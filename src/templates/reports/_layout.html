@@ -1,0 +1,24 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
+
+{% set selectedSubnavItem = 'reports' %}
+
+
+{% block sidebar %}
+
+    <nav class="last">
+        <ul>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'campaigns' ? 'sel' }}" href="{{ url('campaign/reports/campaigns') }}">{{ 'Campaigns'|t('campaign') }}</a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'contacts' ? 'sel' }}" href="{{ url('campaign/reports/contacts') }}">{{ 'Contacts'|t('campaign') }}</a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'mailinglists' ? 'sel' }}" href="{{ url('campaign/reports/mailinglists') }}">{{ 'Mailing Lists'|t('campaign') }}</a>
+            </li>
+        </ul>
+    </nav>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set mailingList = craft.campaign.getMailingListById(mailingListId) %}
+{% set title = 'Contact Activity'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') },
+    { label: 'Mailing Lists'|t('campaign'), url: url('campaign/reports/mailinglists') },
+    { label: mailingList.title, url: mailingList.reportUrl }
+] %}
+
+
+{% block content %}
+
+    {% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.getMailingListContactActivity(mailingListId) } %}
+
+{% endblock %}

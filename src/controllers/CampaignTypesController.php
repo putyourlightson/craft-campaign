@@ -1,0 +1,149 @@
+<?php
+/**
+ * @link      https://craftcampaign.com
+ * @copyright Copyright (c) PutYourLightsOn
+ */
+
+namespace putyourlightson\campaign\controllers;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\models\CampaignTypeModel;
+use putyourlightson\campaign\elements\CampaignElement;
+
+use Craft;
+use craft\web\Controller;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
+
+/**
+ * CampaignTypesController
+ *
+ * @author    PutYourLightsOn
+ * @package   Campaign
+ * @since     1.0.0   
+ */
+class CampaignTypesController extends Controller
+{
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @param int|null $campaignTypeId The campaign type’s ID, if editing an existing campaign type.
+     * @param CampaignTypeModel|null $campaignType The campaign type being edited, if there were any validation errors.
+     *
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionEditCampaignType(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
+    {
+        // Get the campaign type
+        // ---------------------------------------------------------------------
+
+        if ($campaignType === null) {
+            if ($campaignTypeId !== null) {
+                $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
+
+                if ($campaignType === null) {
+                    throw new NotFoundHttpException('Campaign type not found');
+                }
+            }
+            else {
+                $campaignType = new CampaignTypeModel();
+            }
+        }
+
+        // Set the variables
+        // ---------------------------------------------------------------------
+
+        $variables = [
+            'campaignTypeId' => $campaignTypeId,
+            'campaignType' => $campaignType
+        ];
+
+        // Set the title
+        // ---------------------------------------------------------------------
+
+        if ($campaignTypeId === null) {
+            $variables['title'] = Craft::t('campaign', 'Create a new campaign');
+        } else {
+            $variables['title'] = $campaignType->name;
+        }
+
+        // Full page form variables
+        $variables['fullPageForm'] = true;
+
+        // Render the template
+        return $this->renderTemplate('campaign/settings/campaigntypes/_edit', $variables);
+    }
+
+    /**
+     * @return Response|null
+     * @throws \Throwable
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionSaveCampaignType()
+    {
+        $this->requirePostRequest();
+
+        $campaignTypeId = Craft::$app->getRequest()->getBodyParam('campaignTypeId');
+
+        if ($campaignTypeId) {
+            $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
+
+            if (!$campaignType) {
+                throw new NotFoundHttpException('Campaign type not found');
+            }
+        } else {
+            $campaignType = new CampaignTypeModel();
+        }
+
+        // Set the simple stuff
+        $campaignType->name = Craft::$app->getRequest()->getBodyParam('name', $campaignType->name);
+        $campaignType->handle = Craft::$app->getRequest()->getBodyParam('handle', $campaignType->handle);
+        $campaignType->uriFormat = Craft::$app->getRequest()->getBodyParam('uriFormat', $campaignType->uriFormat);
+        $campaignType->htmlTemplate = Craft::$app->getRequest()->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
+        $campaignType->plaintextTemplate = Craft::$app->getRequest()->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
+
+        // Set the field layout
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        $fieldLayout->type = CampaignElement::class;
+        $campaignType->setFieldLayout($fieldLayout);
+
+        // Save it
+        if (!Campaign::$plugin->campaignTypes->saveCampaignType($campaignType)) {
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save campaign type.'));
+
+            // Send the campaign type back to the template
+            Craft::$app->getUrlManager()->setRouteParams([
+                'campaignType' => $campaignType
+            ]);
+
+            return null;
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign type saved.'));
+
+        return $this->redirectToPostedUrl($campaignType);
+    }
+
+    /**
+     * Deletes a campaign type
+     *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws \Throwable
+     */
+    public function actionDeleteCampaignType(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $campaignTypeId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+
+        Campaign::$plugin->campaignTypes->deleteCampaignTypeById($campaignTypeId);
+
+        return $this->asJson(['success' => true]);
+    }
+}

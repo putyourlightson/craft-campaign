@@ -1,0 +1,20 @@
+<div>
+    {% set tabs = settings.getBehavior('contactFieldLayout').getFieldLayout().getTabs() %}
+    {% if tabs|length %}
+        {% for tab in tabs %}
+            <div id="tab{{ loop.index }}"{% if not loop.first %} class="hidden"{% endif %}>
+                {% if loop.first %}
+                    {% include "campaign/contacts/_includes/titlefield" %}
+                {% endif %}
+                {% include '_includes/fields' with {
+                    fields:  tab.getFields(),
+                    element: contact
+                } only %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div id="tab1">
+            {% include "campaign/contacts/_includes/titlefield" %}
+        </div>
+    {% endif %}
+</div>

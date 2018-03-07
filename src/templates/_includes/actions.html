@@ -1,0 +1,20 @@
+{% if actions|length %}
+    <div>
+        <div id="action-menubtn" class="btn menubtn" data-icon="settings" title="{{ 'Actions'|t('app') }}"></div>
+        <div class="menu">
+            <ul>
+                {% for action in actions %}
+                    <li>
+                        <a
+                            {%- if action.id is defined %} id="{{ action.id }}"{% endif %}
+                            {%- if action.action is defined %} class="formsubmit" data-action="{{ action.action }}"{% endif -%}
+                            {%- if action.redirect is defined %} data-redirect="{{ action.redirect|hash }}"{% endif -%}
+                            {%- if action.confirm is defined %} data-confirm="{{ action.confirm }}"{% endif -%}
+                        >{{ action.label }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="action-spinner" class="spinner hidden"></div>
+    </div>
+{% endif %}

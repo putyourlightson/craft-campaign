@@ -1,0 +1,60 @@
+<h2>{{ "Contact Details"|t('campaign') }}</h2>
+
+<table class="data fullwidth fixed-layout">
+    <tbody>
+    <tr>
+        <th class="light">{{ "Email"|t('campaign') }}</th>
+        <td>{{ contact.email }}</td>
+    </tr>
+    <tr>
+        <th class="light">{{ "Location"|t('campaign') }}</th>
+        <td>
+            {% if contact.country %}
+                <span class="flag-icon flag-icon-{{ contact.countryCode }}"></span>
+                {{ contact.country }}
+                {% set location = contact.location %}
+                {% if location %}
+                    <span class="info">
+                        <p>
+                            City: {{ location.city }}<br/>
+                            Post Code: {{ location.postCode }}<br/>
+                            Region: {{ location.region }}<br/>
+                            Country: {{ location.country }}<br/>
+                            Timezone: {{ location.timeZone }}
+                        </p>
+                    </span>
+                {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th class="light">{{ "Device"|t('campaign') }}</th>
+        <td><span class="device {{ contact.device }}"></span> {{ contact.device ? contact.device|ucfirst|t('campaign') }}</td>
+    </tr>
+    <tr>
+        <th class="light">{{ "OS"|t('campaign') }}</th>
+        <td>{{ contact.os|t('campaign') }}</td>
+    </tr>
+    <tr>
+        <th class="light">{{ "Client"|t('campaign') }}</th>
+        <td>{{ contact.client|t('campaign') }}</td>
+    </tr>
+    <tr>
+        <th class="light">{{ "Last Activity"|t('campaign') }}</th>
+        <td>{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<br/><br/>
+
+{% set limit = 10 %}
+
+<h2>{{ "Campaign Activity"|t('campaign') }}</h2>
+{% include 'campaign/reports/contacts/_includes/campaign-activity' with { campaignActivity: craft.campaign.getContactCampaignActivity(contactId, limit) } %}
+
+<h2>{{ "Mailing List Activity"|t('campaign') }}</h2>
+{% include 'campaign/reports/contacts/_includes/mailinglist-activity' with { mailingListActivity: craft.campaign.getContactMailingListActivity(contactId, limit) } %}
+
+<h2>{{ "Timeline"|t('campaign') }}</h2>
+{% include 'campaign/reports/contacts/_includes/timeline' with { timeline: craft.campaign.getContactTimeline(contactId, limit) } %}

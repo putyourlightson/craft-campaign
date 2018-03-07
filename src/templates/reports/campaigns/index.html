@@ -1,0 +1,103 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set title = 'Campaigns'|t('campaign') %}
+{% set selectedSubnavItem = 'reports' %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') }
+] %}
+
+{% set data = craft.campaign.getCampaignsReportData() %}
+
+
+{% block content %}
+
+    {% if data.campaigns|length %}
+        <div class="report-chart">
+            <div class="spinner big"></div>
+            <div id="chart"></div>
+        </div>
+
+        {% js %}
+            new Campaign.Chart({
+                action: 'campaign/reports/get-campaigns-chart-data'
+            }).getChart();
+        {% endjs %}
+
+        <div class="cols padded-right">
+            <div id="open-rate" class="percentage-chart half" data-labels='{{ 'Opened'|t('campaign') }},{{ 'Unopened'|t('campaign') }}' data-values="{{ data.opened }},{{ data.recipients - data.opened }}" data-colors="#4486EC,#E3E5E8"></div>
+            <div id="click-rate" class="percentage-chart half" data-labels='{{ 'Clicked'|t('campaign') }},{{ 'Unclicked'|t('campaign') }}' data-values="{{ data.clicked }},{{ data.recipients - data.clicked }}" data-colors="#008000,#E3E5E8"></div>
+        </div>
+        <div class="clear"></div>
+    {% endif %}
+
+    <h2>{{ "Campaigns Overview"|t('campaign') }}</h2>
+
+    <table class="data fullwidth collapsible">
+        <tbody>
+            <tr>
+                <th class="light">{{ 'Total'|t('campaign') }}</th>
+                <td>{{ data.campaigns|length }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Sendouts'|t('campaign') }}</th>
+                <td>{{ data.sendouts }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Recipients'|t('campaign') }}</th>
+                <td>{{ data.recipients }}</td>
+            </tr>
+            <tr>
+                <th class="light">
+                    {{ 'Click Through Rate'|t('campaign') }}
+                    <span class="info">{{ "Click Through Rate is calculated by dividing the number of contacts that clicked on a link in an email by the number of contacts that opened the email."|t('campaign') }}</span>
+                </th>
+                <td>{{ data.clickThroughRate }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br/><br/>
+
+    {% if data.campaigns|length %}
+        <table id="campaigns" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Title"|t('app') }}</th>
+            <th scope="col">{{ "Recipients"|t('campaign') }}</th>
+            <th scope="col">{{ "Opened"|t('campaign') }}</th>
+            <th scope="col">{{ "Clicked"|t('campaign') }}</th>
+            <th scope="col">{{ "Unsubscribed"|t('campaign') }}</th>
+            <th scope="col">{{ "Complained"|t('campaign') }}</th>
+            <th scope="col">{{ "Bounced"|t('campaign') }}</th>
+            <th scope="col">
+                {{ "CTR"|t('campaign') }}
+                <span class="info">{{ "Click Through Rate is calculated by dividing the number of contacts that clicked on a link in an email by the number of contacts that opened the email."|t('campaign') }}</span>
+            </th>
+            <th scope="col" data-attribute="link" data-icon="world" title="{{ "Link"|t('app') }}"></th>
+            </thead>
+            <tbody>
+            {% for campaign in data.campaigns %}
+                <tr>
+                    <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ url('campaign/reports/campaigns/' ~ campaign.id) }}">{{ campaign.title }}</a></th>
+                    <td data-title="{{ 'Recipients'|t('campaign') }}">{{ campaign.recipients }}</td>
+                    <td data-title="{{ 'Opened'|t('campaign') }}">{{ campaign.opened }}</td>
+                    <td data-title="{{ 'Clicked'|t('campaign') }}">{{ campaign.clicked }}</td>
+                    <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ campaign.unsubscribed }}</td>
+                    <td data-title="{{ 'Complained'|t('campaign') }}">{{ campaign.complained }}</td>
+                    <td data-title="{{ 'Bounced'|t('campaign') }}">{{ campaign.bounced }}</td>
+                    <td data-title="{{ 'CTR'|t('campaign') }}">{{ campaign.clickThroughRate }}%</td>
+                    <td data-title="{{ "Link"|t('app') }}" data-attr="link"><a href="{{ campaign.url }}" target="_blank" data-icon="world"></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+
+        <p>{{ "No campaigns have been sent."|t('campaign') }}</p>
+
+    {% endif %}
+
+    <br/><br/>
+
+{% endblock %}

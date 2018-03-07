@@ -1,0 +1,94 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'General Settings'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
+] %}
+
+{% set settings = craft.campaign.getSettings() %}
+
+{% set fullPageForm = true %}
+
+
+{% macro configWarning(setting) -%}
+    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
+{%- endmacro %}
+{% from _self import configWarning %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-general">
+
+    {{ forms.lightswitchField({
+        first: true,
+        required: true,
+        label: "Test Mode"|t('campaign'),
+        instructions: "Sendout emails will be saved into local files (in {path}) rather that actually being sent."|t('campaign', { path: '<code>storage/runtime/debug/mail</code>' }),
+        warning: (config.testMode is defined ? configWarning('testMode')),
+        id: 'testMode',
+        name: 'testMode',
+        on: settings.testMode,
+        errors: settings.getErrors('testMode')
+    }) }}
+
+    <hr/>
+
+    {{ forms.textField({
+        required: true,
+        label: "API Key"|t('campaign'),
+        instructions: "An API key to use for triggerring tasks and notifications (min. 16 characters)."|t('campaign'),
+        warning: (config.apiKey is defined ? configWarning('apiKey')),
+        id: 'apiKey',
+        name: 'apiKey',
+        value: settings.apiKey,
+        errors: settings.getErrors('apiKey')
+    }) }}
+
+    {% set code %}
+        <code>wget {{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: settings.apiKey }) }} >/dev/null 2>&1</code>
+    {% endset %}
+    {{ forms.field({
+        label: "Cron Jobs"|t('campaign'),
+        instructions: "Create a cron job with the following command to trigger checks on a regular basis (every 5 minutes for example)."|t('campaign'),
+    }, code) }}
+
+    {% set table %}
+        <table class="shadow-box editable">
+            <thead>
+                <tr>
+                    <th class="thin">{{ "Service"|t('campaign') }}</th>
+                    <th>{{ "Webhook URL"|t('campaign') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="thin">Mailgun</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: settings.apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">Mandrill</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mandrill', { key: settings.apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">Postmark</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/postmark', { key: settings.apiKey }) }}</textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endset %}
+    {{ forms.field({
+        label: "Webhooks"|t('campaign'),
+        instructions: "Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only)."|t('campaign'),
+    }, table) }}
+
+{% endblock %}

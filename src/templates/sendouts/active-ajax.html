@@ -1,0 +1,11 @@
+[
+{% for sendout in craft.campaign.getActiveSendouts(craft.app.request.getParam('completedWithin')) %}
+    {
+    "id": "{{ sendout.id }}",
+    "status": "{{ sendout.status }}",
+    "progress": "{{ sendout.progress }}",
+    "recipients": "{{ sendout.recipients }}",
+    "completed": "{{ sendout.completed ? sendout.completed|timestamp('short') }}"
+    }{{ not loop.last ? ',' }}
+{% endfor %}
+]

@@ -1,0 +1,75 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set title = 'Contacts'|t('campaign') %}
+{% set selectedSubnavItem = 'reports' %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') }
+] %}
+
+{% set data = craft.campaign.getContactsReportData(10) %}
+
+
+{% block content %}
+
+    {% if data.total %}
+        {% js %}
+            new Campaign.Chart();
+        {% endjs %}
+
+        <br/>
+
+        <div class="cols padded-right">
+            <div id="active-pending" class="percentage-chart" data-labels="{{ 'Active'|t('campaign') }},{{ 'Pending'|t('campaign') }},{{ 'Complained'|t('campaign') }},{{ 'Bounced'|t('campaign') }}" data-values="{{ data.active }},{{ data.pending }},{{ data.complained }},{{ data.bounced }}" data-colors="#4486EC,#F2842D,#503112,#000000"></div>
+        </div>
+        <div class="clear"></div>
+    {% endif %}
+
+    <h2>{{ "Contacts Overview"|t('campaign') }}</h2>
+
+    <table class="data fullwidth collapsible">
+        <tbody>
+            <tr>
+                <th class="light">{{ 'Total'|t('campaign') }}</th>
+                <td>{{ data.total }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Subscribed'|t('campaign') }}</th>
+                <td>{{ data.subscribed }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Unubscribed'|t('campaign') }}</th>
+                <td>{{ data.unsubscribed }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Complained'|t('campaign') }}</th>
+                <td>{{ data.complained }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Bounced'|t('campaign') }}</th>
+                <td>{{ data.bounced }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br/><br/>
+
+    {% set limit = 5 %}
+
+    <h2>{{ "Contact Activity"|t('campaign') }}</h2>
+    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.getContactsActivity( limit) } %}
+
+    <div class="cols">
+        <div class="half">
+            <h2>{{ "Locations"|t('campaign') }}</h2>
+            {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getContactsLocations(limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/locations') } %}
+        </div>
+
+        <div class="half">
+            <h2>{{ "Devices"|t('campaign') }}</h2>
+            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/devices') } %}
+        </div>
+    </div>
+    <div class="clear"></div>
+
+{% endblock %}

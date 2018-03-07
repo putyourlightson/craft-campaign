@@ -1,0 +1,87 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set import = craft.campaign.getImportById(importId) %}
+
+{% set title = import.fileName ? "CSV File"|t('campaign') : "User Group"|t('campaign') %}
+{% set selectedSubnavItem = 'import-export' %}
+
+{% set crumbs = [
+    { label: 'Import'|t('campaign'), url: url('campaign/import-export/import') }
+] %}
+
+
+{% block content %}
+
+    {% if import.fileName %}
+        {% set input %}
+            <p><a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}">{{ import.fileName }}</a></p>
+        {% endset %}
+        {{ forms.field({label: "CSV File"|t('campaign') ~ ':'}, input) }}
+    {% else %}
+        {% set input %}
+            <p><a href="{{ cpUrl('users') }}">{{ import.userGroup.name }}</a></p>
+        {% endset %}
+        {{ forms.field({label: "User Group"|t('campaign') ~ ':'}, input) }}
+    {% endif %}
+
+    {% set input %}
+        <span class="status {{ import.mailingList.status }}"></span>{{ import.mailingList.title }}<br/>
+    {% endset %}
+    {{ forms.field({label: "Mailing List"|t('campaign') ~ ':'}, input) }}
+
+    {% set failures = import.getFailures() %}
+    {% if failures|length %}
+        {% set input %}
+            <table id="imports" class="data fullwidth collapsible">
+                <thead>
+                    <tr>
+                        <th scope="col" class="thin">{{ "Line"|t('campaign') }}</th>
+                        <th scope="col">{{ "Values"|t('campaign') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lineNumber, row in failures %}
+                        <tr>
+                            <td>{{ lineNumber }}</td>
+                            <td><code>{{ row }}</code></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endset %}
+        {{ forms.field({label: "Failures"|t('campaign') ~ ':'}, input) }}
+    {% endif %}
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div class="meta read-only">
+        <div class="data first">
+            <h5 class="heading">{{ "Imported By"|t('campaign') }}</h5>
+            <div class="value">
+                {% include '_elements/element' with {'element': import.user} %}
+            </div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Added"|t('campaign') }}</h5>
+            <div class="value">{{ import.added }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Updated"|t('campaign') }}</h5>
+            <div class="value">{{ import.updated }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Failed"|t('campaign') }}</h5>
+            <div class="value">{{ import.failed }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Date Imported"|t('campaign') }}</h5>
+            <div class="value">{{ import.dateImported|datetime }}</div>
+        </div>
+    </div>
+
+{% endblock %}

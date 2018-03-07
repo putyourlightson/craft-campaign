@@ -1,0 +1,4 @@
+/**
+ * Campaign class
+ */
+Campaign = {};

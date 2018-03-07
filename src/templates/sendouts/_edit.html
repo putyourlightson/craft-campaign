@@ -1,0 +1,271 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = sendout.id ? sendout.title : 'Create a new sendout'|t('campaign') %}
+{% set selectedSubnavItem = 'sendouts' %}
+
+{% set crumbs = [
+    { label: 'Sendouts'|t('campaign'), url: url('campaign/sendouts') },
+    { label: sendout.sendoutTypes[sendout.sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
+] %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
+
+
+{% block actionButton %}
+
+    <input type="submit" class="btn submit" value="{{ 'Save and Preview'|t('campaign') }}">
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% if settings.testMode %}
+        <div class="testmode" title="Campaign is running in Test Mode."></div>
+    {% endif %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/sendouts/save-sendout">
+    <input type="hidden" name="sendoutId" value="{{ sendout.id }}">
+    <input type="hidden" name="sendoutType" value="{{ sendoutType }}">
+    {{ redirectInput('campaign/sendouts/{sendoutType}/{id}?preview=1') }}
+
+    <div id="fields">
+
+        {% if sendout.recipients %}
+            {{ forms.field({
+                warning: 'This sendout has already been sent to {recipients} recipients.'|t('campaign', {recipients: sendout.recipients})
+            }) }}
+        {% endif %}
+
+        {% include "campaign/sendouts/_includes/titlefield" %}
+
+        {{ forms.elementSelectField({
+            label: "Campaign"|t('campaign'),
+            instructions: "Choose a campaign to send."|t('campaign'),
+            id: 'campaignId',
+            name: 'campaignId',
+            elementType: campaignElementType,
+            selectionLabel: "Choose a campaign"|t('campaign'),
+            criteria: campaignElementCriteria,
+            limit: 1,
+            elements: sendout.campaignId ? [sendout.campaign],
+            errors: sendout.getErrors('campaignId'),
+            required: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Subject"|t('campaign'),
+            instructions: "Enter an email subject."|t('campaign'),
+            id: 'subject',
+            name: 'subject',
+            value: sendout.subject,
+            errors: sendout.getErrors('subject'),
+            required: true,
+            autocomplete: true
+        }) }}
+
+        {{ forms.textField({
+            label: "From Name"|t('campaign'),
+            instructions: "The name to send from."|t('campaign'),
+            id: 'fromName',
+            name: 'fromName',
+            value: sendout.fromName ? sendout.fromName : settings.defaultFromName,
+            errors: sendout.getErrors('fromName'),
+            required: true,
+            autocomplete: true
+        }) }}
+
+        {{ forms.textField({
+            label: "From Email Address"|t('campaign'),
+            instructions: "The email address to send from."|t('campaign'),
+            id: 'fromEmail',
+            name: 'fromEmail',
+            value: sendout.fromEmail ? sendout.fromEmail : settings.defaultFromEmail,
+            errors: sendout.getErrors('fromEmail'),
+            required: true,
+            autocomplete: true
+        }) }}
+
+        <hr/>
+
+        {{ forms.elementSelectField({
+            label: "To"|t('campaign'),
+            instructions: "Select at least one mailing list to send the campaign to."|t('campaign'),
+            id: 'mailingListIds',
+            name: 'mailingListIds',
+            elementType: mailingListElementType,
+            selectionLabel: "Add a mailing list"|t('campaign'),
+            criteria: mailingListElementCriteria,
+            limit: 100,
+            elements: sendout.mailingListIds ? sendout.mailingLists,
+            errors: sendout.getErrors('mailingListIds'),
+            required: true
+        }) }}
+
+        {{ forms.elementSelectField({
+            label: "Exclude"|t('campaign'),
+            instructions: "Select any mailing lists to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
+            id: 'excludedMailingListIds',
+            name: 'excludedMailingListIds',
+            elementType: mailingListElementType,
+            selectionLabel: "Add a mailing list"|t('campaign'),
+            criteria: mailingListElementCriteria,
+            limit: 100,
+            elements: sendout.excludedMailingListIds ? sendout.excludedMailingLists,
+            errors: sendout.getErrors('excludedMailingListIds')
+        }) }}
+
+        {{ forms.elementSelectField({
+            label: "Segment"|t('campaign'),
+            instructions: "Select any segments to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+            id: 'segmentIds',
+            name: 'segmentIds',
+            elementType: segmentElementType,
+            selectionLabel: "Add a segment"|t('campaign'),
+            limit: 100,
+            elements: sendout.segmentIds ? sendout.segments,
+            errors: sendout.getErrors('segmentsIds')
+        }) }}
+
+        <hr/>
+
+        {{ forms.textField({
+            label: "Notification Email Address"|t('campaign'),
+            instructions: "An email address to notify when sending this sendout is complete or fails."|t('campaign'),
+            id: 'notificationEmailAddress',
+            name: 'notificationEmailAddress',
+            value: (sendout.notificationEmailAddress ? sendout.notificationEmailAddress : (not sendout.id ? currentUser.email)),
+            errors: sendout.getErrors('notificationEmailAddress'),
+            autocomplete: true,
+            required: true
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Google Analytics Link Tracking"|t('campaign'),
+            instructions: "Add Google Analytics tracking to links in your campaign."|t('campaign'),
+            id: 'googleAnalyticsLinkTracking',
+            name: 'googleAnalyticsLinkTracking',
+            on: sendout.googleAnalyticsLinkTracking,
+            errors: sendout.getErrors('googleAnalyticsLinkTracking')
+        }) }}
+
+        {% if sendout.sendoutType == 'scheduled' %}
+
+            <hr/>
+
+            {{ forms.dateTimeField({
+                label: "Send Date"|t('campaign'),
+                instructions: "The date and time at which to begin sending."|t('campaign'),
+                id: 'sendDate',
+                name: 'sendDate',
+                value: (sendout.sendDate ? sendout.sendDate : date()),
+                errors: sendout.getErrors('sendDate'),
+                required: true
+            }) }}
+
+        {% endif %}
+
+        {% if sendout.sendoutType == 'automated' %}
+
+            <hr/>
+
+            {% set input %}
+                {{ forms.text({
+                    name: 'automatedSchedule[timeDelay]',
+                    type: 'number',
+                    value: automatedSchedule.timeDelay,
+                    size: '10',
+                }) }}
+                {{ forms.select({
+                    name: 'automatedSchedule[timeDelayInterval]',
+                    options: timeDelayIntervals,
+                    value: automatedSchedule.timeDelayInterval,
+                }) }}
+            {% endset %}
+            {{ forms.field({
+                label: "Time Delay"|t('campaign'),
+                instructions: "The amount of time to wait after subscribers join the list(s). Set to 0 for immediately."|t('campaign'),
+                errors: automatedSchedule.getErrors('timeDelay'),
+                required: true
+            }, input) }}
+
+            {{ forms.lightswitchField({
+                label: "Specific Time and Days"|t('campaign'),
+                instructions: "Whether to send only at a specific time and on specific days of the week."|t('campaign'),
+                name: 'automatedSchedule[specificTimeDays]',
+                id: 'specificTimeDays',
+                on: automatedSchedule.specificTimeDays,
+                errors: automatedSchedule.getErrors('specificTimeDays'),
+                required: true,
+                toggle: 'specificTimeDaysFields'
+            }) }}
+
+            <div id="specificTimeDaysFields" {{ not automatedSchedule.specificTimeDays ? 'class="hidden"' }}>
+
+                {% set input %}
+                    {{ forms.time({
+                        name: 'automatedSchedule[timeOfDay]',
+                        id: 'timeOfDay',
+                        value: (automatedSchedule.timeOfDay.time is defined ? automatedSchedule.timeOfDay.time : '09:00'),
+                    }) }}
+                    {{ (automatedSchedule.timeOfDay.timezone is defined ? automatedSchedule.timeOfDay.timezone : craft.app.timezone) }}
+                {% endset %}
+                {{ forms.field({
+                    label: "Time of Day"|t('campaign'),
+                    instructions: "The time of day at which to send."|t('campaign'),
+                    errors: automatedSchedule.getErrors('timeOfDay'),
+                    required: true
+                }, input) }}
+
+                {% set input %}
+                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                        {{ forms.checkbox({
+                            label: day|t('campaign'),
+                            name: 'automatedSchedule[daysOfWeek][' ~ loop.index ~ ']',
+                            value: 1,
+                            checked: (automatedSchedule.daysOfWeek[loop.index] is defined and automatedSchedule.daysOfWeek[loop.index]),
+                        }) }}
+                    {% endfor %}
+                {% endset %}
+                {{ forms.field({
+                    label: "Days of Week"|t('campaign'),
+                    instructions: "The days of the week on which to send."|t('campaign'),
+                    errors: automatedSchedule.getErrors('daysOfWeek'),
+                    required: true
+                }, input) }}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+{% endblock %}
+
+
+{% block details %}
+
+    {% if sendout.id %}
+        <div class="meta read-only">
+            <div class="data first">
+                <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+                <div class="value flex">
+                    <div class="flex-grow">
+                        <span class="status {{ sendout.status }}"></span> {{ sendout.statuses[sendout.status] }}
+                    </div>
+                    {% include 'campaign/_includes/actions' %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

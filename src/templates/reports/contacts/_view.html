@@ -1,0 +1,22 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set contact = craft.campaign.getContactById(contactId) %}
+{% set title = contact.email %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') },
+    { label: 'Contacts'|t('campaign'), url: url('campaign/reports/contacts') }
+] %}
+
+
+{% block pageTitle %}
+    {{ parent() }}
+    <a href="{{ contact.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
+{% endblock %}
+
+
+{% block content %}
+
+    {% include 'campaign/reports/contacts/_includes/report' %}
+
+{% endblock %}

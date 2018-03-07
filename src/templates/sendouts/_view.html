@@ -1,0 +1,271 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = sendout.title %}
+{% set selectedSubnavItem = 'sendouts' %}
+
+{% set crumbs = [
+    { label: 'Sendouts'|t('campaign'), url: url('campaign/sendouts') },
+    { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
+] %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
+
+
+{% block pageTitle %}
+
+    {{ parent() }}
+
+    {% if sendout.isEditable %}
+        <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block actionButton %}
+
+    {% if sendout.isEditable %}
+        {% set saveLabel = 'Send Now'|t('campaign') %}
+        {% set confirmMessage = 'This sendout will begin sending immediately. Are you sure you want to proceed?'|t %}
+        {% if sendout.sendoutType == 'scheduled' %}
+            {% set saveLabel = 'Schedule Sending'|t('campaign') %}
+            {% set confirmMessage = 'This sendout will be scheduled for sending on the send date. Are you sure you want to proceed?'|t %}
+        {% elseif sendout.sendoutType == 'automated' %}
+            {% set saveLabel = 'Activate Sending'|t('campaign') %}
+            {% set confirmMessage = 'This sendout will be activated for automated sending. Are you sure you want to proceed?'|t %}
+        {% endif %}
+        {% if sendout.isResumable() %}
+            {% set saveLabel = 'Resume Sending'|t('campaign') %}
+            {% set confirmMessage = 'Sending of this sendout will be resumed. Are you sure you want to proceed?'|t %}
+        {% endif %}
+        <input type="submit" class="btn submit confirm-send" value="{{ saveLabel }}" data-confirm="{{ confirmMessage }}">
+    {% endif %}
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% if settings.testMode %}
+        <div class="testmode" title="Campaign is running in Test Mode."></div>
+    {% endif %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block content %}
+
+    {% if fullPageForm %}
+        <input type="hidden" name="action" value="campaign/sendouts/send-sendout">
+    {% else %}
+        <form action="" method="post">
+            {{ csrfInput() }}
+    {% endif %}
+
+    <input type="hidden" name="sendoutId" value="{{ sendout.id }}">
+    {{ redirectInput('campaign/sendouts') }}
+
+    <div id="fields">
+
+        {% set input %}
+        <span class="status {{ sendout.campaign.status }}"></span>{{ sendout.campaign.title }}
+        {% endset %}
+        {{ forms.field({label: "Campaign"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            <p>{{ sendout.subject }}</p>
+        {% endset %}
+        {{ forms.field({label: "Subject"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            <p>{{ sendout.fromName }} &lt;{{ sendout.fromEmail }}&gt;</p>
+        {% endset %}
+        {{ forms.field({label: "From"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            {% for mailingList in sendout.mailingLists %}
+            <span class="status {{ mailingList.status }}"></span>{{ mailingList.title }}<br/>
+            {% endfor %}
+        {% endset %}
+        {{ forms.field({label: "To"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            {% for excludedMailingList in sendout.excludedMailingLists %}
+                <p><span class="status {{ excludedMailingList.status }}"></span>{{ excludedMailingList.title }}</p>
+            {% endfor %}
+            {% if sendout.excludedMailingLists|length == 0 %}
+                <p>-</p>
+            {% endif %}
+        {% endset %}
+        {{ forms.field({label: "Exclude"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            {% for segment in sendout.segments %}
+                <p><span class="status {{ segment.status }}"></span>{{ segment.title }}</p>
+            {% endfor %}
+            {% if sendout.segments|length == 0 %}
+                <p>-</p>
+            {% endif %}
+        {% endset %}
+        {{ forms.field({label: "Segments"|t('campaign') ~ ':'}, input) }}
+
+        <hr/>
+
+        {% set input %}
+            <p>{{ sendout.notificationEmailAddress }}</p>
+        {% endset %}
+        {{ forms.field({label: "Notification Email Address"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            <p>{{ sendout.googleAnalyticsLinkTracking ? 'On'|t('campaign') : 'Off'|t('campaign') }}</p>
+        {% endset %}
+        {{ forms.field({label: "Google Analytics Link Tracking"|t('campaign') ~ ':'}, input) }}
+
+        {% if sendout.sendoutType == 'scheduled' %}
+
+            <hr/>
+
+            {% set input %}
+                <p>{{ sendout.sendDate|datetime }}</p>
+            {% endset %}
+            {{ forms.field({label: "Send Date"|t('campaign') ~ ':'}, input) }}
+
+        {% endif %}
+
+        {% if sendout.sendoutType == 'automated' %}
+
+            <hr/>
+
+            {% set input %}
+                <p>{{ automatedSchedule.timeDelay }} {{ timeDelayIntervals[automatedSchedule.timeDelayInterval] }}</p>
+            {% endset %}
+            {{ forms.field({label: "Time Delay"|t('campaign') ~ ':'}, input) }}
+
+            {% set input %}
+                <p>{{ automatedSchedule.specificTimeDays ? 'On'|t('campaign') : 'Off'|t('campaign') }}</p>
+            {% endset %}
+            {{ forms.field({label: "Specific Time and Days"|t('campaign') ~ ':'}, input) }}
+
+            {% if automatedSchedule.specificTimeDays %}
+
+                {% set input %}
+                    <p>{{ automatedSchedule.timeOfDay.time }} {{ automatedSchedule.timeOfDay.timezone }}</p>
+                {% endset %}
+                {{ forms.field({label: "Time of Day"|t('campaign') ~ ':'}, input) }}
+
+                {% set input %}
+                    <p>
+                        {% set days = [] %}
+                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                            {% if automatedSchedule.daysOfWeek[loop.index] is defined and automatedSchedule.daysOfWeek[loop.index] %}
+                                {% set days = days|merge([day]) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ days|join(', ') }}
+                    </p>
+                {% endset %}
+                {{ forms.field({label: "Days of Week"|t('campaign') ~ ':'}, input) }}
+
+            {% endif %}
+
+        {% endif %}
+
+        <hr/>
+
+        {% set input %}
+            <iframe class="email-body" src="{{ actionUrl('/campaign/sendouts/get-html-body', { sendoutId: sendout.id }) }}"></iframe>
+        {% endset %}
+        {{ forms.field({label: "HTML Body"|t('campaign') ~ ':'}, input) }}
+
+        {% set input %}
+            <textarea class="email-body" disabled>{{ sendout.getPlaintextBody() }}</textarea>
+        {% endset %}
+        {{ forms.field({label: "Plaintext Body"|t('campaign') ~ ':'}, input) }}
+
+    </div>
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div class="meta read-only">
+        <div class="data first">
+            <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+            <div class="value flex">
+                <div class="flex-grow">
+                    <span class="status {{ sendout.status }}"></span> {{ sendout.statuses[sendout.status] }}
+                </div>
+                {% include 'campaign/_includes/actions' %}
+            </div>
+        </div>
+
+        {% if sendout.status == 'draft' and sendout.sendoutType != 'automated' %}
+
+            <div class="data">
+                <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
+                <div class="value">{{ sendout.recipientIds|length }}</div>
+            </div>
+
+        {% else %}
+
+            {% if sendout.status == 'failed' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Status Message"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.sendStatusMessage }}</div>
+                </div>
+            {% endif %}
+            {% set sender = sendout.sender %}
+            {% if sender %}
+                <div class="data">
+                    <h5 class="heading">{{ "Last Sent By"|t('campaign') }}</h5>
+                    <div class="value">
+                        {% include '_elements/element' with {'element': sender} %}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="data">
+                <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
+                <div class="value">{{ sendout.recipients }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "SID"|t('campaign') }}</h5>
+                <div class="value"><code>{{ sendout.sid }}</code></div>
+            </div>
+            {% if sendout.lastSent %}
+                <div class="data">
+                    <h5 class="heading">{{ "Last Sent"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.lastSent|datetime }}</div>
+                </div>
+            {% endif %}
+            <div class="data">
+                <h5 class="heading">{{ "Date Created"|t('app') }}</h5>
+                <div class="value">{{ sendout.dateCreated|datetime }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Updated"|t('app') }}</h5>
+                <div class="value">{{ sendout.dateUpdated|datetime }}</div>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    {% if not sendout.lastSent %}
+        <hr/>
+        <div class="meta">
+            {{ forms.textField({
+                label: "Test Email"|t('campaign'),
+                id: 'testEmail',
+                type: 'email',
+                value: currentUser.email
+            }) }}
+            <a class="send-test btn right">{{ 'Send Test'|t('campaign') }}</a>
+        </div>
+    {% endif %}
+
+{% endblock %}

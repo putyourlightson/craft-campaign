@@ -1,0 +1,54 @@
+{% if contactActivity|length %}
+    <table id="contact-activity" class="data fullwidth collapsible">
+        <thead>
+            <th scope="col">{{ "Email"|t('campaign') }}</th>
+            <th scope="col">{{ "Subscription Status"|t('campaign') }}</th>
+            <th scope="col">{{ "Source"|t('campaign') }}</th>
+            <th scope="col">{{ "Location"|t('campaign') }}</th>
+            <th scope="col">{{ "Last Activity"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+            {% for contactMailingList in contactActivity %}
+                {% set contact = contactMailingList.contact %}
+                <tr>
+                    <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                    <td data-title="{{ 'Subscription Status'|t('campaign') }}">{{ contactMailingList.subscriptionStatus|ucfirst|t('campaign') }}</td>
+                    <td data-title="{{ 'Source'|t('campaign') }}">
+                        {% if contactMailingList.source %}
+                            <a href="{{ contactMailingList.sourceUrl }}" class="go" target="_blank">{{ contactMailingList.source|ucfirst|t('campaign') }}</a>
+                        {% endif %}
+                    </td>
+                    <td data-title="{{ 'Location'|t('campaign') }}">
+                        {% if contactMailingList.country %}
+                            {{ contactMailingList.country }}
+                            {% set location = contactMailingList.location %}
+                            {% if location %}
+                                <span class="info">
+                                    <p>
+                                        City: {{ location.city }}<br/>
+                                        Post Code: {{ location.postCode }}<br/>
+                                        Region: {{ location.region }}<br/>
+                                        Country: {{ location.country }}<br/>
+                                        Timezone: {{ location.timeZone }}
+                                    </p>
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td data-title="{{ 'Last Activity'|t('campaign') }}">{{ contactMailingList.dateUpdated|datetime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if limit is defined and limit == contactActivity|length %}
+        <p><a href="{{ mailingList.reportUrl ~ '/contact-activity' }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+    {% endif %}
+
+{% else %}
+
+    <p>{{ "No contact activity for this mailing list."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

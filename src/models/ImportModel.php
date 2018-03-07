@@ -1,0 +1,203 @@
+<?php
+/**
+ * @link      https://craftcampaign.com
+ * @copyright Copyright (c) PutYourLightsOn
+ */
+
+namespace putyourlightson\campaign\models;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\elements\MailingListElement;
+
+use Craft;
+use craft\elements\User;
+use craft\helpers\UrlHelper;
+use craft\models\UserGroup;
+
+/**
+ * ImportModel
+ *
+ * @author    PutYourLightsOn
+ * @package   Campaign
+ * @since     1.0.0
+ *
+ * @property string                       $cpViewUrl
+ * @property User|null                    $user
+ * @property null|UserGroup               $userGroup
+ * @property null|MailingListElement      $mailingList
+ */
+class ImportModel extends BaseModel
+{
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var int|null ID
+     */
+    public $id;
+
+    /**
+     * @var string|null File name
+     */
+    public $fileName;
+
+    /**
+     * @var string|null File path
+     */
+    public $filePath;
+
+    /**
+     * @var int|null User group ID
+     */
+    public $userGroupId;
+
+    /**
+     * @var int|null User ID
+     */
+    public $userId;
+
+    /**
+     * @var int Email field index
+     */
+    public $emailFieldIndex;
+
+    /**
+     * @var array|null Field indexes
+     */
+    public $fieldIndexes;
+
+    /**
+     * @var int|null Mailing list ID
+     */
+    public $mailingListId;
+
+    /**
+     * @var int Added
+     */
+    public $added = 0;
+
+    /**
+     * @var int Updated
+     */
+    public $updated = 0;
+
+    /**
+     * @var int Failed
+     */
+    public $failed = 0;
+
+    /**
+     * @var mixed Failures
+     */
+    public $failures = [];
+
+    /**
+     * @var \DateTime|null Date imported
+     */
+    public $dateImported;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * Use the handle as the string representation.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string)$this->fileName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        $labels = parent::attributeLabels();
+
+        // Set the field labels
+        $labels['mailingListId'] = Craft::t('campaign', 'Mailing List');
+        $labels['emailFieldIndex'] = Craft::t('campaign', 'Email');
+
+        return $labels;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            [['id', 'userId', 'mailingListId'], 'number', 'integerOnly' => true],
+            [['mailingListId', 'emailFieldIndex'], 'required'],
+            [['fileName', 'filePath'], 'string', 'max' => 255],
+        ];
+    }
+
+    /**
+     * Returns the CP view URL
+     *
+     * @return string
+     */
+    public function getCpViewUrl(): string
+    {
+        return UrlHelper::cpUrl('campaign/import-export/import/'.$this->id);
+    }
+
+    /**
+     * Returns the user group
+     *
+     * @return UserGroup|null
+     */
+    public function getUserGroup()
+    {
+        if ($this->userGroupId === null) {
+            return null;
+        }
+
+        return Craft::$app->getUserGroups()->getGroupById($this->userGroupId);
+    }
+
+    /**
+     * Returns the user
+     *
+     * @return User|null
+     */
+    public function getUser()
+    {
+        if ($this->userId === null) {
+            return null;
+        }
+
+        return User::find()->id($this->userId)->one();
+    }
+
+    /**
+     * Returns the mailing list
+     *
+     * @return MailingListElement|null
+     */
+    public function getMailingList()
+    {
+        if ($this->mailingListId === null) {
+            return null;
+        }
+
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
+
+        return $mailingList;
+    }
+
+    /**
+     * Returns the failed rows as an array
+     *
+     * @return array
+     */
+    public function getFailures(): array
+    {
+        // JSON decode
+        return empty($this->failures) ? [] : json_decode($this->failures, true);
+    }
+}

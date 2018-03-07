@@ -1,0 +1,38 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Contact Settings'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
+] %}
+
+{% set settings = craft.campaign.getSettings() %}
+
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-contact">
+
+    {{ forms.textField({
+        label: "Email Field Label"|t('campaign'),
+        instructions: "What do you want the Email field to be called?"|t('campaign'),
+        id: 'emailFieldLabel',
+        name: 'emailFieldLabel',
+        value: settings.emailFieldLabel,
+        errors: settings.getErrors('emailFieldLabel'),
+        required: true
+    }) }}
+
+    <hr/>
+
+    {% include "_includes/fieldlayoutdesigner" with {
+        fieldLayout: settings.getBehavior('contactFieldLayout').getFieldLayout(),
+        customizableTabs: false,
+        pretendTabName: "Contact"|t('campaign')
+    } only %}
+
+{% endblock %}

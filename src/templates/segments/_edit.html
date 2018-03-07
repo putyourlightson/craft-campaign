@@ -1,0 +1,222 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set selectedSubnavItem = 'segments' %}
+
+{% set crumbs = [
+    { label: 'Segments'|t('campaign'), url: url('campaign/segments') },
+] %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SegmentEditAsset') %}
+
+
+{% block actionButton %}
+
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/segments/new')|hash }}">{{ "Save and add another"|t('app') }}</a>
+                </li>
+                {% if segment.id %}
+                    <li>
+                        <a class="formsubmit" data-param="duplicate" data-value="1" data-redirect="{{ continueEditingUrl|hash }}">{{ "Save as a new segment"|t('campaign') }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/segments/save-segment">
+
+    {{ redirectInput('campaign/segments') }}
+
+    {% if segment.id %}
+        <input type="hidden" name="segmentId" value="{{ segment.id }}">
+    {% endif %}
+
+    <div id="fields">
+        <div>
+            <div id="tab1">
+                {% include "campaign/segments/_includes/titlefield" %}
+            </div>
+
+            {% set fieldOperators = craft.campaign.getSegmentFieldOperators() %}
+            {% set availableFields = craft.campaign.getSegmentAvailableFields() %}
+            <div class="field">
+                <div class="heading">
+                    <label>{{ "Conditions"|t('campaign') }}</label>
+                    <div class="instructions">
+                        <p>{{ "Create one or more conditions to apply to this segment."|t('campaign') }}</p>
+                    </div>
+                </div>
+
+                <div id="newCondition" class="andCondition field hidden">
+                    <table class="heading data fullwidth collapsible">
+                        <tbody>
+                            <tr class="orCondition">
+                                <td>
+                                    <div class="select">
+                                        <select name="conditions[][][1]" class="conditionField" disabled>
+                                            {% for field in availableFields %}
+                                                <option data-field="{{ field.type }}" value="{{ field.handle }}">{{ field.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="select">
+                                        {% for fieldType, operators in fieldOperators %}
+                                            <select name="conditions[][][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
+                                                {% for value, label in operators %}
+                                                    <option class="{{ fieldType }}" value="{{ value }}">{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="conditionValue PlainText Number hidden">
+                                        <input type="text" class="text fullwidth" name="conditions[][][2]" value="" disabled />
+                                    </div>
+                                    <div class="conditionValue Date hidden">
+                                        <div class="datewrapper">
+                                            <input class="text" type="text fullwidth" name="conditions[][][2]" value="" autocomplete="off" placeholder=" " disabled />
+                                            <div data-icon="date"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">OR</a></td>
+                                <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
+                </div>
+
+                <div class="conditions">
+                    {% for andIndex, conditions in segment.conditions %}
+                        <div class="andCondition field">
+                            <table class="heading data fullwidth collapsible">
+                                <tbody>
+                                    {% for orIndex, condition in conditions %}
+                                        <tr class="orCondition">
+                                            <td>
+                                                <div class="select">
+                                                    <select name="conditions[{{ andIndex }}][{{ orIndex }}][1]" class="conditionField">
+                                                        {% for field in availableFields %}
+                                                            <option data-field="{{ field.type }}" value="{{ field.handle }}" {{ condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="select">
+                                                    {% for fieldType, operators in fieldOperators %}
+                                                        <select name="conditions[{{ andIndex }}][{{ orIndex }}][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
+                                                            {% for value, label in operators %}
+                                                                <option class="{{ fieldType }}" value="{{ value }}" {{ condition[0] == value ? 'selected' }}>{{ label }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    {% endfor %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="conditionValue PlainText Number hidden">
+                                                    <input type="text" class="text fullwidth" name="conditions[{{ andIndex }}][{{ orIndex }}][2]" value="{{ condition[2] }}" disabled />
+                                                </div>
+                                                <div class="conditionValue Date hidden">
+                                                    <div class="datewrapper">
+                                                        <input class="text" type="text fullwidth" name="conditions[{{ andIndex }}][{{ orIndex }}][2]" value="{{ condition[2] }}" autocomplete="off" placeholder=" " disabled />
+                                                        <div data-icon="date"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">{{ 'OR'|t('campaign') }}</a></td>
+                                            <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div id="settings" class="meta">
+        {{ forms.textField({
+            label: "Slug"|t('app'),
+            id: 'slug',
+            name: 'slug',
+            value: segment.slug,
+            placeholder: "Enter slug"|t('app'),
+            errors: segment.getErrors('slug')
+        }) }}
+
+        {% set statusInput %}
+            <div class="left">
+                {{ forms.lightswitch({
+                    id: 'enabled',
+                    name: 'enabled',
+                    on: segment.enabled
+                }) }}
+            </div>
+
+            {% if segment.id %}
+                <div class="right">
+                    <input type="button" class="btn small formsubmit" value="{{ 'Delete'|t('app') }}" data-action="campaign/segments/delete-segment" data-confirm="{{ 'Are you sure you want to delete this segment?'|t('campaign') }}" data-redirect="{{ 'campaign/segments'|hash }}">
+                </div>
+            {% endif %}
+        {% endset %}
+
+        {{ forms.field({
+            label: "Enabled"|t('app'),
+            id: 'enabled'
+        }, statusInput) }}
+    </div>
+
+    {% if segment.id %}
+        <hr/>
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ "Date Created"|t('app') }}</h5>
+                <div class="value">{{ segment.dateCreated|datetime }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Updated"|t('app') }}</h5>
+                <div class="value">{{ segment.dateUpdated|datetime }}</div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% if not segment.slug %}
+    {% js %}
+        window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');
+    {% endjs %}
+{% endif %}

@@ -1,0 +1,146 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set selectedSubnavItem = 'contacts' %}
+
+{% set crumbs = [
+    { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') },
+] %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ContactEditAsset') %}
+
+
+{% block actionButton %}
+
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/contacts/new')|hash }}">{{ "Save and add another"|t('app') }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/contacts/save-contact">
+
+    {{ redirectInput('campaign/contacts') }}
+
+    {% if contact.id %}
+        <input type="hidden" name="contactId" value="{{ contact.id }}">
+    {% endif %}
+
+    <div id="fields">
+        {% include "campaign/contacts/_includes/fields" %}
+
+        {% if contact.id %}
+            {% set mailingLists = craft.campaign.getAllMailingLists() %}
+            <div id="tab-mailinglists" class="hidden">
+                <div id="nomailinglists"{% if mailingLists|length %}class="hidden"{% endif %}>
+                    <p>{{ "No mailing lists exist."|t('campaign') }}</p>
+                </div>
+
+                {% if mailingLists|length %}
+                    <table id="mailinglists" class="data fullwidth collapsible">
+                        <thead>
+                            <th scope="col">{{ "Title"|t('app') }}</th>
+                            <th scope="col">{{ "Subscription Status"|t('campaign') }}</th>
+                            <td class="thin"></td>
+                            <td class="thin"></td>
+                        </thead>
+                        <tbody>
+                            {% for mailingList in mailingLists %}
+                                {% set subscriptionStatus = contact.getMailingListSubscriptionStatus(mailingList.id) %}
+                                <tr data-id="{{ mailingList.id }}">
+                                    <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ mailingList.cpEditUrl }}">{{ mailingList.title }}</a></th>
+                                    <td data-title="{{ 'Subscription Status'|t('campaign') }}">
+                                        <label class="subscriptionStatus {{ subscriptionStatus }}">
+                                            {{ subscriptionStatus ? subscriptionStatus : 'none'|t('campaign') }}
+                                        </label>
+                                    </td>
+                                    <td class="thin">
+                                        <input type="button" class="btn small update-subscription subscribe {{ subscriptionStatus == 'subscribed' or subscriptionStatus == 'bounced' ? 'hidden' }}" value="{{ 'Subscribe'|t('campaign') }}" data-action="campaign/contacts/subscribe-mailing-list" data-confirm="{{ 'Are you sure you want to subscribe this contact to this mailing list?'|t('campaign') }}">
+                                        <input type="button" class="btn small update-subscription unsubscribe {{ subscriptionStatus != 'subscribed' or subscriptionStatus == 'bounced' ? 'hidden' }}" value="{{ 'Unsubscribe'|t('campaign') }}" data-action="campaign/contacts/unsubscribe-mailing-list" data-confirm="{{ 'Are you sure you want to unsubscribe this contact from this mailing list?'|t('campaign') }}">
+                                    </td>
+                                    <td class="thin">
+                                        <a class="delete icon update-subscription remove {{ subscriptionStatus == '' ? 'hidden' }}" title="{{ 'Remove from mailing list'|t('campaign') }}" role="button" data-action="campaign/contacts/remove-mailing-list" data-confirm="{{ 'Are you sure you want to remove this contact from this mailing list?'|t('campaign') }}"></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+
+            {% if contact.id %}
+                {% include 'campaign/contacts/_includes/report' %}
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+
+{% block details %}
+
+    {% if contact.id %}
+        <div class="meta read-only">
+            <div class="data first">
+                <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+                <div class="value flex">
+                    <div class="flex-grow">
+                        <span class="status {{ contact.status }}"></span> {{ contact.statuses[contact.status] }}
+                    </div>
+                    {% include 'campaign/_includes/actions' %}
+                </div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "CID"|t('campaign') }}</h5>
+                <div class="value"><code>{{ contact.cid }}</code></div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Created"|t('app') }}</h5>
+                <div class="value">{{ contact.dateCreated|datetime }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Updated"|t('app') }}</h5>
+                <div class="value">{{ contact.dateUpdated|datetime }}</div>
+            </div>
+            {% if contact.lastActivity %}
+                <div class="data">
+                    <h5 class="heading">{{ "Last Activity"|t('campaign') }}</h5>
+                    <div class="value">{{ contact.lastActivity|datetime }}</div>
+                </div>
+            {% endif %}
+            {% if contact.complained %}
+                <div class="data">
+                    <h5 class="heading">{{ "Complained"|t('campaign') }}</h5>
+                    <div class="value">{{ contact.complained|datetime }}</div>
+                </div>
+            {% endif %}
+            {% if contact.bounced %}
+                <div class="data">
+                    <h5 class="heading">{{ "Bounced"|t('campaign') }}</h5>
+                    <div class="value">{{ contact.bounced|datetime }}</div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

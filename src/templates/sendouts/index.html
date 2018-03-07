@@ -1,0 +1,22 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% set elementType = 'putyourlightson\\campaign\\elements\\SendoutElement' %}
+
+{% set title = 'Sendouts'|t('campaign') %}
+{% set selectedSubnavItem = 'sendouts' %}
+
+{% js %}
+    Craft.publishableSendoutTypes = [
+        {% for sendoutType, sendoutTypeLabel in craft.campaign.getAllSendoutTypes() %}
+            {
+                id: {{ loop.index }},
+                name: "{{ sendoutTypeLabel|e('js') }}",
+                handle: "{{ sendoutType|e('js') }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    {% if sendoutType is defined %}
+        window.defaultSendoutTypeHandle = '{{ sendoutType }}';
+    {% endif %}
+{% endjs %}

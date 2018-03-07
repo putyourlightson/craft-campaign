@@ -1,0 +1,38 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% set selectedSubnavItem = 'settings' %}
+
+
+{% block sidebar %}
+
+    <nav class="last">
+        <ul>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'general' ? 'sel' }}" href="{{ url('campaign/settings/general') }}">
+                    {{ 'General Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'email' ? 'sel' }}" href="{{ url('campaign/settings/email') }}">
+                    {{ 'Email Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'contact' ? 'sel' }}" href="{{ url('campaign/settings/contact') }}">
+                    {{ 'Contact Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'campaigntypes' ? 'sel' }}" href="{{ url('campaign/settings/campaigntypes') }}">
+                    {{ 'Campaign Types'|t('campaign') }}
+                </a>
+            </li>
+            <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'mailinglisttypes' ? 'sel' }}" href="{{ url('campaign/settings/mailinglisttypes') }}">
+                    {{ 'Mailing List Types'|t('campaign') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% set elementType = 'putyourlightson\\campaign\\elements\\MailingListElement' %}
+
+{% set title = 'Mailing Lists'|t('campaign') %}
+{% set selectedSubnavItem = 'mailinglists' %}
+
+{% js %}
+    {% if mailingListTypeHandle is defined %}
+        window.defaultMailingListTypeHandle = '{{ mailingListTypeHandle }}';
+    {% endif %}
+{% endjs %}

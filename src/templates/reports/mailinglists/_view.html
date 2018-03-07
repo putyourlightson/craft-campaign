@@ -1,0 +1,22 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set mailingList = craft.campaign.getMailingListById(mailingListId) %}
+{% set title = mailingList.title %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') },
+    { label: 'Mailing Lists'|t('campaign'), url: url('campaign/reports/mailinglist') }
+] %}
+
+
+{% block pageTitle %}
+    {{ parent() }}
+    <a href="{{ mailingList.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
+{% endblock %}
+
+
+{% block content %}
+
+    {% include 'campaign/reports/mailinglists/_includes/report' %}
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% if reportUrl is not defined %}
+
+    {% set interaction = craft.app.request.param('interaction') %}
+    {{ "Filter by interaction"|t('campaign') }}:
+    <div class="select">
+        <select class="interaction-filter">
+            <option value="">{{ "All"|t('campaign') }}</option>
+            <option value="opened" {{ interaction == 'opened' ? 'selected' }}>{{ "Opened"|t('campaign') }}</option>
+            <option value="clicked" {{ interaction == 'clicked' ? 'selected' }}>{{ "Clicked"|t('campaign') }}</option>
+            <option value="unsubscribed" {{ interaction == 'unsubscribed' ? 'selected' }}>{{ "Unsubscribed"|t('campaign') }}</option>
+            <option value="complained" {{ interaction == 'complained' ? 'selected' }}>{{ "Complained"|t('campaign') }}</option>
+            <option value="bounced" {{ interaction == 'bounced' ? 'selected' }}>{{ "Bounced"|t('campaign') }}</option>
+        </select>
+    </div>
+    <br/><br/>
+
+{% endif %}
+
+
+{% if contactActivity|length %}
+
+    <table id="contact-activity" class="data fullwidth collapsible">
+        <thead>
+            <th scope="col">{{ "Email"|t('campaign') }}</th>
+            <th scope="col">{{ "Interaction"|t('campaign') }}</th>
+            <th scope="col">{{ "Count"|t('campaign') }}</th>
+            <th scope="col">{{ "Last Activity"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+            {% for activity in contactActivity %}
+                {% set contact = activity.model.contact %}
+                <tr>
+                    <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                    <td data-title="{{ 'Interaction'|t('campaign') }}">
+                        {{ activity.interaction|ucfirst|t('campaign') }}
+                        {% if activity.links|length %}
+                            <span class="info">
+                                <p>
+                                    {% for link in activity.links %}
+                                        <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
+                                        {{ not loop.last ? '</br/>'|raw }}
+                                    {% endfor %}
+                                </p>
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td data-title="{{ 'Count'|t('campaign') }}">{{ activity.count }}</td>
+                    <td data-title="{{ 'Last Activity'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if limit is defined and limit == contactActivity|length and reportUrl is defined %}
+        <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+    {% endif %}
+
+{% else %}
+
+    <p>{{ "No contact activity for this campaign."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

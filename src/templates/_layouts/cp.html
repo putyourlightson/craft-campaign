@@ -1,0 +1,24 @@
+{% extends elementType is defined ? '_layouts/elementindex' : '_layouts/cp' %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\CampaignAsset') %}
+
+{% js %}
+    Craft.publishableCampaignTypes = [
+        {% for campaignType in craft.campaign.getAllCampaignTypes() %}
+            {
+                id: {{ campaignType.id }},
+                name: "{{ campaignType.name|e('js') }}",
+                handle: "{{ campaignType.handle|e('js') }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+    Craft.publishableMailingListTypes = [
+        {% for mailingListType in craft.campaign.getAllMailingListTypes() %}
+            {
+                id: {{ mailingListType.id }},
+                name: "{{ mailingListType.name|e('js') }}",
+                handle: "{{ mailingListType.handle|e('js') }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+{% endjs %}

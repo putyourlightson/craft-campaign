@@ -1,0 +1,97 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = mailingListType.id ? mailingListType.name : 'Create a new mailing list type'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings/mailinglisttypes') },
+    { label: 'Mailing List Types'|t('campaign'), url: url('campaign/settings/mailinglisttypes') }
+] %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/mailing-list-types/save-mailing-list-type">
+
+    {{ redirectInput('campaign/settings/mailinglisttypes') }}
+
+    {% if mailingListType.id %}
+        <input type="hidden" name="mailingListTypeId" value="{{ mailingListType.id }}">
+    {% endif %}
+
+    {{ forms.textField({
+        first: true,
+        label: "Name"|t('campaign'),
+        instructions: "What this mailing list type will be called in the CP."|t('campaign'),
+        id: 'name',
+        name: 'name',
+        value: mailingListType.name,
+        errors: mailingListType.getErrors('name'),
+        autofocus: true,
+        required: true
+    }) }}
+
+    {{ forms.textField({
+        label: "Handle"|t('campaign'),
+        instructions: "How you’ll refer to this mailing list type in the templates."|t('campaign'),
+        id: 'handle',
+        class: 'code',
+        name: 'handle',
+        value: mailingListType.handle,
+        errors: mailingListType.getErrors('handle'),
+        required: true
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Double Opt-In"|t('campaign'),
+        instructions: "Whether the user needs to verify their email address by clicking on a link in an email that will be sent to them (recommended for security)."|t('campaign'),
+        id: 'doubleOptIn',
+        name: 'doubleOptIn',
+        on: mailingListType.doubleOptIn,
+        errors: mailingListType.getErrors('doubleOptIn')
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Require MLID on Subscription Forms"|t('campaign'),
+        instructions: "Whether the MLID field needs to be submitted on front-end subscription forms (recommended for security)."|t('campaign'),
+        id: 'requireMlid',
+        name: 'requireMlid',
+        on: mailingListType.requireMlid,
+        errors: mailingListType.getErrors('requireMlid')
+    }) }}
+
+    {{ forms.textField({
+        label: "Subscribe Success Template"|t('campaign'),
+        instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign'),
+        id: 'subscribeSuccessTemplate',
+        name: 'subscribeSuccessTemplate',
+        value: mailingListType.subscribeSuccessTemplate,
+        errors: mailingListType.getErrors('subscribeSuccessTemplate'),
+        autocomplete: true
+    }) }}
+
+    {{ forms.textField({
+        label: "Unsubscribe Success Template"|t('campaign'),
+        instructions: "The template to use when a user unsubscribes from a mailing list (leave blank for default message template)."|t('campaign'),
+        id: 'unsubscribeSuccessTemplate',
+        name: 'unsubscribeSuccessTemplate',
+        value: mailingListType.unsubscribeSuccessTemplate,
+        errors: mailingListType.getErrors('unsubscribeSuccessTemplate'),
+        autocomplete: true
+    }) }}
+
+    <hr>
+
+    {% include "_includes/fieldlayoutdesigner" with {
+        fieldLayout: mailingListType.getFieldLayout(),
+        customizableTabs: false,
+        pretendTabName: "Mailing List"|t('campaign')
+    } only %}
+
+{% endblock %}
+
+
+{% if not mailingListType.handle %}
+    {% js "new Craft.HandleGenerator('#name', '#handle');" %}
+{% endif %}

@@ -1,0 +1,18 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set campaign = craft.campaign.getCampaignById(campaignId) %}
+{% set title = 'Devices'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') },
+    { label: 'Campaigns'|t('campaign'), url: url('campaign/reports/campaigns') },
+    { label: campaign.title, url: campaign.reportUrl }
+] %}
+
+
+{% block content %}
+
+    {% set detailed = true %}
+    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getCampaignDevices(campaignId, detailed), detailed: detailed, countLabel: 'Opened' } %}
+
+{% endblock %}

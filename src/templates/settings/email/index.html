@@ -1,0 +1,81 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Email Settings'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings/email') }
+] %}
+
+{% set settings = craft.campaign.getSettings() %}
+
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-email">
+
+    {{ forms.textField({
+        label: "Default From Name"|t('campaign'),
+        instructions: "The default name to send emails from."|t('campaign'),
+        id: 'defaultFromName',
+        name: 'defaultFromName',
+        value: settings.defaultFromName,
+        errors: settings.getErrors('defaultFromName'),
+        first: true,
+        autofocus: true,
+        required: true,
+        autocomplete: true,
+    }) }}
+
+    {{ forms.textField({
+        label: "Default From Email Address"|t('campaign'),
+        instructions: "The default email address to send emails from."|t('campaign'),
+        id: 'defaultFromEmail',
+        name: 'defaultFromEmail',
+        type: 'email',
+        value: settings.defaultFromEmail,
+        errors: settings.getErrors('defaultFromEmail'),
+        required: true,
+        autocomplete: true,
+    }) }}
+
+    <hr/>
+
+    {{ forms.selectField({
+        label: "Transport Type"|t('campaign'),
+        instructions: "The email sending service to use for sending."|t('campaign'),
+        id: 'transportType',
+        name: 'transportType',
+        options: transportTypeOptions,
+        value: className(adapter),
+        errors: adapter.getErrors('type'),
+        required: true,
+        toggle: true
+    }) }}
+
+    {% for _adapter in allTransportAdapters %}
+        {% set isCurrent = (className(_adapter) == className(adapter)) %}
+        <div id="{{ className(_adapter)|id }}"{% if not isCurrent %} class="hidden"{% endif %}>
+            {% namespace 'transportTypes['~className(_adapter)~']' %}
+            {{ (isCurrent ? adapter : _adapter).getSettingsHtml()|raw }}
+            {% endnamespace %}
+        </div>
+    {% endfor %}
+
+    <hr>
+
+    {% if settings.defaultFromEmail %}
+        <div class="btn formsubmit" data-action="campaign/settings/send-test-email">{{ "Send Test Email"|t('campaign') }}</div>
+    {% else %}
+        {% set input %}
+            <div class="btn disabled">{{ "Send Test Email"|t('campaign') }}</div>
+        {% endset %}
+        {{ forms.field({
+            warning: "You must add a Default Send From Email Address before you can send a test email."|t('campaign')
+        }, input) }}
+    {% endif %}
+
+{% endblock %}

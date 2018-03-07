@@ -1,0 +1,46 @@
+<?php
+/**
+ * @link      https://craftcampaign.com
+ * @copyright Copyright (c) PutYourLightsOn
+ */
+
+namespace putyourlightson\campaign\records;
+
+use craft\db\ActiveRecord;
+
+
+/**
+ * ImportRecord
+ *
+ * @property int         $id                    ID
+ * @property string      $fileName              File name
+ * @property string      $filePath              File path
+ * @property int         $userId                User ID
+ * @property int         $mailingListId         Mailing list ID
+ * @property int         $emailFieldIndex       Email field index
+ * @property mixed       $fieldIndexes          Field indexed
+ * @property int         $added                 Added
+ * @property int         $updated               Updated
+ * @property int         $failed                Failed
+ * @property mixed       $failures              Failures
+ * @property \DateTime   $dateImported          Date imported
+ *
+ * @author    PutYourLightsOn
+ * @package   Campaign
+ * @since     1.0.0   
+ */
+class ImportRecord extends ActiveRecord
+{
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     *
+     * @return string
+     */
+    public static function tableName(): string
+    {
+        return '{{%campaign_imports}}';
+    }
+}

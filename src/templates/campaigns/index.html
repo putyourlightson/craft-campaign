@@ -1,0 +1,13 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% set elementType = 'putyourlightson\\campaign\\elements\\CampaignElement' %}
+
+{% set title = 'Campaigns'|t('campaign') %}
+{% set selectedSubnavItem = 'campaigns' %}
+
+
+{% js %}
+    {% if campaignTypeHandle is defined %}
+        window.defaultCampaignTypeHandle = '{{ campaignTypeHandle }}';
+    {% endif %}
+{% endjs %}

@@ -1,0 +1,152 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set selectedSubnavItem = 'campaigns' %}
+
+{% set crumbs = [
+    { label: 'Campaigns'|t('campaign'), url: url('campaign/campaigns') },
+    { label: campaignType.name, url: url('campaign/campaigns/' ~ campaignType.handle) }
+] %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\CampaignEditAsset') %}
+
+
+{% block actionButton %}
+
+    <div class="btngroup">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/campaigns/' ~ campaignType.handle ~ '/new')|hash }}">{{ "Save and add another"|t('app') }}</a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/sendouts/regular/new?campaignId={id}')|hash }}">{{ "Save and create new sendout"|t('campaign') }}</a>
+                </li>
+                {% if campaign.id %}
+                    <li>
+                        <a class="formsubmit" data-param="duplicate" data-value="1" data-redirect="{{ continueEditingUrl|hash }}">{{ "Save as a new campaign"|t('campaign') }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block header %}
+    {{ block('pageTitle') }}
+    {{ block('contextMenu') }}
+    <div class="flex-grow"></div>
+    {% if showPreviewBtn %}
+        <div class="btn livepreviewbtn">{{ "Live Preview"|t('app') }}</div>
+    {% endif %}
+    {% if shareUrl is defined %}
+        <a href="{{ shareUrl }}" class="btn sharebtn" target="_blank">{{ 'Share'|t('app') }}</a>
+    {% endif %}
+    <div class="flex-grow"></div>
+    {{ block('actionButton') }}
+{% endblock %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/campaigns/save-campaign">
+    <input type="hidden" name="campaignTypeId" value="{{ campaignType.id }}">
+
+    {{ redirectInput('campaign/campaigns') }}
+
+    {% if campaign.id %}
+        <input type="hidden" name="campaignId" value="{{ campaign.id }}">
+    {% endif %}
+
+    <div id="fields">
+        {% include "campaign/campaigns/_includes/fields" %}
+
+        {% if campaign.id %}
+            {% include 'campaign/campaigns/_includes/report' %}
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div id="settings" class="meta">
+        {{ forms.textField({
+            label: "Slug"|t('app'),
+            id: 'slug',
+            name: 'slug',
+            value: campaign.slug,
+            placeholder: "Enter slug"|t('app'),
+            errors: campaign.getErrors('slug')
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Enabled"|t('app'),
+            id: 'enabled',
+            name: 'enabled',
+            on: campaign.enabled
+        }) }}
+    </div>
+
+    {% if campaign.id %}
+        <hr/>
+        <div class="meta read-only">
+            <div class="data first">
+                <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+                <div class="value flex">
+                    <div class="flex-grow">
+                        <span class="status {{ campaign.status }}"></span> {{ campaign.statuses[campaign.status] }}
+                    </div>
+                    {% include 'campaign/_includes/actions' %}
+                </div>
+            </div>
+            {% if campaign.dateClosed %}
+                <div class="data">
+                    <h5 class="heading">{{ "Date Closed"|t('campaign') }}</h5>
+                    <div class="value">{{ campaign.dateClosed|datetime }}</div>
+                </div>
+            {% endif %}
+            <div class="data">
+                <h5 class="heading">{{ "Date Created"|t('app') }}</h5>
+                <div class="value">{{ campaign.dateCreated|datetime }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Updated"|t('app') }}</h5>
+                <div class="value">{{ campaign.dateUpdated|datetime }}</div>
+            </div>
+        </div>
+
+        <hr/>
+        <div class="meta">
+            {{ forms.textField({
+                label: "Test Email"|t('campaign'),
+                id: 'testEmail',
+                type: 'email',
+                value: currentUser.email
+            }) }}
+            <a class="send-test btn right" style="margin-top: 5px;">{{ 'Send Test'|t('campaign') }}</a>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+
+{% if not campaign.slug %}
+    {% js %}
+        window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');
+    {% endjs %}
+{% endif %}
