@@ -46,22 +46,17 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                 };
 
                 Craft.postActionRequest('campaign/sendouts/send-sendout', data, function(response, textStatus) {
-                    if (textStatus === 'success') {
-                        if (!response.success) {
-                            $('.preflight .spinner').addClass('hidden');
-                            $('.preflight .error').text(response.error).removeClass('hidden');
-                            return;
-                        }
-
-                        $('.preflight .confirm').fadeOut(function() {
-                            $('.preflight .launched').fadeIn();
-                        });
-
+                    if (textStatus !== 'success' || !response.success) {
+                        $('.preflight .spinner').addClass('hidden');
+                        $('.preflight .error').text(response.error).removeClass('hidden');
                         return;
                     }
 
-                    $('.preflight .spinner').addClass('hidden');
-                    $('.preflight .error').text(response.error).removeClass('hidden');
+                    Craft.postActionRequest('queue/run');
+
+                    $('.preflight .confirm').fadeOut(function() {
+                        $('.preflight .launched').fadeIn();
+                    });
                 });
             }
         },
@@ -72,12 +67,14 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                 sendoutId: $('input[name=sendoutId]').val()
             };
 
-            Craft.postActionRequest('campaign/sendouts/send-test', data, function(response) {
-                if (response.success) {
-                    Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
-                }
-                else {
-                    Craft.cp.displayError(response.error);
+            Craft.postActionRequest('campaign/sendouts/send-test', data, function(response, textStatus) {
+                if (textStatus === 'success') {
+                    if (response.success) {
+                        Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
+                    }
+                    else {
+                        Craft.cp.displayError(response.error);
+                    }
                 }
             });
         },
