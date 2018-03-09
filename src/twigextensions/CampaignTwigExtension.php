@@ -41,12 +41,16 @@ class CampaignTwigExtension extends \Twig_Extension implements \Twig_Extension_G
     /**
      * Converts HTML to plaintext (with line breaks)
      *
-     * @param string $html
+     * @param string|null $html
      *
      * @return string
      */
-    public function htmlToPlaintext(string $html): string
+    public function htmlToPlaintext($html): string
     {
+        if ($html === null) {
+            return '';
+        }
+
         // Convert <br> tags to avoid losing them
         $html = preg_replace('/<br\s?\/?>/i', '[[br]]', $html);
 

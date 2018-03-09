@@ -5,18 +5,64 @@
  */
 Campaign.SendoutEdit = Garnish.Base.extend(
     {
+        modal: null,
+
         init: function() {
-            this.addListener($('.confirm-send').closest('form'), 'submit', 'confirmSend');
+            this.addListener($('.prepare'), 'click', 'preflight');
+            this.addListener($('.preflight .cancel'), 'click', 'cancel');
+            this.addListener($('.preflight .launch'), 'click', 'launch');
             this.addListener($('.send-test'), 'click', 'sendTest');
             this.addListener($('#testEmail'), 'keypress', 'testEmailKeypress');
         },
 
-        confirmSend: function(event) {
-            if ($('.confirm-send').closest('form').find('input[name=action]').length == 1) {
-                var confirmMessage = $('.confirm-send').attr('data-confirm');
-                if (confirmMessage && !confirm(confirmMessage)) {
-                    event.preventDefault();
+        preflight: function(event) {
+            if (this.modal === null) {
+                this.modal = new Garnish.Modal($('.preflight'), {
+                    hideOnEsc: false,
+                    hideOnShadeClick: false
+                });
+            }
+            else {
+                this.modal.show();
+            }
+        },
+
+        cancel: function(event) {
+            if (!$('.preflight .cancel').hasClass('disabled')) {
+                this.modal.hide();
+            }
+        },
+
+        launch: function(event) {
+            event.preventDefault();
+
+            if (!$('.preflight .launch').hasClass('disabled')) {
+                $('.preflight .launch').disable();
+                $('.preflight .cancel').disable();
+                $('.preflight .spinner').removeClass('hidden');
+
+                var data = {
+                    sendoutId: $('input[name=sendoutId]').val()
                 };
+
+                Craft.postActionRequest('campaign/sendouts/send-sendout', data, function(response, textStatus) {
+                    if (textStatus === 'success') {
+                        if (!response.success) {
+                            $('.preflight .spinner').addClass('hidden');
+                            $('.preflight .error').text(response.error).removeClass('hidden');
+                            return;
+                        }
+
+                        $('.preflight .confirm').fadeOut(function() {
+                            $('.preflight .launched').fadeIn();
+                        });
+
+                        return;
+                    }
+
+                    $('.preflight .spinner').addClass('hidden');
+                    $('.preflight .error').text(response.error).removeClass('hidden');
+                });
             }
         },
 

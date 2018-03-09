@@ -61,6 +61,58 @@
     margin-top: 5px;
 }
 
+.preflight > div, .preflight .body {
+    height: 100%;
+    text-align: center;
+}
+
+.preflight .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.preflight h1 {
+    font-size: 36px;
+    line-height: 60px;
+}
+
+.preflight p {
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.preflight .testmode {
+    margin-top: 0;
+}
+
+.launch {
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 12px 15px;
+    font-weight: bold;
+    font-size: 19px;
+    height: 42px;
+    line-height: 18px;
+}
+
+.rocketman {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 0 0px 50px #000;
+    background: url('../images/launch.jpg') no-repeat;
+    background-size: contain;
+}
+
+.launched {
+    color: #fff;
+    height: 100%;
+    background: url('../images/launched.jpg') #8AB59F center 30px no-repeat;
+    background-size: cover;
+}
+
 @keyframes saturate-fadeOut {
     50% {
         filter: grayscale(0);

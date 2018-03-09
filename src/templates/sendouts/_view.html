@@ -10,6 +10,9 @@
     { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 
+{% set recipientIds = sendout.recipientIds %}
+{% set mailingLists = sendout.mailingLists %}
+
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
 
 
@@ -27,20 +30,7 @@
 {% block actionButton %}
 
     {% if sendout.isEditable %}
-        {% set saveLabel = 'Send Now'|t('campaign') %}
-        {% set confirmMessage = 'This sendout will begin sending immediately. Are you sure you want to proceed?'|t %}
-        {% if sendout.sendoutType == 'scheduled' %}
-            {% set saveLabel = 'Schedule Sending'|t('campaign') %}
-            {% set confirmMessage = 'This sendout will be scheduled for sending on the send date. Are you sure you want to proceed?'|t %}
-        {% elseif sendout.sendoutType == 'automated' %}
-            {% set saveLabel = 'Activate Sending'|t('campaign') %}
-            {% set confirmMessage = 'This sendout will be activated for automated sending. Are you sure you want to proceed?'|t %}
-        {% endif %}
-        {% if sendout.isResumable() %}
-            {% set saveLabel = 'Resume Sending'|t('campaign') %}
-            {% set confirmMessage = 'Sending of this sendout will be resumed. Are you sure you want to proceed?'|t %}
-        {% endif %}
-        <input type="submit" class="btn submit confirm-send" value="{{ saveLabel }}" data-confirm="{{ confirmMessage }}">
+        {% include 'campaign/sendouts/_includes/preflight' %}
     {% endif %}
 
 {% endblock %}
@@ -87,7 +77,7 @@
         {{ forms.field({label: "From"|t('campaign') ~ ':'}, input) }}
 
         {% set input %}
-            {% for mailingList in sendout.mailingLists %}
+            {% for mailingList in mailingLists %}
             <span class="status {{ mailingList.status }}"></span>{{ mailingList.title }}<br/>
             {% endfor %}
         {% endset %}
@@ -208,7 +198,7 @@
 
             <div class="data">
                 <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                <div class="value">{{ sendout.recipientIds|length }}</div>
+                <div class="value">{{ recipientIds|length }}</div>
             </div>
 
         {% else %}

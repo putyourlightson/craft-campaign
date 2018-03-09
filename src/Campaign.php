@@ -187,7 +187,7 @@ class Campaign extends Plugin
 
         // Show settings if permission allows
         if ($user->checkPermission('campaign-accessSettings')) {
-            $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Settings'), 'url' => 'campaign/settings'];
+            $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Plugin Settings'), 'url' => 'campaign/settings'];
         }
 
         return $cpNavItem;

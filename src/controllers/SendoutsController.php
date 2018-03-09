@@ -357,6 +357,8 @@ class SendoutsController extends Controller
 
         $this->requirePostRequest();
 
+        $request = Craft::$app->getRequest();
+
         $sendout = $this->_getSendoutFromPostedId();
 
         // Store current user ID
@@ -367,6 +369,10 @@ class SendoutsController extends Controller
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($sendout)) {
+            if ($request->getAcceptsJson()) {
+                return $this->asJson(['errors' => $sendout->getErrors()]);
+            }
+
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
             // Send the sendout back to the template
@@ -382,6 +388,10 @@ class SendoutsController extends Controller
 
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
+
+        if ($request->getAcceptsJson()) {
+            return $this->asJson(['success' => true]);
+        }
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout saved.'));
 

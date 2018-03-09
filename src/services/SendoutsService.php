@@ -587,7 +587,7 @@ class SendoutsService extends Component
             ->all();
 
         foreach ($sendoutJobs as $sendoutJob) {
-            $job = unserialize($sendoutJob['job'], false);
+            $job = unserialize($sendoutJob['job'], []);
 
             // If sendout IDs match then delete the job
             if ($job->sendoutId == $sendout->id) {
