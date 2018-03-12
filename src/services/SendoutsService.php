@@ -466,31 +466,6 @@ class SendoutsService extends Component
     }
 
     /**
-     * Resumes a sendout
-     *
-     * @param SendoutElement $sendout
-     *
-     * @return bool Whether the action was successful
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws \Throwable
-     */
-    public function resumeSendout(SendoutElement $sendout): bool
-    {
-        if ($sendout->isResumable()) {
-            $sendout->sendStatus = 'pending';
-
-            if (Craft::$app->getElements()->saveElement($sendout)) {
-                $this->queuePendingSendouts();
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Cancels a sendout
      *
      * @param SendoutElement $sendout

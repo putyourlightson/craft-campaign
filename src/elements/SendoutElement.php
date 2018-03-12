@@ -10,7 +10,6 @@ use craft\elements\User;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
-use putyourlightson\campaign\elements\actions\ResumeSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -177,9 +176,6 @@ class SendoutElement extends Element
 
         // Pause
         $actions[] = PauseSendouts::class;
-
-        // Resume
-        $actions[] = ResumeSendouts::class;
 
         // Cancel
         $actions[] = CancelSendouts::class;

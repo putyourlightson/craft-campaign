@@ -29,7 +29,7 @@
 
 {% block actionButton %}
 
-    {% if sendout.isEditable and not sendout.isResumable %}
+    {% if sendout.isEditable or sendout.isResumable %}
         {% include 'campaign/sendouts/_includes/preflight' %}
     {% endif %}
 

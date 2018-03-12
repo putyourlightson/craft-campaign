@@ -4,8 +4,6 @@
 - Review queue job implementation
 
 ## Unreleased
-
-## 1.0.0-beta1.1 - 2018-03-12
 ### Added
 - Added preflight sendout screen
 ### Changed

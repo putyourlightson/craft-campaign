@@ -197,15 +197,6 @@ class SendoutsController extends Controller
             ];
         }
 
-        if ($sendout->isResumable()) {
-            $variables['actions'][] = [
-                'action' => 'campaign/sendouts/resume-sendout',
-                'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Resume…'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to resume sending of this sendout?')
-            ];
-        }
-
         if ($sendout->isCancellable()) {
             $variables['actions'][] = [
                 'action' => 'campaign/sendouts/cancel-sendout',
@@ -456,36 +447,6 @@ class SendoutsController extends Controller
         LogHelper::logUserAction('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout paused.'));
-
-        return $this->redirectToPostedUrl();
-    }
-
-    /**
-     * Resumes a sendout
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     */
-    public function actionResumeSendout()
-    {
-        $this->requirePostRequest();
-
-        $sendout = $this->_getSendoutFromPostedId();
-
-        if (!Campaign::$plugin->sendouts->resumeSendout($sendout)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be resumed.'));
-
-            return null;
-        }
-
-        // Log it
-        LogHelper::logUserAction('Sendout "{title}" resumed by "{username}".', ['title' => $sendout->title], __METHOD__);
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout resumed.'));
 
         return $this->redirectToPostedUrl();
     }
