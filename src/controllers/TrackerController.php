@@ -37,13 +37,18 @@ class TrackerController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['open', 'click', 'subscribe', 'unsubscribe'];
+    protected $allowAnonymous = ['open', 'click', 'subscribe', 'unsubscribe', 'verify-email'];
 
     // Public Methods
     // =========================================================================
 
     /**
      * Open
+     *
+     * @return Response|null
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws \Throwable
      */
     public function actionOpen()
     {
@@ -53,15 +58,7 @@ class TrackerController extends Controller
 
         if ($contact AND $sendout) {
             // Track open
-            try {
-                Campaign::$plugin->tracker->open($contact, $sendout);
-            }
-            catch (ElementNotFoundException $e) {
-            }
-            catch (Exception $e) {
-            }
-            catch (\Throwable $e) {
-            }
+            Campaign::$plugin->tracker->open($contact, $sendout);
         }
 
         // Return tracking image
@@ -193,14 +190,18 @@ class TrackerController extends Controller
             return null;
         }
 
+        // Get referrer
+        $referrer = $request->getReferrer();
+
         // If double opt-in
         if ($mailingList->mailingListType->doubleOptIn) {
             // Send confirmation email
-            Campaign::$plugin->contacts->sendVerifyEmail($contact, $mailingList);
+            Campaign::$plugin->contacts->sendVerifyEmail($contact, $mailingList, $referrer);
         }
-
-        // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, $mailingList->mailingListType->doubleOptIn, 'web', Craft::$app->getRequest()->getReferrer());
+        else {
+            // Track subscribe
+            Campaign::$plugin->tracker->subscribe($contact, $mailingList, $mailingList->mailingListType->doubleOptIn, 'web', $referrer);
+        }
 
         if ($request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
@@ -230,6 +231,12 @@ class TrackerController extends Controller
 
     /**
      * Unsubscribe
+     *
+     * @return Response|null
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \Throwable
      */
     public function actionUnsubscribe()
     {
@@ -263,6 +270,50 @@ class TrackerController extends Controller
             'title' => 'Unsubscribed',
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
+        ]);
+    }
+
+    /**
+     * Verifies a contact's email
+     *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     */
+    public function actionVerifyEmail(): Response
+    {
+        // Get contact and mailing list
+        $contact = $this->_getContact();
+        $mailingList = $this->_getMailingList();
+
+        // Verify contact if pending
+        if ($contact->pending) {
+            $contact->pending = false;
+            Craft::$app->getElements()->saveElement($contact);
+        }
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException('Mailing list not found');
+        }
+
+        // Get referrer
+        $referrer = Craft::$app->getRequest()->getParam('referrer');
+
+        // Track subscribe
+        Campaign::$plugin->tracker->subscribe($contact, $mailingList, false, 'web', $referrer);
+
+        // Use message template
+        $template = 'campaign/message';
+
+        // Set template mode to CP
+        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+
+        return $this->renderTemplate($template, [
+            'title' => 'Verified',
+            'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
         ]);
     }
 
@@ -316,4 +367,21 @@ class TrackerController extends Controller
 
         return LinkRecord::findOne(['lid' => $lid]);
     }
+
+    /**
+     * Gets mailing list by MLID in query param
+     *
+     * @return MailingListElement|null
+     */
+    private function _getMailingList()
+    {
+        $mlid = Craft::$app->getRequest()->getParam('mlid');
+
+        if ($mlid === null) {
+            return null;
+        }
+
+        return Campaign::$plugin->mailingLists->getMailingListByMlid($mlid);
+    }
+
 }

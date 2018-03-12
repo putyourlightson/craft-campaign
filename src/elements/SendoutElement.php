@@ -287,9 +287,9 @@ class SendoutElement extends Element
     public $campaignId;
 
     /**
-     * @var int|null User ID
+     * @var int|null Sender ID
      */
-    public $userId;
+    public $senderId;
 
     /**
      * @var string Sendout type
@@ -472,7 +472,7 @@ class SendoutElement extends Element
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = [['recipients', 'campaignId', 'userId'], 'number', 'integerOnly' => true];
+        $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds', 'notificationEmailAddress'], 'required'];
         $rules[] = [['sid'], 'string', 'max' => 32];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
@@ -557,7 +557,7 @@ class SendoutElement extends Element
      */
     public function getSender()
     {
-        if ($this->userId === null) {
+        if ($this->senderId === null) {
             return null;
         }
 
@@ -565,7 +565,7 @@ class SendoutElement extends Element
             return $this->_sender;
         }
 
-        $this->_sender = Craft::$app->getUsers()->getUserById($this->userId);
+        $this->_sender = Craft::$app->getUsers()->getUserById($this->senderId);
 
         return $this->_sender;
     }

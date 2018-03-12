@@ -239,7 +239,7 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'sid' => $this->uid(),
                 'campaignId' => $this->integer(),
-                'userId' => $this->integer(),
+                'senderId' => $this->integer(),
                 'sendoutType' => $this->string()->notNull(),
                 'sendStatus' => $this->string()->notNull(),
                 'sendStatusMessage' => $this->text(),
@@ -333,7 +333,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_segments}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_sendouts}}', 'userId', '{{%users}}', 'id', 'SET NULL');
+        $this->addForeignKey(null, '{{%campaign_sendouts}}', 'senderId', '{{%users}}', 'id', 'SET NULL');
     }
 
     /**

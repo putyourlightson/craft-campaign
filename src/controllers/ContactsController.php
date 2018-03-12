@@ -29,66 +29,8 @@ use yii\web\NotFoundHttpException;
  */
 class ContactsController extends Controller
 {
-    // Properties
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected $allowAnonymous = ['verify-email'];
-
     // Public Methods
     // =========================================================================
-
-    /**
-     * Verifies a contact's email
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     */
-    public function actionVerifyEmail(): Response
-    {
-        $cid = Craft::$app->getRequest()->getRequiredParam('cid');
-        $mlid = Craft::$app->getRequest()->getRequiredParam('mlid');
-
-        // Get contact
-        $contact = Campaign::$plugin->contacts->getContactByCid($cid);
-
-        if ($contact === null) {
-            throw new NotFoundHttpException('Contact not found');
-        }
-
-        // Verify contact if pending
-        if ($contact->pending) {
-            $contact->pending = false;
-            Craft::$app->getElements()->saveElement($contact);
-        }
-
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListByMlid($mlid);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException('Mailing list not found');
-        }
-
-        // Add contact interaction to mailing list
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed');
-
-        // Use message template
-        $template = 'campaign/message';
-
-        // Set template mode to CP
-        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-
-        return $this->renderTemplate($template, [
-            'title' => 'Verified',
-            'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
-        ]);
-    }
 
     /**
      * @param int|null             $contactId    The contact’s ID, if editing an existing contact.

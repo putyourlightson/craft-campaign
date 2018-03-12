@@ -124,7 +124,7 @@ class SendoutElementQuery extends ElementQuery
         $this->query->select([
             'campaign_sendouts.sid',
             'campaign_sendouts.campaignId',
-            'campaign_sendouts.userId',
+            'campaign_sendouts.senderId',
             'campaign_sendouts.sendoutType',
             'campaign_sendouts.sendStatus',
             'campaign_sendouts.sendStatusMessage',

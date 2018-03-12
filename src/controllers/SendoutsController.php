@@ -362,7 +362,7 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromPostedId();
 
         // Store current user ID
-        $sendout->userId = Craft::$app->getUser()->getId();
+        $sendout->senderId = Craft::$app->getUser()->getId();
 
         // Set status to pending
         $sendout->sendStatus = 'pending';

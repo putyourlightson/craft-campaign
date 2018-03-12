@@ -110,11 +110,13 @@ class TrackerService extends Component
         $interaction = $pending ? 'pending' : 'subscribed';
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction, $source, $sourceUrl);
 
-        // Update contact mailing list record
-        $this->_updateContactMailingListRecord($contact, $mailingList);
+        if (!$pending) {
+            // Update contact mailing list record
+            $this->_updateContactMailingListRecord($contact, $mailingList);
 
-        // Update contact
-        $this->_updateContact($contact);
+            // Update contact
+            $this->_updateContact($contact);
+        }
     }
 
     /**

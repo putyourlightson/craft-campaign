@@ -15,7 +15,7 @@ use DateTime;
  * @property int         $id                         ID
  * @property string      $sid                        SID
  * @property int         $campaignId                 Campaign ID
- * @property int         $userId                     User ID
+ * @property int         $senderId                   Sender ID
  * @property string      $sendoutType                Sendout type
  * @property string      $sendStatus                 Send status
  * @property string      $sendStatusMessage          Send status message

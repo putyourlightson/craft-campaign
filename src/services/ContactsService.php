@@ -94,15 +94,16 @@ class ContactsService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
+     * @param string|null $referrer
      *
      * @return bool
      * @throws MissingComponentException
      * @throws Exception
      */
-    public function sendVerifyEmail(ContactElement $contact, MailingListElement $mailingList): bool
+    public function sendVerifyEmail(ContactElement $contact, MailingListElement $mailingList, $referrer = ''): bool
     {
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/contacts/verify-email';
-        $url = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'mlid' => $mailingList->mlid]);
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
+        $url = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'mlid' => $mailingList->mlid, 'referrer' => $referrer]);
 
         $mailer = Campaign::$plugin->createMailer();
 
