@@ -277,7 +277,6 @@ class TrackerController extends Controller
      * Verifies a contact's email
      *
      * @return Response
-     * @throws BadRequestHttpException
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException

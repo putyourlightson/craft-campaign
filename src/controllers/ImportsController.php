@@ -16,9 +16,9 @@ use Craft;
 use craft\web\Controller;
 use craft\helpers\FileHelper;
 use craft\helpers\App;
-use craft\models\FieldLayout;
 use craft\web\UploadedFile;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -262,6 +262,7 @@ class ImportsController extends Controller
      * @param ImportModel $import
      *
      * @return Response
+     * @throws InvalidConfigException
      */
     private function _returnFieldsTemplate(ImportModel $import): Response
     {

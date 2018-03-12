@@ -17,6 +17,7 @@ use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -45,6 +46,7 @@ class ExportsController extends Controller
      * @param ExportModel|null $export The export, if there were any validation errors.
      *
      * @return Response
+     * @throws InvalidConfigException
      */
     public function actionNewExport(ExportModel $export = null): Response
     {

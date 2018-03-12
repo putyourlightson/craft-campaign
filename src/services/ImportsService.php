@@ -18,6 +18,7 @@ use craft\base\Field;
 use craft\base\FieldInterface;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
+use yii\base\InvalidConfigException;
 
 /**
  * ImportsService
@@ -44,6 +45,7 @@ class ImportsService extends Component
      * Returns contact fields
      *
      * @return FieldInterface[]
+     * @throws InvalidConfigException
      */
     public function getContactFields(): array
     {

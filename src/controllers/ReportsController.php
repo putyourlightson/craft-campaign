@@ -120,7 +120,7 @@ class ReportsController extends Controller
             $values = [];
 
             // Set values
-            /** @var string[][][] $chart */
+            /** @var string[][][][] $chart */
             foreach ($chart['data']['indexes'] as $index) {
                 $values[] = $data['activity'][$interaction][$index] ?? 0;
             }
@@ -173,7 +173,7 @@ class ReportsController extends Controller
         }
 
         // Get colors
-        /** @var string[] $data['interactions'] */
+        /** @var string[][] $data['interactions'] */
         $chart['colors'] = $this->_getColors($data['interactions']);
 
         return $this->asJson($chart);
@@ -223,7 +223,7 @@ class ReportsController extends Controller
             $values = [];
 
             // Set values
-            /** @var string[][][] $chart */
+            /** @var string[][][][] $chart */
             foreach ($chart['data']['indexes'] as $index) {
                 $values[] = $data['activity'][$interaction][$index] ?? 0;
             }

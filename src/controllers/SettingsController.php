@@ -15,6 +15,7 @@ use craft\web\Controller;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
 use craft\errors\MissingComponentException;
+use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
 use yii\base\Exception;
@@ -179,6 +180,7 @@ class SettingsController extends Controller
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
         // Create the transport adapter so that we can validate it
+        /* @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Trigger before save event to give transport adapters a chance to encrypt sensitive data
@@ -259,6 +261,7 @@ class SettingsController extends Controller
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
         // Create the transport adapter so that we can validate it
+        /* @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Trigger before save event to give transport adapters a chance to encrypt sensitive data

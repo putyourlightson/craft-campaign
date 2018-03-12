@@ -19,6 +19,7 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\fields\Date;
 use craft\fields\Number;
 use craft\fields\PlainText;
+use yii\base\InvalidConfigException;
 
 /**
  * SegmentsService
@@ -112,6 +113,7 @@ class SegmentsService extends Component
      * Returns segment available fields
      *
      * @return array
+     * @throws InvalidConfigException
      */
     public function getSegmentAvailableFields(): array
     {
