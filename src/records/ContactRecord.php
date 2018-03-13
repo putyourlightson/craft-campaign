@@ -21,6 +21,7 @@ use craft\db\ActiveRecord;
  * @property string      $os                         OS
  * @property string      $client                     Client
  * @property \DateTime   $lastActivity               Last activity
+ * @property \DateTime   $verified                   Verified
  * @property \DateTime   $complained                 Complained
  * @property \DateTime   $bounced                    Bounced
  *

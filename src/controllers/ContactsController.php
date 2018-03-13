@@ -146,9 +146,9 @@ class ContactsController extends Controller
         switch ($contact->getStatus()) {
             case ContactElement::STATUS_PENDING:
                 $variables['actions'][] = [
-                    'action' => 'campaign/contacts/activate-contact',
+                    'action' => 'campaign/contacts/verify-contact',
                     'redirect' => 'campaign/contacts/{id}',
-                    'label' => Craft::t('campaign', 'Activate contact')
+                    'label' => Craft::t('campaign', 'Verify contact')
                 ];
             break;
         }
@@ -231,7 +231,6 @@ class ContactsController extends Controller
         }
         else {
             $contact = new ContactElement();
-            $contact->pending = false;
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
@@ -285,7 +284,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * Activates a contact
+     * Verifies a contact
      *
      * @return Response|null
      * @throws BadRequestHttpException
@@ -294,20 +293,21 @@ class ContactsController extends Controller
      * @throws NotFoundHttpException
      * @throws \Throwable
      */
-    public function actionActivateContact()
+    public function actionVerifyContact()
     {
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
 
         $contact->pending = false;
+        $contact->verified = new \DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t activate contact.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t verify contact.'));
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
@@ -321,7 +321,7 @@ class ContactsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact activated.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact verified.'));
 
         return $this->redirectToPostedUrl($contact);
     }

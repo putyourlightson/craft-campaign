@@ -296,6 +296,13 @@ class ContactElement extends Element
     public $lastActivity;
 
     /**
+     * Verified
+     *
+     * @var \DateTime
+     */
+    public $verified;
+
+    /**
      * Complained
      *
      * @var \DateTime
@@ -310,7 +317,7 @@ class ContactElement extends Element
     public $bounced;
 
     /**
-     * Subscription status
+     * Subscription status, only used when a mailing list is selected in element index
      *
      * @var string
      */
@@ -724,6 +731,7 @@ class ContactElement extends Element
             $contactRecord->os = $this->os;
             $contactRecord->client = $this->client;
             $contactRecord->lastActivity = $this->lastActivity;
+            $contactRecord->verified = $this->verified;
             $contactRecord->complained = $this->complained;
             $contactRecord->bounced = $this->bounced;
 

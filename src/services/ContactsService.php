@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\ConfigHelper;
+use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -100,7 +102,7 @@ class ContactsService extends Component
      * @throws MissingComponentException
      * @throws Exception
      */
-    public function sendVerifyEmail(ContactElement $contact, MailingListElement $mailingList, $referrer = ''): bool
+    public function sendVerificationEmail(ContactElement $contact, MailingListElement $mailingList, $referrer = ''): bool
     {
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
         $url = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'mlid' => $mailingList->mlid, 'referrer' => $referrer]);
@@ -122,5 +124,38 @@ class ContactsService extends Component
             ->setTextBody($body);
 
         return $message->send();
+    }
+
+    /**
+     * Deletes expired pending contacts
+     */
+    public function purgeExpiredPendingContacts()
+    {
+        $config = Craft::$app->getConfig()->getConfigFromFile('campaign');
+        $purgePendingContactsDuration = isset($config['purgePendingUsersDuration']) ? ConfigHelper::durationInSeconds($config['purgePendingUsersDuration']) : 0;
+
+        if ($purgePendingContactsDuration === 0) {
+            return;
+        }
+
+        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
+        $expire = DateTimeHelper::currentUTCDateTime();
+        $pastTime = $expire->sub($interval);
+
+        $contactIds = ContactElement::find()
+            ->where([
+                'and',
+                ['pending' => true],
+                ['<', 'dateCreated', Db::prepareDateForDb($pastTime)]
+            ])
+            ->ids();
+
+        $elementsService = Craft::$app->getElements();
+
+        foreach ($contactIds as $contactId) {
+            $contact = $this->getContactById($contactId);
+            $elementsService->deleteElement($contact);
+            Craft::info("Deleted pending contact {$contact->email} ({$contactId}), because they took too long to verify their email.", __METHOD__);
+        }
     }
 }

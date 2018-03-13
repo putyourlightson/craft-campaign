@@ -128,6 +128,12 @@
                     <div class="value">{{ contact.lastActivity|datetime }}</div>
                 </div>
             {% endif %}
+            {% if contact.verified %}
+                <div class="data">
+                    <h5 class="heading">{{ "Verified"|t('campaign') }}</h5>
+                    <div class="value">{{ contact.verified|datetime }}</div>
+                </div>
+            {% endif %}
             {% if contact.complained %}
                 <div class="data">
                     <h5 class="heading">{{ "Complained"|t('campaign') }}</h5>

@@ -96,11 +96,6 @@ class MailingListsService extends Component
             $contactMailingListRecord->mailingListId = $mailingList->id;
         }
 
-        // If not yet confirmed
-        if ($contactMailingListRecord->confirmed === null) {
-            $contactMailingListRecord->confirmed = new \DateTime();
-        }
-
         // If first time for this interaction
         if ($contactMailingListRecord->$interaction === null) {
             $contactMailingListRecord->$interaction = new \DateTime();

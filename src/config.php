@@ -19,6 +19,9 @@
  */
 
 return [
-    // Test Mode - setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
+    // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
     'testMode' => false,
+
+    // The amount of time to wait before purging pending contacts
+    'purgePendingContactsDuration' => 0,
 ];

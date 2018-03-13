@@ -37,6 +37,7 @@ use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use craft\web\User;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 
@@ -103,6 +104,9 @@ class Campaign extends Plugin
             'webhook' => WebhookService::class,
         ]);
 
+        // Register Twig extension
+        Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
+
         // Register variable
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
             /** @var CraftVariable $variable */
@@ -110,8 +114,10 @@ class Campaign extends Plugin
             $variable->set('campaign', CampaignVariable::class);
         });
 
-        // Register Twig extension
-        Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
+        // Register house-cleaning after login to purge expired pending contacts
+        Event::on(User::class, User::EVENT_AFTER_LOGIN, function() {
+            $this->contacts->purgeExpiredPendingContacts();
+        });
 
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {

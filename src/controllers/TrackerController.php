@@ -195,8 +195,8 @@ class TrackerController extends Controller
 
         // If double opt-in
         if ($mailingList->mailingListType->doubleOptIn) {
-            // Send confirmation email
-            Campaign::$plugin->contacts->sendVerifyEmail($contact, $mailingList, $referrer);
+            // Send verification email
+            Campaign::$plugin->contacts->sendVerificationEmail($contact, $mailingList, $referrer);
         }
         else {
             // Track subscribe
@@ -287,12 +287,6 @@ class TrackerController extends Controller
         // Get contact and mailing list
         $contact = $this->_getContact();
         $mailingList = $this->_getMailingList();
-
-        // Verify contact if pending
-        if ($contact->pending) {
-            $contact->pending = false;
-            Craft::$app->getElements()->saveElement($contact);
-        }
 
         if ($mailingList === null) {
             throw new NotFoundHttpException('Mailing list not found');

@@ -21,14 +21,6 @@ use craft\helpers\Component;
  */
 class SettingsService extends Component
 {
-    // Constants
-    // =========================================================================
-
-    /**
-     * @event RegisterComponentTypesEvent The event that is triggered when registering mailer transport types.
-     */
-    const EVENT_REGISTER_MAILER_TRANSPORT_TYPES = 'registerMailerTransportTypes';
-
     // Public Methods
     // =========================================================================
 

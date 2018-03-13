@@ -112,10 +112,10 @@ class TrackerService extends Component
 
         if (!$pending) {
             // Update contact mailing list record
-            $this->_updateContactMailingListRecord($contact, $mailingList);
+            $this->_updateContactMailingListRecord($contact, $mailingList, true);
 
             // Update contact
-            $this->_updateContact($contact);
+            $this->_updateContact($contact, true);
         }
     }
 
@@ -202,8 +202,9 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
+     * @param bool $verify
      */
-    private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList)
+    private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList, $verify = false)
     {
         $contactMailingListRecord = ContactMailingListRecord::findOne([
             'contactId' => $contact->id,
@@ -213,6 +214,10 @@ class TrackerService extends Component
         // Ensure record exists
         if ($contactMailingListRecord === null) {
             return;
+        }
+
+        if ($verify AND $contactMailingListRecord->verified === null) {
+            $contactMailingListRecord->verified = new \DateTime();
         }
 
         // Update GeoIP if it exists
@@ -236,13 +241,19 @@ class TrackerService extends Component
      * Update contact
      *
      * @param ContactElement $contact
+     * @param bool $verify
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    private function _updateContact(ContactElement $contact)
+    private function _updateContact(ContactElement $contact, $verify = false)
     {
+        if ($verify AND $contact->pending) {
+            $contact->pending = false;
+            $contact->verified = new \DateTime();
+        }
+
         $geoIp = $this->_getGeoIp();
 
         if ($geoIp !== null) {

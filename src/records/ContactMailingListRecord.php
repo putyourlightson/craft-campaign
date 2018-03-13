@@ -19,7 +19,7 @@ use craft\db\ActiveRecord;
  * @property \DateTime   $unsubscribed               Unsubscribed
  * @property \DateTime   $complained                 Complained
  * @property \DateTime   $bounced                    Bounced
- * @property \DateTime   $confirmed                  Confirmed
+ * @property \DateTime   $verified                   Verified
  * @property string      $source                     Source
  * @property string      $sourceUrl                  Source URL
  * @property string      $country                    Country
@@ -27,7 +27,6 @@ use craft\db\ActiveRecord;
  * @property string      $device                     Device
  * @property string      $os                         OS
  * @property string      $client                     Client
- * @property string      $pendingContactData         Pending contact data
  *
  * @author    PutYourLightsOn
  * @package   Campaign

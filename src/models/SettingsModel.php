@@ -65,6 +65,11 @@ class SettingsModel extends Model
      */
     public $contactFieldLayoutId;
 
+    /**
+     * @var mixed The amount of time to wait before purging pending contacts
+     */
+    public $purgePendingContactsDuration = 0;
+
     // Public Methods
     // =========================================================================
 
