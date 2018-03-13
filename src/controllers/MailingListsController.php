@@ -34,6 +34,15 @@ class MailingListsController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-mailingLists');
+    }
+
+    /**
      * @param string                  $mailingListTypeHandle The mailing list type’s handle
      * @param int|null                $mailingListId         The mailing list’s ID, if editing an existing mailingList.
      * @param MailingListElement|null $mailingList           The mailing list being edited, if there were any validation errors.

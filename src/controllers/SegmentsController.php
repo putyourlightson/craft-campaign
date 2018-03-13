@@ -33,6 +33,15 @@ class SegmentsController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-segments');
+    }
+
+    /**
      * @param int|null              $segmentId    The segment’s ID, if editing an existing segment.
      * @param SegmentElement|null   $segment      The segment being edited, if there were any validation errors.
      *

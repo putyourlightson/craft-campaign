@@ -29,6 +29,15 @@ class CampaignTypesController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-settings');
+    }
+
+    /**
      * @param int|null $campaignTypeId The campaign type’s ID, if editing an existing campaign type.
      * @param CampaignTypeModel|null $campaignType The campaign type being edited, if there were any validation errors.
      *

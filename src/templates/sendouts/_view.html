@@ -245,7 +245,7 @@
 
     </div>
 
-    {% if not sendout.lastSent %}
+    {% if sendout.sendStatus != 'sent' %}
         <hr/>
         <div class="meta">
             {{ forms.textField({

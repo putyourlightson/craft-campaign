@@ -40,7 +40,7 @@ class ImportsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-accessImport');
+        $this->requirePermission('campaign-import');
     }
 
     /**

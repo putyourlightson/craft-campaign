@@ -29,6 +29,15 @@ class MailingListTypesController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-settings');
+    }
+
+    /**
      * @param int|null                  $mailingListTypeId    The mailing list type’s ID, if editing an existing mailing list type.
      * @param MailingListTypeModel|null $mailingListType      The mailing list type being edited, if there were any validation errors.
      *

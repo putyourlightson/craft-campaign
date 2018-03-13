@@ -106,6 +106,9 @@ class SendoutsController extends Controller
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
+        // Require permission
+        $this->requirePermission('campaign-sendouts');
+
         // Check that the sendout type exists
         // ---------------------------------------------------------------------
 
@@ -246,6 +249,9 @@ class SendoutsController extends Controller
      */
     public function actionSaveSendout()
     {
+        // Require permission
+        $this->requirePermission('campaign-sendouts');
+
         $this->requirePostRequest();
 
         $sendoutId = Craft::$app->getRequest()->getBodyParam('sendoutId');

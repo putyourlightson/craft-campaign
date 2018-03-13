@@ -28,6 +28,15 @@ class ReportsController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-reports');
+    }
+
+    /**
      * Returns campaigns chart data
      *
      * @return Response|null

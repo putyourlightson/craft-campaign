@@ -113,18 +113,6 @@ class Campaign extends Plugin
         // Register Twig extension
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
 
-        // Register user permissions if edition is client or above
-        if (Craft::$app->getEdition() >= Craft::Client) {
-            Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Campaign'] = [
-                    'campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')],
-                    'campaign-accessImport' => ['label' => Craft::t('campaign', 'Access import')],
-                    'campaign-accessExport' => ['label' => Craft::t('campaign', 'Access export')],
-                    'campaign-accessSettings' => ['label' => Craft::t('campaign', 'Access settings')],
-                ];
-            });
-        }
-
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules['campaign/reports/campaigns/<campaignId:\d+>'] = ['template' => 'campaign/reports/campaigns/_view'];              $event->rules['campaign/reports/campaigns/<campaignId:\d+>/contact-activity'] = ['template' => 'campaign/reports/campaigns/_contact-activity'];
@@ -160,6 +148,25 @@ class Campaign extends Plugin
             $event->rules['campaign/settings/mailinglisttypes/new'] = 'campaign/mailing-list-types/edit-mailing-list-type';
             $event->rules['campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>'] = 'campaign/mailing-list-types/edit-mailing-list-type';
         });
+
+        // Register user permissions if edition is client or above
+        if (Craft::$app->getEdition() >= Craft::Client) {
+            Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+                $event->permissions['Campaign'] = [
+                    'campaign-reports' => ['label' => Craft::t('campaign', 'Manage reports')],
+                    'campaign-campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
+                    'campaign-contacts' => ['label' => Craft::t('campaign', 'Manage contacts')],
+                    'campaign-mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
+                    'campaign-sendouts' => [
+                        'label' => Craft::t('campaign', 'Manage sendouts'),
+                        'nested' => ['campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]]
+                    ],
+                    'campaign-import' => ['label' => Craft::t('campaign', 'Import contacts')],
+                    'campaign-export' => ['label' => Craft::t('campaign', 'Export contacts')],
+                    'campaign-settings' => ['label' => Craft::t('campaign', 'Manage plugin settings')],
+                ];
+            });
+        }
     }
 
     /**
@@ -167,26 +174,34 @@ class Campaign extends Plugin
      */
     public function getCpNavItem()
     {
-        $cpNavItem =  parent::getCpNavItem();
-
-        $cpNavItem['subnav'] = [
-            'reports' => ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'],
-            'campaigns' => ['label' => Craft::t('campaign', 'Campaigns'), 'url' => 'campaign/campaigns'],
-            'contacts' => ['label' => Craft::t('campaign', 'Contacts'), 'url' => 'campaign/contacts'],
-            'mailinglists' => ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'],
-            'segments' => ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'],
-            'sendouts' => ['label' => Craft::t('campaign', 'Sendouts'), 'url' => 'campaign/sendouts'],
-        ];
-
         $user = Craft::$app->getUser();
 
-        // Show import/export if permission allows
-        if ($user->checkPermission('campaign-accessImport') OR $user->checkPermission('campaign-accessExport')) {
+        $cpNavItem =  parent::getCpNavItem();
+        $cpNavItem['subnav'] = [];
+
+        // Show nav items based on permissions
+        if ($user->checkPermission('campaign-reports')) {
+            $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
+        }
+        if ($user->checkPermission('campaign-campaigns')) {
+            $cpNavItem['subnav']['campaigns'] = ['label' => Craft::t('campaign', 'Campaigns'), 'url' => 'campaign/campaigns'];
+        }
+        if ($user->checkPermission('campaign-contacts')) {
+            $cpNavItem['subnav']['contacts'] = ['label' => Craft::t('campaign', 'Contacts'), 'url' => 'campaign/contacts'];
+        }
+        if ($user->checkPermission('campaign-mailingLists')) {
+            $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
+        }
+        if ($user->checkPermission('campaign-segments')) {
+            $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
+        }
+        if ($user->checkPermission('campaign-sendouts')) {
+            $cpNavItem['subnav']['sendouts'] = ['label' => Craft::t('campaign', 'Sendouts'), 'url' => 'campaign/sendouts'];
+        }
+        if ($user->checkPermission('campaign-import') OR $user->checkPermission('campaign-export')) {
             $cpNavItem['subnav']['import-export'] = ['label' => Craft::t('campaign', 'Import/Export'), 'url' => 'campaign/import-export'];
         }
-
-        // Show settings if permission allows
-        if ($user->checkPermission('campaign-accessSettings')) {
+        if ($user->checkPermission('campaign-settings')) {
             $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Plugin Settings'), 'url' => 'campaign/settings'];
         }
 

@@ -44,6 +44,15 @@ class CampaignsController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-campaigns');
+    }
+
+    /**
      * @param CampaignElement $campaign
      *
      * @return string

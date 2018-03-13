@@ -39,7 +39,7 @@ class ExportsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-accessExport');
+        $this->requirePermission('campaign-export');
     }
 
     /**

@@ -32,6 +32,15 @@ class ContactsController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Require permission
+        $this->requirePermission('campaign-contacts');
+    }
+
+    /**
      * @param int|null             $contactId    The contact’s ID, if editing an existing contact.
      * @param ContactElement|null  $contact      The contact being edited, if there were any validation errors.
      *
