@@ -252,15 +252,8 @@ class ReportsService extends Component
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
-        // Get contact campaigns grouped by country
-        $results = (new Query())
-            ->select(['country', 'geoIp', 'COUNT(*) AS count'])
-            ->from(ContactCampaignRecord::tableName())
-            ->where(['campaignId' => $campaignId])
-            ->groupBy('country')
-            ->all();
-
-        return $this->_getLocations($results, $campaign->opened, $limit);
+        // Return locations of contact campaigns
+        return $this->_getLocations(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $campaign->opened, $limit);
     }
 
     /**
@@ -277,18 +270,8 @@ class ReportsService extends Component
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
-        $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
-
-        // Get contact campaigns grouped by device, os and client
-        $results = (new Query())
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from(ContactCampaignRecord::tableName())
-            ->where(['campaignId' => $campaignId])
-            ->andWhere('device IS NOT NULL')
-            ->groupBy($fields)
-            ->all();
-
-        return $this->_getDevices($results, $campaign->opened, $limit);
+        // Return device, os and client of contact campaigns
+        return $this->_getDevices(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $detailed, $campaign->opened, $limit);
     }
 
     /**
@@ -363,15 +346,8 @@ class ReportsService extends Component
             ->where(['pending' => false, 'complained' => null, 'bounced' => null])
             ->count();
 
-        // Get contacts grouped by country
-        $results = (new Query())
-            ->select(['country', 'geoIp', 'COUNT(*) AS count'])
-            ->from(ContactRecord::tableName())
-            ->where(['pending' => false])
-            ->groupBy('country')
-            ->all();
-
-        return $this->_getLocations($results, $total, $limit);
+        // Return locations of contacts
+        return $this->_getLocations(ContactRecord::tableName(), ['pending' => false], $total, $limit);
     }
 
     /**
@@ -389,17 +365,8 @@ class ReportsService extends Component
             ->where(['pending' => false, 'complained' => null, 'bounced' => null])
             ->count();
 
-        $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
-
-        // Get contacts grouped by device, os and client
-        $results = (new Query())
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from(ContactRecord::tableName())
-            ->where('device IS NOT NULL')
-            ->groupBy($fields)
-            ->all();
-
-        return $this->_getDevices($results, $total, $limit);
+        // Return device, os and client of contacts
+        return $this->_getDevices(ContactRecord::tableName(), [], $detailed, $total, $limit);
     }
 
     /**
@@ -654,15 +621,8 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
-        // Get contact mailing lists grouped by country
-        $results = (new Query())
-            ->select(['country', 'geoIp', 'COUNT(*) AS count'])
-            ->from(ContactMailingListRecord::tableName())
-            ->where(['mailingListId' => $mailingListId])
-            ->groupBy('country')
-            ->all();
-
-        return $this->_getLocations($results, $mailingList->getSubscribedCount(), $limit);
+        // Return locations of contact mailing lists
+        return $this->_getLocations(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $mailingList->getSubscribedCount(), $limit);
     }
 
     /**
@@ -679,18 +639,8 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
-        $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
-
-        // Get contact mailing lists grouped by device, os and client
-        $results = (new Query())
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from(ContactMailingListRecord::tableName())
-            ->where(['mailingListId' => $mailingListId])
-            ->andWhere('device IS NOT NULL')
-            ->groupBy($fields)
-            ->all();
-
-        return $this->_getDevices($results, $mailingList->getSubscribedCount(), $limit);
+        // Return device, os and client of contact mailing lists
+        return $this->_getDevices(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
 
     // Private Methods
@@ -746,16 +696,29 @@ class ReportsService extends Component
     /**
      * Returns locations
      *
+     * @param string
      * @param array
      * @param int
      * @param int|null
      *
      * @return array
      */
-    private function _getLocations(array $results, int $total, int $limit = 100): array
+    private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
     {
         $locations = [];
         $countArray = [];
+
+        $subQuery = (new Query())
+            ->select(['country', 'COUNT(*) AS count'])
+            ->from($table)
+            ->where($conditions)
+            ->groupBy('country');
+
+        $results = (new Query())
+            ->select(['t.country', 'geoIp', 'count'])
+            ->from(['subquery' => $subQuery])
+            ->innerJoin($table.' t', 't.country = subquery.country')
+            ->all();
 
         foreach ($results as $result) {
             // Get lower case country code
@@ -784,16 +747,29 @@ class ReportsService extends Component
     /**
      * Returns devices
      *
+     * @param string
      * @param array
+     * @param boolean
      * @param int
      * @param int|null
      *
      * @return array
      */
-    private function _getDevices(array $results, int $count, int $limit = 100): array
+    private function _getDevices(string $table, array $conditions, bool $detailed, int $count, int $limit = 100): array
     {
         $devices = [];
         $countArray = [];
+
+        $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
+
+        // Get contact campaigns grouped by device, os and client
+        $results = (new Query())
+            ->select(array_merge($fields, ['COUNT(*) AS count']))
+            ->from($table)
+            ->where($conditions)
+            ->andWhere('device IS NOT NULL')
+            ->groupBy($fields)
+            ->all();
 
         foreach ($results as $result) {
             $devices[] = [

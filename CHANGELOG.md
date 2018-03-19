@@ -4,6 +4,8 @@
 - Review queue job implementation
 
 ## Unreleased
+
+## 1.0.0-beta2 - 2018-03-19
 ### Added
 - Added preflight sendout screen
 - Added more user group permissions
@@ -12,7 +14,10 @@
 ### Changed
 - Changed "Settings" to "Plugin Settings"
 - Changed "userId" to "senderId" in Sendouts table
+- Improved performance of SQL queries in reports
 - Moved "actionVerifyEmail" into TrackerController
+### Fixed
+- Fixed SQL error when only_full_group_by mode enabled
 
 ## 1.0.0-beta1 - 2018-03-07
 - Initial release of public beta
