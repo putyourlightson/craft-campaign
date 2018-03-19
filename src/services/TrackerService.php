@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\errors\ElementNotFoundException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -19,7 +18,9 @@ use DeviceDetector\DeviceDetector;
 
 use Craft;
 use craft\base\Component;
+use craft\errors\ElementNotFoundException;
 use yii\base\Exception;
+use yii\base\Model;
 
 /**
  * TrackerService
@@ -177,22 +178,7 @@ class TrackerService extends Component
             return;
         }
 
-        // Update GeoIP if it exists
-        $geoIp = $this->_getGeoIp();
-
-        if ($geoIp !== null) {
-            $contactCampaignRecord->country = GeoIpHelper::getCountryName($geoIp);
-            $contactCampaignRecord->geoIp = $geoIp;
-        }
-
-        // Update device, OS and client
-        $deviceDetector = $this->_getDeviceDetector();
-        $contactCampaignRecord->device = $deviceDetector->getDeviceName();
-
-        $os = $deviceDetector->getOs('name');
-        $contactCampaignRecord->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
-        $client = $deviceDetector->getClient('name');
-        $contactCampaignRecord->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
+        $contactCampaignRecord = $this->_updateLocationDevice($contactCampaignRecord);
 
         $contactCampaignRecord->save();
     }
@@ -220,19 +206,7 @@ class TrackerService extends Component
             $contactMailingListRecord->verified = new \DateTime();
         }
 
-        // Update GeoIP if it exists
-        $geoIp = $this->_getGeoIp();
-
-        if ($geoIp !== null) {
-            $contactMailingListRecord->country = GeoIpHelper::getCountryName($geoIp);
-            $contactMailingListRecord->geoIp = $geoIp;
-        }
-
-        // Update browser, device and user agent
-        $deviceDetector = $this->_getDeviceDetector();
-        $contactMailingListRecord->device = $deviceDetector->getDeviceName();
-        $contactMailingListRecord->os = $deviceDetector->getOs('name');
-        $contactMailingListRecord->client = $deviceDetector->getClient('name');
+        $contactMailingListRecord = $this->_updateLocationDevice($contactMailingListRecord);
 
         $contactMailingListRecord->save();
     }
@@ -254,29 +228,55 @@ class TrackerService extends Component
             $contact->verified = new \DateTime();
         }
 
-        $geoIp = $this->_getGeoIp();
+        $contact->lastActivity = new \DateTime();
 
-        if ($geoIp !== null) {
-            $contact->country = GeoIpHelper::getCountryName($this->_geoIp);
-            $contact->geoIp = $this->_geoIp;
-            $contact->lastActivity = new \DateTime();
-        }
-
-        // Update browser, device and user agent
-        $deviceDetector = $this->_getDeviceDetector();
-        $contact->device = $deviceDetector->getDeviceName();
-        $contact->os = $deviceDetector->getOs('name');
-        $contact->client = $deviceDetector->getClient('name');
+        $contact = $this->_updateLocationDevice($contact);
 
         Craft::$app->getElements()->saveElement($contact);
     }
 
     /**
+     * Update location and device
+     *
+     * @param Model $model
+     *
+     * @return Model
+     */
+    private function _updateLocationDevice(Model $model): Model
+    {
+        // Update GeoIP if it exists
+        $geoIp = $this->_getGeoIp();
+
+        if ($geoIp !== null) {
+            $model->country = GeoIpHelper::getCountryName($this->_geoIp);
+            $model->geoIp = $this->_geoIp;
+        }
+
+        // Get device detector
+        $deviceDetector = $this->_getDeviceDetector();
+        $device = $deviceDetector->getDeviceName();
+
+        // If device exists and not a bot
+        if ($device AND !$deviceDetector->isBot()) {
+            // Update device, OS and client
+            $model->device = $device;
+
+            $os = $deviceDetector->getOs('name');
+            $model->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
+
+            $client = $deviceDetector->getClient('name');
+            $model->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
+        }
+
+        return $model;
+    }
+
+    /**
      * Gets geolocation
      *
-     * @return string
+     * @return string|null
      */
-    private function _getGeoIp(): string
+    private function _getGeoIp()
     {
         if ($this->_geoIp !== null) {
             return $this->_geoIp;

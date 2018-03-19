@@ -151,13 +151,14 @@ class CampaignVariable
      * Returns campaign devices
      *
      * @param int
+     * @param bool
      * @param int|null
      *
      * @return array
      */
-    public function getCampaignDevices(int $campaignId, int $limit = 100): array
+    public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = 100): array
     {
-        return Campaign::$plugin->reports->getCampaignDevices($campaignId, $limit);
+        return Campaign::$plugin->reports->getCampaignDevices($campaignId, $detailed, $limit);
     }
 
     /**
@@ -197,13 +198,14 @@ class CampaignVariable
     /**
      * Returns contacts devices
      *
+     * @param bool
      * @param int|null
      *
      * @return array
      */
-    public function getContactsDevices(int $limit = 100): array
+    public function getContactsDevices(bool $detailed = false, int $limit = 100): array
     {
-        return Campaign::$plugin->reports->getContactsDevices($limit);
+        return Campaign::$plugin->reports->getContactsDevices($detailed, $limit);
     }
 
     /**
@@ -297,13 +299,14 @@ class CampaignVariable
      * Returns mailing list devices
      *
      * @param int
+     * @param bool
      * @param int|null
      *
      * @return array
      */
-    public function getMailingListDevices(int $mailingListId, int $limit = 100): array
+    public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = 100): array
     {
-        return Campaign::$plugin->reports->getMailingListDevices($mailingListId, $limit);
+        return Campaign::$plugin->reports->getMailingListDevices($mailingListId, $detailed, $limit);
     }
 
     /**

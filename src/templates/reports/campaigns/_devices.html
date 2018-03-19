@@ -12,7 +12,6 @@
 
 {% block content %}
 
-    {% set detailed = true %}
-    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getCampaignDevices(campaignId, detailed), detailed: detailed, countLabel: 'Opened' } %}
+    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getCampaignDevices(campaignId, true), countLabel: 'Opened' } %}
 
 {% endblock %}

@@ -28,11 +28,11 @@ class GeoIpHelper
      *
      * @param int|null
      *
-     * @return string
+     * @return string|null
      */
-    public static function getGeoIp(int $timeout = 3): string
+    public static function getGeoIp(int $timeout = 3)
     {
-        $geoIp = '';
+        $geoIp = null;
 
         $client = new Client([
             'timeout' => $timeout,
@@ -49,6 +49,11 @@ class GeoIpHelper
             }
         }
         catch (ConnectException $e) {}
+
+        // If country is empty then return empty string so we are not saving IP addresses pointlessly
+        if (empty($geoIp['country_code'])) {
+            return null;
+        }
 
         return $geoIp;
     }

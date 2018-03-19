@@ -13,8 +13,8 @@
                 <tr>
                     <td data-title="{{ 'Device'|t('campaign') }}"><span class="device {{ device.device }}"></span> {{ device.device ? device.device|ucfirst|t('campaign') : 'Unknown'|t('campaign') }}</td>
                     {% if reportUrl is not defined %}
-                        <td data-title="{{ 'OS'|t('campaign') }}">{{ device.os ? device.os|t('campaign') : 'Unknown'|t('campaign') }}</td>
-                        <td data-title="{{ 'Client'|t('campaign') }}">{{ device.client ? device.client|t('campaign') : 'Unknown'|t('campaign') }}</td>
+                        <td data-title="{{ 'OS'|t('campaign') }}">{{ device.os and device.os != 'UNK' ? device.os|t('campaign') : 'Unknown'|t('campaign') }}</td>
+                        <td data-title="{{ 'Client'|t('campaign') }}">{{ device.client and device.client != 'UNK' ? device.client|t('campaign') : 'Unknown'|t('campaign') }}</td>
             {% endif %}
                     <td data-title="{{ (countLabel ?? 'Count')|t('campaign') }}">{{ device.count }} <code>[{{ device.countRate }}%]</code></td>
                 </tr>

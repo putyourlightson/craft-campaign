@@ -67,7 +67,7 @@
 
         <div class="half">
             <h2>{{ "Devices"|t('campaign') }}</h2>
-            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/devices') } %}
+            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(false, limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/devices') } %}
         </div>
     </div>
     <div class="clear"></div>

@@ -366,7 +366,7 @@ class ReportsService extends Component
             ->count();
 
         // Return device, os and client of contacts
-        return $this->_getDevices(ContactRecord::tableName(), [], $detailed, $total, $limit);
+        return $this->_getDevices(ContactRecord::tableName(), ['pending' => false], $detailed, $total, $limit);
     }
 
     /**
@@ -705,43 +705,60 @@ class ReportsService extends Component
      */
     private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
     {
-        $locations = [];
         $countArray = [];
 
         $subQuery = (new Query())
-            ->select(['country', 'COUNT(*) AS count'])
+            ->select(['MAX(id) as id', 'country', 'COUNT(*) AS count'])
             ->from($table)
             ->where($conditions)
             ->groupBy('country');
 
         $results = (new Query())
-            ->select(['t.country', 'geoIp', 'count'])
+            ->select(['subquery.country', 'subquery.count', 't.geoIp'])
             ->from(['subquery' => $subQuery])
-            ->innerJoin($table.' t', 't.country = subquery.country')
+            ->innerJoin($table.' t', 't.id = subquery.id')
             ->all();
 
-        foreach ($results as $result) {
+        // Set default unknown count
+        $unknownCount = 0;
+
+        foreach ($results as $key => &$result) {
+            // Increment and unset unknown results
+            if (empty($result['country'])) {
+                $unknownCount += $result['count'];
+                unset($results[$key]);
+                continue;
+            }
+
             // Get lower case country code
             $geoIp = $result['geoIp'] ? json_decode($result['geoIp'], true) : [];
             $countryCode = $geoIp['country_code'] ?? '';
             $countryCode = strtolower($countryCode);
 
-            $locations[] = [
-                'country' => $result['country'],
-                'countryCode' => $countryCode,
-                'count' => $result['count'],
-                'countRate' => $total ? number_format($result['count'] / $total * 100, 1) : 0,
-            ];
+            $result['countryCode'] = $countryCode;
+            $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
+
             $countArray[] = $result['count'];
         }
 
-        // Sort locations by opened array descending
-        array_multisort($countArray, SORT_DESC, $locations);
+        // If there is an unknown count then add it to results
+        if ($unknownCount > 0) {
+            $results[] = [
+                'country' => '',
+                'countryCode' => '',
+                'count' => $unknownCount,
+                'countRate' => $total ? number_format($unknownCount / $total * 100, 1) : 0,
+            ];
+            $countArray[] = $unknownCount;
+        }
+
+        // Sort results by count array descending
+        array_multisort($countArray, SORT_DESC, $results);
 
         // Enforce the limit
-        $locations = \array_slice($locations, 0, $limit);
+        $results = \array_slice($results, 0, $limit);
 
-        return $locations;
+        return $results;
     }
 
     /**
@@ -749,7 +766,7 @@ class ReportsService extends Component
      *
      * @param string
      * @param array
-     * @param boolean
+     * @param bool
      * @param int
      * @param int|null
      *
@@ -757,12 +774,10 @@ class ReportsService extends Component
      */
     private function _getDevices(string $table, array $conditions, bool $detailed, int $count, int $limit = 100): array
     {
-        $devices = [];
         $countArray = [];
 
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
-        // Get contact campaigns grouped by device, os and client
         $results = (new Query())
             ->select(array_merge($fields, ['COUNT(*) AS count']))
             ->from($table)
@@ -771,24 +786,18 @@ class ReportsService extends Component
             ->groupBy($fields)
             ->all();
 
-        foreach ($results as $result) {
-            $devices[] = [
-                'device' => $result['device'],
-                'os' => $result['os'],
-                'client' => $result['client'],
-                'count' => $result['count'],
-                'countRate' => $count ? number_format($result['count'] / $count * 100, 1) : 0,
-            ];
+        foreach ($results as &$result) {
+            $result['countRate'] = $count ? number_format($result['count'] / $count * 100, 1) : 0;
             $countArray[] = $result['count'];
         }
 
-        // Sort locations by count array descending
-        array_multisort($countArray, SORT_DESC, $devices);
+        // Sort results by count array descending
+        array_multisort($countArray, SORT_DESC, $results);
 
         // Enforce the limit
-        $devices = \array_slice($devices, 0, $limit);
+        $results = \array_slice($results, 0, $limit);
 
-        return $devices;
+        return $results;
     }
 
     /**

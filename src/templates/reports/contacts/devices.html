@@ -10,6 +10,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(), countLabel: 'Contacts' } %}
+    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(true), countLabel: 'Contacts' } %}
 
 {% endblock %}
