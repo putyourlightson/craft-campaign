@@ -13,7 +13,6 @@
 - Added purging of pending contacts with "purgePendingUsersDuration" config setting
 ### Changed
 - Changed "Settings" to "Plugin Settings"
-- Changed "userId" to "senderId" in Sendouts table
 - Improved performance of SQL queries in reports
 - Moved "actionVerifyEmail" into TrackerController
 ### Fixed
