@@ -13,8 +13,9 @@
 - Added purging of pending contacts with "purgePendingUsersDuration" config setting
 ### Changed
 - Changed "Settings" to "Plugin Settings"
-- Improved performance of SQL queries in reports
 - Moved "actionVerifyEmail" into TrackerController
+- Improved performance of SQL queries in reports
+- Improved accuracy of tracked locations and devices
 ### Fixed
 - Fixed SQL error when only_full_group_by mode enabled
 

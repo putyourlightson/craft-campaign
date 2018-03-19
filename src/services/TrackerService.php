@@ -244,64 +244,42 @@ class TrackerService extends Component
      */
     private function _updateLocationDevice(Model $model): Model
     {
-        // Update GeoIP if it exists
-        $geoIp = $this->_getGeoIp();
+        // Get GeoIP
+        if ($this->_geoIp === null) {
+            $this->_geoIp = GeoIpHelper::getGeoIp();
+        }
 
-        if ($geoIp !== null) {
-            $model->country = GeoIpHelper::getCountryName($this->_geoIp);
-            $model->geoIp = $this->_geoIp;
+        // If GeoIP exists
+        if ($this->_geoIp !== null) {
+            $country = GeoIpHelper::getCountryName($this->_geoIp);
+
+            // If country exists
+            if ($country) {
+                $model->country = $country;
+                $model->geoIp = $this->_geoIp;
+            }
         }
 
         // Get device detector
-        $deviceDetector = $this->_getDeviceDetector();
-        $device = $deviceDetector->getDeviceName();
+        if ($this->_deviceDetector === null) {
+            $userAgent = Craft::$app->getRequest()->getUserAgent();
+            $this->_deviceDetector = new DeviceDetector($userAgent);
+        }
+
+        $this->_deviceDetector->parse();
+        $device = $this->_deviceDetector->getDeviceName();
 
         // If device exists and not a bot
-        if ($device AND !$deviceDetector->isBot()) {
-            // Update device, OS and client
+        if ($device AND !$this->_deviceDetector->isBot()) {
             $model->device = $device;
 
-            $os = $deviceDetector->getOs('name');
+            $os = $this->_deviceDetector->getOs('name');
             $model->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
 
-            $client = $deviceDetector->getClient('name');
+            $client = $this->_deviceDetector->getClient('name');
             $model->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
         }
 
         return $model;
-    }
-
-    /**
-     * Gets geolocation
-     *
-     * @return string|null
-     */
-    private function _getGeoIp()
-    {
-        if ($this->_geoIp !== null) {
-            return $this->_geoIp;
-        }
-
-        $this->_geoIp = GeoIpHelper::getGeoIp();
-
-        return $this->_geoIp;
-    }
-
-    /**
-     * Gets device detector
-     *
-     * @return DeviceDetector
-     */
-    private function _getDeviceDetector(): DeviceDetector
-    {
-        if ($this->_deviceDetector !== null) {
-            return $this->_deviceDetector;
-        }
-
-        $userAgent = Craft::$app->getRequest()->getUserAgent();
-        $this->_deviceDetector = new DeviceDetector($userAgent);
-        $this->_deviceDetector->parse();
-
-        return $this->_deviceDetector;
     }
 }
