@@ -17,13 +17,13 @@ use craft\queue\BaseJob;
 use Performance\Performance;
 
 /**
- * SendoutJob
+ * SingleSendoutJob
  *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
  */
-class SendoutJob extends BaseJob
+class SingleSendoutJob extends BaseJob
 {
     // Properties
     // =========================================================================
@@ -63,25 +63,24 @@ class SendoutJob extends BaseJob
         }
 
         // Call for max power
-        App::maxPowerCaptain();
-        //@set_time_limit(3);
+        //App::maxPowerCaptain();
+        @ini_set('memory_limit', 128000000);
 
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
 
-        // Loop as long as the there are pending recipient IDs and the sendout is sendable
-        $i = 0;
-        $max = 100;
-        while ($sendout->pendingRecipientIds AND $sendout->isSendable() AND $i < $max) {
-            // Set progress
-            //$progress = $sendout->getProgressFraction();
-            $progress = $i / $max;
-            $this->setProgress($queue, $progress);
+        // Send email
+        $sendout = Campaign::$plugin->sendouts->sendEmail($sendout);
 
-            // Send email
-            $sendout = Campaign::$plugin->sendouts->sendEmail($sendout);
+        // If not finished then add another job
+        if (!empty($sendout->pendingRecipientIds) AND $sendout->recipients < 200) {
+            // Add sendout job to queue
+            Craft::$app->queue->push(new self([
+                'sendoutId' => $this->sendoutId,
+                'title' => $this->title,
+            ]));
 
-            $i++;
+            return;
         }
 
         // Finalise sending

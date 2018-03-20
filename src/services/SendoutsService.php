@@ -11,6 +11,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
+use putyourlightson\campaign\jobs\SingleSendoutJob;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
@@ -168,7 +169,7 @@ class SendoutsService extends Component
                 Craft::$app->getElements()->saveElement($sendout);
 
                 // Add sendout job to queue
-                Craft::$app->queue->push(new SendoutJob([
+                Craft::$app->queue->push(new SingleSendoutJob([
                     'sendoutId' => $sendout->id,
                     'title' => $sendout->title,
                 ]));
@@ -244,10 +245,12 @@ class SendoutsService extends Component
         $contactId = array_shift($pendingRecipientIds);
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
+        // Testing
+        //$sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
+
         if ($contact !== null) {
             // Return if contact has complained or bounced
             if ($contact->complained !== null OR $contact->bounced !== null) {
-                $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
                 return $sendout;
             }
 
@@ -304,7 +307,6 @@ class SendoutsService extends Component
             if ($success) {
                 // Update recipients
                 $sendout->recipients++;
-                $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
                 $sendout->sentRecipientIds = $sendout->sentRecipientIds ? $sendout->sentRecipientIds.','.$contact->id : $contact->id;
 
                 // Update last sent
@@ -629,7 +631,7 @@ class SendoutsService extends Component
 
                     // Create new record if not found
                     if ($linkRecord === null) {
-                        $linkRecord = new LinkRecord;
+                        $linkRecord = new LinkRecord();
                         $linkRecord->campaignId = $sendout->campaignId;
                         $linkRecord->url = $url;
                         $linkRecord->title = $title;
