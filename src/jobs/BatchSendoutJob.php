@@ -87,7 +87,7 @@ class BatchSendoutJob extends BaseJob
             $memoryUsage = memory_get_usage();
             $executionTime = time() - $_SERVER['REQUEST_TIME'];
 
-            // If we're beyond the half way memory and time limits
+            // If we're beyond the memory limit or time limit
             if ($memoryUsage > $memoryLimit OR $executionTime > $timeLimit) {
                 // Add new job to queue with delay of 10 seconds
                 Craft::$app->queue->delay(10)->push(new self([
