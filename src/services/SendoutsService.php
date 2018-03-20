@@ -10,6 +10,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
+use putyourlightson\campaign\jobs\BatchSendoutJob;
 use putyourlightson\campaign\jobs\SendoutJob;
 use putyourlightson\campaign\jobs\SingleSendoutJob;
 use putyourlightson\campaign\records\LinkRecord;
@@ -169,7 +170,7 @@ class SendoutsService extends Component
                 Craft::$app->getElements()->saveElement($sendout);
 
                 // Add sendout job to queue
-                Craft::$app->queue->push(new SingleSendoutJob([
+                Craft::$app->queue->push(new BatchSendoutJob([
                     'sendoutId' => $sendout->id,
                     'title' => $sendout->title,
                 ]));
@@ -400,9 +401,10 @@ class SendoutsService extends Component
     public function prepareSending(SendoutElement $sendout)
     {
         // Update send status
-        $sendout->sendStatus = 'sending';
-
-        Craft::$app->getElements()->saveElement($sendout);
+        if ($sendout->sendStatus != 'sending') {
+            $sendout->sendStatus = 'sending';
+            Craft::$app->getElements()->saveElement($sendout);
+        }
     }
 
     /**
@@ -422,10 +424,9 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'sent';
         }
 
-        $contact = new ContactElement();
-
         // Update HTML and plaintext body
         $campaign = $sendout->getCampaign();
+        $contact = new ContactElement();
         $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
 

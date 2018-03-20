@@ -103,6 +103,7 @@ class SendoutsController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
