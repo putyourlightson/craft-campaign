@@ -68,28 +68,28 @@ class BatchSendoutJob extends BaseJob
         }
 
         // Call for max power
-        //App::maxPowerCaptain();
+        App::maxPowerCaptain();
 
-        // Get memory and time limits (force them if unlimited)
+        // Get memory limit (default to 128MB if unlimited)
         $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = $memoryLimit > 0 ? $this->_memoryInBytes($memoryLimit) : 128000000;
-        $memoryLimit = round($memoryLimit * $this->threshold);
+        $memoryLimit = $memoryLimit > -1 ? round($this->_memoryInBytes($memoryLimit) * $this->threshold) : (128 * 1024 * 1024);
+
+        // Get time limit (default to 5 minutes if unlimited)
         $timeLimit = ini_get('max_execution_time');
-        $timeLimit = $timeLimit > 0 ? $timeLimit : 300;
-        $timeLimit = round($timeLimit * $this->threshold);
+        $timeLimit = $timeLimit > 0 ? round($timeLimit * $this->threshold) : (5 * 60);
 
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
 
         // Loop as long as the there are pending recipient IDs and the sendout is sendable
-        while ($sendout->pendingRecipientIds AND $sendout->isSendable() AND $sendout->recipients < 1000) {
+        while ($sendout->pendingRecipientIds AND $sendout->isSendable() ) {
             // Get memory usage and execution time
             $memoryUsage = memory_get_usage();
             $executionTime = time() - $_SERVER['REQUEST_TIME'];
 
             // If we're beyond the half way memory and time limits
             if ($memoryUsage > $memoryLimit OR $executionTime > $timeLimit) {
-                // Add new job to queue with delay
+                // Add new job to queue with delay of 10 seconds
                 Craft::$app->queue->delay(10)->push(new self([
                     'sendoutId' => $this->sendoutId,
                     'title' => $this->title,
@@ -104,6 +104,11 @@ class BatchSendoutJob extends BaseJob
 
             // Send email
             $sendout = Campaign::$plugin->sendouts->sendEmail($sendout);
+
+            // TEST CODE
+            if ($sendout->recipients > 1000) {
+                return;
+            }
         }
 
 
