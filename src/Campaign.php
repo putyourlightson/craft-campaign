@@ -149,6 +149,7 @@ class Campaign extends Plugin
             $event->rules['campaign/import-export/export'] = 'campaign/exports/new-export';
             $event->rules['campaign/settings/general'] = 'campaign/settings/edit-general';
             $event->rules['campaign/settings/email'] = 'campaign/settings/edit-email';
+            $event->rules['campaign/settings/contact'] = 'campaign/settings/edit-contact';
             $event->rules['campaign/settings/campaigntypes/new'] = 'campaign/campaign-types/edit-campaign-type';
             $event->rules['campaign/settings/campaigntypes/<campaignTypeId:\d+>'] = 'campaign/campaign-types/edit-campaign-type';
             $event->rules['campaign/settings/mailinglisttypes/new'] = 'campaign/mailing-list-types/edit-mailing-list-type';
@@ -258,6 +259,20 @@ class Campaign extends Plugin
         ]);
 
         return $mailer;
+    }
+
+    /**
+     * Sets memory and time limits
+     */
+    public function maxPowerLieutenant()
+    {
+        $settings = self::$plugin->getSettings();
+
+        // Set memory limit
+        @ini_set('memory_limit', $settings->memoryLimit);
+
+        // Set time limit
+        @set_time_limit($settings->timeLimit);
     }
 
     // Protected Methods

@@ -12,6 +12,8 @@
 
 {% set fullPageForm = true %}
 
+{% from "campaign/settings/_macros" import configWarning %}
+
 
 {% block content %}
 
@@ -19,7 +21,8 @@
 
     {{ forms.textField({
         label: "Email Field Label"|t('campaign'),
-        instructions: "What do you want the Email field to be called?"|t('campaign'),
+        instructions: "A label to use for the email field."|t('campaign'),
+        warning: (config.emailFieldLabel is defined ? configWarning('emailFieldLabel')),
         id: 'emailFieldLabel',
         name: 'emailFieldLabel',
         value: settings.emailFieldLabel,

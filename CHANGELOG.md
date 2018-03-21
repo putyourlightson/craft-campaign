@@ -5,6 +5,12 @@
 
 ## Unreleased
 
+## 1.0.0-beta3 - 2018-03-21
+### Added
+- Added batching in sendout job
+- Added config settings
+- Added system limits to preflight screen
+
 ## 1.0.0-beta2 - 2018-03-19
 ### Added
 - Added preflight sendout screen

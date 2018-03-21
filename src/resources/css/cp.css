@@ -82,6 +82,10 @@
     line-height: 30px;
 }
 
+.preflight .info {
+    vertical-align: top;
+}
+
 .preflight .testmode {
     margin-top: 0;
 }

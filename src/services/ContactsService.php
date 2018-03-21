@@ -131,14 +131,13 @@ class ContactsService extends Component
      */
     public function purgeExpiredPendingContacts()
     {
-        $config = Craft::$app->getConfig()->getConfigFromFile('campaign');
-        $purgePendingContactsDuration = isset($config['purgePendingUsersDuration']) ? ConfigHelper::durationInSeconds($config['purgePendingUsersDuration']) : 0;
+        $settings = Campaign::$plugin->getSettings();
 
-        if ($purgePendingContactsDuration === 0) {
+        if ($settings->purgePendingContactsDuration === 0) {
             return;
         }
 
-        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
+        $interval = DateTimeHelper::secondsToInterval($settings->purgePendingContactsDuration);
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);
 

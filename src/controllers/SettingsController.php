@@ -64,11 +64,9 @@ class SettingsController extends Controller
             $settings = $this->_settings;
         }
 
-        $config = Craft::$app->getConfig()->getConfigFromFile('campaign');
-
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
-            'config' => $config,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
     }
 
@@ -125,9 +123,27 @@ class SettingsController extends Controller
 
         return $this->renderTemplate('campaign/settings/email', [
             'settings' => $settings,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'adapter' => $adapter,
             'allTransportAdapters' => $allTransportAdapters,
             'transportTypeOptions' => $transportTypeOptions,
+        ]);
+    }
+
+    /**
+     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     *
+     * @return Response
+     */
+    public function actionEditContact(SettingsModel $settings = null): Response
+    {
+        if ($settings === null) {
+            $settings = $this->_settings;
+        }
+
+        return $this->renderTemplate('campaign/settings/contact', [
+            'settings' => $settings,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
     }
 

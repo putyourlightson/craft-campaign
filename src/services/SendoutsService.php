@@ -10,9 +10,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
-use putyourlightson\campaign\jobs\BatchSendoutJob;
 use putyourlightson\campaign\jobs\SendoutJob;
-use putyourlightson\campaign\jobs\SingleSendoutJob;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
@@ -170,7 +168,7 @@ class SendoutsService extends Component
                 Craft::$app->getElements()->saveElement($sendout);
 
                 // Add sendout job to queue
-                Craft::$app->queue->push(new BatchSendoutJob([
+                Craft::$app->queue->push(new SendoutJob([
                     'sendoutId' => $sendout->id,
                     'title' => $sendout->title,
                 ]));

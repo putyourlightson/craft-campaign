@@ -26,22 +26,22 @@ class SettingsModel extends Model
     // =========================================================================
 
     /**
-     * @var bool Test mode
+     * @var bool Sendout emails will be saved into local files (in storage/runtime/debug/mail) rather that actually being sent
      */
     public $testMode = false;
 
     /**
-     * @var string API Key
+     * @var string An API key to use for triggering tasks and notifications (min. 16 characters)
      */
     public $apiKey;
 
     /**
-     * @var string|null Default from name
+     * @var string|null The default name to send emails from
      */
     public $defaultFromName;
 
     /**
-     * @var string|null Default from email
+     * @var string|null The default email address to send emails from
      */
     public $defaultFromEmail;
 
@@ -56,7 +56,7 @@ class SettingsModel extends Model
     public $transportSettings;
 
     /**
-     * @var string Email field label
+     * @var string A label to use for the email field
      */
     public $emailFieldLabel = 'Email';
 
@@ -66,9 +66,34 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
-     * @var mixed The amount of time to wait before purging pending contacts
+     * @var mixed The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
      */
     public $purgePendingContactsDuration = 0;
+
+    /**
+     * @var float The threshold for memory usage per sendout batch as a fraction
+     */
+    public $memoryThreshold = 0.8;
+
+    /**
+     * @var float The threshold for execution time per sendout batch as a fraction
+     */
+    public $timeThreshold = 0.8;
+
+    /**
+     * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+     */
+    public $memoryLimit = '128M';
+
+    /**
+     * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+     */
+    public $timeLimit = 300;
+
+    /**
+     * @var int The max size of sendout batches
+     */
+    public $maxBatchSize = 1000;
 
     // Public Methods
     // =========================================================================
