@@ -244,8 +244,7 @@ class SendoutsService extends Component
         $contactId = array_shift($pendingRecipientIds);
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
-        // Testing
-        //$sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
+        $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
 
         if ($contact !== null) {
             // Return if contact has complained or bounced
