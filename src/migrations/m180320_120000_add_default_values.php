@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 /**
  * m180320_120000_add_default_values migration.
