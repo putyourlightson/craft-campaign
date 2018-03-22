@@ -1,8 +1,5 @@
 # Campaign Changelog
 
-## Roadmap
-- Review queue job implementation
-
 ## Unreleased
 ### Added
 - Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his expert input on this)
