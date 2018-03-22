@@ -5,7 +5,7 @@
     "type": "craft-plugin",
     "minimum-stability": "dev",
     "require": {
-        "craftcms/cms": "^3.0.0-RC1",
+        "craftcms/cms": "^3.0.0-RC16",
         "piwik/device-detector": "^3.9.1",
         "purplebooth/htmlstrip": "^1.0.0"
     },

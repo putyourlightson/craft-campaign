@@ -36,29 +36,39 @@ Campaign.SendoutEdit = Garnish.Base.extend(
         launch: function(event) {
             event.preventDefault();
 
-            if (!$('.preflight .launch').hasClass('disabled')) {
-                $('.preflight .launch').disable();
-                $('.preflight .cancel').disable();
-                $('.preflight .spinner').removeClass('hidden');
-
-                var data = {
-                    sendoutId: $('input[name=sendoutId]').val()
-                };
-
-                Craft.postActionRequest('campaign/sendouts/send-sendout', data, function(response, textStatus) {
-                    if (textStatus !== 'success' || !response.success) {
-                        $('.preflight .spinner').addClass('hidden');
-                        $('.preflight .error').text(response.error).removeClass('hidden');
-                        return;
-                    }
-
-                    Craft.postActionRequest('queue/run');
-
-                    $('.preflight .confirm').fadeOut(function() {
-                        $('.preflight .launched').fadeIn();
-                    });
-                });
+            if ($('.preflight .launch').hasClass('disabled')) {
+                return;
             }
+
+            $('.preflight .launch').disable();
+            $('.preflight .cancel').disable();
+            $('.preflight .spinner').removeClass('hidden');
+
+            var data = {
+                sendoutId: $('input[name=sendoutId]').val()
+            };
+
+            Craft.postActionRequest('campaign/sendouts/send-sendout', data, function(response, textStatus) {
+                $('.preflight .spinner').addClass('hidden');
+
+                if (textStatus === 'success') {
+                    if (response.success) {
+                        if (Craft.runQueueAutomatically) {
+                            Craft.postActionRequest('queue/run');
+                        }
+
+                        $('.preflight .confirm').fadeOut(function() {
+                            $('.preflight .launched').fadeIn();
+                        });
+                    }
+                    else if (response.errors) {
+                        $('.preflight .error').text(response.error).removeClass('hidden');
+                    }
+                    else {
+                        Craft.cp.displayError();
+                    }
+                }
+            });
         },
 
         sendTest: function(event) {

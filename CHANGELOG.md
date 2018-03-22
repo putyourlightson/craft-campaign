@@ -7,9 +7,16 @@
 
 ## 1.0.0-beta3 - 2018-03-21
 ### Added
-- Added batching in sendout job
-- Added config settings
+- Added smart batching in sendout jobs
 - Added system limits to preflight screen
+- Added config settings
+
+### Changed
+- Changed Craft version requirement to 3.0.0-RC16
+
+### Fixed
+- Fixed error handling on preflight screen
+- Fixed AJAX request to queue/run to only happen when runQueueAutomatically is true
 
 ## 1.0.0-beta2 - 2018-03-19
 ### Added
