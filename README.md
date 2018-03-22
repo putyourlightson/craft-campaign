@@ -17,6 +17,7 @@ Learn more at [craftcampaign.com](https://craftcampaign.com).
 The Campaign plugin will be available to purchase in the official Craft Plugin Store. Updates will be free, annual renewal fees will be in alignment with the plugin store's guidelines ([plugin store FAQ](https://github.com/craftcms/cms/wiki/Plugin-Store-FAQ)).  
 **Campaign: $129**  
 **Campaign Pro: $249** ([view pro features](https://craftcampaign.com/docs/pro-features))
+
 ### Requirements
 The Campaign plugin requires Craft CMS 3.0.0-RC16 or later.
 
