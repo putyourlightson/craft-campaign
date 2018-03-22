@@ -20,35 +20,35 @@
 
 return [
     // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
-    'testMode' => false,
+    //'testMode' => false,
 
     // An API key to use for triggering tasks and notifications (min. 16 characters)
-    'apiKey' => 'aBcDeFgHiJkLmNoP',
+    //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
     // The default name to send emails from
-    'defaultFromName' => 'Zorro',
+    //'defaultFromName' => 'Zorro',
 
     // The default email address to send emails from
-    'defaultFromEmail' => 'legend@zorro.com',
+    //'defaultFromEmail' => 'legend@zorro.com',
 
     // A label to use for the email field
-    'emailFieldLabel' => 'Email',
+    //'emailFieldLabel' => 'Email',
 
     // The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
-    'purgePendingContactsDuration' => 0,
+    //'purgePendingContactsDuration' => 0,
 
     // The threshold for memory usage per sendout batch as a fraction
-    'memoryThreshold' => 0.8,
+    //'memoryThreshold' => 0.8,
 
     // The threshold for execution time per sendout batch as a fraction
-    'timeThreshold' => 0.8,
+    //'timeThreshold' => 0.8,
 
     // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-    'memoryLimit' => '128M',
+    //'memoryLimit' => '128M',
 
     // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-    'timeLimit' => 300,
+    //'timeLimit' => 300,
 
     // The max size of sendout batches
-    'maxBatchSize' => 1000,
+    //'maxBatchSize' => 1000,
 ];
