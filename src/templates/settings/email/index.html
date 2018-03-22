@@ -8,8 +8,6 @@
     { label: 'Plugin Settings'|t('campaign'), url: url('campaign/settings/email') }
 ] %}
 
-{% set settings = craft.campaign.getSettings() %}
-
 {% set fullPageForm = true %}
 
 {% from "campaign/settings/_macros" import configWarning %}

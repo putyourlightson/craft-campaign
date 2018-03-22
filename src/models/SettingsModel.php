@@ -95,6 +95,11 @@ class SettingsModel extends Model
      */
     public $maxBatchSize = 1000;
 
+    /**
+     * @var int The amount of time in seconds to delay jobs between sendout batches
+     */
+    public $batchJobDelay = 10;
+
     // Public Methods
     // =========================================================================
 

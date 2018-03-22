@@ -105,8 +105,8 @@ class SendoutJob extends BaseJob
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
             if (memory_get_usage() > $memoryLimit OR time() - $_SERVER['REQUEST_TIME'] > $timeLimit OR $count >= $settings->maxBatchSize) {
-                // Add new job to queue with delay of 10 seconds
-                Craft::$app->queue->delay(10)->push(new self([
+                // Add new job to queue with delay
+                Craft::$app->queue->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,
                     'title' => $this->title,
                     'batch' => $this->batch + 1,
