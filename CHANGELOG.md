@@ -4,10 +4,8 @@
 - Review queue job implementation
 
 ## Unreleased
-
-## 1.0.0-beta3 - 2018-03-21
 ### Added
-- Added smart batching in sendout jobs
+- Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his expert input on this)
 - Added system limits to preflight screen
 - Added config settings
 
