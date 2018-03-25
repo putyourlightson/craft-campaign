@@ -7,11 +7,11 @@
 namespace putyourlightson\campaign\jobs;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\events\SendoutEvent;
+use putyourlightson\campaign\services\SendoutsService;
 
 use Craft;
 use craft\queue\BaseJob;
-use putyourlightson\campaign\events\SendoutEvent;
-use putyourlightson\campaign\services\SendoutsService;
 
 /**
  * SendoutJob
@@ -35,6 +35,21 @@ class SendoutJob extends BaseJob
      */
     public $title;
 
+    /**
+     * @var int
+     */
+    public $batch = 1;
+
+    /**
+     * @var mixed
+     */
+    public $unlimitedMemoryLimit = '1G';
+
+    /**
+     * @var int
+     */
+    public $unlimitedTimeLimit = 3600;
+
     // Public Methods
     // =========================================================================
 
@@ -57,8 +72,24 @@ class SendoutJob extends BaseJob
             return;
         }
 
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
+        // Get settings
+        $settings = Campaign::$plugin->getSettings();
+
+        // Get memory limit with threshold if unlimited
+        $memoryLimit = ini_get('memory_limit');
+        $memoryLimit = $memoryLimit === -1 ? $this->_memoryInBytes($this->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+
+        // Get time limit with threshold if unlimited
+        $timeLimit = ini_get('max_execution_time');
+        $timeLimit = $timeLimit === 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
+
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
+
+        $count = 0;
 
         // Loop as long as the there are pending recipient IDs and the sendout is sendable
         while ($sendout->pendingRecipientIds AND $sendout->isSendable()) {
@@ -68,6 +99,21 @@ class SendoutJob extends BaseJob
 
             // Send email
             $sendout = Campaign::$plugin->sendouts->sendEmail($sendout);
+
+            // Increment count
+            $count++;
+
+            // If we're beyond the memory limit or time limit or max batch size has been reached
+            if (memory_get_usage() > $memoryLimit OR time() - $_SERVER['REQUEST_TIME'] > $timeLimit OR $count >= $settings->maxBatchSize) {
+                // Add new job to queue with delay
+                Craft::$app->queue->delay($settings->batchJobDelay)->push(new self([
+                    'sendoutId' => $this->sendoutId,
+                    'title' => $this->title,
+                    'batch' => $this->batch + 1,
+                ]));
+
+                return;
+            }
         }
 
         // Finalise sending
@@ -81,6 +127,32 @@ class SendoutJob extends BaseJob
         }
     }
 
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * @param string $value
+     *
+     * @return int
+     */
+    private function _memoryInBytes(string $value): int
+    {
+        $unit = strtolower(substr($value, -1, 1));
+        $value = (int) $value;
+        switch($unit) {
+            case 'g':
+                $value *= 1024;
+                // no break (cumulative multiplier)
+            case 'm':
+                $value *= 1024;
+                // no break (cumulative multiplier)
+            case 'k':
+                $value *= 1024;
+        }
+
+        return $value;
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -89,8 +161,9 @@ class SendoutJob extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Sending “{title}” sendout.', [
+        return Craft::t('campaign', 'Sending “{title}” sendout batch {batch}', [
             'title' => $this->title,
+            'batch' => $this->batch,
         ]);
     }
 }

@@ -8,9 +8,9 @@
     { label: 'Plugin Settings'|t('campaign'), url: url('campaign/settings/email') }
 ] %}
 
-{% set settings = craft.campaign.getSettings() %}
-
 {% set fullPageForm = true %}
+
+{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -20,6 +20,7 @@
     {{ forms.textField({
         label: "Default From Name"|t('campaign'),
         instructions: "The default name to send emails from."|t('campaign'),
+        warning: (config.defaultFromName is defined ? configWarning('defaultFromName')),
         id: 'defaultFromName',
         name: 'defaultFromName',
         value: settings.defaultFromName,
@@ -33,6 +34,7 @@
     {{ forms.textField({
         label: "Default From Email Address"|t('campaign'),
         instructions: "The default email address to send emails from."|t('campaign'),
+        warning: (config.defaultFromEmail is defined ? configWarning('defaultFromEmail')),
         id: 'defaultFromEmail',
         name: 'defaultFromEmail',
         type: 'email',

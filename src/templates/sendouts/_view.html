@@ -218,6 +218,12 @@
                     </div>
                 </div>
             {% endif %}
+            {% if sendout.sendStatus == 'paused' and sendout.sendoutType != 'automated' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
+                    <div class="value">{{ recipientIds|length }}</div>
+                </div>
+            {% endif %}
             <div class="data">
                 <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
                 <div class="value">{{ sendout.recipients }}</div>

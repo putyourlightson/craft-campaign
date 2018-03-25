@@ -82,6 +82,10 @@
     line-height: 30px;
 }
 
+.preflight .info {
+    vertical-align: top;
+}
+
 .preflight .testmode {
     margin-top: 0;
 }
@@ -101,7 +105,7 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    box-shadow: 0 0px 50px #000;
+    box-shadow: 0 0 50px #000;
     background: url('../images/launch.jpg') no-repeat;
     background-size: contain;
 }

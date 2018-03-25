@@ -8,15 +8,9 @@
     { label: 'Plugin Settings'|t('campaign'), url: url('campaign/settings') }
 ] %}
 
-{% set settings = craft.campaign.getSettings() %}
-
 {% set fullPageForm = true %}
 
-
-{% macro configWarning(setting) -%}
-    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
-{%- endmacro %}
-{% from _self import configWarning %}
+{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}

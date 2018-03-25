@@ -6,8 +6,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\helpers\ConfigHelper;
-use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -15,6 +13,8 @@ use putyourlightson\campaign\elements\MailingListElement;
 use Craft;
 use craft\base\Component;
 use craft\errors\MissingComponentException;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use yii\base\Exception;
@@ -128,17 +128,18 @@ class ContactsService extends Component
 
     /**
      * Deletes expired pending contacts
+     *
+     * @throws \Throwable
      */
     public function purgeExpiredPendingContacts()
     {
-        $config = Craft::$app->getConfig()->getConfigFromFile('campaign');
-        $purgePendingContactsDuration = isset($config['purgePendingUsersDuration']) ? ConfigHelper::durationInSeconds($config['purgePendingUsersDuration']) : 0;
+        $settings = Campaign::$plugin->getSettings();
 
-        if ($purgePendingContactsDuration === 0) {
+        if ($settings->purgePendingContactsDuration === 0) {
             return;
         }
 
-        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
+        $interval = DateTimeHelper::secondsToInterval($settings->purgePendingContactsDuration);
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);
 

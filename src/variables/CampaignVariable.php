@@ -23,6 +23,8 @@ use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
 
+use yii\base\InvalidConfigException;
+
 /**
  * CampaignVariable
  *
@@ -425,6 +427,7 @@ class CampaignVariable
      * Returns segment available fields
      *
      * @return array
+     * @throws InvalidConfigException
      */
     public function getSegmentAvailableFields(): array
     {
@@ -479,6 +482,7 @@ class CampaignVariable
      * Returns contact fields
      *
      * @return array
+     * @throws InvalidConfigException
      */
     public function getContactFields(): array
     {

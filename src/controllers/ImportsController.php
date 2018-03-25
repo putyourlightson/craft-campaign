@@ -104,6 +104,7 @@ class ImportsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
      */
     public function actionImportFile()
     {
@@ -177,6 +178,7 @@ class ImportsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
      */
     public function actionImportUserGroup()
     {

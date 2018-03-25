@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -17,8 +16,9 @@ use putyourlightson\campaign\helpers\LogHelper;
 
 use Craft;
 use craft\web\Controller;
-use craft\helpers\DateTimeHelper;
 use craft\errors\ElementNotFoundException;
+use craft\errors\MissingComponentException;
+use craft\helpers\DateTimeHelper;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -103,6 +103,7 @@ class SendoutsController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
@@ -234,6 +235,15 @@ class SendoutsController extends Controller
         if ($sendout->getIsEditable() AND !Craft::$app->request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
+
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
+        // Get the system limits
+        $variables['system'] = [
+            'memoryLimit' => ini_get('memory_limit'),
+            'timeLimit' => ini_get('max_execution_time'),
+        ];
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }

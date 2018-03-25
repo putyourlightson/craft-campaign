@@ -244,10 +244,11 @@ class SendoutsService extends Component
         $contactId = array_shift($pendingRecipientIds);
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
+        $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
+
         if ($contact !== null) {
             // Return if contact has complained or bounced
             if ($contact->complained !== null OR $contact->bounced !== null) {
-                $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
                 return $sendout;
             }
 
@@ -304,7 +305,6 @@ class SendoutsService extends Component
             if ($success) {
                 // Update recipients
                 $sendout->recipients++;
-                $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
                 $sendout->sentRecipientIds = $sendout->sentRecipientIds ? $sendout->sentRecipientIds.','.$contact->id : $contact->id;
 
                 // Update last sent
@@ -398,9 +398,10 @@ class SendoutsService extends Component
     public function prepareSending(SendoutElement $sendout)
     {
         // Update send status
-        $sendout->sendStatus = 'sending';
-
-        Craft::$app->getElements()->saveElement($sendout);
+        if ($sendout->sendStatus != 'sending') {
+            $sendout->sendStatus = 'sending';
+            Craft::$app->getElements()->saveElement($sendout);
+        }
     }
 
     /**
@@ -420,10 +421,9 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'sent';
         }
 
-        $contact = new ContactElement();
-
         // Update HTML and plaintext body
         $campaign = $sendout->getCampaign();
+        $contact = new ContactElement();
         $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
 
@@ -629,7 +629,7 @@ class SendoutsService extends Component
 
                     // Create new record if not found
                     if ($linkRecord === null) {
-                        $linkRecord = new LinkRecord;
+                        $linkRecord = new LinkRecord();
                         $linkRecord->campaignId = $sendout->campaignId;
                         $linkRecord->url = $url;
                         $linkRecord->title = $title;
