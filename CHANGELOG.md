@@ -1,17 +1,17 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta3 - 2018-03-25
 ### Added
-- Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his expert input on this)
+- Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his input on this)
 - Added system limits to preflight screen
 - Added config settings
 
 ### Changed
 - Changed Craft version requirement to 3.0.0-RC16
+- Changed AJAX request to queue/run only when runQueueAutomatically is true
 
 ### Fixed
 - Fixed error handling on preflight screen
-- Fixed AJAX request to queue/run to only happen when runQueueAutomatically is true
 
 ## 1.0.0-beta2 - 2018-03-19
 ### Added

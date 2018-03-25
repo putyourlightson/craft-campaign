@@ -3,7 +3,7 @@
 {% set prepLabel = 'Prepare to Send Now'|t('campaign') %}
 {% set saveLabel = 'Send Now'|t('campaign') %}
 {% set confirmMessage = 'This sendout will be sent to {recipients} contact(s) in {mailingLists} mailing list(s).'|t('campaign', params) %}
-{% set launchedMessage = 'Sendout Queued!'|t('campaign') %}
+{% set launchedMessage = 'Sendout Queued for Sending!'|t('campaign') %}
 {% if sendout.sendoutType == 'scheduled' %}
     {% set prepLabel = 'Prepare to Schedule Sending'|t('campaign') %}
     {% set saveLabel = 'Schedule Sending'|t('campaign') %}
