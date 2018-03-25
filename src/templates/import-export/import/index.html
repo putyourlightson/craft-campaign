@@ -42,7 +42,7 @@
 
         {{ forms.fileField({
             label: "CSV File"|t('campaign'),
-            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The following contact fields are available (email is required):"|t('campaign') ~ '<br><code>Email, ' ~ contactFieldNames|join(', ') ~ '</code><br>')|raw,
+            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The following contact fields are available (email is required):"|t('campaign') ~ '<br><code>' ~ ['Email']|merge(contactFieldNames)|join(', ') ~ '</code><br>')|raw,
             name: 'file',
             required: true
         }) }}
