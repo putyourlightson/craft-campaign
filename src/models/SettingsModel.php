@@ -83,7 +83,7 @@ class SettingsModel extends Model
     /**
      * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
      */
-    public $memoryLimit = '128M';
+    public $memoryLimit = '1024M';
 
     /**
      * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
