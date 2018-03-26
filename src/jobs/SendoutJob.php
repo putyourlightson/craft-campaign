@@ -131,6 +131,8 @@ class SendoutJob extends BaseJob
     // =========================================================================
 
     /**
+     * Returns the provided memory converted to bytes
+     *
      * @param string $value
      *
      * @return int
@@ -141,13 +143,14 @@ class SendoutJob extends BaseJob
         $value = (int) $value;
         switch($unit) {
             case 'g':
-                $value *= 1024;
-                // no break (cumulative multiplier)
+                $value *= pow(1024, 3);
+                break;
             case 'm':
-                $value *= 1024;
-                // no break (cumulative multiplier)
+                $value *= pow(1024, 2);
+                break;
             case 'k':
                 $value *= 1024;
+                break;
         }
 
         return $value;
