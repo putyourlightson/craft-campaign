@@ -1,6 +1,6 @@
 <p align="center">
    <a href="https://craftcampaign.com/" target="_blank">
-     <img width="300" src="https://craftcampaign.com/interface/images/logo.svg?v=20180326" alt="crftcampaign.com">
+     <img width="300" src="https://craftcampaign.com/interface/images/logo.svg?v=20180326a" alt="crftcampaign.com">
    </a>
 </p>
 
