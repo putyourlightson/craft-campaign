@@ -1,5 +1,10 @@
 # Campaign Changelog
 
+## Unreleased
+### Changed
+- Changed plugin icons to be clearer
+- Changed max power to respect limits in import and export
+
 ## 1.0.0-beta3 - 2018-03-26
 ### Added
 - Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his input on this)

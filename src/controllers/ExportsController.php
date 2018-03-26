@@ -133,7 +133,7 @@ class ExportsController extends Controller
         LogHelper::logUserAction('File exported by "{username}".', [], __METHOD__);
 
         // Call for max power
-        App::maxPowerCaptain();
+        Campaign::$plugin->maxPowerLieutenant();
 
         return Craft::$app->getResponse()->sendFile($export->filePath);
     }

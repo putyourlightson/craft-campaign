@@ -230,7 +230,7 @@ class ImportsController extends Controller
         }
 
         // Call for max power
-        App::maxPowerCaptain();
+        Campaign::$plugin->maxPowerLieutenant();
 
         return Craft::$app->getResponse()->sendFile($import->filePath, $import->fileName);
     }
