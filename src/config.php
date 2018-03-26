@@ -44,7 +44,7 @@ return [
     //'timeThreshold' => 0.8,
 
     // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-    //'memoryLimit' => '128M',
+    //'memoryLimit' => '1024M',
 
     // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
     //'timeLimit' => 300,
