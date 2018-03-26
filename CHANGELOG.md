@@ -1,6 +1,6 @@
 # Campaign Changelog
 
-## 1.0.0-beta3 - 2018-03-25
+## 1.0.0-beta3 - 2018-03-26
 ### Added
 - Added smart batching in sendout jobs (credit to Oliver Stark @ostark for his input on this)
 - Added system limits to preflight screen
