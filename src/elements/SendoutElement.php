@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 
 use Craft;
@@ -343,24 +344,19 @@ class SendoutElement extends Element
     public $segmentIds;
 
     /**
+     * @var int Expected recipients
+     */
+    public $expectedRecipients = 0;
+
+    /**
+     * @var int Failed recipients
+     */
+    public $failedRecipients = 0;
+
+    /**
      * @var int Recipients
      */
     public $recipients = 0;
-
-    /**
-     * @var string Pending recipient IDs
-     */
-    public $pendingRecipientIds;
-
-    /**
-     * @var string Sent recipient IDs
-     */
-    public $sentRecipientIds;
-
-    /**
-     * @var string Failed recipient IDs
-     */
-    public $failedRecipientIds;
 
     /**
      * @var mixed Automated schedule
@@ -502,12 +498,10 @@ class SendoutElement extends Element
             return 1;
         }
 
-        // Get number of recipients
-        $pendingRecipients = $this->pendingRecipientIds ? substr_count($this->pendingRecipientIds, ',') + 1 : 0;
+        $progress = $this->expectedRecipients == 0 ?: $this->recipients / $this->expectedRecipients;
+        $progress = $progress <= 1 ?: 1;
 
-        $totalRecipients = $this->recipients + $pendingRecipients;
-
-        return $totalRecipients == 0 ?: $this->recipients / $totalRecipients;
+        return $progress;
     }
 
     /**
@@ -665,13 +659,14 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's recipients based on its mailing lists and segments
+     * Returns the sendout's pending recipients based on its mailing lists and segments
      *
      * @return array
      */
-    public function getRecipientIds(): array
+    public function getPendingRecipients(): array
     {
-        $recipientIds = [];
+        $recipients = [];
+
         $mailingLists = $this->getMailingLists();
         $excludedMailingLists = $this->getExcludedMailingLists();
         $segments = $this->getSegments();
@@ -680,12 +675,11 @@ class SendoutElement extends Element
         foreach ($mailingLists as $mailingList) {
             /** @var MailingListElement $mailingList */
             $contacts = $mailingList->getSubscribedContacts();
-
             foreach ($contacts as $contact) {
                 // If contact has not yet been added
                 /** @var ContactElement $contact */
-                if (!\in_array($contact->id, $recipientIds, true)) {
-                    $recipientIds[] = $contact->id;
+                if (empty($recipients[$contact->id])) {
+                    $recipients[$contact->id] = ['contactId' => $contact->id, 'mailingListId' => $mailingList->id];
                 }
             }
         }
@@ -694,24 +688,45 @@ class SendoutElement extends Element
         foreach ($excludedMailingLists as $mailingList) {
             /** @var MailingListElement $mailingList */
             $contacts = $mailingList->getSubscribedContacts();
-
             foreach ($contacts as $contact) {
                 // If contact has been added then unset
-                /** @var ContactElement $contact */
-                $key = array_search($contact->id, $recipientIds, true);
-                if ($key !== false) {
-                    unset($recipientIds[$key]);
+                if (isset($recipients[$contact->id])) {
+                    unset($recipients[$contact->id]);
                 }
             }
         }
 
-        // Remove all contacts that do not exist in segments
+        // Remove contacts that are already sent recipients
+        $recipients = array_diff_key($recipients, array_flip($this->getSentRecipientIds()));
+
         foreach ($segments as $segment) {
             // Keep only contacts that exist in the segment
-            $recipientIds = array_intersect($recipientIds, $segment->getContactIds());
+            $recipients = array_intersect_key($recipients, array_flip($segment->getContactIds()));
         }
 
-        return $recipientIds;
+        return $recipients;
+    }
+
+    /**
+     * Returns the sendout's sent recipient ID's
+     *
+     * @return array
+     */
+    public function getSentRecipientIds(): array
+    {
+        $contactCampaignRecords = ContactCampaignRecord::find()
+            ->select('contactId')
+            ->where(['sendoutId' => $this->id])
+            ->all();
+
+        $sentRecipientIds = [];
+
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            /** @var ContactCampaignRecord $contactCampaignRecord */
+            $sentRecipientIds[] = $contactCampaignRecord->contactId;
+        }
+
+        return $sentRecipientIds;
     }
 
     /**

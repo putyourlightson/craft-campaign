@@ -10,7 +10,7 @@
     { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 
-{% set recipientIds = sendout.recipientIds %}
+{% set pendingRecipients = sendout.pendingRecipients %}
 {% set mailingLists = sendout.mailingLists %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
@@ -198,7 +198,7 @@
 
             <div class="data">
                 <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                <div class="value">{{ recipientIds|length }}</div>
+                <div class="value">{{ pendingRecipients|length }}</div>
             </div>
 
         {% else %}
@@ -221,7 +221,7 @@
             {% if sendout.sendStatus == 'paused' and sendout.sendoutType != 'automated' %}
                 <div class="data">
                     <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                    <div class="value">{{ recipientIds|length }}</div>
+                    <div class="value">{{ pendingRecipients|length }}</div>
                 </div>
             {% endif %}
             <div class="data">

@@ -15,7 +15,10 @@ use putyourlightson\campaign\elements\CampaignElement;
  * @property int         $id                         ID
  * @property int         $contactId                  Contact ID
  * @property int         $campaignId                 Campaign ID
- * @property int         $sendoutId                  SID
+ * @property int         $sendoutId                  Sendout ID
+ * @property int         $mailingListId              Mailing List ID
+ * @property \DateTime   $sent                       Sent
+ * @property \DateTime   $failed                     Failed
  * @property \DateTime   $opened                     Opened
  * @property \DateTime   $clicked                    Clicked
  * @property \DateTime   $unsubscribed               Unsubscribed

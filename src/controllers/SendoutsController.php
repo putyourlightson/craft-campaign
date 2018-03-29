@@ -430,7 +430,7 @@ class SendoutsController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Test Email must be a valid email address.')]);
         }
 
-        if (!Campaign::$plugin->sendouts->sendTest($testEmail, $sendout)) {
+        if (!Campaign::$plugin->sendouts->sendTest($sendout, $testEmail)) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
         }
 

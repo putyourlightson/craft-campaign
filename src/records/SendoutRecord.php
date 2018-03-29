@@ -25,10 +25,9 @@ use DateTime;
  * @property boolean     $googleAnalyticsLinkTracking Google Analytics link tracking
  * @property string      $mailingListIds             Mailing list IDs
  * @property string      $excludedMailingListIds     Excluded mailing list IDs
+ * @property int         $expectedRecipients         Expected recipients
+ * @property int         $failedRecipients           Failed recipients
  * @property int         $recipients                 Recipients
- * @property string      $pendingRecipientIds        Pending recipient IDs
- * @property string      $sentRecipientIds           Sent recipient IDs
- * @property string      $failedRecipientIds         Failed recipient IDs
  * @property mixed       $automatedSchedule          Automated schedule
  * @property DateTime    $sendDate                   Send date
  * @property DateTime    $lastSent                   Last sent

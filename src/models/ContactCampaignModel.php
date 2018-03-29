@@ -58,6 +58,21 @@ class ContactCampaignModel extends BaseModel
     public $sendoutId;
 
     /**
+     * @var int Mailing List ID
+     */
+    public $mailingListId;
+
+    /**
+     * @var \DateTime|null Sent
+     */
+    public $sent;
+
+    /**
+     * @var \DateTime|null Failed
+     */
+    public $failed;
+
+    /**
      * @var \DateTime|null Opened
      */
     public $opened;
@@ -148,6 +163,34 @@ class ContactCampaignModel extends BaseModel
     public function getCampaign(): CampaignElement
     {
         return Campaign::$plugin->campaigns->getCampaignById($this->campaignId);
+    }
+
+    /**
+     * Returns the sendout
+     *
+     * @return SendoutElement|null
+     */
+    public function getSendout()
+    {
+        if ($this->sendoutId === null) {
+            return null;
+        }
+
+        return Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
+    }
+
+    /**
+     * Returns the mailing list
+     *
+     * @return MailingListElement|null
+     */
+    public function getMailingList()
+    {
+        if ($this->mailingListId === null) {
+            return null;
+        }
+
+        return Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
     }
 
     /**

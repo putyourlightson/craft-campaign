@@ -8,9 +8,11 @@ namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
@@ -160,9 +162,8 @@ class SendoutsService extends Component
                 // Update send status
                 $sendout->sendStatus = 'queued';
 
-                // Get pending recipients
-                $pendingRecipientIds = $sendout->getRecipientIds();
-                $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
+                // Get expected recipients
+                $sendout->expectedRecipients = count($sendout->getPendingRecipients());
 
                 // Save sendout
                 Craft::$app->getElements()->saveElement($sendout);
@@ -179,8 +180,8 @@ class SendoutsService extends Component
     /**
      * Sends a test
      *
-     * @param string         $testEmail
      * @param SendoutElement $sendout
+     * @param string         $testEmail
      *
      * @return bool Whether the test was sent successfully
      * @throws Exception
@@ -188,7 +189,7 @@ class SendoutsService extends Component
      * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
-    public function sendTest(string $testEmail, SendoutElement $sendout): bool
+    public function sendTest(SendoutElement $sendout, string $testEmail): bool
     {
         // Get campaign
         $campaign = $sendout->getCampaign();
@@ -222,118 +223,125 @@ class SendoutsService extends Component
      * Sends an email
      *
      * @param SendoutElement $sendout
+     * @param int $contactId
+     * @param int $mailingListId
      *
-     * @return SendoutElement
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    public function sendEmail(SendoutElement $sendout): SendoutElement
+    public function sendEmail(SendoutElement $sendout, int $contactId, int $mailingListId)
     {
         if ($sendout->isSendable() === false) {
-            return $sendout;
+            return;
         }
 
         // Get campaign
         $campaign = $sendout->getCampaign();
 
-        // Get pending recipients
-        $pendingRecipientIds = $sendout->pendingRecipientIds ? explode(',', $sendout->pendingRecipientIds) : [];
-
-        // Get first pending contact
-        $contactId = array_shift($pendingRecipientIds);
+        // Get contact
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
-        $sendout->pendingRecipientIds = implode(',', $pendingRecipientIds);
-
-        if ($contact !== null) {
-            // Return if contact has complained or bounced
-            if ($contact->complained !== null OR $contact->bounced !== null) {
-                return $sendout;
-            }
-
-            // Get subject
-            $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
-
-            // Get body
-            $htmlBody = $campaign->getHtmlBody($contact, $sendout);
-            $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
-
-            // Convert links in HTML body
-            $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
-
-            // Add secret image to HTML body
-            $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/open';
-            $secretImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
-            $htmlBody .= '<img src="'.$secretImageUrl.'" width="1" height="1" />';
-
-            // Get mailer
-            $mailer = $this->getMailer();
-
-            // If test mode is enabled then use file transport instead of sending emails
-            if (Campaign::$plugin->getSettings()->testMode) {
-                $mailer->useFileTransport = true;
-            }
-
-            // Create message
-            /** @var Message $message */
-            $message = $mailer->compose()
-                ->setFrom([$sendout->fromEmail => $sendout->fromName])
-                ->setTo($contact->email)
-                ->setSubject($subject)
-                ->setHtmlBody($htmlBody)
-                ->setTextBody($plaintextBody);
-
-            // Add webhooks to message
-            $this->_addWebhooks($message, $sendout->sid);
-
-            // Fire a 'beforeSendEmail' event
-            $event = new SendoutEmailEvent([
-                'sendout' => $sendout,
-                'contact' => $contact,
-                'message' => $message,
-            ]);
-            $this->trigger(self::EVENT_BEFORE_SEND_EMAIL, $event);
-
-            if (!$event->isValid) {
-                return $sendout;
-            }
-
-            // Send message
-            $success = $message->send();
-
-            if ($success) {
-                // Update recipients
-                $sendout->recipients++;
-                $sendout->sentRecipientIds = $sendout->sentRecipientIds ? $sendout->sentRecipientIds.','.$contact->id : $contact->id;
-
-                // Update last sent
-                $sendout->lastSent = new \DateTime();
-            }
-            else {
-                // Update failed recipients
-                $sendout->failedRecipientIds = $sendout->failedRecipientIds ? $sendout->failedRecipientIds.','.$contact->id : $contact->id;
-
-                // Change status to failed and add status message
-                $sendout->sendStatus = 'failed';
-                $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
-            }
-
-            // Fire an 'afterSendEmail' event
-            if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
-                $this->trigger(self::EVENT_AFTER_SEND_EMAIL, new SendoutEmailEvent([
-                    'sendout' => $sendout,
-                    'contact' => $contact,
-                    'message' => $message,
-                    'success' => $success,
-                ]));
-            }
+        // Return if contact has complained or bounced
+        if ($contact === null OR $contact->complained !== null OR $contact->bounced !== null) {
+            return;
         }
+
+        // Create contact campaign record
+        $contactCampaignRecord = new ContactCampaignRecord();
+        $contactCampaignRecord->contactId = $contact->id;
+        $contactCampaignRecord->campaignId = $campaign->id;
+        $contactCampaignRecord->sendoutId = $sendout->id;
+        $contactCampaignRecord->mailingListId = $mailingListId;
+        $contactCampaignRecord->save();
+
+        // Get subject
+        $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
+
+        // Get body
+        $htmlBody = $campaign->getHtmlBody($contact, $sendout);
+        $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+
+        // Convert links in HTML body
+        $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
+
+        // Add secret image to HTML body
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/open';
+        $secretImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
+        $htmlBody .= '<img src="'.$secretImageUrl.'" width="1" height="1" />';
+
+        // Get mailer
+        $mailer = $this->getMailer();
+
+        // If test mode is enabled then use file transport instead of sending emails
+        if (Campaign::$plugin->getSettings()->testMode) {
+            $mailer->useFileTransport = true;
+        }
+
+        // Create message
+        /** @var Message $message */
+        $message = $mailer->compose()
+            ->setFrom([$sendout->fromEmail => $sendout->fromName])
+            ->setTo($contact->email)
+            ->setSubject($subject)
+            ->setHtmlBody($htmlBody)
+            ->setTextBody($plaintextBody);
+
+        // Add webhooks to message
+        $this->_addWebhooks($message, $sendout->sid);
+
+        // Fire a 'beforeSendEmail' event
+        $event = new SendoutEmailEvent([
+            'sendout' => $sendout,
+            'contact' => $contact,
+            'message' => $message,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_SEND_EMAIL, $event);
+
+        if (!$event->isValid) {
+            return;
+        }
+
+        // Send message
+        $success = $message->send();
+
+        if ($success) {
+            // Update sent date
+            $contactCampaignRecord->sent = new \DateTime();
+
+            // Update recipients
+            $sendout->recipients++;
+
+            // Update last sent
+            $sendout->lastSent = new \DateTime();
+        }
+        else {
+            // Update failed date
+            $contactCampaignRecord->failed = new \DateTime();
+
+            // Update failed recipients
+            $sendout->failedRecipients++;
+
+            // Change status to failed and add status message
+            $sendout->sendStatus = 'failed';
+            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
+        }
+
+        // Save contact campaign record
+        $contactCampaignRecord->save();
 
         // Save sendout
         Craft::$app->getElements()->saveElement($sendout);
 
-        return $sendout;
+        // Fire an 'afterSendEmail' event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
+            $this->trigger(self::EVENT_AFTER_SEND_EMAIL, new SendoutEmailEvent([
+                'sendout' => $sendout,
+                'contact' => $contact,
+                'message' => $message,
+                'success' => $success,
+            ]));
+        }
     }
 
     /**
@@ -417,7 +425,7 @@ class SendoutsService extends Component
     public function finaliseSending(SendoutElement $sendout)
     {
         // Update send status if fully complete
-        if (empty($sendout->pendingRecipientIds)) {
+        if (count($sendout->getPendingRecipients()) == 0) {
             $sendout->sendStatus = 'sent';
         }
 
@@ -456,9 +464,6 @@ class SendoutsService extends Component
         if ($sendout->isPausable()) {
             $sendout->sendStatus = 'paused';
 
-            // Delete any job for this sendout
-            $this->_deleteJobs($sendout);
-
             return Craft::$app->getElements()->saveElement($sendout);
         }
 
@@ -480,9 +485,6 @@ class SendoutsService extends Component
         if ($sendout->isCancellable()) {
             $sendout->sendStatus = 'cancelled';
 
-            // Delete any job for this sendout
-            $this->_deleteJobs($sendout);
-
             return Craft::$app->getElements()->saveElement($sendout);
         }
 
@@ -500,9 +502,6 @@ class SendoutsService extends Component
     public function deleteSendout(SendoutElement $sendout): bool
     {
         if ($sendout->isDeletable()) {
-            // Delete any job for this sendout
-            $this->_deleteJobs($sendout);
-
             return Craft::$app->getElements()->deleteElement($sendout);
         }
 
@@ -537,38 +536,6 @@ class SendoutsService extends Component
                 case 'SendgridTransport':
                     $message->addHeader('X-SMTPAPI', '{"unique_args": {"sid": "'.$sid.'"}}');
                     break;
-            }
-        }
-    }
-
-    /**
-     * Delete jobs
-     *
-     * Once sending has started it is not possible to stop it by updating the sendout status
-     * in the database as it is not queried before each sendout, therefore we delete all jobs
-     * associated with this sendout to force it to stop.
-     *
-     * @param SendoutElement $sendout
-     *
-     * @throws \yii\db\Exception
-     */
-    private function _deleteJobs(SendoutElement $sendout)
-    {
-        // Get all sendout jobs
-        $sendoutJobs = (new Query())
-            ->select(['id', 'job'])
-            ->from('{{%queue}}')
-            ->where(['like', 'job', SendoutJob::class])
-            ->all();
-
-        foreach ($sendoutJobs as $sendoutJob) {
-            $job = unserialize($sendoutJob['job'], []);
-
-            // If sendout IDs match then delete the job
-            if ($job->sendoutId == $sendout->id) {
-                Craft::$app->getDb()->createCommand()
-                    ->delete('{{%queue}}', ['id' => $sendoutJob['id']])
-                    ->execute();
             }
         }
     }

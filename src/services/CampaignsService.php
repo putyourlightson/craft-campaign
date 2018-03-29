@@ -78,14 +78,11 @@ class CampaignsService extends Component
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
             'campaignId' => $campaign->id,
+            'sendoutId' => $sendout->id,
         ]);
 
-        // Create contact campaign record if it doesn't exist
         if ($contactCampaignRecord === null) {
-            $contactCampaignRecord = new ContactCampaignRecord();
-            $contactCampaignRecord->contactId = $contact->id;
-            $contactCampaignRecord->campaignId = $sendout->campaignId;
-            $contactCampaignRecord->sendoutId = $sendout->id;
+            return;
         }
 
         // If first time for this interaction
@@ -131,6 +128,7 @@ class CampaignsService extends Component
         }
 
         $contactCampaignRecord->save();
+
         Craft::$app->getElements()->saveElement($campaign);
     }
 

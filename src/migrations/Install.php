@@ -154,6 +154,9 @@ class Install extends Migration
                 'contactId' => $this->integer()->notNull(),
                 'campaignId' => $this->integer()->notNull(),
                 'sendoutId' => $this->integer()->notNull(),
+                'mailingListId' => $this->integer()->notNull(),
+                'sent' => $this->dateTime(),
+                'failed' => $this->dateTime(),
                 'opened' => $this->dateTime(),
                 'clicked' => $this->dateTime(),
                 'unsubscribed' => $this->dateTime(),
@@ -251,10 +254,9 @@ class Install extends Migration
                 'mailingListIds' => $this->text(),
                 'excludedMailingListIds' => $this->text(),
                 'segmentIds' => $this->text(),
-                'recipients' => $this->integer()->notNull(),
-                'pendingRecipientIds' => $this->text(),
-                'sentRecipientIds' => $this->text(),
-                'failedRecipientIds' => $this->text(),
+                'expectedRecipients' => $this->integer()->defaultValue(0)->notNull(),
+                'failedRecipients' => $this->integer()->defaultValue(0)->notNull(),
+                'recipients' => $this->integer()->defaultValue(0)->notNull(),
                 'automatedSchedule' => $this->text(),
                 'htmlBody' => $this->text(),
                 'plaintextBody' => $this->text(),
@@ -298,8 +300,8 @@ class Install extends Migration
         $this->createIndex(null, '{{%campaign_campaigntypes}}', 'handle', true);
         $this->createIndex(null, '{{%campaign_contacts}}', 'email', true);
         $this->createIndex(null, '{{%campaign_contacts}}', 'cid', true);
-        $this->createIndex(null, '{{%campaign_contacts_campaigns}}', 'campaignId, contactId', true);
-        $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'mailingListId, contactId', true);
+        $this->createIndex(null, '{{%campaign_contacts_campaigns}}', 'contactId, sendoutId', true);
+        $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'contactId, mailingListId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
         $this->createIndex(null, '{{%campaign_links}}', 'lid', true);
         $this->createIndex(null, '{{%campaign_mailinglists}}', 'mlid', true);
@@ -329,7 +331,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_links}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'mailingListTypeId', '{{%campaign_mailinglisttypes}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
+        $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_segments}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');

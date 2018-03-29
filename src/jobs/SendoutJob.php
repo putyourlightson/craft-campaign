@@ -62,6 +62,10 @@ class SendoutJob extends BaseJob
         // Get sendout
         $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
 
+        if ($sendout === null) {
+            return;
+        }
+
         // Fire a 'beforeSend' event
         $event = new SendoutEvent([
             'sendout' => $sendout,
@@ -89,16 +93,22 @@ class SendoutJob extends BaseJob
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
 
+        // Get pending recipients
+        $pendingRecipients = $sendout->getPendingRecipients();
+
         $count = 0;
 
-        // Loop as long as the there are pending recipient IDs and the sendout is sendable
-        while ($sendout->pendingRecipientIds AND $sendout->isSendable()) {
+        // Loop as long as the there are pending recipients and the sendout is sendable
+        while (count($pendingRecipients) AND $sendout->isSendable()) {
             // Set progress
             $progress = $sendout->getProgressFraction();
             $this->setProgress($queue, $progress);
 
+            // Get next pending recipient
+            $pendingRecipient = array_shift($pendingRecipients);
+
             // Send email
-            $sendout = Campaign::$plugin->sendouts->sendEmail($sendout);
+            Campaign::$plugin->sendouts->sendEmail($sendout, $pendingRecipient['contactId'], $pendingRecipient['mailingListId']);
 
             // Increment count
             $count++;
@@ -114,6 +124,9 @@ class SendoutJob extends BaseJob
 
                 return;
             }
+
+            // Get fresh version of sendout
+            $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
         }
 
         // Finalise sending

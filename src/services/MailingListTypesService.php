@@ -60,9 +60,7 @@ class MailingListTypesService extends Component
             ->orderBy(['name' => SORT_ASC])
             ->all();
 
-        $mailingListTypes = MailingListTypeModel::populateModels($mailingListTypeRecords, false);
-
-        return $mailingListTypes;
+        return MailingListTypeModel::populateModels($mailingListTypeRecords, false);
     }
 
     /**
@@ -80,10 +78,7 @@ class MailingListTypesService extends Component
             return null;
         }
 
-        $mailingListTypeModel = new MailingListTypeModel();
-        $mailingListTypeModel->setAttributes($mailingListTypeRecord->getAttributes());
-
-        return $mailingListTypeModel;
+        return MailingListTypeModel::populateModel($mailingListTypeRecord, false);
     }
 
     /**
@@ -101,10 +96,7 @@ class MailingListTypesService extends Component
             return null;
         }
 
-        $mailingListTypeModel = new MailingListTypeModel();
-        $mailingListTypeModel->setAttributes($mailingListTypeRecord->getAttributes());
-
-        return $mailingListTypeModel;
+        return MailingListTypeModel::populateModel($mailingListTypeRecord, false);
     }
 
     /**
