@@ -50,8 +50,8 @@ class GeoIpHelper
         }
         catch (ConnectException $e) {}
 
-        // If country is empty then return empty string so we are not saving IP addresses pointlessly
-        if (empty($geoIp['country_code'])) {
+        // If country is empty then return empty string so we are not pointlessly saving IP addresses
+        if (empty($geoIp->country_code)) {
             return null;
         }
 
