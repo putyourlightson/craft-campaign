@@ -11,7 +11,7 @@ Campaign is an email marketing plugin built specifically for Craft 3. It aims to
 Learn more at [craftcampaign.com](https://craftcampaign.com).
 
 ### Beta
-**Campaign is currently in beta, therefore it is not recommend for use in a live production environment.** We aim to release a stable release candidate by the 4th of April 2018, along with the expected launch of Craft CMS 3.0.0 GA.
+**Campaign is currently in beta, therefore it is not recommend for use in a live production environment.** We aim to release a stable release candidate by mid April 2018, shortly after the launch of Craft CMS 3.0.0 GA.
 
 ### Pricing
 The Campaign plugin will be available to purchase in the official Craft Plugin Store. Updates will be free, annual renewal fees will be in alignment with the plugin store's guidelines ([plugin store FAQ](https://github.com/craftcms/cms/wiki/Plugin-Store-FAQ)).  
