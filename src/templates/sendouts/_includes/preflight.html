@@ -54,6 +54,9 @@
     <div class="launched" style="display: none;">
         <div class="body">
             <h1>{{ launchedMessage }}</h1>
+            {% if currentUser.photoUrl %}
+                <img src="{{ currentUser.photoUrl }}" class="photo" />
+            {% endif %}
         </div>
         <div class="footer">
             <div class="buttons right">

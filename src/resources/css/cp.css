@@ -61,9 +61,21 @@
     margin-top: 5px;
 }
 
+.preflight {
+    max-width: 920px;
+    max-height: 490px;
+}
+
 .preflight > div, .preflight .body {
     height: 100%;
     text-align: center;
+}
+
+.preflight .photo {
+    margin-top: 69px;
+    width: 100px;
+    border: 2px solid #949599;
+    border-radius: 50%;
 }
 
 .preflight .footer {

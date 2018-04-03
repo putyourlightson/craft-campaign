@@ -1,6 +1,9 @@
 # Campaign Changelog
 
 ## 1.0.0-beta4 - 2018-04-03
+### Added
+- Added user photo to preflight screen
+
 ### Changed
 - Improved how sendouts store recipients
 - Improved warning messages when deleting elements
