@@ -49,6 +49,6 @@
 new Craft.AdminTable({
     tableSelector: '#campaigntypes',
     deleteAction: 'campaign/campaign-types/delete-campaign-type',
-    confirmDeleteMessage: '{{ 'ATTENTION!! Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it.'|t('campaign') }}',
+    confirmDeleteMessage: '{{ 'Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it. This action cannot be undone.'|t('campaign') }}',
 });
 {% endjs %}

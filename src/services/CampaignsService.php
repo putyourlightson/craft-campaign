@@ -77,7 +77,6 @@ class CampaignsService extends Component
 
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
-            'campaignId' => $campaign->id,
             'sendoutId' => $sendout->id,
         ]);
 

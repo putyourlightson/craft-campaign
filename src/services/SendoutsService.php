@@ -369,13 +369,13 @@ class SendoutsService extends Component
 
         if ($sendout->sendStatus == 'sent') {
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout <a href="{sendoutUrl}">"{title}"</a> has been successfully completed!!', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
         }
 
         else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout <a href="{sendoutUrl}">"{title}"</a> has failed. Please check that your <a href="{emailSettingsUrl}">Craft Campaign email settings</a> are correctly configured.', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has failed. Please check that your <a href="{emailSettingsUrl}">Craft Campaign email settings</a> are correctly configured.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Craft Campaign email settings [{emailSettingsUrl}] are correctly configured.', $variables);
         }
 

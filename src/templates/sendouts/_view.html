@@ -224,10 +224,16 @@
                     <div class="value">{{ pendingRecipients|length }}</div>
                 </div>
             {% endif %}
-            <div class="data">
-                <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
-                <div class="value">{{ sendout.recipients }}</div>
-            </div>
+            {% if sendout.sendStatus == 'sent' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.recipients }}</div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Failed Recipients"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.failedRecipients }}</div>
+                </div>
+            {% endif %}
             <div class="data">
                 <h5 class="heading">{{ "SID"|t('campaign') }}</h5>
                 <div class="value"><code>{{ sendout.sid }}</code></div>

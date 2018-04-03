@@ -12,8 +12,11 @@ use putyourlightson\campaign\Campaign;
 
 use Craft;
 use craft\web\Controller;
+use putyourlightson\campaign\models\ContactCampaignModel;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 /**
  * WebhookController
@@ -63,17 +66,17 @@ class WebhookController extends Controller
         $sid = $request->getBodyParam('sid');
 
         if (!$event OR !$email) {
-            exit();
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
         }
 
         if ($event == 'complained') {
-            $this->_callWebhook('complained', $email, $sid);
+            return $this->_callWebhook('complained', $email, $sid);
         }
-        else if ($event == 'bounced') {
-            $this->_callWebhook('bounced', $email, $sid);
+        if ($event == 'bounced') {
+            return $this->_callWebhook('bounced', $email, $sid);
         }
 
-        exit();
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
     }
 
     /**
@@ -92,17 +95,17 @@ class WebhookController extends Controller
         $sid = $message['metadata']['sid'] ?? '';
 
         if (!$event OR !$email OR !$email) {
-            exit();
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
         }
 
         if ($event == 'spam') {
-            $this->_callWebhook('complained', $email, $sid);
+            return $this->_callWebhook('complained', $email, $sid);
         }
-        else if ($event == 'hard_bounce') {
-            $this->_callWebhook('bounced', $email, $sid);
+        if ($event == 'hard_bounce') {
+            return $this->_callWebhook('bounced', $email, $sid);
         }
 
-        exit();
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
     }
 
     /**
@@ -120,15 +123,17 @@ class WebhookController extends Controller
         $sid = $request->getBodyParam('sid');
 
         if (!$event OR !$email) {
-            exit();
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
         }
 
         if ($event == 'SpamComplaint') {
-            $this->_callWebhook('complained', $email, $sid);
+            return $this->_callWebhook('complained', $email, $sid);
         }
-        else if ($event == 'HardBounce') {
-            $this->_callWebhook('bounced', $email, $sid);
+        if ($event == 'HardBounce') {
+            return $this->_callWebhook('bounced', $email, $sid);
         }
+
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
     }
 
     /**
@@ -150,12 +155,14 @@ class WebhookController extends Controller
             $sid = $event['sid'] ?? '';
 
             if ($event['event'] == 'complained') {
-                $this->_callWebhook('complained', $email, $sid);
+                return $this->_callWebhook('complained', $email, $sid);
             }
-            else if ($event['event'] == 'bounced') {
-                $this->_callWebhook('bounced', $email, $sid);
+            if ($event['event'] == 'bounced') {
+                return $this->_callWebhook('bounced', $email, $sid);
             }
         }
+
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
     }
 
     // Private Methods
@@ -168,12 +175,13 @@ class WebhookController extends Controller
      * @param string $email
      * @param string|null $sid
      *
+     * @return Response
      * @throws ForbiddenHttpException
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _callWebhook(string $event, string $email, $sid)
+    private function _callWebhook(string $event, string $email, $sid = null)
     {
         // Get plugin settings
         $settings = Campaign::$plugin->getSettings();
@@ -190,14 +198,25 @@ class WebhookController extends Controller
 
         // Ensure contact exists
         if ($contact === null) {
-            exit();
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
         }
 
         // Get sendout by SID
         $sendout = $sid ? Campaign::$plugin->sendouts->getSendoutBySid($sid) : null;
 
-        // Get first mailing list in sendout that this contact is subscribed to
-        $mailingList = $sendout !== null ? $contact->getSubscribedMailingListInSendout($sendout) : null;
+        $contactCampaignRecord = ContactCampaignRecord::findOne([
+            'contactId' => $contact->id,
+            'sendoutId' => $sendout->id,
+        ]);
+
+        if ($contactCampaignRecord === null) {
+            return null;
+        }
+
+        /** @var ContactCampaignModel $contactCampaign */
+        $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
+
+        $mailingList = $contactCampaign->getMailingList();
 
         if ($event == 'complained') {
             Campaign::$plugin->webhook->complain($contact, $mailingList, $sendout);
@@ -206,6 +225,6 @@ class WebhookController extends Controller
             Campaign::$plugin->webhook->bounce($contact, $mailingList, $sendout);
         }
 
-        exit();
+        return $this->asJson(['success' => true]);
     }
 }

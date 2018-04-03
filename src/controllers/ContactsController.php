@@ -191,7 +191,7 @@ class ContactsController extends Controller
             'action' => 'campaign/contacts/delete-contact',
             'redirect' => 'campaign/contacts',
             'label' => Craft::t('campaign', 'Delete…'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact?')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact? This action cannot be undone.')
         ];
 
         // Get the settings

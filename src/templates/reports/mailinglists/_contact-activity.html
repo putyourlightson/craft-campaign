@@ -12,6 +12,7 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.getMailingListContactActivity(mailingListId) } %}
+    {% set interaction = craft.app.request.param('interaction') %}
+    {% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.getMailingListContactActivity(mailingListId, interaction) } %}
 
 {% endblock %}

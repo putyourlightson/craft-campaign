@@ -3,7 +3,7 @@
         <thead>
             <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
             <th scope="col">{{ "Interaction"|t('campaign') }}</th>
-            <th scope="col">{{ "Last Activity"|t('campaign') }}</th>
+            <th scope="col">{{ "First Interaction"|t('campaign') }}</th>
         </thead>
         <tbody>
             {% for activity in mailingListActivity %}
@@ -11,7 +11,7 @@
                 <tr>
                     <th scope="row" data-title="{{ 'Mailing List'|t('campaign') }}"><a href="{{ mailingList.reportUrl }}">{{ mailingList.title }}</a></th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
-                    <td data-title="{{ 'Last Activity'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                    <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
                 </tr>
             {% endfor %}
         </tbody>

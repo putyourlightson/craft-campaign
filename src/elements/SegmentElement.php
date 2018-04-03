@@ -110,7 +110,7 @@ class SegmentElement extends Element
         // Delete
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected segments?'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected segments? This action cannot be undone.'),
             'successMessage' => Craft::t('campaign', 'Segments deleted.'),
         ]);
 

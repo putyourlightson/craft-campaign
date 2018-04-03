@@ -214,7 +214,7 @@ class SendoutsController extends Controller
             'action' => 'campaign/sendouts/delete-sendout',
             'redirect' => 'campaign/sendouts',
             'label' => Craft::t('campaign', 'Delete…'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.')
         ];
 
         // Get the time delay intervals

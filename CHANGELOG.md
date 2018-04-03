@@ -1,9 +1,13 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta4 - 2018-04-03
 ### Changed
+- Improved how sendouts store recipients
+- Improved warning messages when deleting elements
+- Improved report headings
 - Changed plugin icons to be clearer
 - Changed max power to respect limits in import and export
+
 
 ## 1.0.0-beta3 - 2018-03-26
 ### Added

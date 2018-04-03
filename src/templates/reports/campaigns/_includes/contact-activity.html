@@ -24,7 +24,7 @@
             <th scope="col">{{ "Email"|t('campaign') }}</th>
             <th scope="col">{{ "Interaction"|t('campaign') }}</th>
             <th scope="col">{{ "Count"|t('campaign') }}</th>
-            <th scope="col">{{ "Last Activity"|t('campaign') }}</th>
+            <th scope="col">{{ "First Interaction"|t('campaign') }}</th>
         </thead>
         <tbody>
             {% for activity in contactActivity %}
@@ -45,7 +45,7 @@
                         {% endif %}
                     </td>
                     <td data-title="{{ 'Count'|t('campaign') }}">{{ activity.count }}</td>
-                    <td data-title="{{ 'Last Activity'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                    <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
                 </tr>
             {% endfor %}
         </tbody>

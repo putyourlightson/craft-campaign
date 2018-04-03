@@ -11,6 +11,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\GeoIpHelper;
+use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
@@ -133,25 +134,30 @@ class TrackerService extends Component
      */
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
     {
-        // Get first mailing list in sendout that this contact is subscribed to
-        $mailingList = $contact->getSubscribedMailingListInSendout($sendout);
+        $contactCampaignRecord = ContactCampaignRecord::findOne([
+            'contactId' => $contact->id,
+            'sendoutId' => $sendout->id,
+        ]);
 
-        // If we found a mailing list
+        if ($contactCampaignRecord === null) {
+            return null;
+        }
+
+        /** @var ContactCampaignModel $contactCampaign */
+        $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
+
+        $mailingList = $contactCampaign->getMailingList();
+
         if ($mailingList !== null) {
-            // Add contact interaction to mailing list
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
 
-            // Update contact mailing list record
             $this->_updateContactMailingListRecord($contact, $mailingList);
         }
 
-        // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
 
-        // Update contact campaign record
         $this->_updateContactCampaignRecord($contact, $sendout);
 
-        // Update contact
         $this->_updateContact($contact);
 
         return $mailingList;
@@ -170,10 +176,9 @@ class TrackerService extends Component
     {
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
-            'campaignId' => $sendout->campaignId,
+            'sendoutId' => $sendout->id,
         ]);
 
-        // Ensure contact campaign record exists
         if ($contactCampaignRecord === null) {
             return;
         }

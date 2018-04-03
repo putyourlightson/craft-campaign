@@ -113,7 +113,7 @@ class ReportsService extends Component
             ->all();
 
         // Check if chart exists
-        $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, 1)) > 0;
+        $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, null, 1)) > 0;
 
         return $data;
     }
@@ -208,7 +208,7 @@ class ReportsService extends Component
             ->limit($limit);
 
         if ($interaction !== null) {
-            $query->andWhere($interaction.' IS NOT NULL');
+            $query->andWhere(['not', [$interaction => null]]);
         }
 
         $contactCampaignRecords = $query->all();
@@ -253,7 +253,7 @@ class ReportsService extends Component
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
         // Return locations of contact campaigns
-        return $this->_getLocations(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $campaign->opened, $limit);
+        return $this->_getLocations(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
     /**
@@ -590,11 +590,12 @@ class ReportsService extends Component
      * Returns mailing list contact activity
      *
      * @param int
+     * @param string|null
      * @param int|null
      *
      * @return ContactMailingListModel[]
      */
-    public function getMailingListContactActivity(int $mailingListId, int $limit = 100): array
+    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
     {
         // Get contact mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
@@ -603,9 +604,10 @@ class ReportsService extends Component
             ->limit($limit)
             ->all();
 
-        $contactActivity = ContactMailingListModel::populateModels($contactMailingListRecords, false);
+        $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
 
-        return $contactActivity;
+        // Return contact activity
+        return $this->_getActivity($contactMailingListModels, $interaction, $limit);
     }
 
     /**
@@ -782,7 +784,7 @@ class ReportsService extends Component
             ->select(array_merge($fields, ['COUNT(*) AS count']))
             ->from($table)
             ->where($conditions)
-            ->andWhere('device IS NOT NULL')
+            ->andWhere(['not', ['device' => null]])
             ->groupBy($fields)
             ->all();
 

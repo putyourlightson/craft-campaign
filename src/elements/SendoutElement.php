@@ -184,7 +184,7 @@ class SendoutElement extends Element
         // Delete
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected sendouts?'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected sendouts? This action cannot be undone.'),
             'successMessage' => Craft::t('campaign', 'Sendouts deleted.'),
         ]);
 

@@ -136,7 +136,7 @@ class MailingListElement extends Element
         // Delete
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected mailing lists?'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected mailing lists? This action cannot be undone.'),
             'successMessage' => Craft::t('campaign', 'Mailing lists deleted.'),
         ]);
 

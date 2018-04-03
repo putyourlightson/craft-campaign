@@ -175,7 +175,7 @@ class ContactElement extends Element
         // Delete
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected contacts?'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected contacts? This action cannot be undone.'),
             'successMessage' => Craft::t('campaign', 'Contacts deleted.'),
         ]);
 
@@ -447,30 +447,6 @@ class ContactElement extends Element
             ->one();
 
         return $contactMailingList->subscriptionStatus ?? '';
-    }
-
-    /**
-     * Returns a subscribed mailing list in a sendout
-     *
-     * @param SendoutElement $sendout
-     *
-     * @return MailingListElement|null
-     */
-    public function getSubscribedMailingListInSendout(SendoutElement $sendout)
-    {
-        $subscribedMailingList = null;
-
-        $subscribedMailingLists = $this->getSubscribedMailingLists();
-        $sendoutMailingListIds = explode(',', $sendout->mailingListIds);
-
-        foreach ($subscribedMailingLists as $mailingList) {
-            if (\in_array($mailingList->id, $sendoutMailingListIds, false)) {
-                $subscribedMailingList = $mailingList;
-                break;
-            }
-        }
-
-        return $subscribedMailingList;
     }
 
     /**

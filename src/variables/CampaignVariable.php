@@ -275,13 +275,14 @@ class CampaignVariable
      * Returns mailing list contact activity
      *
      * @param int
+     * @param string|null
      * @param int|null
      *
      * @return ContactMailingListModel[]
      */
-    public function getMailingListContactActivity(int $mailingListId, int $limit = 100): array
+    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
     {
-        return Campaign::$plugin->reports->getMailingListContactActivity($mailingListId, $limit);
+        return Campaign::$plugin->reports->getMailingListContactActivity($mailingListId, $interaction, $limit);
     }
 
     /**

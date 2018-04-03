@@ -57,7 +57,7 @@
     {% set limit = 5 %}
 
     <h2>{{ "Contact Activity"|t('campaign') }}</h2>
-    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.getContactsActivity( limit) } %}
+    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.getContactsActivity(limit) } %}
 
     <div class="cols">
         <div class="half">
