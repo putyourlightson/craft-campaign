@@ -41,7 +41,7 @@
                 </span>
             </p>
             <p><input type="submit" class="btn submit launch" value="{{ saveLabel }}"></p>
-            <div class="rocketman"></div>
+            <div class="rocketeer"></div>
             <p class="spinner big hidden"></p>
             <p class="error hidden"></p>
         </div>
@@ -54,8 +54,9 @@
     <div class="launched" style="display: none;">
         <div class="body">
             <h1>{{ launchedMessage }}</h1>
-            {% if currentUser.photoUrl %}
-                <img src="{{ currentUser.photoUrl }}" class="photo" />
+            {% set photo = currentUser.photo %}
+            {% if photo %}
+                <img src="{{ photo.url }}" class="photo" />
             {% endif %}
         </div>
         <div class="footer">
