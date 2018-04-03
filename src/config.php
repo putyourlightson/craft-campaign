@@ -52,6 +52,9 @@ return [
     // The max size of sendout batches
     //'maxBatchSize' => 1000,
 
+    // The max number of sendout retry attempts
+    //'maxRetryAttempts' => 10,
+
     // The amount of time in seconds to delay jobs between sendout batches
     //'batchJobDelay' => 10,
 ];

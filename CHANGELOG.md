@@ -1,5 +1,15 @@
 # Campaign Changelog
 
+## Unreleased
+### Added
+- Added ttr and maxRetryAttempts to sendout job
+
+### Changed
+- Made classes gender neutral
+
+### Fixed
+- Fixed deprecation error on preflight screen
+
 ## 1.0.0-beta4 - 2018-04-03
 ### Added
 - Added user photo to preflight screen

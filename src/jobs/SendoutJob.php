@@ -12,6 +12,7 @@ use putyourlightson\campaign\services\SendoutsService;
 
 use Craft;
 use craft\queue\BaseJob;
+use yii\queue\RetryableJobInterface;
 
 /**
  * SendoutJob
@@ -19,8 +20,10 @@ use craft\queue\BaseJob;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
+ *
+ * @property int $ttr
  */
-class SendoutJob extends BaseJob
+class SendoutJob extends BaseJob implements RetryableJobInterface
 {
     // Properties
     // =========================================================================
@@ -53,9 +56,33 @@ class SendoutJob extends BaseJob
     // Public Methods
     // =========================================================================
 
+    public function getTtr()
+    {
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
+        // Get settings
+        $settings = Campaign::$plugin->getSettings();
+
+        // Get time limit with threshold if unlimited
+        $timeLimit = ini_get('max_execution_time');
+        $timeLimit = $timeLimit === 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
+
+        return $timeLimit;
+    }
+
+    public function canRetry($attempt, $error): bool
+    {
+        // Get settings
+        $settings = Campaign::$plugin->getSettings();
+
+        return ($attempt < $settings->maxRetryAttempts) && ($error instanceof TemporaryException);
+    }
+
     /**
      * @inheritdoc
      * @throws \Exception
+     * @throws \Throwable
      */
     public function execute($queue)
     {

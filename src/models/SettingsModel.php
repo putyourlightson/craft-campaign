@@ -96,6 +96,11 @@ class SettingsModel extends Model
     public $maxBatchSize = 1000;
 
     /**
+     * @var int The max number of sendout retry attempts
+     */
+    public $maxRetryAttempts = 10;
+
+    /**
      * @var int The amount of time in seconds to delay jobs between sendout batches
      */
     public $batchJobDelay = 10;
