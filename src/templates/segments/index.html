@@ -1,5 +1,7 @@
 {% extends 'campaign/_layouts/cp' %}
 
+{% do craft.campaign.requirePro() %}
+
 {% set elementType = 'putyourlightson\\campaign\\elements\\SegmentElement' %}
 
 {% set title = 'Segments'|t('campaign') %}

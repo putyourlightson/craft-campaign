@@ -24,6 +24,7 @@ use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
 
 use yii\base\InvalidConfigException;
+use yii\web\ForbiddenHttpException;
 
 /**
  * CampaignVariable
@@ -45,6 +46,16 @@ class CampaignVariable
     public function isPro(): bool
     {
         return Campaign::$plugin->isPro();
+    }
+
+    /**
+     * Checks whether the plugin is the pro version
+     *
+     * @throws ForbiddenHttpException
+     */
+    public function requirePro()
+    {
+        Campaign::$plugin->requirePro();
     }
 
     /**

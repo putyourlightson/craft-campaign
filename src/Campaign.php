@@ -241,6 +241,8 @@ class Campaign extends Plugin
 
     /**
      * Checks whether the plugin is the pro version
+     *
+     * @throws ForbiddenHttpException
      */
     public function requirePro()
     {
