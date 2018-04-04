@@ -7,12 +7,11 @@ Campaign.CampaignEdit = Garnish.Base.extend(
     {
         init: function() {
             this.addListener($('.send-test'), 'click', 'sendTest');
-            this.addListener($('#testEmail'), 'keypress', 'testEmailKeypress');
         },
 
         sendTest: function(event) {
             var data = {
-                testEmail: $('#testEmail').val(),
+                contactId: $('#testContact input').val(),
                 campaignId: $('input[name=campaignId]').val()
             };
 
@@ -24,13 +23,6 @@ Campaign.CampaignEdit = Garnish.Base.extend(
                     Craft.cp.displayError(response.error);
                 }
             });
-        },
-
-        testEmailKeypress: function(event) {
-            if (event.which == 13) {
-                event.preventDefault();
-                this.sendTest();
-            }
         },
     }
 );

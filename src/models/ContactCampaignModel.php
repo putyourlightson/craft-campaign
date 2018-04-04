@@ -10,6 +10,8 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\GeoIpHelper;
 use putyourlightson\campaign\records\LinkRecord;
 
@@ -20,12 +22,14 @@ use putyourlightson\campaign\records\LinkRecord;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property string          $countryCode
- * @property ContactElement  $contact
- * @property string          $interaction
+ * @property string $countryCode
+ * @property ContactElement $contact
+ * @property string $interaction
  * @property CampaignElement $campaign
- * @property string          $interactions
- * @property array           $location
+ * @property string $interactions
+ * @property MailingListElement|null $mailingList
+ * @property SendoutElement|null $sendout
+ * @property array $location
  */
 class ContactCampaignModel extends BaseModel
 {

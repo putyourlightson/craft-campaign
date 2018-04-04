@@ -13,7 +13,6 @@ use putyourlightson\campaign\models\ExportModel;
 
 use Craft;
 use craft\behaviors\FieldLayoutBehavior;
-use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
 use yii\base\Exception;

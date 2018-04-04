@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\controllers;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
 use Craft;
@@ -17,7 +18,6 @@ use craft\web\Controller;
 use craft\helpers\Json;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\validators\EmailValidator;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
@@ -206,6 +206,16 @@ class CampaignsController extends Controller
             $variables['showPreviewBtn'] = false;
         }
 
+        // Contact element selector variables
+        $variables['contactElementType'] = ContactElement::class;
+        $variables['contactElementCriteria'] = [
+            'status' => ['active'],
+        ];
+
+        // Get test contact based on current user's email address
+        $currentUser = Craft::$app->user->getIdentity();
+        $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
+
         // Determine which actions should be available
         // ---------------------------------------------------------------------
 
@@ -277,16 +287,21 @@ class CampaignsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $testEmail = Craft::$app->getRequest()->getBodyParam('testEmail');
+        $contactId = Craft::$app->getRequest()->getBodyParam('contactId');
         $campaign = $this->_getCampaign();
 
-        // Validate test email
-        $validator = new EmailValidator();
-        if (!$validator->validate($testEmail)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Test Email must be a valid email address.')]);
+        // Validate test contact
+        if (empty($contactId)) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'A contact must be submitted.')]);
         }
 
-        if (!Campaign::$plugin->campaigns->sendTest($testEmail, $campaign)) {
+        $contact = Campaign::$plugin->contacts->getContactById($contactId);
+
+        if ($contact === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
+        }
+
+        if (!Campaign::$plugin->campaigns->sendTest($campaign, $contact)) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
         }
 

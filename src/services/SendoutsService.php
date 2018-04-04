@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
@@ -17,7 +16,6 @@ use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\db\Query;
 use craft\errors\ElementNotFoundException;
 use craft\errors\MissingComponentException;
 use craft\helpers\Db;
@@ -181,7 +179,7 @@ class SendoutsService extends Component
      * Sends a test
      *
      * @param SendoutElement $sendout
-     * @param string         $testEmail
+     * @param ContactElement $contact
      *
      * @return bool Whether the test was sent successfully
      * @throws Exception
@@ -189,17 +187,17 @@ class SendoutsService extends Component
      * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
-    public function sendTest(SendoutElement $sendout, string $testEmail): bool
+    public function sendTest(SendoutElement $sendout, ContactElement $contact): bool
     {
         // Get campaign
         $campaign = $sendout->getCampaign();
 
         // Get body
-        $htmlBody = $campaign->getHtmlBody(null, $sendout);
-        $plaintextBody = $campaign->getPlaintextBody(null, $sendout);
+        $htmlBody = $campaign->getHtmlBody($contact, $sendout);
+        $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
 
         // Convert links in HTML body
-        $htmlBody = $this->_convertLinks($htmlBody, new ContactElement(), $sendout);
+        $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
 
         // Get mailer
         $mailer = $this->getMailer();
@@ -208,7 +206,7 @@ class SendoutsService extends Component
         /** @var Message $message*/
         $message = $mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
-            ->setTo($testEmail)
+            ->setTo($contact->email)
             ->setSubject('[Test] '.$sendout->subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
@@ -223,29 +221,26 @@ class SendoutsService extends Component
      * Sends an email
      *
      * @param SendoutElement $sendout
-     * @param int $contactId
+     * @param ContactElement $contact
      * @param int $mailingListId
      *
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    public function sendEmail(SendoutElement $sendout, int $contactId, int $mailingListId)
+    public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId)
     {
         if ($sendout->isSendable() === false) {
             return;
         }
 
-        // Get campaign
-        $campaign = $sendout->getCampaign();
-
-        // Get contact
-        $contact = Campaign::$plugin->contacts->getContactById($contactId);
-
         // Return if contact has complained or bounced
-        if ($contact === null OR $contact->complained !== null OR $contact->bounced !== null) {
+        if ($contact->complained !== null OR $contact->bounced !== null) {
             return;
         }
+
+        // Get campaign
+        $campaign = $sendout->getCampaign();
 
         // Create contact campaign record
         $contactCampaignRecord = new ContactCampaignRecord();

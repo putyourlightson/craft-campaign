@@ -12,7 +12,6 @@ Campaign.SendoutEdit = Garnish.Base.extend(
             this.addListener($('.preflight .cancel'), 'click', 'cancel');
             this.addListener($('.preflight .launch'), 'click', 'launch');
             this.addListener($('.send-test'), 'click', 'sendTest');
-            this.addListener($('#testEmail'), 'keypress', 'testEmailKeypress');
         },
 
         preflight: function(event) {
@@ -73,7 +72,7 @@ Campaign.SendoutEdit = Garnish.Base.extend(
 
         sendTest: function(event) {
             var data = {
-                testEmail: $('#testEmail').val(),
+                contactId: $('#testContact input').val(),
                 sendoutId: $('input[name=sendoutId]').val()
             };
 
@@ -87,13 +86,6 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                     }
                 }
             });
-        },
-
-        testEmailKeypress: function(event) {
-            if (event.which == 13) {
-                event.preventDefault();
-                this.sendTest();
-            }
         },
     }
 );

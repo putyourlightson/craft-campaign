@@ -76,7 +76,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Get settings
         $settings = Campaign::$plugin->getSettings();
 
-        return ($attempt < $settings->maxRetryAttempts) && ($error instanceof TemporaryException);
+        return $attempt < $settings->maxRetryAttempts;
     }
 
     /**
@@ -134,8 +134,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             // Get next pending recipient
             $pendingRecipient = array_shift($pendingRecipients);
 
+            $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
+            $mailingListId = $pendingRecipient['mailingListId'];
+
             // Send email
-            Campaign::$plugin->sendouts->sendEmail($sendout, $pendingRecipient['contactId'], $pendingRecipient['mailingListId']);
+            Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingListId);
 
             // Increment count
             $count++;

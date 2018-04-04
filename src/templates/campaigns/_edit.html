@@ -131,13 +131,17 @@
 
         <hr/>
         <div class="meta">
-            {{ forms.textField({
+            {{ forms.elementSelectField({
                 label: "Test Email"|t('campaign'),
-                id: 'testEmail',
-                type: 'email',
-                value: currentUser.email
+                id: 'testContact',
+                name: 'testContact',
+                elementType: contactElementType,
+                selectionLabel: "Choose a contact"|t('campaign'),
+                criteria: contactElementCriteria,
+                elements: [testContact],
+                limit: 1
             }) }}
-            <a class="send-test btn right" style="margin-top: 5px;">{{ 'Send Test'|t('campaign') }}</a>
+            <a class="send-test btn right">{{ 'Send Test Email'|t('campaign') }}</a>
         </div>
 
     {% endif %}

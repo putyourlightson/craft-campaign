@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\mail\Message;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -18,6 +17,7 @@ use putyourlightson\campaign\records\LinkRecord;
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
+use craft\mail\Message;
 use yii\base\Exception;
 
 /**
@@ -134,21 +134,21 @@ class CampaignsService extends Component
     /**
      * Sends a test
      *
-     * @param string          $testEmail
      * @param CampaignElement $campaign
+     * @param ContactElement $contact
      *
      * @return bool Whether the test was sent successfully
      * @throws Exception
      * @throws \Twig_Error_Loader
      */
-    public function sendTest(string $testEmail, CampaignElement $campaign): bool
+    public function sendTest(CampaignElement $campaign, ContactElement $contact): bool
     {
         // Get settings
         $settings = Campaign::$plugin->getSettings();
 
         // Get body
-        $htmlBody = $campaign->getHtmlBody();
-        $plaintextBody = $campaign->getPlaintextBody();
+        $htmlBody = $campaign->getHtmlBody($contact);
+        $plaintextBody = $campaign->getPlaintextBody($contact);
 
         // Get mailer
         $mailer = Campaign::$plugin->createMailer();
@@ -157,7 +157,7 @@ class CampaignsService extends Component
         /** @var Message $message*/
         $message = $mailer->compose()
             ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
-            ->setTo($testEmail)
+            ->setTo($contact->email)
             ->setSubject('[Test] '.$campaign->title)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);

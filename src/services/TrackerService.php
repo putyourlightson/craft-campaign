@@ -57,6 +57,7 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function open(ContactElement $contact, SendoutElement $sendout)
     {
@@ -75,11 +76,12 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
-     * @param LinkRecord     $linkRecord
+     * @param LinkRecord $linkRecord
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
     {
@@ -96,15 +98,16 @@ class TrackerService extends Component
     /**
      * Subscribe
      *
-     * @param ContactElement     $contact
+     * @param ContactElement $contact
      * @param MailingListElement $mailingList
-     * @param bool|null          $pending
-     * @param string|null        $source
-     * @param string|null        $sourceUrl
+     * @param bool|null $pending
+     * @param string|null $source
+     * @param string|null $sourceUrl
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function subscribe(ContactElement $contact, MailingListElement $mailingList, bool $pending = true, string $source = '', string $sourceUrl = '')
     {
@@ -131,6 +134,7 @@ class TrackerService extends Component
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
     {
@@ -149,6 +153,7 @@ class TrackerService extends Component
         $mailingList = $contactCampaign->getMailingList();
 
         if ($mailingList !== null) {
+            /** @var MailingListElement $mailingList */
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
 
             $this->_updateContactMailingListRecord($contact, $mailingList);
@@ -171,6 +176,7 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContactCampaignRecord(ContactElement $contact, SendoutElement $sendout)
     {
@@ -183,6 +189,7 @@ class TrackerService extends Component
             return;
         }
 
+        /** @var ContactCampaignRecord $contactCampaignRecord */
         $contactCampaignRecord = $this->_updateLocationDevice($contactCampaignRecord);
 
         $contactCampaignRecord->save();
@@ -194,6 +201,7 @@ class TrackerService extends Component
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
      * @param bool $verify
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList, $verify = false)
     {
@@ -211,6 +219,7 @@ class TrackerService extends Component
             $contactMailingListRecord->verified = new \DateTime();
         }
 
+        /** @var ContactCampaignRecord $contactCampaignRecord */
         $contactMailingListRecord = $this->_updateLocationDevice($contactMailingListRecord);
 
         $contactMailingListRecord->save();
@@ -225,6 +234,7 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContact(ContactElement $contact, $verify = false)
     {
@@ -246,6 +256,7 @@ class TrackerService extends Component
      * @param Model $model
      *
      * @return Model
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateLocationDevice(Model $model): Model
     {

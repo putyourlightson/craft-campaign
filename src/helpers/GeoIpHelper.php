@@ -29,6 +29,7 @@ class GeoIpHelper
      * @param int|null
      *
      * @return string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getGeoIp(int $timeout = 3)
     {
@@ -49,6 +50,7 @@ class GeoIpHelper
             }
         }
         catch (ConnectException $e) {}
+        catch (GuzzleException $e) {}
 
         // If country is empty then return empty string so we are not pointlessly saving IP addresses
         if (empty($geoIp->country_code)) {

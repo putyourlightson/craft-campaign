@@ -15,7 +15,6 @@ use putyourlightson\campaign\models\ImportModel;
 use Craft;
 use craft\web\Controller;
 use craft\helpers\FileHelper;
-use craft\helpers\App;
 use craft\web\UploadedFile;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;

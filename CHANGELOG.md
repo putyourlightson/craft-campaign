@@ -1,10 +1,11 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta5 - 2018-04-04
 ### Added
 - Added ttr and maxRetryAttempts to sendout job
 
 ### Changed
+- Changed test emails to require a contact
 - Made classes gender neutral
 
 ### Fixed
