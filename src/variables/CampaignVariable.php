@@ -38,6 +38,16 @@ class CampaignVariable
     // =========================================================================
 
     /**
+     * Returns true if pro version
+     *
+     * @return bool
+     */
+    public function isPro(): bool
+    {
+        return Campaign::$plugin->isPro();
+    }
+
+    /**
      * Returns campaign element query
      *
      * @return CampaignElementQuery

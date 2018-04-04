@@ -93,17 +93,19 @@
         {% endset %}
         {{ forms.field({label: "Exclude"|t('campaign') ~ ':'}, input) }}
 
-        {% set input %}
-            {% for segment in sendout.segments %}
-                <p><span class="status {{ segment.status }}"></span>{{ segment.title }}</p>
-            {% endfor %}
-            {% if sendout.segments|length == 0 %}
-                <p>-</p>
-            {% endif %}
-        {% endset %}
-        {{ forms.field({label: "Segments"|t('campaign') ~ ':'}, input) }}
+        {% if craft.campaign.isPro() %}
+            {% set input %}
+                {% for segment in sendout.segments %}
+                    <p><span class="status {{ segment.status }}"></span>{{ segment.title }}</p>
+                {% endfor %}
+                {% if sendout.segments|length == 0 %}
+                    <p>-</p>
+                {% endif %}
+            {% endset %}
+            {{ forms.field({label: "Segments"|t('campaign') ~ ':'}, input) }}
 
-        <hr/>
+            <hr/>
+        {% endif %}
 
         {% set input %}
             <p>{{ sendout.notificationEmailAddress }}</p>

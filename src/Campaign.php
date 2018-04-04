@@ -40,6 +40,7 @@ use craft\web\UrlManager;
 use craft\web\User;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Campaign plugin
@@ -159,19 +160,22 @@ class Campaign extends Plugin
         // Register user permissions if edition is client or above
         if (Craft::$app->getEdition() >= Craft::Client) {
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Campaign'] = [
-                    'campaign-reports' => ['label' => Craft::t('campaign', 'Manage reports')],
-                    'campaign-campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
-                    'campaign-contacts' => ['label' => Craft::t('campaign', 'Manage contacts')],
-                    'campaign-mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
-                    'campaign-sendouts' => [
+                $event->permissions['Campaign']['campaign-reports'] = ['label' => Craft::t('campaign', 'Manage reports')];
+                $event->permissions['Campaign']['campaign-campaigns'] = ['label' => Craft::t('campaign', 'Manage campaigns')];
+                $event->permissions['Campaign']['campaign-contacts'] = ['label' => Craft::t('campaign', 'Manage contacts')];
+                $event->permissions['Campaign']['campaign-mailingLists'] = ['label' => Craft::t('campaign', 'Manage mailing lists')];
+
+                if ($this->isPro()) {
+                    $event->permissions['Campaign']['campaign-segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
+                }
+
+                $event->permissions['Campaign']['campaign-sendouts'] = [
                         'label' => Craft::t('campaign', 'Manage sendouts'),
-                        'nested' => ['campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]]
-                    ],
-                    'campaign-import' => ['label' => Craft::t('campaign', 'Import contacts')],
-                    'campaign-export' => ['label' => Craft::t('campaign', 'Export contacts')],
-                    'campaign-settings' => ['label' => Craft::t('campaign', 'Manage plugin settings')],
+                        'nested' => ['campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]],
                 ];
+                $event->permissions['Campaign']['campaign-import'] = ['label' => Craft::t('campaign', 'Import contacts')];
+                $event->permissions['Campaign']['campaign-export'] = ['label' => Craft::t('campaign', 'Export contacts')];
+                $event->permissions['Campaign']['campaign-settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
             });
         }
     }
@@ -199,7 +203,7 @@ class Campaign extends Plugin
         if ($user->checkPermission('campaign-mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign-segments')) {
+        if ($user->checkPermission('campaign-segments') AND $this->isPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
         if ($user->checkPermission('campaign-sendouts')) {
@@ -226,13 +230,23 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns true if lite version
+     * Returns true if pro version
      *
      * @return bool
      */
-    public function isLite(): bool
+    public function isPro(): bool
     {
-        return $this->packageName == 'putyourlightson/campaign-lite';
+        return $this->packageName == 'putyourlightson/campaign-pro';
+    }
+
+    /**
+     * Checks whether the plugin is the pro version
+     */
+    public function requirePro()
+    {
+        if ($this->isPro() === false) {
+            throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action'));
+        }
     }
 
     /**

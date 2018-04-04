@@ -175,11 +175,13 @@ class SendoutsController extends Controller
             'status' => 'enabled',
         ];
 
-        // Segment element selector variables
-        $variables['segmentElementType'] = SegmentElement::class;
-        $variables['segmentElementCriteria'] = [
-            'status' => 'enabled',
-        ];
+        if (Campaign::$plugin->isPro()) {
+            // Segment element selector variables
+            $variables['segmentElementType'] = SegmentElement::class;
+            $variables['segmentElementCriteria'] = [
+                'status' => 'enabled',
+            ];
+        }
 
         // Contact element selector variables
         $variables['contactElementType'] = ContactElement::class;
@@ -300,6 +302,7 @@ class SendoutsController extends Controller
         $sendout->mailingListIds = \is_array($sendout->mailingListIds) ? implode(',', $sendout->mailingListIds) : '';
         $sendout->excludedMailingListIds = Craft::$app->getRequest()->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
         $sendout->excludedMailingListIds = \is_array($sendout->excludedMailingListIds) ? implode(',', $sendout->excludedMailingListIds) : '';
+
         $sendout->segmentIds = Craft::$app->getRequest()->getBodyParam('segmentIds', $sendout->segmentIds);
         $sendout->segmentIds = \is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
 
@@ -316,7 +319,7 @@ class SendoutsController extends Controller
         // Get automated fields
         $automatedSchedule = null;
 
-        if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isLite() === false) {
+        if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isPro()) {
             $sendout->automatedSchedule = Craft::$app->getRequest()->getBodyParam('automatedSchedule', $sendout->automatedSchedule);
 
             // Create automated schedule model

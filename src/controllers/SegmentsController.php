@@ -39,6 +39,9 @@ class SegmentsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign-segments');
+
+        // Require pro
+        Campaign::$plugin->requirePro();
     }
 
     /**

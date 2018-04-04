@@ -124,19 +124,21 @@
             errors: sendout.getErrors('excludedMailingListIds')
         }) }}
 
-        {{ forms.elementSelectField({
-            label: "Segment"|t('campaign'),
-            instructions: "Select any segments to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
-            id: 'segmentIds',
-            name: 'segmentIds',
-            elementType: segmentElementType,
-            selectionLabel: "Add a segment"|t('campaign'),
-            limit: 100,
-            elements: sendout.segmentIds ? sendout.segments,
-            errors: sendout.getErrors('segmentsIds')
-        }) }}
+        {% if craft.campaign.isPro() %}
+            {{ forms.elementSelectField({
+                label: "Segment"|t('campaign'),
+                instructions: "Select any segments to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+                id: 'segmentIds',
+                name: 'segmentIds',
+                elementType: segmentElementType,
+                selectionLabel: "Add a segment"|t('campaign'),
+                limit: 100,
+                elements: sendout.segmentIds ? sendout.segments,
+                errors: sendout.getErrors('segmentsIds')
+            }) }}
 
-        <hr/>
+            <hr/>
+        {% endif %}
 
         {{ forms.textField({
             label: "Notification Email Address"|t('campaign'),
