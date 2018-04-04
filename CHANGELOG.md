@@ -1,9 +1,10 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta6 - 2018-04-04
 ### Changed
 - Changed Craft version requirement to 3.0.0
-- Disabled pro features
+- Removed check for Craft Client edition 
+- Disabled Campaign Pro features
 
 ## 1.0.0-beta5 - 2018-04-04
 ### Added

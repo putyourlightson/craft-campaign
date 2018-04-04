@@ -157,8 +157,8 @@ class Campaign extends Plugin
             $event->rules['campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>'] = 'campaign/mailing-list-types/edit-mailing-list-type';
         });
 
-        // Register user permissions if edition is client or above
-        if (Craft::$app->getEdition() >= Craft::Client) {
+        // Register user permissions if edition is pro
+        if (Craft::$app->getEdition() == Craft::Pro) {
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Campaign']['campaign-reports'] = ['label' => Craft::t('campaign', 'Manage reports')];
                 $event->permissions['Campaign']['campaign-campaigns'] = ['label' => Craft::t('campaign', 'Manage campaigns')];
