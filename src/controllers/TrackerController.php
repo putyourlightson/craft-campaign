@@ -49,6 +49,7 @@ class TrackerController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionOpen()
     {
@@ -78,6 +79,7 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionClick(): Response
     {
@@ -118,6 +120,7 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionSubscribe()
     {
@@ -237,6 +240,7 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionUnsubscribe()
     {
@@ -281,6 +285,7 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionVerifyEmail(): Response
     {

@@ -404,7 +404,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" sent by "{username}".', ['title' => $sendout->title], __METHOD__);
+        LogHelper::logUserAction('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();

@@ -172,6 +172,8 @@ class SendoutsService extends Component
                     'title' => $sendout->title,
                 ]));
             }
+
+            // TODO: automated sendouts
         }
     }
 
