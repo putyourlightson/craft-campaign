@@ -158,7 +158,7 @@ class Campaign extends Plugin
         });
 
         // Register user permissions if edition is pro
-        if (Craft::$app->getEdition() == Craft::Pro) {
+        if (Craft::$app->getEdition() === Craft::Pro) {
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Campaign']['campaign-reports'] = ['label' => Craft::t('campaign', 'Manage reports')];
                 $event->permissions['Campaign']['campaign-campaigns'] = ['label' => Craft::t('campaign', 'Manage campaigns')];
@@ -213,7 +213,7 @@ class Campaign extends Plugin
             $cpNavItem['subnav']['import-export'] = ['label' => Craft::t('campaign', 'Import/Export'), 'url' => 'campaign/import-export'];
         }
         if ($user->checkPermission('campaign-settings')) {
-            $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Plugin Settings'), 'url' => 'campaign/settings'];
+            $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Settings'), 'url' => 'campaign/settings'];
         }
 
         return $cpNavItem;

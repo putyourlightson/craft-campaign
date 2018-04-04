@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## Unreleased
+### Changed
+- Changed "Plugin Settings" back to "Settings"
+
 ## 1.0.0-beta6 - 2018-04-04
 ### Changed
 - Changed Craft version requirement to 3.0.0
