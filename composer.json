@@ -3,7 +3,14 @@
     "description": "Send and manage email campaigns, contacts and mailing lists.",
     "version": "1.0.0-beta5",
     "type": "craft-plugin",
-    "minimum-stability": "dev",
+    "homepage": "https://craftcampaign.com/",
+    "license": "proprietary",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "newsletter"
+    ],
     "require": {
         "craftcms/cms": "^3.0.0-RC16",
         "piwik/device-detector": "^3.9.1",
@@ -16,6 +23,7 @@
     },
     "support": {
         "docs": "https://craftcampaign.com/docs",
+        "source": "https://github.com/putyourlightson/craft-campaign",
         "issues": "https://github.com/putyourlightson/craft-campaign/issues"
     },
     "extra": {
