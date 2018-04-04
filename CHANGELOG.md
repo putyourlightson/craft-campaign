@@ -1,5 +1,10 @@
 # Campaign Changelog
 
+## Unreleased
+### Changed
+- Changed Craft version requirement to 3.0.0
+- Disabled pro features
+
 ## 1.0.0-beta5 - 2018-04-04
 ### Added
 - Added ttr and maxRetryAttempts to sendout job

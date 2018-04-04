@@ -173,7 +173,7 @@ class SendoutsService extends Component
                 ]));
             }
 
-            // TODO: automated sendouts
+            // TODO: queue automated sendouts
         }
     }
 

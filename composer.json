@@ -1,7 +1,7 @@
 {
     "name": "putyourlightson/craft-campaign",
     "description": "Send and manage email campaigns, contacts and mailing lists.",
-    "version": "1.0.0-beta5",
+    "version": "1.0.0",
     "type": "craft-plugin",
     "homepage": "https://craftcampaign.com/",
     "license": "proprietary",
@@ -12,7 +12,7 @@
         "newsletter"
     ],
     "require": {
-        "craftcms/cms": "^3.0.0-RC16",
+        "craftcms/cms": "^3.0.0",
         "piwik/device-detector": "^3.9.1",
         "purplebooth/htmlstrip": "^1.0.0"
     },
