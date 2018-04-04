@@ -3,6 +3,7 @@
 ## Unreleased
 ### Changed
 - Changed "Plugin Settings" back to "Settings"
+- Improved webhook response messages
 
 ## 1.0.0-beta6 - 2018-04-04
 ### Changed

@@ -48,7 +48,7 @@ class WebhookController extends Controller
      */
     public function actionTest()
     {
-        exit('Test');
+        return $this->asJson(['success' => true]);
     }
 
     /**
@@ -181,7 +181,7 @@ class WebhookController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _callWebhook(string $event, string $email, $sid = null)
+    private function _callWebhook(string $event, string $email, $sid = null): Response
     {
         // Get plugin settings
         $settings = Campaign::$plugin->getSettings();
@@ -204,13 +204,17 @@ class WebhookController extends Controller
         // Get sendout by SID
         $sendout = $sid ? Campaign::$plugin->sendouts->getSendoutBySid($sid) : null;
 
+        if ($sendout === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
+        }
+
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
             'sendoutId' => $sendout->id,
         ]);
 
         if ($contactCampaignRecord === null) {
-            return null;
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact cmpaign not found.')]);
         }
 
         /** @var ContactCampaignModel $contactCampaign */
