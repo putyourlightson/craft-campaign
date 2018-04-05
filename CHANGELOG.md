@@ -1,6 +1,6 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta8 - 2018-04-05
 ### Added
 - Added call to queue pending sendouts after CP login
 
