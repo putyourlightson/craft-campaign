@@ -8,7 +8,7 @@
 
 Campaign is an email marketing plugin built specifically for Craft 3. It aims to bring the distribution of content by email into the CMS, where we believe it should be, along with the same ethos of flexibility and user-friendliness that Craft does. 
 
-**Campaign is currently in beta. We aim to release a stable version shortly after the launch of Craft CMS 3.0.0 GA.**
+**Campaign is still in beta but we are very close to a stable release.**
 
 Learn more at [craftcampaign.com](https://craftcampaign.com).
 
