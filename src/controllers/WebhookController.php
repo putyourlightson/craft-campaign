@@ -193,29 +193,18 @@ class WebhookController extends Controller
             throw new ForbiddenHttpException('Unauthorised access.');
         }
 
-        // Get contact
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
-        // Ensure contact exists
         if ($contact === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
         }
 
-        // Get sendout by SID
         $sendout = $sid ? Campaign::$plugin->sendouts->getSendoutBySid($sid) : null;
-
-        if ($sendout === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
-        }
 
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
             'sendoutId' => $sendout->id,
         ]);
-
-        if ($contactCampaignRecord === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact cmpaign not found.')]);
-        }
 
         /** @var ContactCampaignModel $contactCampaign */
         $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);

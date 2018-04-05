@@ -1,7 +1,8 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.0.0-beta7 - 2018-04-05
 ### Changed
+- Changed Craft version requirement to 3.0.1
 - Changed "Plugin Settings" back to "Settings"
 - Improved webhook response messages
 
