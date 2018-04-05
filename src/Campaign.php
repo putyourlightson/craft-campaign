@@ -115,10 +115,13 @@ class Campaign extends Plugin
             $variable->set('campaign', CampaignVariable::class);
         });
 
-        // Register house-cleaning after login to purge expired pending contacts
-        Event::on(User::class, User::EVENT_AFTER_LOGIN, function() {
-            $this->contacts->purgeExpiredPendingContacts();
-        });
+        // Do some house-cleaning after login to CP
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            Event::on(User::class, User::EVENT_AFTER_LOGIN, function() {
+                $this->contacts->purgeExpiredPendingContacts();
+                $this->sendouts->queuePendingSendouts();
+            });
+        }
 
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
