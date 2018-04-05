@@ -136,9 +136,8 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.mailingListIds',
             'campaign_sendouts.excludedMailingListIds',
             'campaign_sendouts.segmentIds',
-            'campaign_sendouts.expectedRecipients',
-            'campaign_sendouts.failedRecipients',
             'campaign_sendouts.recipients',
+            'campaign_sendouts.failedRecipients',
             'campaign_sendouts.automatedSchedule',
             'campaign_sendouts.htmlBody',
             'campaign_sendouts.plaintextBody',
@@ -174,41 +173,12 @@ class SendoutElementQuery extends ElementQuery
      */
     protected function statusCondition(string $status)
     {
-        switch ($status) {
-            case SendoutElement::STATUS_SENT:
-                return [
-                    'campaign_sendouts.sendStatus' => 'sent',
-                ];
-            case SendoutElement::STATUS_SENDING:
-                return [
-                    'campaign_sendouts.sendStatus' => 'sending',
-                ];
-            case SendoutElement::STATUS_QUEUED:
-                return [
-                    'campaign_sendouts.sendStatus' => 'queued',
-                ];
-            case SendoutElement::STATUS_PENDING:
-                return [
-                    'campaign_sendouts.sendStatus' => 'pending',
-                ];
-            case SendoutElement::STATUS_PAUSED:
-                return [
-                    'campaign_sendouts.sendStatus' => 'paused',
-                ];
-            case SendoutElement::STATUS_CANCELLED:
-                return [
-                    'campaign_sendouts.sendStatus' => 'cancelled',
-                ];
-            case SendoutElement::STATUS_FAILED:
-                return [
-                    'campaign_sendouts.sendStatus' => 'failed',
-                ];
-            case SendoutElement::STATUS_DRAFT:
-                return [
-                    'campaign_sendouts.sendStatus' => 'draft',
-                ];
-            default:
-                return parent::statusCondition($status);
+        $statuses = SendoutElement::statuses();
+
+        if (isset($statuses[$status])) {
+            return ['campaign_sendouts.sendStatus' => $status];
         }
+
+        return parent::statusCondition($status);
     }
 }

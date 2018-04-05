@@ -184,33 +184,39 @@
     background-size: cover;
 }
 
+.status.sent {
+    background: #27AE60;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.status.sending {
+    background: rgba(39, 174, 96, 0.2);
+    border-color: #27AE60 !important;
+}
+
+.status.queued {
+    background: rgba(242, 132, 45, 0.2);
+    border-color: #F2842D !important;
+}
+
+.status.paused {
+    background: rgba(208, 2, 27, 0.2);
+    border-color: #D6301A !important;
+}
+
+.status.cancelled {
+    background: #D6301A;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
 .status.complained {
-    background-color: #6D4C41;
+    background: #6D4C41;
     border-color: rgba(0, 0, 0, 0) !important;
 }
 
 .status.failed, .status.bounced {
-    background-color: #263238;
+    background: #263238;
     border-color: rgba(0, 0, 0, 0) !important;
-}
-
-.status.running {
-    background: none;
-}
-
-.status.active.running {
-    border-color: #27AE60;
-    background: rgba(39, 174, 96, 0.2);
-}
-
-.status.pending.running {
-    border-color: #F2842D;
-    background: rgba(242, 132, 45, 0.2);
-}
-
-.status.suspended.running {
-    border-color: #D6301A;
-    background: rgba(208, 2, 27, 0.2);
 }
 
 label.subscriptionStatus {

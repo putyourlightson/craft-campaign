@@ -38,9 +38,9 @@ class CampaignElement extends Element
     // Constants
     // =========================================================================
 
-    const STATUS_SENT = 'active';
-    const STATUS_UNSENT = 'pending';
-    const STATUS_CLOSED = 'expired';
+    const STATUS_SENT = 'sent';
+    const STATUS_UNSENT = 'unsent';
+    const STATUS_CLOSED = 'closed';
 
     // Static Methods
     // =========================================================================

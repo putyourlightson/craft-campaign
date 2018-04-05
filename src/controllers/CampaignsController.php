@@ -226,7 +226,7 @@ class CampaignsController extends Controller
                 $variables['actions'][] = [
                     'action' => 'campaign/campaigns/close-campaign',
                     'label' => Craft::t('campaign', 'Close this campaign…'),
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign.')
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
                 ];
                 break;
         }

@@ -160,9 +160,6 @@ class SendoutsService extends Component
                 // Update send status
                 $sendout->sendStatus = 'queued';
 
-                // Get expected recipients
-                $sendout->expectedRecipients = count($sendout->getPendingRecipients());
-
                 // Save sendout
                 Craft::$app->getElements()->saveElement($sendout);
 

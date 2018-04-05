@@ -166,7 +166,7 @@ class SendoutsController extends Controller
         // Campaign element selector variables
         $variables['campaignElementType'] = CampaignElement::class;
         $variables['campaignElementCriteria'] = [
-            'status' => ['active', 'pending'],
+            'status' => ['sent', 'unsent'],
         ];
 
         // Mailing list element selector variables

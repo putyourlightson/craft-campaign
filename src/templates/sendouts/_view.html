@@ -124,7 +124,7 @@
             {% set input %}
                 <p>{{ sendout.sendDate|datetime }}</p>
             {% endset %}
-            {{ forms.field({label: "Send Date"|t('campaign') ~ ':'}, input) }}
+            {{ forms.field({label: "Scheduled Send Date"|t('campaign') ~ ':'}, input) }}
 
         {% endif %}
 
@@ -214,19 +214,19 @@
             {% set sender = sendout.sender %}
             {% if sender %}
                 <div class="data">
-                    <h5 class="heading">{{ "Last Sent By"|t('campaign') }}</h5>
+                    <h5 class="heading">{{ "Sent By"|t('campaign') }}</h5>
                     <div class="value">
                         {% include '_elements/element' with {'element': sender} %}
                     </div>
                 </div>
             {% endif %}
-            {% if sendout.sendStatus == 'paused' and sendout.sendoutType != 'automated' %}
+            {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}
                 <div class="data">
                     <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
                     <div class="value">{{ pendingRecipients|length }}</div>
                 </div>
             {% endif %}
-            {% if sendout.sendStatus == 'sent' %}
+            {% if sendout.status == 'sent' %}
                 <div class="data">
                     <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
                     <div class="value">{{ sendout.recipients }}</div>

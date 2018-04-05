@@ -4,6 +4,9 @@
 ### Added
 - Added call to queue pending sendouts after CP login
 
+### Changed
+- Removed expectedRecipients column
+
 ## 1.0.0-beta7 - 2018-04-05
 ### Changed
 - Changed Craft version requirement to 3.0.1

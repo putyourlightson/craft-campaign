@@ -53,12 +53,12 @@ class SendoutElement extends Element
     // Constants
     // =========================================================================
 
-    const STATUS_SENT = 'active';
-    const STATUS_SENDING = 'active running';
-    const STATUS_QUEUED = 'pending running';
+    const STATUS_SENT = 'sent';
+    const STATUS_SENDING = 'sending';
+    const STATUS_QUEUED = 'queued';
     const STATUS_PENDING = 'pending';
-    const STATUS_PAUSED = 'suspended running';
-    const STATUS_CANCELLED = 'suspended';
+    const STATUS_PAUSED = 'paused';
+    const STATUS_CANCELLED = 'cancelled';
     const STATUS_FAILED = 'failed';
     const STATUS_DRAFT = 'draft';
 
@@ -219,7 +219,7 @@ class SendoutElement extends Element
             'campaignId' => ['label' => Craft::t('campaign', 'Campaign')],
             'recipients' => ['label' => Craft::t('campaign', 'Recipients')],
             'progress' => ['label' => Craft::t('campaign', 'Progress')],
-            'sender' => ['label' => Craft::t('campaign', 'Last Sent By')],
+            'sender' => ['label' => Craft::t('campaign', 'Sent By')],
             'mailingListIds' => ['label' => Craft::t('campaign', 'Mailing Lists')],
             'sendDate' => ['label' => Craft::t('campaign', 'Send Date')],
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
@@ -344,19 +344,14 @@ class SendoutElement extends Element
     public $segmentIds;
 
     /**
-     * @var int Expected recipients
+     * @var int Recipients
      */
-    public $expectedRecipients = 0;
+    public $recipients = 0;
 
     /**
      * @var int Failed recipients
      */
     public $failedRecipients = 0;
-
-    /**
-     * @var int Recipients
-     */
-    public $recipients = 0;
 
     /**
      * @var mixed Automated schedule
@@ -494,12 +489,15 @@ class SendoutElement extends Element
      */
     public function getProgressFraction(): float
     {
-        if ($this->status == self::STATUS_SENT) {
+        if ($this->sendStatus == self::STATUS_SENT) {
             return 1;
         }
 
-        $progress = $this->expectedRecipients == 0 ?: $this->recipients / $this->expectedRecipients;
-        $progress = $progress <= 1 ?: 1;
+        // Get expected recipients
+        $expectedRecipients = count($this->getPendingRecipients());
+
+        $progress = $expectedRecipients == 0 ?: $this->recipients / $expectedRecipients;
+        $progress = $progress < 1 ? $progress : 1;
 
         return $progress;
     }
@@ -511,7 +509,7 @@ class SendoutElement extends Element
      */
     public function getProgress(): string
     {
-        if ($this->status == self::STATUS_DRAFT OR $this->sendoutType == 'automated') {
+        if ($this->sendStatus == self::STATUS_DRAFT OR $this->sendoutType == 'automated') {
             return '';
         }
 
@@ -772,24 +770,7 @@ class SendoutElement extends Element
      */
     public function getStatus()
     {
-        switch ($this->sendStatus) {
-            case 'sent':
-                return self::STATUS_SENT;
-            case 'sending':
-                return self::STATUS_SENDING;
-            case 'queued':
-                return self::STATUS_QUEUED;
-            case 'pending':
-                return self::STATUS_PENDING;
-            case 'paused':
-                return self::STATUS_PAUSED;
-            case 'cancelled':
-                return self::STATUS_CANCELLED;
-            case 'failed':
-                return self::STATUS_FAILED;
-            default:
-                return self::STATUS_DRAFT;
-        }
+        return $this->sendStatus;
     }
 
     /**
