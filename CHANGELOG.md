@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.0.0-beta9 - 2018-04-06
+### Added
+- Added Campaign Pro features
+
 ## 1.0.0-beta8 - 2018-04-05
 ### Added
 - Added call to queue pending sendouts after CP login
