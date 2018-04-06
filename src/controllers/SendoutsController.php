@@ -231,10 +231,11 @@ class SendoutsController extends Controller
 
         // Get the time delay intervals
         $variables['timeDelayIntervals'] = [
-            60 => Craft::t('campaign', 'minute(s)'),
-            3600 => Craft::t('campaign', 'hour(s)'),
-            86400 => Craft::t('campaign', 'day(s)'),
-            604800 => Craft::t('campaign', 'week(s)'),
+            'minutes' => Craft::t('campaign', 'minute(s)'),
+            'hours' => Craft::t('campaign', 'hour(s)'),
+            'days' => Craft::t('campaign', 'day(s)'),
+            'weeks' => Craft::t('campaign', 'week(s)'),
+            'months' => Craft::t('campaign', 'month(s)'),
         ];
 
         // Get the settings

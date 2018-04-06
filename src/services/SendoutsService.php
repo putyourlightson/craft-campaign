@@ -154,23 +154,17 @@ class SendoutsService extends Component
             ])
             ->all();
 
+        /** @var SendoutElement[] $sendouts */
         foreach ($sendouts as $sendout) {
-            /** @var SendoutElement $sendout */
+            // Queue regular and scheduled sendouts
             if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled') {
-                // Update send status
-                $sendout->sendStatus = 'queued';
-
-                // Save sendout
-                Craft::$app->getElements()->saveElement($sendout);
-
-                // Add sendout job to queue
-                Craft::$app->queue->push(new SendoutJob([
-                    'sendoutId' => $sendout->id,
-                    'title' => $sendout->title,
-                ]));
+                $this->_queueSendout($sendout);
             }
 
-            // TODO: queue automated sendouts
+            // Queue automated sendouts if pro version and there are pending recipients
+            else if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isPro() AND $sendout->hasPendingRecipients()) {
+                $this->_queueSendout($sendout);
+            }
         }
     }
 
@@ -418,8 +412,11 @@ class SendoutsService extends Component
      */
     public function finaliseSending(SendoutElement $sendout)
     {
-        // Update send status if fully complete
-        if (count($sendout->getPendingRecipients()) == 0) {
+        // Reset send status
+        $sendout->sendStatus = 'pending';
+
+        // Update send status if fully complete and not automated
+        if (!$sendout->hasPendingRecipients() AND $sendout->sendoutType != 'automated') {
             $sendout->sendStatus = 'sent';
         }
 
@@ -504,6 +501,29 @@ class SendoutsService extends Component
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Queue sendout
+     *
+     * @param SendoutElement $sendout
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws \Throwable
+     */
+    private function _queueSendout(SendoutElement $sendout)
+    {
+        // Add sendout job to queue
+        Craft::$app->queue->push(new SendoutJob([
+            'sendoutId' => $sendout->id,
+            'title' => $sendout->title,
+        ]));
+
+        // Update send status
+        $sendout->sendStatus = 'queued';
+
+        // Save sendout
+        Craft::$app->getElements()->saveElement($sendout);
+    }
 
     /**
      * Add webhooks to message

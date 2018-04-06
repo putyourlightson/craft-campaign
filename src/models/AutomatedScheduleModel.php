@@ -26,9 +26,9 @@ class AutomatedScheduleModel extends BaseModel
     public $timeDelay = 0;
 
     /**
-     * @var int Time interval
+     * @var string Time interval
      */
-    public $timeDelayInterval = 60;
+    public $timeDelayInterval = 'minutes';
 
     /**
      * @var bool Specific time and days
@@ -41,7 +41,7 @@ class AutomatedScheduleModel extends BaseModel
     public $timeOfDay;
 
     /**
-     * @var array|null Day of the week
+     * @var array|null Days of the week
      */
     public $daysOfWeek;
 

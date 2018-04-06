@@ -6,13 +6,14 @@
 
 namespace putyourlightson\campaign\elements;
 
-use craft\elements\User;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 
 use Craft;
@@ -20,11 +21,14 @@ use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
+use craft\elements\User;
+use craft\helpers\DateTimeHelper;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\helpers\Json;
 use craft\validators\DateTimeValidator;
 use yii\base\Exception;
+use yii\base\ExitException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -706,6 +710,42 @@ class SendoutElement extends Element
             $recipients = array_intersect_key($recipients, array_flip($segment->getContactIds()));
         }
 
+        if ($this->sendoutType == 'automated') {
+            $automatedSchedule = new AutomatedScheduleModel($this->automatedSchedule);
+
+            // Remove all contacts that have not passed the time delay since subscribing
+            foreach ($recipients as $key => $recipientData) {
+                /** @var ContactMailingListRecord $contactMailingListRecord */
+                $contactMailingListRecord = ContactMailingListRecord::findOne($recipientData);
+
+                if ($contactMailingListRecord === null) {
+                    unset($recipients[$key]);
+                    continue;
+                }
+
+                $subscribedDateTime = DateTimeHelper::toDateTime($contactMailingListRecord->subscribed);
+                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
+
+                // If subscribed date time plus delay has not yet passed
+                if (!DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
+                    unset($recipients[$key]);
+                    continue;
+                }
+
+                // If time and days were specified
+                if ($automatedSchedule->specificTimeDays) {
+                    $currentDayNumeric = (new \DateTime())->format('N');
+                    $timeOfDay = DateTimeHelper::toDateTime($automatedSchedule->timeOfDay);
+
+                    // If today is not one of "the days" or the time of day has not yet passed
+                    if (empty($automatedSchedule->daysOfWeek[$currentDayNumeric]) OR !DateTimeHelper::isInThePast($timeOfDay)) {
+                        unset($recipients[$key]);
+                        continue;
+                    }
+                }
+            }
+        }
+
         return $recipients;
     }
 
@@ -779,6 +819,16 @@ class SendoutElement extends Element
     public function getIsEditable(): bool
     {
         return ($this->getStatus() == self::STATUS_DRAFT OR $this->getStatus() == self::STATUS_PAUSED);
+    }
+
+    /**
+     * Returns whether the sendout has pending recipients
+     *
+     * @return bool
+     */
+    public function hasPendingRecipients(): bool
+    {
+        return count($this->getPendingRecipients());
     }
 
     /**

@@ -14,8 +14,7 @@
     {% set saveLabel = 'Activate Sending'|t('campaign') %}
     {% set confirmMessage = 'This sendout will be activated for automated sending to {mailingLists} mailing list(s).'|t('campaign', params) %}
     {% set launchedMessage = 'Sendout Activated!'|t('campaign') %}
-{% endif %}
-{% if sendout.isResumable %}
+{% elseif sendout.isResumable %}
     {% set prepLabel = 'Prepare to Resume Sending'|t('campaign') %}
     {% set saveLabel = 'Resume Sending'|t('campaign') %}
     {% set confirmMessage = 'This sendout will resume sending to {recipients} contact(s) in {mailingLists} mailing list(s).'|t('campaign', params) %}
