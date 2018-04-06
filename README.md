@@ -14,4 +14,6 @@ Learn more at [craftcampaign.com](https://craftcampaign.com).
 
 View the documentation at [craftcampaign.com/docs](https://craftcampaign.com/docs).
   
+View more about the pro features at [craftcampaign.com/docs/pro-features](https://craftcampaign.com/docs/pro-features).
+
 <small>Created by [PutYourLightsOn](https://www.putyourlightson.net/).</small>
