@@ -239,7 +239,7 @@ class Campaign extends Plugin
      */
     public function isPro(): bool
     {
-        return $this->packageName == 'putyourlightson/campaign-pro';
+        return Craft::$app->plugins->getPlugin('campaign-pro') !== null;
     }
 
     /**
