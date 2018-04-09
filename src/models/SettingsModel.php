@@ -131,7 +131,7 @@ class SettingsModel extends Model
             [['apiKey', 'defaultFromName', 'defaultFromEmail', 'transportType', 'emailFieldLabel'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['defaultFromName', 'defaultFromEmail'], 'string', 'max' => 255],
-            [['contactFieldLayoutId'], 'number', 'integerOnly' => true]
+            [['contactFieldLayoutId'], 'integer']
         ];
     }
 }

@@ -50,12 +50,13 @@ class SendoutsController extends Controller
     /**
      * Queues pending sendouts
      *
+     * @return Response
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws ForbiddenHttpException
      * @throws \Throwable
      */
-    public function actionQueuePendingSendouts()
+    public function actionQueuePendingSendouts(): Response
     {
         // Get plugin settings
         $settings = Campaign::$plugin->getSettings();
@@ -69,19 +70,22 @@ class SendoutsController extends Controller
 
         Campaign::$plugin->sendouts->queuePendingSendouts();
 
-        return $this->asRaw('');
+        // Prep the response
+        $response = Craft::$app->getResponse();
+        $response->content = '1';
+
+        return $response;
     }
 
     /**
-     * @return string
-     *
+     * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
-    public function actionGetHtmlBody()
+    public function actionGetHtmlBody(): Response
     {
         $sendoutId = Craft::$app->getRequest()->getRequiredParam('sendoutId');
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
@@ -90,9 +94,11 @@ class SendoutsController extends Controller
             throw new NotFoundHttpException('Sendout not found');
         }
 
-        echo $sendout->getHtmlBody();
+        // Prep the response
+        $response = Craft::$app->getResponse();
+        $response->content = $sendout->getHtmlBody();
 
-        exit();
+        return $response;
     }
 
     /**

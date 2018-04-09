@@ -78,7 +78,10 @@ class MailingListTypesService extends Component
             return null;
         }
 
-        return MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+        /** @var MailingListTypeModel $mailingListType */
+        $mailingListType = MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+
+        return $mailingListType;
     }
 
     /**
@@ -96,7 +99,10 @@ class MailingListTypesService extends Component
             return null;
         }
 
-        return MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+        /** @var MailingListTypeModel $mailingListType */
+        $mailingListType = MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+
+        return $mailingListType;
     }
 
     /**

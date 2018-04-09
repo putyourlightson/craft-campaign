@@ -37,6 +37,10 @@ class SettingsService extends Component
             return false;
         }
 
+        // Limit decimal places of floats
+        $settings->memoryThreshold = number_format($settings->memoryThreshold, 2);
+        $settings->timeThreshold = number_format($settings->timeThreshold, 2);
+
         return Craft::$app->plugins->savePluginSettings(Campaign::$plugin, $settings->getAttributes());
     }
 }

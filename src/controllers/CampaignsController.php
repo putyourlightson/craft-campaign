@@ -19,6 +19,7 @@ use craft\helpers\Json;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -45,6 +46,7 @@ class CampaignsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {
@@ -55,15 +57,16 @@ class CampaignsController extends Controller
     /**
      * @param CampaignElement $campaign
      *
-     * @return string
+     * @return Response
      *
      * @throws Exception
      * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
-    public function actionGetBody(CampaignElement $campaign)
+    public function actionGetBody(CampaignElement $campaign): Response
     {
         $request = Craft::$app->getRequest();
+        $response = Craft::$app->getResponse();
 
         // If CID passed in then get contact
         $cid = $request->getParam('cid');
@@ -71,10 +74,14 @@ class CampaignsController extends Controller
 
         // If plaintext passed in then return plaintext body
         if ($request->getParam('plaintext')) {
-            exit($campaign->getPlaintextBody($contact));
+            $response->content = $campaign->getPlaintextBody($contact);
+        }
+        // Otherwise return html body
+        else {
+            $response->content = $campaign->getHtmlBody($contact);
         }
 
-        exit($campaign->getHtmlBody($contact));
+        return $response;
     }
 
     /**
@@ -95,11 +102,9 @@ class CampaignsController extends Controller
         // Get the campaign type
         // ---------------------------------------------------------------------
 
-        if (!empty($campaignTypeHandle)) {
-            $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
-        }
+        $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
 
-        if (empty($campaignType)) {
+        if ($campaignType === null) {
             throw new NotFoundHttpException('Campaign type not found');
         }
 

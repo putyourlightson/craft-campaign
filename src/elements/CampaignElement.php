@@ -303,11 +303,12 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
-        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'number', 'integerOnly' => true];
+        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'];
         $rules[] = [['dateClosed'], DateTimeValidator::class];
 
         return $rules;
@@ -315,6 +316,7 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function getUriFormat()
     {
@@ -456,6 +458,7 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function getCpEditUrl()
     {
@@ -477,6 +480,7 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     protected function tableAttributeHtml(string $attribute): string
     {
@@ -493,6 +497,10 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @return string
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \Twig_Error_Loader
      */
     public function getEditorHtml(): string
     {

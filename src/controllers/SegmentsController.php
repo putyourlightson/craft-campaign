@@ -16,6 +16,7 @@ use craft\helpers\Json;
 use craft\web\Controller;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -34,6 +35,7 @@ class SegmentsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {

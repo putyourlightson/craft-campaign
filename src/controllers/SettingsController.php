@@ -20,6 +20,7 @@ use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -44,6 +45,7 @@ class SettingsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {

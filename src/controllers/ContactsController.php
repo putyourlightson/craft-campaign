@@ -15,7 +15,9 @@ use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 
@@ -33,6 +35,7 @@ class ContactsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {
@@ -41,11 +44,12 @@ class ContactsController extends Controller
     }
 
     /**
-     * @param int|null             $contactId    The contact’s ID, if editing an existing contact.
-     * @param ContactElement|null  $contact      The contact being edited, if there were any validation errors.
+     * @param int|null $contactId The contact’s ID, if editing an existing contact.
+     * @param ContactElement|null $contact The contact being edited, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException if the requested contact is not found
+     * @throws InvalidConfigException
      */
     public function actionEditContact(int $contactId = null, ContactElement $contact = null): Response
     {

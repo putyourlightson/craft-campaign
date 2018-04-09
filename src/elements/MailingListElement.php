@@ -19,6 +19,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
@@ -210,11 +211,12 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
-        $rules[] = [['mailingListTypeId'], 'number', 'integerOnly' => true];
+        $rules[] = [['mailingListTypeId'], 'integer'];
         $rules[] = [['mlid'], 'string', 'max' => 32];
 
         return $rules;
@@ -351,6 +353,7 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function getCpEditUrl()
     {
@@ -394,6 +397,10 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @return string
+     * @throws InvalidConfigException
+     * @throws \Twig_Error_Loader
+     * @throws Exception
      */
     public function getEditorHtml(): string
     {

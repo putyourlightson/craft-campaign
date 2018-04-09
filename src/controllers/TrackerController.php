@@ -218,7 +218,7 @@ class TrackerController extends Controller
         $template = $mailingList !== null ? $mailingList->getMailingListType()->subscribeSuccessTemplate : '';
 
         // Use message template if none was defined
-        if (empty($template)) {
+        if ($template == '') {
             $template = 'campaign/message';
 
             // Set template mode to CP
@@ -263,7 +263,7 @@ class TrackerController extends Controller
         $template = $mailingList !== null ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : '';
 
         // Use message template if none was defined
-        if (empty($template)) {
+        if ($template == '') {
             $template = 'campaign/message';
 
             // Set template mode to CP

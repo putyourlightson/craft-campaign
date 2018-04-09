@@ -85,7 +85,10 @@ class CampaignTypesService extends Component
             return null;
         }
 
-        return CampaignTypeModel::populateModel($campaignTypeRecord, false);
+        /** @var CampaignTypeModel $campaignType */
+        $campaignType = CampaignTypeModel::populateModel($campaignTypeRecord, false);
+
+        return $campaignType;
     }
 
     /**
@@ -103,7 +106,10 @@ class CampaignTypesService extends Component
             return null;
         }
 
-        return CampaignTypeModel::populateModel($campaignTypeRecord, false);
+        /** @var CampaignTypeModel $campaignType */
+        $campaignType = CampaignTypeModel::populateModel($campaignTypeRecord, false);
+
+        return $campaignType;
     }
 
     /**

@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use Craft;
 use craft\web\Controller;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -30,6 +31,7 @@ class MailingListTypesController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {

@@ -17,6 +17,7 @@ use craft\web\Controller;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -35,6 +36,7 @@ class MailingListsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {

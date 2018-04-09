@@ -28,7 +28,7 @@ class AutomatedScheduleModel extends BaseModel
     /**
      * @var string Time interval
      */
-    public $timeDelayInterval = 'minutes';
+    public $timeDelayInterval = '';
 
     /**
      * @var bool Specific time and days
@@ -54,9 +54,10 @@ class AutomatedScheduleModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['timeDelay'], 'number'],
+            [['timeDelay'], 'integer', 'min' => 0],
             [['specificTimeDays'], 'boolean'],
             [['timeDelay', 'timeDelayInterval'], 'required'],
+            ['timeDelayInterval', 'in', 'range' => ['minutes', 'hours', 'days', 'weeks', 'months']],
             [
                 ['timeOfDay', 'daysOfWeek'],
                 'required',

@@ -130,7 +130,7 @@ class ImportModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'userId', 'mailingListId'], 'number', 'integerOnly' => true],
+            [['id', 'userId', 'mailingListId'], 'integer'],
             [['mailingListId', 'emailFieldIndex'], 'required'],
             [['fileName', 'filePath'], 'string', 'max' => 255],
         ];

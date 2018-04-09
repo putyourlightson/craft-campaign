@@ -1,5 +1,14 @@
 # Campaign Changelog
 
+## 1.0.0-beta10 - 2018-04-09
+### Added
+- Added queuing of automated sendouts based on automated schedule
+- Added "months" to time delay interval options
+
+### Changed
+- Changed how time delay intervals are stored
+- Improved responses to controller actions
+
 ## 1.0.0-beta9 - 2018-04-06
 ### Added
 - Added Campaign Pro features

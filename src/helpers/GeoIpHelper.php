@@ -10,6 +10,7 @@ use Craft;
 use craft\helpers\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * GeoIpHelper
@@ -29,7 +30,6 @@ class GeoIpHelper
      * @param int|null
      *
      * @return string|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getGeoIp(int $timeout = 3)
     {

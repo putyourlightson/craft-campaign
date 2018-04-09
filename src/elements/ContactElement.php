@@ -24,6 +24,7 @@ use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * ContactElement
@@ -352,7 +353,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $labels = parent::attributeLabels();
 
@@ -364,8 +365,9 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules[] = [['cid', 'email'], 'required'];
@@ -379,6 +381,7 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function getFieldLayout()
     {

@@ -99,7 +99,7 @@ class CampaignTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
+            [['id', 'fieldLayoutId'], 'integer'],
             [['name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
             [['name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'string', 'max' => 255],
             [

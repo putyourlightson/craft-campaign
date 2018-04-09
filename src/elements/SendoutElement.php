@@ -28,7 +28,6 @@ use craft\helpers\UrlHelper;
 use craft\helpers\Json;
 use craft\validators\DateTimeValidator;
 use yii\base\Exception;
-use yii\base\ExitException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -446,7 +445,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         $labels = parent::attributeLabels();
 
@@ -459,11 +458,12 @@ class SendoutElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
-        $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
+        $rules[] = [['recipients', 'campaignId', 'senderId'], 'integer'];
         $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds', 'notificationEmailAddress'], 'required'];
         $rules[] = [['sid'], 'string', 'max' => 32];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
@@ -498,7 +498,7 @@ class SendoutElement extends Element
         }
 
         // Get expected recipients
-        $expectedRecipients = count($this->getPendingRecipients());
+        $expectedRecipients = \count($this->getPendingRecipients());
 
         $progress = $expectedRecipients == 0 ?: $this->recipients / $expectedRecipients;
         $progress = $progress < 1 ? $progress : 1;
@@ -735,10 +735,10 @@ class SendoutElement extends Element
                 // If time and days were specified
                 if ($automatedSchedule->specificTimeDays) {
                     $currentDayNumeric = (new \DateTime())->format('N');
-                    $timeOfDay = DateTimeHelper::toDateTime($automatedSchedule->timeOfDay);
+                    $timeOfDayToday = DateTimeHelper::toDateTime($automatedSchedule->timeOfDay);
 
                     // If today is not one of "the days" or the time of day has not yet passed
-                    if (empty($automatedSchedule->daysOfWeek[$currentDayNumeric]) OR !DateTimeHelper::isInThePast($timeOfDay)) {
+                    if (empty($automatedSchedule->daysOfWeek[$currentDayNumeric]) OR !DateTimeHelper::isInThePast($timeOfDayToday)) {
                         unset($recipients[$key]);
                         continue;
                     }
@@ -828,7 +828,7 @@ class SendoutElement extends Element
      */
     public function hasPendingRecipients(): bool
     {
-        return count($this->getPendingRecipients());
+        return \count($this->getPendingRecipients());
     }
 
     /**

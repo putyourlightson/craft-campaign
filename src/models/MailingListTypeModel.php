@@ -104,7 +104,7 @@ class MailingListTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
+            [['id', 'fieldLayoutId'], 'integer'],
             [['name', 'handle'], 'required'],
             [['name', 'handle', 'subscribeSuccessTemplate', 'unsubscribeSuccessTemplate'], 'string', 'max' => 255],
             [['doubleOptIn', 'requireMlid'], 'boolean'],

@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use Craft;
 use craft\web\Controller;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -29,6 +30,7 @@ class ReportsController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {
@@ -129,7 +131,8 @@ class ReportsController extends Controller
             $values = [];
 
             // Set values
-            /** @var string[][][][] $chart */
+            /** @var string[][][] $chart */
+            /** @var string[][][][] $data */
             foreach ($chart['data']['indexes'] as $index) {
                 $values[] = $data['activity'][$interaction][$index] ?? 0;
             }
@@ -232,7 +235,8 @@ class ReportsController extends Controller
             $values = [];
 
             // Set values
-            /** @var string[][][][] $chart */
+            /** @var string[][][] $chart */
+            /** @var string[][][][] $data */
             foreach ($chart['data']['indexes'] as $index) {
                 $values[] = $data['activity'][$interaction][$index] ?? 0;
             }

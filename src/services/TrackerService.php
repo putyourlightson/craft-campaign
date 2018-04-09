@@ -219,9 +219,9 @@ class TrackerService extends Component
             $contactMailingListRecord->verified = new \DateTime();
         }
 
-        /** @var ContactCampaignRecord $contactCampaignRecord */
         $contactMailingListRecord = $this->_updateLocationDevice($contactMailingListRecord);
 
+        /** @var ContactMailingListRecord $contactMailingListRecord */
         $contactMailingListRecord->save();
     }
 
@@ -247,6 +247,7 @@ class TrackerService extends Component
 
         $contact = $this->_updateLocationDevice($contact);
 
+        /** @var ContactElement $contact */
         Craft::$app->getElements()->saveElement($contact);
     }
 

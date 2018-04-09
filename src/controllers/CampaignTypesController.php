@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 use Craft;
 use craft\web\Controller;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -30,6 +31,7 @@ class CampaignTypesController extends Controller
 
     /**
      * @inheritdoc
+     * @throws ForbiddenHttpException
      */
     public function init()
     {
