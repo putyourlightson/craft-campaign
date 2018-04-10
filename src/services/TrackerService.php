@@ -98,7 +98,6 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
-     * @param bool|null $pending
      * @param string|null $source
      * @param string|null $sourceUrl
      *
@@ -106,19 +105,15 @@ class TrackerService extends Component
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, bool $pending = true, string $source = '', string $sourceUrl = '')
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $source = '', string $sourceUrl = '')
     {
-        // Add contact interaction to mailing list
-        $interaction = $pending ? 'pending' : 'subscribed';
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction, $source, $sourceUrl);
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $source, $sourceUrl);
 
-        if (!$pending) {
-            // Update contact mailing list record
-            $this->_updateContactMailingListRecord($contact, $mailingList, true);
+        // Update contact mailing list record
+        $this->_updateContactMailingListRecord($contact, $mailingList, true);
 
-            // Update contact
-            $this->_updateContact($contact, true);
-        }
+        // Update contact
+        $this->_updateContact($contact);
     }
 
     /**
@@ -223,19 +218,13 @@ class TrackerService extends Component
      * Update contact
      *
      * @param ContactElement $contact
-     * @param bool $verify
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    private function _updateContact(ContactElement $contact, $verify = false)
+    private function _updateContact(ContactElement $contact)
     {
-        if ($verify AND $contact->pending) {
-            $contact->pending = false;
-            $contact->verified = new \DateTime();
-        }
-
         $contact->lastActivity = new \DateTime();
 
         $contact = $this->_updateLocationDevice($contact);

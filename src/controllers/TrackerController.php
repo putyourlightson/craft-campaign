@@ -224,7 +224,7 @@ class TrackerController extends Controller
             }
 
             // Track subscribe
-            Campaign::$plugin->tracker->subscribe($contact, $mailingList, $mailingList->mailingListType->doubleOptIn, 'web', $referrer);
+            Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $referrer);
         }
 
         if ($request->getAcceptsJson()) {
@@ -333,7 +333,7 @@ class TrackerController extends Controller
         }
 
         // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, false, 'web', $pendingContact->sourceUrl);
+        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->sourceUrl);
 
         // Use message template
         $template = 'campaign/message';

@@ -125,13 +125,13 @@ class ContactElementQuery extends ElementQuery
         $this->query->select([
             'campaign_contacts.cid',
             'campaign_contacts.email',
-            'campaign_contacts.pending',
             'campaign_contacts.country',
             'campaign_contacts.geoIp',
             'campaign_contacts.device',
             'campaign_contacts.os',
             'campaign_contacts.client',
             'campaign_contacts.lastActivity',
+            'campaign_contacts.verified',
             'campaign_contacts.complained',
             'campaign_contacts.bounced',
         ]);
@@ -170,13 +170,6 @@ class ContactElementQuery extends ElementQuery
                 return [
                     'campaign_contacts.complained' => null,
                     'campaign_contacts.bounced' => null,
-                    'campaign_contacts.pending' => 0,
-                ];
-            case ContactElement::STATUS_PENDING:
-                return [
-                    'campaign_contacts.complained' => null,
-                    'campaign_contacts.bounced' => null,
-                    'campaign_contacts.pending' => 1,
                 ];
             case ContactElement::STATUS_COMPLAINED:
                 return [

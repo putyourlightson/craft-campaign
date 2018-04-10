@@ -132,7 +132,6 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'cid' => $this->uid(),
                 'email' => $this->string()->notNull(),
-                'pending' => $this->boolean()->defaultValue(true)->notNull(),
                 'country' => $this->string(),
                 'geoIp' => $this->text(),
                 'device' => $this->string(),

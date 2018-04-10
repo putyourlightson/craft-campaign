@@ -14,7 +14,6 @@ use craft\db\ActiveRecord;
  * @property int         $id                         ID
  * @property string      $cid                        Contact ID
  * @property string      $email                      Email
- * @property bool        $pending                    Pending
  * @property string      $country                    Country
  * @property string      $geoIp                      GeoIP
  * @property string      $device                     Device

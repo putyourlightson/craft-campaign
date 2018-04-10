@@ -147,16 +147,6 @@ class ContactsController extends Controller
 
         $variables['actions'] = [];
 
-        switch ($contact->getStatus()) {
-            case ContactElement::STATUS_PENDING:
-                $variables['actions'][] = [
-                    'action' => 'campaign/contacts/verify-contact',
-                    'redirect' => 'campaign/contacts/{id}',
-                    'label' => Craft::t('campaign', 'Verify contact')
-                ];
-            break;
-        }
-
         // Add complain and bounce actions
         if ($contact->complained === null) {
             $variables['actions'][] = [
@@ -283,49 +273,6 @@ class ContactsController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact saved.'));
-
-        return $this->redirectToPostedUrl($contact);
-    }
-
-    /**
-     * Verifies a contact
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     */
-    public function actionVerifyContact()
-    {
-        $this->requirePostRequest();
-
-        $contact = $this->_getPostedContact();
-
-        $contact->pending = false;
-        $contact->verified = new \DateTime();
-
-        if (!Craft::$app->getElements()->saveElement($contact)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t verify contact.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
-            ]);
-
-            return null;
-        }
-
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact verified.'));
 
         return $this->redirectToPostedUrl($contact);
     }

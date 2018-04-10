@@ -272,9 +272,6 @@ class ImportsService extends Component
         // Set field values
         $contact->setFieldValues($values);
 
-        // Set pending to false
-        $contact->pending = false;
-
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
             $import->failed++;

@@ -43,6 +43,10 @@
         <th class="light">{{ "Last Activity"|t('campaign') }}</th>
         <td>{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
     </tr>
+    <tr>
+        <th class="light">{{ "Verified"|t('campaign') }}</th>
+        <td>{{ contact.verified ? contact.verified|datetime }}</td>
+    </tr>
     </tbody>
 </table>
 

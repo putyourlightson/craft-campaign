@@ -53,7 +53,6 @@ class ContactElement extends Element
     // =========================================================================
 
     const STATUS_ACTIVE = 'active';
-    const STATUS_PENDING = 'pending';
     const STATUS_COMPLAINED = 'complained';
     const STATUS_BOUNCED = 'bounced';
 
@@ -91,7 +90,6 @@ class ContactElement extends Element
     {
         return [
             self::STATUS_ACTIVE => Craft::t('campaign', 'Active'),
-            self::STATUS_PENDING => Craft::t('campaign', 'Pending'),
             self::STATUS_COMPLAINED => Craft::t('campaign', 'Complained'),
             self::STATUS_BOUNCED => Craft::t('campaign', 'Bounced')
         ];
@@ -198,6 +196,7 @@ class ContactElement extends Element
             'subscriptionStatus' => Craft::t('campaign', 'Subscription Status'),
             'country' => Craft::t('campaign', 'Country'),
             'lastActivity' => Craft::t('campaign', 'Last Activity'),
+            'verified' => Craft::t('campaign', 'Verified'),
             'elements.dateCreated' => Craft::t('app', 'Date Created'),
             'elements.dateUpdated' => Craft::t('app', 'Date Updated'),
         ];
@@ -215,6 +214,7 @@ class ContactElement extends Element
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],
+            'verified' => ['label' => Craft::t('campaign', 'Verified')],
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
@@ -254,13 +254,6 @@ class ContactElement extends Element
      * @var string
      */
     public $email;
-
-    /**
-     * Pending
-     *
-     * @var bool
-     */
-    public $pending = true;
 
     /**
      * Country name
@@ -344,6 +337,7 @@ class ContactElement extends Element
     {
         $names = parent::datetimeAttributes();
         $names[] = 'lastActivity';
+        $names[] = 'verified';
         $names[] = 'complained';
         $names[] = 'bounced';
 
@@ -374,7 +368,7 @@ class ContactElement extends Element
         $rules[] = [['cid'], 'string', 'max' => 32];
         $rules[] = [['email'], 'email'];
         $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class];
-        $rules[] = [['lastActivity', 'complained', 'bounced'], DateTimeValidator::class];
+        $rules[] = [['lastActivity', 'verified', 'complained', 'bounced'], DateTimeValidator::class];
 
         return $rules;
     }
@@ -462,16 +456,6 @@ class ContactElement extends Element
     public function getSubscribedCount(): int
     {
         return $this->_getMailingListCount('subscribed');
-    }
-
-    /**
-     * Returns the number of pending mailing lists
-     *
-     * @return int
-     */
-    public function getPendingCount(): int
-    {
-        return $this->_getMailingListCount('pending');
     }
 
     /**
@@ -587,11 +571,7 @@ class ContactElement extends Element
             return self::STATUS_COMPLAINED;
         }
 
-        if (!$this->pending) {
-            return self::STATUS_ACTIVE;
-        }
-
-        return self::STATUS_PENDING;
+        return self::STATUS_ACTIVE;
     }
 
     /**
@@ -705,7 +685,6 @@ class ContactElement extends Element
         if ($contactRecord) {
             // Set attributes
             $contactRecord->email = $this->email;
-            $contactRecord->pending = $this->pending;
             $contactRecord->country = $this->country;
             $contactRecord->geoIp = $this->geoIp;
             $contactRecord->device = $this->device;

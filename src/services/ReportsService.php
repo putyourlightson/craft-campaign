@@ -294,11 +294,7 @@ class ReportsService extends Component
 
         // Get contacts data
         $data['active'] = ContactElement::find()
-                ->where(['pending' => false, 'complained' => null, 'bounced' => null])
-                ->count();
-
-        $data['pending'] = ContactElement::find()
-                ->where(['pending' => true, 'complained' => null, 'bounced' => null])
+                ->where(['complained' => null, 'bounced' => null])
                 ->count();
 
         $data['complained'] = ContactElement::find()
@@ -309,7 +305,7 @@ class ReportsService extends Component
                 ->where(['not', ['bounced' => null]])
                 ->count();
 
-        $data['total'] = $data['active'] + $data['pending'] + $data['complained'] + $data['bounced'];
+        $data['total'] = $data['active'] + $data['complained'] + $data['bounced'];
 
         return $data;
     }
@@ -343,11 +339,11 @@ class ReportsService extends Component
     {
         // Get total active contacts
         $total = ContactElement::find()
-            ->where(['pending' => false, 'complained' => null, 'bounced' => null])
+            ->where(['complained' => null, 'bounced' => null])
             ->count();
 
         // Return locations of contacts
-        return $this->_getLocations(ContactRecord::tableName(), ['pending' => false], $total, $limit);
+        return $this->_getLocations(ContactRecord::tableName(), [], $total, $limit);
     }
 
     /**
@@ -362,11 +358,11 @@ class ReportsService extends Component
     {
         // Get total active contacts
         $total = ContactElement::find()
-            ->where(['pending' => false, 'complained' => null, 'bounced' => null])
+            ->where(['complained' => null, 'bounced' => null])
             ->count();
 
         // Return device, os and client of contacts
-        return $this->_getDevices(ContactRecord::tableName(), ['pending' => false], $detailed, $total, $limit);
+        return $this->_getDevices(ContactRecord::tableName(), [], $detailed, $total, $limit);
     }
 
     /**

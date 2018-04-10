@@ -233,16 +233,6 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the number of pending contacts
-     *
-     * @return int
-     */
-    public function getPendingCount(): int
-    {
-        return $this->_getContactCount('pending');
-    }
-
-    /**
      * Returns the number of unsubscribed contacts
      *
      * @return int
@@ -280,16 +270,6 @@ class MailingListElement extends Element
     public function getSubscribedContacts(): array
     {
         return $this->_getContactsBySubscriptionStatus('subscribed');
-    }
-
-    /**
-     * Returns the pending contacts
-     *
-     * @return ContactElement[]
-     */
-    public function getPendingContacts(): array
-    {
-        return $this->_getContactsBySubscriptionStatus('pending');
     }
 
     /**

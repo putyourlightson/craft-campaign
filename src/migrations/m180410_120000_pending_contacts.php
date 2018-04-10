@@ -33,6 +33,8 @@ class m180410_120000_pending_contacts extends Migration
 
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', true);
+
+        $this->dropColumn('{{%campaign_contacts}}', 'pending');
     }
 
     /**

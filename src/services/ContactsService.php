@@ -22,6 +22,7 @@ use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\PendingContactRecord;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
+use yii\helpers\Json;
 
 
 /**
@@ -146,7 +147,7 @@ class ContactsService extends Component
         $settings = Campaign::$plugin->getSettings();
 
         $subject = Craft::t('campaign', 'Verify your email address');
-        $body = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on this link:')."\n".$url;
+        $body = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:')."\n".$url;
 
         // Create message
         /** @var Message $message */
@@ -181,7 +182,7 @@ class ContactsService extends Component
         }
 
         /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord);
+        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
 
         // Get contact if it exists
         $contact = $this->getContactByEmail($pendingContact->email);
@@ -190,12 +191,17 @@ class ContactsService extends Component
             $contact = new ContactElement();
         }
 
-        // Set field values
-        $contact->email = $pendingContact->email;
-        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
-        $contact->setFieldValues($pendingContact->fieldData);
+        if ($contact->verified === null) {
+            $contact->verified = new \DateTime();
+        }
 
-        $contact->save();
+        $contact->email = $pendingContact->email;
+
+        // Set field values
+        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+        $contact->setFieldValues(Json::decode($pendingContact->fieldData));
+
+        Craft::$app->getElements()->saveElement($contact);
 
         // Delete pending contact
         $pendingContactRecord = PendingContactRecord::find()
