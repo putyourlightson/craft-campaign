@@ -148,6 +148,20 @@ class Install extends Migration
             ]);
         }
 
+        if (!$this->db->tableExists('{{%campaign_pending_contacts}}')) {
+            $this->createTable('{{%campaign_pending_contacts}}', [
+                'id' => $this->primaryKey(),
+                'pid' => $this->uid(),
+                'email' => $this->string()->notNull(),
+                'mailingListId' => $this->integer()->notNull(),
+                'sourceUrl' => $this->string(),
+                'fieldData' => $this->text(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+        }
+
         if (!$this->db->tableExists('{{%campaign_contacts_campaigns}}')) {
             $this->createTable('{{%campaign_contacts_campaigns}}', [
                 'id' => $this->primaryKey(),

@@ -17,7 +17,11 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
+use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\PendingContactModel;
+use putyourlightson\campaign\records\PendingContactRecord;
 use yii\base\Exception;
+use yii\db\StaleObjectException;
 
 
 /**
@@ -92,20 +96,56 @@ class ContactsService extends Component
     }
 
     /**
+     * Creates a pending contact
+     *
+     * @param string $email
+     * @param int $mailingListId
+     * @param string $sourceUrl
+     * @param array $fieldData
+     *
+     * @return PendingContactModel
+     */
+    public function createPendingContact(string $email, int $mailingListId, string $sourceUrl, array $fieldData): PendingContactModel
+    {
+        // Get pending contact if it exists
+        $pendingContactRecord = PendingContactRecord::find()
+            ->where([
+                'email' => $email,
+                'mailingListId' => $mailingListId,
+            ])
+            ->one();
+
+        if ($pendingContactRecord === null) {
+            $pendingContactRecord = new PendingContactRecord();
+        }
+
+        $pendingContactRecord->pid = StringHelper::uniqueId('p');
+        $pendingContactRecord->email = $email;
+        $pendingContactRecord->mailingListId = $mailingListId;
+        $pendingContactRecord->sourceUrl = $sourceUrl;
+        $pendingContactRecord->fieldData = $fieldData;
+
+        $pendingContactRecord->save();
+
+        /** @var PendingContactModel $pendingContact */
+        $pendingContact = PendingContactModel::populateModel($pendingContactRecord);
+
+        return $pendingContact;
+    }
+
+    /**
      * Sends a verification email
      *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param string|null $referrer
+     * @param PendingContactModel $pendingContact
      *
      * @return bool
-     * @throws MissingComponentException
      * @throws Exception
+     * @throws MissingComponentException
      */
-    public function sendVerificationEmail(ContactElement $contact, MailingListElement $mailingList, $referrer = ''): bool
+    public function sendVerificationEmail(PendingContactModel $pendingContact): bool
     {
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
-        $url = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'mlid' => $mailingList->mlid, 'referrer' => $referrer]);
+        $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
 
         $mailer = Campaign::$plugin->createMailer();
 
@@ -118,12 +158,61 @@ class ContactsService extends Component
         /** @var Message $message */
         $message = $mailer->compose()
             ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
-            ->setTo($contact->email)
+            ->setTo($pendingContact->email)
             ->setSubject($subject)
             ->setHtmlBody($body)
             ->setTextBody($body);
 
         return $message->send();
+    }
+
+    /**
+     * Verifies a pending contact
+     *
+     * @param string $pid
+     *
+     * @return PendingContactModel|null
+     * @throws StaleObjectException
+     * @throws \Throwable
+     */
+    public function verifyPendingContact(string $pid)
+    {
+        // Get pending contact
+        $pendingContactRecord = PendingContactRecord::find()
+            ->where(['pid' => $pid])
+            ->one();
+
+        if ($pendingContactRecord === null) {
+            return null;
+        }
+
+        /** @var PendingContactModel $pendingContact */
+        $pendingContact = PendingContactModel::populateModel($pendingContactRecord);
+
+        // Get contact if it exists
+        $contact = $this->getContactByEmail($pendingContact->email);
+
+        if ($contact === null) {
+            $contact = new ContactElement();
+        }
+
+        // Set field values
+        $contact->email = $pendingContact->email;
+        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+        $contact->setFieldValues($pendingContact->fieldData);
+
+        $contact->save();
+
+        // Delete pending contact
+        $pendingContactRecord = PendingContactRecord::find()
+            ->where(['pid' => $pendingContact->pid])
+            ->one();
+
+        if ($pendingContactRecord !== null) {
+            $pendingContactRecord->delete();
+        }
+
+        return $pendingContact;
     }
 
     /**
@@ -143,20 +232,15 @@ class ContactsService extends Component
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);
 
-        $contactIds = ContactElement::find()
-            ->where([
-                'and',
-                ['pending' => true],
-                ['<', 'dateCreated', Db::prepareDateForDb($pastTime)]
-            ])
-            ->ids();
+        $pendingContactRecords = PendingContactRecord::find()
+            ->where(['<', 'dateUpdated', Db::prepareDateForDb($pastTime)])
+            ->all();
 
-        $elementsService = Craft::$app->getElements();
+        foreach ($pendingContactRecords as $pendingContactRecord) {
+            $pendingContactRecord->delete();
 
-        foreach ($contactIds as $contactId) {
-            $contact = $this->getContactById($contactId);
-            $elementsService->deleteElement($contact);
-            Craft::info("Deleted pending contact {$contact->email} ({$contactId}), because they took too long to verify their email.", __METHOD__);
+            /** @var PendingContactRecord $pendingContactRecord */
+            Craft::info("Deleted pending contact {$pendingContactRecord->email}, because they took too long to verify their email.", __METHOD__);
         }
     }
 }

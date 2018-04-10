@@ -10,12 +10,15 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\web\Controller;
 use craft\web\View;
+use putyourlightson\campaign\records\PendingContactRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -49,7 +52,6 @@ class TrackerController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionOpen()
     {
@@ -79,7 +81,6 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionClick(): Response
     {
@@ -89,7 +90,7 @@ class TrackerController extends Controller
         $linkRecord = $this->_getLink();
 
         if ($linkRecord === null) {
-            throw new NotFoundHttpException('Link not found.');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Link not found'));
         }
 
         $url = $linkRecord->url;
@@ -118,9 +119,7 @@ class TrackerController extends Controller
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionSubscribe()
     {
@@ -136,7 +135,7 @@ class TrackerController extends Controller
             ->one();
 
         if ($mailingList === null) {
-            throw new NotFoundHttpException('Mailing list not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
         }
 
         // If MLID is required
@@ -151,34 +150,26 @@ class TrackerController extends Controller
                 ->one();
 
             if ($mailingList === null) {
-                throw new NotFoundHttpException('Mailing list not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
             }
         }
 
-        // Check if contact with submitted email address exists
         $email = $request->getRequiredBodyParam('email');
+
+        // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
             $contact = new ContactElement();
-            $contact->email = $email;
         }
 
-        // Set the field layout ID
+        // Set field values
+        $contact->email = $email;
         $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+        $contact->setFieldValuesFromRequest('fields');
 
-        // Set the field locations
-        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
-        $contact->setFieldValuesFromRequest($fieldsLocation);
-
-        // If not double opt-in
-        if (!$mailingList->mailingListType->doubleOptIn) {
-            // Verify contact
-            $contact->pending = false;
-        }
-
-        // Save it
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        // Validate contact
+        if ($contact->validate() === false) {
             if ($request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => $contact->getErrors(),
@@ -198,10 +189,16 @@ class TrackerController extends Controller
 
         // If double opt-in
         if ($mailingList->mailingListType->doubleOptIn) {
+            // Create pending contact
+            $pendingContact = Campaign::$plugin->contacts->createPendingContact($email, $mailingList->id, $referrer, $contact->getFieldValues());
+
             // Send verification email
-            Campaign::$plugin->contacts->sendVerificationEmail($contact, $mailingList, $referrer);
+            Campaign::$plugin->contacts->sendVerificationEmail($pendingContact);
         }
         else {
+            // Save contact
+            Craft::$app->getElements()->saveElement($contact);
+
             // Track subscribe
             Campaign::$plugin->tracker->subscribe($contact, $mailingList, $mailingList->mailingListType->doubleOptIn, 'web', $referrer);
         }
@@ -211,7 +208,7 @@ class TrackerController extends Controller
         }
 
         if ($request->getBodyParam('redirect')) {
-            return $this->redirectToPostedUrl($contact);
+            return $this->redirectToPostedUrl();
         }
 
         // Get template
@@ -240,7 +237,6 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionUnsubscribe()
     {
@@ -271,7 +267,7 @@ class TrackerController extends Controller
         }
 
         return $this->renderTemplate($template, [
-            'title' => 'Unsubscribed',
+            'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ]);
@@ -285,23 +281,35 @@ class TrackerController extends Controller
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function actionVerifyEmail(): Response
     {
-        // Get contact and mailing list
-        $contact = $this->_getContact();
-        $mailingList = $this->_getMailingList();
+        // Get pending contact
+        $pid = Craft::$app->getRequest()->getParam('pid');
 
-        if ($mailingList === null) {
-            throw new NotFoundHttpException('Mailing list not found');
+        if ($pid === null) {
+            return null;
         }
 
-        // Get referrer
-        $referrer = Craft::$app->getRequest()->getParam('referrer');
+        // Verify pending contact
+        $pendingContact = Campaign::$plugin->contacts->verifyPendingContact($pid);
+
+        if ($pendingContact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
+        }
+
+        // Get contact
+        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
+
+        // Get mailing list
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
+        }
 
         // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, false, 'web', $referrer);
+        Campaign::$plugin->tracker->subscribe($contact, $mailingList, false, 'web', $pendingContact->sourceUrl);
 
         // Use message template
         $template = 'campaign/message';
@@ -365,21 +373,4 @@ class TrackerController extends Controller
 
         return LinkRecord::findOne(['lid' => $lid]);
     }
-
-    /**
-     * Gets mailing list by MLID in query param
-     *
-     * @return MailingListElement|null
-     */
-    private function _getMailingList()
-    {
-        $mlid = Craft::$app->getRequest()->getParam('mlid');
-
-        if ($mlid === null) {
-            return null;
-        }
-
-        return Campaign::$plugin->mailingLists->getMailingListByMlid($mlid);
-    }
-
 }

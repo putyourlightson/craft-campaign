@@ -57,7 +57,6 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function open(ContactElement $contact, SendoutElement $sendout)
     {
@@ -81,7 +80,6 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
     {
@@ -107,7 +105,6 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function subscribe(ContactElement $contact, MailingListElement $mailingList, bool $pending = true, string $source = '', string $sourceUrl = '')
     {
@@ -134,7 +131,6 @@ class TrackerService extends Component
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
     {
@@ -176,7 +172,6 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContactCampaignRecord(ContactElement $contact, SendoutElement $sendout)
     {
@@ -201,7 +196,6 @@ class TrackerService extends Component
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
      * @param bool $verify
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList, $verify = false)
     {
@@ -234,7 +228,6 @@ class TrackerService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateContact(ContactElement $contact, $verify = false)
     {
