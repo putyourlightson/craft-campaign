@@ -98,7 +98,9 @@ class CampaignTypesController extends Controller
     {
         $this->requirePostRequest();
 
-        $campaignTypeId = Craft::$app->getRequest()->getBodyParam('campaignTypeId');
+        $request = Craft::$app->getRequest();
+
+        $campaignTypeId = $request->getBodyParam('campaignTypeId');
 
         if ($campaignTypeId) {
             $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
@@ -111,11 +113,11 @@ class CampaignTypesController extends Controller
         }
 
         // Set the simple stuff
-        $campaignType->name = Craft::$app->getRequest()->getBodyParam('name', $campaignType->name);
-        $campaignType->handle = Craft::$app->getRequest()->getBodyParam('handle', $campaignType->handle);
-        $campaignType->uriFormat = Craft::$app->getRequest()->getBodyParam('uriFormat', $campaignType->uriFormat);
-        $campaignType->htmlTemplate = Craft::$app->getRequest()->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
-        $campaignType->plaintextTemplate = Craft::$app->getRequest()->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
+        $campaignType->name = $request->getBodyParam('name', $campaignType->name);
+        $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
+        $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
+        $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
+        $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

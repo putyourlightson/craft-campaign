@@ -44,4 +44,21 @@ class PendingContactModel extends BaseModel
      * @var mixed Field data
      */
     public $fieldData;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     * @throws InvalidConfigException
+     */
+    public function rules(): array
+    {
+        return [
+            [['pid', 'email'], 'required'],
+            [['pid'], 'string', 'max' => 32],
+            [['email'], 'email'],
+        ];
+    }
+
 }

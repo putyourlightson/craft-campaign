@@ -238,7 +238,7 @@ class ContactsController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $contact->email = Craft::$app->getRequest()->getBodyParam('email', $contact->email);
+        $contact->email = $request->getBodyParam('email', $contact->email);
 
         // Set the field layout ID
         $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;

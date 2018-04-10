@@ -83,12 +83,14 @@ class ExportsController extends Controller
     {
         $this->requirePostRequest();
 
+        $request = Craft::$app->getRequest();
+
         $export = new ExportModel();
-        $export->mailingListIds = Craft::$app->getRequest()->getBodyParam('mailingListIds');
+        $export->mailingListIds = $request->getBodyParam('mailingListIds');
 
         // Get fields to export
         $export->fields = [];
-        $fields = Craft::$app->getRequest()->getBodyParam('fields');
+        $fields = $request->getBodyParam('fields');
         if (\is_array($fields)) {
             foreach ($fields as $field => $value) {
                 if ($value) {

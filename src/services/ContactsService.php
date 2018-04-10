@@ -96,22 +96,19 @@ class ContactsService extends Component
     }
 
     /**
-     * Creates a pending contact
+     * Saves a pending contact
      *
-     * @param string $email
-     * @param int $mailingListId
-     * @param string $sourceUrl
-     * @param array $fieldData
+     * @param PendingContactModel $pendingContact
      *
-     * @return PendingContactModel
+     * @return bool
      */
-    public function createPendingContact(string $email, int $mailingListId, string $sourceUrl, array $fieldData): PendingContactModel
+    public function savePendingContact(PendingContactModel $pendingContact): bool
     {
         // Get pending contact if it exists
         $pendingContactRecord = PendingContactRecord::find()
             ->where([
-                'email' => $email,
-                'mailingListId' => $mailingListId,
+                'email' => $pendingContact->email,
+                'mailingListId' => $pendingContact->mailingListId,
             ])
             ->one();
 
@@ -119,18 +116,15 @@ class ContactsService extends Component
             $pendingContactRecord = new PendingContactRecord();
         }
 
-        $pendingContactRecord->pid = StringHelper::uniqueId('p');
-        $pendingContactRecord->email = $email;
-        $pendingContactRecord->mailingListId = $mailingListId;
-        $pendingContactRecord->sourceUrl = $sourceUrl;
-        $pendingContactRecord->fieldData = $fieldData;
+        $pendingContactRecord->pid = $pendingContact->pid;
+        $pendingContactRecord->email = $pendingContact->email;
+        $pendingContactRecord->mailingListId = $pendingContact->mailingListId;
+        $pendingContactRecord->sourceUrl = $pendingContact->sourceUrl;
+        $pendingContactRecord->fieldData = $pendingContact->fieldData;
 
         $pendingContactRecord->save();
 
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord);
-
-        return $pendingContact;
+        return true;
     }
 
     /**

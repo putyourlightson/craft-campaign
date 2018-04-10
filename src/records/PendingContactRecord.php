@@ -34,6 +34,6 @@ class PendingContactRecord extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%campaign_pending_contacts}}';
+        return '{{%campaign_pendingcontacts}}';
     }
 }

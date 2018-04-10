@@ -148,8 +148,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_pending_contacts}}')) {
-            $this->createTable('{{%campaign_pending_contacts}}', [
+        if (!$this->db->tableExists('{{%campaign_pendingcontacts}}')) {
+            $this->createTable('{{%campaign_pendingcontacts}}', [
                 'id' => $this->primaryKey(),
                 'pid' => $this->uid(),
                 'email' => $this->string()->notNull(),
@@ -313,13 +313,14 @@ class Install extends Migration
         $this->createIndex(null, '{{%campaign_campaigntypes}}', 'handle', true);
         $this->createIndex(null, '{{%campaign_contacts}}', 'email', true);
         $this->createIndex(null, '{{%campaign_contacts}}', 'cid', true);
+        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
+        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', true);
         $this->createIndex(null, '{{%campaign_contacts_campaigns}}', 'contactId, sendoutId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'contactId, mailingListId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
         $this->createIndex(null, '{{%campaign_links}}', 'lid', true);
         $this->createIndex(null, '{{%campaign_mailinglists}}', 'mlid', true);
         $this->createIndex(null, '{{%campaign_mailinglisttypes}}', 'handle', true);
-
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sid', true);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sendoutType', false);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sendStatus', false);

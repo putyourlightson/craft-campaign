@@ -94,7 +94,9 @@ class MailingListTypesController extends Controller
     {
         $this->requirePostRequest();
 
-        $mailingListTypeId = Craft::$app->getRequest()->getBodyParam('mailingListTypeId');
+        $request = Craft::$app->getRequest();
+
+        $mailingListTypeId = $request->getBodyParam('mailingListTypeId');
 
         if ($mailingListTypeId) {
             $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
@@ -107,10 +109,10 @@ class MailingListTypesController extends Controller
         }
 
         // Set the simple stuff
-        $mailingListType->name = Craft::$app->getRequest()->getBodyParam('name', $mailingListType->name);
-        $mailingListType->handle = Craft::$app->getRequest()->getBodyParam('handle', $mailingListType->handle);
-        $mailingListType->doubleOptIn = (bool)Craft::$app->getRequest()->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);
-        $mailingListType->requireMlid = (bool)Craft::$app->getRequest()->getBodyParam('requireMlid', $mailingListType->requireMlid);
+        $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
+        $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
+        $mailingListType->doubleOptIn = (bool)$request->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);
+        $mailingListType->requireMlid = (bool)$request->getBodyParam('requireMlid', $mailingListType->requireMlid);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

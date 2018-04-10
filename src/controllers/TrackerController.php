@@ -155,49 +155,73 @@ class TrackerController extends Controller
         }
 
         $email = $request->getRequiredBodyParam('email');
-
-        // Get contact if it exists
-        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
-
-        if ($contact === null) {
-            $contact = new ContactElement();
-        }
-
-        // Set field values
-        $contact->email = $email;
-        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
-        $contact->setFieldValuesFromRequest('fields');
-
-        // Validate contact
-        if ($contact->validate() === false) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
-            ]);
-
-            return null;
-        }
-
-        // Get referrer
         $referrer = $request->getReferrer();
 
         // If double opt-in
         if ($mailingList->mailingListType->doubleOptIn) {
+            // Create new contact to get field values
+            $contact = new ContactElement();
+            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+            $contact->setFieldValuesFromRequest('fields');
+
             // Create pending contact
-            $pendingContact = Campaign::$plugin->contacts->createPendingContact($email, $mailingList->id, $referrer, $contact->getFieldValues());
+            $pendingContact = new PendingContactModel();
+            $pendingContact->pid = StringHelper::uniqueId('p');
+            $pendingContact->email = $email;
+            $pendingContact->mailingListId = $mailingList->id;
+            $pendingContact->sourceUrl = $referrer;
+            $pendingContact->fieldData = $contact->getFieldValues();
+
+            // Validate pending contact
+            if (!$pendingContact->validate()) {
+                if ($request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'errors' => $pendingContact->getErrors(),
+                    ]);
+                }
+
+                // Send the contact back to the template
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'pendingContact' => $pendingContact
+                ]);
+
+                return null;
+            }
+
+            // Save pending contact
+            Campaign::$plugin->contacts->savePendingContact($pendingContact);
 
             // Send verification email
             Campaign::$plugin->contacts->sendVerificationEmail($pendingContact);
         }
         else {
+            // Get contact if it exists
+            $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+
+            if ($contact === null) {
+                $contact = new ContactElement();
+            }
+
+            // Set field values
+            $contact->email = $email;
+            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+            $contact->setFieldValuesFromRequest('fields');
+
             // Save contact
-            Craft::$app->getElements()->saveElement($contact);
+            if (!Craft::$app->getElements()->saveElement($contact)) {
+                if ($request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'errors' => $contact->getErrors(),
+                    ]);
+                }
+
+                // Send the contact back to the template
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'contact' => $contact
+                ]);
+
+                return null;
+            }
 
             // Track subscribe
             Campaign::$plugin->tracker->subscribe($contact, $mailingList, $mailingList->mailingListType->doubleOptIn, 'web', $referrer);

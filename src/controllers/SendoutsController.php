@@ -283,7 +283,9 @@ class SendoutsController extends Controller
 
         $this->requirePostRequest();
 
-        $sendoutId = Craft::$app->getRequest()->getBodyParam('sendoutId');
+        $request = Craft::$app->getRequest();
+
+        $sendoutId = $request->getBodyParam('sendoutId');
 
         if ($sendoutId) {
             $sendout = $this->_getSendoutFromPostedId();
@@ -292,30 +294,30 @@ class SendoutsController extends Controller
             $sendout = new SendoutElement();
         }
 
-        $sendout->title = Craft::$app->getRequest()->getBodyParam('title', $sendout->title);
-        $sendout->sendoutType = Craft::$app->getRequest()->getBodyParam('sendoutType', $sendout->sendoutType);
-        $sendout->fromName = Craft::$app->getRequest()->getBodyParam('fromName', $sendout->fromName);
-        $sendout->fromEmail = Craft::$app->getRequest()->getBodyParam('fromEmail', $sendout->fromEmail);
-        $sendout->subject = Craft::$app->getRequest()->getBodyParam('subject', $sendout->subject);
-        $sendout->notificationEmailAddress = Craft::$app->getRequest()->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
-        $sendout->googleAnalyticsLinkTracking = (bool)Craft::$app->getRequest()->getBodyParam('googleAnalyticsLinkTracking', $sendout->googleAnalyticsLinkTracking);
+        $sendout->title = $request->getBodyParam('title', $sendout->title);
+        $sendout->sendoutType = $request->getBodyParam('sendoutType', $sendout->sendoutType);
+        $sendout->fromName = $request->getBodyParam('fromName', $sendout->fromName);
+        $sendout->fromEmail = $request->getBodyParam('fromEmail', $sendout->fromEmail);
+        $sendout->subject = $request->getBodyParam('subject', $sendout->subject);
+        $sendout->notificationEmailAddress = $request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
+        $sendout->googleAnalyticsLinkTracking = (bool)$request->getBodyParam('googleAnalyticsLinkTracking', $sendout->googleAnalyticsLinkTracking);
 
         // Get the selected campaign ID
-        $sendout->campaignId = Craft::$app->getRequest()->getBodyParam('campaignId', $sendout->campaignId);
+        $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);
         $sendout->campaignId = (\is_array($sendout->campaignId) AND isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
-        $sendout->mailingListIds = Craft::$app->getRequest()->getBodyParam('mailingListIds', $sendout->mailingListIds);
+        $sendout->mailingListIds = $request->getBodyParam('mailingListIds', $sendout->mailingListIds);
         $sendout->mailingListIds = \is_array($sendout->mailingListIds) ? implode(',', $sendout->mailingListIds) : '';
-        $sendout->excludedMailingListIds = Craft::$app->getRequest()->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
+        $sendout->excludedMailingListIds = $request->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
         $sendout->excludedMailingListIds = \is_array($sendout->excludedMailingListIds) ? implode(',', $sendout->excludedMailingListIds) : '';
 
-        $sendout->segmentIds = Craft::$app->getRequest()->getBodyParam('segmentIds', $sendout->segmentIds);
+        $sendout->segmentIds = $request->getBodyParam('segmentIds', $sendout->segmentIds);
         $sendout->segmentIds = \is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
 
         // Convert send date
         if ($sendout->sendoutType == 'scheduled') {
-            $sendout->sendDate = Craft::$app->getRequest()->getBodyParam('sendDate', $sendout->sendDate);
+            $sendout->sendDate = $request->getBodyParam('sendDate', $sendout->sendDate);
             $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
             $sendout->sendDate = ($sendout->sendDate === false) ? null : $sendout->sendDate;
         }
@@ -327,7 +329,7 @@ class SendoutsController extends Controller
         $automatedSchedule = null;
 
         if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isPro()) {
-            $sendout->automatedSchedule = Craft::$app->getRequest()->getBodyParam('automatedSchedule', $sendout->automatedSchedule);
+            $sendout->automatedSchedule = $request->getBodyParam('automatedSchedule', $sendout->automatedSchedule);
 
             // Create automated schedule model
             $automatedSchedule = new AutomatedScheduleModel($sendout->automatedSchedule);
@@ -342,7 +344,7 @@ class SendoutsController extends Controller
 
                 Craft::$app->getUrlManager()->setRouteParams([
                     'sendout' => $sendout,
-                    'automatedSchedule' => $automatedSchedule
+                    'automatedSchedule' => $automatedSchedule,
                 ]);
 
                 return null;
@@ -356,7 +358,7 @@ class SendoutsController extends Controller
             // Send the sendout and automated schedule back to the template
             Craft::$app->getUrlManager()->setRouteParams([
                 'sendout' => $sendout,
-                'automatedSchedule' => $automatedSchedule
+                'automatedSchedule' => $automatedSchedule,
             ]);
 
             return null;
