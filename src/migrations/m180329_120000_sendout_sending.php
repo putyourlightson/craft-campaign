@@ -35,7 +35,7 @@ class m180329_120000_sendout_sending extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180329_120000_sendout_sending cannot be reverted.\n";
 

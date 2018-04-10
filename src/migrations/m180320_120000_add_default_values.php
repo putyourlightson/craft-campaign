@@ -34,7 +34,7 @@ class m180320_120000_add_default_values extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180320_120000_add_default_values cannot be reverted.\n";
 

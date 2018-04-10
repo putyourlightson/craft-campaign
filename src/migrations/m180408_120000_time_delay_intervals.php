@@ -40,7 +40,7 @@ class m180408_120000_time_delay_intervals extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180408_120000_time_delay_intervals cannot be reverted.\n";
 

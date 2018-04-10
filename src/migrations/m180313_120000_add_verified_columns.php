@@ -30,7 +30,7 @@ class m180313_120000_add_verified_columns extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180313_120000_add_verified_columns cannot be reverted.\n";
 

@@ -257,7 +257,6 @@ class TrackerService extends Component
      * @param Model $model
      *
      * @return Model
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function _updateLocationDevice(Model $model): Model
     {

@@ -23,7 +23,7 @@ class m180405_120000_remove_expected_recipients extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180405_120000_remove_expected_recipients cannot be reverted.\n";
 
