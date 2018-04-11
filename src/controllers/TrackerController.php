@@ -18,7 +18,6 @@ use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\web\Controller;
 use craft\web\View;
-use putyourlightson\campaign\records\PendingContactRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;

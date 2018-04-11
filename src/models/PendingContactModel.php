@@ -50,7 +50,6 @@ class PendingContactModel extends BaseModel
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function rules(): array
     {

@@ -6,10 +6,10 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\helpers\ConfigHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\models\PendingContactModel;
+use putyourlightson\campaign\records\PendingContactRecord;
 
 use Craft;
 use craft\base\Component;
@@ -18,9 +18,6 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
-use putyourlightson\campaign\helpers\StringHelper;
-use putyourlightson\campaign\models\PendingContactModel;
-use putyourlightson\campaign\records\PendingContactRecord;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\helpers\Json;
