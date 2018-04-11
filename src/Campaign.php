@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign;
 
+use craft\helpers\ConfigHelper;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
@@ -65,7 +66,6 @@ use yii\web\ForbiddenHttpException;
  *
  * @property  array|null $cpNavItem
  * @property  mixed $settingsResponse
- * @method    SettingsModel getSettings()
  */
 class Campaign extends Plugin
 {
@@ -181,6 +181,20 @@ class Campaign extends Plugin
                 $event->permissions['Campaign']['campaign-settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
             });
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettings()
+    {
+        /** @var SettingsModel $settings */
+        $settings = parent::getSettings();
+
+        // Normalize time duration settings
+        $settings->purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
+
+        return $settings;
     }
 
     /**

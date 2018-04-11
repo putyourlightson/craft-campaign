@@ -1,5 +1,14 @@
 # Campaign Changelog
 
+## 1.0.0-beta11 - 2018-04-11
+> Warning: this update will delete any currently pending contacts.
+
+### Added
+- Added maxPendingContacts config setting
+
+### Changed
+- Changed how pending contacts are stored to be non-destructive
+
 ## 1.0.0-beta10 - 2018-04-09
 ### Added
 - Added queuing of automated sendouts based on automated schedule

@@ -312,7 +312,7 @@ class TrackerController extends Controller
         $pid = Craft::$app->getRequest()->getParam('pid');
 
         if ($pid === null) {
-            return null;
+            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
         }
 
         // Verify pending contact

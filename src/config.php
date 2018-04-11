@@ -34,6 +34,9 @@ return [
     // A label to use for the email field
     //'emailFieldLabel' => 'Email',
 
+    // The maximum number of pending contacts to store per email address and mailing list
+    //'maxPendingContacts' => 5,
+
     // The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
     //'purgePendingContactsDuration' => 0,
 
@@ -49,10 +52,10 @@ return [
     // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
     //'timeLimit' => 300,
 
-    // The max size of sendout batches
+    // The maximum size of sendout batches
     //'maxBatchSize' => 1000,
 
-    // The max number of sendout retry attempts
+    // The maximum number of sendout retry attempts
     //'maxRetryAttempts' => 10,
 
     // The amount of time in seconds to delay jobs between sendout batches

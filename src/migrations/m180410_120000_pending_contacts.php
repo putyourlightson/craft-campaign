@@ -2,9 +2,9 @@
 
 namespace putyourlightson\campaign\migrations;
 
-use craft\helpers\MigrationHelper;
-
+use Craft;
 use craft\db\Migration;
+use craft\db\Query;
 
 /**
  * m180410_120000_pending_contacts migration.
@@ -32,7 +32,18 @@ class m180410_120000_pending_contacts extends Migration
         ]);
 
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
-        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', true);
+        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', false);
+
+        // Remove old pending contacts
+        $pendingContacts = (new Query())
+            ->select('id')
+            ->from('{{%campaign_contacts}}')
+            ->where(['pending' => true])
+            ->all();
+
+        foreach ($pendingContacts as $pendingContact) {
+            Craft::$app->getElements()->deleteElementById($pendingContact->id);
+        }
 
         $this->dropColumn('{{%campaign_contacts}}', 'pending');
     }

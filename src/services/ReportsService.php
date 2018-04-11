@@ -109,7 +109,7 @@ class ReportsService extends Component
         // Get sendouts
         $data['sendouts'] = SendoutElement::find()
             ->campaignId($campaignId)
-            ->orderBy('sendDate')
+            ->orderBy(['sendDate' => SORT_ASC])
             ->all();
 
         // Check if chart exists
@@ -134,7 +134,7 @@ class ReportsService extends Component
         /** @var SendoutElement $sendout */
         $sendout = SendoutElement::find()
             ->campaignId($campaignId)
-            ->orderBy('sendDate asc')
+            ->orderBy(['sendDate' => SORT_ASC])
             ->one();
 
         if ($sendout === null) {
@@ -156,7 +156,7 @@ class ReportsService extends Component
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
             ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
-            ->orderBy('dateCreated asc')
+            ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
 
         // Get interactions
@@ -204,7 +204,7 @@ class ReportsService extends Component
         // Get contact campaigns
         $query = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit);
 
         if ($interaction !== null) {
@@ -232,7 +232,7 @@ class ReportsService extends Component
         // Get campaign links
         $linkRecords = LinkRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy('clicked desc, clicks desc')
+            ->orderBy(['clicked desc, clicks' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -321,7 +321,7 @@ class ReportsService extends Component
     {
         // Get recently active contacts
         $contacts = ContactElement::find()
-            ->orderBy('lastActivity desc')
+            ->orderBy(['lastActivity' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -378,7 +378,7 @@ class ReportsService extends Component
         // Get contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['contactId' => $contactId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -401,7 +401,7 @@ class ReportsService extends Component
         // Get mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['contactId' => $contactId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -424,7 +424,7 @@ class ReportsService extends Component
         // Get contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['contactId' => $contactId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -433,7 +433,7 @@ class ReportsService extends Component
         // Get mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['contactId' => $contactId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
 
@@ -503,13 +503,13 @@ class ReportsService extends Component
         // Get sendouts
         $data['sendouts'] = SendoutElement::find()
             ->mailingListId($mailingListId)
-            ->orderBy('sendDate')
+            ->orderBy(['sendDate' => SORT_ASC])
             ->all();
 
         // Get first contact mailing list
         $contactMailingListRecord = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
-            ->orderBy('dateCreated asc')
+            ->orderBy(['dateCreated' => SORT_ASC])
             ->one();
 
         // Check if chart exists
@@ -548,7 +548,7 @@ class ReportsService extends Component
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
             ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
-            ->orderBy('dateCreated asc')
+            ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
 
         // Get interactions
@@ -596,7 +596,7 @@ class ReportsService extends Component
         // Get contact mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
-            ->orderBy('dateUpdated desc')
+            ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
 

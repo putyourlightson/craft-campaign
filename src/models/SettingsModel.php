@@ -66,6 +66,11 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
+     * @var int The maximum number of pending contacts to store per email address and mailing list
+     */
+    public $maxPendingContacts = 5;
+
+    /**
      * @var mixed The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
      */
     public $purgePendingContactsDuration = 0;
@@ -91,12 +96,12 @@ class SettingsModel extends Model
     public $timeLimit = 300;
 
     /**
-     * @var int The max size of sendout batches
+     * @var int The maximum size of sendout batches
      */
     public $maxBatchSize = 1000;
 
     /**
-     * @var int The max number of sendout retry attempts
+     * @var int The maximum number of sendout retry attempts
      */
     public $maxRetryAttempts = 10;
 

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\ConfigHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -102,30 +103,43 @@ class ContactsService extends Component
      * @param PendingContactModel $pendingContact
      *
      * @return bool
+     * @throws StaleObjectException
+     * @throws \Throwable
      */
     public function savePendingContact(PendingContactModel $pendingContact): bool
     {
-        // Get pending contact if it exists
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where([
-                'email' => $pendingContact->email,
-                'mailingListId' => $pendingContact->mailingListId,
-            ])
-            ->one();
+        $this->purgeExpiredPendingContacts();
 
-        if ($pendingContactRecord === null) {
-            $pendingContactRecord = new PendingContactRecord();
+        $settings = Campaign::$plugin->getSettings();
+
+        $condition = [
+            'email' => $pendingContact->email,
+            'mailingListId' => $pendingContact->mailingListId,
+        ];
+
+        // Check if max pending contacts reached for this email
+        $numPendingContactRecords = PendingContactRecord::find()
+            ->where($condition)
+            ->count();
+
+        if ($numPendingContactRecords >= $settings->maxPendingContacts) {
+            // Delete oldest pending contacts
+            $pendingContactRecords = PendingContactRecord::find()
+                ->where($condition)
+                ->orderBy(['dateCreated' => SORT_ASC])
+                ->limit($numPendingContactRecords - $settings->maxPendingContacts + 1)
+                ->all();
+
+            foreach ($pendingContactRecords as $pendingContactRecord) {
+                $pendingContactRecord->delete();
+            }
         }
 
-        $pendingContactRecord->pid = $pendingContact->pid;
-        $pendingContactRecord->email = $pendingContact->email;
-        $pendingContactRecord->mailingListId = $pendingContact->mailingListId;
-        $pendingContactRecord->sourceUrl = $pendingContact->sourceUrl;
-        $pendingContactRecord->fieldData = $pendingContact->fieldData;
+        $pendingContactRecord = new PendingContactRecord();
 
-        $pendingContactRecord->save();
+        $pendingContactRecord->setAttributes($pendingContact->getAttributes(), false);
 
-        return true;
+        return $pendingContactRecord->save();
     }
 
     /**

@@ -313,7 +313,7 @@ class Install extends Migration
         $this->createIndex(null, '{{%campaign_contacts}}', 'email', true);
         $this->createIndex(null, '{{%campaign_contacts}}', 'cid', true);
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
-        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', true);
+        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', false);
         $this->createIndex(null, '{{%campaign_contacts_campaigns}}', 'contactId, sendoutId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'contactId, mailingListId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
