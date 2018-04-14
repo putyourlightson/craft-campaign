@@ -242,7 +242,10 @@ class CampaignTypesService extends Component
 
             // Delete the campaign type
             $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
-            $campaignTypeRecord->delete();
+
+            if ($campaignTypeRecord !== null) {
+                $campaignTypeRecord->delete();
+            }
 
             $transaction->commit();
         } catch (\Throwable $e) {

@@ -201,6 +201,10 @@ class WebhookController extends Controller
 
         $sendout = $sid ? Campaign::$plugin->sendouts->getSendoutBySid($sid) : null;
 
+        if ($sendout === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
+        }
+
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,
             'sendoutId' => $sendout->id,

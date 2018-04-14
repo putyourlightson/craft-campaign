@@ -231,7 +231,10 @@ class MailingListTypesService extends Component
 
             // Delete the mailing list type
             $mailingListTypeRecord = MailingListTypeRecord::findOne($mailingListType->id);
-            $mailingListTypeRecord->delete();
+
+            if ($mailingListTypeRecord !== null) {
+                $mailingListTypeRecord->delete();
+            }
 
             $transaction->commit();
         } catch (\Throwable $e) {

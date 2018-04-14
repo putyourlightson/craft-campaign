@@ -135,6 +135,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             $pendingRecipient = array_shift($pendingRecipients);
 
             $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
+
+            if ($contact === null) {
+                continue;
+            }
+
             $mailingListId = $pendingRecipient['mailingListId'];
 
             // Send email

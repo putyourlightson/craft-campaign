@@ -185,6 +185,10 @@ class SendoutsService extends Component
         // Get campaign
         $campaign = $sendout->getCampaign();
 
+        if ($campaign === null) {
+            return false;
+        }
+
         // Get body
         $htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
@@ -234,6 +238,10 @@ class SendoutsService extends Component
 
         // Get campaign
         $campaign = $sendout->getCampaign();
+
+        if ($campaign === null) {
+            return;
+        }
 
         // Create contact campaign record
         $contactCampaignRecord = new ContactCampaignRecord();
@@ -420,16 +428,19 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'sent';
         }
 
-        // Update HTML and plaintext body
+        // Get campaign
         $campaign = $sendout->getCampaign();
+
+        if ($campaign === null) {
+            return;
+        }
+
+        // Update HTML and plaintext body
         $contact = new ContactElement();
         $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
 
         Craft::$app->getElements()->saveElement($sendout);
-
-        // Get campaign
-        $campaign = $sendout->getCampaign();
 
         // Update campaign recipients
         $campaign->recipients += $sendout->recipients;

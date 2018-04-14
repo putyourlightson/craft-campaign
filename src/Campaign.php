@@ -186,7 +186,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettings()
+    public function getSettings(): SettingsModel
     {
         /** @var SettingsModel $settings */
         $settings = parent::getSettings();
@@ -314,7 +314,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): SettingsModel
     {
         $settings = new SettingsModel();
 

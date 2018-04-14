@@ -21,7 +21,6 @@ use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
 use yii\base\Exception;
-use yii\base\Model;
 
 /**
  * TrackerService
@@ -236,11 +235,11 @@ class TrackerService extends Component
     /**
      * Update location and device
      *
-     * @param Model $model
+     * @param ContactCampaignRecord|ContactMailingListRecord|ContactElement $model
      *
-     * @return Model
+     * @return ContactElement|ContactCampaignRecord|ContactMailingListRecord
      */
-    private function _updateLocationDevice(Model $model): Model
+    private function _updateLocationDevice($model)
     {
         // Get GeoIP
         if ($this->_geoIp === null) {

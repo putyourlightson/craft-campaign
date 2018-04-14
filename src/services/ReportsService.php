@@ -252,7 +252,12 @@ class ReportsService extends Component
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
+        if ($campaign === null) {
+            return [];
+        }
+
         // Return locations of contact campaigns
+        /** @var CampaignElement $campaign */
         return $this->_getLocations(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
@@ -269,6 +274,10 @@ class ReportsService extends Component
     {
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+
+        if ($campaign === null) {
+            return [];
+        }
 
         // Return device, os and client of contact campaigns
         return $this->_getDevices(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $detailed, $campaign->opened, $limit);
@@ -533,6 +542,10 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
+        if ($mailingList === null) {
+            return [];
+        }
+
         // Get date time format ensuring interval is valid
         $format = $this->_getDateTimeFormat($interval);
         if ($format === null) {
@@ -619,6 +632,10 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
+        if ($mailingList === null) {
+            return [];
+        }
+
         // Return locations of contact mailing lists
         return $this->_getLocations(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $mailingList->getSubscribedCount(), $limit);
     }
@@ -636,6 +653,10 @@ class ReportsService extends Component
     {
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
+        if ($mailingList === null) {
+            return [];
+        }
 
         // Return device, os and client of contact mailing lists
         return $this->_getDevices(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $detailed, $mailingList->getSubscribedCount(), $limit);

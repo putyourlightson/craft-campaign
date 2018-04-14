@@ -165,7 +165,7 @@ class SegmentElement extends Element
     // =========================================================================
 
     /**
-     * @var array Conditions
+     * @var mixed Conditions
      */
     public $conditions;
 

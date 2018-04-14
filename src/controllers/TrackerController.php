@@ -324,6 +324,10 @@ class TrackerController extends Controller
         // Get contact
         $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
 
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found'));
+        }
+
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
 
