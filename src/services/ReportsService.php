@@ -232,7 +232,7 @@ class ReportsService extends Component
         // Get campaign links
         $linkRecords = LinkRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy(['clicked, clicks' => SORT_DESC])
+            ->orderBy(['clicked' => SORT_DESC, 'clicks' => SORT_DESC])
             ->limit($limit)
             ->all();
 
