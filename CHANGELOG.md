@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed SQL bug when retrieving links report
+- Fixed device icon positioning in reports
 
 ## 1.0.0-beta11 - 2018-04-11
 > Warning: this update will delete any currently pending contacts.
