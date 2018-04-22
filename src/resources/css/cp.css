@@ -267,8 +267,8 @@ label.subscriptionStatus.bounced {
 }
 
 .device {
-    background-size: cover;
     background: no-repeat 50%;
+    background-size: contain;
     position: relative;
     display: inline-block;
     width: 1.33333333em;
