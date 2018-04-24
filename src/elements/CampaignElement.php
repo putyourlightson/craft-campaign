@@ -329,8 +329,14 @@ class CampaignElement extends Element
     protected function route()
     {
         return [
-            'campaign/campaigns/get-body', [
-                'campaign' => $this,
+            'templates/render', [
+                'template' => $this->getCampaignType()->htmlTemplate,
+                'variables' => [
+                    'campaign' => $this,
+                    'browserVersionUrl' => $this->url,
+                    'contact' => new ContactElement(),
+                    'unsubscribeUrl' => '',
+                ]
             ]
         ];
     }

@@ -55,36 +55,6 @@ class CampaignsController extends Controller
     }
 
     /**
-     * @param CampaignElement $campaign
-     *
-     * @return Response
-     *
-     * @throws Exception
-     * @throws \Twig_Error_Loader
-     * @throws InvalidConfigException
-     */
-    public function actionGetBody(CampaignElement $campaign): Response
-    {
-        $request = Craft::$app->getRequest();
-        $response = Craft::$app->getResponse();
-
-        // If CID passed in then get contact
-        $cid = $request->getParam('cid');
-        $contact = $cid ? Campaign::$plugin->contacts->getContactByCid($cid) : null;
-
-        // If plaintext passed in then return plaintext body
-        if ($request->getParam('plaintext')) {
-            $response->content = $campaign->getPlaintextBody($contact);
-        }
-        // Otherwise return html body
-        else {
-            $response->content = $campaign->getHtmlBody($contact);
-        }
-
-        return $response;
-    }
-
-    /**
      * @param string               $campaignTypeHandle The campaign type’s handle
      * @param int|null             $campaignId         The campaign’s ID, if editing an existing campaign.
      * @param CampaignElement|null $campaign           The campaign being edited, if there were any validation errors.
