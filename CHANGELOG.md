@@ -4,6 +4,7 @@
 
 ### Changed
 - Refactored code
+- Improved webhook handling
 
 ### Fixed
 - Fixed SQL bug when retrieving links report

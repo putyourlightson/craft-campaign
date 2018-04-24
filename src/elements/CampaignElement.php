@@ -325,6 +325,7 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     protected function route()
     {
