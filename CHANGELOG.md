@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Added webhook for Amazon SES complain and bounce notifications
+
 ### Changed
 - Refactored code
 - Improved webhook handling

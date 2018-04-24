@@ -52,6 +52,43 @@ class WebhookController extends Controller
     }
 
     /**
+     * Amazon SES
+     *
+     * @throws \Throwable
+     */
+    public function actionAmazonSes()
+    {
+        $this->requirePostRequest();
+
+        $event = Craft::$app->getRequest()->getRawBody();
+        $event = Json::decode($event);
+
+        if (is_array($event)) {
+            $eventType = $event['notificationType'];
+
+            // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
+            $sid = '';
+            foreach ($event['mail']['headers'] as $header) {
+                if ($header['name'] == 'sid') {
+                    $sid = $header['value'];
+                    break;
+                }
+            }
+
+            if ($eventType == 'Complaint') {
+                $email = $event['complaint']['complainedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('complained', $email, $sid);
+            }
+            if ($eventType == 'Bounce' AND $event['bounce']['bounceType'] == 'Permanent') {
+                $email = $event['bounce']['bouncedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('bounced', $email, $sid);
+            }
+        }
+
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+    }
+
+    /**
      * Mailgun
      *
      * @throws \Throwable
@@ -61,14 +98,14 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $event = $request->getBodyParam('event');
+        $eventType = $request->getBodyParam('event');
         $email = $request->getBodyParam('recipient');
         $sid = $request->getBodyParam('sid');
 
-        if ($event == 'complained') {
+        if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($event == 'bounced') {
+        if ($eventType == 'bounced') {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 
@@ -88,15 +125,15 @@ class WebhookController extends Controller
         $events = Json::decodeIfJson($events);
 
         if (is_array($events)) {
-            foreach ($events as $eventArray) {
-                $event = $eventArray['event'] ?? '';
-                $email = $eventArray['msg']['email'] ?? '';
-                $sid = $eventArray['msg']['metadata']['sid'] ?? '';
+            foreach ($events as $event) {
+                $eventType = $event['event'] ?? '';
+                $email = $event['msg']['email'] ?? '';
+                $sid = $event['msg']['metadata']['sid'] ?? '';
 
-                if ($event == 'spam') {
+                if ($eventType == 'spam') {
                     return $this->_callWebhook('complained', $email, $sid);
                 }
-                if ($event == 'hard_bounce') {
+                if ($eventType == 'hard_bounce') {
                     return $this->_callWebhook('bounced', $email, $sid);
                 }
             }
@@ -115,14 +152,14 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $event = $request->getBodyParam('Type');
+        $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
         $sid = $request->getBodyParam('sid');
 
-        if ($event == 'SpamComplaint') {
+        if ($eventType == 'SpamComplaint') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($event == 'HardBounce') {
+        if ($eventType == 'HardBounce') {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 
@@ -142,15 +179,15 @@ class WebhookController extends Controller
         $events = Json::decodeIfJson($events);
 
         if (is_array($events)) {
-            foreach ($events as $eventArray) {
-                $event = $eventArray['event'] ?? '';
-                $email = $eventArray['email'] ?? '';
-                $sid = $eventArray['sid'] ?? '';
+            foreach ($events as $event) {
+                $eventType = $event['event'] ?? '';
+                $email = $event['email'] ?? '';
+                $sid = $event['sid'] ?? '';
 
-                if ($event == 'complained') {
+                if ($eventType == 'complained') {
                     return $this->_callWebhook('complained', $email, $sid);
                 }
-                if ($event == 'bounced') {
+                if ($eventType == 'bounced') {
                     return $this->_callWebhook('bounced', $email, $sid);
                 }
             }

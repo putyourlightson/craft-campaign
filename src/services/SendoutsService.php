@@ -554,6 +554,10 @@ class SendoutsService extends Component
         if ($transport instanceof \Swift_Transport) {
             $transportClass = \get_class($transport);
             switch ($transportClass) {
+                case 'AmazonSesTransport':
+                    $message->addHeader('sid', $sid);
+                    break;
+
                 case 'MailgunTransport':
                     $message->addHeader('X-Mailgun-Variables', '{"sid": "'.$sid.'"}');
                     break;
