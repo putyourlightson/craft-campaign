@@ -9,21 +9,19 @@
     <tr>
         <th class="light">{{ "Location"|t('campaign') }}</th>
         <td>
-            {% if contact.country %}
-                <span class="flag-icon flag-icon-{{ contact.countryCode }}"></span>
-                {{ contact.country }}
-                {% set location = contact.location %}
-                {% if location %}
-                    <span class="info">
-                        <p>
-                            City: {{ location.city }}<br/>
-                            Post Code: {{ location.postCode }}<br/>
-                            Region: {{ location.region }}<br/>
-                            Country: {{ location.country }}<br/>
-                            Timezone: {{ location.timeZone }}
-                        </p>
-                    </span>
-                {% endif %}
+            {% set geoIp = contact.geoIp %}
+            {% if geoIp %}
+                <span class="flag-icon flag-icon-{{ geoIp.countryCode|lower }}"></span>
+                {{ geoIp.countryName }}
+                <span class="info">
+                    <p>
+                        City: {{ geoIp.city }}<br/>
+                        Post Code: {{ geoIp.postCode }}<br/>
+                        Region: {{ geoIp.regionName }}<br/>
+                        Country: {{ geoIp.countryName }}<br/>
+                        Timezone: {{ geoIp.timeZone }}
+                    </p>
+                </span>
             {% endif %}
         </td>
     </tr>

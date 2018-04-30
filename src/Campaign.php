@@ -211,9 +211,6 @@ class Campaign extends Plugin
         $cpNavItem['subnav'] = [];
 
         // Show nav items based on permissions
-        if ($user->checkPermission('campaign-reports')) {
-            $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
-        }
         if ($user->checkPermission('campaign-campaigns')) {
             $cpNavItem['subnav']['campaigns'] = ['label' => Craft::t('campaign', 'Campaigns'), 'url' => 'campaign/campaigns'];
         }
@@ -228,6 +225,9 @@ class Campaign extends Plugin
         }
         if ($user->checkPermission('campaign-sendouts')) {
             $cpNavItem['subnav']['sendouts'] = ['label' => Craft::t('campaign', 'Sendouts'), 'url' => 'campaign/sendouts'];
+        }
+        if ($user->checkPermission('campaign-reports')) {
+            $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
         }
         if ($user->checkPermission('campaign-import') OR $user->checkPermission('campaign-export')) {
             $cpNavItem['subnav']['import-export'] = ['label' => Craft::t('campaign', 'Import/Export'), 'url' => 'campaign/import-export'];
@@ -312,6 +312,20 @@ class Campaign extends Plugin
 
         // Set time limit
         @set_time_limit($settings->timeLimit);
+    }
+
+    /**
+     * Logs a user action
+     *
+     * @param string $message
+     * @param array $params
+     * @param string|null $category
+     */
+    public function logUserAction(string $message, array $params, string $category = 'Campaign')
+    {
+        $params['username'] = Craft::$app->getUser()->getIdentity()->username;
+
+        Craft::info(Craft::t('campaign', $message, $params), $category);
     }
 
     // Protected Methods

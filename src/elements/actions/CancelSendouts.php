@@ -107,7 +107,7 @@ EOD;
             Campaign::$plugin->sendouts->cancelSendout($sendout);
 
             // Log it
-            LogHelper::logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
+            Campaign::$plugin->logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
         }
 
         $this->setMessage(Craft::t('campaign', 'Sendouts cancelled.'));

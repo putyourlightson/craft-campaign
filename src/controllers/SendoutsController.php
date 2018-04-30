@@ -413,7 +413,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
@@ -487,7 +487,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout paused.'));
 
@@ -517,7 +517,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout cancelled.'));
 
@@ -545,7 +545,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout deleted.'));
 

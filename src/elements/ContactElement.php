@@ -18,6 +18,7 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
+use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
@@ -44,7 +45,6 @@ use yii\base\InvalidConfigException;
  * @property string               $countryCode
  * @property MailingListElement[] $allMailingLists
  * @property int                  $subscribedCount
- * @property array                $location
  */
 class ContactElement extends Element
 {
@@ -336,8 +336,8 @@ class ContactElement extends Element
     {
         parent::init();
 
-        // Decode geoIp if not null
-        $this->geoIp = $this->geoIp !== null ? Json::decode($this->geoIp) : [];
+        // Decode geoIp if not empty
+        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : [];
     }
 
     /**

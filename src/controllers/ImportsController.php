@@ -134,7 +134,7 @@ class ImportsController extends Controller
         Campaign::$plugin->imports->startImport($import);
 
         // Log it
-        LogHelper::logUserAction('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName], __METHOD__);
+        Campaign::$plugin->logUserAction('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'CSV file successfully queued for importing.'));
 
@@ -207,7 +207,7 @@ class ImportsController extends Controller
         Campaign::$plugin->imports->startImport($import);
 
         // Log it
-        LogHelper::logUserAction('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name], __METHOD__);
+        Campaign::$plugin->logUserAction('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'User group successfully queued for importing.'));
 
