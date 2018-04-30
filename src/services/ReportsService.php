@@ -860,10 +860,6 @@ class ReportsService extends Component
                 'index' => $longDateFormat,
                 'label' => substr($shortDateFormat, 0, 3),
             ],
-            'weeks' => [
-                'index' => $longDateFormat,
-                'label' => substr($shortDateFormat, 0, 3),
-            ],
             'months' => [
                 'index' => str_replace('j ', '', $longDateFormat),
                 'label' => str_replace('j/', '', $shortDateFormat),

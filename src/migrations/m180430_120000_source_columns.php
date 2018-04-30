@@ -19,8 +19,8 @@ class m180430_120000_source_columns extends Migration
      */
     public function safeUp()
     {
-        //$this->renameColumn('{{%campaign_contacts_mailinglists}}', 'source', 'sourceType');
-        //$this->renameColumn('{{%campaign_contacts_mailinglists}}', 'sourceUrl', 'source');
+        $this->renameColumn('{{%campaign_contacts_mailinglists}}', 'source', 'sourceType');
+        $this->renameColumn('{{%campaign_contacts_mailinglists}}', 'sourceUrl', 'source');
 
         // Resave contact mailing lists
         $contactMailingLists = ContactMailingListRecord::find()
