@@ -23,7 +23,7 @@ class ContactActivityModel extends BaseModel
     // =========================================================================
 
     /**
-     * @var CampaignElement|MailingListElement Model
+     * @var ContactCampaignModel|ContactMailingListModel
      */
     public $model;
 
@@ -53,9 +53,9 @@ class ContactActivityModel extends BaseModel
     public $date;
 
     /**
-     * @var string URL
+     * @var string Source URL
      */
-    public $url;
+    public $sourceUrl;
 
     /**
      * @var array Links

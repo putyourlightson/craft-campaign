@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\elements\actions;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\LogHelper;
 
 use Craft;
 use craft\base\ElementAction;

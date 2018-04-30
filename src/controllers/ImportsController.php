@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\controllers;
 use craft\behaviors\FieldLayoutBehavior;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\LogHelper;
 use putyourlightson\campaign\models\ImportModel;
 
 use Craft;

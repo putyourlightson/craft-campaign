@@ -69,7 +69,7 @@ class WebhookController extends Controller
             // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
             $sid = '';
             foreach ($event['mail']['headers'] as $header) {
-                if ($header['name'] == 'sid') {
+                if ($header['name'] == 'putyourlightson-campaign-sid') {
                     $sid = $header['value'];
                     break;
                 }
@@ -100,7 +100,7 @@ class WebhookController extends Controller
         $request = Craft::$app->getRequest();
         $eventType = $request->getBodyParam('event');
         $email = $request->getBodyParam('recipient');
-        $sid = $request->getBodyParam('sid');
+        $sid = $request->getBodyParam('putyourlightson-campaign-sid');
 
         if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email, $sid);
@@ -128,7 +128,7 @@ class WebhookController extends Controller
             foreach ($events as $event) {
                 $eventType = $event['event'] ?? '';
                 $email = $event['msg']['email'] ?? '';
-                $sid = $event['msg']['metadata']['sid'] ?? '';
+                $sid = $event['msg']['metadata']['putyourlightson-campaign-sid'] ?? '';
 
                 if ($eventType == 'spam') {
                     return $this->_callWebhook('complained', $email, $sid);
@@ -154,7 +154,7 @@ class WebhookController extends Controller
         $request = Craft::$app->getRequest();
         $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
-        $sid = $request->getBodyParam('sid');
+        $sid = $request->getBodyParam('putyourlightson-campaign-sid');
 
         if ($eventType == 'SpamComplaint') {
             return $this->_callWebhook('complained', $email, $sid);
@@ -182,7 +182,7 @@ class WebhookController extends Controller
             foreach ($events as $event) {
                 $eventType = $event['event'] ?? '';
                 $email = $event['email'] ?? '';
-                $sid = $event['sid'] ?? '';
+                $sid = $event['putyourlightson-campaign-sid'] ?? '';
 
                 if ($eventType == 'complained') {
                     return $this->_callWebhook('complained', $email, $sid);

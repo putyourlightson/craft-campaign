@@ -80,14 +80,14 @@ class ContactMailingListModel extends BaseModel
     public $confirmed;
 
     /**
+     * @var string Source type
+     */
+    public $sourceType = '';
+
+    /**
      * @var string Source
      */
     public $source = '';
-
-    /**
-     * @var string Source URL
-     */
-    public $sourceUrl = '';
 
     /**
      * @var string|null Country

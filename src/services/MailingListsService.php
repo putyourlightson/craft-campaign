@@ -73,10 +73,10 @@ class MailingListsService extends Component
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
      * @param string $interaction
+     * @param string|null $sourceType
      * @param string|null $source
-     * @param string|null $sourceUrl
      */
-    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $source = '', string $sourceUrl = '')
+    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', string $source = '')
     {
         // Ensure that interaction exists
         if (!\in_array($interaction, ContactMailingListModel::INTERACTIONS, true)) {
@@ -104,8 +104,8 @@ class MailingListsService extends Component
         // If subscribing
         if ($interaction == 'subscribed') {
             // Set source and source URL if not already set
+            $contactMailingListRecord->sourceType = $contactMailingListRecord->sourceType ?? $sourceType;
             $contactMailingListRecord->source = $contactMailingListRecord->source ?? $source;
-            $contactMailingListRecord->sourceUrl = $contactMailingListRecord->sourceUrl ?? $sourceUrl;
         }
 
         $contactMailingListRecord->subscriptionStatus = $interaction;

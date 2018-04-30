@@ -10,6 +10,7 @@ Added utility to queue pending sendouts and purge expired pending contacts
 
 ### Changed
 - Removed IP address in location field for GDPR compliance
+- Reworked source URLs
 - Improved webhook handling
 - Refactored code
 

@@ -168,7 +168,7 @@ class TrackerController extends Controller
             $pendingContact->pid = StringHelper::uniqueId('p');
             $pendingContact->email = $email;
             $pendingContact->mailingListId = $mailingList->id;
-            $pendingContact->sourceUrl = $referrer;
+            $pendingContact->source = $referrer;
             $pendingContact->fieldData = $contact->getFieldValues();
 
             // Validate pending contact
@@ -336,7 +336,7 @@ class TrackerController extends Controller
         }
 
         // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->sourceUrl);
+        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->source);
 
         // Use message template
         $template = 'campaign/message';

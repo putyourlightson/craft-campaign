@@ -20,8 +20,8 @@ use craft\db\ActiveRecord;
  * @property \DateTime   $complained                 Complained
  * @property \DateTime   $bounced                    Bounced
  * @property \DateTime   $verified                   Verified
+ * @property string      $sourceType                 Source type
  * @property string      $source                     Source
- * @property string      $sourceUrl                  Source URL
  * @property string      $country                    Country
  * @property string      $geoIp                      GeoIP
  * @property string      $device                     Device

@@ -549,24 +549,27 @@ class SendoutsService extends Component
      */
     private function _addWebhooks(Message $message, string $sid)
     {
+        // Add SID to message header for webhooks
+        $message->addHeader('putyourlightson-campaign-sid', $sid);
+
         // Get mailer transport
         $mailer = $this->getMailer();
         $transport = $mailer->getTransport();
 
-        // Add SID to message header for webhooks
+        // Add SID for custom transports
         if ($transport instanceof \Swift_Transport) {
             $transportClass = \get_class($transport);
             switch ($transportClass) {
-                case 'AmazonSesTransport':
-                    $message->addHeader('sid', $sid);
+                case 'MailgunTransport':
+                    $message->addHeader('X-Mailgun-Variables', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
                     break;
 
-                case 'MailgunTransport':
-                    $message->addHeader('X-Mailgun-Variables', '{"sid": "'.$sid.'"}');
+                case 'MandrillTransport':
+                    $message->addHeader('X-MC-Metadata', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
                     break;
 
                 case 'SendgridTransport':
-                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"sid": "'.$sid.'"}}');
+                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"putyourlightson-campaign-sid": "'.$sid.'"}}');
                     break;
             }
         }

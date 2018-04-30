@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -669,7 +670,7 @@ class ReportsService extends Component
     /**
      * Returns activity
      *
-     * @param array
+     * @param ContactCampaignModel[]|ContactMailingListModel[]
      * @param string|null
      * @param int|null
      *
@@ -697,6 +698,19 @@ class ReportsService extends Component
                     }
                     else if ($interactionType == 'clicked') {
                         $contactActivityModel->count = $model->clicks;
+                    }
+
+                    if (!empty($model->sourceType)) {
+                        switch ($model->sourceType) {
+                            case 'import':
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/import-export/import/'.$model->source);
+                                break;
+                            case 'user':
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl($model->source ? 'users/'.$model->source : 'myaccount');
+                                break;
+                            default:
+                                $contactActivityModel->sourceUrl = $model->source;
+                        }
                     }
 
                     $activity[$model->$interactionType.' '.$interactionType] = $contactActivityModel;

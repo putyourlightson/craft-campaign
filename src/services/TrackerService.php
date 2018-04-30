@@ -99,16 +99,16 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
+     * @param string|null $sourceType
      * @param string|null $source
-     * @param string|null $sourceUrl
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $source = '', string $sourceUrl = '')
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = '', string $source = '')
     {
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $source, $sourceUrl);
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source);
 
         // Update contact mailing list record
         $this->_updateContactMailingListRecord($contact, $mailingList, true);

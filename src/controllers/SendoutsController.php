@@ -13,7 +13,6 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
-use putyourlightson\campaign\helpers\LogHelper;
 
 use Craft;
 use craft\web\Controller;
@@ -110,6 +109,7 @@ class SendoutsController extends Controller
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
+     * @throws InvalidConfigException
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {

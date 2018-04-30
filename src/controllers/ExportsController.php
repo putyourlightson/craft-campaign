@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\controllers;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\LogHelper;
 use putyourlightson\campaign\models\ExportModel;
 
 use Craft;
