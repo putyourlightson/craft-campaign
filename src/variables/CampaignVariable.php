@@ -515,6 +515,7 @@ class CampaignVariable
      * Returns plugin settings
      *
      * @return SettingsModel
+     * @throws InvalidConfigException
      */
     public function getSettings(): SettingsModel
     {

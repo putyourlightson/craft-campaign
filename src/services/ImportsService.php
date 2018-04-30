@@ -287,12 +287,11 @@ class ImportsService extends Component
             return $import;
         }
 
-        // Add contact interaction
-        // TODO: Import URL is currently tied to the CP URL
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->getCpViewUrl());
-
         // Save import
         Campaign::$plugin->imports->saveImport($import);
+
+        // Add contact interaction
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
 
         return $import;
     }

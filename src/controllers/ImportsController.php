@@ -80,7 +80,6 @@ class ImportsController extends Controller
         // Save file
         $file->saveAs($filePath);
 
-        // TODO: ensure checked mime types are sufficient
         // Ensure file is a CSV file
         $mimeType = FileHelper::getMimeType($filePath);
         if ($mimeType != 'text/plain' AND $mimeType != 'text/csv') {
@@ -218,6 +217,7 @@ class ImportsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
      */
     public function actionDownloadFile()
     {

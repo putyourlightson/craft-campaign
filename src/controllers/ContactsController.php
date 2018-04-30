@@ -457,7 +457,7 @@ class ContactsController extends Controller
             Campaign::$plugin->mailingLists->deleteContactSubscription($contact, $mailingList);
         }
         else {
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', Craft::$app->getUser()->getIdentity()->getCpEditUrl());
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', Craft::$app->getUser()->getIdentity()->id);
         }
 
         return $this->asJson([

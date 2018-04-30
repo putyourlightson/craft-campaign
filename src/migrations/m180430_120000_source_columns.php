@@ -2,13 +2,9 @@
 
 namespace putyourlightson\campaign\migrations;
 
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 
-use Craft;
 use craft\db\Migration;
-use craft\helpers\Json;
 
 /**
  * m180430_120000_source_columns migration.
@@ -35,7 +31,7 @@ class m180430_120000_source_columns extends Migration
             /** @var ContactMailingListRecord $contactMailingList */
             $start = strrpos($contactMailingList->source, '/') + 1;
             $id = substr($contactMailingList->source, $start);
-            $contactMailingList->source = is_numeric($id) ? $id : '';
+            $contactMailingList->source = is_numeric($id) ? $id : 1;
 
             $contactMailingList->save();
         }
