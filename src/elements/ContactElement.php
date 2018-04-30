@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\elements;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
-use putyourlightson\campaign\helpers\GeoIpHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -265,7 +264,7 @@ class ContactElement extends Element
     /**
      * GeoIP
      *
-     * @var string|null
+     * @var mixed
      */
     public $geoIp;
 
@@ -328,6 +327,17 @@ class ContactElement extends Element
     public function __toString()
     {
         return $this->email;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Decode geoIp if not null
+        $this->geoIp = $this->geoIp !== null ? Json::decode($this->geoIp) : [];
     }
 
     /**
@@ -545,17 +555,7 @@ class ContactElement extends Element
      */
     public function getCountryCode(): string
     {
-        return GeoIpHelper::getCountryCode($this->geoIp);
-    }
-
-    /**
-     * Returns the location
-     *
-     * @return array
-     */
-    public function getLocation(): array
-    {
-        return GeoIpHelper::getLocation($this->geoIp);
+        return $this->geoIp['countryCode'] ?? '';
     }
 
     /**

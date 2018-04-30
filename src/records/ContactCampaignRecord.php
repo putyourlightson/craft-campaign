@@ -28,7 +28,7 @@ use putyourlightson\campaign\elements\CampaignElement;
  * @property int         $clicks                     Clicks
  * @property string      $links                      Links
  * @property string      $country                    Country
- * @property string      $geoIp                      GeoIP
+ * @property mixed       $geoIp                      GeoIP
  * @property string      $device                     Device
  * @property string      $os                         OS
  * @property string      $client                     Client

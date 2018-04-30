@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign;
 
-use craft\helpers\ConfigHelper;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
@@ -30,6 +29,7 @@ use craft\base\Plugin;
 use craft\errors\MissingComponentException;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
@@ -41,6 +41,7 @@ use craft\web\UrlManager;
 use craft\web\User;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -83,10 +84,8 @@ class Campaign extends Plugin
     public function init()
     {
         parent::init();
-        self::$plugin = $this;
 
-        // Add tracker controller shorthand to controller map
-        $this->controllerMap = ['t' => TrackerController::class];
+        self::$plugin = $this;
 
         // Register services as components
         $this->setComponents([
@@ -104,6 +103,9 @@ class Campaign extends Plugin
             'tracker' => TrackerService::class,
             'webhook' => WebhookService::class,
         ]);
+
+        // Register tracker controller shorthand
+        $this->controllerMap = ['t' => TrackerController::class];
 
         // Register Twig extension
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
@@ -185,6 +187,7 @@ class Campaign extends Plugin
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function getSettings(): SettingsModel
     {
@@ -275,6 +278,7 @@ class Campaign extends Plugin
      *
      * @return Mailer
      * @throws MissingComponentException
+     * @throws InvalidConfigException
      */
     public function createMailer($settings = null): Mailer
     {
@@ -296,6 +300,8 @@ class Campaign extends Plugin
 
     /**
      * Sets memory and time limits
+     *
+     * @throws InvalidConfigException
      */
     public function maxPowerLieutenant()
     {

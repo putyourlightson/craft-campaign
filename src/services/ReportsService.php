@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -749,12 +750,10 @@ class ReportsService extends Component
                 continue;
             }
 
-            // Get lower case country code
-            $geoIp = $result['geoIp'] ? json_decode($result['geoIp'], true) : [];
-            $countryCode = $geoIp['country_code'] ?? '';
-            $countryCode = strtolower($countryCode);
+            // Decode GeoIp
+            $geoIp = $result['geoIp'] ? Json::decodeIfJson($result['geoIp']) : [];
 
-            $result['countryCode'] = $countryCode;
+            $result['countryCode'] = strtolower($geoIp['countryCode'] ?? '');
             $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
 
             $countArray[] = $result['count'];

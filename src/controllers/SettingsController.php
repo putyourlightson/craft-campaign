@@ -275,6 +275,8 @@ class SettingsController extends Controller
         $settings = $this->_settings;
 
         // Set the simple stuff
+        $settings->defaultFromName = Craft::$app->getRequest()->getBodyParam('defaultFromName', $settings->defaultFromName);
+        $settings->defaultFromEmail = Craft::$app->getRequest()->getBodyParam('defaultFromEmail', $settings->defaultFromEmail);
         $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 

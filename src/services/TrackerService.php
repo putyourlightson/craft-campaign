@@ -35,7 +35,7 @@ class TrackerService extends Component
     // =========================================================================
 
     /**
-     * @var string|null
+     * @var mixed
      */
     private $_geoIp;
 
@@ -235,7 +235,7 @@ class TrackerService extends Component
     /**
      * Update location and device
      *
-     * @param ContactCampaignRecord|ContactMailingListRecord|ContactElement $model
+     * @param ContactElement|ContactCampaignRecord|ContactMailingListRecord $model
      *
      * @return ContactElement|ContactCampaignRecord|ContactMailingListRecord
      */
@@ -248,7 +248,7 @@ class TrackerService extends Component
 
         // If GeoIP exists
         if ($this->_geoIp !== null) {
-            $country = GeoIpHelper::getCountryName($this->_geoIp);
+            $country = $this->_geoIp['country'];
 
             // If country exists
             if ($country) {
