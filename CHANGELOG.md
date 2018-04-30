@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.0.0-beta11.1 - 2018-04-30
+### Fixed
+- Fixed SQL bug when retrieving links report
+
 ## 1.0.0-beta11 - 2018-04-11
 > Warning: this update will delete any currently pending contacts.
 
