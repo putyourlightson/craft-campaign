@@ -158,7 +158,7 @@ class ContactCampaignModel extends BaseModel
         parent::init();
 
         // Decode geoIp if not null
-        $this->geoIp = $this->geoIp !== null ? Json::decode($this->geoIp) : [];
+        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
     }
 
     /**

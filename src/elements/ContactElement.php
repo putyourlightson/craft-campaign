@@ -337,7 +337,7 @@ class ContactElement extends Element
         parent::init();
 
         // Decode geoIp if not empty
-        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : [];
+        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
     }
 
     /**

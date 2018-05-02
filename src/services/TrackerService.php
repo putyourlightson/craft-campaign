@@ -14,15 +14,18 @@ use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
+
 use DeviceDetector\DeviceDetector;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
+use craft\helpers\Json;
 use yii\base\Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * TrackerService
@@ -250,7 +253,7 @@ class TrackerService extends Component
 
         // If GeoIP exists
         if ($this->_geoIp !== null) {
-            $country = $this->_geoIp['country'];
+            $country = $this->_geoIp['countryName'];
 
             // If country exists
             if ($country) {
@@ -306,24 +309,25 @@ class TrackerService extends Component
 
             if ($response->getStatusCode() == 200) {
                 $geoIp = $response->getBody();
+                $geoIp = Json::decodeIfJson($geoIp);
             }
         }
         catch (ConnectException $e) {}
         catch (GuzzleException $e) {}
 
         // If country is empty then return null
-        if (empty($geoIp->country_code)) {
+        if (empty($geoIp['country_code'])) {
             return null;
         }
 
         return [
-            'city' => $geoIp->city ?? '',
-            'postCode' => $geoIp->zip_code ?? '',
-            'regionCode' => $geoIp->region_code ?? '',
-            'regionName' => $geoIp->region_name ?? '',
-            'countryCode' => $geoIp->country_code ?? '',
-            'countryName' => $geoIp->country_name ?? '',
-            'timeZone' => $geoIp->time_zone ?? '',
+            'city' => $geoIp['city'] ?? '',
+            'postCode' => $geoIp['zip_code'] ?? '',
+            'regionCode' => $geoIp['region_code'] ?? '',
+            'regionName' => $geoIp['region_name'] ?? '',
+            'countryCode' => $geoIp['country_code'] ?? '',
+            'countryName' => $geoIp['country_name'] ?? '',
+            'timeZone' => $geoIp['time_zone'] ?? '',
         ];
     }
 }

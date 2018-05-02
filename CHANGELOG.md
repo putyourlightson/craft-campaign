@@ -1,16 +1,13 @@
 # Campaign Changelog
 
-## Unreleased
-Added spam protection  
-Added utility to queue pending sendouts and purge expired pending contacts  
-
-## 1.0.0-beta12 - 2018-04-30
+## 1.0.0-beta12 - 2018-05-02
 ### Added
 - Added webhook for Amazon SES complain and bounce notifications
 
 ### Changed
 - Removed IP address in location field for GDPR compliance
-- Reworked source URLs
+- Changed how source URLs are stored
+- Changed order of contact campaign activity
 - Improved webhook handling
 - Refactored code
 

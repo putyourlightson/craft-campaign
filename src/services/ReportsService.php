@@ -684,7 +684,7 @@ class ReportsService extends Component
             /** @var ContactCampaignModel|ContactMailingListModel $model */
             $interactionTypes = ($interaction !== null AND \in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
 
-            foreach ($interactionTypes as $interactionType) {
+            foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->$interactionType !== null) {
                     $contactActivityModel = new ContactActivityModel();
                     $contactActivityModel->model = $model;
@@ -714,7 +714,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$model->$interactionType.' '.$interactionType] = $contactActivityModel;
+                    $activity[$model->$interactionType.'-'.$key.'-'.$interactionType] = $contactActivityModel;
                 }
             }
         }
