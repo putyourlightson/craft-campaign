@@ -1,28 +1,12 @@
-{% if not currentUser.can('campaign-accessExport') %}
-    {% if currentUser.can('campaign-accessImport') %}
-        {% redirect 'campaign/import-export/import' %}
-    {% else %}
-        {% redirect 'campaign' %}
-    {% endif %}
+{% if not currentUser.can('campaign-exportContacts') %}
+    {% redirect 'campaign' %}
 {% endif %}
 
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/contacts/_layout' %}
 
 {% import '_includes/forms' as forms %}
 
 {% set title = 'Export'|t('campaign') %}
-{% set selectedSubnavItem = 'import-export' %}
-
-{% set tabs = {} %}
-{% if currentUser.can('campaign-accessImport') %}
-    {% set tabs = {
-        'import': {'label': 'Import', 'url': url('campaign/import-export/import')}
-    } %}
-{% endif %}
-{% set tabs = tabs|merge({
-    'export': {'label': 'Export', 'url': url('campaign/import-export/export')}
-}) %}
-{% set selectedTab = 'export' %}
 
 
 {% block content %}

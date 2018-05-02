@@ -1,5 +1,12 @@
 # Campaign Changelog
 
+## 1.0.0 - 2018-05-02
+- Stable release
+
+### Changed
+- Moved import and export pages into contacts navigation item
+- Nested import and export user permissions under manage contacts
+
 ## 1.0.0-beta12.1 - 2018-05-02
 ### Added
 - Added webhook request log message

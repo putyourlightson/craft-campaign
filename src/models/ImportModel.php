@@ -143,7 +143,7 @@ class ImportModel extends BaseModel
      */
     public function getCpViewUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/import-export/import/'.$this->id);
+        return UrlHelper::cpUrl('campaign/contacts/import/'.$this->id);
     }
 
     /**

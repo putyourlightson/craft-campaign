@@ -39,7 +39,7 @@ class ExportsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-export');
+        $this->requirePermission('campaign-exportContacts');
     }
 
     /**
@@ -67,7 +67,7 @@ class ExportsController extends Controller
         $variables['fields'] = $fieldLayout->getFields();
 
         // Render the template
-        return $this->renderTemplate('campaign/import-export/export', $variables);
+        return $this->renderTemplate('campaign/contacts/export', $variables);
     }
 
     /**

@@ -1,15 +1,10 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/contacts/_layouts' %}
 
 {% import '_includes/forms' as forms %}
 
 {% set import = craft.campaign.getImportById(importId) %}
 
 {% set title = import.fileName ? "CSV File"|t('campaign') : "User Group"|t('campaign') %}
-{% set selectedSubnavItem = 'import-export' %}
-
-{% set crumbs = [
-    { label: 'Import'|t('campaign'), url: url('campaign/import-export/import') }
-] %}
 
 
 {% block content %}

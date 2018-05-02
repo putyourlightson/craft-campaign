@@ -1,0 +1,7 @@
+{% extends 'campaign/_layouts/cp' %}
+
+{% set selectedSubnavItem = 'contacts' %}
+
+{% set crumbs = crumbs is defined ? crumbs : [
+    { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') },
+] %}

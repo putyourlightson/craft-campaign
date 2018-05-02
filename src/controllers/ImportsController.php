@@ -40,7 +40,7 @@ class ImportsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-import');
+        $this->requirePermission('campaign-importContacts');
     }
 
     /**
@@ -283,6 +283,6 @@ class ImportsController extends Controller
         // Get columns
         $variables['columns'] = Campaign::$plugin->imports->getColumns($import);
 
-        return $this->renderTemplate('campaign/import-export/import/_fields', $variables);
+        return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
     }
 }

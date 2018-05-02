@@ -703,7 +703,7 @@ class ReportsService extends Component
                     if (!empty($model->sourceType)) {
                         switch ($model->sourceType) {
                             case 'import':
-                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/import-export/import/'.$model->source);
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/'.$model->source);
                                 break;
                             case 'user':
                                 $path = (Craft::$app->getEdition() === Craft::Pro AND $model->source) ? 'users/'.$model->source : 'myaccount';
