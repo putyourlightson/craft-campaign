@@ -116,6 +116,8 @@ class SendoutsController extends Controller
         // Require permission
         $this->requirePermission('campaign-sendouts');
 
+        $request = Craft::$app->getRequest();
+
         // Check that the sendout type exists
         // ---------------------------------------------------------------------
 
@@ -141,7 +143,7 @@ class SendoutsController extends Controller
                 $sendout->sendoutType = $sendoutType;
 
                 // If a campaign ID was passed in as a param
-                $campaignId = Craft::$app->getRequest()->getParam('campaignId');
+                $campaignId = $request->getParam('campaignId');
                 if ($campaignId) {
                     // Set campaign ID
                     $sendout->campaignId = $campaignId;
@@ -251,7 +253,7 @@ class SendoutsController extends Controller
         $variables['fullPageForm'] = true;
 
         // Render the template
-        if ($sendout->getIsEditable() AND !Craft::$app->request->getParam('preview')) {
+        if ($sendout->getIsEditable() AND !$request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
 

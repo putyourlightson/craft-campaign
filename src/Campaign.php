@@ -156,6 +156,7 @@ class Campaign extends Plugin
             $event->rules['campaign/settings/general'] = 'campaign/settings/edit-general';
             $event->rules['campaign/settings/email'] = 'campaign/settings/edit-email';
             $event->rules['campaign/settings/contact'] = 'campaign/settings/edit-contact';
+            $event->rules['campaign/settings/recaptcha'] = 'campaign/settings/edit-recaptcha';
             $event->rules['campaign/settings/campaigntypes/new'] = 'campaign/campaign-types/edit-campaign-type';
             $event->rules['campaign/settings/campaigntypes/<campaignTypeId:\d+>'] = 'campaign/campaign-types/edit-campaign-type';
             $event->rules['campaign/settings/mailinglisttypes/new'] = 'campaign/mailing-list-types/edit-mailing-list-type';

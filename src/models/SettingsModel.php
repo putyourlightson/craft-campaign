@@ -66,6 +66,21 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
+     * @var bool Enable reCAPTCHA to protect mailing list subscription forms from bots
+     */
+    public $reCaptcha = false;
+
+    /**
+     * @var string The reCAPTCHA site key
+     */
+    public $reCaptchaSiteKey;
+
+    /**
+     * @var string The reCAPTCHA secret key
+     */
+    public $reCaptchaSecretKey;
+
+    /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
      */
     public $maxPendingContacts = 5;

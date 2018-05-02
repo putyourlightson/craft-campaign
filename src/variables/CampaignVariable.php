@@ -512,6 +512,24 @@ class CampaignVariable
     }
 
     /**
+     * Returns reCAPTCHA script
+     *
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function getRecaptcha(): string
+    {
+        $settings = Campaign::$plugin->getSettings();
+
+        if ($settings->reCaptcha) {
+            return '
+                <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+                <div class="g-recaptcha" data-sitekey="'.$settings->reCaptchaSiteKey.'"></div>
+            ';
+        }
+    }
+
+    /**
      * Returns plugin settings
      *
      * @return SettingsModel

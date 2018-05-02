@@ -1,0 +1,59 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'reCAPTCHA Settings'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% from "campaign/settings/_macros" import configWarning %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-recaptcha">
+
+    {{ forms.lightswitchField({
+        first: true,
+        required: true,
+        label: "reCAPTCHA"|t('campaign'),
+        instructions: "Enable reCAPTCHA to protect mailing list subscription forms from bots."|t('campaign'),
+        warning: (config.reCaptcha is defined ? configWarning('reCaptcha')),
+        id: 'reCaptcha',
+        name: 'reCaptcha',
+        on: settings.reCaptcha,
+        errors: settings.getErrors('reCaptcha')
+    }) }}
+
+    {% set code %}
+        <code>{{ '{{ craft.campaign.recaptcha }}' }}</code>
+    {% endset %}
+    {{ forms.field({
+        instructions: "Add the following tag to all mailing list subscription forms (not doing so will prevent forms from submitting)."|t('campaign'),
+    }, code) }}
+
+    {{ forms.textField({
+        label: "reCAPTCHA Key"|t('campaign'),
+        instructions: "The reCAPTCHA site key."|t('campaign'),
+        warning: (config.reCaptchaSiteKey is defined ? configWarning('reCaptchaSiteKey')),
+        id: 'reCaptchaSiteKey',
+        name: 'reCaptchaSiteKey',
+        value: settings.reCaptchaSiteKey,
+        errors: settings.getErrors('reCaptchaSiteKey')
+    }) }}
+
+    {{ forms.textField({
+        label: "reCAPTCHA Secret Key"|t('campaign'),
+        instructions: "The reCAPTCHA secret key."|t('campaign'),
+        warning: (config.reCaptchaSecretKey is defined ? configWarning('reCaptchaSecretKey')),
+        id: 'reCaptchaSecretKey',
+        name: 'reCaptchaSecretKey',
+        value: settings.reCaptchaSecretKey,
+        errors: settings.getErrors('reCaptchaSecretKey')
+    }) }}
+
+{% endblock %}

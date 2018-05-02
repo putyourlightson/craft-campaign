@@ -19,7 +19,6 @@ use DeviceDetector\DeviceDetector;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\GuzzleException;
 
 use Craft;
 use craft\base\Component;
@@ -293,7 +292,7 @@ class TrackerService extends Component
      *
      * @return array|null
      */
-    private function getGeoIp(int $timeout = 3)
+    private function getGeoIp(int $timeout = 5)
     {
         $geoIp = null;
 
@@ -302,18 +301,14 @@ class TrackerService extends Component
             'connect_timeout' => $timeout,
         ]);
 
-        $ipAddress = Craft::$app->request->getUserIP();
-
         try {
-            $response = $client->request('get', 'http://freegeoip.net/json/'.$ipAddress);
+            $response = $client->get('http://freegeoip.net/json/'.Craft::$app->getRequest()->getUserIP());
 
             if ($response->getStatusCode() == 200) {
-                $geoIp = $response->getBody();
-                $geoIp = Json::decodeIfJson($geoIp);
+                $geoIp = Json::decodeIfJson($response->getBody());
             }
         }
         catch (ConnectException $e) {}
-        catch (GuzzleException $e) {}
 
         // If country is empty then return null
         if (empty($geoIp['country_code'])) {
