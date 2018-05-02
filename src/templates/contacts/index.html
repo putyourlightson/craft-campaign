@@ -1,9 +1,26 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/contacts/_layout' %}
 
 {% set elementType = 'putyourlightson\\campaign\\elements\\ContactElement' %}
 
 {% set title = 'Contacts'|t('campaign') %}
 {% set selectedSubnavItem = 'contacts' %}
+
+{% set crumbs = [] %}
+
+{% if currentUser.can('campaign-importContacts') or currentUser.can('campaign-exportContacts') %}
+    {% set tabs = {'view': {'label': 'View', 'url': url('campaign/contacts')}} %}
+    {% if currentUser.can('campaign-importContacts') %}
+        {% set tabs = tabs|merge({
+            'import': {'label': 'Import', 'url': url('campaign/contacts/import')}
+        }) %}
+    {% endif %}
+    {% if currentUser.can('campaign-exportContacts') %}
+        {% set tabs = tabs|merge({
+            'export': {'label': 'Export', 'url': url('campaign/contacts/export')}
+        }) %}
+    {% endif %}
+{% endif %}
+
 
 {% block actionButton %}
     <div id="extra-headers">

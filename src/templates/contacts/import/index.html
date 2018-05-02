@@ -1,27 +1,12 @@
-{% if not currentUser.can('campaign-accessImport') %}
-    {% if currentUser.can('campaign-accessExport') %}
-        {% redirect 'campaign/import-export/export' %}
-    {% else %}
-        {% redirect 'campaign' %}
-    {% endif %}
+{% if not currentUser.can('campaign-importContacts') %}
+    {% redirect 'campaign' %}
 {% endif %}
 
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/contacts/_layout' %}
 
 {% import '_includes/forms' as forms %}
 
 {% set title = 'Import'|t('campaign') %}
-{% set selectedSubnavItem = 'import-export' %}
-
-{% set tabs = {
-    'import': {'label': 'Import', 'url': url('campaign/import-export/import')}
-} %}
-{% if currentUser.can('campaign-accessExport') %}
-    {% set tabs = tabs|merge({
-        'export': {'label': 'Export', 'url': url('campaign/import-export/export')}
-    }) %}
-{% endif %}
-{% set selectedTab = 'import' %}
 
 {% set contactFieldNames = [] %}
 {% set contactFields = craft.campaign.getContactFields() %}

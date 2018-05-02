@@ -143,6 +143,8 @@ class Campaign extends Plugin
             $event->rules['campaign/campaigns/<campaignTypeHandle:{handle}>/<campaignId:\d+>'] = 'campaign/campaigns/edit-campaign';
             $event->rules['campaign/contacts/new'] = 'campaign/contacts/edit-contact';
             $event->rules['campaign/contacts/<contactId:\d+>'] = 'campaign/contacts/edit-contact';
+            $event->rules['campaign/contacts/import/<importId:\d+>'] = ['template' => 'campaign/contacts/import/_view'];
+            $event->rules['campaign/contacts/export'] = 'campaign/exports/new-export';
             $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>'] = ['template' => 'campaign/mailinglists/index'];
             $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>/new'] = 'campaign/mailing-lists/edit-mailing-list';
             $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+>'] = 'campaign/mailing-lists/edit-mailing-list';
@@ -151,8 +153,6 @@ class Campaign extends Plugin
             $event->rules['campaign/sendouts/<sendoutType:{handle}>'] = ['template' => 'campaign/sendouts/index'];
             $event->rules['campaign/sendouts/<sendoutType:{handle}>/new'] = 'campaign/sendouts/edit-sendout';
             $event->rules['campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>'] = 'campaign/sendouts/edit-sendout';
-            $event->rules['campaign/import-export/import/<importId:\d+>'] = ['template' => 'campaign/import-export/import/_view'];
-            $event->rules['campaign/import-export/export'] = 'campaign/exports/new-export';
             $event->rules['campaign/settings/general'] = 'campaign/settings/edit-general';
             $event->rules['campaign/settings/email'] = 'campaign/settings/edit-email';
             $event->rules['campaign/settings/contact'] = 'campaign/settings/edit-contact';
@@ -167,7 +167,13 @@ class Campaign extends Plugin
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Campaign']['campaign-reports'] = ['label' => Craft::t('campaign', 'Manage reports')];
                 $event->permissions['Campaign']['campaign-campaigns'] = ['label' => Craft::t('campaign', 'Manage campaigns')];
-                $event->permissions['Campaign']['campaign-contacts'] = ['label' => Craft::t('campaign', 'Manage contacts')];
+                $event->permissions['Campaign']['campaign-contacts'] = [
+                    'label' => Craft::t('campaign', 'Manage contacts'),
+                    'nested' => [
+                        'campaign-importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
+                        'campaign-exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
+                    ],
+                ];
                 $event->permissions['Campaign']['campaign-mailingLists'] = ['label' => Craft::t('campaign', 'Manage mailing lists')];
 
                 if ($this->isPro()) {
@@ -178,8 +184,6 @@ class Campaign extends Plugin
                         'label' => Craft::t('campaign', 'Manage sendouts'),
                         'nested' => ['campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]],
                 ];
-                $event->permissions['Campaign']['campaign-import'] = ['label' => Craft::t('campaign', 'Import contacts')];
-                $event->permissions['Campaign']['campaign-export'] = ['label' => Craft::t('campaign', 'Export contacts')];
                 $event->permissions['Campaign']['campaign-settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
             });
         }
@@ -228,9 +232,6 @@ class Campaign extends Plugin
         }
         if ($user->checkPermission('campaign-reports')) {
             $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
-        }
-        if ($user->checkPermission('campaign-import') OR $user->checkPermission('campaign-export')) {
-            $cpNavItem['subnav']['import-export'] = ['label' => Craft::t('campaign', 'Import/Export'), 'url' => 'campaign/import-export'];
         }
         if ($user->checkPermission('campaign-settings')) {
             $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Settings'), 'url' => 'campaign/settings'];

@@ -1,12 +1,6 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/contacts/_layout' %}
 
 {% import '_includes/forms' as forms %}
-
-{% set selectedSubnavItem = 'contacts' %}
-
-{% set crumbs = [
-    { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') },
-] %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ContactEditAsset') %}
 
