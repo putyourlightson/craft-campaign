@@ -259,7 +259,7 @@ class ReportsController extends Controller
     /**
      * Returns colors
      *
-     * @param []
+     * @param array $interactions
      *
      * @return array
      */

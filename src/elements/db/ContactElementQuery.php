@@ -153,8 +153,10 @@ class ContactElementQuery extends ElementQuery
 
         if ($this->segmentId) {
             $segment = Campaign::$plugin->segments->getSegmentById($this->segmentId);
-            $contactIds = $segment->getContactIds();
-            $this->subQuery->andWhere(['elements.id' => $contactIds]);
+
+            if ($segment !== null) {
+                $this->subQuery->andWhere(['elements.id' => $segment->getContactIds()]);
+            }
         }
 
         return parent::beforePrepare();

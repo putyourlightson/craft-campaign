@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\elements\actions;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\LogHelper;
 
 use Craft;
 use craft\base\ElementAction;
@@ -107,7 +106,7 @@ EOD;
             Campaign::$plugin->sendouts->cancelSendout($sendout);
 
             // Log it
-            LogHelper::logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
+            Campaign::$plugin->logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
         }
 
         $this->setMessage(Craft::t('campaign', 'Sendouts cancelled.'));

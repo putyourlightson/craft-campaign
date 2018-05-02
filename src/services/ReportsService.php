@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -252,7 +254,12 @@ class ReportsService extends Component
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
+        if ($campaign === null) {
+            return [];
+        }
+
         // Return locations of contact campaigns
+        /** @var CampaignElement $campaign */
         return $this->_getLocations(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
@@ -269,6 +276,10 @@ class ReportsService extends Component
     {
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+
+        if ($campaign === null) {
+            return [];
+        }
 
         // Return device, os and client of contact campaigns
         return $this->_getDevices(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $detailed, $campaign->opened, $limit);
@@ -533,6 +544,10 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
+        if ($mailingList === null) {
+            return [];
+        }
+
         // Get date time format ensuring interval is valid
         $format = $this->_getDateTimeFormat($interval);
         if ($format === null) {
@@ -619,6 +634,10 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
+        if ($mailingList === null) {
+            return [];
+        }
+
         // Return locations of contact mailing lists
         return $this->_getLocations(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $mailingList->getSubscribedCount(), $limit);
     }
@@ -637,6 +656,10 @@ class ReportsService extends Component
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
+        if ($mailingList === null) {
+            return [];
+        }
+
         // Return device, os and client of contact mailing lists
         return $this->_getDevices(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
@@ -647,7 +670,7 @@ class ReportsService extends Component
     /**
      * Returns activity
      *
-     * @param array
+     * @param ContactCampaignModel[]|ContactMailingListModel[]
      * @param string|null
      * @param int|null
      *
@@ -661,7 +684,7 @@ class ReportsService extends Component
             /** @var ContactCampaignModel|ContactMailingListModel $model */
             $interactionTypes = ($interaction !== null AND \in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
 
-            foreach ($interactionTypes as $interactionType) {
+            foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->$interactionType !== null) {
                     $contactActivityModel = new ContactActivityModel();
                     $contactActivityModel->model = $model;
@@ -677,7 +700,21 @@ class ReportsService extends Component
                         $contactActivityModel->count = $model->clicks;
                     }
 
-                    $activity[$model->$interactionType.' '.$interactionType] = $contactActivityModel;
+                    if (!empty($model->sourceType)) {
+                        switch ($model->sourceType) {
+                            case 'import':
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/import-export/import/'.$model->source);
+                                break;
+                            case 'user':
+                                $path = (Craft::$app->getEdition() === Craft::Pro AND $model->source) ? 'users/'.$model->source : 'myaccount';
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
+                                break;
+                            default:
+                                $contactActivityModel->sourceUrl = $model->source;
+                        }
+                    }
+
+                    $activity[$model->$interactionType.'-'.$key.'-'.$interactionType] = $contactActivityModel;
                 }
             }
         }
@@ -728,12 +765,10 @@ class ReportsService extends Component
                 continue;
             }
 
-            // Get lower case country code
-            $geoIp = $result['geoIp'] ? json_decode($result['geoIp'], true) : [];
-            $countryCode = $geoIp['country_code'] ?? '';
-            $countryCode = strtolower($countryCode);
+            // Decode GeoIp
+            $geoIp = $result['geoIp'] ? Json::decodeIfJson($result['geoIp']) : [];
 
-            $result['countryCode'] = $countryCode;
+            $result['countryCode'] = strtolower($geoIp['countryCode'] ?? '');
             $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
 
             $countArray[] = $result['count'];
@@ -822,10 +857,6 @@ class ReportsService extends Component
                 'label' => 'H:00',
             ],
             'days' => [
-                'index' => $longDateFormat,
-                'label' => substr($shortDateFormat, 0, 3),
-            ],
-            'weeks' => [
                 'index' => $longDateFormat,
                 'label' => substr($shortDateFormat, 0, 3),
             ],

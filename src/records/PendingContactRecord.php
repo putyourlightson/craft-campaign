@@ -15,7 +15,7 @@ use craft\db\ActiveRecord;
  * @property string      $pid                        Pending ID
  * @property string      $email                      Email
  * @property int         $mailingListId              Mailing List ID
- * @property string      $sourceUrl                  Source URL
+ * @property string      $source                     Source
  * @property mixed       $fieldData                  Field data
  *
  * @author    PutYourLightsOn

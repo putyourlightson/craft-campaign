@@ -7,8 +7,6 @@
 namespace putyourlightson\campaign\models;
 
 use putyourlightson\campaign\base\BaseModel;
-use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\elements\MailingListElement;
 
 /**
  * ContactActivityModel
@@ -23,7 +21,7 @@ class ContactActivityModel extends BaseModel
     // =========================================================================
 
     /**
-     * @var CampaignElement|MailingListElement Model
+     * @var ContactCampaignModel|ContactMailingListModel
      */
     public $model;
 
@@ -51,6 +49,11 @@ class ContactActivityModel extends BaseModel
      * @var \DateTime
      */
     public $date;
+
+    /**
+     * @var string Source URL
+     */
+    public $sourceUrl;
 
     /**
      * @var string URL

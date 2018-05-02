@@ -13,7 +13,6 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
-use putyourlightson\campaign\helpers\LogHelper;
 
 use Craft;
 use craft\web\Controller;
@@ -110,6 +109,7 @@ class SendoutsController extends Controller
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
+     * @throws InvalidConfigException
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
@@ -413,7 +413,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
@@ -487,7 +487,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout paused.'));
 
@@ -517,7 +517,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout cancelled.'));
 
@@ -545,7 +545,7 @@ class SendoutsController extends Controller
         }
 
         // Log it
-        LogHelper::logUserAction('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title], __METHOD__);
+        Campaign::$plugin->logUserAction('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout deleted.'));
 

@@ -52,6 +52,43 @@ class WebhookController extends Controller
     }
 
     /**
+     * Amazon SES
+     *
+     * @throws \Throwable
+     */
+    public function actionAmazonSes()
+    {
+        $this->requirePostRequest();
+
+        $event = Craft::$app->getRequest()->getRawBody();
+        $event = Json::decode($event);
+
+        if (is_array($event)) {
+            $eventType = $event['notificationType'];
+
+            // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
+            $sid = '';
+            foreach ($event['mail']['headers'] as $header) {
+                if ($header['name'] == 'putyourlightson-campaign-sid') {
+                    $sid = $header['value'];
+                    break;
+                }
+            }
+
+            if ($eventType == 'Complaint') {
+                $email = $event['complaint']['complainedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('complained', $email, $sid);
+            }
+            if ($eventType == 'Bounce' AND $event['bounce']['bounceType'] == 'Permanent') {
+                $email = $event['bounce']['bouncedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('bounced', $email, $sid);
+            }
+        }
+
+        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+    }
+
+    /**
      * Mailgun
      *
      * @throws \Throwable
@@ -61,18 +98,14 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $event = $request->getBodyParam('event');
+        $eventType = $request->getBodyParam('event');
         $email = $request->getBodyParam('recipient');
-        $sid = $request->getBodyParam('sid');
+        $sid = $request->getBodyParam('putyourlightson-campaign-sid');
 
-        if (!$event OR !$email) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
-        }
-
-        if ($event == 'complained') {
+        if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($event == 'bounced') {
+        if ($eventType == 'bounced') {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 
@@ -88,21 +121,22 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-        $event = $request->getBodyParam('event');
-        $message = $request->getBodyParam('msg');
-        $email = $message['email'] ?? '';
-        $sid = $message['metadata']['sid'] ?? '';
+        $events = Craft::$app->getRequest()->getBodyParam('mandrill_events');
+        $events = Json::decodeIfJson($events);
 
-        if (!$event OR !$email OR !$email) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
-        }
+        if (is_array($events)) {
+            foreach ($events as $event) {
+                $eventType = $event['event'] ?? '';
+                $email = $event['msg']['email'] ?? '';
+                $sid = $event['msg']['metadata']['putyourlightson-campaign-sid'] ?? '';
 
-        if ($event == 'spam') {
-            return $this->_callWebhook('complained', $email, $sid);
-        }
-        if ($event == 'hard_bounce') {
-            return $this->_callWebhook('bounced', $email, $sid);
+                if ($eventType == 'spam') {
+                    return $this->_callWebhook('complained', $email, $sid);
+                }
+                if ($eventType == 'hard_bounce') {
+                    return $this->_callWebhook('bounced', $email, $sid);
+                }
+            }
         }
 
         return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
@@ -118,18 +152,14 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $event = $request->getBodyParam('Type');
+        $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
-        $sid = $request->getBodyParam('sid');
+        $sid = $request->getBodyParam('putyourlightson-campaign-sid');
 
-        if (!$event OR !$email) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
-        }
-
-        if ($event == 'SpamComplaint') {
+        if ($eventType == 'SpamComplaint') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($event == 'HardBounce') {
+        if ($eventType == 'HardBounce') {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 
@@ -145,20 +175,21 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-        $events = $request->getRawBody();
+        $events = Craft::$app->getRequest()->getRawBody();
         $events = Json::decodeIfJson($events);
 
-        /** @var array $events */
-        foreach ($events as $event) {
-            $email = $event['email'];
-            $sid = $event['sid'] ?? '';
+        if (is_array($events)) {
+            foreach ($events as $event) {
+                $eventType = $event['event'] ?? '';
+                $email = $event['email'] ?? '';
+                $sid = $event['putyourlightson-campaign-sid'] ?? '';
 
-            if ($event['event'] == 'complained') {
-                return $this->_callWebhook('complained', $email, $sid);
-            }
-            if ($event['event'] == 'bounced') {
-                return $this->_callWebhook('bounced', $email, $sid);
+                if ($eventType == 'complained') {
+                    return $this->_callWebhook('complained', $email, $sid);
+                }
+                if ($eventType == 'bounced') {
+                    return $this->_callWebhook('bounced', $email, $sid);
+                }
             }
         }
 
@@ -172,7 +203,7 @@ class WebhookController extends Controller
      * Call webhook
      *
      * @param string $event
-     * @param string $email
+     * @param string|null $email
      * @param string|null $sid
      *
      * @return Response
@@ -181,8 +212,16 @@ class WebhookController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _callWebhook(string $event, string $email, $sid = null): Response
+    private function _callWebhook(string $event, $email = null, $sid = null): Response
     {
+        if ($email === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
+        }
+
+        if ($sid === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
+        }
+
         // Get plugin settings
         $settings = Campaign::$plugin->getSettings();
 
@@ -199,7 +238,11 @@ class WebhookController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
         }
 
-        $sendout = $sid ? Campaign::$plugin->sendouts->getSendoutBySid($sid) : null;
+        $sendout = Campaign::$plugin->sendouts->getSendoutBySid($sid);
+
+        if ($sendout === null) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
+        }
 
         $contactCampaignRecord = ContactCampaignRecord::findOne([
             'contactId' => $contact->id,

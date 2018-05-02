@@ -1,5 +1,21 @@
 # Campaign Changelog
 
+## 1.0.0-beta12 - 2018-05-02
+### Added
+- Added webhook for Amazon SES complain and bounce notifications
+
+### Changed
+- Removed IP address in location field for GDPR compliance
+- Changed how source URLs are stored
+- Changed order of contact campaign activity
+- Improved webhook handling
+- Refactored code
+
+### Fixed
+- Fixed device icon positioning in reports
+- Fixed permissions bug when viewing a campaign when not logged in
+- Fixed lost settings when sending test email
+
 ## 1.0.0-beta11.1 - 2018-04-30
 ### Fixed
 - Fixed SQL bug when retrieving links report

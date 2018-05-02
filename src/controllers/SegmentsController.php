@@ -15,6 +15,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\web\Controller;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -47,11 +48,12 @@ class SegmentsController extends Controller
     }
 
     /**
-     * @param int|null              $segmentId    The segment’s ID, if editing an existing segment.
-     * @param SegmentElement|null   $segment      The segment being edited, if there were any validation errors.
+     * @param int|null $segmentId The segment’s ID, if editing an existing segment.
+     * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException if the requested segment is not found
+     * @throws InvalidConfigException
      */
     public function actionEditSegment(int $segmentId = null, SegmentElement $segment = null): Response
     {

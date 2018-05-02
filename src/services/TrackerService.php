@@ -10,18 +10,22 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\GeoIpHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
+
 use DeviceDetector\DeviceDetector;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
+use craft\helpers\Json;
 use yii\base\Exception;
-use yii\base\Model;
 
 /**
  * TrackerService
@@ -36,7 +40,7 @@ class TrackerService extends Component
     // =========================================================================
 
     /**
-     * @var string|null
+     * @var mixed
      */
     private $_geoIp;
 
@@ -98,16 +102,16 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
+     * @param string|null $sourceType
      * @param string|null $source
-     * @param string|null $sourceUrl
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $source = '', string $sourceUrl = '')
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = '', string $source = '')
     {
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $source, $sourceUrl);
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source);
 
         // Update contact mailing list record
         $this->_updateContactMailingListRecord($contact, $mailingList, true);
@@ -236,20 +240,20 @@ class TrackerService extends Component
     /**
      * Update location and device
      *
-     * @param Model $model
+     * @param ContactElement|ContactCampaignRecord|ContactMailingListRecord $model
      *
-     * @return Model
+     * @return ContactElement|ContactCampaignRecord|ContactMailingListRecord
      */
-    private function _updateLocationDevice(Model $model): Model
+    private function _updateLocationDevice($model)
     {
         // Get GeoIP
         if ($this->_geoIp === null) {
-            $this->_geoIp = GeoIpHelper::getGeoIp();
+            $this->_geoIp = $this->getGeoIp();
         }
 
         // If GeoIP exists
         if ($this->_geoIp !== null) {
-            $country = GeoIpHelper::getCountryName($this->_geoIp);
+            $country = $this->_geoIp['countryName'];
 
             // If country exists
             if ($country) {
@@ -279,5 +283,51 @@ class TrackerService extends Component
         }
 
         return $model;
+    }
+
+
+    /**
+     * Gets geolocation based on IP address
+     *
+     * @param int|null
+     *
+     * @return array|null
+     */
+    private function getGeoIp(int $timeout = 3)
+    {
+        $geoIp = null;
+
+        $client = new Client([
+            'timeout' => $timeout,
+            'connect_timeout' => $timeout,
+        ]);
+
+        $ipAddress = Craft::$app->request->getUserIP();
+
+        try {
+            $response = $client->request('get', 'http://freegeoip.net/json/'.$ipAddress);
+
+            if ($response->getStatusCode() == 200) {
+                $geoIp = $response->getBody();
+                $geoIp = Json::decodeIfJson($geoIp);
+            }
+        }
+        catch (ConnectException $e) {}
+        catch (GuzzleException $e) {}
+
+        // If country is empty then return null
+        if (empty($geoIp['country_code'])) {
+            return null;
+        }
+
+        return [
+            'city' => $geoIp['city'] ?? '',
+            'postCode' => $geoIp['zip_code'] ?? '',
+            'regionCode' => $geoIp['region_code'] ?? '',
+            'regionName' => $geoIp['region_name'] ?? '',
+            'countryCode' => $geoIp['country_code'] ?? '',
+            'countryName' => $geoIp['country_name'] ?? '',
+            'timeZone' => $geoIp['time_zone'] ?? '',
+        ];
     }
 }

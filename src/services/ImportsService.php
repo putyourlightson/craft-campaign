@@ -245,6 +245,13 @@ class ImportsService extends Component
      */
     public function importRow(ImportModel $import, $row, int $lineNumber): ImportModel
     {
+        // Get mailing list
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
+
+        if ($mailingList === null) {
+            return $import;
+        }
+
         // Get email
         $email = $row[$import->emailFieldIndex];
 
@@ -280,15 +287,11 @@ class ImportsService extends Component
             return $import;
         }
 
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
-
-        // Add contact interaction
-        // TODO: Import URL is currently tied to the CP URL
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->getCpViewUrl());
-
         // Save import
         Campaign::$plugin->imports->saveImport($import);
+
+        // Add contact interaction
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
 
         return $import;
     }
@@ -311,7 +314,10 @@ class ImportsService extends Component
 
         // Delete the import
         $importRecord = ImportRecord::findOne($importId);
-        $importRecord->delete();
+
+        if ($importRecord !== null) {
+            $importRecord->delete();
+        }
 
         return true;
     }

@@ -785,7 +785,13 @@ class SendoutElement extends Element
             return $this->htmlBody;
         }
 
-        return $this->getCampaign()->getHtmlBody();
+        $campaign = $this->getCampaign();
+
+        if ($campaign === null) {
+            return '';
+        }
+
+        return $campaign->getHtmlBody();
     }
 
     /**
@@ -802,7 +808,13 @@ class SendoutElement extends Element
             return $this->plaintextBody;
         }
 
-        return $this->getCampaign()->getPlaintextBody();
+        $campaign = $this->getCampaign();
+
+        if ($campaign === null) {
+            return '';
+        }
+
+        return $campaign->getPlaintextBody();
     }
 
     /**
@@ -924,6 +936,12 @@ class SendoutElement extends Element
 
     /**
      * @inheritdoc
+     * @param string $attribute
+     *
+     * @return string
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \Twig_Error_Loader
      */
     protected function tableAttributeHtml(string $attribute): string
     {
@@ -933,6 +951,11 @@ class SendoutElement extends Element
 
             case 'campaignId':
                 $campaign = $this->getCampaign();
+
+                if ($campaign === null) {
+                    return '';
+                }
+
                 return Template::raw('<a href="'.$campaign->getCpEditUrl().'">'.$campaign->title.'</a>');
 
             case 'sender':

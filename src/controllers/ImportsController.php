@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\controllers;
 use craft\behaviors\FieldLayoutBehavior;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\LogHelper;
 use putyourlightson\campaign\models\ImportModel;
 
 use Craft;
@@ -81,7 +80,6 @@ class ImportsController extends Controller
         // Save file
         $file->saveAs($filePath);
 
-        // TODO: ensure checked mime types are sufficient
         // Ensure file is a CSV file
         $mimeType = FileHelper::getMimeType($filePath);
         if ($mimeType != 'text/plain' AND $mimeType != 'text/csv') {
@@ -134,7 +132,7 @@ class ImportsController extends Controller
         Campaign::$plugin->imports->startImport($import);
 
         // Log it
-        LogHelper::logUserAction('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName], __METHOD__);
+        Campaign::$plugin->logUserAction('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'CSV file successfully queued for importing.'));
 
@@ -207,7 +205,7 @@ class ImportsController extends Controller
         Campaign::$plugin->imports->startImport($import);
 
         // Log it
-        LogHelper::logUserAction('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name], __METHOD__);
+        Campaign::$plugin->logUserAction('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name], __METHOD__);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'User group successfully queued for importing.'));
 
@@ -219,6 +217,7 @@ class ImportsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
+     * @throws InvalidConfigException
      */
     public function actionDownloadFile()
     {

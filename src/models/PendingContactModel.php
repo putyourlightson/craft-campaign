@@ -36,9 +36,9 @@ class PendingContactModel extends BaseModel
     public $mailingListId;
 
     /**
-     * @var string Source URL
+     * @var string Source
      */
-    public $sourceUrl;
+    public $source;
 
     /**
      * @var mixed Field data

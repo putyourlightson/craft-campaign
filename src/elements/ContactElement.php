@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\elements;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
-use putyourlightson\campaign\helpers\GeoIpHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -19,6 +18,7 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
+use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
@@ -45,7 +45,6 @@ use yii\base\InvalidConfigException;
  * @property string               $countryCode
  * @property MailingListElement[] $allMailingLists
  * @property int                  $subscribedCount
- * @property array                $location
  */
 class ContactElement extends Element
 {
@@ -265,7 +264,7 @@ class ContactElement extends Element
     /**
      * GeoIP
      *
-     * @var string|null
+     * @var mixed
      */
     public $geoIp;
 
@@ -328,6 +327,17 @@ class ContactElement extends Element
     public function __toString()
     {
         return $this->email;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Decode geoIp if not empty
+        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
     }
 
     /**
@@ -545,17 +555,7 @@ class ContactElement extends Element
      */
     public function getCountryCode(): string
     {
-        return GeoIpHelper::getCountryCode($this->geoIp);
-    }
-
-    /**
-     * Returns the location
-     *
-     * @return array
-     */
-    public function getLocation(): array
-    {
-        return GeoIpHelper::getLocation($this->geoIp);
+        return $this->geoIp['countryCode'] ?? '';
     }
 
     /**

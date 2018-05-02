@@ -12,8 +12,9 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\GeoIpHelper;
 use putyourlightson\campaign\records\LinkRecord;
+
+use craft\helpers\Json;
 
 /**
  * ContactCampaignModel
@@ -122,7 +123,7 @@ class ContactCampaignModel extends BaseModel
     public $country;
 
     /**
-     * @var string|null GeoIP
+     * @var mixed GeoIP
      */
     public $geoIp;
 
@@ -148,6 +149,17 @@ class ContactCampaignModel extends BaseModel
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Decode geoIp if not null
+        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
+    }
 
     /**
      * Returns the contact
@@ -228,17 +240,7 @@ class ContactCampaignModel extends BaseModel
      */
     public function getCountryCode(): string
     {
-        return GeoIpHelper::getCountryCode($this->geoIp);
-    }
-
-    /**
-     * Returns the location
-     *
-     * @return array
-     */
-    public function getLocation(): array
-    {
-        return GeoIpHelper::getLocation($this->geoIp);
+        return $this->geoIp['countryCode'] ?? '';
     }
 
     /**

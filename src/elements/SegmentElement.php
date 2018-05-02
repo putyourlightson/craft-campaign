@@ -165,7 +165,7 @@ class SegmentElement extends Element
     // =========================================================================
 
     /**
-     * @var array Conditions
+     * @var mixed Conditions
      */
     public $conditions;
 
@@ -179,8 +179,8 @@ class SegmentElement extends Element
     {
         parent::init();
 
-        // Decode conditions if not empty
-        $this->conditions = !empty($this->conditions) ? Json::decode($this->conditions) : [];
+        // Decode conditions if not null
+        $this->conditions = $this->conditions !== null ? Json::decode($this->conditions) : [];
     }
 
     /**

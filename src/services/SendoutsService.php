@@ -122,6 +122,7 @@ class SendoutsService extends Component
      *
      * @return Mailer
      * @throws MissingComponentException
+     * @throws InvalidConfigException
      */
     public function getMailer(): Mailer
     {
@@ -185,6 +186,10 @@ class SendoutsService extends Component
         // Get campaign
         $campaign = $sendout->getCampaign();
 
+        if ($campaign === null) {
+            return false;
+        }
+
         // Get body
         $htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
@@ -234,6 +239,10 @@ class SendoutsService extends Component
 
         // Get campaign
         $campaign = $sendout->getCampaign();
+
+        if ($campaign === null) {
+            return;
+        }
 
         // Create contact campaign record
         $contactCampaignRecord = new ContactCampaignRecord();
@@ -338,6 +347,7 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @throws MissingComponentException
+     * @throws InvalidConfigException
      */
     public function sendNotification(SendoutElement $sendout)
     {
@@ -420,16 +430,19 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'sent';
         }
 
-        // Update HTML and plaintext body
+        // Get campaign
         $campaign = $sendout->getCampaign();
+
+        if ($campaign === null) {
+            return;
+        }
+
+        // Update HTML and plaintext body
         $contact = new ContactElement();
         $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
 
         Craft::$app->getElements()->saveElement($sendout);
-
-        // Get campaign
-        $campaign = $sendout->getCampaign();
 
         // Update campaign recipients
         $campaign->recipients += $sendout->recipients;
@@ -529,26 +542,34 @@ class SendoutsService extends Component
      * Add webhooks to message
      *
      * @param Message $message
-     * @param string  $sid
+     * @param string $sid
      *
      * @throws MissingComponentException
+     * @throws InvalidConfigException
      */
     private function _addWebhooks(Message $message, string $sid)
     {
+        // Add SID to message header for webhooks
+        $message->addHeader('putyourlightson-campaign-sid', $sid);
+
         // Get mailer transport
         $mailer = $this->getMailer();
         $transport = $mailer->getTransport();
 
-        // Add SID to message header for webhooks
+        // Add SID for custom transports
         if ($transport instanceof \Swift_Transport) {
             $transportClass = \get_class($transport);
             switch ($transportClass) {
                 case 'MailgunTransport':
-                    $message->addHeader('X-Mailgun-Variables', '{"sid": "'.$sid.'"}');
+                    $message->addHeader('X-Mailgun-Variables', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
+                    break;
+
+                case 'MandrillTransport':
+                    $message->addHeader('X-MC-Metadata', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
                     break;
 
                 case 'SendgridTransport':
-                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"sid": "'.$sid.'"}}');
+                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"putyourlightson-campaign-sid": "'.$sid.'"}}');
                     break;
             }
         }

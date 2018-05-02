@@ -60,6 +60,12 @@
             </thead>
             <tbody>
                 <tr>
+                    <th class="thin">Amazon SES</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: settings.apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
                     <th class="thin">Mailgun</th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: settings.apiKey }) }}</textarea>
