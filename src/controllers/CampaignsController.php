@@ -33,14 +33,6 @@ use yii\web\ServerErrorHttpException;
  */
 class CampaignsController extends Controller
 {
-    // Properties
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected $allowAnonymous = ['get-body'];
-
     // Public Methods
     // =========================================================================
 
