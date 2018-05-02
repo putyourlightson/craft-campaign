@@ -67,7 +67,7 @@ class TrackerController extends Controller
         $response = Craft::$app->getResponse();
         $response->getHeaders()->set('Content-Type', 'image/gif');
         $response->format = Response::FORMAT_RAW;
-        $response->stream = fopen('@putyourlightson/campaign/resources/images/t.gif', 'rb');
+        $response->stream = fopen(Craft::getAlias('@putyourlightson/campaign/resources/images/t.gif'), 'rb');
 
         return $response->send();
     }

@@ -1,5 +1,13 @@
 # Campaign Changelog
 
+## 1.0.0-beta12.1 - 2018-05-02
+### Added
+- Added webhook request log message
+
+### Fixed
+- Fixed Mailgun webhook
+- Fixed open tracking image
+
 ## 1.0.0-beta12 - 2018-05-02
 ### Added
 - Added webhook for Amazon SES complain and bounce notifications

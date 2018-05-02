@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\controllers\WebhookController;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
@@ -550,7 +551,7 @@ class SendoutsService extends Component
     private function _addWebhooks(Message $message, string $sid)
     {
         // Add SID to message header for webhooks
-        $message->addHeader('putyourlightson-campaign-sid', $sid);
+        $message->addHeader(WebhookController::HEADER_NAME, $sid);
 
         // Get mailer transport
         $mailer = $this->getMailer();
@@ -561,15 +562,15 @@ class SendoutsService extends Component
             $transportClass = \get_class($transport);
             switch ($transportClass) {
                 case 'MailgunTransport':
-                    $message->addHeader('X-Mailgun-Variables', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
+                    $message->addHeader('X-Mailgun-Variables', '{"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}');
                     break;
 
                 case 'MandrillTransport':
-                    $message->addHeader('X-MC-Metadata', '{"putyourlightson-campaign-sid": "'.$sid.'"}');
+                    $message->addHeader('X-MC-Metadata', '{"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}');
                     break;
 
                 case 'SendgridTransport':
-                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"putyourlightson-campaign-sid": "'.$sid.'"}}');
+                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}}');
                     break;
             }
         }
