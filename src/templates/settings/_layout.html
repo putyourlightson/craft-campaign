@@ -23,6 +23,11 @@
                 </a>
             </li>
             <li>
+                <a class="{{ craft.app.request.getSegment(3) == 'geoip' ? 'sel' }}" href="{{ url('campaign/settings/geoip') }}">
+                    {{ 'GeoIP Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
                 <a class="{{ craft.app.request.getSegment(3) == 'recaptcha' ? 'sel' }}" href="{{ url('campaign/settings/recaptcha') }}">
                     {{ 'reCAPTCHA Settings'|t('campaign') }}
                 </a>

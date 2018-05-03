@@ -350,6 +350,7 @@ class Campaign extends Plugin
             'campaign/settings/general' => 'campaign/settings/edit-general',
             'campaign/settings/email' => 'campaign/settings/edit-email',
             'campaign/settings/contact' => 'campaign/settings/edit-contact',
+            'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
             'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',
             'campaign/settings/campaigntypes/new' => 'campaign/campaign-types/edit-campaign-type',
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit-campaign-type',

@@ -3,6 +3,7 @@
 ## Unreleased
 ### Added
 - Added reCAPTCHA spam protection to mailing list subscription forms
+- Added GeoIP settings for ipstack.com
 
 ## 1.0.0 - 2018-05-02
 - Stable release

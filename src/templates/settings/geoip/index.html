@@ -1,0 +1,53 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'GeoIP Settings'|t('campaign') %}
+
+{% set crumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% from "campaign/settings/_macros" import configWarning %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-geoip">
+
+    {{ forms.lightswitchField({
+        first: true,
+        required: true,
+        label: "GeoIP"|t('campaign'),
+        instructions: "Enable GeoIP to geolocate contacts by their IP addresses."|t('campaign'),
+        warning: (config.geoIp is defined ? configWarning('geoIp')),
+        id: 'geoIp',
+        name: 'geoIp',
+        on: settings.geoIp,
+        errors: settings.getErrors('geoIp')
+    }) }}
+
+    {{ forms.textField({
+        label: "ipstack.com API Key"|t('campaign'),
+        instructions: "The ipstack.com API key."|t('campaign'),
+        warning: (config.ipstackApiKey is defined ? configWarning('ipstackApiKey')),
+        id: 'geoIpA',
+        name: 'ipstackApiKey',
+        value: settings.ipstackApiKey,
+        errors: settings.getErrors('ipstackApiKey')
+    }) }}
+
+    <p>
+        <em>
+            {{ 'Create and view your ipstack.com API key at {link}'|t('campaign', { link: '
+                <a href="https://ipstack.com/dashboard" class="go" target="_blank">
+                    https://ipstack.com/dashboard
+                </a>'
+            })|raw }}
+        </em>
+    </p>
+
+
+{% endblock %}

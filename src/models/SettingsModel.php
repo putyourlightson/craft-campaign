@@ -66,6 +66,16 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
+     * @var bool Enable GeoIP to geolocate contacts by their IP addresses
+     */
+    public $geoIp = false;
+
+    /**
+     * @var string The ipstack.com API key
+     */
+    public $ipstackApiKey;
+
+    /**
      * @var bool Enable reCAPTCHA to protect mailing list subscription forms from bots
      */
     public $reCaptcha = false;

@@ -156,6 +156,23 @@ class SettingsController extends Controller
      *
      * @return Response
      */
+    public function actionEditGeoip(SettingsModel $settings = null): Response
+    {
+        if ($settings === null) {
+            $settings = $this->_settings;
+        }
+
+        return $this->renderTemplate('campaign/settings/geoip', [
+            'settings' => $settings,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+        ]);
+    }
+
+    /**
+     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     *
+     * @return Response
+     */
     public function actionEditRecaptcha(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
@@ -279,6 +296,37 @@ class SettingsController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact settings saved.'));
+
+        return $this->redirectToPostedUrl();
+    }
+
+    /**
+     * @return Response|null
+     * @throws BadRequestHttpException
+     */
+    public function actionSaveGeoip()
+    {
+        $this->requirePostRequest();
+
+        $settings = $this->_settings;
+
+        // Set the simple stuff
+        $settings->geoIp = Craft::$app->getRequest()->getBodyParam('geoIp', $settings->geoIp);
+        $settings->ipstackApiKey = Craft::$app->getRequest()->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
+
+        // Save it
+        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+            Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save GeoIP settings.'));
+
+            // Send the settings back to the template
+            Craft::$app->getUrlManager()->setRouteParams([
+                'settings' => $settings
+            ]);
+
+            return null;
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'GeoIP settings saved.'));
 
         return $this->redirectToPostedUrl();
     }
