@@ -114,7 +114,7 @@ class SendoutsController extends Controller
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
         // Require permission
-        $this->requirePermission('campaign-sendouts');
+        $this->requirePermission('campaign:sendouts');
 
         $request = Craft::$app->getRequest();
 
@@ -281,7 +281,7 @@ class SendoutsController extends Controller
     public function actionSaveSendout()
     {
         // Require permission
-        $this->requirePermission('campaign-sendouts');
+        $this->requirePermission('campaign:sendouts');
 
         $this->requirePostRequest();
 
@@ -384,7 +384,7 @@ class SendoutsController extends Controller
     public function actionSendSendout()
     {
         // Require permission to send
-        $this->requirePermission('campaign-sendSendouts');
+        $this->requirePermission('campaign:sendSendouts');
 
         $this->requirePostRequest();
 

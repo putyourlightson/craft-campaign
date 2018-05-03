@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\helpers\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
@@ -145,7 +146,7 @@ class TrackerController extends Controller
                 $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
                     'form_params' => [
                         'secret' => $settings->reCaptchaSecretKey,
-                        'response' => $request->getParam('response'),
+                        'response' => $request->getParam('g-recaptcha-response'),
                         'remoteip' => $request->getUserIP(),
                     ]
                 ]);
@@ -157,6 +158,7 @@ class TrackerController extends Controller
             catch (ConnectException $e) {}
 
             if (empty($result['success'])) {
+                Craft::dd($result);
                 throw new ForbiddenHttpException(Craft::t('campaign', 'Your form submission was blocked by reCAPTCHA. Please verify that you are human.'));
             }
         }

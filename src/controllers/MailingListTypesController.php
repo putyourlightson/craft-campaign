@@ -36,7 +36,7 @@ class MailingListTypesController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-settings');
+        $this->requirePermission('campaign:settings');
     }
 
     /**

@@ -40,7 +40,7 @@ class ContactsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-contacts');
+        $this->requirePermission('campaign:contacts');
     }
 
     /**

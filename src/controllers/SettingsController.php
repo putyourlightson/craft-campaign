@@ -52,7 +52,7 @@ class SettingsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-settings');
+        $this->requirePermission('campaign:settings');
 
         $this->_settings = Campaign::$plugin->getSettings();
     }

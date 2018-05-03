@@ -37,8 +37,8 @@
     }, code) }}
 
     {{ forms.textField({
-        label: "reCAPTCHA Key"|t('campaign'),
-        instructions: "The reCAPTCHA site key."|t('campaign'),
+        label: "reCAPTCHA Site Key"|t('campaign'),
+        instructions: "The reCAPTCHA site key for this domain."|t('campaign'),
         warning: (config.reCaptchaSiteKey is defined ? configWarning('reCaptchaSiteKey')),
         id: 'reCaptchaSiteKey',
         name: 'reCaptchaSiteKey',
@@ -48,12 +48,19 @@
 
     {{ forms.textField({
         label: "reCAPTCHA Secret Key"|t('campaign'),
-        instructions: "The reCAPTCHA secret key."|t('campaign'),
+        instructions: "The reCAPTCHA secret key for this domain."|t('campaign'),
         warning: (config.reCaptchaSecretKey is defined ? configWarning('reCaptchaSecretKey')),
         id: 'reCaptchaSecretKey',
         name: 'reCaptchaSecretKey',
         value: settings.reCaptchaSecretKey,
         errors: settings.getErrors('reCaptchaSecretKey')
     }) }}
+
+    <p>
+        <a href="https://www.google.com/recaptcha/admin" class="go" target="_blank">
+            {{ 'Google reCAPTCHA Admin'|t('campaign') }}
+        </a>
+    </p>
+
 
 {% endblock %}
