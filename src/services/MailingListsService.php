@@ -76,7 +76,7 @@ class MailingListsService extends Component
      * @param string|null $sourceType
      * @param string|null $source
      */
-    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', string $source = '')
+    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, $sourceType = '', $source = '')
     {
         // Ensure that interaction exists
         if (!\in_array($interaction, ContactMailingListModel::INTERACTIONS, true)) {

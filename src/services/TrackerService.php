@@ -109,7 +109,7 @@ class TrackerService extends Component
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = '', string $source = '')
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '')
     {
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source);
 
