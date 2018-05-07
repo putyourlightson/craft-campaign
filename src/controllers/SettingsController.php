@@ -345,6 +345,7 @@ class SettingsController extends Controller
         $settings->reCaptcha = Craft::$app->getRequest()->getBodyParam('reCaptcha', $settings->reCaptcha);
         $settings->reCaptchaSiteKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSiteKey', $settings->reCaptchaSiteKey);
         $settings->reCaptchaSecretKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSecretKey', $settings->reCaptchaSecretKey);
+        $settings->reCaptchaErrorMessage = Craft::$app->getRequest()->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {

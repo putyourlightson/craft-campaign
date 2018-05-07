@@ -56,6 +56,16 @@
         errors: settings.getErrors('reCaptchaSecretKey')
     }) }}
 
+    {{ forms.textField({
+        label: "reCAPTCHA Error Message"|t('campaign'),
+        instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
+        warning: (config.reCaptchaErrorMessage is defined ? configWarning('reCaptchaErrorMessage')),
+        id: 'reCaptchaErrorMessage',
+        name: 'reCaptchaErrorMessage',
+        value: settings.reCaptchaErrorMessage,
+        errors: settings.getErrors('reCaptchaErrorMessage')
+    }) }}
+
     <p>
         <em>
             {{ 'Create and view your reCAPTCHA keys at {link}'|t('campaign', { link: '

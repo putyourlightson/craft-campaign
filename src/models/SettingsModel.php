@@ -91,6 +91,11 @@ class SettingsModel extends Model
     public $reCaptchaSecretKey;
 
     /**
+     * @var string The reCAPTCHA error message
+     */
+    public $reCaptchaErrorMessage = 'Your form submission was blocked. Please verify that you are human.';
+
+    /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
      */
     public $maxPendingContacts = 5;

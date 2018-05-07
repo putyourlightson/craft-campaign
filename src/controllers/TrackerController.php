@@ -158,8 +158,7 @@ class TrackerController extends Controller
             catch (ConnectException $e) {}
 
             if (empty($result['success'])) {
-                Craft::dd($result);
-                throw new ForbiddenHttpException(Craft::t('campaign', 'Your form submission was blocked by reCAPTCHA. Please verify that you are human.'));
+                throw new ForbiddenHttpException($settings->reCaptchaErrorMessage);
             }
         }
 
