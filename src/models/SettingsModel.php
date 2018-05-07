@@ -66,6 +66,36 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
+     * @var bool Enable GeoIP to geolocate contacts by their IP addresses
+     */
+    public $geoIp = false;
+
+    /**
+     * @var string The ipstack.com API key
+     */
+    public $ipstackApiKey;
+
+    /**
+     * @var bool Enable reCAPTCHA to protect mailing list subscription forms from bots
+     */
+    public $reCaptcha = false;
+
+    /**
+     * @var string The reCAPTCHA site key
+     */
+    public $reCaptchaSiteKey;
+
+    /**
+     * @var string The reCAPTCHA secret key
+     */
+    public $reCaptchaSecretKey;
+
+    /**
+     * @var string The reCAPTCHA error message
+     */
+    public $reCaptchaErrorMessage = 'Your form submission was blocked. Please verify that you are human.';
+
+    /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
      */
     public $maxPendingContacts = 5;

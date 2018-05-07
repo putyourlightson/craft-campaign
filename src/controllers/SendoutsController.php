@@ -114,7 +114,9 @@ class SendoutsController extends Controller
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
     {
         // Require permission
-        $this->requirePermission('campaign-sendouts');
+        $this->requirePermission('campaign:sendouts');
+
+        $request = Craft::$app->getRequest();
 
         // Check that the sendout type exists
         // ---------------------------------------------------------------------
@@ -141,7 +143,7 @@ class SendoutsController extends Controller
                 $sendout->sendoutType = $sendoutType;
 
                 // If a campaign ID was passed in as a param
-                $campaignId = Craft::$app->getRequest()->getParam('campaignId');
+                $campaignId = $request->getParam('campaignId');
                 if ($campaignId) {
                     // Set campaign ID
                     $sendout->campaignId = $campaignId;
@@ -251,7 +253,7 @@ class SendoutsController extends Controller
         $variables['fullPageForm'] = true;
 
         // Render the template
-        if ($sendout->getIsEditable() AND !Craft::$app->request->getParam('preview')) {
+        if ($sendout->getIsEditable() AND !$request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
 
@@ -279,7 +281,7 @@ class SendoutsController extends Controller
     public function actionSaveSendout()
     {
         // Require permission
-        $this->requirePermission('campaign-sendouts');
+        $this->requirePermission('campaign:sendouts');
 
         $this->requirePostRequest();
 
@@ -382,7 +384,7 @@ class SendoutsController extends Controller
     public function actionSendSendout()
     {
         // Require permission to send
-        $this->requirePermission('campaign-sendSendouts');
+        $this->requirePermission('campaign:sendSendouts');
 
         $this->requirePostRequest();
 

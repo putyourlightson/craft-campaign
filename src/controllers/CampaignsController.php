@@ -43,7 +43,7 @@ class CampaignsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-campaigns');
+        $this->requirePermission('campaign:campaigns');
     }
 
     /**

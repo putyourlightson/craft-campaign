@@ -47,27 +47,6 @@ class MailingListsService extends Component
     }
 
     /**
-     * Returns mailing list by MLID
-     *
-     * @param string $mlid
-     *
-     * @return MailingListElement|null
-     */
-    public function getMailingListByMlid(string $mlid)
-    {
-        if (!$mlid) {
-            return null;
-        }
-
-        $mailingList = MailingListElement::find()
-            ->where(['mlid' => $mlid])
-            ->status(null)
-            ->one();
-
-        return $mailingList;
-    }
-
-    /**
      * Adds a contact interaction
      *
      * @param ContactElement $contact

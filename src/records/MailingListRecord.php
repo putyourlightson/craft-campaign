@@ -12,7 +12,6 @@ use craft\db\ActiveRecord;
  * MailingListRecord
  *
  * @property int         $id                         ID
- * @property string      $mlid                       Mailing list ID
  * @property int|null    $mailingListTypeId          Mailing list type ID
  *
  * @author    PutYourLightsOn

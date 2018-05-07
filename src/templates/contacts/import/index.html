@@ -1,4 +1,4 @@
-{% if not currentUser.can('campaign-importContacts') %}
+{% if not currentUser.can('campaign:importContacts') %}
     {% redirect 'campaign' %}
 {% endif %}
 

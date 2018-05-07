@@ -36,7 +36,7 @@ class MailingListTypesController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-settings');
+        $this->requirePermission('campaign:settings');
     }
 
     /**
@@ -112,7 +112,6 @@ class MailingListTypesController extends Controller
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
         $mailingListType->doubleOptIn = (bool)$request->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);
-        $mailingListType->requireMlid = (bool)$request->getBodyParam('requireMlid', $mailingListType->requireMlid);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

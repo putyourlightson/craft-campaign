@@ -19,13 +19,13 @@ use DeviceDetector\DeviceDetector;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\GuzzleException;
 
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * TrackerService
@@ -171,6 +171,7 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
+     * @throws InvalidConfigException
      */
     private function _updateContactCampaignRecord(ContactElement $contact, SendoutElement $sendout)
     {
@@ -195,6 +196,7 @@ class TrackerService extends Component
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
      * @param bool $verify
+     * @throws InvalidConfigException
      */
     private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList, $verify = false)
     {
@@ -243,21 +245,19 @@ class TrackerService extends Component
      * @param ContactElement|ContactCampaignRecord|ContactMailingListRecord $model
      *
      * @return ContactElement|ContactCampaignRecord|ContactMailingListRecord
+     * @throws InvalidConfigException
      */
     private function _updateLocationDevice($model)
     {
-        // Get GeoIP
-        if ($this->_geoIp === null) {
-            $this->_geoIp = $this->getGeoIp();
-        }
-
-        // If GeoIP exists
-        if ($this->_geoIp !== null) {
-            $country = $this->_geoIp['countryName'];
+        // Get GeoIP if enabled
+        if (Campaign::$plugin->getSettings()->geoIp) {
+            if ($this->_geoIp === null) {
+                $this->_geoIp = $this->getGeoIp();
+            }
 
             // If country exists
-            if ($country) {
-                $model->country = $country;
+            if (!empty($this->_geoIp['countryName'])) {
+                $model->country = $this->_geoIp['countryName'];
                 $model->geoIp = $this->_geoIp;
             }
         }
@@ -292,8 +292,9 @@ class TrackerService extends Component
      * @param int|null
      *
      * @return array|null
+     * @throws InvalidConfigException
      */
-    private function getGeoIp(int $timeout = 3)
+    private function getGeoIp(int $timeout = 5)
     {
         $geoIp = null;
 
@@ -302,18 +303,14 @@ class TrackerService extends Component
             'connect_timeout' => $timeout,
         ]);
 
-        $ipAddress = Craft::$app->request->getUserIP();
-
         try {
-            $response = $client->request('get', 'http://freegeoip.net/json/'.$ipAddress);
+            $response = $client->get('http://api.ipstack.com/'.Craft::$app->getRequest()->getUserIP().'?access_key='.Campaign::$plugin->getSettings()->ipstackApiKey);
 
             if ($response->getStatusCode() == 200) {
-                $geoIp = $response->getBody();
-                $geoIp = Json::decodeIfJson($geoIp);
+                $geoIp = Json::decodeIfJson($response->getBody());
             }
         }
         catch (ConnectException $e) {}
-        catch (GuzzleException $e) {}
 
         // If country is empty then return null
         if (empty($geoIp['country_code'])) {
@@ -321,13 +318,15 @@ class TrackerService extends Component
         }
 
         return [
-            'city' => $geoIp['city'] ?? '',
-            'postCode' => $geoIp['zip_code'] ?? '',
-            'regionCode' => $geoIp['region_code'] ?? '',
-            'regionName' => $geoIp['region_name'] ?? '',
+            'continentCode' => $geoIp['continent_code'] ?? '',
+            'continentName' => $geoIp['continent_name'] ?? '',
             'countryCode' => $geoIp['country_code'] ?? '',
             'countryName' => $geoIp['country_name'] ?? '',
-            'timeZone' => $geoIp['time_zone'] ?? '',
+            'regionCode' => $geoIp['region_code'] ?? '',
+            'regionName' => $geoIp['region_name'] ?? '',
+            'city' => $geoIp['city'] ?? '',
+            'postCode' => $geoIp['zip_code'] ?? '',
+            'timeZone' => $geoIp['time_zone']['id'] ?? '',
         ];
     }
 }

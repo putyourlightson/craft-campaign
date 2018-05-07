@@ -5,7 +5,7 @@
 {% set title = mailingListType.id ? mailingListType.name : 'Create a new mailing list type'|t('campaign') %}
 
 {% set crumbs = [
-    { label: 'Plugin Settings'|t('campaign'), url: url('campaign/settings/mailinglisttypes') },
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings/mailinglisttypes') },
     { label: 'Mailing List Types'|t('campaign'), url: url('campaign/settings/mailinglisttypes') }
 ] %}
 
@@ -50,15 +50,6 @@
         name: 'doubleOptIn',
         on: mailingListType.doubleOptIn,
         errors: mailingListType.getErrors('doubleOptIn')
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: "Require MLID on Subscription Forms"|t('campaign'),
-        instructions: "Whether the MLID field needs to be submitted on front-end subscription forms (recommended for security)."|t('campaign'),
-        id: 'requireMlid',
-        name: 'requireMlid',
-        on: mailingListType.requireMlid,
-        errors: mailingListType.getErrors('requireMlid')
     }) }}
 
     {{ forms.textField({

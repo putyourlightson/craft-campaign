@@ -32,11 +32,6 @@ class MailingListElementQuery extends ElementQuery
     // =========================================================================
 
     /**
-     * @var string MLID
-     */
-    public $mlid;
-
-    /**
      * @var int|int[]|null The mailing list type ID(s) that the resulting mailing lists must have.
      */
     public $mailingListTypeId;
@@ -56,20 +51,6 @@ class MailingListElementQuery extends ElementQuery
             default:
                 parent::__set($name, $value);
         }
-    }
-
-    /**
-     * Sets the [[mlid]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
-     */
-    public function mlid(string $value)
-    {
-        $this->mlid = $value;
-
-        return $this;
     }
 
     /**
@@ -122,13 +103,8 @@ class MailingListElementQuery extends ElementQuery
         $this->joinElementTable('campaign_mailinglists');
 
         $this->query->select([
-            'campaign_mailinglists.mlid',
             'campaign_mailinglists.mailingListTypeId',
         ]);
-
-        if ($this->mlid) {
-            $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mlid', $this->mlid));
-        }
 
         if ($this->mailingListTypeId) {
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));

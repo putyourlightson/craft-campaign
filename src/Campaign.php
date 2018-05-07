@@ -127,64 +127,13 @@ class Campaign extends Plugin
 
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules['campaign/reports/campaigns/<campaignId:\d+>'] = ['template' => 'campaign/reports/campaigns/_view'];              $event->rules['campaign/reports/campaigns/<campaignId:\d+>/contact-activity'] = ['template' => 'campaign/reports/campaigns/_contact-activity'];
-            $event->rules['campaign/reports/campaigns/<campaignId:\d+>/links'] = ['template' => 'campaign/reports/campaigns/_links'];
-            $event->rules['campaign/reports/campaigns/<campaignId:\d+>/locations'] = ['template' => 'campaign/reports/campaigns/_locations'];
-            $event->rules['campaign/reports/campaigns/<campaignId:\d+>/devices'] = ['template' => 'campaign/reports/campaigns/_devices'];
-            $event->rules['campaign/reports/contacts/<contactId:\d+>'] = ['template' => 'campaign/reports/contacts/_view'];
-            $event->rules['campaign/reports/contacts/<contactId:\d+>/campaign-activity'] = ['template' => 'campaign/reports/contacts/_campaign-activity'];
-            $event->rules['campaign/reports/contacts/<contactId:\d+>/mailinglist-activity'] = ['template' => 'campaign/reports/contacts/_mailinglist-activity'];
-            $event->rules['campaign/reports/mailinglists/<mailingListId:\d+>'] = ['template' => 'campaign/reports/mailinglists/_view'];
-            $event->rules['campaign/reports/mailinglists/<mailingListId:\d+>/contact-activity'] = ['template' => 'campaign/reports/mailinglists/_contact-activity'];
-            $event->rules['campaign/reports/mailinglists/<mailingListId:\d+>/locations'] = ['template' => 'campaign/reports/mailinglists/_locations'];
-            $event->rules['campaign/reports/mailinglists/<mailingListId:\d+>/devices'] = ['template' => 'campaign/reports/mailinglists/_devices'];
-            $event->rules['campaign/campaigns/<campaignTypeHandle:{handle}>'] = ['template' => 'campaign/campaigns/index'];
-            $event->rules['campaign/campaigns/<campaignTypeHandle:{handle}>/new'] = 'campaign/campaigns/edit-campaign';
-            $event->rules['campaign/campaigns/<campaignTypeHandle:{handle}>/<campaignId:\d+>'] = 'campaign/campaigns/edit-campaign';
-            $event->rules['campaign/contacts/new'] = 'campaign/contacts/edit-contact';
-            $event->rules['campaign/contacts/<contactId:\d+>'] = 'campaign/contacts/edit-contact';
-            $event->rules['campaign/contacts/import/<importId:\d+>'] = ['template' => 'campaign/contacts/import/_view'];
-            $event->rules['campaign/contacts/export'] = 'campaign/exports/new-export';
-            $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>'] = ['template' => 'campaign/mailinglists/index'];
-            $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>/new'] = 'campaign/mailing-lists/edit-mailing-list';
-            $event->rules['campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+>'] = 'campaign/mailing-lists/edit-mailing-list';
-            $event->rules['campaign/segments/new'] = 'campaign/segments/edit-segment';
-            $event->rules['campaign/segments/<segmentId:\d+>'] = 'campaign/segments/edit-segment';
-            $event->rules['campaign/sendouts/<sendoutType:{handle}>'] = ['template' => 'campaign/sendouts/index'];
-            $event->rules['campaign/sendouts/<sendoutType:{handle}>/new'] = 'campaign/sendouts/edit-sendout';
-            $event->rules['campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>'] = 'campaign/sendouts/edit-sendout';
-            $event->rules['campaign/settings/general'] = 'campaign/settings/edit-general';
-            $event->rules['campaign/settings/email'] = 'campaign/settings/edit-email';
-            $event->rules['campaign/settings/contact'] = 'campaign/settings/edit-contact';
-            $event->rules['campaign/settings/campaigntypes/new'] = 'campaign/campaign-types/edit-campaign-type';
-            $event->rules['campaign/settings/campaigntypes/<campaignTypeId:\d+>'] = 'campaign/campaign-types/edit-campaign-type';
-            $event->rules['campaign/settings/mailinglisttypes/new'] = 'campaign/mailing-list-types/edit-mailing-list-type';
-            $event->rules['campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>'] = 'campaign/mailing-list-types/edit-mailing-list-type';
+            $event->rules = array_merge($event->rules, $this->getCpRoutes());
         });
 
         // Register user permissions if edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Campaign']['campaign-reports'] = ['label' => Craft::t('campaign', 'Manage reports')];
-                $event->permissions['Campaign']['campaign-campaigns'] = ['label' => Craft::t('campaign', 'Manage campaigns')];
-                $event->permissions['Campaign']['campaign-contacts'] = [
-                    'label' => Craft::t('campaign', 'Manage contacts'),
-                    'nested' => [
-                        'campaign-importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
-                        'campaign-exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
-                    ],
-                ];
-                $event->permissions['Campaign']['campaign-mailingLists'] = ['label' => Craft::t('campaign', 'Manage mailing lists')];
-
-                if ($this->isPro()) {
-                    $event->permissions['Campaign']['campaign-segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
-                }
-
-                $event->permissions['Campaign']['campaign-sendouts'] = [
-                        'label' => Craft::t('campaign', 'Manage sendouts'),
-                        'nested' => ['campaign-sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]],
-                ];
-                $event->permissions['Campaign']['campaign-settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
+                $event->permissions['Campaign'] = $this->getCpPermissions();
             });
         }
     }
@@ -215,25 +164,25 @@ class Campaign extends Plugin
         $cpNavItem['subnav'] = [];
 
         // Show nav items based on permissions
-        if ($user->checkPermission('campaign-campaigns')) {
+        if ($user->checkPermission('campaign:campaigns')) {
             $cpNavItem['subnav']['campaigns'] = ['label' => Craft::t('campaign', 'Campaigns'), 'url' => 'campaign/campaigns'];
         }
-        if ($user->checkPermission('campaign-contacts')) {
+        if ($user->checkPermission('campaign:contacts')) {
             $cpNavItem['subnav']['contacts'] = ['label' => Craft::t('campaign', 'Contacts'), 'url' => 'campaign/contacts'];
         }
-        if ($user->checkPermission('campaign-mailingLists')) {
+        if ($user->checkPermission('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign-segments') AND $this->isPro()) {
+        if ($user->checkPermission('campaign:segments') AND $this->isPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
-        if ($user->checkPermission('campaign-sendouts')) {
+        if ($user->checkPermission('campaign:sendouts')) {
             $cpNavItem['subnav']['sendouts'] = ['label' => Craft::t('campaign', 'Sendouts'), 'url' => 'campaign/sendouts'];
         }
-        if ($user->checkPermission('campaign-reports')) {
+        if ($user->checkPermission('campaign:reports')) {
             $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
         }
-        if ($user->checkPermission('campaign-settings')) {
+        if ($user->checkPermission('campaign:settings')) {
             $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Settings'), 'url' => 'campaign/settings'];
         }
 
@@ -361,5 +310,88 @@ class Campaign extends Plugin
         $url = UrlHelper::cpUrl('campaign/welcome');
 
         Craft::$app->getResponse()->redirect($url)->send();
+    }
+
+    /**
+     * Returns the CP routes
+     *
+     * @return array
+     */
+    protected function getCpRoutes(): array
+    {
+        return [
+            'campaign/reports/campaigns/<campaignId:\d+>' => ['template' => 'campaign/reports/campaigns/_view'],
+            'campaign/reports/campaigns/<campaignId:\d+>/contact-activity' => ['template' => 'campaign/reports/campaigns/_contact-activity'],
+            'campaign/reports/campaigns/<campaignId:\d+>/links' => ['template' => 'campaign/reports/campaigns/_links'],
+            'campaign/reports/campaigns/<campaignId:\d+>/locations' => ['template' => 'campaign/reports/campaigns/_locations'],
+            'campaign/reports/campaigns/<campaignId:\d+>/devices' => ['template' => 'campaign/reports/campaigns/_devices'],
+            'campaign/reports/contacts/<contactId:\d+>' => ['template' => 'campaign/reports/contacts/_view'],
+            'campaign/reports/contacts/<contactId:\d+>/campaign-activity' => ['template' => 'campaign/reports/contacts/_campaign-activity'],
+            'campaign/reports/contacts/<contactId:\d+>/mailinglist-activity' => ['template' => 'campaign/reports/contacts/_mailinglist-activity'],
+            'campaign/reports/mailinglists/<mailingListId:\d+>' => ['template' => 'campaign/reports/mailinglists/_view'],
+            'campaign/reports/mailinglists/<mailingListId:\d+>/contact-activity' => ['template' => 'campaign/reports/mailinglists/_contact-activity'],
+            'campaign/reports/mailinglists/<mailingListId:\d+>/locations' => ['template' => 'campaign/reports/mailinglists/_locations'],
+            'campaign/reports/mailinglists/<mailingListId:\d+>/devices' => ['template' => 'campaign/reports/mailinglists/_devices'],
+            'campaign/campaigns/<campaignTypeHandle:{handle}>' => ['template' => 'campaign/campaigns/index'],
+            'campaign/campaigns/<campaignTypeHandle:{handle}>/new' => 'campaign/campaigns/edit-campaign',
+            'campaign/campaigns/<campaignTypeHandle:{handle}>/<campaignId:\d+>' => 'campaign/campaigns/edit-campaign',
+            'campaign/contacts/new' => 'campaign/contacts/edit-contact',
+            'campaign/contacts/<contactId:\d+>' => 'campaign/contacts/edit-contact',
+            'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/import/_view'],
+            'campaign/contacts/export' => 'campaign/exports/new-export',
+            'campaign/mailinglists/<mailingListTypeHandle:{handle}>' => ['template' => 'campaign/mailinglists/index'],
+            'campaign/mailinglists/<mailingListTypeHandle:{handle}>/new' => 'campaign/mailing-lists/edit-mailing-list',
+            'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+>' => 'campaign/mailing-lists/edit-mailing-list',
+            'campaign/segments/new' => 'campaign/segments/edit-segment',
+            'campaign/segments/<segmentId:\d+>' => 'campaign/segments/edit-segment',
+            'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
+            'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/edit-sendout',
+            'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit-sendout',
+            'campaign/settings/general' => 'campaign/settings/edit-general',
+            'campaign/settings/email' => 'campaign/settings/edit-email',
+            'campaign/settings/contact' => 'campaign/settings/edit-contact',
+            'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
+            'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',
+            'campaign/settings/campaigntypes/new' => 'campaign/campaign-types/edit-campaign-type',
+            'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit-campaign-type',
+            'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit-mailing-list-type',
+            'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit-mailing-list-type',
+        ];
+    }
+
+    /**
+     * Returns the CP permissions
+     *
+     * @return array
+     */
+    protected function getCpPermissions(): array
+    {
+        $permissions = [
+            'campaign:reports' => ['label' => Craft::t('campaign', 'Manage reports')],
+            'campaign:campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
+            'campaign:contacts' => [
+                'label' => Craft::t('campaign', 'Manage contacts'),
+                'nested' => [
+                    'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
+                    'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
+                ],
+            ],
+            'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
+        ];
+
+        if ($this->isPro()) {
+            $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
+        }
+
+        $permissions['campaign:sendouts'] = [
+            'label' => Craft::t('campaign', 'Manage sendouts'),
+            'nested' => [
+                'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]
+            ],
+        ];
+
+        $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
+
+        return $permissions;
     }
 }

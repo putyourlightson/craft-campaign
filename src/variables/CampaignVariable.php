@@ -23,6 +23,7 @@ use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
 
+use craft\helpers\Template;
 use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
@@ -495,7 +496,7 @@ class CampaignVariable
      *
      * @return ImportModel|null
      */
-    public function getImportById($importId)
+    public function getImportById(int $importId)
     {
         return Campaign::$plugin->imports->getImportById($importId);
     }
@@ -509,6 +510,35 @@ class CampaignVariable
     public function getContactFields(): array
     {
         return Campaign::$plugin->imports->getContactFields();
+    }
+
+    /**
+     * Returns reCAPTCHA markup
+     *
+     * @return \Twig_Markup|null
+     * @throws InvalidConfigException
+     */
+    public function getRecaptcha()
+    {
+        $settings = Campaign::$plugin->getSettings();
+
+        if ($settings->reCaptcha) {
+            return Template::raw('
+                <script src="https://www.google.com/recaptcha/api.js"></script>
+                <div class="g-recaptcha" data-sitekey="'.$settings->reCaptchaSiteKey.'"></div>
+            ');
+        }
+    }
+
+    /**
+     * Returns reCAPTCHA site key
+     *
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function getRecaptchaSiteKey(): string
+    {
+        return Campaign::$plugin->getSettings()->reCaptchaSiteKey;
     }
 
     /**

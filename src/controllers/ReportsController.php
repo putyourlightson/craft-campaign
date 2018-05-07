@@ -35,7 +35,7 @@ class ReportsController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign-reports');
+        $this->requirePermission('campaign:reports');
     }
 
     /**

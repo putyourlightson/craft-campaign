@@ -34,6 +34,18 @@ return [
     // A label to use for the email field
     //'emailFieldLabel' => 'Email',
 
+    // Enable reCAPTCHA to protect mailing list subscription forms from bots
+    //'reCaptcha' => false,
+
+    // The reCAPTCHA site key
+    //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoPaBcDeFgHiJkLmNoP',
+
+    // The reCAPTCHA secret key
+    //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoPaBcDeFgHiJkLmNoP',
+
+    // The reCAPTCHA error message
+    //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please verify that you are human.',
+
     // The maximum number of pending contacts to store per email address and mailing list
     //'maxPendingContacts' => 5,
 

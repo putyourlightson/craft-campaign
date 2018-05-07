@@ -6,6 +6,9 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\helpers\Json;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -21,6 +24,7 @@ use craft\web\View;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -126,6 +130,38 @@ class TrackerController extends Controller
 
         $request = Craft::$app->getRequest();
 
+        $settings = Campaign::$plugin->getSettings();
+
+        // Validate reCAPTCHA if enabled
+        if ($settings->reCaptcha)
+        {
+            $result = '';
+
+            $client = new Client([
+                'timeout' => 5,
+                'connect_timeout' => 5,
+            ]);
+
+            try {
+                $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'form_params' => [
+                        'secret' => $settings->reCaptchaSecretKey,
+                        'response' => $request->getParam('g-recaptcha-response'),
+                        'remoteip' => $request->getUserIP(),
+                    ]
+                ]);
+
+                if ($response->getStatusCode() == 200) {
+                    $result = Json::decodeIfJson($response->getBody());
+                }
+            }
+            catch (ConnectException $e) {}
+
+            if (empty($result['success'])) {
+                throw new ForbiddenHttpException($settings->reCaptchaErrorMessage);
+            }
+        }
+
         // Get mailing list by slug
         $mailingListSlug = $request->getRequiredBodyParam('mailingList');
         /** @var MailingListElement $mailingList */
@@ -137,22 +173,6 @@ class TrackerController extends Controller
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
         }
 
-        // If MLID is required
-        if ($mailingList->mailingListType->requireMlid) {
-            $mlid = $request->getBodyParam('mlid');
-
-            // Get mailing list by MLID
-            /** @var MailingListElement $mailingList */
-            $mailingList = MailingListElement::find()
-                ->slug($mailingListSlug)
-                ->where(['mlid' => $mlid])
-                ->one();
-
-            if ($mailingList === null) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
-            }
-        }
-
         $email = $request->getRequiredBodyParam('email');
         $referrer = $request->getReferrer();
 
@@ -160,7 +180,7 @@ class TrackerController extends Controller
         if ($mailingList->mailingListType->doubleOptIn) {
             // Create new contact to get field values
             $contact = new ContactElement();
-            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+            $contact->fieldLayoutId = $settings->contactFieldLayoutId;
             $contact->setFieldValuesFromRequest('fields');
 
             // Create pending contact

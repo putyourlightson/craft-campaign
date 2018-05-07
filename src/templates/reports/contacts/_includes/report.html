@@ -15,11 +15,12 @@
                 {{ geoIp.countryName }}
                 <span class="info">
                     <p>
-                        City: {{ geoIp.city }}<br/>
-                        Post Code: {{ geoIp.postCode }}<br/>
-                        Region: {{ geoIp.regionName }}<br/>
-                        Country: {{ geoIp.countryName }}<br/>
-                        Timezone: {{ geoIp.timeZone }}
+                        {{ geoIp.city ? ('City'|t('campaign') ~ ': ' ~ geoIp.city ~ '<br/>')|raw }}
+                        {{ geoIp.postCode ? ('Post Code'|t('campaign') ~ ': ' ~ geoIp.postCode ~ '<br/>')|raw }}
+                        {{ geoIp.regionName ? ('Region'|t('campaign') ~ ': ' ~ geoIp.regionName ~ '<br/>')|raw }}
+                        {{ geoIp.countryName ? ('Country'|t('campaign') ~ ': ' ~ geoIp.countryName ~ '<br/>')|raw }}
+                        {{ geoIp.continentName ? ('Continent'|t('campaign') ~ ': ' ~ geoIp.continentName ~ '<br/>')|raw }}
+                        {{ geoIp.timeZone ? ('Timezone'|t('campaign') ~ ': ' ~ geoIp.timeZone ~ '<br/>')|raw }}
                     </p>
                 </span>
             {% endif %}
