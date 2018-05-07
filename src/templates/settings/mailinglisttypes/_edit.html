@@ -52,15 +52,6 @@
         errors: mailingListType.getErrors('doubleOptIn')
     }) }}
 
-    {{ forms.lightswitchField({
-        label: "Require MLID on Subscription Forms"|t('campaign'),
-        instructions: "Whether the MLID field needs to be submitted on front-end subscription forms (recommended for security)."|t('campaign'),
-        id: 'requireMlid',
-        name: 'requireMlid',
-        on: mailingListType.requireMlid,
-        errors: mailingListType.getErrors('requireMlid')
-    }) }}
-
     {{ forms.textField({
         label: "Subscribe Success Template"|t('campaign'),
         instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign'),

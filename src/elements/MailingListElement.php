@@ -197,11 +197,6 @@ class MailingListElement extends Element
     // =========================================================================
 
     /**
-     * @var string Mailing list ID
-     */
-    public $mlid;
-
-    /**
      * @var int|null Mailing list type ID
      */
     public $mailingListTypeId;
@@ -217,7 +212,6 @@ class MailingListElement extends Element
     {
         $rules = parent::rules();
         $rules[] = [['mailingListTypeId'], 'integer'];
-        $rules[] = [['mlid'], 'string', 'max' => 32];
 
         return $rules;
     }
@@ -359,15 +353,14 @@ class MailingListElement extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
+            case 'mailingListType':
+                return $this->getMailingListType()->name;
             case 'subscribed':
                 return $this->getSubscribedCount();
-
             case 'unsubscribed':
                 return $this->getUnsubscribedCount();
-
             case 'complained':
                 return $this->getComplainedCount();
-
             case 'bounced':
                 return $this->getBouncedCount();
         }
@@ -403,25 +396,11 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
-    public function beforeSave(bool $isNew): bool
-    {
-        if ($isNew) {
-            // Create unique ID
-            $this->mlid = StringHelper::uniqueId('ml');
-        }
-
-        return parent::beforeSave($isNew);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function afterSave(bool $isNew)
     {
         if ($isNew) {
             $mailingListRecord = new MailingListRecord();
             $mailingListRecord->id = $this->id;
-            $mailingListRecord->mlid = $this->mlid;
         } else {
             $mailingListRecord = MailingListRecord::findOne($this->id);
         }

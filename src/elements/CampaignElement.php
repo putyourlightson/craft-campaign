@@ -494,7 +494,6 @@ class CampaignElement extends Element
         switch ($attribute) {
             case 'campaignType':
                 return $this->getCampaignType()->name;
-
             case 'clickThroughRate':
                 return $this->getClickThroughRate().'%';
         }

@@ -1,12 +1,16 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.1.0 - 2018-05-07
 ### Added
 - Added reCAPTCHA spam protection to mailing list subscription forms
 - Added GeoIP settings for ipstack.com
 
+### Removed
+- Removed MLID column and MLID required setting
+
 ### Fixed
 - Fixed import view template bug
+- Fixed mailing list type HTML attribute in mailing list index 
 
 ## 1.0.1 - 2018-05-03
 ### Fixed

@@ -58,11 +58,6 @@ class MailingListTypeModel extends BaseModel
     public $doubleOptIn = true;
 
     /**
-     * @var bool Require MLID
-     */
-    public $requireMlid = true;
-
-    /**
      * @var string|null Subscribe success template
      */
     public $subscribeSuccessTemplate;
@@ -107,7 +102,7 @@ class MailingListTypeModel extends BaseModel
             [['id', 'fieldLayoutId'], 'integer'],
             [['name', 'handle'], 'required'],
             [['name', 'handle', 'subscribeSuccessTemplate', 'unsubscribeSuccessTemplate'], 'string', 'max' => 255],
-            [['doubleOptIn', 'requireMlid'], 'boolean'],
+            [['doubleOptIn'], 'boolean'],
             [
                 ['handle'],
                 HandleValidator::class,

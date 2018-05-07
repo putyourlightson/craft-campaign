@@ -17,7 +17,6 @@ use craft\db\ActiveRecord;
  * @property string      $name                          Name
  * @property string      $handle                        Handle
  * @property bool        $doubleOptIn                   Double opt-in
- * @property bool        $requireMlid                   Require MLID
  * @property string      $subscribeSuccessTemplate      Subscribe success template
  * @property string      $unsubscribeSuccessTemplate    Unsubscribe success template
  *

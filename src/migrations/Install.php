@@ -192,7 +192,6 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_mailinglists}}')) {
             $this->createTable('{{%campaign_mailinglists}}', [
                 'id' => $this->primaryKey(),
-                'mlid' => $this->uid(),
                 'mailingListTypeId' => $this->integer()->notNull(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
@@ -207,7 +206,6 @@ class Install extends Migration
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'doubleOptIn' => $this->boolean()->defaultValue(true)->notNull(),
-                'requireMlid' => $this->boolean()->defaultValue(true)->notNull(),
                 'subscribeSuccessTemplate' => $this->string(),
                 'unsubscribeSuccessTemplate' => $this->string(),
                 'dateCreated' => $this->dateTime()->notNull(),
@@ -318,7 +316,6 @@ class Install extends Migration
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'contactId, mailingListId', true);
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
         $this->createIndex(null, '{{%campaign_links}}', 'lid', true);
-        $this->createIndex(null, '{{%campaign_mailinglists}}', 'mlid', true);
         $this->createIndex(null, '{{%campaign_mailinglisttypes}}', 'handle', true);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sid', true);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sendoutType', false);
