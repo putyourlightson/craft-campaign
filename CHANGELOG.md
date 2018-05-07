@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.1.1 - 2018-05-07
+### Changed
+- Made reCAPTCHA and GeoIP setting fields required when enabled
+
 ## 1.1.0 - 2018-05-07
 ### Added
 - Added reCAPTCHA spam protection to mailing list subscription forms

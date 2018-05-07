@@ -44,7 +44,7 @@ return [
     //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoPaBcDeFgHiJkLmNoP',
 
     // The reCAPTCHA error message
-    //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please verify that you are human.',
+    //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
 
     // The maximum number of pending contacts to store per email address and mailing list
     //'maxPendingContacts' => 5,

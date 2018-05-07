@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\models;
 
 use putyourlightson\campaign\elements\ContactElement;
 
+use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 
@@ -93,7 +94,7 @@ class SettingsModel extends Model
     /**
      * @var string The reCAPTCHA error message
      */
-    public $reCaptchaErrorMessage = 'Your form submission was blocked. Please verify that you are human.';
+    public $reCaptchaErrorMessage = 'Your form submission was blocked. Please go back and verify that you are human.';
 
     /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
@@ -165,8 +166,30 @@ class SettingsModel extends Model
         return [
             [['apiKey', 'defaultFromName', 'defaultFromEmail', 'transportType', 'emailFieldLabel'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
+            [['ipstackApiKey'], 'required', 'when' => function($model) {
+                return $model->geoIp;
+            }],
+            [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => function($model) {
+                return $model->reCaptcha;
+            }],
             [['defaultFromName', 'defaultFromEmail'], 'string', 'max' => 255],
             [['contactFieldLayoutId'], 'integer']
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        $labels = parent::attributeLabels();
+
+        // Set the field labels
+        $labels['reCaptchaSiteKey'] = Craft::t('campaign', 'reCAPTCHA Site Key');
+        $labels['reCaptchaSecretKey'] = Craft::t('campaign', 'reCAPTCHA Secret Key');
+        $labels['reCaptchaErrorMessage'] = Craft::t('campaign', 'reCAPTCHA Error Message');
+
+        return $labels;
+    }
+
 }
