@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.1.2 - 2018-05-07
+### Added
+- Added language query parameter to reCAPTCHA
+
 ## 1.1.1 - 2018-05-07
 ### Changed
 - Made reCAPTCHA and GeoIP setting fields required when enabled

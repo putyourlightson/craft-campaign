@@ -23,6 +23,7 @@ use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
 
+use Craft;
 use craft\helpers\Template;
 use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
@@ -524,7 +525,7 @@ class CampaignVariable
 
         if ($settings->reCaptcha) {
             return Template::raw('
-                <script src="https://www.google.com/recaptcha/api.js"></script>
+                <script src="https://www.google.com/recaptcha/api.js?hl='.Craft::$app->getSites()->getCurrentSite()->language.'"></script>
                 <div class="g-recaptcha" data-sitekey="'.$settings->reCaptchaSiteKey.'"></div>
             ');
         }
