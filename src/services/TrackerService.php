@@ -10,6 +10,8 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\events\SubscribeContactEvent;
+use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -36,6 +38,29 @@ use yii\base\InvalidConfigException;
  */
 class TrackerService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event SubscribeContactEvent
+     */
+    const EVENT_BEFORE_SUBSCRIBE_CONTACT = 'beforeSubscribeContact';
+
+    /**
+     * @event SubscribeContactEvent
+     */
+    const EVENT_AFTER_SUBSCRIBE_CONTACT = 'afterSubscribeContact';
+
+    /**
+     * @event UnsubscribeContactEvent
+     */
+    const EVENT_BEFORE_UNSUBSCRIBE_CONTACT = 'beforeUnsubscribeContact';
+
+    /**
+     * @event UnsubscribeContactEvent
+     */
+    const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
+
     // Properties
     // =========================================================================
 
@@ -111,6 +136,16 @@ class TrackerService extends Component
      */
     public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '')
     {
+        // Fire a 'beforeSubscribeContact' event
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
+            $this->trigger(self::EVENT_BEFORE_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
+                'contact' => $contact,
+                'mailingList' => $mailingList,
+                'sourceType' => $sourceType,
+                'source' => $source,
+            ]));
+        }
+
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source);
 
         // Update contact mailing list record
@@ -118,6 +153,16 @@ class TrackerService extends Component
 
         // Update contact
         $this->_updateContact($contact);
+
+        // Fire a 'afterSubscribeContact' event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SUBSCRIBE_CONTACT)) {
+            $this->trigger(self::EVENT_AFTER_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
+                'contact' => $contact,
+                'mailingList' => $mailingList,
+                'sourceType' => $sourceType,
+                'source' => $source,
+            ]));
+        }
     }
 
     /**
@@ -148,6 +193,14 @@ class TrackerService extends Component
         $mailingList = $contactCampaign->getMailingList();
 
         if ($mailingList !== null) {
+            // Fire a 'beforeUnubscribeContact' event
+            if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
+                $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
+                    'contact' => $contact,
+                    'mailingList' => $mailingList,
+                ]));
+            }
+
             /** @var MailingListElement $mailingList */
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
 
@@ -159,6 +212,16 @@ class TrackerService extends Component
         $this->_updateContactCampaignRecord($contact, $sendout);
 
         $this->_updateContact($contact);
+
+        if ($mailingList !== null) {
+            // Fire a 'afterUnubscribeContact' event
+            if ($this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
+                $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
+                    'contact' => $contact,
+                    'mailingList' => $mailingList,
+                ]));
+            }
+        }
 
         return $mailingList;
     }

@@ -1,6 +1,9 @@
 # Campaign Changelog
 
 ## Unreleased
+### Added
+- Added subscribe and unsubscribe events to tracker service
+
 ### Changed
 - Refactored template layouts
 - Improved contact import queue message
