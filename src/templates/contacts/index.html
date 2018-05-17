@@ -3,9 +3,6 @@
 {% set elementType = 'putyourlightson\\campaign\\elements\\ContactElement' %}
 
 {% set title = 'Contacts'|t('campaign') %}
-{% set selectedSubnavItem = 'contacts' %}
-
-{% set crumbs = [] %}
 
 {% if currentUser.can('campaign:importContacts') or currentUser.can('campaign:exportContacts') %}
     {% set tabs = {'view': {'label': 'View', 'url': url('campaign/contacts')}} %}

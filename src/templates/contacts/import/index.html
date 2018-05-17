@@ -8,6 +8,8 @@
 
 {% set title = 'Import'|t('campaign') %}
 
+{% set crumbs = [] %}
+
 {% set contactFieldNames = [] %}
 {% set contactFields = craft.campaign.getContactFields() %}
 {% for field in contactFields %}

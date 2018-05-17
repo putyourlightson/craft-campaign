@@ -2,11 +2,9 @@
 
 {% set title = 'Mailing List Types'|t('campaign') %}
 
-{% set crumbs = [
-    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
-] %}
-
 {% set mailingListTypes = craft.campaign.getAllMailingListTypes() %}
+
+{% set crumbs = [] %}
 
 
 {% block actionButton %}

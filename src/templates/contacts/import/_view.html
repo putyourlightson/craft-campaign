@@ -6,6 +6,10 @@
 
 {% set title = import.fileName ? "CSV File"|t('campaign') : "User Group"|t('campaign') %}
 
+{% set crumbs = [
+    { label: 'Import'|t('campaign'), url: url('campaign/contacts/import') },
+] %}
+
 
 {% block content %}
 

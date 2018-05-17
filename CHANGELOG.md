@@ -1,5 +1,10 @@
 # Campaign Changelog
 
+## Unreleased
+### Changed
+- Refactored template layouts
+- Improved contact import queue message
+
 ## 1.1.2 - 2018-05-07
 ### Added
 - Added language query parameter to reCAPTCHA

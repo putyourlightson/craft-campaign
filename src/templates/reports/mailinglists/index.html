@@ -1,11 +1,8 @@
 {% extends 'campaign/reports/_layout' %}
 
 {% set title = 'Mailing Lists'|t('campaign') %}
-{% set selectedSubnavItem = 'reports' %}
 
-{% set crumbs = [
-    { label: 'Reports'|t('campaign'), url: url('campaign/reports') }
-] %}
+{% set crumbs = [] %}
 
 {% set data = craft.campaign.getMailingListsReportData('mailingLists') %}
 

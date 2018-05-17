@@ -1,6 +1,13 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/_layout' %}
 
 {% set selectedSubnavItem = 'settings' %}
+
+{% set baseCrumbs = [
+    { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
+] %}
+{% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
+
+{% set segment3 = craft.app.request.getSegment(3) %}
 
 
 {% block sidebar %}
@@ -8,37 +15,37 @@
     <nav class="last">
         <ul>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'general' ? 'sel' }}" href="{{ url('campaign/settings/general') }}">
+                <a class="{{ segment3 == 'general' ? 'sel' }}" href="{{ url('campaign/settings/general') }}">
                     {{ 'General Settings'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'email' ? 'sel' }}" href="{{ url('campaign/settings/email') }}">
+                <a class="{{ segment3 == 'email' ? 'sel' }}" href="{{ url('campaign/settings/email') }}">
                     {{ 'Email Settings'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'contact' ? 'sel' }}" href="{{ url('campaign/settings/contact') }}">
+                <a class="{{ segment3 == 'contact' ? 'sel' }}" href="{{ url('campaign/settings/contact') }}">
                     {{ 'Contact Settings'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'geoip' ? 'sel' }}" href="{{ url('campaign/settings/geoip') }}">
+                <a class="{{ segment3 == 'geoip' ? 'sel' }}" href="{{ url('campaign/settings/geoip') }}">
                     {{ 'GeoIP Settings'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'recaptcha' ? 'sel' }}" href="{{ url('campaign/settings/recaptcha') }}">
+                <a class="{{ segment3 == 'recaptcha' ? 'sel' }}" href="{{ url('campaign/settings/recaptcha') }}">
                     {{ 'reCAPTCHA Settings'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'campaigntypes' ? 'sel' }}" href="{{ url('campaign/settings/campaigntypes') }}">
+                <a class="{{ segment3 == 'campaigntypes' ? 'sel' }}" href="{{ url('campaign/settings/campaigntypes') }}">
                     {{ 'Campaign Types'|t('campaign') }}
                 </a>
             </li>
             <li>
-                <a class="{{ craft.app.request.getSegment(3) == 'mailinglisttypes' ? 'sel' }}" href="{{ url('campaign/settings/mailinglisttypes') }}">
+                <a class="{{ segment3 == 'mailinglisttypes' ? 'sel' }}" href="{{ url('campaign/settings/mailinglisttypes') }}">
                     {{ 'Mailing List Types'|t('campaign') }}
                 </a>
             </li>

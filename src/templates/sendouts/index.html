@@ -1,9 +1,8 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/sendouts/_layout' %}
 
 {% set elementType = 'putyourlightson\\campaign\\elements\\SendoutElement' %}
 
 {% set title = 'Sendouts'|t('campaign') %}
-{% set selectedSubnavItem = 'sendouts' %}
 
 {% js %}
     Craft.publishableSendoutTypes = [

@@ -69,6 +69,6 @@ class ImportJob extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Importing CSV file.');
+        return Craft::t('campaign', 'Importing contacts.');
     }
 }

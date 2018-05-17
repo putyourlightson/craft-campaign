@@ -66,6 +66,8 @@ use yii\web\ForbiddenHttpException;
  * @property  WebhookService $webhook
  *
  * @property  array|null $cpNavItem
+ * @property  array $cpRoutes
+ * @property  array $cpPermissions
  * @property  mixed $settingsResponse
  */
 class Campaign extends Plugin

@@ -1,12 +1,10 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/sendouts/_layout' %}
 
 {% import '_includes/forms' as forms %}
 
 {% set title = sendout.id ? sendout.title : 'Create a new sendout'|t('campaign') %}
-{% set selectedSubnavItem = 'sendouts' %}
 
 {% set crumbs = [
-    { label: 'Sendouts'|t('campaign'), url: url('campaign/sendouts') },
     { label: sendout.sendoutTypes[sendout.sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 

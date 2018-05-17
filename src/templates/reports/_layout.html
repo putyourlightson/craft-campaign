@@ -1,9 +1,13 @@
-{% extends 'campaign/_layouts/cp' %}
+{% extends 'campaign/_layout' %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
 
 {% set selectedSubnavItem = 'reports' %}
 
+{% set baseCrumbs = [
+    { label: 'Reports'|t('campaign'), url: url('campaign/reports') }
+] %}
+{% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
 
 {% block sidebar %}
 
