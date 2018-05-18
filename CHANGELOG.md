@@ -1,6 +1,6 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.1.3 - 2018-05-18
 ### Added
 - Added reCAPTCHA invisible mode and extra settings
 - Added subscribe and unsubscribe events to tracker service
