@@ -97,6 +97,21 @@ class SettingsModel extends Model
     public $reCaptchaErrorMessage = 'Your form submission was blocked. Please go back and verify that you are human.';
 
     /**
+     * @var string The size of the reCAPTCHA widget
+     */
+    public $reCaptchaSize;
+
+    /**
+     * @var string The color theme of the reCAPTCHA widget
+     */
+    public $reCaptchaTheme;
+
+    /**
+     * @var string The position of the reCAPTCHA badge (when invisible)
+     */
+    public $reCaptchaBadge;
+
+    /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
      */
     public $maxPendingContacts = 5;

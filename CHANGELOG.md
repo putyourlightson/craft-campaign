@@ -2,6 +2,7 @@
 
 ## Unreleased
 ### Added
+- Added reCAPTCHA invisible mode and extra settings
 - Added subscribe and unsubscribe events to tracker service
 
 ### Changed

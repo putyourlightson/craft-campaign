@@ -525,8 +525,19 @@ class CampaignVariable
 
         if ($settings->reCaptcha) {
             return Template::raw('
-                <script src="https://www.google.com/recaptcha/api.js?hl='.Craft::$app->getSites()->getCurrentSite()->language.'"></script>
-                <div class="g-recaptcha" data-sitekey="'.$settings->reCaptchaSiteKey.'"></div>
+                <div id="campaign-recaptcha"></div>
+                <script type="text/javascript">
+                    var onloadCampaignRecaptchaCallback = function() {
+                        var widgetId = grecaptcha.render("campaign-recaptcha", {
+                            sitekey : "'.$settings->reCaptchaSiteKey.'",
+                            size : "'.$settings->reCaptchaSize.'",
+                            theme : "'.$settings->reCaptchaTheme.'",
+                            badge : "'.$settings->reCaptchaBadge.'",
+                        });
+                        grecaptcha.execute(widgetId);
+                    };
+                </script>
+                <script src="https://www.google.com/recaptcha/api.js?onload=onloadCampaignRecaptchaCallback&render=explicit&hl='.Craft::$app->getSites()->getCurrentSite()->language.'" async defer></script>
             ');
         }
     }

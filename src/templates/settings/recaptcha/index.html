@@ -64,6 +64,50 @@
         errors: settings.getErrors('reCaptchaErrorMessage')
     }) }}
 
+    {{ forms.selectField({
+        label: "reCAPTCHA Size"|t('campaign'),
+        instructions: "The size of the reCAPTCHA widget."|t('campaign'),
+        warning: (config.reCaptchaSize is defined ? configWarning('reCaptchaSize')),
+        id: 'reCaptchaSize',
+        name: 'reCaptchaSize',
+        value: settings.reCaptchaSize,
+        options: {
+            'normal': 'Normal'|t('campaign'),
+            'compact': 'Compact'|t('campaign'),
+            'invisible': 'Invisible'|t('campaign'),
+        },
+        errors: settings.getErrors('reCaptchaSize')
+    }) }}
+
+    {{ forms.selectField({
+        label: "reCAPTCHA Theme"|t('campaign'),
+        instructions: "The color theme of the reCAPTCHA widget."|t('campaign'),
+        warning: (config.reCaptchaTheme is defined ? configWarning('reCaptchaTheme')),
+        id: 'reCaptchaTheme',
+        name: 'reCaptchaTheme',
+        value: settings.reCaptchaTheme,
+        options: {
+            'light': 'Light'|t('campaign'),
+            'dark': 'Dark '|t('campaign'),
+        },
+        errors: settings.getErrors('reCaptchaTheme')
+    }) }}
+
+    {{ forms.selectField({
+        label: "reCAPTCHA Badge"|t('campaign'),
+        instructions: "The position of the reCAPTCHA badge (when invisible)."|t('campaign'),
+        warning: (config.reCaptchaBadge is defined ? configWarning('reCaptchaBadge')),
+        id: 'reCaptchaBadge',
+        name: 'reCaptchaBadge',
+        value: settings.reCaptchaBadge,
+        options: {
+            'bottomright': 'Bottom right '|t('campaign'),
+            'bottomleft': 'Bottom left '|t('campaign'),
+            'inline': 'Inline'|t('campaign'),
+        },
+        errors: settings.getErrors('reCaptchaBadge')
+    }) }}
+
     <p>
         <em>
             {{ 'Create and view your reCAPTCHA keys at {link}'|t('campaign', { link: '
