@@ -278,7 +278,7 @@ class ImportsController extends Controller
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
         $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-        $variables['fields'] = [];//$fieldLayout->getFields();
+        $variables['fields'] = $fieldLayout->getFields();
 
         // Get columns
         $variables['columns'] = Campaign::$plugin->imports->getColumns($import);
