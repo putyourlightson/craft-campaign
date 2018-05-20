@@ -356,7 +356,7 @@ class TrackerController extends Controller
         }
 
         // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->source);
+        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->source, true);
 
         // Use message template
         $template = 'campaign/message';

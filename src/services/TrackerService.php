@@ -92,9 +92,6 @@ class TrackerService extends Component
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
 
-        // Update contact campaign record
-        $this->_updateContactCampaignRecord($contact, $sendout);
-
         // Update contact
         $this->_updateContact($contact);
     }
@@ -115,9 +112,6 @@ class TrackerService extends Component
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);
 
-        // Update contact campaign record
-        $this->_updateContactCampaignRecord($contact, $sendout);
-
         // Update contact
         $this->_updateContact($contact);
     }
@@ -129,12 +123,13 @@ class TrackerService extends Component
      * @param MailingListElement $mailingList
      * @param string|null $sourceType
      * @param string|null $source
+     * @param bool|null $verify
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '')
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '', $verify = false)
     {
         // Fire a 'beforeSubscribeContact' event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
@@ -146,10 +141,7 @@ class TrackerService extends Component
             ]));
         }
 
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source);
-
-        // Update contact mailing list record
-        $this->_updateContactMailingListRecord($contact, $mailingList, true);
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verify);
 
         // Update contact
         $this->_updateContact($contact);
@@ -201,15 +193,10 @@ class TrackerService extends Component
                 ]));
             }
 
-            /** @var MailingListElement $mailingList */
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
-
-            $this->_updateContactMailingListRecord($contact, $mailingList);
         }
 
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
-
-        $this->_updateContactCampaignRecord($contact, $sendout);
 
         $this->_updateContact($contact);
 
@@ -228,60 +215,6 @@ class TrackerService extends Component
     // =========================================================================
 
     /**
-     * Updates a contact campaign record
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @throws InvalidConfigException
-     */
-    private function _updateContactCampaignRecord(ContactElement $contact, SendoutElement $sendout)
-    {
-        $contactCampaignRecord = ContactCampaignRecord::findOne([
-            'contactId' => $contact->id,
-            'sendoutId' => $sendout->id,
-        ]);
-
-        if ($contactCampaignRecord === null) {
-            return;
-        }
-
-        /** @var ContactCampaignRecord $contactCampaignRecord */
-        $contactCampaignRecord = $this->_updateLocationDevice($contactCampaignRecord);
-
-        $contactCampaignRecord->save();
-    }
-
-    /**
-     * Updates a contact mailing list record
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param bool $verify
-     * @throws InvalidConfigException
-     */
-    private function _updateContactMailingListRecord(ContactElement $contact, MailingListElement $mailingList, $verify = false)
-    {
-        $contactMailingListRecord = ContactMailingListRecord::findOne([
-            'contactId' => $contact->id,
-            'mailingListId' => $mailingList->id,
-        ]);
-
-        // Ensure record exists
-        if ($contactMailingListRecord === null) {
-            return;
-        }
-
-        if ($verify AND $contactMailingListRecord->verified === null) {
-            $contactMailingListRecord->verified = new \DateTime();
-        }
-
-        $contactMailingListRecord = $this->_updateLocationDevice($contactMailingListRecord);
-
-        /** @var ContactMailingListRecord $contactMailingListRecord */
-        $contactMailingListRecord->save();
-    }
-
-    /**
      * Update contact
      *
      * @param ContactElement $contact
@@ -294,32 +227,16 @@ class TrackerService extends Component
     {
         $contact->lastActivity = new \DateTime();
 
-        $contact = $this->_updateLocationDevice($contact);
-
-        /** @var ContactElement $contact */
-        Craft::$app->getElements()->saveElement($contact);
-    }
-
-    /**
-     * Update location and device
-     *
-     * @param ContactElement|ContactCampaignRecord|ContactMailingListRecord $model
-     *
-     * @return ContactElement|ContactCampaignRecord|ContactMailingListRecord
-     * @throws InvalidConfigException
-     */
-    private function _updateLocationDevice($model)
-    {
         // Get GeoIP if enabled
         if (Campaign::$plugin->getSettings()->geoIp) {
             if ($this->_geoIp === null) {
-                $this->_geoIp = $this->getGeoIp();
+                $this->_geoIp = $this->_getGeoIp();
             }
 
             // If country exists
             if (!empty($this->_geoIp['countryName'])) {
-                $model->country = $this->_geoIp['countryName'];
-                $model->geoIp = $this->_geoIp;
+                $contact->country = $this->_geoIp['countryName'];
+                $contact->geoIp = $this->_geoIp;
             }
         }
 
@@ -334,18 +251,17 @@ class TrackerService extends Component
 
         // If device exists and not a bot
         if ($device AND !$this->_deviceDetector->isBot()) {
-            $model->device = $device;
+            $contact->device = $device;
 
             $os = $this->_deviceDetector->getOs('name');
-            $model->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
+            $contact->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
 
             $client = $this->_deviceDetector->getClient('name');
-            $model->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
+            $contact->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
         }
 
-        return $model;
+        Craft::$app->getElements()->saveElement($contact);
     }
-
 
     /**
      * Gets geolocation based on IP address
@@ -355,7 +271,7 @@ class TrackerService extends Component
      * @return array|null
      * @throws InvalidConfigException
      */
-    private function getGeoIp(int $timeout = 5)
+    private function _getGeoIp(int $timeout = 5)
     {
         $geoIp = null;
 

@@ -259,7 +259,6 @@ class ReportsService extends Component
         }
 
         // Return locations of contact campaigns
-        /** @var CampaignElement $campaign */
         return $this->_getLocations(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
@@ -742,16 +741,12 @@ class ReportsService extends Component
     {
         $countArray = [];
 
-        $subQuery = (new Query())
-            ->select(['MAX(id) as id', 'country', 'COUNT(*) AS count'])
-            ->from($table)
-            ->where($conditions)
-            ->groupBy('country');
-
         $results = (new Query())
-            ->select(['subquery.country', 'subquery.count', 't.geoIp'])
-            ->from(['subquery' => $subQuery])
-            ->innerJoin($table.' t', 't.id = subquery.id')
+            ->select(['country', 'MAX(geoIp) AS geoIp', 'COUNT(*) AS count'])
+            ->from($table.' t')
+            ->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId')
+            ->where($conditions)
+            ->groupBy('country')
             ->all();
 
         // Set default unknown count
@@ -813,7 +808,8 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from($table)
+            ->from($table.' t')
+            ->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId')
             ->where($conditions)
             ->andWhere(['not', ['device' => null]])
             ->groupBy($fields)

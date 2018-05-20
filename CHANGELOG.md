@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## Unreleased
+### Changed
+- Removed duplicate location and device columns
+
 ## 1.1.4 - 2018-05-20
 ### Fixed
 - Fixed bug when importing contacts without any fields defined

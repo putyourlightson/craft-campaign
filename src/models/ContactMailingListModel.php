@@ -77,9 +77,9 @@ class ContactMailingListModel extends BaseModel
     public $bounced;
 
     /**
-     * @var \DateTime|null Confirmed
+     * @var \DateTime|null Verified
      */
-    public $confirmed;
+    public $verified;
 
     /**
      * @var string Source type

@@ -22,11 +22,6 @@ use craft\db\ActiveRecord;
  * @property \DateTime   $verified                   Verified
  * @property string      $sourceType                 Source type
  * @property string      $source                     Source
- * @property string      $country                    Country
- * @property string      $geoIp                      GeoIP
- * @property string      $device                     Device
- * @property string      $os                         OS
- * @property string      $client                     Client
  *
  * @author    PutYourLightsOn
  * @package   Campaign
