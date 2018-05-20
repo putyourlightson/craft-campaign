@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.1.4 - 2018-05-20
+### Fixed
+- Fixed bug when importing contacts without any fields defined
+
 ## 1.1.3 - 2018-05-18
 ### Added
 - Added reCAPTCHA invisible mode and extra settings

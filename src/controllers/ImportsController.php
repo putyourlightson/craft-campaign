@@ -188,7 +188,7 @@ class ImportsController extends Controller
         $import->userGroupId = $request->getRequiredBodyParam('userGroupId');
 
         $mailingListId = $request->getBodyParam('mailingListId');
-        $import->mailingListId = (\is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : '';
+        $import->mailingListId = $mailingListId[0] ?? '';
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
@@ -278,7 +278,7 @@ class ImportsController extends Controller
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
         $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-        $variables['fields'] = $fieldLayout->getFields();
+        $variables['fields'] = [];//$fieldLayout->getFields();
 
         // Get columns
         $variables['columns'] = Campaign::$plugin->imports->getColumns($import);

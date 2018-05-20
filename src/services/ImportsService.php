@@ -269,15 +269,17 @@ class ImportsService extends Component
         }
 
         // Map fields to values
-        $values = [];
-        foreach ($import->fieldIndexes as $field => $index) {
-            if ($index !== '' AND isset($row[$index])) {
-                $values[$field] = $row[$index];
+        if (is_array($import->fieldIndexes)) {
+            $values = [];
+            foreach ($import->fieldIndexes as $field => $index) {
+                if ($index !== '' AND isset($row[$index])) {
+                    $values[$field] = $row[$index];
+                }
             }
-        }
 
-        // Set field values
-        $contact->setFieldValues($values);
+            // Set field values
+            $contact->setFieldValues($values);
+        }
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
