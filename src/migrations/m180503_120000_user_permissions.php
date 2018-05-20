@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\records\UserPermission;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use craft\db\Migration;
 

@@ -2,8 +2,6 @@
 
 namespace putyourlightson\campaign\migrations;
 
-use putyourlightson\campaign\records\ContactMailingListRecord;
-
 use craft\db\Migration;
 
 /**

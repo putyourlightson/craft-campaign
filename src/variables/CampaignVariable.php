@@ -516,7 +516,7 @@ class CampaignVariable
     /**
      * Returns reCAPTCHA markup
      *
-     * @return \Twig_Markup|null
+     * @return \Twig_Markup|string
      * @throws InvalidConfigException
      */
     public function getRecaptcha()
@@ -540,6 +540,8 @@ class CampaignVariable
                 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCampaignRecaptchaCallback&render=explicit&hl='.Craft::$app->getSites()->getCurrentSite()->language.'" async defer></script>
             ');
         }
+
+        return '';
     }
 
     /**

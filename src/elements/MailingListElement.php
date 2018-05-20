@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\elements;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
-use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\MailingListRecord;

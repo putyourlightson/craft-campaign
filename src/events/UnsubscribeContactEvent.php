@@ -17,7 +17,7 @@ use yii\base\Event;
  * @package   Campaign
  * @since     1.0.0
  */
-class UnsubscribeContactEvent extends SubscribeContactEvent
+class UnsubscribeContactEvent extends Event
 {
     // Properties
     // =========================================================================

@@ -67,6 +67,7 @@ class WebhookController extends Controller
 
         if (is_array($event)) {
             $eventType = $event['notificationType'];
+            /** @var array $headers */
             $headers = $event['mail']['headers'];
 
             // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
