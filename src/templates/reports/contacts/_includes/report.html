@@ -58,6 +58,3 @@
 
 <h2>{{ "Mailing List Activity"|t('campaign') }}</h2>
 {% include 'campaign/reports/contacts/_includes/mailinglist-activity' with { mailingListActivity: craft.campaign.getContactMailingListActivity(contactId, limit) } %}
-
-<h2>{{ "Timeline"|t('campaign') }}</h2>
-{% include 'campaign/reports/contacts/_includes/timeline' with { timeline: craft.campaign.getContactTimeline(contactId, limit) } %}

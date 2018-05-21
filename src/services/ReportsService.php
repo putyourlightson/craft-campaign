@@ -422,40 +422,6 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contact timeline
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return ContactActivityModel[]
-     */
-    public function getContactTimeline(int $contactId, int $limit = 100): array
-    {
-        // Get contact campaigns
-        $contactCampaignRecords = ContactCampaignRecord::find()
-            ->where(['contactId' => $contactId])
-            ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
-            ->all();
-
-        $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
-
-        // Get mailing lists
-        $contactMailingListRecords = ContactMailingListRecord::find()
-            ->where(['contactId' => $contactId])
-            ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
-            ->all();
-
-        $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
-
-        // Return contact activity
-        $models = array_merge($contactCampaignModels, $contactMailingListModels);
-
-        return $this->_getActivity($models, null, $limit);
-    }
-
-    /**
      * Returns mailing lists report data
      *
      * @return array

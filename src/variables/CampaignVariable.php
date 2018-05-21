@@ -260,19 +260,6 @@ class CampaignVariable
     }
 
     /**
-     * Returns contact timeline
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactTimeline(int $contactId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactTimeline($contactId, $limit);
-    }
-
-    /**
      * Returns mailing lists report data
      *
      * @return array
