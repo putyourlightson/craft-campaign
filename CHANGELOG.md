@@ -1,12 +1,13 @@
 # Campaign Changelog
 
-## Unreleased
+## 1.1.5 - 2018-05-25
 ### Added
 - Added source to contact's mailing list activity report
 
 ### Changed
 - Removed duplicate location and device columns
 - Removed timeline from contact report
+- Refactored reports variables
 
 ## 1.1.4 - 2018-05-20
 ### Fixed
