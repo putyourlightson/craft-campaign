@@ -151,7 +151,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             // If we're beyond the memory limit or time limit or max batch size has been reached
             if (memory_get_usage() > $memoryLimit OR time() - $_SERVER['REQUEST_TIME'] > $timeLimit OR $count >= $settings->maxBatchSize) {
                 // Add new job to queue with delay
-                Craft::$app->queue->delay($settings->batchJobDelay)->push(new self([
+                Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,
                     'title' => $this->title,
                     'batch' => $this->batch + 1,

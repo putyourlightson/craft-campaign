@@ -44,7 +44,7 @@ class m180430_120000_geoip_refactoring extends Migration
                 'timeZone' => $geoIp['time_zone'] ?? '',
             ];
 
-            Craft::$app->elements->saveElement($contact);
+            Craft::$app->getElements()->saveElement($contact);
         }
 
         // Resave contact campaigns

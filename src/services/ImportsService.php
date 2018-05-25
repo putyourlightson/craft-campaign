@@ -230,7 +230,7 @@ class ImportsService extends Component
     public function startImport(ImportModel $import)
     {
         // Add import job to queue
-        Craft::$app->queue->push(new ImportJob(['import' => $import]));
+        Craft::$app->getQueue()->push(new ImportJob(['import' => $import]));
     }
 
     /**

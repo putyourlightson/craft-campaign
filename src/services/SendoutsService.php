@@ -527,7 +527,7 @@ class SendoutsService extends Component
     private function _queueSendout(SendoutElement $sendout)
     {
         // Add sendout job to queue
-        Craft::$app->queue->push(new SendoutJob([
+        Craft::$app->getQueue()->push(new SendoutJob([
             'sendoutId' => $sendout->id,
             'title' => $sendout->title,
         ]));

@@ -33,7 +33,7 @@ class m180408_120000_time_delay_intervals extends Migration
         foreach ($sendouts as $sendout) {
             $sendout->automatedSchedule['timeDelayInterval'] = $intervals[$sendout->automatedSchedule['timeDelayInterval']] ?? 'minutes';
 
-            Craft::$app->elements->saveElement($sendout);
+            Craft::$app->getElements()->saveElement($sendout);
         }
     }
 
