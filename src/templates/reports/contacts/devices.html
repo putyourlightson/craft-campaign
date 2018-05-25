@@ -9,6 +9,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(true), countLabel: 'Contacts' } %}
+    {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getContactsDevices(true), countLabel: 'Contacts' } %}
 
 {% endblock %}

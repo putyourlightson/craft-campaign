@@ -4,7 +4,7 @@
 
 {% set crumbs = [] %}
 
-{% set data = craft.campaign.getContactsReportData(10) %}
+{% set data = craft.campaign.reports.getContactsReportData(10) %}
 
 
 {% block content %}
@@ -54,17 +54,17 @@
     {% set limit = 5 %}
 
     <h2>{{ "Contact Activity"|t('campaign') }}</h2>
-    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.getContactsActivity(limit) } %}
+    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getContactsActivity(limit) } %}
 
     <div class="cols">
         <div class="half">
             <h2>{{ "Locations"|t('campaign') }}</h2>
-            {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getContactsLocations(limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/locations') } %}
+            {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getContactsLocations(limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/locations') } %}
         </div>
 
         <div class="half">
             <h2>{{ "Devices"|t('campaign') }}</h2>
-            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getContactsDevices(false, limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/devices') } %}
+            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getContactsDevices(false, limit), countLabel: 'Contacts', reportUrl: url('campaign/reports/contacts/devices') } %}
         </div>
     </div>
     <div class="clear"></div>

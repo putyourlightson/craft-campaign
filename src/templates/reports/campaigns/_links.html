@@ -11,6 +11,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/campaigns/_includes/links' with { links: craft.campaign.getCampaignLinks(campaignId) } %}
+    {% include 'campaign/reports/campaigns/_includes/links' with { links: craft.campaign.reports.getCampaignLinks(campaignId) } %}
 
 {% endblock %}

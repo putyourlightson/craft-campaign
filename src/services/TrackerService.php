@@ -15,7 +15,6 @@ use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use DeviceDetector\DeviceDetector;
 

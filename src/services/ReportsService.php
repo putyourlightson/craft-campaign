@@ -707,13 +707,17 @@ class ReportsService extends Component
     {
         $countArray = [];
 
-        $results = (new Query())
+        $query = (new Query())
             ->select(['country', 'MAX(geoIp) AS geoIp', 'COUNT(*) AS count'])
             ->from($table.' t')
-            ->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId')
             ->where($conditions)
-            ->groupBy('country')
-            ->all();
+            ->groupBy('country');
+
+        if ($table !== ContactRecord::tableName()) {
+            $query->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId');
+        }
+
+        $results = $query->all();
 
         // Set default unknown count
         $unknownCount = 0;
@@ -772,14 +776,18 @@ class ReportsService extends Component
 
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
-        $results = (new Query())
+        $query = (new Query())
             ->select(array_merge($fields, ['COUNT(*) AS count']))
             ->from($table.' t')
-            ->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId')
             ->where($conditions)
             ->andWhere(['not', ['device' => null]])
-            ->groupBy($fields)
-            ->all();
+            ->groupBy($fields);
+
+        if ($table !== ContactRecord::tableName()) {
+            $query->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId');
+        }
+
+        $results = $query->all();
 
         foreach ($results as &$result) {
             $result['countRate'] = $count ? number_format($result['count'] / $count * 100, 1) : 0;

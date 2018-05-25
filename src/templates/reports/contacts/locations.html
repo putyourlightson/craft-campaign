@@ -9,6 +9,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getContactsLocations(), countLabel: 'Contacts' } %}
+    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getContactsLocations(), countLabel: 'Contacts' } %}
 
 {% endblock %}

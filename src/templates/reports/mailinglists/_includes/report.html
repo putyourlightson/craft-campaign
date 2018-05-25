@@ -1,4 +1,4 @@
-{% set data = craft.campaign.getMailingListReportData(mailingListId) %}
+{% set data = craft.campaign.reports.getMailingListReportData(mailingListId) %}
 
 {% if data.hasChart %}
     <div class="report-chart">
@@ -51,17 +51,17 @@
 {% set limit = 5 %}
 
 <h2>{{ "Contact Activity"|t('campaign') }}</h2>
-{% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.getMailingListContactActivity(mailingListId, limit), reportUrl: url('campaign/reports/mailinglists/contact-activity/' ~ mailingListId) } %}
+{% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getMailingListContactActivity(mailingListId, limit), reportUrl: url('campaign/reports/mailinglists/contact-activity/' ~ mailingListId) } %}
 
 <div class="cols">
     <div class="half">
         <h2>{{ "Locations"|t('campaign') }}</h2>
-        {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getMailingListLocations(mailingListId, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/_locations/' ~ mailingListId) } %}
+        {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getMailingListLocations(mailingListId, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/_locations/' ~ mailingListId) } %}
     </div>
 
     <div class="half">
         <h2>{{ "Devices"|t('campaign') }}</h2>
-        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.getMailingListDevices(mailingListId, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/devices/' ~ mailingListId) } %}
+        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getMailingListDevices(mailingListId, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/devices/' ~ mailingListId) } %}
     </div>
 </div>
 <div class="clear"></div>

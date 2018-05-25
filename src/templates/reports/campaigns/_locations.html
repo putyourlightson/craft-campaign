@@ -11,6 +11,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getCampaignLocations(campaignId), countLabel: 'Opened' } %}
+    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getCampaignLocations(campaignId), countLabel: 'Opened' } %}
 
 {% endblock %}

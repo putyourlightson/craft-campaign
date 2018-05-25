@@ -11,6 +11,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/contacts/_includes/mailinglist-activity' with { mailingListActivity: craft.campaign.getContactMailingListActivity(contactId) } %}
+    {% include 'campaign/reports/contacts/_includes/mailinglist-activity' with { mailingListActivity: craft.campaign.reports.getContactMailingListActivity(contactId) } %}
 
 {% endblock %}

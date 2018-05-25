@@ -18,10 +18,10 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\models\CampaignTypeModel;
-use putyourlightson\campaign\models\ContactMailingListModel;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
+use putyourlightson\campaign\services\ReportsService;
 
 use Craft;
 use craft\helpers\Template;
@@ -111,215 +111,13 @@ class CampaignVariable
     }
 
     /**
-     * Returns campaigns report data
+     * Returns reports service
      *
-     * @return array
+     * @return ReportsService
      */
-    public function getCampaignsReportData(): array
+    public function getReports(): ReportsService
     {
-        return Campaign::$plugin->reports->getCampaignsReportData();
-    }
-
-    /**
-     * Returns campaign report data
-     *
-     * @param int
-     *
-     * @return array
-     */
-    public function getCampaignReportData(int $campaignId): array
-    {
-        return Campaign::$plugin->reports->getCampaignReportData($campaignId);
-    }
-
-    /**
-     * Returns campaign contact activity
-     *
-     * @param int
-     * @param string|null
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getCampaignContactActivity($campaignId, $interaction, $limit);
-    }
-
-    /**
-     * Returns campaign locations
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getCampaignLocations(int $campaignId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getCampaignLocations($campaignId, $limit);
-    }
-
-    /**
-     * Returns campaign links
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getCampaignLinks(int $campaignId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getCampaignLinks($campaignId, $limit);
-    }
-
-    /**
-     * Returns campaign devices
-     *
-     * @param int
-     * @param bool
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getCampaignDevices($campaignId, $detailed, $limit);
-    }
-
-    /**
-     * Returns contacts report data
-     *
-     * @return array
-     */
-    public function getContactsReportData(): array
-    {
-        return Campaign::$plugin->reports->getContactsReportData();
-    }
-
-    /**
-     * Returns contacts activity
-     *
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactsActivity(int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactsActivity($limit);
-    }
-
-    /**
-     * Returns contacts locations
-     *
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactsLocations(int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactsLocations($limit);
-    }
-
-    /**
-     * Returns contacts devices
-     *
-     * @param bool
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactsDevices(bool $detailed = false, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactsDevices($detailed, $limit);
-    }
-
-    /**
-     * Returns contact campaign activity
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactCampaignActivity(int $contactId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactCampaignActivity($contactId, $limit);
-    }
-
-    /**
-     * Returns contact mailing list activity
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getContactMailingListActivity(int $contactId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getContactMailingListActivity($contactId, $limit);
-    }
-
-    /**
-     * Returns mailing lists report data
-     *
-     * @return array
-     */
-    public function getMailingListsReportData(): array
-    {
-        return Campaign::$plugin->reports->getMailingListsReportData();
-    }
-
-    /**
-     * Returns mailing list report data
-     *
-     * @param int
-     *
-     * @return array
-     */
-    public function getMailingListReportData(int $mailingListId): array
-    {
-        return Campaign::$plugin->reports->getMailingListReportData($mailingListId);
-    }
-
-    /**
-     * Returns mailing list contact activity
-     *
-     * @param int
-     * @param string|null
-     * @param int|null
-     *
-     * @return ContactMailingListModel[]
-     */
-    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getMailingListContactActivity($mailingListId, $interaction, $limit);
-    }
-
-    /**
-     * Returns mailing list locations
-     *
-     * @param int
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getMailingListLocations(int $mailingListId, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getMailingListLocations($mailingListId, $limit);
-    }
-
-    /**
-     * Returns mailing list devices
-     *
-     * @param int
-     * @param bool
-     * @param int|null
-     *
-     * @return array
-     */
-    public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = 100): array
-    {
-        return Campaign::$plugin->reports->getMailingListDevices($mailingListId, $detailed, $limit);
+        return Campaign::$plugin->reports;
     }
 
     /**

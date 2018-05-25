@@ -11,6 +11,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.getMailingListLocations(mailingListId), countLabel: 'Subscribed' } %}
+    {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getMailingListLocations(mailingListId), countLabel: 'Subscribed' } %}
 
 {% endblock %}

@@ -9,6 +9,6 @@
 
 {% block content %}
 
-    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.getContactsActivity() } %}
+    {% include 'campaign/reports/contacts/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getContactsActivity() } %}
 
 {% endblock %}
