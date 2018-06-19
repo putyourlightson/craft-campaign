@@ -235,7 +235,7 @@ class Campaign extends Plugin
     public function createMailer($settings = null): Mailer
     {
         if ($settings == null) {
-            $settings = self::$plugin->getSettings();
+            $settings = $this->getSettings();
         }
 
         // Create the transport adapter
@@ -257,7 +257,7 @@ class Campaign extends Plugin
      */
     public function maxPowerLieutenant()
     {
-        $settings = self::$plugin->getSettings();
+        $settings = $this->getSettings();
 
         // Set memory limit
         @ini_set('memory_limit', $settings->memoryLimit);
@@ -306,7 +306,7 @@ class Campaign extends Plugin
     {
         // Create and save default settings
         $settings = $this->createSettingsModel();
-        self::$plugin->settings->saveSettings($settings);
+        $this->settings->saveSettings($settings);
 
         // Redirect to welcome page
         $url = UrlHelper::cpUrl('campaign/welcome');

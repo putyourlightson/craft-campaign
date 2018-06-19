@@ -316,7 +316,7 @@ class SettingsController extends Controller
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save GeoIP settings.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save GeoIP settings.'));
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
