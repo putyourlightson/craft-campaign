@@ -193,7 +193,7 @@
     border-color: #27AE60 !important;
 }
 
-.status.queued {
+.status.unsent, .status.queued {
     background: rgba(242, 132, 45, 0.2);
     border-color: #F2842D !important;
 }
@@ -203,7 +203,7 @@
     border-color: #D6301A !important;
 }
 
-.status.cancelled {
+.status.closed, .status.cancelled {
     background: #D6301A;
     border-color: rgba(0, 0, 0, 0) !important;
 }

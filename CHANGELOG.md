@@ -1,5 +1,12 @@
 # Campaign Changelog
 
+## 1.1.6 - 2018-07-24
+### Added
+- Added `run` parameter to `queue-pending-sendouts` action
+
+### Fixed
+- Fixed missing status colours in sendouts
+
 ## 1.1.5 - 2018-05-25
 ### Added
 - Added source to contact's mailing list activity report

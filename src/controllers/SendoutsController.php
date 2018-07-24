@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\helpers\App;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -57,17 +58,25 @@ class SendoutsController extends Controller
      */
     public function actionQueuePendingSendouts(): Response
     {
+        $request = Craft::$app->getRequest();
+
         // Get plugin settings
         $settings = Campaign::$plugin->getSettings();
 
         // Verify API key
-        $apiKey = Craft::$app->getRequest()->getQueryParam('key');
+        $apiKey = $request->getParam('key');
 
         if (!$apiKey OR $apiKey != $settings->apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
 
         Campaign::$plugin->sendouts->queuePendingSendouts();
+
+        if ($request->getParam('run')) {
+            App::maxPowerCaptain();
+
+            Craft::$app->getQueue()->run();
+        }
 
         // Prep the response
         $response = Craft::$app->getResponse();
