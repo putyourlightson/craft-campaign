@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.1.7 - 2018-07-25
+### Fixed
+- Fixed an error that could appear when deleted mailing lists or segments were saved in an existing sendout
+
 ## 1.1.6 - 2018-07-24
 ### Added
 - Added `run` parameter to `queue-pending-sendouts` action

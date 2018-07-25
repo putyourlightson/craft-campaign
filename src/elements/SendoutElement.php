@@ -594,7 +594,11 @@ class SendoutElement extends Element
         $mailingListIds = $this->mailingListIds ? explode(',', $this->mailingListIds) : [];
 
         foreach ($mailingListIds as $mailingListId) {
-            $this->_mailingLists[] = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
+            if ($mailingList !== null) {
+                $this->_mailingLists[] = $mailingList;
+            }
         }
 
         return $this->_mailingLists;
@@ -632,7 +636,11 @@ class SendoutElement extends Element
         $excludedMailingListIds = $this->excludedMailingListIds ? explode(',', $this->excludedMailingListIds) : [];
 
         foreach ($excludedMailingListIds as $excludedMailingListId) {
-            $this->_excludedMailingLists[] = Campaign::$plugin->mailingLists->getMailingListById($excludedMailingListId);
+            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($excludedMailingListId);
+
+            if ($mailingList !== null) {
+                $this->_excludedMailingLists[] = $mailingList;
+            }
         }
 
         return $this->_excludedMailingLists;
@@ -658,7 +666,11 @@ class SendoutElement extends Element
         $segmentIds = $this->segmentIds ? explode(',', $this->segmentIds) : [];
 
         foreach ($segmentIds as $segmentId) {
-            $this->_segments[] = Campaign::$plugin->segments->getSegmentById($segmentId);
+            $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
+
+            if ($segment !== null) {
+                $this->_segments[] = $segment;
+            }
         }
 
         return $this->_segments;
