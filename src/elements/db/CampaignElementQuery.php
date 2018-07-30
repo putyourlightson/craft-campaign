@@ -118,7 +118,7 @@ class CampaignElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('campaign_campaigns.campaignTypeId', $this->campaignTypeId));
         }
 
-        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', 'campaign_campaigntypes.id = campaign_campaigns.campaignTypeId');
+        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
         $this->subQuery->select('campaign_campaigntypes.name AS campaignType');
 
         return parent::beforePrepare();

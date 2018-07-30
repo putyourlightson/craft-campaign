@@ -714,7 +714,7 @@ class ReportsService extends Component
             ->groupBy('country');
 
         if ($table !== ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId');
+            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[t.contactId]]');
         }
 
         $results = $query->all();
@@ -784,7 +784,7 @@ class ReportsService extends Component
             ->groupBy($fields);
 
         if ($table !== ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', 'contacts.id = t.contactId');
+            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[t.contactId]]');
         }
 
         $results = $query->all();

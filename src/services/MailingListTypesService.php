@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\base\Component;
+use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -144,6 +145,11 @@ class MailingListTypesService extends Component
 
         $mailingListTypeRecord->setAttributes($mailingListType->getAttributes(), false);
 
+        // Unset ID if null to avoid making postgres mad
+        if ($mailingListTypeRecord->id === null) {
+            unset($mailingListTypeRecord->id);
+        }
+
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
@@ -154,7 +160,9 @@ class MailingListTypesService extends Component
             $mailingListTypeRecord->fieldLayoutId = $fieldLayout->id;
 
             // Save the mailing list type
-            $mailingListTypeRecord->save(false);
+            if (!$mailingListTypeRecord->save(false)) {
+                throw new Exception('Couldn’t save mailing list type record.');
+            }
 
             // Now that we have an mailing list type ID, save it on the model
             if (!$mailingListType->id) {
@@ -164,7 +172,6 @@ class MailingListTypesService extends Component
             $transaction->commit();
         } catch (\Throwable $e) {
             $transaction->rollBack();
-
             throw $e;
         }
 

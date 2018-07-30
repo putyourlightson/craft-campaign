@@ -112,6 +112,8 @@ class MailingListTypesController extends Controller
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
         $mailingListType->doubleOptIn = (bool)$request->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);
+        $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
+        $mailingListType->unsubscribeSuccessTemplate = $request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

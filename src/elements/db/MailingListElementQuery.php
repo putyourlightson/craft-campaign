@@ -110,7 +110,7 @@ class MailingListElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));
         }
 
-        $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', 'campaign_mailinglisttypes.id = campaign_mailinglists.mailingListTypeId');
+        $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
         $this->subQuery->select('campaign_mailinglisttypes.name AS mailingListType');
 
         if ($this->mailingListTypeId) {

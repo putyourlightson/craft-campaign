@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\base\Component;
+use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -153,6 +154,11 @@ class CampaignTypesService extends Component
 
         $campaignTypeRecord->setAttributes($campaignType->getAttributes(), false);
 
+        // Unset ID if null to avoid making postgres mad
+        if ($campaignTypeRecord->id === null) {
+            unset($campaignTypeRecord->id);
+        }
+
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
@@ -163,7 +169,9 @@ class CampaignTypesService extends Component
             $campaignTypeRecord->fieldLayoutId = $fieldLayout->id;
 
             // Save the campaign type
-            $campaignTypeRecord->save(false);
+            if (!$campaignTypeRecord->save(false)) {
+                throw new Exception('Couldn’t save campaign type record.');
+            }
 
             // Now that we have an campaign type ID, save it on the model
             if (!$campaignType->id) {
@@ -173,7 +181,6 @@ class CampaignTypesService extends Component
             $transaction->commit();
         } catch (\Throwable $e) {
             $transaction->rollBack();
-
             throw $e;
         }
 

@@ -13,7 +13,7 @@ use craft\db\ActiveRecord;
  * MailingListTypeRecord
  *
  * @property int         $id                            ID
- * @property int         $fieldLayoutId Field layout    ID
+ * @property int         $fieldLayoutId                 Field layout ID
  * @property string      $name                          Name
  * @property string      $handle                        Handle
  * @property bool        $doubleOptIn                   Double opt-in
