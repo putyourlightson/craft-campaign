@@ -3,7 +3,7 @@
 ## 1.1.8 - 2018-07-30
 ### Fixed
 - Fixed mailing list type fields that were not being saved
-- Fixed errors that occured with PostgreSQL
+- Fixed errors that occurred with PostgreSQL
 
 ## 1.1.7 - 2018-07-25
 ### Fixed
