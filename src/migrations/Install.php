@@ -258,6 +258,7 @@ class Install extends Migration
                 'recipients' => $this->integer()->defaultValue(0)->notNull(),
                 'failedRecipients' => $this->integer()->defaultValue(0)->notNull(),
                 'automatedSchedule' => $this->text(),
+                'recurringSchedule' => $this->text(),
                 'htmlBody' => $this->text(),
                 'plaintextBody' => $this->text(),
                 'sendDate' => $this->dateTime(),

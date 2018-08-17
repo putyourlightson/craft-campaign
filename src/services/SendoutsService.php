@@ -163,8 +163,8 @@ class SendoutsService extends Component
                 $this->_queueSendout($sendout);
             }
 
-            // Queue automated sendouts if pro version and there are pending recipients
-            else if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isPro() AND $sendout->hasPendingRecipients()) {
+            // If pro version and sendout is scheduled to send now and there are pending recipients
+            else if (Campaign::$plugin->isPro() AND $sendout->isScheduledToSendNow() AND $sendout->hasPendingRecipients()) {
                 $this->_queueSendout($sendout);
             }
         }
@@ -426,8 +426,8 @@ class SendoutsService extends Component
         // Reset send status
         $sendout->sendStatus = 'pending';
 
-        // Update send status if fully complete and not automated
-        if (!$sendout->hasPendingRecipients() AND $sendout->sendoutType != 'automated') {
+        // Update send status if fully complete and not automated or recurring
+        if (!$sendout->hasPendingRecipients() AND $sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring') {
             $sendout->sendStatus = 'sent';
         }
 

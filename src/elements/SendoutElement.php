@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
+use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -268,6 +269,7 @@ class SendoutElement extends Element
 
         if (Campaign::$plugin->isPro()) {
             $sendoutTypes['automated'] = Craft::t('campaign', 'Automated');
+            $sendoutTypes['recurring'] = Craft::t('campaign', 'Recurring');
         }
 
         return $sendoutTypes;
@@ -357,9 +359,14 @@ class SendoutElement extends Element
     public $failedRecipients = 0;
 
     /**
-     * @var mixed Automated schedule
+     * @var AutomatedScheduleModel|string Automated schedule
      */
     public $automatedSchedule;
+
+    /**
+     * @var RecurringScheduleModel|string Recurring schedule
+     */
+    public $recurringSchedule;
 
     /**
      * @var string HTML body
@@ -426,8 +433,9 @@ class SendoutElement extends Element
     {
         parent::init();
 
-        // Decode the automated schedule
+        // Decode the schedules
         $this->automatedSchedule = Json::decode($this->automatedSchedule);
+        $this->recurringSchedule = Json::decode($this->recurringSchedule);
     }
 
     /**
@@ -513,7 +521,7 @@ class SendoutElement extends Element
      */
     public function getProgress(): string
     {
-        if ($this->sendStatus == self::STATUS_DRAFT OR $this->sendoutType == 'automated') {
+        if ($this->sendStatus == self::STATUS_DRAFT OR $this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
             return '';
         }
 
@@ -741,19 +749,6 @@ class SendoutElement extends Element
                 // If subscribed date time plus delay has not yet passed
                 if (!DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
                     unset($recipients[$key]);
-                    continue;
-                }
-
-                // If time and days were specified
-                if ($automatedSchedule->specificTimeDays) {
-                    $currentDayNumeric = (new \DateTime())->format('N');
-                    $timeOfDayToday = DateTimeHelper::toDateTime($automatedSchedule->timeOfDay);
-
-                    // If today is not one of "the days" or the time of day has not yet passed
-                    if (empty($automatedSchedule->daysOfWeek[$currentDayNumeric]) OR !DateTimeHelper::isInThePast($timeOfDayToday)) {
-                        unset($recipients[$key]);
-                        continue;
-                    }
                 }
             }
         }
@@ -903,6 +898,24 @@ class SendoutElement extends Element
     public function isDeletable(): bool
     {
         return (!$this->isPausable() OR $this->getStatus() == self::STATUS_FAILED);
+    }
+
+    /**
+     * Returns whether the sendout is scheduled to send now
+     *
+     * @return bool
+     */
+    public function isScheduledToSendNow(): bool
+    {
+        if ($this->sendoutType == 'automated') {
+            return $this->automatedSchedule->isScheduledToSendNow();
+        }
+
+        if ($this->sendoutType == 'recurring') {
+            return $this->recurringSchedule->isScheduledToSendNow();
+        }
+
+        return true;
     }
 
     /**
