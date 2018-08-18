@@ -7,19 +7,21 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\helpers\App;
+use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\models\AutomatedScheduleModel;
 
 use Craft;
 use craft\web\Controller;
 use craft\errors\ElementNotFoundException;
 use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
+use putyourlightson\campaign\models\AutomatedScheduleModel;
+use putyourlightson\campaign\models\RecurringScheduleModel;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -113,14 +115,14 @@ class SendoutsController extends Controller
      * @param string $sendoutType The sendout type
      * @param int|null $sendoutId The sendout’s ID, if editing an existing sendout.
      * @param SendoutElement|null $sendout The sendout being edited, if there were any validation errors.
-     * @param AutomatedScheduleModel|null $automatedSchedule The automated schedule, if there were any validation errors.
+     * @param ScheduleModel|null $schedule The schedule, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
      * @throws InvalidConfigException
      */
-    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, AutomatedScheduleModel $automatedSchedule = null): Response
+    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, ScheduleModel $schedule = null): Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');
@@ -165,9 +167,12 @@ class SendoutsController extends Controller
             }
         }
 
-        // Get the automated schedule
-        if ($sendoutType == 'automated' AND $automatedSchedule === null) {
-            $automatedSchedule = new AutomatedScheduleModel($sendout->automatedSchedule);
+        // Get the schedule
+        if ($sendoutType == 'automated') {
+            $schedule = new AutomatedScheduleModel($sendout->schedule);
+        }
+        else if ($sendoutType == 'recurring') {
+            $schedule = new RecurringScheduleModel($sendout->schedule);
         }
 
         // Set the variables
@@ -177,7 +182,7 @@ class SendoutsController extends Controller
             'sendoutType' => $sendoutType,
             'sendoutId' => $sendoutId,
             'sendout' => $sendout,
-            'automatedSchedule' => $automatedSchedule,
+            'schedule' => $schedule,
         ];
 
         // Campaign element selector variables
@@ -246,14 +251,26 @@ class SendoutsController extends Controller
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.')
         ];
 
-        // Get the time delay intervals
-        $variables['timeDelayIntervals'] = [
-            'minutes' => Craft::t('campaign', 'minute(s)'),
-            'hours' => Craft::t('campaign', 'hour(s)'),
-            'days' => Craft::t('campaign', 'day(s)'),
-            'weeks' => Craft::t('campaign', 'week(s)'),
-            'months' => Craft::t('campaign', 'month(s)'),
-        ];
+        if ($sendoutType == 'automated') {
+            // Get the time delay interval options
+            $variables['timeDelayIntervalOptions'] = [
+                'minutes' => Craft::t('campaign', 'minute(s)'),
+                'hours' => Craft::t('campaign', 'hour(s)'),
+                'days' => Craft::t('campaign', 'day(s)'),
+                'weeks' => Craft::t('campaign', 'week(s)'),
+                'months' => Craft::t('campaign', 'month(s)'),
+            ];
+        }
+
+        if ($sendoutType == 'recurring') {
+            // Get the frequency options
+            $variables['frequencyOptions'] = [
+                'days' => Craft::t('campaign', 'day(s)'),
+                'weeks' => Craft::t('campaign', 'week(s)'),
+                'months' => Craft::t('campaign', 'month(s)'),
+                'years' => Craft::t('campaign', 'year(s)'),
+            ];
+        }
 
         // Get the settings
         $variables['settings'] = Campaign::$plugin->getSettings();
@@ -336,26 +353,30 @@ class SendoutsController extends Controller
             $sendout->sendDate = $sendout->sendDate ?? new \DateTime();
         }
 
-        // Get automated fields
-        $automatedSchedule = null;
+        // Get schedule fields
+        $schedule = null;
 
-        if ($sendout->sendoutType == 'automated' AND Campaign::$plugin->isPro()) {
-            $sendout->automatedSchedule = $request->getBodyParam('automatedSchedule', $sendout->automatedSchedule);
+        if ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') {
+            $sendout->schedule = $request->getBodyParam('schedule', $sendout->schedule);
 
-            // Create automated schedule model
-            $automatedSchedule = new AutomatedScheduleModel($sendout->automatedSchedule);
+            if ($sendout->sendoutType == 'automated') {
+                $schedule = new AutomatedScheduleModel($sendout->schedule);
+            }
+            else if ($sendout->sendoutType == 'recurring') {
+                $schedule = new RecurringScheduleModel($sendout->schedule);
+            }
 
-            // Validate automated schedule and sendout
-            $automatedSchedule->validate();
+            // Validate schedule and sendout
+            $schedule->validate();
             $sendout->validate();
 
-            // If errors then send the sendout and automated schedule back to the template
-            if ($automatedSchedule->hasErrors() OR $sendout->hasErrors()) {
+            // If errors then send the sendout and schedule back to the template
+            if ($schedule->hasErrors() OR $sendout->hasErrors()) {
                 Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
                 Craft::$app->getUrlManager()->setRouteParams([
                     'sendout' => $sendout,
-                    'automatedSchedule' => $automatedSchedule,
+                    'schedule' => $schedule,
                 ]);
 
                 return null;
@@ -366,10 +387,10 @@ class SendoutsController extends Controller
         if (!Craft::$app->getElements()->saveElement($sendout)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
-            // Send the sendout and automated schedule back to the template
+            // Send the sendout and schedule back to the template
             Craft::$app->getUrlManager()->setRouteParams([
                 'sendout' => $sendout,
-                'automatedSchedule' => $automatedSchedule,
+                'schedule' => $schedule,
             ]);
 
             return null;

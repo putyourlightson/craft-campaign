@@ -308,6 +308,7 @@ class CampaignElement extends Element
     public function rules(): array
     {
         $rules = parent::rules();
+
         $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'];
         $rules[] = [['dateClosed'], DateTimeValidator::class];
 

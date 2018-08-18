@@ -8,29 +8,29 @@ namespace putyourlightson\campaign\models;
 
 use craft\helpers\DateTimeHelper;
 use craft\validators\DateTimeValidator;
-use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\base\ScheduleModel;
 
 /**
  * RecurringScheduleModel
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.2.0
  */
-class RecurringScheduleModel extends BaseModel
+class RecurringScheduleModel extends ScheduleModel
 {
     // Properties
     // =========================================================================
 
     /**
-     * @var string Recurring type
+     * @var string Frequency
      */
-    public $recurringType = '';
+    public $frequency = '';
 
     /**
-     * @var int Frequency
+     * @var int Interval
      */
-    public $frequency = 1;
+    public $interval = 1;
 
     /**
      * @var int Max occurrences
@@ -65,16 +65,18 @@ class RecurringScheduleModel extends BaseModel
      */
     public function rules(): array
     {
-        return [
-            [['recurringType', 'timeOfDay'], 'required'],
-            [['frequency', 'maxOccurrences'], 'integer'],
-            [['frequency'], 'min' => 1],
-            [['timeOfDay'], DateTimeValidator::class],
-        ];
+        $rules = parent::rules();
+
+        $rules[] = [['frequency', 'timeOfDay'], 'required'];
+        $rules[] = [['frequency', 'maxOccurrences'], 'integer'];
+        $rules[] = [['frequency'], 'min' => 1];
+        $rules[] = [['timeOfDay'], DateTimeValidator::class];
+
+        return $rules;
     }
 
     /**
-     * Returns whether the sendout is scheduled for sending now
+     * @inheritdoc
      */
     public function isScheduledToSendNow(): bool
     {
@@ -84,24 +86,24 @@ class RecurringScheduleModel extends BaseModel
             return false;
         }
 
-        if ($this->recurringType == 'daily') {
+        if ($this->frequency == 'daily') {
             return true;
         }
 
         $now = new \DateTime();
 
         // N: Numeric representation of the day of the week: 1 to 7
-        if ($this->recurringType == 'weekly' AND !empty($this->daysOfWeek[$now->format('N')])) {
+        if ($this->frequency == 'weekly' AND !empty($this->daysOfWeek[$now->format('N')])) {
             return true;
         }
 
         // j: Numeric representation of the day of the month: 1 to 31
-        if ($this->recurringType == 'monthly' AND !empty($this->daysOfMonth[$now->format('j')])) {
+        if ($this->frequency == 'monthly' AND !empty($this->daysOfMonth[$now->format('j')])) {
             return true;
         }
 
         // n: Numeric representation of the month: 1 to 12
-        if ($this->recurringType == 'yearly' AND !empty($this->monthsOfYear[$now->format('n')])) {
+        if ($this->frequency == 'yearly' AND !empty($this->monthsOfYear[$now->format('n')])) {
             return true;
         }
 

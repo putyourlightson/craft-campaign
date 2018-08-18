@@ -6,13 +6,13 @@
 
 namespace putyourlightson\campaign\elements;
 
+use putyourlightson\campaign\base\ScheduleInterface;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
-use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -359,14 +359,9 @@ class SendoutElement extends Element
     public $failedRecipients = 0;
 
     /**
-     * @var AutomatedScheduleModel|string Automated schedule
+     * @var ScheduleInterface|null Schedule
      */
-    public $automatedSchedule;
-
-    /**
-     * @var RecurringScheduleModel|string Recurring schedule
-     */
-    public $recurringSchedule;
+    public $schedule;
 
     /**
      * @var string HTML body
@@ -433,9 +428,8 @@ class SendoutElement extends Element
     {
         parent::init();
 
-        // Decode the schedules
-        $this->automatedSchedule = Json::decode($this->automatedSchedule);
-        $this->recurringSchedule = Json::decode($this->recurringSchedule);
+        // Decode the schedule
+        $this->schedule = Json::decode($this->schedule);
     }
 
     /**
@@ -731,7 +725,7 @@ class SendoutElement extends Element
         }
 
         if ($this->sendoutType == 'automated') {
-            $automatedSchedule = new AutomatedScheduleModel($this->automatedSchedule);
+            $automatedSchedule = new AutomatedScheduleModel($this->schedule);
 
             // Remove all contacts that have not passed the time delay since subscribing
             foreach ($recipients as $key => $recipientData) {
@@ -898,24 +892,6 @@ class SendoutElement extends Element
     public function isDeletable(): bool
     {
         return (!$this->isPausable() OR $this->getStatus() == self::STATUS_FAILED);
-    }
-
-    /**
-     * Returns whether the sendout is scheduled to send now
-     *
-     * @return bool
-     */
-    public function isScheduledToSendNow(): bool
-    {
-        if ($this->sendoutType == 'automated') {
-            return $this->automatedSchedule->isScheduledToSendNow();
-        }
-
-        if ($this->sendoutType == 'recurring') {
-            return $this->recurringSchedule->isScheduledToSendNow();
-        }
-
-        return true;
     }
 
     /**

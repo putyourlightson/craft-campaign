@@ -138,7 +138,7 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.segmentIds',
             'campaign_sendouts.recipients',
             'campaign_sendouts.failedRecipients',
-            'campaign_sendouts.automatedSchedule',
+            'campaign_sendouts.schedule',
             'campaign_sendouts.htmlBody',
             'campaign_sendouts.plaintextBody',
             'campaign_sendouts.sendDate',

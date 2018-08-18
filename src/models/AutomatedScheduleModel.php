@@ -7,16 +7,16 @@
 namespace putyourlightson\campaign\models;
 
 use craft\helpers\DateTimeHelper;
-use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\base\ScheduleModel;
 
 /**
  * AutomatedScheduleModel
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.2.0
  */
-class AutomatedScheduleModel extends BaseModel
+class AutomatedScheduleModel extends ScheduleModel
 {
     // Properties
     // =========================================================================
@@ -54,23 +54,25 @@ class AutomatedScheduleModel extends BaseModel
      */
     public function rules(): array
     {
-        return [
-            [['timeDelay', 'timeDelayInterval'], 'required'],
-            [['timeDelay'], 'integer', 'min' => 0],
-            [['specificTimeDays'], 'boolean'],
-            ['timeDelayInterval', 'in', 'range' => ['minutes', 'hours', 'days', 'weeks', 'months']],
-            [
-                ['timeOfDay', 'daysOfWeek'],
-                'required',
-                'when' => function($model) {
-                    return (bool)$model->specificTimeDays;
-                }
-            ],
+        $rules = parent::rules();
+
+        $rules[] = [['timeDelay', 'timeDelayInterval'], 'required'];
+        $rules[] = [['timeDelay'], 'integer', 'min' => 0];
+        $rules[] = [['specificTimeDays'], 'boolean'];
+        $rules[] = ['timeDelayInterval', 'in', 'range' => ['minutes', 'hours', 'days', 'weeks', 'months']];
+        $rules[] = [
+            ['timeOfDay', 'daysOfWeek'],
+            'required',
+            'when' => function($model) {
+                return (bool)$model->specificTimeDays;
+            }
         ];
+
+        return $rules;
     }
 
     /**
-     * Returns whether the sendout is scheduled for sending now
+     * @inheritdoc
      */
     public function isScheduledToSendNow(): bool
     {

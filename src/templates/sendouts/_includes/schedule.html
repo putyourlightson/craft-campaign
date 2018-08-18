@@ -1,0 +1,19 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.dateField({
+    label: "Start Date"|t('campaign'),
+    instructions: "The date on which to begin sending."|t('campaign'),
+    id: 'sendDate',
+    name: 'sendDate',
+    value: (sendout.sendDate ? sendout.sendDate : date()),
+    errors: sendout.getErrors('sendDate'),
+    required: true
+}) }}
+
+{{ forms.dateField({
+    label: "End Date"|t('campaign'),
+    instructions: "The date on which to end sending (optional)."|t('campaign'),
+    name: 'schedule[endDate]',
+    value: (schedule.endDate ? schedule.endDate),
+    errors: schedule.getErrors('endDate'),
+}) }}

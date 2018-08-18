@@ -44,7 +44,7 @@
             }) }}
         {% endif %}
 
-        {% include "campaign/sendouts/_includes/titlefield" %}
+        {% include 'campaign/sendouts/_includes/titlefield' %}
 
         {{ forms.elementSelectField({
             label: "Campaign"|t('campaign'),
@@ -178,51 +178,53 @@
 
             <hr/>
 
+            {% include 'campaign/sendouts/_includes/schedule' %}
+
             {% set input %}
                 {{ forms.text({
-                    name: 'automatedSchedule[timeDelay]',
+                    name: 'schedule[timeDelay]',
                     type: 'number',
-                    value: automatedSchedule.timeDelay,
+                    value: schedule.timeDelay,
                     size: '10',
                 }) }}
                 {{ forms.select({
-                    name: 'automatedSchedule[timeDelayInterval]',
-                    options: timeDelayIntervals,
-                    value: automatedSchedule.timeDelayInterval,
+                    name: 'schedule[timeDelayInterval]',
+                    options: timeDelayIntervalOptions,
+                    value: schedule.timeDelayInterval,
                 }) }}
             {% endset %}
             {{ forms.field({
                 label: "Time Delay"|t('campaign'),
                 instructions: "The amount of time to wait after subscribers join the list(s). Set to 0 for immediately."|t('campaign'),
-                errors: automatedSchedule.getErrors('timeDelay'),
+                errors: schedule.getErrors('timeDelay'),
                 required: true
             }, input) }}
 
             {{ forms.lightswitchField({
                 label: "Specific Time and Days"|t('campaign'),
                 instructions: "Whether to send only at a specific time and on specific days of the week."|t('campaign'),
-                name: 'automatedSchedule[specificTimeDays]',
+                name: 'schedule[specificTimeDays]',
                 id: 'specificTimeDays',
-                on: automatedSchedule.specificTimeDays,
-                errors: automatedSchedule.getErrors('specificTimeDays'),
+                on: schedule.specificTimeDays,
+                errors: schedule.getErrors('specificTimeDays'),
                 required: true,
                 toggle: 'specificTimeDaysFields'
             }) }}
 
-            <div id="specificTimeDaysFields" {{ not automatedSchedule.specificTimeDays ? 'class="hidden"' }}>
+            <div id="specificTimeDaysFields" {{ not schedule.specificTimeDays ? 'class="hidden"' }}>
 
                 {% set input %}
                     {{ forms.time({
-                        name: 'automatedSchedule[timeOfDay]',
+                        name: 'schedule[timeOfDay]',
                         id: 'timeOfDay',
-                        value: (automatedSchedule.timeOfDay.time is defined ? automatedSchedule.timeOfDay.time : '09:00'),
+                        value: (schedule.timeOfDay.time is defined ? schedule.timeOfDay.time : '09:00'),
                     }) }}
-                    {{ (automatedSchedule.timeOfDay.timezone is defined ? automatedSchedule.timeOfDay.timezone : craft.app.timezone) }}
+                    {{ (schedule.timeOfDay.timezone is defined ? schedule.timeOfDay.timezone : craft.app.timezone) }}
                 {% endset %}
                 {{ forms.field({
                     label: "Time of Day"|t('campaign'),
                     instructions: "The time of day at which to send."|t('campaign'),
-                    errors: automatedSchedule.getErrors('timeOfDay'),
+                    errors: schedule.getErrors('timeOfDay'),
                     required: true
                 }, input) }}
 
@@ -230,19 +232,78 @@
                     {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
                         {{ forms.checkbox({
                             label: day|t('campaign'),
-                            name: 'automatedSchedule[daysOfWeek][' ~ loop.index ~ ']',
+                            name: 'schedule[daysOfWeek][' ~ loop.index ~ ']',
                             value: 1,
-                            checked: (automatedSchedule.daysOfWeek[loop.index] is defined and automatedSchedule.daysOfWeek[loop.index]),
+                            checked: (schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index]),
                         }) }}
                     {% endfor %}
                 {% endset %}
                 {{ forms.field({
                     label: "Days of Week"|t('campaign'),
                     instructions: "The days of the week on which to send."|t('campaign'),
-                    errors: automatedSchedule.getErrors('daysOfWeek'),
+                    errors: schedule.getErrors('daysOfWeek'),
                     required: true
                 }, input) }}
             </div>
+
+        {% elseif sendout.sendoutType == 'recurring' %}
+
+            <hr/>
+
+            {% include 'campaign/sendouts/_includes/schedule' %}
+
+            {% set input %}
+                {{ forms.text({
+                    name: 'schedule[interval]',
+                    type: 'number',
+                    value: schedule.interval,
+                    size: '10',
+                }) }}
+                {{ forms.select({
+                    name: 'schedule[frequency]',
+                    options: frequencyOptions,
+                    value: schedule.frequency,
+                }) }}
+            {% endset %}
+            {{ forms.field({
+                label: "Recurring Schedule"|t('campaign'),
+                instructions: "The amount of time to wait after subscribers join the list(s). Set to 0 for immediately."|t('campaign'),
+                errors: schedule.getErrors('frequency'),
+                required: true
+            }, input) }}
+
+            {% set input %}
+                {{ forms.time({
+                    name: 'schedule[timeOfDay]',
+                    id: 'timeOfDay',
+                    value: (schedule.timeOfDay.time is defined ? schedule.timeOfDay.time : '09:00'),
+                }) }}
+                {{ (schedule.timeOfDay.timezone is defined ? schedule.timeOfDay.timezone : craft.app.timezone) }}
+            {% endset %}
+            {{ forms.field({
+                label: "Time of Day"|t('campaign'),
+                instructions: "The time of day at which to send."|t('campaign'),
+                errors: schedule.getErrors('timeOfDay'),
+                required: true
+            }, input) }}
+
+            {% set input %}
+                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                    {{ forms.checkbox({
+                        label: day|t('campaign'),
+                        name: 'schedule[daysOfWeek][' ~ loop.index ~ ']',
+                        value: 1,
+                        checked: (schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index]),
+                    }) }}
+                    <br/>
+                {% endfor %}
+            {% endset %}
+            {{ forms.field({
+                label: "Days of Week"|t('campaign'),
+                instructions: "The days of the week on which to send."|t('campaign'),
+                errors: schedule.getErrors('daysOfWeek'),
+                required: true
+            }, input) }}
 
         {% endif %}
 

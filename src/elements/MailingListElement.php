@@ -210,6 +210,7 @@ class MailingListElement extends Element
     public function rules(): array
     {
         $rules = parent::rules();
+
         $rules[] = [['mailingListTypeId'], 'integer'];
 
         return $rules;

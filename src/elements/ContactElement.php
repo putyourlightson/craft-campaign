@@ -374,6 +374,7 @@ class ContactElement extends Element
     public function rules(): array
     {
         $rules = parent::rules();
+
         $rules[] = [['cid', 'email'], 'required'];
         $rules[] = [['cid'], 'string', 'max' => 32];
         $rules[] = [['email'], 'email'];
