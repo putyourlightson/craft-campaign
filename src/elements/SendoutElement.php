@@ -845,6 +845,18 @@ class SendoutElement extends Element
     }
 
     /**
+     * Returns whether the sendout can be sent now
+     */
+    public function canSendNow(): bool
+    {
+        if ($this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
+            return $this->schedule->canSendNow($this->sendDate);
+        }
+
+        return true;
+    }
+
+    /**
      * Returns whether the sendout is sendable
      *
      * @return bool

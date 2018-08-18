@@ -251,25 +251,9 @@ class SendoutsController extends Controller
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.')
         ];
 
-        if ($sendoutType == 'automated') {
-            // Get the time delay interval options
-            $variables['timeDelayIntervalOptions'] = [
-                'minutes' => Craft::t('campaign', 'minute(s)'),
-                'hours' => Craft::t('campaign', 'hour(s)'),
-                'days' => Craft::t('campaign', 'day(s)'),
-                'weeks' => Craft::t('campaign', 'week(s)'),
-                'months' => Craft::t('campaign', 'month(s)'),
-            ];
-        }
-
-        if ($sendoutType == 'recurring') {
-            // Get the frequency options
-            $variables['frequencyOptions'] = [
-                'days' => Craft::t('campaign', 'day(s)'),
-                'weeks' => Craft::t('campaign', 'week(s)'),
-                'months' => Craft::t('campaign', 'month(s)'),
-                'years' => Craft::t('campaign', 'year(s)'),
-            ];
+        if ($sendoutType == 'automated' OR $sendoutType == 'recurring') {
+            // Get the interval options
+            $variables['intervalOptions'] = $schedule->getIntervalOptions();
         }
 
         // Get the settings

@@ -163,8 +163,8 @@ class SendoutsService extends Component
                 $this->_queueSendout($sendout);
             }
 
-            // If pro version and sendout is automated or recurring and the schedule can send now and there are pending recipients
-            else if (Campaign::$plugin->isPro() AND ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND $sendout->schedule->canSendNow() AND $sendout->hasPendingRecipients()) {
+            // If pro version and sendout is automated or recurring and the sendout can send now and there are pending recipients
+            else if (Campaign::$plugin->isPro() AND ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND $sendout->canSendNow() AND $sendout->hasPendingRecipients()) {
                 $this->_queueSendout($sendout);
             }
         }

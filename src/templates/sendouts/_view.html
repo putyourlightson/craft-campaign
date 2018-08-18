@@ -131,36 +131,37 @@
             <hr/>
 
             {% set input %}
-                <p>{{ automatedSchedule.timeDelay }} {{ timeDelayIntervals[automatedSchedule.timeDelayInterval] }}</p>
+                <p>{{ sendout.sendDate|datetime }}</p>
+            {% endset %}
+            {{ forms.field({label: "Start Date"|t('campaign') ~ ':'}, input) }}
+
+            {% set input %}
+                <p>{{ schedule.endDate|datetime }}</p>
+            {% endset %}
+            {{ forms.field({label: "End Date"|t('campaign') ~ ':'}, input) }}
+
+            {% set input %}
+                <p>{{ schedule.timeDelay }} {{ timeDelayIntervals[schedule.timeDelayInterval] }}</p>
             {% endset %}
             {{ forms.field({label: "Time Delay"|t('campaign') ~ ':'}, input) }}
 
             {% set input %}
-                <p>{{ automatedSchedule.specificTimeDays ? 'On'|t('campaign') : 'Off'|t('campaign') }}</p>
+                <p>{{ schedule.timeOfDay.time }} {{ schedule.timeOfDay.timezone }}</p>
             {% endset %}
-            {{ forms.field({label: "Specific Time and Days"|t('campaign') ~ ':'}, input) }}
+            {{ forms.field({label: "Time of Day"|t('campaign') ~ ':'}, input) }}
 
-            {% if automatedSchedule.specificTimeDays %}
-
-                {% set input %}
-                    <p>{{ automatedSchedule.timeOfDay.time }} {{ automatedSchedule.timeOfDay.timezone }}</p>
-                {% endset %}
-                {{ forms.field({label: "Time of Day"|t('campaign') ~ ':'}, input) }}
-
-                {% set input %}
-                    <p>
-                        {% set days = [] %}
-                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-                            {% if automatedSchedule.daysOfWeek[loop.index] is defined and automatedSchedule.daysOfWeek[loop.index] %}
-                                {% set days = days|merge([day]) %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ days|join(', ') }}
-                    </p>
-                {% endset %}
-                {{ forms.field({label: "Days of Week"|t('campaign') ~ ':'}, input) }}
-
-            {% endif %}
+            {% set input %}
+                <p>
+                    {% set days = [] %}
+                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                        {% if schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index] %}
+                            {% set days = days|merge([day]) %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ days|join(', ') }}
+                </p>
+            {% endset %}
+            {{ forms.field({label: "Days of Week"|t('campaign') ~ ':'}, input) }}
 
         {% endif %}
 

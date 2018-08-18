@@ -6,8 +6,10 @@
 
 namespace putyourlightson\campaign\models;
 
+use Craft;
 use craft\helpers\DateTimeHelper;
-use putyourlightson\campaign\base\ScheduleModel;
+use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\base\ScheduleInterface;
 
 /**
  * AutomatedScheduleModel
@@ -15,11 +17,18 @@ use putyourlightson\campaign\base\ScheduleModel;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.2.0
+ *
+ * @property array $intervalOptions
  */
-class AutomatedScheduleModel extends ScheduleModel
+class AutomatedScheduleModel extends BaseModel implements ScheduleInterface
 {
     // Properties
     // =========================================================================
+
+    /**
+     * @var \DateTime|null End date
+     */
+    public $endDate;
 
     /**
      * @var int Time delay
@@ -32,16 +41,6 @@ class AutomatedScheduleModel extends ScheduleModel
     public $timeDelayInterval = '';
 
     /**
-     * @var bool Specific time and days
-     */
-    public $specificTimeDays = false;
-
-    /**
-     * @var \DateTime|null Time of day
-     */
-    public $timeOfDay;
-
-    /**
      * @var array|null Days of the week
      */
     public $daysOfWeek;
@@ -50,23 +49,29 @@ class AutomatedScheduleModel extends ScheduleModel
     // =========================================================================
 
     /**
+     * @return array
+     */
+    public function getIntervalOptions(): array
+    {
+        return [
+            'minutes' => Craft::t('campaign', 'minute(s)'),
+            'hours' => Craft::t('campaign', 'hour(s)'),
+            'days' => Craft::t('campaign', 'day(s)'),
+            'weeks' => Craft::t('campaign', 'week(s)'),
+            'months' => Craft::t('campaign', 'month(s)'),
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
     {
         $rules = parent::rules();
 
-        $rules[] = [['timeDelay', 'timeDelayInterval'], 'required'];
+        $rules[] = [['timeDelay', 'timeDelayInterval', 'daysOfWeek'], 'required'];
         $rules[] = [['timeDelay'], 'integer', 'min' => 0];
-        $rules[] = [['specificTimeDays'], 'boolean'];
-        $rules[] = ['timeDelayInterval', 'in', 'range' => ['minutes', 'hours', 'days', 'weeks', 'months']];
-        $rules[] = [
-            ['timeOfDay', 'daysOfWeek'],
-            'required',
-            'when' => function($model) {
-                return (bool)$model->specificTimeDays;
-            }
-        ];
+        $rules[] = ['timeDelayInterval', 'in', 'range' => array_keys($this->getIntervalOptions())];
 
         return $rules;
     }
@@ -74,20 +79,17 @@ class AutomatedScheduleModel extends ScheduleModel
     /**
      * @inheritdoc
      */
-    public function isScheduledToSendNow(): bool
+    public function canSendNow(\DateTime $sendDate): bool
     {
-        // If time and days were specified
-        if ($this->specificTimeDays) {
-            $now = new \DateTime();
-            $timeOfDayToday = DateTimeHelper::toDateTime($this->timeOfDay);
+        $now = new \DateTime();
+        $sendTimeToday = DateTimeHelper::toDateTime($sendDate->format('H:i:s T'));
 
-            // If today is not one of "the days" or the time of day has not yet passed
-            // N: Numeric representation of the day of the week: 1 to 7
-            if (empty($this->daysOfWeek[$now->format('N')]) OR !DateTimeHelper::isInThePast($timeOfDayToday)) {
-                return false;
-            }
+        // If today is not one of "the days" or the time of day has not yet passed
+        // N: Numeric representation of the day of the week: 1 to 7
+        if (!empty($this->daysOfWeek[$now->format('N')]) AND DateTimeHelper::isInThePast($sendTimeToday)) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

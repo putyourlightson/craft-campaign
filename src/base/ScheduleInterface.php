@@ -19,7 +19,10 @@ interface ScheduleInterface
     // =========================================================================
 
     /**
-     * Returns whether the sendout is scheduled for sending now
+     * Returns whether the sendout can be sent now
+     *
+     * @param \DateTime $sendDate
+     * @return bool
      */
-    public function isScheduledToSendNow(): bool;
+    public function canSendNow(\DateTime $sendDate): bool;
 }
