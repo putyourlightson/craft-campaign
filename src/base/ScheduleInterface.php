@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\base;
 
+use putyourlightson\campaign\elements\SendoutElement;
+
 /**
  * ScheduleInterface
  *
@@ -21,8 +23,8 @@ interface ScheduleInterface
     /**
      * Returns whether the sendout can be sent now
      *
-     * @param \DateTime $sendDate
+     * @param SendoutElement $sendout
      * @return bool
      */
-    public function canSendNow(\DateTime $sendDate): bool;
+    public function canSendNow(SendoutElement $sendout): bool;
 }

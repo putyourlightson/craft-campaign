@@ -10,6 +10,7 @@ use Craft;
 use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\base\ScheduleInterface;
+use putyourlightson\campaign\elements\SendoutElement;
 
 /**
  * AutomatedScheduleModel
@@ -79,17 +80,21 @@ class AutomatedScheduleModel extends BaseModel implements ScheduleInterface
     /**
      * @inheritdoc
      */
-    public function canSendNow(\DateTime $sendDate): bool
+    public function canSendNow(SendoutElement $sendout): bool
     {
         $now = new \DateTime();
-        $sendTimeToday = DateTimeHelper::toDateTime($sendDate->format('H:i:s T'));
+        $sendTimeToday = DateTimeHelper::toDateTime($sendout->sendDate->format('H:i:s T'));
 
-        // If today is not one of "the days" or the time of day has not yet passed
-        // N: Numeric representation of the day of the week: 1 to 7
-        if (!empty($this->daysOfWeek[$now->format('N')]) AND DateTimeHelper::isInThePast($sendTimeToday)) {
-            return true;
+        // Ensure send time is in the past
+        if (!DateTimeHelper::isInThePast($sendTimeToday)) {
+            return false;
         }
 
-        return false;
+        // N: Numeric representation of the day of the week: 1 to 7
+        if (empty($this->daysOfWeek[$now->format('N')]) AND DateTimeHelper::isInThePast($sendTimeToday)) {
+            return false;
+        }
+
+        return true;
     }
 }

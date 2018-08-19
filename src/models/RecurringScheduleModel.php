@@ -11,6 +11,7 @@ use craft\helpers\DateTimeHelper;
 use craft\validators\DateTimeValidator;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\base\ScheduleInterface;
+use putyourlightson\campaign\elements\SendoutElement;
 
 /**
  * RecurringScheduleModel
@@ -89,29 +90,55 @@ class RecurringScheduleModel extends BaseModel implements ScheduleInterface
     /**
      * @inheritdoc
      */
-    public function canSendNow(\DateTime $sendDate): bool
+    public function canSendNow(SendoutElement $sendout): bool
     {
-        $sendTimeToday = DateTimeHelper::toDateTime($sendDate->format('H:i:s T'));
+        $now = new \DateTime();
 
+        // Ensure not already sent today
+        if ($now->diff($sendout->lastSent)->d == 0) {
+            return false;
+        }
+
+        $sendTimeToday = DateTimeHelper::toDateTime($sendout->sendDate->format('H:i:s T'));
+
+        // Ensure send time is in the past
         if (!DateTimeHelper::isInThePast($sendTimeToday)) {
             return false;
         }
 
-        // TODO: add frequency conditional
-        
+        $diff = $now->diff($sendout->sendDate);
+
         if ($this->frequencyInterval == 'days') {
+            if ($this->frequency > 1 AND $diff->d % $this->frequency != 0) {
+                return false;
+            }
+
             return true;
         }
 
-        $now = new \DateTime();
+        if ($this->frequencyInterval == 'weeks') {
+            // N: Numeric representation of the day of the week: 1 to 7
+            if (empty($this->daysOfWeek[$now->format('N')])) {
+                return false;
+            }
 
-        // N: Numeric representation of the day of the week: 1 to 7
-        if ($this->frequencyInterval == 'weeks' AND !empty($this->daysOfWeek[$now->format('N')])) {
+            if ($this->frequency > 1 AND floor($diff->d / 7) % $this->frequency != 0) {
+                return false;
+            }
+
             return true;
         }
 
-        // j: Numeric representation of the day of the month: 1 to 31
-        if ($this->frequencyInterval == 'months' AND !empty($this->daysOfMonth[$now->format('j')])) {
+        if ($this->frequencyInterval == 'months') {
+            // j: Numeric representation of the day of the month: 1 to 31
+            if (empty($this->daysOfMonth[$now->format('j')])) {
+                return false;
+            }
+
+            if ($this->frequency > 1 AND $diff->m % $this->frequency != 0) {
+                return false;
+            }
+
             return true;
         }
 
