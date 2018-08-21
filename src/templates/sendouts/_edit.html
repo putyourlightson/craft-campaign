@@ -162,15 +162,7 @@
 
             <hr/>
 
-            {{ forms.dateTimeField({
-                label: "Scheduled Send Date"|t('campaign'),
-                instructions: "The date and time at which to begin sending."|t('campaign'),
-                id: 'sendDate',
-                name: 'sendDate',
-                value: (sendout.sendDate ? sendout.sendDate : date()),
-                errors: sendout.getErrors('sendDate'),
-                required: true
-            }) }}
+            {% include 'campaign/sendouts/_includes/schedule' %}
 
         {% endif %}
 
@@ -178,7 +170,8 @@
 
             <hr/>
 
-            {% include 'campaign/sendouts/_includes/schedule' %}
+            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date', endDate: true} %}
+
             {% set input %}
                 {{ forms.text({
                     name: 'schedule[timeDelay]',
@@ -199,29 +192,13 @@
                 required: true
             }, input) }}
 
-            {% set input %}
-                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-                    {{ forms.checkbox({
-                        label: day|t('campaign'),
-                        name: 'schedule[daysOfWeek][' ~ loop.index ~ ']',
-                        value: 1,
-                        checked: (schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index]),
-                    }) }}
-                    <br/>
-                {% endfor %}
-            {% endset %}
-            {{ forms.field({
-                label: "Days of Week"|t('campaign'),
-                instructions: "The days of the week on which to send."|t('campaign'),
-                errors: schedule.getErrors('daysOfWeek'),
-                required: true
-            }, input) }}
+            {% include 'campaign/sendouts/_includes/daysOfWeek' %}
 
         {% elseif sendout.sendoutType == 'recurring' %}
 
             <hr/>
 
-            {% include 'campaign/sendouts/_includes/schedule' %}
+            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date', endDate: true} %}
 
             {% set input %}
                 {{ "Every"|t('campaign') }}
@@ -248,23 +225,7 @@
 
             <div id="frequency-weeks" {{ schedule.frequencyInterval != 'weeks' ? 'class="hidden"' }}>
 
-                {% set input %}
-                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-                        {{ forms.checkbox({
-                            label: day|t('campaign'),
-                            name: 'schedule[daysOfWeek][' ~ loop.index ~ ']',
-                            value: 1,
-                            checked: (schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index]),
-                        }) }}
-                        <br/>
-                    {% endfor %}
-                {% endset %}
-                {{ forms.field({
-                    label: "Days of Week"|t('campaign'),
-                    instructions: "The days of the week on which to send."|t('campaign'),
-                    errors: schedule.getErrors('daysOfWeek'),
-                    required: true
-                }, input) }}
+                {% include 'campaign/sendouts/_includes/daysOfWeek' %}
 
             </div>
 
@@ -278,6 +239,8 @@
                             value: 1,
                             checked: (schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index]),
                         }) }}
+                        {{ loop.index == 29 ? '(in February only exists in leap years)' }}
+                        {{ loop.index > 29 ? '(does not exist in all months)' }}
                         <br/>
                     {% endfor %}
                 {% endset %}
@@ -289,23 +252,6 @@
                 }, input) }}
 
             </div>
-
-            {% set input %}
-                {{ forms.time({
-                    name: 'schedule[timeOfDay]',
-                    id: 'timeOfDay',
-                    value: (schedule.timeOfDay.time is defined ? schedule.timeOfDay.time : '09:00'),
-                }) }}
-                {{ (schedule.timeOfDay.timezone is defined ? schedule.timeOfDay.timezone : craft.app.timezone) }}
-            {% endset %}
-            {{ forms.field({
-                label: "Time of Day"|t('campaign'),
-                instructions: "The time of day at which to send."|t('campaign'),
-                errors: schedule.getErrors('timeOfDay'),
-                required: true
-            }, input) }}
-
-
 
         {% endif %}
 

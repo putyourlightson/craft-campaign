@@ -7,7 +7,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\helpers\App;
-use putyourlightson\campaign\base\ScheduleModel;
+use putyourlightson\campaign\base\ScheduleInterface;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -115,14 +115,14 @@ class SendoutsController extends Controller
      * @param string $sendoutType The sendout type
      * @param int|null $sendoutId The sendout’s ID, if editing an existing sendout.
      * @param SendoutElement|null $sendout The sendout being edited, if there were any validation errors.
-     * @param ScheduleModel|null $schedule The schedule, if there were any validation errors.
+     * @param ScheduleInterface|null $schedule The schedule, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
      * @throws InvalidConfigException
      */
-    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, ScheduleModel $schedule = null): Response
+    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, ScheduleInterface $schedule = null): Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');

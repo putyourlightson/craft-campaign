@@ -1,19 +1,33 @@
 {% import '_includes/forms' as forms %}
 
-{{ forms.dateTimeField({
-    label: "Start Date"|t('campaign'),
-    instructions: "The date on which to begin sending."|t('campaign'),
-    id: 'sendDate',
-    name: 'sendDate',
-    value: (sendout.sendDate ? sendout.sendDate : date()),
+{% set label = label ?? 'Send Date' %}
+
+{% set input %}
+    {{ forms.date({
+        name: 'sendDate',
+        value: sendout.sendDate.date ?? date(),
+    }) }}
+    {{ forms.time({
+        name: 'sendDate',
+        value: sendout.sendDate.time ?? date(),
+    }) }}
+    {{ sendout.sendDate.timezone ?? craft.app.timezone }}
+{% endset %}
+{{ forms.field({
+    label: label|t('campaign'),
+    instructions: "The date and time at which to begin sending."|t('campaign'),
     errors: sendout.getErrors('sendDate'),
     required: true
-}) }}
+}, input) }}
 
-{{ forms.dateField({
-    label: "End Date"|t('campaign'),
-    instructions: "The date on which to end sending (optional)."|t('campaign'),
-    name: 'schedule[endDate]',
-    value: (schedule.endDate ? schedule.endDate),
-    errors: schedule.getErrors('endDate'),
-}) }}
+{% if endDate is defined and endDate %}
+
+    {{ forms.dateField({
+        label: "End Date"|t('campaign'),
+        instructions: "The date on which to end sending (optional)."|t('campaign'),
+        name: 'schedule[endDate]',
+        value: schedule.endDate ? schedule.endDate.date,
+        errors: schedule.getErrors('endDate'),
+    }) }}
+
+{% endif %}

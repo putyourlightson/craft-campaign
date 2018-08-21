@@ -716,8 +716,10 @@ class SendoutElement extends Element
             }
         }
 
-        // Remove contacts that are already sent recipients
-        $recipients = array_diff_key($recipients, array_flip($this->getSentRecipientIds()));
+        // If not recurring sendout then remove contacts that are already sent recipients
+        if ($this->sendoutType != 'recurring') {
+            $recipients = array_diff_key($recipients, array_flip($this->getSentRecipientIds()));
+        }
 
         foreach ($segments as $segment) {
             // Keep only contacts that exist in the segment
