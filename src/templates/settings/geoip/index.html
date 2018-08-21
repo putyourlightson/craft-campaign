@@ -1,14 +1,13 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = 'GeoIP Settings'|t('campaign') %}
 
 {% set crumbs = [] %}
 
 {% set fullPageForm = true %}
-
-{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -20,7 +19,7 @@
         required: true,
         label: "GeoIP"|t('campaign'),
         instructions: "Enable GeoIP to geolocate contacts by their IP addresses."|t('campaign'),
-        warning: (config.geoIp is defined ? configWarning('geoIp')),
+        warning: (config.geoIp is defined ? macros.configWarning('geoIp')),
         id: 'geoIp',
         name: 'geoIp',
         on: settings.geoIp,
@@ -30,7 +29,7 @@
     {{ forms.textField({
         label: "ipstack.com API Key"|t('campaign'),
         instructions: "The ipstack.com API key for your account."|t('campaign'),
-        warning: (config.ipstackApiKey is defined ? configWarning('ipstackApiKey')),
+        warning: (config.ipstackApiKey is defined ? macros.configWarning('ipstackApiKey')),
         id: 'geoIpA',
         name: 'ipstackApiKey',
         value: settings.ipstackApiKey,

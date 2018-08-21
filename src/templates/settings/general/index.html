@@ -1,14 +1,13 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = 'General Settings'|t('campaign') %}
 
 {% set crumbs = [] %}
 
 {% set fullPageForm = true %}
-
-{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -20,7 +19,7 @@
         required: true,
         label: "Test Mode"|t('campaign'),
         instructions: "Sendout emails will be saved into local files (in {path}) rather that actually being sent."|t('campaign', { path: '<code>storage/runtime/debug/mail</code>' }),
-        warning: (config.testMode is defined ? configWarning('testMode')),
+        warning: (config.testMode is defined ? macros.configWarning('testMode')),
         id: 'testMode',
         name: 'testMode',
         on: settings.testMode,
@@ -33,7 +32,7 @@
         required: true,
         label: "API Key"|t('campaign'),
         instructions: "An API key to use for triggerring tasks and notifications (min. 16 characters)."|t('campaign'),
-        warning: (config.apiKey is defined ? configWarning('apiKey')),
+        warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
         id: 'apiKey',
         name: 'apiKey',
         value: settings.apiKey,

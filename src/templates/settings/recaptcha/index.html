@@ -1,14 +1,13 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = 'reCAPTCHA Settings'|t('campaign') %}
 
 {% set crumbs = [] %}
 
 {% set fullPageForm = true %}
-
-{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -20,7 +19,7 @@
         required: true,
         label: "reCAPTCHA"|t('campaign'),
         instructions: "Enable reCAPTCHA to protect mailing list subscription forms from bots."|t('campaign'),
-        warning: (config.reCaptcha is defined ? configWarning('reCaptcha')),
+        warning: (config.reCaptcha is defined ? macros.configWarning('reCaptcha')),
         id: 'reCaptcha',
         name: 'reCaptcha',
         on: settings.reCaptcha,
@@ -37,7 +36,7 @@
     {{ forms.textField({
         label: "reCAPTCHA Site Key"|t('campaign'),
         instructions: "The reCAPTCHA site key for this domain."|t('campaign'),
-        warning: (config.reCaptchaSiteKey is defined ? configWarning('reCaptchaSiteKey')),
+        warning: (config.reCaptchaSiteKey is defined ? macros.configWarning('reCaptchaSiteKey')),
         id: 'reCaptchaSiteKey',
         name: 'reCaptchaSiteKey',
         value: settings.reCaptchaSiteKey,
@@ -47,7 +46,7 @@
     {{ forms.textField({
         label: "reCAPTCHA Secret Key"|t('campaign'),
         instructions: "The reCAPTCHA secret key for this domain."|t('campaign'),
-        warning: (config.reCaptchaSecretKey is defined ? configWarning('reCaptchaSecretKey')),
+        warning: (config.reCaptchaSecretKey is defined ? macros.configWarning('reCaptchaSecretKey')),
         id: 'reCaptchaSecretKey',
         name: 'reCaptchaSecretKey',
         value: settings.reCaptchaSecretKey,
@@ -57,7 +56,7 @@
     {{ forms.textField({
         label: "reCAPTCHA Error Message"|t('campaign'),
         instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
-        warning: (config.reCaptchaErrorMessage is defined ? configWarning('reCaptchaErrorMessage')),
+        warning: (config.reCaptchaErrorMessage is defined ? macros.configWarning('reCaptchaErrorMessage')),
         id: 'reCaptchaErrorMessage',
         name: 'reCaptchaErrorMessage',
         value: settings.reCaptchaErrorMessage,
@@ -67,7 +66,7 @@
     {{ forms.selectField({
         label: "reCAPTCHA Size"|t('campaign'),
         instructions: "The size of the reCAPTCHA widget."|t('campaign'),
-        warning: (config.reCaptchaSize is defined ? configWarning('reCaptchaSize')),
+        warning: (config.reCaptchaSize is defined ? macros.configWarning('reCaptchaSize')),
         id: 'reCaptchaSize',
         name: 'reCaptchaSize',
         value: settings.reCaptchaSize,
@@ -82,7 +81,7 @@
     {{ forms.selectField({
         label: "reCAPTCHA Theme"|t('campaign'),
         instructions: "The color theme of the reCAPTCHA widget."|t('campaign'),
-        warning: (config.reCaptchaTheme is defined ? configWarning('reCaptchaTheme')),
+        warning: (config.reCaptchaTheme is defined ? macros.configWarning('reCaptchaTheme')),
         id: 'reCaptchaTheme',
         name: 'reCaptchaTheme',
         value: settings.reCaptchaTheme,
@@ -96,7 +95,7 @@
     {{ forms.selectField({
         label: "reCAPTCHA Badge"|t('campaign'),
         instructions: "The position of the reCAPTCHA badge (when invisible)."|t('campaign'),
-        warning: (config.reCaptchaBadge is defined ? configWarning('reCaptchaBadge')),
+        warning: (config.reCaptchaBadge is defined ? macros.configWarning('reCaptchaBadge')),
         id: 'reCaptchaBadge',
         name: 'reCaptchaBadge',
         value: settings.reCaptchaBadge,

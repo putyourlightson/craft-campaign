@@ -1,14 +1,13 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = 'Contact Settings'|t('campaign') %}
 
 {% set crumbs = [] %}
 
 {% set fullPageForm = true %}
-
-{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -18,7 +17,7 @@
     {{ forms.textField({
         label: "Email Field Label"|t('campaign'),
         instructions: "A label to use for the email field."|t('campaign'),
-        warning: (config.emailFieldLabel is defined ? configWarning('emailFieldLabel')),
+        warning: (config.emailFieldLabel is defined ? macros.configWarning('emailFieldLabel')),
         id: 'emailFieldLabel',
         name: 'emailFieldLabel',
         value: settings.emailFieldLabel,

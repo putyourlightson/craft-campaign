@@ -1,14 +1,13 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = 'Email Settings'|t('campaign') %}
 
 {% set crumbs = [] %}
 
 {% set fullPageForm = true %}
-
-{% from "campaign/settings/_macros" import configWarning %}
 
 
 {% block content %}
@@ -18,7 +17,7 @@
     {{ forms.textField({
         label: "Default From Name"|t('campaign'),
         instructions: "The default name to send emails from."|t('campaign'),
-        warning: (config.defaultFromName is defined ? configWarning('defaultFromName')),
+        warning: (config.defaultFromName is defined ? macros.configWarning('defaultFromName')),
         id: 'defaultFromName',
         name: 'defaultFromName',
         value: settings.defaultFromName,
@@ -32,7 +31,7 @@
     {{ forms.textField({
         label: "Default From Email Address"|t('campaign'),
         instructions: "The default email address to send emails from."|t('campaign'),
-        warning: (config.defaultFromEmail is defined ? configWarning('defaultFromEmail')),
+        warning: (config.defaultFromEmail is defined ? macros.configWarning('defaultFromEmail')),
         id: 'defaultFromEmail',
         name: 'defaultFromEmail',
         type: 'email',

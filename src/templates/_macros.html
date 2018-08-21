@@ -1,0 +1,10 @@
+{% macro configWarning(setting) -%}
+    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
+{%- endmacro %}
+
+
+{% macro info(text, params) -%}
+    <span class="info">
+        {{- text|t('campaign', params)|raw -}}
+    </span>
+{%- endmacro %}

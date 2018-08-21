@@ -1,6 +1,7 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set title = mailingListType.id ? mailingListType.name : 'Create a new mailing list type'|t('campaign') %}
 
@@ -54,9 +55,11 @@
 
     <div id="verifyEmailFields" {{ not mailingListType.doubleOptIn ? 'class="hidden"' }}>
 
+        {% set infoText = 'Available template tags: {tags}' %}
+
         {{ forms.textField({
             label: "Verify Email Template"|t('campaign'),
-            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign'),
+            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`url`, `mailingList`'}),
             name: 'verifyEmailTemplate',
             value: mailingListType.verifyEmailTemplate,
             errors: mailingListType.getErrors('verifyEmailTemplate'),
@@ -65,7 +68,7 @@
 
         {{ forms.textField({
             label: "Verify Success Template"|t('campaign'),
-            instructions: "The template to use when a user verifies their email address (leave blank for default message template)."|t('campaign'),
+            instructions: "The template to use when a user verifies their email address (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`mailingList`'}),
             name: 'verifySuccessTemplate',
             value: mailingListType.verifySuccessTemplate,
             errors: mailingListType.getErrors('verifySuccessTemplate'),
@@ -76,7 +79,7 @@
 
     {{ forms.textField({
         label: "Subscribe Success Template"|t('campaign'),
-        instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign'),
+        instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`mailingList`'}),
         id: 'subscribeSuccessTemplate',
         name: 'subscribeSuccessTemplate',
         value: mailingListType.subscribeSuccessTemplate,
@@ -86,7 +89,7 @@
 
     {{ forms.textField({
         label: "Unsubscribe Success Template"|t('campaign'),
-        instructions: "The template to use when a user unsubscribes from a mailing list (leave blank for default message template)."|t('campaign'),
+        instructions: "The template to use when a user unsubscribes from a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`mailingList`'}),
         id: 'unsubscribeSuccessTemplate',
         name: 'unsubscribeSuccessTemplate',
         value: mailingListType.unsubscribeSuccessTemplate,
