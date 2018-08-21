@@ -588,7 +588,7 @@ class CampaignElement extends Element
         // Get template mode so we can reset later
         $templateMode = $view->getTemplateMode();
 
-        // Set template mode to front-end site
+        // Set template mode to site
         $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         // Get body from rendered template with variables

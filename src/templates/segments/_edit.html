@@ -56,8 +56,9 @@
                 {% include "campaign/segments/_includes/titlefield" %}
             </div>
 
-            {% set fieldOperators = craft.campaign.getSegmentFieldOperators() %}
-            {% set availableFields = craft.campaign.getSegmentAvailableFields() %}
+            {% set fieldOperators = segment.getFieldOperators() %}
+            {% set availableFields = segment.getAvailableFields() %}
+
             <div class="field">
                 <div class="heading">
                     <label>{{ "Conditions"|t('campaign') }}</label>
@@ -69,41 +70,7 @@
                 <div id="newCondition" class="andCondition field hidden">
                     <table class="heading data fullwidth collapsible">
                         <tbody>
-                            <tr class="orCondition">
-                                <td>
-                                    <div class="select">
-                                        <select name="conditions[][][1]" class="conditionField" disabled>
-                                            {% for field in availableFields %}
-                                                <option data-field="{{ field.type }}" value="{{ field.handle }}">{{ field.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="select">
-                                        {% for fieldType, operators in fieldOperators %}
-                                            <select name="conditions[][][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
-                                                {% for value, label in operators %}
-                                                    <option class="{{ fieldType }}" value="{{ value }}">{{ label }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        {% endfor %}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="conditionValue PlainText Number hidden">
-                                        <input type="text" class="text fullwidth" name="conditions[][][2]" value="" disabled />
-                                    </div>
-                                    <div class="conditionValue Date hidden">
-                                        <div class="datewrapper">
-                                            <input class="text" type="text fullwidth" name="conditions[][][2]" value="" autocomplete="off" placeholder=" " disabled />
-                                            <div data-icon="date"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">OR</a></td>
-                                <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
-                            </tr>
+                            {% include 'campaign/segments/_includes/condition' %}
                         </tbody>
                     </table>
                     <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
@@ -115,41 +82,7 @@
                             <table class="heading data fullwidth collapsible">
                                 <tbody>
                                     {% for orIndex, condition in conditions %}
-                                        <tr class="orCondition">
-                                            <td>
-                                                <div class="select">
-                                                    <select name="conditions[{{ andIndex }}][{{ orIndex }}][1]" class="conditionField">
-                                                        {% for field in availableFields %}
-                                                            <option data-field="{{ field.type }}" value="{{ field.handle }}" {{ condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="select">
-                                                    {% for fieldType, operators in fieldOperators %}
-                                                        <select name="conditions[{{ andIndex }}][{{ orIndex }}][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
-                                                            {% for value, label in operators %}
-                                                                <option class="{{ fieldType }}" value="{{ value }}" {{ condition[0] == value ? 'selected' }}>{{ label }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    {% endfor %}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="conditionValue PlainText Number hidden">
-                                                    <input type="text" class="text fullwidth" name="conditions[{{ andIndex }}][{{ orIndex }}][2]" value="{{ condition[2] }}" disabled />
-                                                </div>
-                                                <div class="conditionValue Date hidden">
-                                                    <div class="datewrapper">
-                                                        <input class="text" type="text fullwidth" name="conditions[{{ andIndex }}][{{ orIndex }}][2]" value="{{ condition[2] }}" autocomplete="off" placeholder=" " disabled />
-                                                        <div data-icon="date"></div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">{{ 'OR'|t('campaign') }}</a></td>
-                                            <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
-                                        </tr>
+                                        {% include 'campaign/segments/_includes/condition' %}
                                     {% endfor %}
                                 </tbody>
                             </table>

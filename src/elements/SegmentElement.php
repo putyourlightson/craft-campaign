@@ -6,18 +6,26 @@
 
 namespace putyourlightson\campaign\elements;
 
-use putyourlightson\campaign\elements\db\ContactElementQuery;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
+use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
+use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
+use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\SegmentRecord;
 
 use Craft;
 use craft\base\Element;
+use craft\base\Field;
+use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use craft\web\View;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * SegmentElement
@@ -33,6 +41,19 @@ use craft\helpers\UrlHelper;
  */
 class SegmentElement extends Element
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event RegisterSegmentFieldOperatorsEvent
+     */
+    const EVENT_REGISTER_FIELD_OPERATORS = 'registerFieldOperators';
+
+    /**
+     * @event RegisterSegmentAvailableFieldsEvent
+     */
+    const EVENT_REGISTER_AVAILABLE_FIELDS = 'registerAvailableFields';
+
     // Static Methods
     // =========================================================================
 
@@ -184,6 +205,111 @@ class SegmentElement extends Element
     }
 
     /**
+     * Returns field operators
+     *
+     * @return array
+     */
+    public function getFieldOperators(): array
+    {
+        $fieldOperators = [
+            'plaintext' =>  [
+                '=' => Craft::t('campaign', 'is'),
+                '!=' => Craft::t('campaign', 'is not'),
+                'like' => Craft::t('campaign', 'contains'),
+                'not like' => Craft::t('campaign', 'does not contain'),
+                'like v%' => Craft::t('campaign', 'starts with'),
+                'not like v%' => Craft::t('campaign', 'does not start with'),
+                'like %v' => Craft::t('campaign', 'ends with'),
+                'not like %v' => Craft::t('campaign', 'does not end with'),
+            ],
+            'number' => [
+                '=' => Craft::t('campaign', 'equals'),
+                '!=' => Craft::t('campaign', 'does not equal'),
+                '<' => Craft::t('campaign', 'is less than'),
+                '>' => Craft::t('campaign', 'is greater than'),
+            ],
+            'date' => [
+                '=' => Craft::t('campaign', 'is on'),
+                '<' => Craft::t('campaign', 'is before'),
+                '>' => Craft::t('campaign', 'is after'),
+            ],
+            'template' => [
+                '1' => Craft::t('campaign', 'evaluates to true'),
+                '0' => Craft::t('campaign', 'evaluates to false'),
+            ],
+        ];
+
+        $event = new RegisterSegmentFieldOperatorsEvent([
+            'fieldOperators' => $fieldOperators
+        ]);
+        $this->trigger(self::EVENT_REGISTER_FIELD_OPERATORS, $event);
+
+        return $event->fieldOperators;
+    }
+
+    /**
+     * Returns available fields
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getAvailableFields(): array
+    {
+        $settings = Campaign::$plugin->getSettings();
+        $availableFields = [[
+            'type' => 'plaintext',
+            'handle' => 'email',
+            'name' => $settings->emailFieldLabel,
+        ]];
+
+        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
+        $fieldLayoutBehavior = $settings->getBehavior('contactFieldLayout');
+        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
+
+        if ($fieldLayout !== null) {
+            $fieldOperators = $this->getFieldOperators();
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                /* @var Field $field */
+                $fieldType = strtolower(StringHelper::getClassName(\get_class($field)));
+                if (isset($fieldOperators[$fieldType])) {
+                    $availableFields[] = [
+                        'type' => $fieldType,
+                        'handle' => 'field_'.$field->handle,
+                        'name' => $field->name,
+                    ];
+                }
+            }
+        }
+
+        // Add date fields
+        $availableFields[] = [
+            'type' => 'date',
+            'handle' => 'lastActivity',
+            'name' => Craft::t('campaign', 'Last Activity'),
+        ];
+        $availableFields[] = [
+            'type' => 'date',
+            'handle' => 'elements.dateCreated',
+            'name' => Craft::t('campaign', 'Date Created'),
+        ];
+
+        // Add template code field
+        $availableFields[] = [
+            'type' => 'template',
+            'handle' => 'template',
+            'name' => Craft::t('campaign', 'Template'),
+        ];
+
+        $event = new RegisterSegmentAvailableFieldsEvent([
+            'availableFields' => $availableFields
+        ]);
+        $this->trigger(self::EVENT_REGISTER_AVAILABLE_FIELDS, $event);
+
+        return $event->availableFields;
+    }
+
+    /**
      * Returns the number of conditions
      *
      * @return int
@@ -210,7 +336,7 @@ class SegmentElement extends Element
      */
     public function getContactCount(): int
     {
-        return $this->_getContactElementQuery()->count();
+        return count($this->getContacts());
     }
 
     /**
@@ -220,13 +346,9 @@ class SegmentElement extends Element
      */
     public function getContactIds(): array
     {
-        $query = $this->_getContactElementQuery();
-        $query->select('elementsId as id');
-
-        $contacts = $query->all();
         $contactIds = [];
 
-        foreach ($contacts as $contact) {
+        foreach ($this->getContacts() as $contact) {
             $contactIds[] = $contact->id;
         }
 
@@ -240,9 +362,89 @@ class SegmentElement extends Element
      */
     public function getContacts(): array
     {
-        $query = $this->_getContactElementQuery();
+        $templateConditions = [];
+        $condition = ['and'];
 
-        return $query->all();
+        foreach ($this->conditions as $andCondition) {
+            $conditions = ['or'];
+
+            /* @var array $andCondition */
+            foreach ($andCondition as $orCondition) {
+                // Deal with template conditions later
+                if ($orCondition[1] == 'template') {
+                    $templateConditions[] = $orCondition;
+                    continue;
+                }
+
+                $operator = $orCondition[0];
+
+                // If operator contains %v
+                if (strpos($operator, '%v') !== false) {
+                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
+                    $orCondition[2] = '%'.$orCondition[2];
+                    $orCondition[3] = false;
+                }
+
+                // If operator contains v%
+                if (strpos($operator, 'v%') !== false) {
+                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
+                    $orCondition[2] .= '%';
+                    $orCondition[3] = false;
+                }
+
+                // Convert value if is a date
+                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
+                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
+                }
+
+                $conditions[] = $orCondition;
+            }
+
+            $condition[] = $conditions;
+        }
+
+        $contacts = ContactElement::find()
+            ->where($condition)
+            ->all();
+
+        if (count($templateConditions)) {
+            $view = Craft::$app->getView();
+
+            // Get template mode so we can reset later
+            $templateMode = $view->getTemplateMode();
+
+            // Set template mode to site
+            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+
+            // Evaluate template conditions
+            foreach ($templateConditions as $templateCondition) {
+                foreach ($contacts as $key => $contact) {
+                    $operand = (bool)$templateCondition[0];
+                    $evaluatedTemplate = null;
+
+                    try {
+                        $renderedTemplate = $view->renderTemplate($templateCondition[2], [
+                            'contact' => $contact,
+                        ]);
+
+                        // Convert rendered template to boolean
+                        $evaluatedTemplate = (bool)trim($renderedTemplate);
+                    }
+                    catch (\Twig_Error_Loader $e) {}
+                    catch (Exception $e) {}
+
+                    // Remove if evaluated template does not equal operand
+                    if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {
+                        unset($contacts[$key]);
+                    }
+                }
+            }
+
+            // Reset template mode
+            $view->setTemplateMode($templateMode);
+        }
+
+        return $contacts;
     }
 
     /**
@@ -297,59 +499,5 @@ class SegmentElement extends Element
         }
 
         parent::afterSave($isNew);
-    }
-
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * Returns the contact element query
-     *
-     * @return ContactElementQuery
-     */
-    public function _getContactElementQuery(): ContactElementQuery
-    {
-        $query = ContactElement::find();
-
-        if (!\is_array($this->conditions)) {
-            return $query;
-        }
-
-        $condition = ['and'];
-
-        foreach ($this->conditions as $andCondition) {
-            $conditions = ['or'];
-            /* @var array $andCondition */
-            foreach ($andCondition as $orCondition) {
-                $operator = $orCondition[0];
-
-                // If operand contains %v
-                if (strpos($operator, '%v') !== false) {
-                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
-                    $orCondition[2] = '%'.$orCondition[2];
-                    $orCondition[3] = false;
-                }
-
-                // If operand contains v%
-                if (strpos($operator, 'v%') !== false) {
-                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
-                    $orCondition[2] .= '%';
-                    $orCondition[3] = false;
-                }
-
-                // Convert value if is a date
-                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
-                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
-                }
-
-                $conditions[] = $orCondition;
-            }
-
-            $condition[] = $conditions;
-        }
-
-        $query->where($condition);
-
-        return $query;
     }
 }

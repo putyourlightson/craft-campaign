@@ -1,0 +1,37 @@
+{% import '_includes/forms' as forms %}
+
+<tr class="orCondition">
+    <td>
+        <div class="select">
+            <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
+                {% for field in availableFields %}
+                    <option data-field="{{ field.type }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </td>
+    <td>
+        <div class="select">
+            {% for fieldType, operators in fieldOperators %}
+                <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
+                    {% for value, label in operators %}
+                        <option class="{{ fieldType }}" value="{{ value }}" {{ condition is defined and condition[0] == value ? 'selected' }}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            {% endfor %}
+        </div>
+    </td>
+    <td>
+        <div class="conditionValue plaintext number template hidden">
+            <input type="text" class="text fullwidth" name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][2]" value="{{ condition[2] ?? '' }}" disabled />
+        </div>
+        <div class="conditionValue date hidden">
+            <div class="datewrapper">
+                <input class="text" type="text fullwidth" name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][2]" value="{{ condition[2] ?? '' }}" autocomplete="off" disabled />
+                <div data-icon="date"></div>
+            </div>
+        </div>
+    </td>
+    <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">{{ 'OR'|t('campaign') }}</a></td>
+    <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
+</tr>

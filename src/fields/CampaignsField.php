@@ -12,7 +12,7 @@ use Craft;
 use craft\fields\BaseRelationField;
 
 /**
- * CampaignElement
+ * CampaignsField
  *
  * @author    PutYourLightsOn
  * @package   Campaign
