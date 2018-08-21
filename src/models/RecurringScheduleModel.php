@@ -9,8 +9,7 @@ namespace putyourlightson\campaign\models;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\validators\DateTimeValidator;
-use putyourlightson\campaign\base\BaseModel;
-use putyourlightson\campaign\base\ScheduleInterface;
+use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
@@ -22,7 +21,7 @@ use putyourlightson\campaign\elements\SendoutElement;
  *
  * @property array $intervalOptions
  */
-class RecurringScheduleModel extends BaseModel implements ScheduleInterface
+class RecurringScheduleModel extends ScheduleModel
 {
     // Properties
     // =========================================================================
@@ -61,7 +60,7 @@ class RecurringScheduleModel extends BaseModel implements ScheduleInterface
     // =========================================================================
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function getIntervalOptions(): array
     {

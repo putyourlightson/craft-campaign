@@ -6,7 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
-use putyourlightson\campaign\base\ScheduleInterface;
+use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
@@ -359,7 +359,7 @@ class SendoutElement extends Element
     public $failedRecipients = 0;
 
     /**
-     * @var ScheduleInterface|null Schedule
+     * @var ScheduleModel|null Schedule
      */
     public $schedule;
 

@@ -6,8 +6,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\helpers\App;
-use putyourlightson\campaign\base\ScheduleInterface;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -19,6 +17,7 @@ use Craft;
 use craft\web\Controller;
 use craft\errors\ElementNotFoundException;
 use craft\errors\MissingComponentException;
+use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
@@ -115,14 +114,13 @@ class SendoutsController extends Controller
      * @param string $sendoutType The sendout type
      * @param int|null $sendoutId The sendout’s ID, if editing an existing sendout.
      * @param SendoutElement|null $sendout The sendout being edited, if there were any validation errors.
-     * @param ScheduleInterface|null $schedule The schedule, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
      * @throws InvalidConfigException
      */
-    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null, ScheduleInterface $schedule = null): Response
+    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null): Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');
@@ -169,10 +167,10 @@ class SendoutsController extends Controller
 
         // Get the schedule
         if ($sendoutType == 'automated') {
-            $schedule = new AutomatedScheduleModel($sendout->schedule);
+            $sendout->schedule = new AutomatedScheduleModel($sendout->schedule);
         }
         else if ($sendoutType == 'recurring') {
-            $schedule = new RecurringScheduleModel($sendout->schedule);
+            $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
         }
 
         // Set the variables
@@ -182,7 +180,6 @@ class SendoutsController extends Controller
             'sendoutType' => $sendoutType,
             'sendoutId' => $sendoutId,
             'sendout' => $sendout,
-            'schedule' => $schedule,
         ];
 
         // Campaign element selector variables
@@ -253,7 +250,7 @@ class SendoutsController extends Controller
 
         if ($sendoutType == 'automated' OR $sendoutType == 'recurring') {
             // Get the interval options
-            $variables['intervalOptions'] = $schedule->getIntervalOptions();
+            $variables['intervalOptions'] = $sendout->schedule->getIntervalOptions();
         }
 
         // Get the settings
@@ -328,39 +325,33 @@ class SendoutsController extends Controller
         $sendout->segmentIds = \is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
 
         // Convert send date
-        if ($sendout->sendoutType == 'scheduled') {
-            $sendout->sendDate = $request->getBodyParam('sendDate', $sendout->sendDate);
-            $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
-            $sendout->sendDate = ($sendout->sendDate === false) ? null : $sendout->sendDate;
-        }
-        else {
-            $sendout->sendDate = $sendout->sendDate ?? new \DateTime();
-        }
-
-        // Get schedule fields
-        $schedule = null;
+        $sendout->sendDate = $request->getBodyParam('sendDate', $sendout->sendDate);
+        $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
+        $sendout->sendDate = $sendout->sendDate ?: new \DateTime();
 
         if ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') {
-            $sendout->schedule = $request->getBodyParam('schedule', $sendout->schedule);
+            $schedule = $request->getBodyParam('schedule');
 
             if ($sendout->sendoutType == 'automated') {
-                $schedule = new AutomatedScheduleModel($sendout->schedule);
+                $sendout->schedule = new AutomatedScheduleModel($schedule);
             }
-            else if ($sendout->sendoutType == 'recurring') {
-                $schedule = new RecurringScheduleModel($sendout->schedule);
+            else {
+                $sendout->schedule = new RecurringScheduleModel($schedule);
             }
+
+            // Convert end date
+            $sendout->schedule->endDate = DateTimeHelper::toDateTime($sendout->schedule->endDate);
 
             // Validate schedule and sendout
-            $schedule->validate();
+            $sendout->schedule->validate();
             $sendout->validate();
 
-            // If errors then send the sendout and schedule back to the template
-            if ($schedule->hasErrors() OR $sendout->hasErrors()) {
+            // If errors then send the sendout back to the template
+            if ($sendout->schedule->hasErrors() OR $sendout->hasErrors()) {
                 Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
                 Craft::$app->getUrlManager()->setRouteParams([
                     'sendout' => $sendout,
-                    'schedule' => $schedule,
                 ]);
 
                 return null;
@@ -374,7 +365,6 @@ class SendoutsController extends Controller
             // Send the sendout and schedule back to the template
             Craft::$app->getUrlManager()->setRouteParams([
                 'sendout' => $sendout,
-                'schedule' => $schedule,
             ]);
 
             return null;

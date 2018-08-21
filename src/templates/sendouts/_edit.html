@@ -170,7 +170,8 @@
 
             <hr/>
 
-            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date', endDate: true} %}
+            {% set schedule = sendout.schedule %}
+            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
                 {{ forms.text({
@@ -198,7 +199,8 @@
 
             <hr/>
 
-            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date', endDate: true} %}
+            {% set schedule = sendout.schedule %}
+            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
                 {{ "Every"|t('campaign') }}
@@ -239,7 +241,7 @@
                             value: 1,
                             checked: (schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index]),
                         }) }}
-                        {{ loop.index == 29 ? '(in February only exists in leap years)' }}
+                        {{ loop.index == 29 ? '(may not exist in all months)' }}
                         {{ loop.index > 29 ? '(does not exist in all months)' }}
                         <br/>
                     {% endfor %}
