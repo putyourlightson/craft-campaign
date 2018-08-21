@@ -6,8 +6,10 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\PendingContactRecord;
 
@@ -143,12 +145,14 @@ class ContactsService extends Component
      * Sends a verification email
      *
      * @param PendingContactModel $pendingContact
+     * @param MailingListElement|null $mailingList
      *
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
+     * @throws \yii\base\InvalidConfigException
      */
-    public function sendVerificationEmail(PendingContactModel $pendingContact): bool
+    public function sendVerificationEmail(PendingContactModel $pendingContact, $mailingList = null): bool
     {
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
         $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
@@ -158,7 +162,22 @@ class ContactsService extends Component
         $settings = Campaign::$plugin->getSettings();
 
         $subject = Craft::t('campaign', 'Verify your email address');
-        $body = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:')."\n".$url;
+        $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
+        $body = $bodyText."\n".$url;
+
+        // Get body from template if defined
+        if ($mailingList !== null AND $mailingList->mailingListType->verifyEmailTemplate !== null) {
+            $view = Craft::$app->getView();
+
+            // Set template mode to site
+            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+
+            $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                'message' => $bodyText,
+                'url' => $url,
+                'mailingList' => $mailingList,
+            ]);
+        }
 
         // Create message
         /** @var Message $message */

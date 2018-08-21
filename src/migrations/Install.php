@@ -201,6 +201,8 @@ class Install extends Migration
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'doubleOptIn' => $this->boolean()->defaultValue(true)->notNull(),
+                'verifyEmailTemplate' => $this->string(),
+                'verifySuccessTemplate' => $this->string(),
                 'subscribeSuccessTemplate' => $this->string(),
                 'unsubscribeSuccessTemplate' => $this->string(),
                 'dateCreated' => $this->dateTime()->notNull(),
