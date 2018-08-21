@@ -1,5 +1,9 @@
 # Campaign Changelog
 
+## 1.1.9 - 2018-08-21
+### Added
+- Added "Verify Email Template" and "Verify Success Template" settings to mailing list types
+
 ## 1.1.8 - 2018-07-30
 ### Fixed
 - Fixed mailing list type fields that were not being saved

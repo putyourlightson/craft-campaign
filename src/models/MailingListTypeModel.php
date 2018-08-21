@@ -58,6 +58,16 @@ class MailingListTypeModel extends BaseModel
     public $doubleOptIn = true;
 
     /**
+     * @var string|null Verify email template
+     */
+    public $verifyEmailTemplate;
+
+    /**
+     * @var string|null Verify success template
+     */
+    public $verifySuccessTemplate;
+
+    /**
      * @var string|null Subscribe success template
      */
     public $subscribeSuccessTemplate;
@@ -101,7 +111,7 @@ class MailingListTypeModel extends BaseModel
         return [
             [['id', 'fieldLayoutId'], 'integer'],
             [['name', 'handle'], 'required'],
-            [['name', 'handle', 'subscribeSuccessTemplate', 'unsubscribeSuccessTemplate'], 'string', 'max' => 255],
+            [['name', 'handle', 'subscribeSuccessTemplate', 'verifyEmailTemplate', 'verifySuccessTemplate', 'verifySuccessTemplate', 'unsubscribeSuccessTemplate'], 'string', 'max' => 255],
             [['doubleOptIn'], 'boolean'],
             [
                 ['handle'],

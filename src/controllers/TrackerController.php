@@ -211,7 +211,7 @@ class TrackerController extends Controller
             Campaign::$plugin->contacts->savePendingContact($pendingContact);
 
             // Send verification email
-            Campaign::$plugin->contacts->sendVerificationEmail($pendingContact);
+            Campaign::$plugin->contacts->sendVerificationEmail($pendingContact, $mailingList);
         }
         else {
             // Get contact if it exists
@@ -358,15 +358,21 @@ class TrackerController extends Controller
         // Track subscribe
         Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->source, true);
 
-        // Use message template
-        $template = 'campaign/message';
+        // Get template
+        $template = $mailingList !== null ? $mailingList->getMailingListType()->verifySuccessTemplate : '';
 
-        // Set template mode to CP
-        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+        // Use message template if none was defined
+        if ($template == '') {
+            $template = 'campaign/message';
+
+            // Set template mode to CP
+            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+        }
 
         return $this->renderTemplate($template, [
             'title' => 'Verified',
             'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
+            'mailingList' => $mailingList,
         ]);
     }
 

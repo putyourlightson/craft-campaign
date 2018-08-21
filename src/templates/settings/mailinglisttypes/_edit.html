@@ -48,8 +48,31 @@
         id: 'doubleOptIn',
         name: 'doubleOptIn',
         on: mailingListType.doubleOptIn,
-        errors: mailingListType.getErrors('doubleOptIn')
+        errors: mailingListType.getErrors('doubleOptIn'),
+        toggle: 'verifyEmailFields',
     }) }}
+
+    <div id="verifyEmailFields" {{ not mailingListType.doubleOptIn ? 'class="hidden"' }}>
+
+        {{ forms.textField({
+            label: "Verify Email Template"|t('campaign'),
+            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign'),
+            name: 'verifyEmailTemplate',
+            value: mailingListType.verifyEmailTemplate,
+            errors: mailingListType.getErrors('verifyEmailTemplate'),
+            autocomplete: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Verify Success Template"|t('campaign'),
+            instructions: "The template to use when a user verifies their email address (leave blank for default message template)."|t('campaign'),
+            name: 'verifySuccessTemplate',
+            value: mailingListType.verifySuccessTemplate,
+            errors: mailingListType.getErrors('verifySuccessTemplate'),
+            autocomplete: true
+        }) }}
+
+    </div>
 
     {{ forms.textField({
         label: "Subscribe Success Template"|t('campaign'),
