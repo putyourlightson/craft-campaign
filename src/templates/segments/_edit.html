@@ -1,6 +1,7 @@
 {% extends 'campaign/_layout' %}
 
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set selectedSubnavItem = 'segments' %}
 
@@ -63,7 +64,10 @@
                 <div class="heading">
                     <label>{{ "Conditions"|t('campaign') }}</label>
                     <div class="instructions">
-                        <p>{{ "Create one or more conditions to apply to this segment."|t('campaign') }}</p>
+                        <p>
+                            {{ "Create one or more conditions to apply to this segment."|t('campaign') }}
+                            {{ macros.info('Available tags in template conditions: {tags}', {tags: '<code>contact</code>'}) }}
+                        </p>
                     </div>
                 </div>
 
