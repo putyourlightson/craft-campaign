@@ -1,3 +1,0 @@
-{% macro configWarning(setting) -%}
-    {{ "This is being overridden by the {setting} config setting."|t('app', {setting: '<code>' ~ setting ~ '</code>' })|raw }}
-{%- endmacro %}
