@@ -11,17 +11,17 @@ use craft\db\ActiveRecord;
 /**
  * ContactMailingListRecord
  *
- * @property int         $id                         ID
- * @property int         $contactId                  Contact ID
- * @property int         $mailingListId              Mailing list ID
- * @property string      $subscriptionStatus         Subscription status
- * @property \DateTime   $subscribed                 Subscribed
- * @property \DateTime   $unsubscribed               Unsubscribed
- * @property \DateTime   $complained                 Complained
- * @property \DateTime   $bounced                    Bounced
- * @property \DateTime   $verified                   Verified
- * @property string      $sourceType                 Source type
- * @property string      $source                     Source
+ * @property int              $id                         ID
+ * @property int              $contactId                  Contact ID
+ * @property int              $mailingListId              Mailing list ID
+ * @property string           $subscriptionStatus         Subscription status
+ * @property \DateTime|null   $subscribed                 Subscribed
+ * @property \DateTime|null   $unsubscribed               Unsubscribed
+ * @property \DateTime|null   $complained                 Complained
+ * @property \DateTime|null   $bounced                    Bounced
+ * @property \DateTime|null   $verified                   Verified
+ * @property string           $sourceType                 Source type
+ * @property string           $source                     Source
  *
  * @author    PutYourLightsOn
  * @package   Campaign

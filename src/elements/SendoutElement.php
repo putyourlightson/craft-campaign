@@ -454,6 +454,8 @@ class SendoutElement extends Element
         // Set the field labels
         $labels['campaignId'] = Craft::t('campaign', 'Campaign');
         $labels['mailingListIds'] = Craft::t('campaign', 'Mailing Lists');
+        $labels['excludedMailingListIds'] = Craft::t('campaign', 'Excluded Mailing Lists');
+        $labels['segmentIds'] = Craft::t('campaign', 'Segments');
 
         return $labels;
     }
@@ -852,7 +854,7 @@ class SendoutElement extends Element
     public function canSendNow(): bool
     {
         if ($this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
-            return $this->schedule->canSendNow($this->sendDate);
+            return $this->schedule->canSendNow($this);
         }
 
         return true;

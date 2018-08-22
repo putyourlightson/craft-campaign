@@ -223,27 +223,6 @@ class CampaignVariable
     }
 
     /**
-     * Returns segment field operators
-     *
-     * @return array
-     */
-    public function getSegmentFieldOperators(): array
-    {
-        return Campaign::$plugin->segments->getSegmentFieldOperators();
-    }
-
-    /**
-     * Returns segment available fields
-     *
-     * @return array
-     * @throws InvalidConfigException
-     */
-    public function getSegmentAvailableFields(): array
-    {
-        return Campaign::$plugin->segments->getSegmentAvailableFields();
-    }
-
-    /**
      * Returns sendout by ID
      *
      * @param int $sendoutId

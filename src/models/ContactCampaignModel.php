@@ -118,16 +118,6 @@ class ContactCampaignModel extends BaseModel
     public $links;
 
     /**
-     * @var string|null Country
-     */
-    public $country;
-
-    /**
-     * @var mixed GeoIP
-     */
-    public $geoIp;
-
-    /**
      * @var string|null Device
      */
     public $device;
@@ -149,17 +139,6 @@ class ContactCampaignModel extends BaseModel
 
     // Public Methods
     // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        // Decode geoIp if not null
-        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
-    }
 
     /**
      * Returns the contact

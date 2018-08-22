@@ -31,7 +31,7 @@ class m180408_120000_time_delay_intervals extends Migration
         $sendouts = SendoutElement::find()->sendoutType('automated')->all();
 
         foreach ($sendouts as $sendout) {
-            $sendout->automatedSchedule['timeDelayInterval'] = $intervals[$sendout->automatedSchedule['timeDelayInterval']] ?? 'minutes';
+            $sendout->schedule['timeDelayInterval'] = $intervals[$sendout->schedule['timeDelayInterval']] ?? 'minutes';
 
             Craft::$app->getElements()->saveElement($sendout);
         }

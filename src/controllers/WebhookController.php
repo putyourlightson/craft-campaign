@@ -48,7 +48,7 @@ class WebhookController extends Controller
     /**
      * Test
      */
-    public function actionTest()
+    public function actionTest(): Response
     {
         return $this->asJson(['success' => true]);
     }
@@ -58,7 +58,7 @@ class WebhookController extends Controller
      *
      * @throws \Throwable
      */
-    public function actionAmazonSes()
+    public function actionAmazonSes(): Response
     {
         $this->requirePostRequest();
 
@@ -97,7 +97,7 @@ class WebhookController extends Controller
      *
      * @throws \Throwable
      */
-    public function actionMailgun()
+    public function actionMailgun(): Response
     {
         $this->requirePostRequest();
 
@@ -132,7 +132,7 @@ class WebhookController extends Controller
      *
      * @throws \Throwable
      */
-    public function actionMandrill()
+    public function actionMandrill(): Response
     {
         $this->requirePostRequest();
 
@@ -162,7 +162,7 @@ class WebhookController extends Controller
      *
      * @throws \Throwable
      */
-    public function actionPostmark()
+    public function actionPostmark(): Response
     {
         $this->requirePostRequest();
 
@@ -186,7 +186,7 @@ class WebhookController extends Controller
      *
      * @throws \Throwable
      */
-    public function actionSendgrid()
+    public function actionSendgrid(): Response
     {
         $this->requirePostRequest();
 

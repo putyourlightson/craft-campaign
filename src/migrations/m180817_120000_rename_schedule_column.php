@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 /**
  * m180817_120000_rename_schedule_column migration.

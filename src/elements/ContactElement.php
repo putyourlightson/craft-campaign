@@ -269,17 +269,23 @@ class ContactElement extends Element
     public $geoIp;
 
     /**
-     * @var string|null Device
+     * Device
+     *
+     * @var string|null
      */
     public $device;
 
     /**
-     * @var string|null OS
+     * OS
+     *
+     * @var string|null
      */
     public $os;
 
     /**
-     * @var string|null Client
+     * Client
+     *
+     * @var string|null
      */
     public $client;
 

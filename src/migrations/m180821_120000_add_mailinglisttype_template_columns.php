@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 /**
  * m180821_120000_add_mailinglisttype_template_columns migration.

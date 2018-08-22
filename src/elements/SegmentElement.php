@@ -34,9 +34,11 @@ use yii\base\InvalidConfigException;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property int                                                       $conditionCount
- * @property int                                                       $contactCount
- * @property array|int[]                                               $contactIds
+ * @property int $conditionCount
+ * @property int $contactCount
+ * @property int[] $contactIds
+ * @property array $fieldOperators
+ * @property array $availableFields
  * @property array|\putyourlightson\campaign\elements\ContactElement[] $contacts
  */
 class SegmentElement extends Element
