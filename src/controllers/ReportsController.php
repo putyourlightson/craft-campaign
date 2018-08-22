@@ -99,19 +99,22 @@ class ReportsController extends Controller
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
 
-        /** @var \DateTime $dateTime */
-        $dateTime = $data['startDateTime'];
-        $now = new \DateTime();
+        /** @var \DateTime $sendDate */
+        $sendDate = $data['sendDate'];
 
         // Set chart title
-        $chart['title'] = Craft::t('campaign', 'Campaign first sent on {date}', ['date' => $dateTime->format(Craft::$app->getLocale()->getDateTimeFormat('full', 'php'))]);
+        $chart['title'] = Craft::t('campaign', 'Campaign first sent on {date}', ['date' => $sendDate->format(Craft::$app->getLocale()->getDateTimeFormat('full', 'php'))]);
 
         // Set chart type
         $chart['type'] = 'line';
 
-
         $chart['data']['labels'] = [];
         $chart['data']['indexes'] = [];
+
+        $now = new \DateTime();
+
+        /** @var \DateTime $dateTime */
+        $dateTime = $data['startDateTime'];
 
         // Get labels and indexes
         for ($i = 0; $i < 12; $i++) {

@@ -150,7 +150,8 @@ class ReportsService extends Component
         }
 
         // Get start and end date times
-        $startDateTime = $sendout->sendDate->modify('-1 '.$interval);
+        $startDateTime = clone $sendout->sendDate;
+        $startDateTime = $startDateTime->modify('-1 '.$interval);
         $endDateTime = clone $startDateTime;
         $endDateTime->modify('+12 '.$interval);
 
@@ -183,6 +184,7 @@ class ReportsService extends Component
         }
 
         // Set data
+        $data['sendDate'] = $sendout->sendDate;
         $data['startDateTime'] = $startDateTime;
         $data['interval'] = $interval;
         $data['format'] = $format;
