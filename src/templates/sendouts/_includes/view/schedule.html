@@ -1,31 +1,16 @@
 {% import '_includes/forms' as forms %}
 
+
 {% set input %}
-    {{ forms.date({
-        name: 'sendDate',
-        value: sendout.sendDate.date ?? date(),
-    }) }}
-    {{ forms.time({
-        name: 'sendDate',
-        value: sendout.sendDate.date ?? date(),
-    }) }}
-    {{ sendout.sendDate.timezone ?? craft.app.timezone }}
+    <p>{{ sendout.sendDate|datetime }} {{ sendout.sendDate.timezone ?? craft.app.timezone }}</p>
 {% endset %}
-{{ forms.field({
-    label: (schedule.endDate is defined ? 'Start Date' : 'Send Date')|t('campaign'),
-    instructions: "The date and time at which to begin sending."|t('campaign'),
-    errors: sendout.getErrors('sendDate'),
-    required: true
-}, input) }}
+{{ forms.field({label: (schedule.endDate is defined ? 'Start Date' : 'Send Date')|t('campaign') ~ ':'}, input) }}
 
-{% if schedule.endDate is defined %}
+{% if schedule.endDate is defined and schedule.endDate is not null %}
 
-    {{ forms.dateField({
-        label: "End Date"|t('campaign'),
-        instructions: "The date on which to end sending (optional)."|t('campaign'),
-        name: 'schedule[endDate]',
-        value: schedule.endDate.date ?? '',
-        errors: schedule.getErrors('endDate'),
-    }) }}
+    {% set input %}
+        <p>{{ schedule.endDate|datetime }}</p>
+    {% endset %}
+    {{ forms.field({label: "End Date"|t('campaign') ~ ':'}, input) }}
 
 {% endif %}

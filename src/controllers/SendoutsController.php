@@ -339,8 +339,8 @@ class SendoutsController extends Controller
                 $sendout->schedule = new RecurringScheduleModel($schedule);
             }
 
-            // Convert end date
-            $sendout->schedule->endDate = DateTimeHelper::toDateTime($sendout->schedule->endDate);
+            // Convert end date or set to null
+            $sendout->schedule->endDate = DateTimeHelper::toDateTime($sendout->schedule->endDate) ?: null;
 
             // Validate schedule and sendout
             $sendout->schedule->validate();

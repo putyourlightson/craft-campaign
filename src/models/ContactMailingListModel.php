@@ -11,8 +11,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 
-use craft\helpers\Json;
-
 /**
  * ContactMailingListModel
  *

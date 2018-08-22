@@ -14,6 +14,11 @@
     {% set saveLabel = 'Activate Sending'|t('campaign') %}
     {% set confirmMessage = 'This sendout will be activated for automated sending to {mailingLists} mailing list(s).'|t('campaign', params) %}
     {% set launchedMessage = 'Sendout Activated!'|t('campaign') %}
+{% elseif sendout.sendoutType == 'recurring' %}
+    {% set prepLabel = 'Prepare to Activate Sending'|t('campaign') %}
+    {% set saveLabel = 'Activate Sending'|t('campaign') %}
+    {% set confirmMessage = 'This sendout will be activated for recurring sending to {mailingLists} mailing list(s).'|t('campaign', params) %}
+    {% set launchedMessage = 'Sendout Activated!'|t('campaign') %}
 {% elseif sendout.isResumable %}
     {% set prepLabel = 'Prepare to Resume Sending'|t('campaign') %}
     {% set saveLabel = 'Resume Sending'|t('campaign') %}
@@ -33,7 +38,7 @@
             <p>{{ confirmMessage }}</p>
             <p>
                 {{ 'All systems are GO!!'|t('campaign') }}
-                w
+                <span class="info">
                     {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
                     {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}

@@ -10,6 +10,7 @@
 
 {% set pendingRecipients = sendout.pendingRecipients %}
 {% set mailingLists = sendout.mailingLists %}
+{% set schedule = sendout.schedule %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
 
@@ -124,44 +125,50 @@
             {% endset %}
             {{ forms.field({label: "Scheduled Send Date"|t('campaign') ~ ':'}, input) }}
 
-        {% endif %}
-
-        {% if sendout.sendoutType == 'automated' %}
+        {% elseif sendout.sendoutType == 'automated' %}
 
             <hr/>
 
-            {% set input %}
-                <p>{{ sendout.sendDate|datetime }}</p>
-            {% endset %}
-            {{ forms.field({label: "Start Date"|t('campaign') ~ ':'}, input) }}
-
-            {% set input %}
-                <p>{{ schedule.endDate|datetime }}</p>
-            {% endset %}
-            {{ forms.field({label: "End Date"|t('campaign') ~ ':'}, input) }}
+            {% include 'campaign/sendouts/_includes/view/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
                 <p>{{ schedule.timeDelay }} {{ timeDelayIntervals[schedule.timeDelayInterval] }}</p>
             {% endset %}
             {{ forms.field({label: "Time Delay"|t('campaign') ~ ':'}, input) }}
 
-            {% set input %}
-                <p>{{ schedule.timeOfDay.time }} {{ schedule.timeOfDay.timezone }}</p>
-            {% endset %}
-            {{ forms.field({label: "Time of Day"|t('campaign') ~ ':'}, input) }}
+            {% include 'campaign/sendouts/_includes/view/daysOfWeek' %}
+
+        {% elseif sendout.sendoutType == 'recurring' %}
+
+            <hr/>
+
+            {% include 'campaign/sendouts/_includes/view/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
-                <p>
-                    {% set days = [] %}
-                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-                        {% if schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index] %}
-                            {% set days = days|merge([day]) %}
-                        {% endif %}
-                    {% endfor %}
-                    {{ days|join(', ') }}
-                </p>
+                {{ "Every"|t('campaign') }} {{ schedule.frequency }} {{ intervalOptions[schedule.frequencyInterval] }}
             {% endset %}
-            {{ forms.field({label: "Days of Week"|t('campaign') ~ ':'}, input) }}
+            {{ forms.field({label: "Frequence"|t('campaign')}, input) }}
+
+            {% if schedule.frequencyInterval == 'weeks' %}
+
+                {% include 'campaign/sendouts/_includes/view/daysOfWeek' %}
+
+            {% elseif schedule.frequencyInterval == 'months' %}
+
+                {% set input %}
+                    <p>
+                        {% set days = [] %}
+                        {% for day in 1..31 %}
+                            {% if schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index] %}
+                                {% set days = days|merge([day]) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ days|join(', ') }}
+                    </p>
+                {% endset %}
+                {{ forms.field({label: "Days of Month"|t('campaign') ~ ':'}, input) }}
+
+            {% endif %}
 
         {% endif %}
 

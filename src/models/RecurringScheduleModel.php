@@ -51,11 +51,6 @@ class RecurringScheduleModel extends ScheduleModel
      */
     public $daysOfMonth;
 
-    /**
-     * @var \DateTime Time of day
-     */
-    public $timeOfDay;
-
     // Public Methods
     // =========================================================================
 
@@ -78,10 +73,9 @@ class RecurringScheduleModel extends ScheduleModel
     {
         $rules = parent::rules();
 
-        $rules[] = [['frequency', 'timeOfDay'], 'required'];
+        $rules[] = [['frequency'], 'required'];
         $rules[] = [['frequency'], 'integer', 'min' => 1];
         $rules[] = ['frequencyInterval', 'in', 'range' => array_keys($this->getIntervalOptions())];
-        $rules[] = [['timeOfDay'], DateTimeValidator::class];
 
         return $rules;
     }

@@ -14,8 +14,6 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
 
-use craft\helpers\Json;
-
 /**
  * ContactCampaignModel
  *

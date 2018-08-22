@@ -8,6 +8,8 @@
     { label: sendout.sendoutTypes[sendout.sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 
+{% set schedule = sendout.schedule %}
+
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
 
 
@@ -162,7 +164,7 @@
 
             <hr/>
 
-            {% include 'campaign/sendouts/_includes/schedule' %}
+            {% include 'campaign/sendouts/_includes/edit/schedule' %}
 
         {% endif %}
 
@@ -170,8 +172,7 @@
 
             <hr/>
 
-            {% set schedule = sendout.schedule %}
-            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date'} %}
+            {% include 'campaign/sendouts/_includes/edit/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
                 {{ forms.text({
@@ -193,14 +194,13 @@
                 required: true
             }, input) }}
 
-            {% include 'campaign/sendouts/_includes/daysOfWeek' %}
+            {% include 'campaign/sendouts/_includes/edit/daysOfWeek' %}
 
         {% elseif sendout.sendoutType == 'recurring' %}
 
             <hr/>
 
-            {% set schedule = sendout.schedule %}
-            {% include 'campaign/sendouts/_includes/schedule' with {label: 'Start Date'} %}
+            {% include 'campaign/sendouts/_includes/edit/schedule' with {label: 'Start Date'} %}
 
             {% set input %}
                 {{ "Every"|t('campaign') }}
@@ -227,7 +227,7 @@
 
             <div id="frequency-weeks" {{ schedule.frequencyInterval != 'weeks' ? 'class="hidden"' }}>
 
-                {% include 'campaign/sendouts/_includes/daysOfWeek' %}
+                {% include 'campaign/sendouts/_includes/edit/daysOfWeek' %}
 
             </div>
 
