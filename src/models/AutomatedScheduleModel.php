@@ -26,11 +26,6 @@ class AutomatedScheduleModel extends ScheduleModel
     // =========================================================================
 
     /**
-     * @var \DateTime|null End date
-     */
-    public $endDate;
-
-    /**
      * @var int Time delay
      */
     public $timeDelay = 0;

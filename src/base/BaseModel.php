@@ -40,6 +40,9 @@ abstract class BaseModel extends Model
         $model = new $class();
         $model->setAttributes($values->getAttributes(), $safeOnly);
 
+        // Re-initialise model
+        $model->init();
+
         return $model;
     }
 

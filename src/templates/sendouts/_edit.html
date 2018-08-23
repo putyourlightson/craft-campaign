@@ -51,6 +51,7 @@
         {{ forms.elementSelectField({
             label: "Campaign"|t('campaign'),
             instructions: "Choose a campaign to send."|t('campaign'),
+            warning: (sendout.sendoutType == 'recurring' ? "This campaign will be duplicated on each subsequent send in order to allow tracking for each version."|t('campaign')),
             id: 'campaignId',
             name: 'campaignId',
             elementType: campaignElementType,

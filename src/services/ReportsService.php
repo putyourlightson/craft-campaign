@@ -132,16 +132,19 @@ class ReportsService extends Component
     {
         $data = [];
 
-        // Get first sendout
-        /** @var SendoutElement $sendout */
-        $sendout = SendoutElement::find()
-            ->campaignId($campaignId)
-            ->orderBy(['sendDate' => SORT_ASC])
+        // Get first send
+        /** @var ContactCampaignRecord $firstSend */
+        $contactCampaignRecord = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaignId])
+            ->orderBy(['sent' => SORT_ASC])
             ->one();
 
-        if ($sendout === null) {
+        if ($contactCampaignRecord === null) {
             return $data;
         }
+
+        /** @var ContactCampaignModel $firstContactCampaign */
+        $firstContactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
 
         // Get date time format ensuring interval is valid
         $format = $this->_getDateTimeFormat($interval);
@@ -150,7 +153,7 @@ class ReportsService extends Component
         }
 
         // Get start and end date times
-        $startDateTime = clone $sendout->sendDate;
+        $startDateTime = clone $firstContactCampaign->sent;
         $startDateTime = $startDateTime->modify('-1 '.$interval);
         $endDateTime = clone $startDateTime;
         $endDateTime->modify('+12 '.$interval);
@@ -184,7 +187,7 @@ class ReportsService extends Component
         }
 
         // Set data
-        $data['sendDate'] = $sendout->sendDate;
+        $data['firstSend'] = $firstContactCampaign->sent;
         $data['startDateTime'] = $startDateTime;
         $data['interval'] = $interval;
         $data['format'] = $format;

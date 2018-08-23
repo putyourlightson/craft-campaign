@@ -6,8 +6,6 @@
 
 namespace putyourlightson\campaign\base;
 
-use craft\base\Model;
-
 /**
  * ScheduleModel
  *
@@ -17,10 +15,29 @@ use craft\base\Model;
  *
  * @property array $intervalOptions
  */
-abstract class ScheduleModel extends Model implements ScheduleInterface
+abstract class ScheduleModel extends BaseModel implements ScheduleInterface
 {
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var \DateTime|null End date
+     */
+    public $endDate;
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        $attributes = parent::datetimeAttributes();
+        $attributes[] = 'endDate';
+
+        return $attributes;
+    }
 
     /**
      * Returns the schedule's interval options

@@ -27,11 +27,6 @@ class RecurringScheduleModel extends ScheduleModel
     // =========================================================================
 
     /**
-     * @var \DateTime|null End date
-     */
-    public $endDate;
-
-    /**
      * @var int Frequency
      */
     public $frequency = 1;

@@ -139,6 +139,23 @@ class ContactCampaignModel extends BaseModel
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        $attributes = parent::datetimeAttributes();
+        $attributes[] = 'sent';
+        $attributes[] = 'failed';
+        $attributes[] = 'opened';
+        $attributes[] = 'clicked';
+        $attributes[] = 'unsubscribed';
+        $attributes[] = 'complained';
+        $attributes[] = 'bounced';
+
+        return $attributes;
+    }
+
+    /**
      * Returns the contact
      *
      * @return ContactElement
