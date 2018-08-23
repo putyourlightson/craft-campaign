@@ -1,5 +1,14 @@
 # Campaign Changelog
 
+## 1.2.0 - Unreleased
+### Added
+- Added recurring sendouts
+- Added template conditions to segments
+- Added info tooltip with available template tags to all template settings 
+
+### Fixed
+- Fixed possible inaccurate first send date in campaign report
+
 ## 1.1.9 - 2018-08-21
 ### Added
 - Added "Verify Email Template" and "Verify Success Template" settings to mailing list types

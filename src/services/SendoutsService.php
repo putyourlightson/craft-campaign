@@ -160,18 +160,8 @@ class SendoutsService extends Component
         foreach ($sendouts as $sendout) {
             $queueSendout = false;
 
-            // Queue regular and scheduled sendouts
-            if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled') {
-                $queueSendout = true;
-            }
-            else if ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') {
-                // If pro version and the sendout can send now and there are pending recipients
-                if (Campaign::$plugin->isPro() AND $sendout->canSendNow() AND $sendout->hasPendingRecipients()) {
-                    $queueSendout = true;
-                }
-            }
-
-            if ($queueSendout) {
+            // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now and there are pending recipients
+            if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->isPro() AND $sendout->canSendNow() AND $sendout->hasPendingRecipients())) {
                 // Add sendout job to queue
                 Craft::$app->getQueue()->push(new SendoutJob([
                     'sendoutId' => $sendout->id,
@@ -262,11 +252,21 @@ class SendoutsService extends Component
             return;
         }
 
-        // Create contact campaign record
-        $contactCampaignRecord = new ContactCampaignRecord();
-        $contactCampaignRecord->contactId = $contact->id;
+        // Get or create contact campaign record
+        $contactCampaignRecord = ContactCampaignRecord::find()
+            ->where([
+                'contactId' => $contact->id,
+                'sendoutId' => $sendout->id,
+            ])
+            ->one();
+
+        if ($contactCampaignRecord === null) {
+            $contactCampaignRecord = new ContactCampaignRecord();
+            $contactCampaignRecord->contactId = $contact->id;
+            $contactCampaignRecord->sendoutId = $sendout->id;
+        }
+
         $contactCampaignRecord->campaignId = $campaign->id;
-        $contactCampaignRecord->sendoutId = $sendout->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
         $contactCampaignRecord->save();
 
