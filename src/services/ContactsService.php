@@ -152,7 +152,7 @@ class ContactsService extends Component
      * @throws MissingComponentException
      * @throws \yii\base\InvalidConfigException
      */
-    public function sendVerificationEmail(PendingContactModel $pendingContact, $mailingList = null): bool
+    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList = null): bool
     {
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
         $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);

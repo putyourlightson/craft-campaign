@@ -142,7 +142,7 @@ class ImportsService extends Component
      *
      * @return array
      */
-    public function getRows(ImportModel $import, $offset = 0, $length = null): array
+    public function getRows(ImportModel $import, int $offset = 0, int $length = null): array
     {
         $rows = [];
 

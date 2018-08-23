@@ -28,7 +28,7 @@ abstract class BaseModel extends Model
      *
      * @return Model
      */
-    public static function populateModel($values, $safeOnly = true): Model
+    public static function populateModel($values, bool $safeOnly = true): Model
     {
         if ($values instanceof Model) {
             $values = $values->getAttributes();
@@ -55,7 +55,7 @@ abstract class BaseModel extends Model
      *
      * @return array
      */
-    public static function populateModels(array $data, $safeOnly = true, $indexBy = null): array
+    public static function populateModels(array $data, bool $safeOnly = true, string $indexBy = null): array
     {
         $models = [];
 

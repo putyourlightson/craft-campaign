@@ -233,7 +233,7 @@ class Campaign extends Plugin
      * @throws MissingComponentException
      * @throws InvalidConfigException
      */
-    public function createMailer($settings = null): Mailer
+    public function createMailer(SettingsModel $settings = null): Mailer
     {
         if ($settings == null) {
             $settings = $this->getSettings();

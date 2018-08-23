@@ -429,7 +429,7 @@ class ContactElement extends Element
      * @return string
      * @throws Exception
      */
-    public function getUnsubscribeUrl($sendout = null): string
+    public function getUnsubscribeUrl(SendoutElement $sendout = null): string
     {
         if ($this->cid === null) {
             return '';

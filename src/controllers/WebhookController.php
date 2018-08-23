@@ -227,7 +227,7 @@ class WebhookController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _callWebhook(string $event, $email = null, $sid = null): Response
+    private function _callWebhook(string $event, string $email = null, string $sid = null): Response
     {
         // Log request
         Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'Campaign');
