@@ -32,17 +32,17 @@ class DeleteSendouts extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getTriggerLabel(): string
+    public static function isDestructive(): bool
     {
-        return Craft::t('campaign', 'Delete…');
+        return true;
     }
 
     /**
      * @inheritdoc
      */
-    public static function isDestructive(): bool
+    public function getTriggerLabel(): string
     {
-        return true;
+        return Craft::t('campaign', 'Delete…');
     }
 
     /**

@@ -45,9 +45,9 @@ class CampaignVariable
      *
      * @return bool
      */
-    public function isPro(): bool
+    public function getIsPro(): bool
     {
-        return Campaign::$plugin->isPro();
+        return Campaign::$plugin->getIsPro();
     }
 
     /**
@@ -241,7 +241,7 @@ class CampaignVariable
      */
     public function getAllSendoutTypes(): array
     {
-        return SendoutElement::getSendoutTypes();
+        return SendoutElement::sendoutTypes();
     }
 
     /**

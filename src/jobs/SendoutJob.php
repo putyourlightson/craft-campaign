@@ -127,7 +127,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $expectedRecipients = \count($pendingRecipients);
 
         // Loop as long as the there are pending recipients and the sendout is sendable
-        while ($sendout->isSendable() AND \count($pendingRecipients)) {
+        while ($sendout->getIsSendable() AND \count($pendingRecipients)) {
             // Set progress
             $this->setProgress($queue, $count / $expectedRecipients);
 

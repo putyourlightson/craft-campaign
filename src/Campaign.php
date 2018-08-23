@@ -68,6 +68,7 @@ use yii\web\ForbiddenHttpException;
  * @property  array|null $cpNavItem
  * @property  array $cpRoutes
  * @property  array $cpPermissions
+ * @property  bool $isPro
  * @property  mixed $settingsResponse
  */
 class Campaign extends Plugin
@@ -175,7 +176,7 @@ class Campaign extends Plugin
         if ($user->checkPermission('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign:segments') AND $this->isPro()) {
+        if ($user->checkPermission('campaign:segments') AND $this->getIsPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
         if ($user->checkPermission('campaign:sendouts')) {
@@ -206,7 +207,7 @@ class Campaign extends Plugin
      *
      * @return bool
      */
-    public function isPro(): bool
+    public function getIsPro(): bool
     {
         return Craft::$app->plugins->getPlugin('campaign-pro') !== null;
     }
@@ -218,7 +219,7 @@ class Campaign extends Plugin
      */
     public function requirePro()
     {
-        if ($this->isPro() === false) {
+        if ($this->getIsPro() === false) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action'));
         }
     }
@@ -381,7 +382,7 @@ class Campaign extends Plugin
             'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
         ];
 
-        if ($this->isPro()) {
+        if ($this->getIsPro()) {
             $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
         }
 

@@ -161,7 +161,7 @@ class SendoutsService extends Component
             $queueSendout = false;
 
             // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now and there are pending recipients
-            if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->isPro() AND $sendout->canSendNow() AND $sendout->hasPendingRecipients())) {
+            if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow() AND $sendout->getHasPendingRecipients())) {
                 // Add sendout job to queue
                 Craft::$app->getQueue()->push(new SendoutJob([
                     'sendoutId' => $sendout->id,
@@ -236,7 +236,7 @@ class SendoutsService extends Component
      */
     public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId)
     {
-        if ($sendout->isSendable() === false) {
+        if ($sendout->getIsSendable() === false) {
             return;
         }
 
@@ -444,7 +444,7 @@ class SendoutsService extends Component
         $sendout->sendStatus = 'pending';
 
         // Update send status if fully complete and not automated or recurring
-        if (!$sendout->hasPendingRecipients() AND $sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring') {
+        if (!$sendout->getHasPendingRecipients() AND $sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring') {
             $sendout->sendStatus = 'sent';
         }
 
@@ -483,7 +483,7 @@ class SendoutsService extends Component
      */
     public function pauseSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->isPausable()) {
+        if ($sendout->getIsPausable()) {
             $sendout->sendStatus = 'paused';
 
             return Craft::$app->getElements()->saveElement($sendout);
@@ -504,7 +504,7 @@ class SendoutsService extends Component
      */
     public function cancelSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->isCancellable()) {
+        if ($sendout->getIsCancellable()) {
             $sendout->sendStatus = 'cancelled';
 
             return Craft::$app->getElements()->saveElement($sendout);
@@ -523,7 +523,7 @@ class SendoutsService extends Component
      */
     public function deleteSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->isDeletable()) {
+        if ($sendout->getIsDeletable()) {
             return Craft::$app->getElements()->deleteElement($sendout);
         }
 

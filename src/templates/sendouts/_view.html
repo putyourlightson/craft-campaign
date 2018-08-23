@@ -92,7 +92,7 @@
         {% endset %}
         {{ forms.field({label: "Exclude"|t('campaign') ~ ':'}, input) }}
 
-        {% if craft.campaign.isPro() %}
+        {% if craft.campaign.getIsPro() %}
             {% set input %}
                 {% for segment in sendout.segments %}
                     <p><span class="status {{ segment.status }}"></span>{{ segment.title }}</p>

@@ -33,18 +33,19 @@ use yii\base\InvalidConfigException;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property int                  $unsubscribedCount
- * @property int                  $complainedCount
+ * @property int $unsubscribedCount
+ * @property int $complainedCount
  * @property MailingListElement[] $complainedMailingLists
- * @property int                  $bouncedCount
- * @property string               $reportUrl
+ * @property int $bouncedCount
+ * @property string $reportUrl
  * @property MailingListElement[] $unsubscribedMailingLists
  * @property MailingListElement[] $subscribedMailingLists
  * @property MailingListElement[] $bouncedMailingLists
- * @property int                  $pendingCount
- * @property string               $countryCode
+ * @property int $pendingCount
+ * @property string $countryCode
  * @property MailingListElement[] $allMailingLists
- * @property int                  $subscribedCount
+ * @property bool $isSubscribed
+ * @property int $subscribedCount
  */
 class ContactElement extends Element
 {
@@ -136,7 +137,7 @@ class ContactElement extends Element
             ];
         }
 
-        if (Campaign::$plugin->isPro()) {
+        if (Campaign::$plugin->getIsPro()) {
             $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
 
             $segments = SegmentElement::findAll();
@@ -407,7 +408,7 @@ class ContactElement extends Element
      *
      * @return bool
      */
-    public function isSubscribed(): bool
+    public function getIsSubscribed(): bool
     {
         $count = ContactMailingListRecord::find()
             ->where([

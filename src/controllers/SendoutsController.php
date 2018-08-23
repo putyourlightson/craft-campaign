@@ -130,7 +130,7 @@ class SendoutsController extends Controller
         // Check that the sendout type exists
         // ---------------------------------------------------------------------
 
-        $sendoutTypes = SendoutElement::getSendoutTypes();
+        $sendoutTypes = SendoutElement::sendoutTypes();
 
         if (empty($sendoutTypes[$sendoutType])) {
             throw new NotFoundHttpException('Sendout type not found');
@@ -194,7 +194,7 @@ class SendoutsController extends Controller
             'status' => 'enabled',
         ];
 
-        if (Campaign::$plugin->isPro()) {
+        if (Campaign::$plugin->getIsPro()) {
             // Segment element selector variables
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
@@ -217,7 +217,7 @@ class SendoutsController extends Controller
 
         $variables['actions'] = [];
 
-        if ($sendout->isPausable()) {
+        if ($sendout->getIsPausable()) {
             $variables['actions'][] = [
                 'action' => 'campaign/sendouts/pause-sendout',
                 'redirect' => $sendout->getCpEditUrl(),
@@ -232,7 +232,7 @@ class SendoutsController extends Controller
             ];
         }
 
-        if ($sendout->isCancellable()) {
+        if ($sendout->getIsCancellable()) {
             $variables['actions'][] = [
                 'action' => 'campaign/sendouts/cancel-sendout',
                 'redirect' => 'campaign/sendouts',

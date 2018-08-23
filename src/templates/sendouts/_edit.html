@@ -125,7 +125,7 @@
             errors: sendout.getErrors('excludedMailingListIds')
         }) }}
 
-        {% if craft.campaign.isPro() %}
+        {% if craft.campaign.getIsPro() %}
             {{ forms.elementSelectField({
                 label: "Segments"|t('campaign'),
                 instructions: "Select any segments to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),

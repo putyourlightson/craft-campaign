@@ -46,11 +46,18 @@ use yii\base\InvalidConfigException;
  * @property string $progress
  * @property int $excludedMailingListCount
  * @property int $mailingListCount
+ * @property MailingListElement[] $mailingLists
  * @property SegmentElement[] $segments
  * @property array $recipientIds
  * @property array $sentRecipientIds
  * @property array $pendingRecipients
- * @property MailingListElement[] $mailingLists
+ * @property bool $isCancellable
+ * @property bool $isSendable
+ * @property bool $canSendNow
+ * @property bool $hasPendingRecipients
+ * @property bool $isPausable
+ * @property bool $isDeletable
+ * @property bool $isResumable
  */
 class SendoutElement extends Element
 {
@@ -68,6 +75,26 @@ class SendoutElement extends Element
 
     // Static Methods
     // =========================================================================
+
+    /**
+     * Returns the sendout types.
+     *
+     * @return array
+     */
+    public static function sendoutTypes(): array
+    {
+        $sendoutTypes = [
+            'regular' => Craft::t('campaign', 'Regular'),
+            'scheduled' => Craft::t('campaign', 'Scheduled'),
+        ];
+
+        if (Campaign::$plugin->getIsPro()) {
+            $sendoutTypes['automated'] = Craft::t('campaign', 'Automated');
+            $sendoutTypes['recurring'] = Craft::t('campaign', 'Recurring');
+        }
+
+        return $sendoutTypes;
+    }
 
     /**
      * @inheritdoc
@@ -128,7 +155,7 @@ class SendoutElement extends Element
         $elementQuery = new SendoutElementQuery(static::class);
 
         // Limit sendout types
-        $elementQuery->sendoutType = array_keys(self::getSendoutTypes());
+        $elementQuery->sendoutType = array_keys(self::sendoutTypes());
 
         return $elementQuery;
     }
@@ -148,7 +175,7 @@ class SendoutElement extends Element
 
         $sources[] = ['heading' => Craft::t('campaign', 'Sendout Types')];
 
-        $sendoutTypes = self::getSendoutTypes();
+        $sendoutTypes = self::sendoutTypes();
         $index = 1;
 
         foreach ($sendoutTypes as $sendoutType => $label) {
@@ -256,23 +283,11 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout types.
-     *
-     * @return array
+     * @inheritdoc
      */
-    public static function getSendoutTypes(): array
+    protected static function defineSearchableAttributes(): array
     {
-        $sendoutTypes = [
-            'regular' => Craft::t('campaign', 'Regular'),
-            'scheduled' => Craft::t('campaign', 'Scheduled'),
-        ];
-
-        if (Campaign::$plugin->isPro()) {
-            $sendoutTypes['automated'] = Craft::t('campaign', 'Automated');
-            $sendoutTypes['recurring'] = Craft::t('campaign', 'Recurring');
-        }
-
-        return $sendoutTypes;
+        return ['title', 'sid', 'subject', 'fromName'];
     }
 
     // Properties
@@ -485,7 +500,7 @@ class SendoutElement extends Element
      */
     public function getSendoutTypeLabel(): string
     {
-        $sendoutTypes = self::getSendoutTypes();
+        $sendoutTypes = self::sendoutTypes();
 
         return $sendoutTypes[$this->sendoutType];
     }
@@ -657,7 +672,7 @@ class SendoutElement extends Element
      */
     public function getSegments(): array
     {
-        if (!Campaign::$plugin->isPro()) {
+        if (!Campaign::$plugin->getIsPro()) {
             return [];
         }
 
@@ -843,15 +858,15 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function hasPendingRecipients(): bool
+    public function getHasPendingRecipients(): bool
     {
-        return \count($this->getPendingRecipients());
+        return \count($this->getPendingRecipients()) > 0;
     }
 
     /**
      * Returns whether the sendout can be sent now
      */
-    public function canSendNow(): bool
+    public function getCanSendNow(): bool
     {
         if ($this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
             return $this->schedule->canSendNow($this);
@@ -865,7 +880,7 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function isSendable(): bool
+    public function getIsSendable(): bool
     {
         return ($this->getStatus() == self::STATUS_SENDING OR $this->getStatus() == self::STATUS_QUEUED);
     }
@@ -875,7 +890,7 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function isPausable(): bool
+    public function getIsPausable(): bool
     {
         return ($this->getStatus() == self::STATUS_SENDING OR $this->getStatus() == self::STATUS_QUEUED OR $this->getStatus() == self::STATUS_PENDING OR $this->getStatus() == self::STATUS_FAILED);
     }
@@ -885,7 +900,7 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function isResumable(): bool
+    public function getIsResumable(): bool
     {
         return ($this->getStatus() == self::STATUS_PAUSED OR $this->getStatus() == self::STATUS_FAILED);
     }
@@ -895,7 +910,7 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function isCancellable(): bool
+    public function getIsCancellable(): bool
     {
         return ($this->getStatus() != self::STATUS_DRAFT AND $this->getStatus() != self::STATUS_CANCELLED AND $this->getStatus() != self::STATUS_SENT);
     }
@@ -905,9 +920,9 @@ class SendoutElement extends Element
      *
      * @return bool
      */
-    public function isDeletable(): bool
+    public function getIsDeletable(): bool
     {
-        return (!$this->isPausable() OR $this->getStatus() == self::STATUS_FAILED);
+        return (!$this->getIsPausable() OR $this->getStatus() == self::STATUS_FAILED);
     }
 
     /**
@@ -916,14 +931,6 @@ class SendoutElement extends Element
     public function getCpEditUrl()
     {
         return UrlHelper::cpUrl('campaign/sendouts/'.$this->sendoutType.'/'.$this->id);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected static function defineSearchableAttributes(): array
-    {
-        return ['title', 'sid', 'subject', 'fromName'];
     }
 
     // Indexes, etc.
@@ -936,19 +943,34 @@ class SendoutElement extends Element
     {
         $htmlAttributes = parent::getHtmlAttributes($context);
 
-        if ($this->isPausable()) {
+        if ($this->getIsPausable()) {
             $htmlAttributes['data-pausable'] = null;
         }
 
-        if ($this->isResumable()) {
+        if ($this->getIsResumable()) {
             $htmlAttributes['data-resumable'] = null;
         }
 
-        if ($this->isCancellable()) {
+        if ($this->getIsCancellable()) {
             $htmlAttributes['data-cancellable'] = null;
         }
 
         return $htmlAttributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEditorHtml(): string
+    {
+        // Get the title field
+        $html = Craft::$app->getView()->renderTemplate('campaign/sendouts/_includes/titlefield', [
+            'sendout' => $this
+        ]);
+
+        $html .= parent::getEditorHtml();
+
+        return $html;
     }
 
     /**
@@ -984,21 +1006,6 @@ class SendoutElement extends Element
         }
 
         return parent::tableAttributeHtml($attribute);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEditorHtml(): string
-    {
-        // Get the title field
-        $html = Craft::$app->getView()->renderTemplate('campaign/sendouts/_includes/titlefield', [
-            'sendout' => $this
-        ]);
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
     }
 
     // Events
