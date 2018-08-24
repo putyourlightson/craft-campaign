@@ -739,8 +739,8 @@ class SendoutElement extends Element
             }
         }
 
-        // If not recurring sendout then remove contacts that are already sent recipients
-        if ($this->sendoutType != 'recurring') {
+        // If not recurring sendout or can send to contacts multiple times is disabled then remove contacts that are already sent recipients
+        if ($this->sendoutType != 'recurring' OR !$this->schedule->canSendToContactsMultipleTimes) {
             $recipients = array_diff_key($recipients, array_flip($this->getSentRecipientIds()));
         }
 

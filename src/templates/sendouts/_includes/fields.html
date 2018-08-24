@@ -1,0 +1,206 @@
+{% import '_includes/forms' as forms %}
+
+{% set editable = editable ?? false %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.elementSelect({
+            id: 'campaignId',
+            name: 'campaignId',
+            elementType: campaignElementType,
+            selectionLabel: "Choose a campaign"|t('campaign'),
+            criteria: campaignElementCriteria,
+            limit: 1,
+            elements: sendout.campaignId ? [sendout.campaign],
+        }) }}
+    {% else %}
+        <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Campaign"|t('campaign'),
+    instructions: "The campaign to send."|t('campaign'),
+    errors: sendout.getErrors('campaignId'),
+    required: true,
+}, input) }}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.text({
+            id: 'subject',
+            name: 'subject',
+            value: sendout.subject,
+            autocomplete: true,
+        }) }}
+    {% else %}
+        <p>{{ sendout.subject }}</p>
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Subject"|t('campaign'),
+    instructions: "The email subject."|t('campaign'),
+    errors: sendout.getErrors('subject'),
+    required: true,
+}, input) }}
+
+{% if editable %}
+    {{ forms.textField({
+        label: "From Name"|t('campaign'),
+        instructions: "The name to send from."|t('campaign'),
+        id: 'fromName',
+        name: 'fromName',
+        value: sendout.fromName ? sendout.fromName : settings.defaultFromName,
+        errors: sendout.getErrors('fromName'),
+        required: true,
+        autocomplete: true
+    }) }}
+    {{ forms.textField({
+        label: "From Email Address"|t('campaign'),
+        instructions: "The email address to send from."|t('campaign'),
+        id: 'fromEmail',
+        name: 'fromEmail',
+        value: sendout.fromEmail ? sendout.fromEmail : settings.defaultFromEmail,
+        errors: sendout.getErrors('fromEmail'),
+        required: true,
+        autocomplete: true
+    }) }}
+{% else %}
+    {% set input %}
+        <p>{{ sendout.fromName }} &lt;{{ sendout.fromEmail }}&gt;</p>
+    {% endset %}
+    {{ forms.field({
+        label: "From"|t('campaign'),
+        instructions: "The name and email address to send from."|t('campaign'),
+        required: true,
+    }, input) }}
+{% endif %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.elementSelect({
+            id: 'mailingListIds',
+            name: 'mailingListIds',
+            elementType: mailingListElementType,
+            selectionLabel: "Add a mailing list"|t('campaign'),
+            criteria: mailingListElementCriteria,
+            limit: 100,
+            elements: sendout.mailingListIds ? sendout.mailingLists,
+        }) }}
+    {% else %}
+        {% for mailingList in mailingLists %}
+            <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+            <br/>
+        {% endfor %}
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "To"|t('campaign'),
+    instructions: "The mailing list(s) to send the campaign to."|t('campaign'),
+    errors: sendout.getErrors('mailingListIds'),
+    required: true,
+}, input) }}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.elementSelect({
+            id: 'excludedMailingListIds',
+            name: 'excludedMailingListIds',
+            elementType: mailingListElementType,
+            selectionLabel: "Add a mailing list"|t('campaign'),
+            criteria: mailingListElementCriteria,
+            limit: 100,
+            elements: sendout.excludedMailingListIds ? sendout.excludedMailingLists,
+        }) }}
+    {% else %}
+        {% for excludedMailingList in sendout.excludedMailingLists %}
+            <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
+            <br/>
+        {% endfor %}
+        {% if sendout.excludedMailingLists|length == 0 %}
+            <p>-</p>
+        {% endif %}
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Exclude"|t('campaign'),
+    instructions: "The mailing list(s) to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
+    errors: sendout.getErrors('excludedMailingListIds'),
+}, input) }}
+
+{% if craft.campaign.getIsPro() %}
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelectField({
+                id: 'segmentIds',
+                name: 'segmentIds',
+                elementType: segmentElementType,
+                selectionLabel: "Add a segment"|t('campaign'),
+                limit: 100,
+                elements: sendout.segmentIds ? sendout.segments,
+            }) }}
+        {% else %}
+            {% for segment in sendout.segments %}
+                <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
+                <br/>
+            {% endfor %}
+            {% if sendout.segments|length == 0 %}
+                <p>-</p>
+            {% endif %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "Segments"|t('campaign'),
+        instructions: "The segment(s) to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+        errors: sendout.getErrors('segmentIds'),
+    }, input) }}
+{% endif %}
+
+<hr/>
+
+{% if sendout.sendoutType == 'scheduled' %}
+
+    {% include 'campaign/sendouts/_includes/schedule' %}
+    <hr/>
+
+{% endif %}
+
+{% if sendout.sendoutType == 'automated' %}
+
+    {% include 'campaign/sendouts/_includes/schedule/automated' %}
+    <hr/>
+
+{% elseif sendout.sendoutType == 'recurring' %}
+
+    {% include 'campaign/sendouts/_includes/schedule/recurring' %}
+    <hr/>
+
+{% endif %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.text({
+            id: 'notificationEmailAddress',
+            name: 'notificationEmailAddress',
+            value: (sendout.notificationEmailAddress ? sendout.notificationEmailAddress : (not sendout.id ? currentUser.email)),
+            autocomplete: true,
+        }) }}
+    {% else %}
+        <p>{{ sendout.notificationEmailAddress }}</p>
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Notification Email Address"|t('campaign'),
+    instructions: "An email address to notify when sending this sendout is complete or fails."|t('campaign'),
+    errors: sendout.getErrors('notificationEmailAddress'),
+    required: true,
+}, input) }}
+
+{{ forms.lightswitchField({
+    label: "Google Analytics Link Tracking"|t('campaign'),
+    instructions: "Whether Google Analytics tracking should be added to links in your campaign."|t('campaign'),
+    id: 'googleAnalyticsLinkTracking',
+    name: 'googleAnalyticsLinkTracking',
+    on: sendout.googleAnalyticsLinkTracking,
+    errors: sendout.getErrors('googleAnalyticsLinkTracking'),
+    disabled: not editable,
+}) }}

@@ -60,132 +60,25 @@
 
     <div id="fields">
 
-        {% set input %}
-            <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
-        {% endset %}
-        {{ forms.field({label: "Campaign"|t('campaign') ~ ':'}, input) }}
-
-        {% set input %}
-            <p>{{ sendout.subject }}</p>
-        {% endset %}
-        {{ forms.field({label: "Subject"|t('campaign') ~ ':'}, input) }}
-
-        {% set input %}
-            <p>{{ sendout.fromName }} &lt;{{ sendout.fromEmail }}&gt;</p>
-        {% endset %}
-        {{ forms.field({label: "From"|t('campaign') ~ ':'}, input) }}
-
-        {% set input %}
-            {% for mailingList in mailingLists %}
-                <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
-                <br/>
-            {% endfor %}
-        {% endset %}
-        {{ forms.field({label: "To"|t('campaign') ~ ':'}, input) }}
-
-        {% set input %}
-            {% for excludedMailingList in sendout.excludedMailingLists %}
-                <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
-                <br/>
-            {% endfor %}
-            {% if sendout.excludedMailingLists|length == 0 %}
-                <p>-</p>
-            {% endif %}
-        {% endset %}
-        {{ forms.field({label: "Exclude"|t('campaign') ~ ':'}, input) }}
-
-        {% if craft.campaign.getIsPro() %}
-            {% set input %}
-                {% for segment in sendout.segments %}
-                    <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
-                    <br/>
-                {% endfor %}
-                {% if sendout.segments|length == 0 %}
-                    <p>-</p>
-                {% endif %}
-            {% endset %}
-            {{ forms.field({label: "Segments"|t('campaign') ~ ':'}, input) }}
-
-            <hr/>
-        {% endif %}
-
-        {% set input %}
-            <p>{{ sendout.notificationEmailAddress }}</p>
-        {% endset %}
-        {{ forms.field({label: "Notification Email Address"|t('campaign') ~ ':'}, input) }}
-
-        {% set input %}
-            <p>{{ sendout.googleAnalyticsLinkTracking ? 'On'|t('campaign') : 'Off'|t('campaign') }}</p>
-        {% endset %}
-        {{ forms.field({label: "Google Analytics Link Tracking"|t('campaign') ~ ':'}, input) }}
-
-        {% if sendout.sendoutType == 'scheduled' %}
-
-            <hr/>
-
-            {% set input %}
-                <p>{{ sendout.sendDate|datetime }}</p>
-            {% endset %}
-            {{ forms.field({label: "Scheduled Send Date"|t('campaign') ~ ':'}, input) }}
-
-        {% elseif sendout.sendoutType == 'automated' %}
-
-            <hr/>
-
-            {% include 'campaign/sendouts/_includes/view/schedule' with {label: 'Start Date'} %}
-
-            {% set input %}
-                <p>{{ schedule.timeDelay }} {{ timeDelayIntervals[schedule.timeDelayInterval] }}</p>
-            {% endset %}
-            {{ forms.field({label: "Time Delay"|t('campaign') ~ ':'}, input) }}
-
-            {% include 'campaign/sendouts/_includes/view/daysOfWeek' %}
-
-        {% elseif sendout.sendoutType == 'recurring' %}
-
-            <hr/>
-
-            {% include 'campaign/sendouts/_includes/view/schedule' with {label: 'Start Date'} %}
-
-            {% set input %}
-                {{ "Every"|t('campaign') }} {{ schedule.frequency }} {{ intervalOptions[schedule.frequencyInterval] }}
-            {% endset %}
-            {{ forms.field({label: "Frequence"|t('campaign')}, input) }}
-
-            {% if schedule.frequencyInterval == 'weeks' %}
-
-                {% include 'campaign/sendouts/_includes/view/daysOfWeek' %}
-
-            {% elseif schedule.frequencyInterval == 'months' %}
-
-                {% set input %}
-                    <p>
-                        {% set days = [] %}
-                        {% for day in 1..31 %}
-                            {% if schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index] %}
-                                {% set days = days|merge([day]) %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ days|join(', ') }}
-                    </p>
-                {% endset %}
-                {{ forms.field({label: "Days of Month"|t('campaign') ~ ':'}, input) }}
-
-            {% endif %}
-
-        {% endif %}
+        {% include 'campaign/sendouts/_includes/fields' %}
 
         <hr/>
 
         {% set input %}
             <iframe class="email-body" src="{{ actionUrl('/campaign/sendouts/get-html-body', { sendoutId: sendout.id }) }}"></iframe>
         {% endset %}
-        {{ forms.field({label: "HTML Body"|t('campaign') ~ ':'}, input) }}
+        {{ forms.field({
+            label: "HTML Body"|t('campaign'),
+            instructions: "A preview of the HTML version of the email body."|t('campaign'),
+        }, input) }}
 
         {% set input %}
             <textarea class="email-body" disabled>{{ sendout.getPlaintextBody() }}</textarea>
         {% endset %}
-        {{ forms.field({label: "Plaintext Body"|t('campaign') ~ ':'}, input) }}
+        {{ forms.field({
+            label: "Plaintext Body"|t('campaign'),
+            instructions: "A preview of the plaintext version of the email body."|t('campaign'),
+        }, input) }}
 
     </div>
 

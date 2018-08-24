@@ -656,13 +656,14 @@ class ReportsService extends Component
 
             foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->$interactionType !== null) {
-                    $contactActivityModel = new ContactActivityModel();
-                    $contactActivityModel->model = $model;
-                    $contactActivityModel->interaction = $interactionType;
-                    $contactActivityModel->date = $model->$interactionType;
-                    $contactActivityModel->links = $interactionType == 'clicked' ? $model->getLinks() : [];
+                    $contactActivityModel = new ContactActivityModel([
+                        'model' => $model,
+                        'interaction' => $interactionType,
+                        'date' => $model->$interactionType,
+                        'links' => $interactionType == 'clicked' ? $model->getLinks() : [],
+                        'count' => 1,
+                    ]);
 
-                    $contactActivityModel->count = 1;
                     if ($interactionType == 'opened') {
                         $contactActivityModel->count = $model->opens;
                     }
@@ -684,7 +685,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$interactionType.'-'.$key.'-'.$interactionType] = $contactActivityModel;
+                    $activity[$contactActivityModel->date->getTimestamp().'-'.$key.'-'.$interactionType] = $contactActivityModel;
                 }
             }
         }

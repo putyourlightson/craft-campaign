@@ -21,6 +21,11 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     // =========================================================================
 
     /**
+     * @var bool Can send to contacts multiple times
+     */
+    public $canSendToContactsMultipleTimes = false;
+
+    /**
      * @var \DateTime|null End date
      */
     public $endDate;
@@ -47,5 +52,15 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public function getIntervalOptions(): array
     {
         return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            [['canSendToContactsMultipleTimes'], 'boolean']
+        ];
     }
 }

@@ -69,6 +69,17 @@ class ContactActivityModel extends BaseModel
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        $attributes = parent::datetimeAttributes();
+        $attributes[] = 'date';
+
+        return $attributes;
+    }
+
+    /**
      * @return array
      */
     public function rules(): array

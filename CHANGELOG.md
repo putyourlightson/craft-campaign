@@ -7,6 +7,9 @@
 - Added info tooltip with available template tags to all template settings 
 - Added utility to queue pending sendouts
 
+### Changed
+- Template refactoring, clearer instructions and general improvements
+
 ### Fixed
 - Fixed possible inaccurate first send date in campaign report
 

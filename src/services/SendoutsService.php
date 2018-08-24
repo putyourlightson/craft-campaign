@@ -192,6 +192,7 @@ class SendoutsService extends Component
     public function sendTest(SendoutElement $sendout, ContactElement $contact): bool
     {
         // Get campaign
+        $campaign = $this->_getCampaign($sendout);
         $campaign = $sendout->getCampaign();
 
         if ($campaign === null) {
@@ -443,8 +444,8 @@ class SendoutsService extends Component
         // Reset send status
         $sendout->sendStatus = 'pending';
 
-        // Update send status if  not automated or recurring and not fully complete
-        if (($sendout->sendoutType != 'automated' OR $sendout->sendoutType != 'recurring') AND !$sendout->getHasPendingRecipients()) {
+        // Update send status if not automated or recurring and fully complete
+        if ($sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring' AND !$sendout->getHasPendingRecipients()) {
             $sendout->sendStatus = 'sent';
         }
 

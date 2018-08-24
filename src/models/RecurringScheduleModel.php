@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\models;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-use craft\validators\DateTimeValidator;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
@@ -91,7 +90,7 @@ class RecurringScheduleModel extends ScheduleModel
             return false;
         }
 
-        $sendTimeToday = DateTimeHelper::toDateTime($sendout->sendDate->format('H:i:s T'));
+        $sendTimeToday = new \DateTime($sendout->sendDate->format('H:i:s T'));
 
         // Ensure send time is in the past
         if (!DateTimeHelper::isInThePast($sendTimeToday)) {
