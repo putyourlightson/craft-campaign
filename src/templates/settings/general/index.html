@@ -80,6 +80,12 @@
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/postmark', { key: settings.apiKey }) }}</textarea>
                     </td>
                 </tr>
+                <tr>
+                    <th class="thin">Sendgrid</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/sendgrid', { key: settings.apiKey }) }}</textarea>
+                    </td>
+                </tr>
             </tbody>
         </table>
     {% endset %}
