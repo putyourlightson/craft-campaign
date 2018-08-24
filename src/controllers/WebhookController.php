@@ -65,7 +65,9 @@ class WebhookController extends Controller
         $event = Craft::$app->getRequest()->getRawBody();
         $event = Json::decode($event);
 
-        if (is_array($event)) {
+        if (is_array($event) AND !empty($event['Message'])) {
+            $event = $event['Message'];
+
             $eventType = $event['notificationType'];
             /** @var array $headers */
             $headers = $event['mail']['headers'];
