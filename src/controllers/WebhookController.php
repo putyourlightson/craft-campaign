@@ -6,6 +6,11 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Aws\Sns\Exception\InvalidSnsMessageException;
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -62,15 +67,37 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $event = Craft::$app->getRequest()->getRawBody();
-        $event = Json::decode($event);
+        // Instantiate the Message and Validator
+        $message = Message::fromRawPostData();
+        $validator = new MessageValidator();
 
-        if (is_array($event) AND !empty($event['Message'])) {
-            $event = $event['Message'];
+        // Validate the message
+        try {
+           $validator->validate($message);
+        }
+        catch (InvalidSnsMessageException $e) {
+           return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
+        }
 
-            $eventType = $event['notificationType'];
+        // Check the type of the message and handle the subscription.
+        if ($message['Type'] === 'SubscriptionConfirmation') {
+            // Confirm the subscription by sending a GET request to the SubscribeURL
+            $client = new Client([
+                'timeout' => 5,
+                'connect_timeout' => 5,
+            ]);
+
+            try {
+                $response = $client->get($message['SubscribeURL']);
+            }
+            catch (ConnectException $e) {}
+
+            die();
+        }
+
+        if ($message['Type'] === 'Notification') {
             /** @var array $headers */
-            $headers = $event['mail']['headers'];
+            $headers = $message['mail']['headers'];
 
             // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
             $sid = '';
@@ -81,12 +108,14 @@ class WebhookController extends Controller
                 }
             }
 
+            $eventType = $message['notificationType'];
+
             if ($eventType == 'Complaint') {
-                $email = $event['complaint']['complainedRecipients'][0]['emailAddress'];
+                $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('complained', $email, $sid);
             }
-            if ($eventType == 'Bounce' AND $event['bounce']['bounceType'] == 'Permanent') {
-                $email = $event['bounce']['bouncedRecipients'][0]['emailAddress'];
+            if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
+                $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('bounced', $email, $sid);
             }
         }
