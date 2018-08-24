@@ -464,7 +464,11 @@ class SendoutsService extends Component
         Craft::$app->getElements()->saveElement($sendout);
 
         // Update campaign recipients
-        $campaign->recipients += $sendout->recipients;
+        $recipients = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaign->id])
+            ->count();
+        
+        $campaign->recipients = $recipients;
 
         Craft::$app->getElements()->saveElement($campaign);
 
