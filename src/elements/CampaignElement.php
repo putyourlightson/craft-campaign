@@ -592,13 +592,20 @@ class CampaignElement extends Element
         $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         // Get body from rendered template with variables
+        $body = '';
+
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
-        $body = $view->renderTemplate($template, [
-            'campaign' => $this,
-            'browserVersionUrl' => $this->url,
-            'contact' => $contact,
-            'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
-        ]);
+
+        try {
+            $body = $view->renderTemplate($template, [
+                'campaign' => $this,
+                'browserVersionUrl' => $this->url,
+                'contact' => $contact,
+                'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
+            ]);
+        }
+        catch (\Twig_Error_Loader $e) {}
+        catch (Exception $e) {}
 
         // Reset template mode
         $view->setTemplateMode($templateMode);

@@ -172,11 +172,15 @@ class ContactsService extends Component
             // Set template mode to site
             $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
-            $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
-                'message' => $bodyText,
-                'url' => $url,
-                'mailingList' => $mailingList,
-            ]);
+            try {
+                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                    'message' => $bodyText,
+                    'url' => $url,
+                    'mailingList' => $mailingList,
+                ]);
+            }
+            catch (\Twig_Error_Loader $e) {}
+            catch (Exception $e) {}
         }
 
         // Create message

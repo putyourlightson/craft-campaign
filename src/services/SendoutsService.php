@@ -192,7 +192,6 @@ class SendoutsService extends Component
     public function sendTest(SendoutElement $sendout, ContactElement $contact): bool
     {
         // Get campaign
-        $campaign = $this->_getCampaign($sendout);
         $campaign = $sendout->getCampaign();
 
         if ($campaign === null) {
@@ -467,7 +466,7 @@ class SendoutsService extends Component
         $recipients = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaign->id])
             ->count();
-        
+
         $campaign->recipients = $recipients;
 
         Craft::$app->getElements()->saveElement($campaign);

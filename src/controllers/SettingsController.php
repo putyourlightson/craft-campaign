@@ -201,7 +201,7 @@ class SettingsController extends Controller
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save general settings.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save general settings.'));
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
@@ -352,7 +352,7 @@ class SettingsController extends Controller
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save reCAPTCHA settings.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save reCAPTCHA settings.'));
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([

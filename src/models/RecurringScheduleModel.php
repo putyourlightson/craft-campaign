@@ -100,11 +100,7 @@ class RecurringScheduleModel extends ScheduleModel
         $diff = $now->diff($sendout->sendDate);
 
         if ($this->frequencyInterval == 'days') {
-            if ($this->frequency > 1 AND $diff->d % $this->frequency != 0) {
-                return false;
-            }
-
-            return true;
+            return ($this->frequency == 1 OR $diff->d % $this->frequency == 0);
         }
 
         if ($this->frequencyInterval == 'weeks') {
