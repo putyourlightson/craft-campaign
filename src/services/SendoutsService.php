@@ -443,8 +443,8 @@ class SendoutsService extends Component
         // Reset send status
         $sendout->sendStatus = 'pending';
 
-        // Update send status if fully complete and not automated or recurring
-        if (!$sendout->getHasPendingRecipients() AND $sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring') {
+        // Update send status if  not automated or recurring and not fully complete
+        if (($sendout->sendoutType != 'automated' OR $sendout->sendoutType != 'recurring') AND !$sendout->getHasPendingRecipients()) {
             $sendout->sendStatus = 'sent';
         }
 

@@ -1,0 +1,14 @@
+{% import "_includes/forms" as forms %}
+
+<form class="utility" method="post" accept-charset="UTF-8">
+    <input type="hidden" name="action" value="campaign/sendouts/queue-pending-sendouts">
+    {{ redirectInput('utilities/campaign') }}
+    {{ csrfInput() }}
+
+    <input type="hidden" name="key" value="{{ settings.apiKey }}" />
+
+    <p class="light">
+        {{ 'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.'|t('campaign') }}
+    </p>
+    <input type="submit" class="btn submit" value="{{ 'Queue Pending Sendouts'|t('campaign') }}" />
+</form>

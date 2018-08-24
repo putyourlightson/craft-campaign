@@ -5,6 +5,7 @@
 - Added recurring sendouts
 - Added template conditions to segments
 - Added info tooltip with available template tags to all template settings 
+- Added utility to queue pending sendouts
 
 ### Fixed
 - Fixed possible inaccurate first send date in campaign report

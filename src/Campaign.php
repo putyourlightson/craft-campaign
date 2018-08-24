@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign;
 
+use craft\events\RegisterComponentTypesEvent;
+use craft\services\Utilities;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
@@ -22,6 +24,7 @@ use putyourlightson\campaign\services\SettingsService;
 use putyourlightson\campaign\services\TrackerService;
 use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
+use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
 
 use Craft;
@@ -120,13 +123,14 @@ class Campaign extends Plugin
             $variable->set('campaign', CampaignVariable::class);
         });
 
-        // Do some house-cleaning after login to CP
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(User::class, User::EVENT_AFTER_LOGIN, function() {
-                $this->contacts->purgeExpiredPendingContacts();
-                $this->sendouts->queuePendingSendouts();
-            });
-        }
+        // Register utility
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
+                    $event->types[] = CampaignUtility::class;
+                }
+            }
+        );
 
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
@@ -394,6 +398,8 @@ class Campaign extends Plugin
         ];
 
         $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
+
+        $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
 
         return $permissions;
     }

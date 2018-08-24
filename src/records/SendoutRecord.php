@@ -27,7 +27,7 @@ use DateTime;
  * @property string      $excludedMailingListIds     Excluded mailing list IDs
  * @property int         $recipients                 Recipients
  * @property int         $failedRecipients           Failed recipients
- * @property mixed       $automatedSchedule          Automated schedule
+ * @property mixed       $schedule                   Schedule
  * @property DateTime    $sendDate                   Send date
  * @property DateTime    $lastSent                   Last sent
  *

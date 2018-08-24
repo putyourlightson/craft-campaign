@@ -80,6 +80,10 @@ class RecurringScheduleModel extends ScheduleModel
      */
     public function canSendNow(SendoutElement $sendout): bool
     {
+        if ($sendout->lastSent === null) {
+            return true;
+        }
+
         $now = new \DateTime();
 
         // Ensure not already sent today

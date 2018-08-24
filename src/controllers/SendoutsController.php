@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -79,11 +80,22 @@ class SendoutsController extends Controller
             Craft::$app->getQueue()->run();
         }
 
-        // Prep the response
-        $response = Craft::$app->getResponse();
-        $response->content = '1';
+        // If front-end site request
+        if (Craft::$app->getView()->templateMode == View::TEMPLATE_MODE_SITE) {
+            // Prep the response
+            $response = Craft::$app->getResponse();
+            $response->content = '1';
 
-        return $response;
+            return $response;
+        }
+
+        if ($request->getAcceptsJson()) {
+            return $this->asJson(['success' => true]);
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Pending sendouts queued.'));
+
+        return $this->redirectToPostedUrl();
     }
 
     /**

@@ -61,7 +61,7 @@
     <div id="fields">
 
         {% set input %}
-        <span class="status {{ sendout.campaign.status }}"></span>{{ sendout.campaign.title }}
+            <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
         {% endset %}
         {{ forms.field({label: "Campaign"|t('campaign') ~ ':'}, input) }}
 
@@ -77,14 +77,16 @@
 
         {% set input %}
             {% for mailingList in mailingLists %}
-            <span class="status {{ mailingList.status }}"></span>{{ mailingList.title }}<br/>
+                <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+                <br/>
             {% endfor %}
         {% endset %}
         {{ forms.field({label: "To"|t('campaign') ~ ':'}, input) }}
 
         {% set input %}
             {% for excludedMailingList in sendout.excludedMailingLists %}
-                <p><span class="status {{ excludedMailingList.status }}"></span>{{ excludedMailingList.title }}</p>
+                <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
+                <br/>
             {% endfor %}
             {% if sendout.excludedMailingLists|length == 0 %}
                 <p>-</p>
@@ -95,7 +97,8 @@
         {% if craft.campaign.getIsPro() %}
             {% set input %}
                 {% for segment in sendout.segments %}
-                    <p><span class="status {{ segment.status }}"></span>{{ segment.title }}</p>
+                    <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
+                    <br/>
                 {% endfor %}
                 {% if sendout.segments|length == 0 %}
                     <p>-</p>

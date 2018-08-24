@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
+use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -443,8 +444,13 @@ class SendoutElement extends Element
     {
         parent::init();
 
-        // Decode the schedule
-        $this->schedule = Json::decode($this->schedule);
+        // Create schedule
+        if ($this->sendoutType == 'automated') {
+            $this->schedule = new AutomatedScheduleModel(Json::decode($this->schedule));
+        }
+        else if ($this->sendoutType == 'recurring') {
+            $this->schedule = new RecurringScheduleModel(Json::decode($this->schedule));
+        }
     }
 
     /**
@@ -744,7 +750,8 @@ class SendoutElement extends Element
         }
 
         if ($this->sendoutType == 'automated') {
-            $automatedSchedule = new AutomatedScheduleModel($this->schedule);
+            /** @var AutomatedScheduleModel $automatedSchedule */
+            $automatedSchedule = $this->schedule;
 
             // Remove all contacts that have not passed the time delay since subscribing
             foreach ($recipients as $key => $recipientData) {

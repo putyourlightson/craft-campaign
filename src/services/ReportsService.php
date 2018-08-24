@@ -684,7 +684,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$model->$interactionType.'-'.$key.'-'.$interactionType] = $contactActivityModel;
+                    $activity[$interactionType.'-'.$key.'-'.$interactionType] = $contactActivityModel;
                 }
             }
         }
