@@ -997,12 +997,7 @@ class SendoutElement extends Element
 
             case 'campaignId':
                 $campaign = $this->getCampaign();
-
-                if ($campaign === null) {
-                    return '';
-                }
-
-                return Template::raw('<a href="'.$campaign->getCpEditUrl().'">'.$campaign->title.'</a>');
+                return $campaign ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $campaign]) : '';
 
             case 'sender':
                 $sender = $this->getSender();

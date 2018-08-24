@@ -2,18 +2,24 @@
     <div>
         <div id="action-menubtn" class="btn menubtn" data-icon="settings" title="{{ 'Actions'|t('app') }}"></div>
         <div class="menu">
-            <ul>
-                {% for action in actions %}
-                    <li>
-                        <a
-                            {%- if action.id is defined %} id="{{ action.id }}"{% endif %}
-                            {%- if action.action is defined %} class="formsubmit" data-action="{{ action.action }}"{% endif -%}
-                            {%- if action.redirect is defined %} data-redirect="{{ action.redirect|hash }}"{% endif -%}
-                            {%- if action.confirm is defined %} data-confirm="{{ action.confirm }}"{% endif -%}
-                        >{{ action.label }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% for actionList in actions %}
+                {% if not loop.first %}<hr>{% endif %}
+                <ul>
+                    {% for actionItem in actionList %}
+                        {% set classes = [] %}
+                        {% if actionItem.destructive is defined and actionItem.destructive %}{% set classes = classes|merge(['error']) %}{% endif %}
+                        <li>
+                            <a
+                                {%- if actionItem.id is defined %} id="{{ actionItem.id }}"{% endif %}
+                                {%- if actionItem.action is defined %}{% set classes = classes|merge(['formsubmit']) %} data-actionItem="{{ actionItem.action }}"{% endif -%}
+                                {%- if actionItem.redirect is defined %} data-redirect="{{ actionItem.redirect|hash }}"{% endif -%}
+                                {%- if actionItem.confirm is defined %} data-confirm="{{ actionItem.confirm }}"{% endif -%}
+                                class="{{ classes|join(' ') }}"
+                            >{{ actionItem.label }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
         </div>
         <div id="action-spinner" class="spinner hidden"></div>
     </div>

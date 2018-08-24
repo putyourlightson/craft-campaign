@@ -40,7 +40,7 @@ class WebhookController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['test', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
+    protected $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
 
     // Public Methods
     // =========================================================================

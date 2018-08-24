@@ -176,7 +176,7 @@ class CampaignsController extends Controller
         // Contact element selector variables
         $variables['contactElementType'] = ContactElement::class;
         $variables['contactElementCriteria'] = [
-            'status' => ['active'],
+            'status' => ContactElement::STATUS_ACTIVE,
         ];
 
         // Get test contact based on current user's email address
@@ -190,16 +190,18 @@ class CampaignsController extends Controller
 
         switch ($campaign->getStatus()) {
             case CampaignElement::STATUS_SENT:
-                $variables['actions'][] = [
+                $variables['actions'][0][] = [
                     'action' => 'campaign/campaigns/close-campaign',
+                    'destructive' => 'true',
                     'label' => Craft::t('campaign', 'Close this campaign…'),
                     'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
                 ];
                 break;
         }
 
-        $variables['actions'][] = [
+        $variables['actions'][0][] = [
             'action' => 'campaign/campaigns/delete-campaign',
+            'destructive' => 'true',
             'redirect' => 'campaign/campaigns',
             'label' => Craft::t('app', 'Delete…'),
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign. This action cannot be undone.')

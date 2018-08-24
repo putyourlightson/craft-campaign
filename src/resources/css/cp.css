@@ -193,7 +193,7 @@
     border-color: #27AE60 !important;
 }
 
-.status.unsent, .status.queued {
+.status.queued {
     background: rgba(242, 132, 45, 0.2);
     border-color: #F2842D !important;
 }

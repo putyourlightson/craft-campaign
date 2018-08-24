@@ -197,27 +197,27 @@ class SendoutsController extends Controller
         // Campaign element selector variables
         $variables['campaignElementType'] = CampaignElement::class;
         $variables['campaignElementCriteria'] = [
-            'status' => ['sent', 'unsent'],
+            'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
         ];
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;
         $variables['mailingListElementCriteria'] = [
-            'status' => 'enabled',
+            'status' => MailingListElement::STATUS_ENABLED,
         ];
 
         if (Campaign::$plugin->getIsPro()) {
             // Segment element selector variables
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
-                'status' => 'enabled',
+                'status' => SegmentElement::STATUS_ENABLED,
             ];
         }
 
         // Contact element selector variables
         $variables['contactElementType'] = ContactElement::class;
         $variables['contactElementCriteria'] = [
-            'status' => ['active'],
+            'status' => ContactElement::STATUS_ACTIVE,
         ];
 
         // Get test contact based on current user's email address
@@ -230,34 +230,36 @@ class SendoutsController extends Controller
         $variables['actions'] = [];
 
         if ($sendout->getIsPausable()) {
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/sendouts/pause-sendout',
                 'redirect' => $sendout->getCpEditUrl(),
                 'label' => Craft::t('campaign', 'Pause and Edit…'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
             ];
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/sendouts/pause-sendout',
                 'redirect' => 'campaign/sendouts',
                 'label' => Craft::t('campaign', 'Pause…'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
             ];
         }
 
         if ($sendout->getIsCancellable()) {
-            $variables['actions'][] = [
+            $variables['actions'][1][] = [
                 'action' => 'campaign/sendouts/cancel-sendout',
+                'destructive' => 'true',
                 'redirect' => 'campaign/sendouts',
                 'label' => Craft::t('campaign', 'Cancel…'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It can never be sent again if cancelled.'),
             ];
         }
 
-        $variables['actions'][] = [
+        $variables['actions'][1][] = [
             'action' => 'campaign/sendouts/delete-sendout',
+            'destructive' => 'true',
             'redirect' => 'campaign/sendouts',
             'label' => Craft::t('campaign', 'Delete…'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.'),
         ];
 
         if ($sendoutType == 'automated' OR $sendoutType == 'recurring') {

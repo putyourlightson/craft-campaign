@@ -23,7 +23,7 @@
     {% endif %}
 {% endset %}
 {{ forms.field({
-    label: "Frequence"|t('campaign'),
+    label: "Frequency"|t('campaign'),
     instructions: "The frequency at which recurring sendouts should be sent."|t('campaign'),
     errors: schedule.getErrors('frequency'),
     required: true,

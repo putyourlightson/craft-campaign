@@ -2,15 +2,18 @@
 
 ## 1.2.0 - Unreleased
 ### Added
-- Added recurring sendouts
-- Added template conditions to segments
+- Added custom template conditions to segments
+- Added recurring sendouts (pro version)
 - Added info tooltip with available template tags to all template settings 
 - Added utility to queue pending sendouts
 
 ### Changed
-- Template refactoring, clearer instructions and general improvements
+- User interface improvements
+- Template refactoring and clearer instructions
+- Changed "unsent" campaign status to "pending"
 
 ### Fixed
+- Fixed bug in Amazon SES webhook controller action
 - Fixed possible inaccurate first send date in campaign report
 
 ## 1.1.9 - 2018-08-21

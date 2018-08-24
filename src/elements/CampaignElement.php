@@ -39,7 +39,7 @@ class CampaignElement extends Element
     // =========================================================================
 
     const STATUS_SENT = 'sent';
-    const STATUS_UNSENT = 'unsent';
+    const STATUS_PENDING = 'pending';
     const STATUS_CLOSED = 'closed';
 
     // Static Methods
@@ -92,7 +92,7 @@ class CampaignElement extends Element
     {
         return [
             self::STATUS_SENT => Craft::t('campaign', 'Sent'),
-            self::STATUS_UNSENT => Craft::t('campaign', 'Unsent'),
+            self::STATUS_PENDING => Craft::t('campaign', 'Pending'),
             self::STATUS_CLOSED => Craft::t('campaign', 'Closed'),
             self::STATUS_DISABLED => Craft::t('app', 'Disabled')
         ];
@@ -453,7 +453,7 @@ class CampaignElement extends Element
             return self::STATUS_SENT;
         }
 
-        return self::STATUS_UNSENT;
+        return self::STATUS_PENDING;
     }
 
     /**

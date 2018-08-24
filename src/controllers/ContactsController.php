@@ -149,7 +149,7 @@ class ContactsController extends Controller
 
         // Add complain and bounce actions
         if ($contact->complained === null) {
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Mark contact as complained…'),
@@ -157,7 +157,7 @@ class ContactsController extends Controller
             ];
         }
         else {
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Unmark contact as complained…'),
@@ -165,7 +165,7 @@ class ContactsController extends Controller
             ];
         }
         if ($contact->bounced === null) {
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Mark contact as bounced…'),
@@ -173,7 +173,7 @@ class ContactsController extends Controller
             ];
         }
         else {
-            $variables['actions'][] = [
+            $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Unmark contact as bounced…'),
@@ -181,8 +181,9 @@ class ContactsController extends Controller
             ];
         }
 
-        $variables['actions'][] = [
+        $variables['actions'][1][] = [
             'action' => 'campaign/contacts/delete-contact',
+            'destructive' => 'true',
             'redirect' => 'campaign/contacts',
             'label' => Craft::t('campaign', 'Delete…'),
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact? This action cannot be undone.')

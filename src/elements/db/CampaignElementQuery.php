@@ -139,7 +139,7 @@ class CampaignElementQuery extends ElementQuery
                     ],
                     ['>', 'campaign_campaigns.recipients', 0]
                 ];
-            case CampaignElement::STATUS_UNSENT:
+            case CampaignElement::STATUS_PENDING:
                 return [
                     'and',
                     [
