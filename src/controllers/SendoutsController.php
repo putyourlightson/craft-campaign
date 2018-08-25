@@ -112,7 +112,7 @@ class SendoutsController extends Controller
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {
-            throw new NotFoundHttpException('Sendout not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
         }
 
         // Prep the response
@@ -145,7 +145,7 @@ class SendoutsController extends Controller
         $sendoutTypes = SendoutElement::sendoutTypes();
 
         if (empty($sendoutTypes[$sendoutType])) {
-            throw new NotFoundHttpException('Sendout type not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout type not found.'));
         }
 
         // Get the sendout
@@ -156,7 +156,7 @@ class SendoutsController extends Controller
                 $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
                 if ($sendout === null) {
-                    throw new NotFoundHttpException('Sendout not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
                 }
             }
             else {
@@ -589,7 +589,7 @@ class SendoutsController extends Controller
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {
-            throw new NotFoundHttpException('Sendout not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
         }
 
         return $sendout;

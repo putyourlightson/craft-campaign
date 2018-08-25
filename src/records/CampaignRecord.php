@@ -54,5 +54,4 @@ class CampaignRecord extends ActiveRecord
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
-
 }

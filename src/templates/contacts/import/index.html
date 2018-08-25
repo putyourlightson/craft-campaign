@@ -54,7 +54,7 @@
             <input type="hidden" name="action" value="campaign/imports/select-user-group" />
             {{ forms.selectField({
                 label: "User Group"|t('campaign'),
-                instructions: "Choose a user group to import:"|t('campaign'),
+                instructions: "Choose a user group to import."|t('campaign'),
                 name: 'userGroup',
                 options: userGroupOptions,
                 required: true
@@ -70,8 +70,8 @@
 
         <table id="imports" class="data fullwidth collapsible">
             <thead>
+                <th scope="col">{{ "Import"|t('campaign') }}</th>
                 <th scope="col">{{ "Source"|t('campaign') }}</th>
-                <th scope="col"></th>
                 <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
                 <th scope="col">{{ "Added"|t('campaign') }}</th>
                 <th scope="col">{{ "Updated"|t('campaign') }}</th>
@@ -84,12 +84,12 @@
                 {% set user = import.user %}
                 <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
                     <th scope="row" data-title="{{ 'Source'|t('campaign') }}"><a href="{{ import.cpViewUrl }}">{{ import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign') }}</a></th>
-                    <td data-title=""><a href="{{ import.fileName ? actionUrl('campaign/imports/download-file', {importId: import.id}) : cpUrl('users') }}" class="go" target="_blank">{{ import.fileName ? import.fileName : import.userGroup.name }}</a></td>
-                    <td data-title="{{ 'Mailing List'|t('campaign') }}">{{ import.mailingList.title }}</td>
-                    <td data-title="{{ 'Added'|t('campaign') }}">{{ import.added }}</td>
-                    <td data-title="{{ 'Updated'|t('campaign') }}">{{ import.updated }}</td>
-                    <td data-title="{{ 'Failed'|t('campaign') }}">{{ import.failed }}</td>
-                    <td data-title="{{ 'Date Imported'|t('campaign') }}">{{ import.dateImported }}</td>
+                    <td><a href="{{ import.fileName ? actionUrl('campaign/imports/download-file', {importId: import.id}) : cpUrl('users') }}" class="go" target="_blank">{{ import.fileName ? import.fileName : import.userGroup.name }}</a></td>
+                    <td><a href="{{ import.mailingList.cpEditUrl }}" class="go" target="_blank">{{ import.mailingList.title }}</a></td>
+                    <td>{{ import.added }}</td>
+                    <td>{{ import.updated }}</td>
+                    <td>{{ import.failed }}</td>
+                    <td>{{ import.dateImported }}</td>
                     <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                 </tr>
             {% endfor %}

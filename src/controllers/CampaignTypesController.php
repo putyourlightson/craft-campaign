@@ -56,7 +56,7 @@ class CampaignTypesController extends Controller
                 $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
 
                 if ($campaignType === null) {
-                    throw new NotFoundHttpException('Campaign type not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
                 }
             }
             else {
@@ -106,7 +106,7 @@ class CampaignTypesController extends Controller
             $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
 
             if (!$campaignType) {
-                throw new NotFoundHttpException('Campaign type not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
             }
         } else {
             $campaignType = new CampaignTypeModel();

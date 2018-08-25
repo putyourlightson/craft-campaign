@@ -188,6 +188,7 @@ class Install extends Migration
             $this->createTable('{{%campaign_mailinglists}}', [
                 'id' => $this->primaryKey(),
                 'mailingListTypeId' => $this->integer()->notNull(),
+                'syncedUserGroupId' => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -333,6 +334,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_links}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'mailingListTypeId', '{{%campaign_mailinglisttypes}}', 'id', 'CASCADE');
+        $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'syncedUserGroupId', '{{%usergroups}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_segments}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'id', '{{%elements}}', 'id', 'CASCADE');

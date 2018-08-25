@@ -1,9 +1,15 @@
-{% extends 'campaign/_layout' %}
+{% extends 'campaign/mailinglists/_layout' %}
 
 {% set elementType = 'putyourlightson\\campaign\\elements\\MailingListElement' %}
 
 {% set title = 'Mailing Lists'|t('campaign') %}
-{% set selectedSubnavItem = 'mailinglists' %}
+
+{% if craft.campaign.getIsPro() and currentUser.can('campaign:syncMailingLists') %}
+    {% set tabs = {
+        'view': {'label': 'View', 'url': url('campaign/mailingLists')},
+        'sync': {'label': 'Sync', 'url': url('campaign/mailingLists/sync')},
+    } %}
+{% endif %}
 
 {% js %}
     {% if mailingListTypeHandle is defined %}

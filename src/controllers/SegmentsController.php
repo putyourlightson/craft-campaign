@@ -67,7 +67,7 @@ class SegmentsController extends Controller
                 $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
 
                 if ($segment === null) {
-                    throw new NotFoundHttpException('Segment not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
                 }
             }
             else {
@@ -125,7 +125,7 @@ class SegmentsController extends Controller
             $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
 
             if ($segment === null) {
-                throw new NotFoundHttpException('Segment not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
             }
         }
         else {
@@ -221,7 +221,7 @@ class SegmentsController extends Controller
         $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
 
         if ($segment === null) {
-            throw new NotFoundHttpException('Segment not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
         }
 
         if (!Craft::$app->getElements()->deleteElement($segment)) {

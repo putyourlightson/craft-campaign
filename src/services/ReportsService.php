@@ -132,19 +132,16 @@ class ReportsService extends Component
     {
         $data = [];
 
-        // Get first send
-        /** @var ContactCampaignRecord $firstSend */
+        // Get first record
+        /** @var ContactCampaignRecord $contactCampaignRecord */
         $contactCampaignRecord = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy(['sent' => SORT_ASC])
+            ->orderBy(['dateCreated' => SORT_ASC])
             ->one();
 
         if ($contactCampaignRecord === null) {
             return $data;
         }
-
-        /** @var ContactCampaignModel $firstContactCampaign */
-        $firstContactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
 
         // Get date time format ensuring interval is valid
         $format = $this->_getDateTimeFormat($interval);
@@ -153,7 +150,7 @@ class ReportsService extends Component
         }
 
         // Get start and end date times
-        $startDateTime = clone $firstContactCampaign->sent;
+        $startDateTime = clone DateTimeHelper::toDateTime($contactCampaignRecord->dateCreated);
         $startDateTime = $startDateTime->modify('-1 '.$interval);
         $endDateTime = clone $startDateTime;
         $endDateTime->modify('+12 '.$interval);
@@ -187,7 +184,6 @@ class ReportsService extends Component
         }
 
         // Set data
-        $data['firstSend'] = $firstContactCampaign->sent;
         $data['startDateTime'] = $startDateTime;
         $data['interval'] = $interval;
         $data['format'] = $format;

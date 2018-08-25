@@ -167,16 +167,6 @@ class CampaignVariable
     }
 
     /**
-     * Returns all mailing lists
-     *
-     * @return array
-     */
-    public function getAllMailingLists(): array
-    {
-        return MailingListElement::findAll();
-    }
-
-    /**
      * Returns mailing list by ID
      *
      * @param int $mailingListId

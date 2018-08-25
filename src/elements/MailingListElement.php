@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
 use putyourlightson\campaign\models\MailingListTypeModel;
@@ -200,6 +201,11 @@ class MailingListElement extends Element
      */
     public $mailingListTypeId;
 
+    /**
+     * @var int|null Synced user group ID
+     */
+    public $syncedUserGroupId;
+
     // Public Methods
     // =========================================================================
 
@@ -315,6 +321,20 @@ class MailingListElement extends Element
         }
 
         return $mailingListType;
+    }
+
+    /**
+     * Returns the mailing list's synced user group
+     *
+     * @return UserGroup|null
+     */
+    public function getSyncedUserGroup()
+    {
+        if ($this->syncedUserGroupId === null) {
+            return null;
+        }
+
+        return Craft::$app->getUserGroups()->getGroupById($this->syncedUserGroupId);
     }
 
     /**

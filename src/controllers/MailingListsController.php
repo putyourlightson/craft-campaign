@@ -65,7 +65,7 @@ class MailingListsController extends Controller
         }
 
         if (empty($variables['mailingListType'])) {
-            throw new NotFoundHttpException('Mailing list type not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
         }
 
         // Get the mailing list
@@ -76,7 +76,7 @@ class MailingListsController extends Controller
                 $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
                 if ($mailingList === null) {
-                    throw new NotFoundHttpException('Mailing list not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
                 }
             }
             else {
@@ -164,11 +164,8 @@ class MailingListsController extends Controller
     /**
      * @return Response|null
      * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException if reasons
      * @throws \Throwable
-     * @throws ElementNotFoundException
      * @throws Exception
-     * @throws InvalidConfigException
      * @throws BadRequestHttpException
      */
     public function actionSaveMailingList()
@@ -183,7 +180,7 @@ class MailingListsController extends Controller
             $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
             if ($mailingList === null) {
-                throw new NotFoundHttpException('Mailing list not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
             }
         }
         else {
@@ -271,7 +268,7 @@ class MailingListsController extends Controller
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
-            throw new NotFoundHttpException('Mailing list not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         if (!Craft::$app->getElements()->deleteElement($mailingList)) {

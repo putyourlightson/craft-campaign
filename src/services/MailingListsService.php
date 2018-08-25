@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\models\UserGroup;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ContactMailingListModel;
@@ -116,5 +117,19 @@ class MailingListsService extends Component
         if ($contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
+    }
+
+    /**
+     * Syncs a user group to a mailing list
+     *
+     * @param MailingListElement $mailingList
+     */
+    public function syncUserGroup(MailingListElement $mailingList)
+    {
+        if ($mailingList->syncedUserGroupId === null) {
+            return;
+        }
+
+
     }
 }

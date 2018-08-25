@@ -56,7 +56,7 @@ class MailingListTypesController extends Controller
                 $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
 
                 if ($mailingListType === null) {
-                    throw new NotFoundHttpException('Mailing list type not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
                 }
             }
             else {
@@ -102,7 +102,7 @@ class MailingListTypesController extends Controller
             $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
 
             if ($mailingListType === null) {
-                throw new NotFoundHttpException('Mailing list type not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
             }
         } else {
             $mailingListType = new MailingListTypeModel();

@@ -63,7 +63,7 @@ class ContactsController extends Controller
                 $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
                 if ($contact === null) {
-                    throw new NotFoundHttpException('Contact not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
                 }
             }
             else {
@@ -221,7 +221,7 @@ class ContactsController extends Controller
             $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
             if ($contact === null) {
-                throw new NotFoundHttpException('Contact not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
             }
         }
         else {
@@ -426,7 +426,7 @@ class ContactsController extends Controller
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
         if ($contact === null) {
-            throw new NotFoundHttpException('Contact not found.');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
         }
 
         return $contact;
@@ -451,7 +451,7 @@ class ContactsController extends Controller
         $mailingListId = Craft::$app->getRequest()->getRequiredBodyParam('mailingListId');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
         if ($mailingList === null) {
-            throw new NotFoundHttpException('Mailing list not found.');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         if ($subscriptionStatus === '') {

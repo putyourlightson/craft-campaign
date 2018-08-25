@@ -1,0 +1,94 @@
+{% do craft.campaign.requirePro() %}
+
+{% if not currentUser.can('campaign:syncMailingLists') %}
+    {% redirect 'campaign/mailingLists' %}
+{% endif %}
+
+{% extends 'campaign/mailingLists/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set mailingListElementType = 'putyourlightson\\campaign\\elements\\MailingListElement' %}
+
+{% set title = 'Sync'|t('campaign') %}
+
+{% set crumbs = [] %}
+
+{% set syncedMailingLists = craft.campaign.getMailingLists().synced().all() %}
+
+
+{% block content %}
+
+    {% set userGroups = craft.app.userGroups.getAllGroups() %}
+
+    {% if userGroups|length %}
+        {% set userGroupOptions = [] %}
+        {% for userGroup in userGroups %}
+            {% set userGroupOptions = userGroupOptions|merge([{'value': userGroup.id, 'label': userGroup.name}]) %}
+        {% endfor %}
+
+        <p>{{ "Sync mailing lists with user groups in order to keep contacts in sync with users. Every time a user is created, updated or deleted, the contact will also be created, updated or deleted accordingly."|t('campaign') }}</p>
+
+        <form action="" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
+            {{ csrfInput() }}
+            <input type="hidden" name="action" value="campaign/sync/add-synced-mailing-list" />
+
+            {{ forms.elementSelectField({
+                label: "Mailing List"|t('campaign'),
+                instructions: "Choose a mailing list to sync."|t('campaign'),
+                id: 'mailingListId',
+                name: 'mailingListId',
+                elementType: mailingListElementType,
+                selectionLabel: "Add a mailing list"|t('campaign'),
+                limit: 1,
+                required: true,
+            }) }}
+
+            {{ forms.selectField({
+                label: "User Group"|t('campaign'),
+                instructions: "Choose a user group to sync to."|t('campaign'),
+                name: 'userGroup',
+                options: userGroupOptions,
+                required: true,
+            }) }}
+
+            <input type="submit" class="btn submit" value="{{ 'Sync'|t('campaign') }}" />
+        </form>
+    {% else %}
+        <p>{{ "No user groups exist."|t('campaign') }}</p>
+    {% endif %}
+
+    {% if syncedMailingLists|length %}
+        <hr/>
+        <h1>Synced Mailing Lists</h1>
+
+        <table id="syncedMailingLists" class="data fullwidth collapsible">
+            <thead>
+                <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
+                <th scope="col">{{ "User Group"|t('campaign') }}</th>
+                <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for mailingList in syncedMailingLists %}
+                {% set user = import.user %}
+                <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
+                    <td data-title="{{ 'Mailing List'|t('campaign') }}">{{ mailingList.title }}</td>
+                    <td data-title="{{ 'User Group'|t('campaign') }}">{{ mailingList.syncedUserGroup.title }}</td>
+                    <td class="thin"><a class="delete icon" title="{{ 'Remove'|t('campaign') }}" role="button"></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
+
+
+{% js %}
+new Craft.AdminTable({
+    tableSelector: '#syncedMailingLists',
+    sortable: true,
+    deleteAction: 'campaign/mailing-lists/remove-synced-mailing-list',
+    confirmDeleteMessage: '{{ 'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.'|t('campaign') }}',
+});
+{% endjs %}

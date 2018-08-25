@@ -547,11 +547,11 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns all mailing lists
+     * Returns all mailing lists that this contact is in
      *
      * @return MailingListElement[]
      */
-    public function getAllMailingLists(): array
+    public function getMailingLists(): array
     {
         return $this->_getMailingLists();
     }

@@ -45,7 +45,7 @@
         {% include "campaign/contacts/_includes/fields" %}
 
         {% if contact.id %}
-            {% set mailingLists = craft.campaign.getAllMailingLists() %}
+            {% set mailingLists = craft.campaign.getMailingLists().all() %}
             <div id="tab-mailinglists" class="hidden">
                 <div id="nomailinglists"{% if mailingLists|length %}class="hidden"{% endif %}>
                     <p>{{ "No mailing lists exist."|t('campaign') }}</p>

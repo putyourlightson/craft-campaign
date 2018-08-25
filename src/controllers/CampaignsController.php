@@ -67,7 +67,7 @@ class CampaignsController extends Controller
         $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
 
         if ($campaignType === null) {
-            throw new NotFoundHttpException('Campaign type not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
         }
 
         // Get the campaign
@@ -78,7 +78,7 @@ class CampaignsController extends Controller
                 $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
                 if ($campaign === null) {
-                    throw new NotFoundHttpException('Campaign not found');
+                    throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
                 }
             }
             else {
@@ -377,7 +377,7 @@ class CampaignsController extends Controller
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
         if (!$campaign) {
-            throw new NotFoundHttpException('Campaign not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
         }
 
         // Set closed date to now
@@ -430,7 +430,7 @@ class CampaignsController extends Controller
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
         if (!$campaign) {
-            throw new NotFoundHttpException('Campaign not found');
+            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
         }
 
         if (!Craft::$app->getElements()->deleteElement($campaign)) {
@@ -477,7 +477,7 @@ class CampaignsController extends Controller
             $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
             if (!$campaign) {
-                throw new NotFoundHttpException('Campaign not found');
+                throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
             }
         }
         else {

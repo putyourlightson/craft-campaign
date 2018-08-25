@@ -383,7 +383,12 @@ class Campaign extends Plugin
                     'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
                 ],
             ],
-            'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
+            'campaign:mailingLists' => [
+                'label' => Craft::t('campaign', 'Manage mailing lists'),
+                'nested' => [
+                    'campaign:syncMailingLists' => ['label' => Craft::t('campaign', 'Sync mailing lists')],
+                ],
+            ],
         ];
 
         if ($this->getIsPro()) {

@@ -93,7 +93,7 @@ class TrackerController extends Controller
         $linkRecord = $this->_getLink();
 
         if ($linkRecord === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Link not found'));
+            throw new NotFoundHttpException(Craft::t('campaign', 'Link not found.'));
         }
 
         $url = $linkRecord->url;
@@ -170,7 +170,7 @@ class TrackerController extends Controller
             ->one();
 
         if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         $email = $request->getRequiredBodyParam('email');
@@ -345,14 +345,14 @@ class TrackerController extends Controller
         $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
 
         if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found'));
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
         }
 
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
 
         if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found'));
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         // Track subscribe

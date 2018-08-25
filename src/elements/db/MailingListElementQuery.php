@@ -36,6 +36,16 @@ class MailingListElementQuery extends ElementQuery
      */
     public $mailingListTypeId;
 
+    /**
+     * @var int|int[]|null The synced user group ID(s) that the resulting mailing lists must have.
+     */
+    public $syncedUserGroupId;
+
+    /**
+     * @var bool Whether to only return mailing lists that have synced user groups.
+     */
+    public $synced = false;
+
     // Public Methods
     // =========================================================================
 
@@ -92,6 +102,34 @@ class MailingListElementQuery extends ElementQuery
         return $this;
     }
 
+    /**
+     * Sets the [[syncedUserGroupId]] property.
+     *
+     * @param int|int[]|null $value The property value
+     *
+     * @return static self reference
+     */
+    public function syncedUserGroupId($value)
+    {
+        $this->syncedUserGroupId = $value;
+
+        return $this;
+    }
+
+    /**
+     * Sets the [[synced]] property.
+     *
+     * @param bool $value The property value
+     *
+     * @return static self reference
+     */
+    public function synced(bool $value = true)
+    {
+        $this->synced = $value;
+
+        return $this;
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -108,6 +146,14 @@ class MailingListElementQuery extends ElementQuery
 
         if ($this->mailingListTypeId) {
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));
+        }
+
+        if ($this->syncedUserGroupId) {
+            $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.syncedUserGroupId', $this->syncedUserGroupId));
+        }
+
+        if ($this->synced === true) {
+            $this->subQuery->andWhere(['not', ['syncedUserGroupId' => 'null']]);
         }
 
         $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
