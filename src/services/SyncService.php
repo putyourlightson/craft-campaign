@@ -54,12 +54,32 @@ class SyncService extends Component
     }
 
     /**
-     * Syncs a user to a mailing list contact
+     * Syncs a user
+     *
+     * @param User $user
+     */
+    public function syncUser(User $user)
+    {
+        $userGroups = $user->getGroups();
+
+        foreach ($userGroups as $userGroup) {
+            $mailingLists = MailingListElement::find()
+                ->syncedUserGroupId($userGroup->id)
+                ->all();
+
+            foreach ($mailingLists as $mailingList) {
+                $this->syncUserMailingList($user, $mailingList);
+            }
+        }
+    }
+
+    /**
+     * Syncs a user to a mailing list
      *
      * @param User $user
      * @param MailingListElement $mailingList
      */
-    public function syncUser(User $user, MailingListElement $mailingList)
+    public function syncUserMailingList(User $user, MailingListElement $mailingList)
     {
         // Get contact with same email as user
         $contact = ContactElement::find()
@@ -71,13 +91,7 @@ class SyncService extends Component
             $contact->email = $user->email;
         }
 
-        // Get contact fields
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-        $fields = $fieldLayout->getFields();
-
-        // Set field values
+        // Set contact's field values from user's field values
         $contact->setFieldValues($user->getFieldValues());
 
         Craft::$app->getElements()->saveElement($contact);
@@ -95,6 +109,8 @@ class SyncService extends Component
             $contactMailingListRecord = new ContactMailingListRecord();
             $contactMailingListRecord->contactId = $contact->id;
             $contactMailingListRecord->mailingListId = $mailingList->id;
+
+            $contactMailingListRecord->subscriptionStatus = 'subscribed';
             $contactMailingListRecord->subscribed = new \DateTime();
 
             $contactMailingListRecord->save();

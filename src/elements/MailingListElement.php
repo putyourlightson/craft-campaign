@@ -428,6 +428,7 @@ class MailingListElement extends Element
         if ($mailingListRecord) {
             // Set attributes
             $mailingListRecord->mailingListTypeId = $this->mailingListTypeId;
+            $mailingListRecord->syncedUserGroupId = $this->syncedUserGroupId;
 
             $mailingListRecord->save(false);
         }

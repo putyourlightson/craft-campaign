@@ -6,7 +6,10 @@
 
 namespace putyourlightson\campaign;
 
+use craft\elements\User;
+use craft\events\ElementEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\services\Elements;
 use craft\services\Utilities;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
@@ -141,8 +144,18 @@ class Campaign extends Plugin
 
         // Register user permissions if edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
+            // Register user permissions
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
                 $event->permissions['Campaign'] = $this->getCpPermissions();
+            });
+        }
+
+        // Register user updates if pro version
+        if ($this->getIsPro()) {
+            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function(ElementEvent $event) {
+                /** @var User $user */
+                $user = $event->element;
+                $this->sync->syncUser($user);
             });
         }
     }

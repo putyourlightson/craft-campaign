@@ -13,6 +13,7 @@ use craft\db\ActiveRecord;
  *
  * @property int         $id                         ID
  * @property int|null    $mailingListTypeId          Mailing list type ID
+ * @property int|null    $syncedUserGroupId          Synced user group ID
  *
  * @author    PutYourLightsOn
  * @package   Campaign
