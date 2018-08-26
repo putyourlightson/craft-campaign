@@ -16,6 +16,11 @@
             'export': {'label': 'Export', 'url': url('campaign/contacts/export')}
         }) %}
     {% endif %}
+    {% if craft.campaign.getIsPro() and currentUser.can('campaign:syncContacts') %}
+        {% set tabs = tabs|merge({
+            'sync': {'label': 'Sync', 'url': url('campaign/contacts/sync')},
+        }) %}
+    {% endif %}
 {% endif %}
 
 

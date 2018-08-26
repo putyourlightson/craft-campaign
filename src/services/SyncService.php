@@ -163,6 +163,8 @@ class SyncService extends Component
 
             $contactMailingListRecord->subscriptionStatus = 'subscribed';
             $contactMailingListRecord->subscribed = new \DateTime();
+            $contactMailingListRecord->sourceType = 'user';
+            $contactMailingListRecord->source = $user->id;
 
             $contactMailingListRecord->save();
         }

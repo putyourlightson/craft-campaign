@@ -1,10 +1,10 @@
 {% do craft.campaign.requirePro() %}
 
-{% if not currentUser.can('campaign:syncMailingLists') %}
-    {% redirect 'campaign/mailingLists' %}
+{% if not currentUser.can('campaign:syncContacts') %}
+    {% redirect 'campaign/contacts' %}
 {% endif %}
 
-{% extends 'campaign/mailingLists/_layout' %}
+{% extends 'campaign/contacts/_layout' %}
 
 {% import '_includes/forms' as forms %}
 

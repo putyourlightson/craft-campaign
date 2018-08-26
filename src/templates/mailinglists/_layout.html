@@ -1,8 +1,0 @@
-{% extends 'campaign/_layout' %}
-
-{% set selectedSubnavItem = 'mailinglists' %}
-
-{% set baseCrumbs = [
-    { label: 'Mailing Lists'|t('campaign'), url: url('campaign/mailinglists') }
-] %}
-{% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}

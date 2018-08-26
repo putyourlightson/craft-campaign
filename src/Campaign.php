@@ -396,7 +396,7 @@ class Campaign extends Plugin
             'campaign:mailingLists' => [
                 'label' => Craft::t('campaign', 'Manage mailing lists'),
                 'nested' => [
-                    'campaign:syncMailingLists' => ['label' => Craft::t('campaign', 'Sync mailing lists')],
+                    'campaign:syncContacts' => ['label' => Craft::t('campaign', 'Sync mailing lists')],
                 ],
             ],
         ];

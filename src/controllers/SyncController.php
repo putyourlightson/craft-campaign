@@ -34,7 +34,7 @@ class SyncController extends Controller
     public function init()
     {
         // Require permission
-        $this->requirePermission('campaign:syncMailingLists');
+        $this->requirePermission('campaign:syncContacts');
     }
 
     /**
@@ -56,7 +56,7 @@ class SyncController extends Controller
         $mailingListId = (\is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : null;
 
         if ($mailingListId === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save mailing list.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t sync mailing list.'));
 
             // Send the errors back to the template
             Craft::$app->getUrlManager()->setRouteParams([
