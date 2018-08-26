@@ -6,6 +6,12 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\events\ElementEvent;
+use craft\events\UserAssignGroupEvent;
+use craft\events\UserEvent;
+use craft\events\UserGroupsAssignEvent;
+use craft\services\Elements;
+use craft\services\Users;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -14,8 +20,8 @@ use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
+use yii\base\Event;
 
 /**
  * SyncService
@@ -41,6 +47,51 @@ class SyncService extends Component
 
     // Public Methods
     // =========================================================================
+
+    public function registerUserEvents()
+    {
+        $events = [
+            [Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT],
+            [Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT],
+            [Users::class, Users::EVENT_AFTER_ACTIVATE_USER],
+            [Users::class, Users::EVENT_AFTER_ASSIGN_USER_TO_DEFAULT_GROUP],
+            [Users::class, Users::EVENT_AFTER_ASSIGN_USER_TO_GROUPS],
+            [Users::class, Users::EVENT_AFTER_SUSPEND_USER],
+            [Users::class, Users::EVENT_AFTER_UNSUSPEND_USER],
+            [Users::class, Users::EVENT_AFTER_VERIFY_EMAIL],
+        ];
+
+        foreach ($events as $event) {
+            Event::on($event[0], $event[1], [$this, 'handleUserEvent']);
+        }
+    }
+
+    /**
+     * Handles a user event
+     *
+     * @param Event $event
+     */
+    public function handleUserEvent(Event $event)
+    {
+        // Ensure pro version
+        if (!Campaign::$plugin->getIsPro()) {
+            return;
+        }
+
+        if ($event instanceof UserEvent OR $event instanceof UserAssignGroupEvent) {
+            $this->syncUser($event->user);
+        }
+        else if ($event instanceof ElementEvent AND $event->element instanceof User) {
+            $this->syncUser($event->element);
+        }
+        else if ($event instanceof UserGroupsAssignEvent) {
+            $user = Craft::$app->getUsers()->getUserById($event->userId);
+
+            if ($user !== null) {
+                $this->syncUser($user);
+            }
+        }
+    }
 
     /**
      * Queues a sync
@@ -104,8 +155,8 @@ class SyncService extends Component
             ])
             ->one();
 
-        // If contact mailing list record does not exist then create it and subscribe
-        if ($contactMailingListRecord === null) {
+        // If user is active and contact mailing list record does not exist then create it and subscribe
+        if ($user->status == User::STATUS_ACTIVE AND $contactMailingListRecord === null) {
             $contactMailingListRecord = new ContactMailingListRecord();
             $contactMailingListRecord->contactId = $contact->id;
             $contactMailingListRecord->mailingListId = $mailingList->id;
@@ -114,6 +165,10 @@ class SyncService extends Component
             $contactMailingListRecord->subscribed = new \DateTime();
 
             $contactMailingListRecord->save();
+        }
+        // If user is not active and contact mailing list record exists then delete it
+        else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {
+            $contactMailingListRecord->delete();
         }
     }
 }

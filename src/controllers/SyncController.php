@@ -113,7 +113,7 @@ class SyncController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $mailingListId = $request->getRequiredBodyParam('mailingListId');
+        $mailingListId = $request->getRequiredBodyParam('id');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {

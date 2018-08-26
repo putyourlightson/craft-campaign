@@ -27,7 +27,7 @@
             {% set userGroupOptions = userGroupOptions|merge([{'value': userGroup.id, 'label': userGroup.name}]) %}
         {% endfor %}
 
-        <p>{{ "Sync mailing lists with user groups in order to keep contacts in sync with users. Every time a user is created, updated or deleted, the contact will also be created, updated or deleted accordingly."|t('campaign') }}</p>
+        <p>{{ "Sync mailing lists with user groups in order to keep contacts in sync with users. Every time a user in the selected user group is created, updated or deleted, a contact in the selected mailing list will also be created, updated or deleted accordingly. Modifications to contacts will NOT affect users."|t('campaign') }}</p>
 
         <form action="" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             {{ csrfInput() }}
@@ -35,7 +35,7 @@
 
             {{ forms.elementSelectField({
                 label: "Mailing List"|t('campaign'),
-                instructions: "Choose a mailing list to sync."|t('campaign'),
+                instructions: "Choose a mailing list to sync. "|t('campaign'),
                 id: 'mailingListId',
                 name: 'mailingListId',
                 elementType: mailingListElementType,
@@ -90,7 +90,7 @@
 new Craft.AdminTable({
     tableSelector: '#syncedMailingLists',
     sortable: true,
-    deleteAction: 'campaign/mailing-lists/remove-synced-mailing-list',
+    deleteAction: 'campaign/sync/remove-synced-mailing-list',
     confirmDeleteMessage: '{{ 'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.'|t('campaign') }}',
 });
 {% endjs %}
