@@ -75,7 +75,7 @@ class SyncJob extends BaseJob
             // Set progress
             $this->setProgress($queue, $i / $total);
 
-            // Sync user to mailing list
+            // Sync user to contact in mailing list
             Campaign::$plugin->sync->syncUserMailingList($user, $mailingList);
         }
 

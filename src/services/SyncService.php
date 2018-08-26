@@ -82,6 +82,10 @@ class SyncService extends Component
             $this->syncUser($event->user);
         }
         else if ($event instanceof ElementEvent AND $event->element instanceof User) {
+            // If deleted
+            if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
+                $this->syncUser($event->element, true);
+            }
             $this->syncUser($event->element);
         }
         else if ($event instanceof UserGroupsAssignEvent) {
@@ -108,24 +112,35 @@ class SyncService extends Component
      * Syncs a user
      *
      * @param User $user
+     * @param bool $deleted
      */
-    public function syncUser(User $user)
+    public function syncUser(User $user, bool $removeAll = false)
     {
+        // Get user's user group IDs
+        $userGroupIds = [];
         $userGroups = $user->getGroups();
 
         foreach ($userGroups as $userGroup) {
-            $mailingLists = MailingListElement::find()
-                ->syncedUserGroupId($userGroup->id)
-                ->all();
+            $userGroupIds[] = $userGroup->id;
+        }
 
-            foreach ($mailingLists as $mailingList) {
+        $mailingLists = MailingListElement::find()
+            ->synced(true)
+            ->all();
+
+        foreach ($mailingLists as $mailingList) {
+            // If we should remove all or mailing list is not synced with user's user group ID
+            if ($removeAll OR !in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
+                $this->removeUserMailingList($user, $mailingList);
+            }
+            else {
                 $this->syncUserMailingList($user, $mailingList);
             }
         }
     }
 
     /**
-     * Syncs a user to a mailing list
+     * Syncs a user to a contact in a mailing list
      *
      * @param User $user
      * @param MailingListElement $mailingList
@@ -170,6 +185,36 @@ class SyncService extends Component
         }
         // If user is not active and contact mailing list record exists then delete it
         else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {
+            $contactMailingListRecord->delete();
+        }
+    }
+
+    /**
+     * Removes a user synced contact from a mailing list
+     *
+     * @param User $user
+     * @param MailingListElement $mailingList
+     */
+    public function removeUserMailingList(User $user, MailingListElement $mailingList)
+    {
+        // Get contact with same email as user
+        $contact = ContactElement::find()
+            ->email($user->email)
+            ->one();
+
+        if ($contact === null) {
+            return;
+        }
+
+        // Get contact mailing list record
+        $contactMailingListRecord = ContactMailingListRecord::find()
+            ->where([
+                'contactId' => $contact->id,
+                'mailingListId' => $mailingList->id,
+            ])
+            ->one();
+
+        if ($contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
     }
