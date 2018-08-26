@@ -93,7 +93,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             return;
         }
 
-        // Fire a 'beforeSend' event
+        // Fire a before event
         $event = new SendoutEvent([
             'sendout' => $sendout,
         ]);
@@ -124,12 +124,12 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $pendingRecipients = $sendout->getPendingRecipients();
 
         $count = 0;
-        $expectedRecipients = \count($pendingRecipients);
+        $total = \count($pendingRecipients);
 
         // Loop as long as the there are pending recipients and the sendout is sendable
         while ($sendout->getIsSendable() AND \count($pendingRecipients)) {
             // Set progress
-            $this->setProgress($queue, $count / $expectedRecipients);
+            $this->setProgress($queue, $count / $total);
 
             // Get next pending recipient
             $pendingRecipient = array_shift($pendingRecipients);
@@ -167,7 +167,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Finalise sending
         Campaign::$plugin->sendouts->finaliseSending($sendout);
 
-        // Fire an 'afterSend' event
+        // Fire an after event
         if (Campaign::$plugin->sendouts->hasEventHandlers(SendoutsService::EVENT_AFTER_SEND)) {
             Campaign::$plugin->sendouts->trigger(SendoutsService::EVENT_AFTER_SEND, new SendoutEvent([
                 'sendout' => $sendout,

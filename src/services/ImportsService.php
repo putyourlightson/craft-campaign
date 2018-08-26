@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\jobs\ImportJob;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\records\ImportRecord;
@@ -32,10 +33,31 @@ use yii\base\InvalidConfigException;
  */
 class ImportsService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event ImportEvent
+     */
+    const EVENT_BEFORE_IMPORT = 'beforeImport';
+
+    /**
+     * @event ImportEvent
+     */
+    const EVENT_AFTER_IMPORT = 'afterImport';
+
     // Properties
     // =========================================================================
 
+    /**
+     * @var bool
+     */
     private $_handle = false;
+
+    /**
+     * @var MailingListElement|null
+     */
+    private $_mailingList;
 
 
     // Public Methods
@@ -223,11 +245,11 @@ class ImportsService extends Component
     }
 
     /**
-     * Starts an import
+     * Queues an import
      *
      * @param ImportModel $import
      */
-    public function startImport(ImportModel $import)
+    public function queueImport(ImportModel $import)
     {
         // Add import job to queue
         Craft::$app->getQueue()->push(new ImportJob(['import' => $import]));

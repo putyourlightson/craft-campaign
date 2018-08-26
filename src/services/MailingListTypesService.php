@@ -119,7 +119,7 @@ class MailingListTypesService extends Component
     {
         $isNew = $mailingListType->id === null;
 
-        // Fire a 'beforeSaveMailingListType' event
+        // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_MAILINGLIST_TYPE)) {
             $this->trigger(self::EVENT_BEFORE_SAVE_MAILINGLIST_TYPE, new MailingListTypeEvent([
                 'mailingListType' => $mailingListType,
@@ -215,7 +215,7 @@ class MailingListTypesService extends Component
      */
     public function deleteMailingListType(MailingListTypeModel $mailingListType): bool
     {
-        // Fire a 'beforeDeleteMailingListType' event
+        // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DELETE_MAILINGLIST_TYPE)) {
             $this->trigger(self::EVENT_BEFORE_DELETE_MAILINGLIST_TYPE, new MailingListTypeEvent([
                 'mailingListType' => $mailingListType,
@@ -250,7 +250,7 @@ class MailingListTypesService extends Component
             throw $e;
         }
 
-        // Fire an 'afterDeleteMailingListType' event
+        // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_DELETE_MAILINGLIST_TYPE)) {
             $this->trigger(self::EVENT_AFTER_DELETE_MAILINGLIST_TYPE, new MailingListTypeEvent([
                 'mailingListType' => $mailingListType,

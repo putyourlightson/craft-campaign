@@ -142,6 +142,7 @@ class MailingListElementQuery extends ElementQuery
 
         $this->query->select([
             'campaign_mailinglists.mailingListTypeId',
+            'campaign_mailinglists.syncedUserGroupId',
         ]);
 
         if ($this->mailingListTypeId) {
@@ -154,13 +155,6 @@ class MailingListElementQuery extends ElementQuery
 
         if ($this->synced === true) {
             $this->subQuery->andWhere(['not', ['syncedUserGroupId' => 'null']]);
-        }
-
-        $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
-        $this->subQuery->select('campaign_mailinglisttypes.name AS mailingListType');
-
-        if ($this->mailingListTypeId) {
-            $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));
         }
 
         return parent::beforePrepare();

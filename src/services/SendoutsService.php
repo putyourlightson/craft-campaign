@@ -305,7 +305,7 @@ class SendoutsService extends Component
         // Add webhooks to message
         $this->_addWebhooks($message, $sendout->sid);
 
-        // Fire a 'beforeSendEmail' event
+        // Fire a before event
         $event = new SendoutEmailEvent([
             'sendout' => $sendout,
             'contact' => $contact,
@@ -348,7 +348,7 @@ class SendoutsService extends Component
         // Save sendout
         Craft::$app->getElements()->saveElement($sendout);
 
-        // Fire an 'afterSendEmail' event
+        // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
             $this->trigger(self::EVENT_AFTER_SEND_EMAIL, new SendoutEmailEvent([
                 'sendout' => $sendout,

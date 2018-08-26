@@ -127,7 +127,7 @@ class CampaignTypesService extends Component
     {
         $isNew = $campaignType->id === null;
 
-        // Fire a 'beforeSaveCampaignType' event
+        // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
@@ -184,7 +184,7 @@ class CampaignTypesService extends Component
             throw $e;
         }
 
-        // Fire an 'afterSaveCampaignType' event
+        // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
@@ -224,7 +224,7 @@ class CampaignTypesService extends Component
      */
     public function deleteCampaignType(CampaignTypeModel $campaignType): bool
     {
-        // Fire a 'beforeDeleteCampaignType' event
+        // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_DELETE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_BEFORE_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,

@@ -6,11 +6,11 @@
 
 namespace putyourlightson\campaign\jobs;
 
-use putyourlightson\campaign\Campaign;
-
 use Craft;
 use craft\queue\BaseJob;
-use putyourlightson\campaign\models\ImportModel;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\events\ImportEvent;
+use putyourlightson\campaign\services\ImportsService;
 
 /**
  * ImportJob
@@ -25,9 +25,9 @@ class ImportJob extends BaseJob
     // =========================================================================
 
     /**
-     * @var ImportModel
+     * @var int
      */
-    public $import;
+    public $importId;
 
     // Public Methods
     // =========================================================================
@@ -39,17 +39,33 @@ class ImportJob extends BaseJob
      */
     public function execute($queue)
     {
-        $import = $this->import;
+        $import = Campaign::$plugin->imports->getImportById($this->importId);
+
+        if ($import === null) {
+            return;
+        }
+
+        // Fire a before event
+        $event = new ImportEvent([
+            'import' => $import,
+        ]);
+        Campaign::$plugin->imports->trigger(ImportsService::EVENT_BEFORE_IMPORT, $event);
+
+        if (!$event->isValid) {
+            return;
+        }
+
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
 
         // Get rows
         $rows = Campaign::$plugin->imports->getRows($import);
-        $totalRows = \count($rows);
+        $total = \count($rows);
 
         // Loop as long as the there are lines
         foreach ($rows as $i => $row) {
             // Set progress
-            $progress = $i / $totalRows;
-            $this->setProgress($queue, $progress);
+            $this->setProgress($queue, $i / $total);
 
             // Import row
             $import = Campaign::$plugin->imports->importRow($import, $row, $i + 1);
@@ -59,6 +75,13 @@ class ImportJob extends BaseJob
 
         // Save import
         Campaign::$plugin->imports->saveImport($import);
+
+        // Fire an after event
+        if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
+            Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, new ImportEvent([
+                'import' => $import,
+            ]));
+        }
     }
 
     // Protected Methods

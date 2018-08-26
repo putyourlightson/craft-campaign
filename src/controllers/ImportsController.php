@@ -129,7 +129,7 @@ class ImportsController extends Controller
             return $this->_returnFieldsTemplate($import);
         }
 
-        Campaign::$plugin->imports->startImport($import);
+        Campaign::$plugin->imports->queueImport($import);
 
         // Log it
         Campaign::$plugin->logUserAction('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName], __METHOD__);
@@ -154,7 +154,11 @@ class ImportsController extends Controller
         $request = Craft::$app->getRequest();
 
         // Get the user group ID
-        $userGroupId = $request->getRequiredBodyParam('userGroup');
+        $userGroupId = $request->getRequiredBodyParam('userGroupId');
+
+        if ($userGroupId === null) {
+            throw new BadRequestHttpException('User group is required.');
+        }
 
         // Get user group
         $userGroup = Craft::$app->getUserGroups()->getGroupById($userGroupId);
@@ -202,7 +206,7 @@ class ImportsController extends Controller
             return $this->_returnFieldsTemplate($import);
         }
 
-        Campaign::$plugin->imports->startImport($import);
+        Campaign::$plugin->imports->queueImport($import);
 
         // Log it
         Campaign::$plugin->logUserAction('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name], __METHOD__);

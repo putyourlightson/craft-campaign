@@ -20,7 +20,7 @@ use yii\web\Response;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0
+ * @since     1.2.0
  */
 class SyncController extends Controller
 {
@@ -56,7 +56,12 @@ class SyncController extends Controller
         $mailingListId = (\is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : null;
 
         if ($mailingListId === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Mailing list is required.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save mailing list.'));
+
+            // Send the errors back to the template
+            Craft::$app->getUrlManager()->setRouteParams([
+                'errors' => ['mailingListId' => [Craft::t('campaign', 'Mailing list is required.')]]
+            ]);
 
             return null;
         }
@@ -64,38 +69,32 @@ class SyncController extends Controller
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Mailing list not found.'));
-
-            return null;
+            throw new BadRequestHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         $userGroupId = $request->getRequiredBodyParam('userGroupId');
 
         if ($userGroupId === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'User group is required.'));
-
-            return null;
+            throw new BadRequestHttpException('User group is required.');
         }
 
         $userGroup = Craft::$app->getUserGroups()->getGroupById($userGroupId);
 
         if ($userGroup === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'User group not found.'));
-
-            return null;
+            throw new BadRequestHttpException(Craft::t('campaign', 'User group not found.'));
         }
 
         $mailingList->syncedUserGroupId = $userGroup->id;
 
         Craft::$app->getElements()->saveElement($mailingList);
 
-        Campaign::$plugin->mailingLists->syncUserGroup($mailingList);
+        Campaign::$plugin->sync->queueSync($mailingList);
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list synced with user group.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
 
         return $this->redirectToPostedUrl();
     }

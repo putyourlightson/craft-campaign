@@ -130,7 +130,7 @@ class TrackerService extends Component
      */
     public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '', $verify = false)
     {
-        // Fire a 'beforeSubscribeContact' event
+        // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_BEFORE_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
                 'contact' => $contact,
@@ -184,7 +184,7 @@ class TrackerService extends Component
         $mailingList = $contactCampaign->getMailingList();
 
         if ($mailingList !== null) {
-            // Fire a 'beforeUnubscribeContact' event
+            // Fire a before event
             if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
                 $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
                     'contact' => $contact,

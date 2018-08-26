@@ -379,7 +379,6 @@ class CampaignElement extends Element
      * @return string
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      */
     public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null): string
     {
@@ -395,7 +394,6 @@ class CampaignElement extends Element
      * @return string
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      */
     public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null): string
     {
@@ -571,7 +569,6 @@ class CampaignElement extends Element
      *
      * @return string
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      * @throws Exception
      */
     private function _getBody($templateType = 'html', ContactElement $contact = null, SendoutElement $sendout = null): string

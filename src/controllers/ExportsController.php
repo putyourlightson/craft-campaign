@@ -134,9 +134,6 @@ class ExportsController extends Controller
         // Log it
         Campaign::$plugin->logUserAction('File exported by "{username}".', [], __METHOD__);
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
         return Craft::$app->getResponse()->sendFile($export->filePath);
     }
 }

@@ -42,14 +42,16 @@
                 selectionLabel: "Add a mailing list"|t('campaign'),
                 limit: 1,
                 required: true,
+                errors: errors.mailingListId ?? '',
             }) }}
 
             {{ forms.selectField({
                 label: "User Group"|t('campaign'),
                 instructions: "Choose a user group to sync to."|t('campaign'),
-                name: 'userGroup',
+                name: 'userGroupId',
                 options: userGroupOptions,
                 required: true,
+                errors: errors.userGroupId ?? '',
             }) }}
 
             <input type="submit" class="btn submit" value="{{ 'Sync'|t('campaign') }}" />
@@ -70,10 +72,10 @@
             </thead>
             <tbody>
             {% for mailingList in syncedMailingLists %}
-                {% set user = import.user %}
-                <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
-                    <td data-title="{{ 'Mailing List'|t('campaign') }}">{{ mailingList.title }}</td>
-                    <td data-title="{{ 'User Group'|t('campaign') }}">{{ mailingList.syncedUserGroup.title }}</td>
+                {% set userGroup = mailingList.getSyncedUserGroup() %}
+                <tr data-id="{{ mailingList.id }}" data-name="{{ mailingList.title }}">
+                    <td data-title="{{ 'Mailing List'|t('campaign') }}"><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a></td>
+                    <td data-title="{{ 'User Group'|t('campaign') }}"><a href="{{ url('users') }}" class="go" target="_blank">{{ userGroup.name }}</a></td>
                     <td class="thin"><a class="delete icon" title="{{ 'Remove'|t('campaign') }}" role="button"></a></td>
                 </tr>
             {% endfor %}

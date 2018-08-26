@@ -120,11 +120,11 @@ class MailingListsService extends Component
     }
 
     /**
-     * Syncs a user group to a mailing list
+     * Syncs a mailing list to a user group
      *
      * @param MailingListElement $mailingList
      */
-    public function syncUserGroup(MailingListElement $mailingList)
+    public function syncMailingList(MailingListElement $mailingList)
     {
         if ($mailingList->syncedUserGroupId === null) {
             return;

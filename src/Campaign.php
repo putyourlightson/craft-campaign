@@ -21,6 +21,7 @@ use putyourlightson\campaign\services\ReportsService;
 use putyourlightson\campaign\services\SegmentsService;
 use putyourlightson\campaign\services\SendoutsService;
 use putyourlightson\campaign\services\SettingsService;
+use putyourlightson\campaign\services\SyncService;
 use putyourlightson\campaign\services\TrackerService;
 use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
@@ -41,7 +42,6 @@ use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
-use craft\web\User;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -65,6 +65,7 @@ use yii\web\ForbiddenHttpException;
  * @property  SegmentsService $segments
  * @property  SendoutsService $sendouts
  * @property  SettingsService $settings
+ * @property  SyncService $sync
  * @property  TrackerService $tracker
  * @property  WebhookService $webhook
  *
@@ -106,6 +107,7 @@ class Campaign extends Plugin
             'segments' => SegmentsService::class,
             'sendouts' => SendoutsService::class,
             'settings' => SettingsService::class,
+            'sync' => SyncService::class,
             'tracker' => TrackerService::class,
             'webhook' => WebhookService::class,
         ]);

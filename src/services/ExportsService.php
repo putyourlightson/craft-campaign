@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
 
 use craft\base\Component;
@@ -19,6 +21,19 @@ use craft\base\Component;
  */
 class ExportsService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event ExportEvent
+     */
+    const EVENT_BEFORE_EXPORT = 'beforeExport';
+
+    /**
+     * @event ExportEvent
+     */
+    const EVENT_AFTER_EXPORT = 'afterExport';
+
     // Public Methods
     // =========================================================================
 
@@ -32,6 +47,19 @@ class ExportsService extends Component
      */
     public function exportFile(ExportModel $export): bool
     {
+        // Fire a before event
+        $event = new ExportEvent([
+            'export' => $export,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_EXPORT, $event);
+
+        if (!$event->isValid) {
+            return false;
+        }
+
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
         // Open file for writing
         $handle = fopen($export->filePath, 'wb');
 
@@ -64,6 +92,13 @@ class ExportsService extends Component
 
         // Close file
         fclose($handle);
+
+        // Fire an after event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_EXPORT)) {
+            $this->trigger(self::EVENT_AFTER_EXPORT, new ExportEvent([
+                'export' => $export,
+            ]));
+        }
 
         return true;
     }
