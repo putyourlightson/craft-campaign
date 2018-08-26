@@ -103,7 +103,6 @@ class SendoutsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
     public function actionGetHtmlBody(): Response
@@ -456,7 +455,6 @@ class SendoutsController extends Controller
      * @throws InvalidConfigException
      * @throws MissingComponentException
      * @throws NotFoundHttpException
-     * @throws \Twig_Error_Loader
      */
     public function actionSendTest(): Response
     {

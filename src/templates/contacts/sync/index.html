@@ -92,5 +92,6 @@ new Craft.AdminTable({
     sortable: true,
     deleteAction: 'campaign/sync/remove-synced-mailing-list',
     confirmDeleteMessage: '{{ 'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.'|t('campaign') }}',
+    deleteSuccessMessage: '{{ 'Syncing successfully removed.'|t('campaign') }}',
 });
 {% endjs %}

@@ -43,7 +43,7 @@ use yii\base\InvalidConfigException;
  * @property MailingListElement[] $bouncedMailingLists
  * @property int $pendingCount
  * @property string $countryCode
- * @property MailingListElement[] $allMailingLists
+ * @property MailingListElement[] $mailingLists
  * @property bool $isSubscribed
  * @property int $subscribedCount
  */

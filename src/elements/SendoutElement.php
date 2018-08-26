@@ -25,7 +25,6 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
-use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\helpers\Json;
 use craft\validators\DateTimeValidator;
@@ -802,7 +801,6 @@ class SendoutElement extends Element
      * Returns the sendout's HTML body
      *
      * @return string|null
-     * @throws \Twig_Error_Loader
      * @throws Exception
      * @throws InvalidConfigException
      */
@@ -826,7 +824,6 @@ class SendoutElement extends Element
      *
      * @return string|null
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      * @throws Exception
      */
     public function getPlaintextBody()
@@ -986,7 +983,6 @@ class SendoutElement extends Element
      *
      * @return string
      * @throws Exception
-     * @throws InvalidConfigException
      * @throws \Twig_Error_Loader
      */
     protected function tableAttributeHtml(string $attribute): string

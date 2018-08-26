@@ -11,8 +11,6 @@ use putyourlightson\campaign\Campaign;
 
 use Craft;
 use craft\queue\BaseJob;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\SyncEvent;
 use putyourlightson\campaign\services\SyncService;
 

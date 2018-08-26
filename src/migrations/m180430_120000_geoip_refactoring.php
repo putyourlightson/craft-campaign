@@ -34,6 +34,8 @@ class m180430_120000_geoip_refactoring extends Migration
                 continue;
             }
 
+            $geoIp = $contact->geoIp;
+
             $contact->geoIp = [
                 'city' => $geoIp['city'] ?? '',
                 'postCode' => $geoIp['zip_code'] ?? '',
@@ -45,52 +47,6 @@ class m180430_120000_geoip_refactoring extends Migration
             ];
 
             Craft::$app->getElements()->saveElement($contact);
-        }
-
-        // Resave contact campaigns
-        $contactCampaigns = ContactCampaignRecord::find()
-            ->where(['not', ['geoIp' => null]])
-            ->andWhere(['not', ['geoIp' => '']])
-            ->all();
-
-        foreach ($contactCampaigns as $contactCampaign) {
-            /** @var ContactCampaignRecord $contactCampaign */
-            $geoIp = Json::decode($contactCampaign->geoIp);
-
-            $contactCampaign->geoIp = [
-                'city' => $geoIp['city'] ?? '',
-                'postCode' => $geoIp['zip_code'] ?? '',
-                'regionCode' => $geoIp['region_code'] ?? '',
-                'regionName' => $geoIp['region_name'] ?? '',
-                'countryCode' => $geoIp['country_code'] ?? '',
-                'countryName' => $geoIp['country_name'] ?? '',
-                'timeZone' => $geoIp['time_zone'] ?? '',
-            ];
-
-            $contactCampaign->save();
-        }
-
-        // Resave contact mailing lists
-        $contactMailingLists = ContactMailingListRecord::find()
-            ->where(['not', ['geoIp' => null]])
-            ->andWhere(['not', ['geoIp' => '']])
-            ->all();
-
-        foreach ($contactMailingLists as $contactMailingList) {
-            /** @var ContactMailingListRecord $contactMailingList */
-            $geoIp = Json::decode($contactMailingList->geoIp);
-
-            $contactMailingList->geoIp = [
-                'city' => $geoIp['city'] ?? '',
-                'postCode' => $geoIp['zip_code'] ?? '',
-                'regionCode' => $geoIp['region_code'] ?? '',
-                'regionName' => $geoIp['region_name'] ?? '',
-                'countryCode' => $geoIp['country_code'] ?? '',
-                'countryName' => $geoIp['country_name'] ?? '',
-                'timeZone' => $geoIp['time_zone'] ?? '',
-            ];
-
-            $contactMailingList->save();
         }
     }
 

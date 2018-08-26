@@ -249,7 +249,6 @@ class CampaignsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Twig_Error_Loader
      */
     public function actionSendTest(): Response
     {

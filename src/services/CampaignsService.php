@@ -139,7 +139,6 @@ class CampaignsService extends Component
      *
      * @return bool Whether the test was sent successfully
      * @throws Exception
-     * @throws \Twig_Error_Loader
      */
     public function sendTest(CampaignElement $campaign, ContactElement $contact): bool
     {

@@ -186,7 +186,6 @@ class SendoutsService extends Component
      * @return bool Whether the test was sent successfully
      * @throws Exception
      * @throws MissingComponentException
-     * @throws \Twig_Error_Loader
      * @throws InvalidConfigException
      */
     public function sendTest(SendoutElement $sendout, ContactElement $contact): bool

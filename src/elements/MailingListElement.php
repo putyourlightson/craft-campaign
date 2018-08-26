@@ -29,18 +29,19 @@ use yii\base\InvalidConfigException;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property int                  $unsubscribedCount
- * @property int                  $complainedCount
- * @property ContactElement[]     $bouncedContacts
- * @property ContactElement[]     $unsubscribedContacts
- * @property int                  $bouncedCount
- * @property string               $reportUrl
- * @property int                  $pendingCount
- * @property ContactElement[]     $pendingContacts
- * @property int                  $subscribedCount
+ * @property int $unsubscribedCount
+ * @property int $complainedCount
+ * @property ContactElement[] $bouncedContacts
+ * @property ContactElement[] $unsubscribedContacts
+ * @property int $bouncedCount
+ * @property string $reportUrl
+ * @property int $pendingCount
+ * @property ContactElement[] $pendingContacts
+ * @property int $subscribedCount
  * @property MailingListTypeModel $mailingListType
- * @property ContactElement[]     $complainedContacts
- * @property ContactElement[]     $subscribedContacts
+ * @property ContactElement[] $complainedContacts
+ * @property UserGroup|null $syncedUserGroup
+ * @property ContactElement[] $subscribedContacts
  */
 class MailingListElement extends Element
 {

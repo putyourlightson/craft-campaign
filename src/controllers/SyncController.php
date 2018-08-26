@@ -12,7 +12,6 @@ use Craft;
 use craft\web\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
@@ -42,9 +41,8 @@ class SyncController extends Controller
      *
      * @throws ForbiddenHttpException
      * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
      */
-    public function actionAddSyncedMailingList()
+    public function actionAddSyncedMailingList(): Response
     {
         $this->requirePermission('campaign:sync');
 
@@ -117,7 +115,7 @@ class SyncController extends Controller
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+            throw new BadRequestHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         $mailingList->syncedUserGroupId = null;
@@ -128,7 +126,7 @@ class SyncController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list syncing removed.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Syncing successfully removed.'));
 
         return $this->redirectToPostedUrl();
     }

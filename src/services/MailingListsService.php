@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\models\UserGroup;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ContactMailingListModel;

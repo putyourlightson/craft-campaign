@@ -5,7 +5,6 @@ namespace putyourlightson\campaign\migrations;
 use craft\db\Migration;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\SendoutRecord;
 
 /**

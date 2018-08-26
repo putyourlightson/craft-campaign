@@ -54,12 +54,6 @@ class ImportsService extends Component
      */
     private $_handle = false;
 
-    /**
-     * @var MailingListElement|null
-     */
-    private $_mailingList;
-
-
     // Public Methods
     // =========================================================================
 
