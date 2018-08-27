@@ -473,8 +473,8 @@ class SendoutElement extends Element
 
         // Set the field labels
         $labels['campaignId'] = Craft::t('campaign', 'Campaign');
-        $labels['mailingListIds'] = Craft::t('campaign', 'Mailing Lists');
-        $labels['excludedMailingListIds'] = Craft::t('campaign', 'Excluded Mailing Lists');
+        $labels['mailingListIds'] = Craft::t('campaign', 'Mailing lists');
+        $labels['excludedMailingListIds'] = Craft::t('campaign', 'Excluded mailing lists');
         $labels['segmentIds'] = Craft::t('campaign', 'Segments');
 
         return $labels;

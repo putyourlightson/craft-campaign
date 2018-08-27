@@ -1,7 +1,7 @@
 .report-chart {
     border-radius: 3px;
     border: 1px solid #e3e5e8;
-    padding-top: 20px;
+    padding: 20px 10px;
     margin-top: 20px;
     margin-bottom: 50px;
     text-align: center;
@@ -9,9 +9,8 @@
 }
 
 .report-chart .select {
-    float: right;
-    margin-top: 5px;
-    margin-right: 30px;
+    float: left;
+    margin-left: 10px;
     z-index: 1;
 }
 

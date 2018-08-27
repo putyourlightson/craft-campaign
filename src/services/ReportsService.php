@@ -145,6 +145,7 @@ class ReportsService extends Component
 
         // Get date time format ensuring interval is valid
         $format = $this->_getDateTimeFormat($interval);
+
         if ($format === null) {
             return $data;
         }
@@ -177,7 +178,10 @@ class ReportsService extends Component
             foreach ($interactions as $interaction) {
                 if ($contactCampaignRecord->$interaction) {
                     $dateTime = DateTimeHelper::toDateTime($contactCampaignRecord->$interaction);
-                    $index = $dateTime->format($format['index']);
+
+                    // Convert dateTime to format index and then timestamp
+                    $index = DateTimeHelper::toDateTime($dateTime->format($format))->getTimestamp();
+
                     $activity[$interaction][$index] = isset($activity[$interaction][$index]) ? $activity[$interaction][$index] + 1 : 1;
                 }
             }
@@ -810,38 +814,18 @@ class ReportsService extends Component
      *
      * @param string
      *
-     * @return array
+     * @return array|null
      */
-    private function _getDateTimeFormat(string $interval): array
+    private function _getDateTimeFormat(string $interval)
     {
-        // Get date and time formats
-        $longDateFormat = Craft::$app->getLocale()->getDateFormat('long', 'php');
-        $shortDateFormat = Craft::$app->getLocale()->getDateFormat('short', 'php');
-        $timeFormat = Craft::$app->getLocale()->getDateTimeFormat('long', 'php');
-
         $formats = [
-            'minutes' => [
-                'index' => str_replace(':s', '', $timeFormat),
-                'label' => 'H:i',
-            ],
-            'hours' => [
-                'index' => str_replace(['i', ':s'], ['00', ''], $timeFormat),
-                'label' => 'H:00',
-            ],
-            'days' => [
-                'index' => $longDateFormat,
-                'label' => substr($shortDateFormat, 0, 3),
-            ],
-            'months' => [
-                'index' => str_replace('j ', '', $longDateFormat),
-                'label' => str_replace('j/', '', $shortDateFormat),
-            ],
-            'years' => [
-                'index' => str_replace(['j ', 'F '], '', $longDateFormat),
-                'label' => str_replace(['j/', 'n/'], '', $shortDateFormat),
-            ],
+            'minutes' => str_replace(':s', '', DATE_ATOM),
+            'hours' => str_replace(['i', ':s'], ['00', ''], DATE_ATOM),
+            'days' => 'Y-m-d',
+            'months' => 'Y-m',
+            'years' => 'Y',
         ];
 
-        return $formats[$interval] ?? [];
+        return $formats[$interval] ?? null;
     }
 }

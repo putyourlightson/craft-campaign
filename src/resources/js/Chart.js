@@ -5,7 +5,11 @@
  */
 Campaign.Chart = Garnish.Base.extend(
     {
-        chart: null,
+        formats: {
+            minutes: 'H:m',
+            hours: 'H:00',
+            days: ''
+        },
 
         init: function(settings) {
             this.setSettings(settings);
@@ -35,19 +39,20 @@ Campaign.Chart = Garnish.Base.extend(
                     ]
                 };
 
-                new Chart({
-                    parent: '#' + $(this).attr('id'),
-                    type: 'percentage',
-                    height: 100,
-                    data: data,
-                    colors: $(this).attr('data-colors').split(',')
-                });
+                // new Chart({
+                //     parent: '#' + $(this).attr('id'),
+                //     type: 'percentage',
+                //     height: 100,
+                //     data: data,
+                //     colors: $(this).attr('data-colors').split(',')
+                // });
             });
         },
 
         getChart: function() {
             $('#chart').html('');
             $('.report-chart .spinner').show();
+            var interval = $('#interval').val();
 
             $.get({
                 url: Craft.getActionUrl(this.settings.action),
@@ -55,29 +60,52 @@ Campaign.Chart = Garnish.Base.extend(
                 data: {
                     campaignId: this.settings.campaignId,
                     mailingListId: this.settings.mailingListId,
-                    interval: $('#interval').val()
+                    interval: interval
                 },
                 success: $.proxy(function(data) {
-                    this.drawChart(data);
+                    this.drawChart(data, interval);
                     $('.report-chart .spinner').hide();
                 }, this)
             });
         },
 
-        drawChart: function(data) {
-            this.chart = new Chart({
-                parent: "#chart",
-                title: data.title ? data.title : '',
-                type: data.type ? data.type : 'bar',
-                height: data.type == 'percentage' ? 100 : 250,
-                data: data.data,
-                colors: data.colors,
-                format_tooltip_x: d => this.getTooltip(data, d)
-            });
-        },
+        drawChart: function(data, interval) {
+            var chart = new ApexCharts(
+                document.querySelector("#chart"),
+                {
+                    chart: {
+                        type: data.type,
+                        height: 300,
+                        zoom: {
+                            enabled: true
+                        }
+                    },
+                    stroke: {
+                        width: 2,
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    colors: data.colors,
+                    series: data.series,
+                    markers: {
+                        size: 4,
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                    },
+                    tooltip: {
+                        x: {
+                            format: this.formats[interval] ? this.formats[interval] : ''
+                        },
+                    },
+                    legend: {
+                        show: false,
+                    }
+                }
+            );
 
-        getTooltip: function(data, label) {
-            return data.data.indexes ? data.data.indexes[label] : label;
+            chart.render();
         },
     }
 );

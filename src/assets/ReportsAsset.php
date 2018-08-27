@@ -31,8 +31,7 @@ class ReportsAsset extends AssetBundle
             'css/chart.css',
         ];
         $this->js = [
-            // Modified version of Frappe Charts (https://github.com/frappe/charts/issues/107)
-            'js/frappe-charts.min.iife.mod.js',
+            'js/lib/apexcharts.js',
             'js/Chart.js',
         ];
 

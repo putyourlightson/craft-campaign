@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -108,19 +109,16 @@ class ReportsController extends Controller
         // Set chart type
         $chart['type'] = 'line';
 
-        $chart['data']['labels'] = [];
-        $chart['data']['indexes'] = [];
-
-        $now = new \DateTime();
+        // Get timestamps
+        $timestamps = [];
 
         /** @var \DateTime $dateTime */
         $dateTime = $data['startDateTime'];
+        $now = new \DateTime();
 
-        // Get labels and indexes
-        for ($i = 0; $i < 12; $i++) {
-            $label = $dateTime->format($data['format']['label']);
-            $chart['data']['labels'][] = $label;
-            $chart['data']['indexes'][$label] = $dateTime->format($data['format']['index']);
+        for ($i = 0; $i < 10000; $i++) {
+            // Convert dateTime to format and then timestamp
+            $timestamps[] = DateTimeHelper::toDateTime($dateTime->format($data['format']))->getTimestamp();
 
             if ($dateTime > $now) {
                 break;
@@ -128,21 +126,19 @@ class ReportsController extends Controller
             $dateTime->modify('+1 '.$data['interval']);
         }
 
-        // Get datasets
-        /** @var string[][] $data */
+        $chart['series'] = [];
+
         foreach ($data['interactions'] as $interaction) {
             $values = [];
 
-            // Set values
-            /** @var string[][][] $chart */
-            /** @var string[][][][] $data */
-            foreach ($chart['data']['indexes'] as $index) {
-                $values[] = $data['activity'][$interaction][$index] ?? 0;
+            foreach ($timestamps as $timestamp) {
+                // Convert timestamp to milliseconds
+                $values[] = [$timestamp * 1000, $data['activity'][$interaction][$timestamp] ?? 0];
             }
 
-            $chart['data']['datasets'][] = [
-                'title' => Craft::t('campaign', ucfirst($interaction)),
-                'values' => $values,
+            $chart['series'][] = [
+                'name' => Craft::t('campaign', ucfirst($interaction)),
+                'data' => $values,
             ];
         }
 
