@@ -82,7 +82,7 @@ class SyncService extends Component
             $this->syncUser($event->user);
         }
         else if ($event instanceof ElementEvent AND $event->element instanceof User) {
-            // If deleted
+            // If user was deleted then specify to remove from mailing list
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
                 $this->syncUser($event->element, true);
             }
@@ -112,9 +112,9 @@ class SyncService extends Component
      * Syncs a user
      *
      * @param User $user
-     * @param bool $deleted
+     * @param bool $remove
      */
-    public function syncUser(User $user, bool $removeAll = false)
+    public function syncUser(User $user, bool $remove = false)
     {
         // Get user's user group IDs
         $userGroupIds = [];
@@ -129,8 +129,8 @@ class SyncService extends Component
             ->all();
 
         foreach ($mailingLists as $mailingList) {
-            // If we should remove all or mailing list is not synced with user's user group ID
-            if ($removeAll OR !in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
+            // If we should remove the user or the mailing list is not synced with user's user group ID
+            if ($remove OR !in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
                 $this->removeUserMailingList($user, $mailingList);
             }
             else {

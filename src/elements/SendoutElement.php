@@ -701,7 +701,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's pending recipients based on its mailing lists and segments
+     * Returns the sendout's pending recipients based on its mailing lists, segments and schedule
      *
      * @return array
      */
