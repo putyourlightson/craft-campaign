@@ -1,5 +1,7 @@
 {% set data = craft.campaign.reports.getMailingListReportData(mailingListId) %}
 
+<p class="light">{{ 'Mailing list created on {date}.'|t('campaign', {date: data.mailingList.dateCreated|datetime('long')}) }}</p>
+
 {% if data.hasChart %}
     <div class="report-chart">
         <div class="select">

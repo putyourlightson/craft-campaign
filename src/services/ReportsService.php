@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Model;
+use craft\db\ActiveRecord;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
@@ -43,6 +45,12 @@ use craft\helpers\Db;
  */
 class ReportsService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    const MAX_INTERVALS = 60;
+    const MIN_INTERVALS = 10;
+
     // Public Methods
     // =========================================================================
 
@@ -114,6 +122,16 @@ class ReportsService extends Component
             ->orderBy(['sendDate' => SORT_ASC])
             ->all();
 
+        // Get date first sent
+        $contactCampaignRecord = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaignId])
+            ->orderBy(['dateCreated' => SORT_ASC])
+            ->limit(1)
+            ->one();
+
+        /** @var ContactCampaignRecord $contactCampaignRecord */
+        $data['dateFirstSent'] = $contactCampaignRecord === null ? null : $contactCampaignRecord->dateCreated;
+
         // Check if chart exists
         $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, null, 1)) > 0;
 
@@ -130,71 +148,12 @@ class ReportsService extends Component
      */
     public function getCampaignChartData(int $campaignId, string $interval = 'hours'): array
     {
-        $data = [];
-
-        // Get first record
-        /** @var ContactCampaignRecord $contactCampaignRecord */
-        $contactCampaignRecord = ContactCampaignRecord::find()
-            ->where(['campaignId' => $campaignId])
-            ->orderBy(['dateCreated' => SORT_ASC])
-            ->one();
-
-        if ($contactCampaignRecord === null) {
-            return $data;
-        }
-
-        // Get date time format ensuring interval is valid
-        $format = $this->_getDateTimeFormat($interval);
-
-        if ($format === null) {
-            return $data;
-        }
-
-        // Get start and end date times
-        $startDateTime = clone DateTimeHelper::toDateTime($contactCampaignRecord->dateCreated);
-        $startDateTime = $startDateTime->modify('-1 '.$interval);
-        $endDateTime = clone $startDateTime;
-        $endDateTime->modify('+12 '.$interval);
-
-        // Get contact campaigns within date range
-        $contactCampaignRecords = ContactCampaignRecord::find()
-            ->where(['campaignId' => $campaignId])
-            ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
-            ->orderBy(['dateCreated' => SORT_ASC])
-            ->all();
-
-        // Get interactions
-        $interactions = ContactCampaignModel::INTERACTIONS;
-
-        // Get activity
-        $activity = [];
-        foreach ($contactCampaignRecords as $contactCampaignRecord) {
-            /** @var ContactCampaignRecord $contactCampaignRecord */
-            $dateTime = DateTimeHelper::toDateTime($contactCampaignRecord->dateCreated);
-            if ($dateTime > $endDateTime) {
-                break;
-            }
-
-            foreach ($interactions as $interaction) {
-                if ($contactCampaignRecord->$interaction) {
-                    $dateTime = DateTimeHelper::toDateTime($contactCampaignRecord->$interaction);
-
-                    // Convert dateTime to format index and then timestamp
-                    $index = DateTimeHelper::toDateTime($dateTime->format($format))->getTimestamp();
-
-                    $activity[$interaction][$index] = isset($activity[$interaction][$index]) ? $activity[$interaction][$index] + 1 : 1;
-                }
-            }
-        }
-
-        // Set data
-        $data['startDateTime'] = $startDateTime;
-        $data['interval'] = $interval;
-        $data['format'] = $format;
-        $data['interactions'] = $interactions;
-        $data['activity'] = $activity;
-
-        return $data;
+        return $this->_getChartData(
+            ContactCampaignRecord::class,
+            ['campaignId' => $campaignId],
+            ContactCampaignModel::INTERACTIONS,
+            $interval
+        );
     }
 
     /**
@@ -509,62 +468,12 @@ class ReportsService extends Component
      */
     public function getMailingListChartData(int $mailingListId, string $interval = 'days'): array
     {
-        $data = [];
-
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
-
-        if ($mailingList === null) {
-            return [];
-        }
-
-        // Get date time format ensuring interval is valid
-        $format = $this->_getDateTimeFormat($interval);
-        if ($format === null) {
-            return $data;
-        }
-
-        // Get start and end date times
-        $startDateTime = $mailingList->dateCreated->modify('-1 '.$interval);
-        $endDateTime = clone $startDateTime;
-        $endDateTime->modify('+12 '.$interval);
-
-        // Get contact mailing lists within date range
-        $contactMailingListRecords = ContactMailingListRecord::find()
-            ->where(['mailingListId' => $mailingListId])
-            ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
-            ->orderBy(['dateCreated' => SORT_ASC])
-            ->all();
-
-        // Get interactions
-        $interactions = ContactMailingListModel::INTERACTIONS;
-
-        // Get activity
-        $activity = [];
-        foreach ($contactMailingListRecords as $contactMailingListRecord) {
-            /** @var ContactMailingListRecord $contactMailingListRecord */
-            $dateTime = DateTimeHelper::toDateTime($contactMailingListRecord->dateCreated);
-            if ($dateTime > $endDateTime) {
-                break;
-            }
-
-            foreach ($interactions as $interaction) {
-                if ($contactMailingListRecord->$interaction) {
-                    $dateTime = DateTimeHelper::toDateTime($contactMailingListRecord->$interaction);
-                    $index = $dateTime->format($format['index']);
-                    $activity[$interaction][$index] = isset($activity[$interaction][$index]) ? $activity[$interaction][$index] + 1 : 1;
-                }
-            }
-        }
-
-        // Set data
-        $data['startDateTime'] = $startDateTime;
-        $data['interval'] = $interval;
-        $data['format'] = $format;
-        $data['interactions'] = $interactions;
-        $data['activity'] = $activity;
-
-        return $data;
+        return $this->_getChartData(
+            ContactMailingListRecord::class,
+            ['mailingListId' => $mailingListId],
+            ContactMailingListModel::INTERACTIONS,
+            $interval
+        );
     }
 
     /**
@@ -636,6 +545,90 @@ class ReportsService extends Component
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns chart data
+     *
+     * @param string $recordClass
+     * @param array $condition
+     * @param array $interactions
+     * @param string $interval
+     *
+     * @return Model[]
+     */
+    private function _getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
+    {
+        $data = [];
+
+        // Get date time format ensuring interval is valid
+        $format = $this->_getDateTimeFormat($interval);
+
+        if ($format === null) {
+            return $data;
+        }
+
+        // Get first record
+        $record = $recordClass::find()
+            ->where($condition)
+            ->orderBy(['dateCreated' => SORT_ASC])
+            ->one();
+
+        if ($record === null) {
+            return $data;
+        }
+
+        /** @var ActiveRecord $record */
+        // Get start and end date times
+        $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 '.$interval);
+        $endDateTime = clone $startDateTime;
+        $endDateTime->modify('+'.self::MAX_INTERVALS.' '.$interval);
+
+        // Get records within date range
+        $records = $recordClass::find()
+            ->where($condition)
+            ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
+            ->orderBy(['dateCreated' => SORT_ASC])
+            ->all();
+
+        // Get activity
+        $activity = [];
+
+        /** @var \DateTime|null $lastInteraction */
+        $lastInteraction = null;
+
+        foreach ($records as $record) {
+            foreach ($interactions as $interaction) {
+                // If the interaction exists for the record
+                if ($record->$interaction) {
+                    // Convert interaction to datetime
+                    $interactionDateTime = DateTimeHelper::toDateTime($record->$interaction);
+
+                    // If interaction datetime is before the specified end time
+                    if ($interactionDateTime < $endDateTime) {
+                        // Update last interaction if null or if interaction dateTime is greater than it
+                        if ($lastInteraction === null OR $interactionDateTime > $lastInteraction) {
+                            $lastInteraction = $interactionDateTime;
+                        }
+
+                        // Get interaction dateTime as timestamp in the correct format
+                        $index = DateTimeHelper::toDateTime($interactionDateTime->format($format))->getTimestamp();
+
+                        $activity[$interaction][$index] = isset($activity[$interaction][$index]) ? $activity[$interaction][$index] + 1 : 1;
+                    }
+                }
+            }
+        }
+
+        // Set data
+        $data['startDateTime'] = $startDateTime;
+        $data['interval'] = $interval;
+        $data['format'] = $format;
+        $data['interactions'] = $interactions;
+        $data['activity'] = $activity;
+        $data['lastInteraction'] = $lastInteraction;
+
+        return $data;
+    }
 
     /**
      * Returns activity
@@ -814,7 +807,7 @@ class ReportsService extends Component
      *
      * @param string
      *
-     * @return array|null
+     * @return string|null
      */
     private function _getDateTimeFormat(string $interval)
     {

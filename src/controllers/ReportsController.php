@@ -13,6 +13,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\web\Controller;
+use putyourlightson\campaign\services\ReportsService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -100,50 +101,7 @@ class ReportsController extends Controller
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
 
-        /** @var \DateTime $startDateTime */
-        $startDateTime = $data['startDateTime'];
-
-        // Set chart title
-        $chart['title'] = Craft::t('campaign', 'Campaign first sent on {date}', ['date' => $startDateTime->format(Craft::$app->getLocale()->getDateTimeFormat('full', 'php'))]);
-
-        // Set chart type
-        $chart['type'] = 'line';
-
-        // Get timestamps
-        $timestamps = [];
-
-        /** @var \DateTime $dateTime */
-        $dateTime = $data['startDateTime'];
-        $now = new \DateTime();
-
-        for ($i = 0; $i < 10000; $i++) {
-            // Convert dateTime to format and then timestamp
-            $timestamps[] = DateTimeHelper::toDateTime($dateTime->format($data['format']))->getTimestamp();
-
-            if ($dateTime > $now) {
-                break;
-            }
-            $dateTime->modify('+1 '.$data['interval']);
-        }
-
-        $chart['series'] = [];
-
-        foreach ($data['interactions'] as $interaction) {
-            $values = [];
-
-            foreach ($timestamps as $timestamp) {
-                // Convert timestamp to milliseconds
-                $values[] = [$timestamp * 1000, $data['activity'][$interaction][$timestamp] ?? 0];
-            }
-
-            $chart['series'][] = [
-                'name' => Craft::t('campaign', ucfirst($interaction)),
-                'data' => $values,
-            ];
-        }
-
-        // Get colors
-        $chart['colors'] = $this->_getColors($data['interactions']);
+        $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
@@ -206,54 +164,73 @@ class ReportsController extends Controller
         // Get chart data
         $data = Campaign::$plugin->reports->getMailingListChartData($mailingListId, $interval);
 
-        /** @var \DateTime $dateTime */
-        $dateTime = $data['startDateTime'];
-        $now = new \DateTime();
-
-        // Set chart title
-        $chart['title'] = Craft::t('campaign', 'Mailing list created on {date}', ['date' => $dateTime->format(Craft::$app->getLocale()->getDateTimeFormat('full', 'php'))]);
-
-        // Set chart type
-        $chart['type'] = 'line';
-
-        // Get labels and indexes
-        for ($i = 0; $i < 12; $i++) {
-            $label = $dateTime->format($data['format']['label']);
-            $chart['data']['labels'][] = $label;
-            $chart['data']['indexes'][$label] = $dateTime->format($data['format']['index']);
-
-            if ($dateTime > $now) {
-                break;
-            }
-            $dateTime->modify('+1 '.$data['interval']);
-        }
-
-        // Get datasets
-        /** @var string[][] $data */
-        foreach ($data['interactions'] as $interaction) {
-            $values = [];
-
-            // Set values
-            /** @var string[][][] $chart */
-            /** @var string[][][][] $data */
-            foreach ($chart['data']['indexes'] as $index) {
-                $values[] = $data['activity'][$interaction][$index] ?? 0;
-            }
-
-            $chart['data']['datasets'][] = [
-                'title' => Craft::t('campaign', ucfirst($interaction)),
-                'values' => $values,
-            ];
-        }
-
-        // Get colors
-        $chart['colors'] = $this->_getColors($data['interactions']);
+        $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns chart data
+     *
+     * @param array $data
+     * @param string $interval
+     *
+     * @return array
+     */
+    private function _getChartData(array $data, string $interval): array
+    {
+        $chart = [];
+
+        // Set chart type
+        $chart['type'] = 'line';
+
+        // Get timestamps
+        $timestamps = [];
+
+        /** @var \DateTime $dateTime */
+        $dateTime = $data['startDateTime'];
+        $now = new \DateTime();
+
+        for ($i = 0; $i < ReportsService::MAX_INTERVALS; $i++) {
+            // Convert dateTime to format and then timestamp
+            $timestamps[] = DateTimeHelper::toDateTime($dateTime->format($data['format']))->getTimestamp();
+
+            // Break loop if datetime is in the future or after last interaction and loop index is at least the min intervals
+            if ($dateTime > $now OR ($data['lastInteraction'] !== null AND $dateTime > $data['lastInteraction'] AND $i >= ReportsService::MIN_INTERVALS )) {
+                break;
+            }
+
+            $dateTime->modify('+1 '.$data['interval']);
+        }
+
+        $chart['series'] = [];
+
+        foreach ($data['interactions'] as $interaction) {
+            $values = [];
+
+            foreach ($timestamps as $timestamp) {
+                // Convert timestamp to milliseconds
+                $values[] = [$timestamp * 1000, $data['activity'][$interaction][$timestamp] ?? 0];
+            }
+
+            $chart['series'][] = [
+                'name' => Craft::t('campaign', ucfirst($interaction)),
+                'data' => $values,
+            ];
+        }
+
+        // Get colors
+        $chart['colors'] = $this->_getColors($data['interactions']);
+
+        // Get interval and locale
+        $chart['interval'] = $interval;
+        $chart['locale'] = Craft::$app->getLocale()->id;
+
+        return $chart;
+    }
 
     /**
      * Returns colors

@@ -5,12 +5,6 @@
  */
 Campaign.Chart = Garnish.Base.extend(
     {
-        formats: {
-            minutes: 'H:m',
-            hours: 'H:00',
-            days: ''
-        },
-
         init: function(settings) {
             this.setSettings(settings);
 
@@ -50,9 +44,8 @@ Campaign.Chart = Garnish.Base.extend(
         },
 
         getChart: function() {
-            $('#chart').html('');
+            $('#chart').html('').css('min-height', '');
             $('.report-chart .spinner').show();
-            var interval = $('#interval').val();
 
             $.get({
                 url: Craft.getActionUrl(this.settings.action),
@@ -60,16 +53,26 @@ Campaign.Chart = Garnish.Base.extend(
                 data: {
                     campaignId: this.settings.campaignId,
                     mailingListId: this.settings.mailingListId,
-                    interval: interval
+                    interval: $('#interval').val(),
                 },
                 success: $.proxy(function(data) {
-                    this.drawChart(data, interval);
+                    this.drawChart(data);
                     $('.report-chart .spinner').hide();
                 }, this)
             });
         },
 
-        drawChart: function(data, interval) {
+        drawChart: function(data) {
+            var intervalFormats = {
+                minutes: {hour: 'numeric', minute: 'numeric', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
+                hours: {hour: 'numeric', minute: 'numeric', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
+                days: {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
+                months: {month: 'short', year: 'numeric'},
+                years: {year: 'numeric'},
+            };
+
+            var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
+
             var chart = new ApexCharts(
                 document.querySelector("#chart"),
                 {
@@ -93,10 +96,15 @@ Campaign.Chart = Garnish.Base.extend(
                     },
                     xaxis: {
                         type: 'datetime',
+                        tooltip: {
+                            enabled: false,
+                        },
                     },
                     tooltip: {
                         x: {
-                            format: this.formats[interval] ? this.formats[interval] : ''
+                            formatter: function(val) {
+                                return dateTimeFormat.format(val);
+                            }
                         },
                     },
                     legend: {

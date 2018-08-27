@@ -11,6 +11,10 @@
 
 {% set data = craft.campaign.reports.getCampaignReportData(campaignId) %}
 
+{% if data.dateFirstSent is not null %}
+    <p class="light">{{ 'Campaign first sent on {date}.'|t('campaign', {date: data.dateFirstSent|datetime('long')}) }}</p>
+{% endif %}
+
 {% if data.hasChart|length %}
     <div class="report-chart">
         <div class="select">
