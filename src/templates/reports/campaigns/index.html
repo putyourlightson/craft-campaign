@@ -10,25 +10,6 @@
 
 {% block content %}
 
-    {% if data.campaigns|length %}
-        <div class="report-chart">
-            <div class="spinner big"></div>
-            <div id="chart"></div>
-        </div>
-
-        {% js %}
-            new Campaign.Chart({
-                action: 'campaign/reports/get-campaigns-chart-data'
-            }).getChart();
-        {% endjs %}
-
-        <div class="cols padded-right">
-            <div id="open-rate" class="percentage-chart half" data-labels='{{ 'Opened'|t('campaign') }},{{ 'Unopened'|t('campaign') }}' data-values="{{ data.opened }},{{ data.recipients - data.opened }}" data-colors="#4486EC,#E3E5E8"></div>
-            <div id="click-rate" class="percentage-chart half" data-labels='{{ 'Clicked'|t('campaign') }},{{ 'Unclicked'|t('campaign') }}' data-values="{{ data.clicked }},{{ data.recipients - data.clicked }}" data-colors="#008000,#E3E5E8"></div>
-        </div>
-        <div class="clear"></div>
-    {% endif %}
-
     <h2>{{ "Campaigns Overview"|t('campaign') }}</h2>
 
     <table class="data fullwidth collapsible">

@@ -41,51 +41,6 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns campaigns chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     */
-    public function actionGetCampaignsChartData()
-    {
-        $this->requireAcceptsJson();
-
-        $chart = [];
-
-        // Get chart data
-        $data = Campaign::$plugin->reports->getCampaignsChartData();
-
-        // Set labels
-        /** @var CampaignElement[] $data */
-        foreach ($data['campaigns'] as $campaign) {
-            $chart['data']['labels'][] = $campaign->title;
-        }
-
-        // Add recipients to interactions
-        $data['interactions'] = array_merge(['recipients'], $data['interactions']);
-
-        // Get datasets
-        foreach ($data['interactions'] as $interaction) {
-            $values = [];
-
-            // Set values
-            foreach ($data['campaigns'] as $campaign) {
-                $values[] = $campaign->$interaction;
-            }
-
-            $chart['data']['datasets'][] = [
-                'title' => Craft::t('campaign', ucfirst($interaction)),
-                'values' => $values,
-            ];
-        }
-
-        // Get colors
-        $chart['colors'] = $this->_getColors($data['interactions']);
-
-        return $this->asJson($chart);
-    }
-
-    /**
      * Returns campaign chart data
      *
      * @return Response|null
@@ -102,48 +57,6 @@ class ReportsController extends Controller
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
 
         $chart = $this->_getChartData($data, $interval);
-
-        return $this->asJson($chart);
-    }
-
-    /**
-     * Returns mailing lists chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     */
-    public function actionGetMailingListsChartData()
-    {
-        $this->requireAcceptsJson();
-
-        // Get chart data
-        $data = Campaign::$plugin->reports->getMailingListsChartData();
-
-        // Set labels
-        /** @var MailingListElement[] $data */
-        foreach ($data['mailingLists'] as $mailingList) {
-            $chart['data']['labels'][] = $mailingList->title;
-        }
-
-        // Get datasets
-        foreach ($data['interactions'] as $interaction) {
-            $values = [];
-
-            // Set values
-            foreach ($data['mailingLists'] as $mailingList) {
-                $count = $interaction.'Count';
-                $values[] = $mailingList->$count;
-            }
-
-            $chart['data']['datasets'][] = [
-                'title' => Craft::t('campaign', ucfirst($interaction)),
-                'values' => $values,
-            ];
-        }
-
-        // Get colors
-        /** @var string[][] $data['interactions'] */
-        $chart['colors'] = $this->_getColors($data['interactions']);
 
         return $this->asJson($chart);
     }

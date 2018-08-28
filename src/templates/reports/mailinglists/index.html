@@ -9,19 +9,6 @@
 
 {% block content %}
 
-    {% if data.mailingLists|length %}
-        <div class="report-chart">
-            <div class="spinner big"></div>
-            <div id="chart"></div>
-        </div>
-
-        {% js %}
-            new Campaign.Chart({
-                action: 'campaign/reports/get-mailing-lists-chart-data'
-            }).getChart();
-        {% endjs %}
-    {% endif %}
-
     <h2>{{ "Mailing Lists Overview"|t('campaign') }}</h2>
 
     <table class="data fullwidth collapsible">

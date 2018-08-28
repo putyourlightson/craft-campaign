@@ -9,11 +9,6 @@
 
 {% block content %}
 
-    {% if data.total > 0 %}
-        <div class="percentage-chart" data-label="{{ 'Subscribed'|t('campaign') }}" data-value="{{ data.subscribedRate }}" data-color="#008000"></div>
-        <div class="percentage-chart" data-label="{{ 'Unsubscribed'|t('campaign') }}" data-value="{{ data.unsubscribedRate }}" data-color="#D0021B"></div>
-    {% endif %}
-
     <h2>{{ "Contacts Overview"|t('campaign') }}</h2>
 
     <table class="data fullwidth collapsible">

@@ -48,7 +48,7 @@ class ReportsService extends Component
     // Constants
     // =========================================================================
 
-    const MAX_INTERVALS = 100;
+    const MAX_INTERVALS = 60;
     const MIN_INTERVALS = 10;
 
     // Public Methods
@@ -82,24 +82,6 @@ class ReportsService extends Component
 
         // Get sendouts count
         $data['sendouts'] = SendoutElement::find()->count();
-
-        return $data;
-    }
-
-    /**
-     * Returns campaigns chart data
-     *
-     * @return array
-     */
-    public function getCampaignsChartData(): array
-    {
-        // Get all sent campaigns
-        $data['campaigns'] = CampaignElement::find()
-            ->status(CampaignElement::STATUS_SENT)
-            ->all();
-
-        // Get interactions
-        $data['interactions'] = ContactCampaignModel::INTERACTIONS;
 
         return $data;
     }
@@ -255,6 +237,8 @@ class ReportsService extends Component
      */
     public function getContactsReportData(): array
     {
+        $data = [];
+
         // Get interactions
         $interactions = ContactMailingListModel::INTERACTIONS;
 
@@ -266,29 +250,7 @@ class ReportsService extends Component
             $data[$interaction] = $count;
         }
 
-        // Get contacts data
-        $data['subscribed'] = ContactElement::find()
-                ->where(['unsubscribed' => null, 'complained' => null, 'bounced' => null])
-                ->count();
-
-        $data['unsubscribed'] = ContactElement::find()
-                ->where([['not', ['unsubscribed' => null]], 'complained' => null, 'bounced' => null])
-                ->count();
-
-        $data['complained'] = ContactElement::find()
-                ->where(['not', ['complained' => null]])
-                ->count();
-
-        $data['bounced'] = ContactElement::find()
-                ->where(['not', ['bounced' => null]])
-                ->count();
-
-        $data['total'] = $data['unsubscribed'] + $data['subscribed'] + $data['complained'] + $data['bounced'];
-
-        $data['subscribedRate'] = $data['total'] > 0 ? (($data['subscribed'] / $data['total']) * 100) : 0;
-        $data['unsubscribedRate'] = $data['total'] > 0 ? (($data['unsubscribed'] / $data['total']) * 100) : 0;
-        $data['complainedRate'] = $data['total'] > 0 ? (($data['complained'] / $data['total']) * 100) : 0;
-        $data['bouncedRate'] = $data['total'] > 0 ? (($data['bounced'] / $data['total']) * 100) : 0;
+        $data['total'] = $count = ContactMailingListRecord::find()->count();
 
         return $data;
     }
@@ -303,12 +265,10 @@ class ReportsService extends Component
     public function getContactsActivity(int $limit = 100): array
     {
         // Get recently active contacts
-        $contacts = ContactElement::find()
+        return ContactElement::find()
             ->orderBy(['lastActivity' => SORT_DESC])
             ->limit($limit)
             ->all();
-
-        return $contacts;
     }
 
     /**
@@ -417,22 +377,6 @@ class ReportsService extends Component
             $data['complained'] += $mailingList->getComplainedCount();
             $data['bounced'] += $mailingList->getBouncedCount();
         }
-
-        return $data;
-    }
-
-    /**
-     * Returns mailing lists chart data
-     *
-     * @return array
-     */
-    public function getMailingListsChartData(): array
-    {
-        // Get all mailing lists
-        $data['mailingLists'] = MailingListElement::findAll();
-
-        // Get interactions
-        $data['interactions'] = ContactMailingListModel::INTERACTIONS;
 
         return $data;
     }
