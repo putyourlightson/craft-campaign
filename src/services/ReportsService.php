@@ -48,11 +48,23 @@ class ReportsService extends Component
     // Constants
     // =========================================================================
 
-    const MAX_INTERVALS = 60;
-    const MIN_INTERVALS = 10;
+    const MIN_INTERVALS = 5;
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Returns max intervals
+     *
+     * @param string $interval
+     * @return int
+     */
+    public function getMaxIntervals(string $interval): int
+    {
+        $maxIntervals = ['minutes' => 180, 'hours' => 24, 'days' => 14, 'months'=> 12, 'years' => 10];
+
+        return $maxIntervals[$interval] ?? 12;
+    }
 
     /**
      * Returns campaigns report data
@@ -521,6 +533,7 @@ class ReportsService extends Component
         }
 
         // Get first record
+        /** @var ActiveRecord $recordClass */
         $record = $recordClass::find()
             ->where($condition)
             ->orderBy(['dateCreated' => SORT_ASC])
@@ -534,7 +547,7 @@ class ReportsService extends Component
         // Get start and end date times
         $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 '.$interval);
         $endDateTime = clone $startDateTime;
-        $endDateTime->modify('+'.self::MAX_INTERVALS.' '.$interval);
+        $endDateTime->modify('+'.$this->getMaxIntervals($interval).' '.$interval);
 
         // Get records within date range
         $records = $recordClass::find()

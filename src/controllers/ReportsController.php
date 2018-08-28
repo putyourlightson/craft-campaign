@@ -103,8 +103,9 @@ class ReportsController extends Controller
         /** @var \DateTime $dateTime */
         $dateTime = $data['startDateTime'];
         $now = new \DateTime();
+        $maxIntervals = Campaign::$plugin->reports->getMaxIntervals($interval);
 
-        for ($i = 0; $i < ReportsService::MAX_INTERVALS; $i++) {
+        for ($i = 0; $i < $maxIntervals; $i++) {
             // Convert dateTime to format and then timestamp
             $timestamps[] = DateTimeHelper::toDateTime($dateTime->format($data['format']))->getTimestamp();
 

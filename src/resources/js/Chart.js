@@ -101,6 +101,7 @@ Campaign.Chart = Garnish.Base.extend(
                     },
                     stroke: {
                         width: 2,
+                        curve: 'smooth',
                     },
                     dataLabels: {
                         enabled: false,
