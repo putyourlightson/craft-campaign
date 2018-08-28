@@ -39,11 +39,11 @@
 {% endif %}
 
 <div class="cols padded-right">
-    <div id="open-rate" class="percentage-chart half" data-labels="{{ 'Opened'|t('campaign') }},{{ 'Unopened'|t('campaign') }}" data-values="{{ data.campaign.opened }},{{ data.campaign.recipients - data.campaign.opened }}" data-colors="#4486EC,#E3E5E8"></div>
-    <div id="click-rate" class="percentage-chart half" data-labels="{{ 'Clicked'|t('campaign') }},{{ 'Unclicked'|t('campaign') }}" data-values="{{ data.campaign.clicked }},{{ data.campaign.recipients - data.campaign.clicked }}" data-colors="#008000,#E3E5E8"></div>
+    <div class="percentage-chart" data-label="{{ 'Opened'|t('campaign') }}" data-value="{{ data.campaign.getRate('opened') }}" data-color="#4486EC"></div>
+    <div class="percentage-chart" data-label="{{ 'Clicked'|t('campaign') }}" data-value="{{ data.campaign.getRate('clicked') }}" data-color="#008000"></div>
+    <div class="percentage-chart" data-label="{{ 'Unsubscribed'|t('campaign') }}" data-value="{{ data.campaign.getRate('unsubscribed') }}" data-color="#D0021B"></div>
 </div>
 <div class="clear"></div>
-
 
 <h2>{{ "Campaign Details"|t('campaign') }}</h2>
 

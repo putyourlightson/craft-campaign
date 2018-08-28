@@ -405,33 +405,21 @@ class CampaignElement extends Element
      *
      * @param string $field
      *
-     * @return float
+     * @return int
      */
-    public function getRate(string $field): float
+    public function getRate(string $field): int
     {
-        $rate = 0;
-
-        if ($this->recipients) {
-            $rate = number_format($this->$field / $this->recipients * 100, 1);
-        }
-
-        return $rate;
+        return $this->recipients > 0 ? floor(($this->$field / $this->recipients) * 100) : 0;
     }
 
     /**
      * Returns the campaign's click-through rate
      *
-     * @return float
+     * @return int
      */
-    public function getClickThroughRate(): float
+    public function getClickThroughRate(): int
     {
-        $clickThroughRate = 0;
-
-        if ($this->opened) {
-            $clickThroughRate = number_format($this->clicked / $this->opened * 100, 1);
-        }
-
-        return $clickThroughRate;
+        return $this->opened > 0 ? floor(($this->clicked / $this->opened) * 100) : 0;
     }
 
     /**

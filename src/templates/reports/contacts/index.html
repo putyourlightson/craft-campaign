@@ -4,22 +4,14 @@
 
 {% set crumbs = [] %}
 
-{% set data = craft.campaign.reports.getContactsReportData(10) %}
+{% set data = craft.campaign.reports.getContactsReportData() %}
 
 
 {% block content %}
 
-    {% if data.total %}
-        {% js %}
-            new Campaign.Chart();
-        {% endjs %}
-
-        <br/>
-
-        <div class="cols padded-right">
-            <div id="active-pending" class="percentage-chart" data-labels="{{ 'Active'|t('campaign') }},{{ 'Complained'|t('campaign') }},{{ 'Bounced'|t('campaign') }}" data-values="{{ data.active }},{{ data.complained }},{{ data.bounced }}" data-colors="#4486EC,`#503112,#000000"></div>
-        </div>
-        <div class="clear"></div>
+    {% if data.total > 0 %}
+        <div class="percentage-chart" data-label="{{ 'Subscribed'|t('campaign') }}" data-value="{{ data.subscribedRate }}" data-color="#008000"></div>
+        <div class="percentage-chart" data-label="{{ 'Unsubscribed'|t('campaign') }}" data-value="{{ data.unsubscribedRate }}" data-color="#D0021B"></div>
     {% endif %}
 
     <h2>{{ "Contacts Overview"|t('campaign') }}</h2>

@@ -3,7 +3,7 @@
     border: 1px solid #e3e5e8;
     padding: 20px 10px;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     text-align: center;
     min-height: 100px;
 }
@@ -23,36 +23,6 @@
     margin: 30px 80px 40px 0;
 }
 
-.percentage-chart {
-    margin-bottom: 10px;
-}
-
-.percentage-chart h6 {
-    display: none;
-}
-
-.percentage-chart .chart-container .graph-focus-margin {
-    margin: 0 5% ! important;
-}
-
-.percentage-chart .chart-container .graphics {
-    padding: 0;
-}
-
-.chart-container>.title {
-    margin-top: 10px !important;
-    text-transform: none;
-}
-
-.chart-container .graph-svg-tip {
-    z-index: 100 !important;
-    background-color: #333f4d !important;
-}
-
-.chart-container .graph-svg-tip.comparison .title {
-    color: #fff;
-}
-
 .apexcharts-tooltip {
     font-size: 13px !important;
 }
@@ -64,4 +34,10 @@
 .apexcharts-tooltip-series-group.active, .apexcharts-tooltip-series-group:last-child {
     line-height: 11px;
     color: #8f98a3;
+}
+
+.percentage-chart {
+    float: left;
+    width: 30%;
+    padding-left: 20px;
 }

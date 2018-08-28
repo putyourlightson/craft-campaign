@@ -184,9 +184,6 @@ class ReportsController extends Controller
     {
         $chart = [];
 
-        // Set chart type
-        $chart['type'] = 'line';
-
         // Get timestamps
         $timestamps = [];
 
@@ -207,13 +204,18 @@ class ReportsController extends Controller
         }
 
         $chart['series'] = [];
+        $chart['maxValue'] = 0;
 
         foreach ($data['interactions'] as $interaction) {
             $values = [];
 
             foreach ($timestamps as $timestamp) {
+                $value = $data['activity'][$interaction][$timestamp] ?? 0;
+
                 // Convert timestamp to milliseconds
-                $values[] = [$timestamp * 1000, $data['activity'][$interaction][$timestamp] ?? 0];
+                $values[] = [$timestamp * 1000, $value];
+
+                $chart['maxValue'] = $value > $chart['maxValue'] ? $value : $chart['maxValue'];
             }
 
             $chart['series'][] = [

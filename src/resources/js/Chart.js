@@ -23,23 +23,41 @@ Campaign.Chart = Garnish.Base.extend(
         },
 
         drawPercentageCharts: function() {
-            $('.percentage-chart').each(function() {
-                var data = {
-                    labels: $(this).attr('data-labels').split(','),
-                    datasets: [
-                        {
-                            values: $.map($(this).attr('data-values').split(','), Number)
-                        }
-                    ]
-                };
+            var options = {
+                chart: {
+                    type: 'radialBar',
+                    height: 200,
+                    animations: {
+                        enabled: false
+                    },
+                },
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            size: '75%'
+                        },
+                        dataLabels: {
+                            name: {
+                                offsetY: 0,
+                                fontSize: '16px',
+                            },
+                            value: {
+                                offsetY: 5,
+                                fontSize: '16px',
+                            },
+                        },
+                    },
+                },
+            };
 
-                // new Chart({
-                //     parent: '#' + $(this).attr('id'),
-                //     type: 'percentage',
-                //     height: 100,
-                //     data: data,
-                //     colors: $(this).attr('data-colors').split(',')
-                // });
+            $('.percentage-chart').each(function() {
+                options.series = [$(this).attr('data-value')];
+                options.labels = [$(this).attr('data-label')];
+                options.colors = [$(this).attr('data-color')];
+
+                var chart = new ApexCharts($(this)[0], options);
+
+                chart.render();
             });
         },
 
@@ -73,11 +91,9 @@ Campaign.Chart = Garnish.Base.extend(
 
             var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
 
-            var chart = new ApexCharts(
-                document.querySelector("#chart"),
-                {
+            var chart = new ApexCharts(document.querySelector("#chart"), {
                     chart: {
-                        type: data.type,
+                        type: 'line',
                         height: 300,
                         zoom: {
                             enabled: true
@@ -92,13 +108,19 @@ Campaign.Chart = Garnish.Base.extend(
                     colors: data.colors,
                     series: data.series,
                     markers: {
-                        size: 4,
+                        size: 0,
+                        hover: {
+                            size: 4
+                        }
                     },
                     xaxis: {
                         type: 'datetime',
                         tooltip: {
                             enabled: false,
                         },
+                    },
+                    yaxis: {
+                        tickAmount: data.maxValue < 5 ? data.maxValue + 1 : 5,
                     },
                     tooltip: {
                         x: {

@@ -48,7 +48,7 @@ class ReportsService extends Component
     // Constants
     // =========================================================================
 
-    const MAX_INTERVALS = 60;
+    const MAX_INTERVALS = 100;
     const MIN_INTERVALS = 10;
 
     // Public Methods
@@ -267,8 +267,12 @@ class ReportsService extends Component
         }
 
         // Get contacts data
-        $data['active'] = ContactElement::find()
-                ->where(['complained' => null, 'bounced' => null])
+        $data['subscribed'] = ContactElement::find()
+                ->where(['unsubscribed' => null, 'complained' => null, 'bounced' => null])
+                ->count();
+
+        $data['unsubscribed'] = ContactElement::find()
+                ->where([['not', ['unsubscribed' => null]], 'complained' => null, 'bounced' => null])
                 ->count();
 
         $data['complained'] = ContactElement::find()
@@ -279,7 +283,12 @@ class ReportsService extends Component
                 ->where(['not', ['bounced' => null]])
                 ->count();
 
-        $data['total'] = $data['active'] + $data['complained'] + $data['bounced'];
+        $data['total'] = $data['unsubscribed'] + $data['subscribed'] + $data['complained'] + $data['bounced'];
+
+        $data['subscribedRate'] = $data['total'] > 0 ? (($data['subscribed'] / $data['total']) * 100) : 0;
+        $data['unsubscribedRate'] = $data['total'] > 0 ? (($data['unsubscribed'] / $data['total']) * 100) : 0;
+        $data['complainedRate'] = $data['total'] > 0 ? (($data['complained'] / $data['total']) * 100) : 0;
+        $data['bouncedRate'] = $data['total'] > 0 ? (($data['bounced'] / $data['total']) * 100) : 0;
 
         return $data;
     }
