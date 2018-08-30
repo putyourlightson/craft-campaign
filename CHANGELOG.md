@@ -13,6 +13,7 @@
 - User interface improvements
 - Template refactoring and clearer instructions
 - Changed "unsent" campaign status to "pending"
+- Updated some potentially long text fields to MEDIUMTEXT
 
 ### Fixed
 - Fixed bug in Amazon SES webhook controller action

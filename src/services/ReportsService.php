@@ -61,7 +61,7 @@ class ReportsService extends Component
      */
     public function getMaxIntervals(string $interval): int
     {
-        $maxIntervals = ['minutes' => 180, 'hours' => 24, 'days' => 14, 'months'=> 12, 'years' => 10];
+        $maxIntervals = ['minutes' => 60, 'hours' => 24, 'days' => 14, 'months'=> 12, 'years' => 10];
 
         return $maxIntervals[$interval] ?? 12;
     }
