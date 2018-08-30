@@ -16,7 +16,7 @@
             value: schedule.timeDelayInterval,
         }) }}
     {% else %}
-        <p>{{ schedule.timeDelay }} {{ timeDelayIntervals[schedule.timeDelayInterval] }}</p>
+        <p>{{ schedule.timeDelay }} {{ intervalOptions[schedule.timeDelayInterval] }}</p>
     {% endif %}
 {% endset %}
 {{ forms.field({
@@ -25,3 +25,5 @@
     errors: schedule.getErrors('timeDelay'),
     required: true,
 }, input) }}
+
+{% include 'campaign/sendouts/_includes/schedule/daysOfWeek' %}

@@ -249,7 +249,7 @@ class SendoutsController extends Controller
                 'destructive' => 'true',
                 'redirect' => 'campaign/sendouts',
                 'label' => Craft::t('campaign', 'Cancel…'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It can never be sent again if cancelled.'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
             ];
         }
 

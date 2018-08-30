@@ -76,19 +76,18 @@ class AutomatedScheduleModel extends ScheduleModel
      */
     public function canSendNow(SendoutElement $sendout): bool
     {
-        $now = new \DateTime();
-        $sendTimeToday = DateTimeHelper::toDateTime($sendout->sendDate->format('H:i:s T'));
+        $sendTimeToday = (new \DateTime())->setTime(
+            $sendout->sendDate->format('H'),
+            $sendout->sendDate->format('i'),
+            $sendout->sendDate->format('s')
+        );
 
-        // Ensure send time is in the past
-        if (!DateTimeHelper::isInThePast($sendTimeToday)) {
-            return false;
-        }
-
+        // Ensure send time is in the past and day of the week is valid
         // N: Numeric representation of the day of the week: 1 to 7
-        if (empty($this->daysOfWeek[$now->format('N')]) AND DateTimeHelper::isInThePast($sendTimeToday)) {
-            return false;
+        if (DateTimeHelper::isInThePast($sendTimeToday) AND !empty($this->daysOfWeek[$sendTimeToday->format('N')])) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

@@ -83,49 +83,33 @@ class RecurringScheduleModel extends ScheduleModel
             return true;
         }
 
-        $now = new \DateTime();
+        $sendTimeToday = (new \DateTime())->setTime(
+            $sendout->sendDate->format('H'),
+            $sendout->sendDate->format('i'),
+            $sendout->sendDate->format('s')
+        );
 
         // Ensure not already sent today
-        if ($now->diff($sendout->lastSent)->d == 0) {
+        if ($sendTimeToday->diff($sendout->lastSent)->d == 0) {
             return false;
         }
-
-        $sendTimeToday = new \DateTime($sendout->sendDate->format('H:i:s T'));
 
         // Ensure send time is in the past
         if (!DateTimeHelper::isInThePast($sendTimeToday)) {
             return false;
         }
 
-        $diff = $now->diff($sendout->sendDate);
+        $diff = $sendTimeToday->diff($sendout->sendDate);
 
-        if ($this->frequencyInterval == 'days') {
-            return ($this->frequency == 1 OR $diff->d % $this->frequency == 0);
-        }
-
-        if ($this->frequencyInterval == 'weeks') {
-            // N: Numeric representation of the day of the week: 1 to 7
-            if (empty($this->daysOfWeek[$now->format('N')])) {
-                return false;
-            }
-
-            if ($this->frequency > 1 AND floor($diff->d / 7) % $this->frequency != 0) {
-                return false;
-            }
-
+        if ($this->frequencyInterval == 'days' AND ($this->frequency == 1 OR $diff->d % $this->frequency == 0)) {
             return true;
         }
-
-        if ($this->frequencyInterval == 'months') {
-            // j: Numeric representation of the day of the month: 1 to 31
-            if (empty($this->daysOfMonth[$now->format('j')])) {
-                return false;
-            }
-
-            if ($this->frequency > 1 AND $diff->m % $this->frequency != 0) {
-                return false;
-            }
-
+        // N: Numeric representation of the day of the week: 1 to 7
+        else if ($this->frequencyInterval == 'weeks' AND !empty($this->daysOfWeek[$sendTimeToday->format('N')]) AND ($this->frequency == 1 OR floor($diff->d / 7) % $this->frequency == 0)) {
+            return true;
+        }
+        // j: Numeric representation of the day of the month: 1 to 31
+        else if ($this->frequencyInterval == 'months' AND !empty($this->daysOfMonth[$sendTimeToday->format('j')]) AND ($this->frequency == 1 OR $diff->m % $this->frequency == 0)) {
             return true;
         }
 

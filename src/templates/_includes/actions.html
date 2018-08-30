@@ -11,7 +11,7 @@
                         <li>
                             <a
                                 {%- if actionItem.id is defined %} id="{{ actionItem.id }}"{% endif %}
-                                {%- if actionItem.action is defined %}{% set classes = classes|merge(['formsubmit']) %} data-actionItem="{{ actionItem.action }}"{% endif -%}
+                                {%- if actionItem.action is defined %}{% set classes = classes|merge(['formsubmit']) %} data-action="{{ actionItem.action }}"{% endif -%}
                                 {%- if actionItem.redirect is defined %} data-redirect="{{ actionItem.redirect|hash }}"{% endif -%}
                                 {%- if actionItem.confirm is defined %} data-confirm="{{ actionItem.confirm }}"{% endif -%}
                                 class="{{ classes|join(' ') }}"

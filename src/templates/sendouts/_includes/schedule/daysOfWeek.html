@@ -1,0 +1,24 @@
+{% import '_includes/forms' as forms %}
+
+{% set input %}
+    {% set days = [] %}
+    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+        {% if editable %}
+            {% set days = days|merge([forms.checkbox({
+                label: day|t('campaign'),
+                name: 'schedule[daysOfWeek][' ~ loop.index ~ ']',
+                value: 1,
+                checked: (schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index]),
+            })]) %}
+        {% elseif schedule.daysOfWeek[loop.index] is defined and schedule.daysOfWeek[loop.index] %}
+            {% set days = days|merge([day]) %}
+        {% endif %}
+    {% endfor %}
+    {{ (editable ? days|join('<br/>') : days|join(', '))|raw }}
+{% endset %}
+{{ forms.field({
+    label: "Days of Week"|t('campaign'),
+    instructions: "The days of the week on which to send."|t('campaign'),
+    errors: schedule.getErrors('daysOfWeek'),
+    required: true,
+}, input) }}
