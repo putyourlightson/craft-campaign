@@ -752,7 +752,7 @@ class SendoutElement extends Element
             /** @var AutomatedScheduleModel $automatedSchedule */
             $automatedSchedule = $this->schedule;
 
-            // Remove all contacts that have not passed the time delay since subscribing
+            // Remove any contacts that do not meet the conditions
             foreach ($recipients as $key => $recipientData) {
                 /** @var ContactMailingListRecord $contactMailingListRecord */
                 $contactMailingListRecord = ContactMailingListRecord::findOne($recipientData);
@@ -765,8 +765,8 @@ class SendoutElement extends Element
                 $subscribedDateTime = DateTimeHelper::toDateTime($contactMailingListRecord->subscribed);
                 $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
 
-                // If subscribed date time plus delay has not yet passed
-                if (!DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
+                // If subscribed date was before sendout was created or time plus delay has not yet passed
+                if ($subscribedDateTime < $this->dateCreated OR !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
                     unset($recipients[$key]);
                 }
             }
