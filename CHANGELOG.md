@@ -4,7 +4,7 @@
 ### Added
 - Added custom template conditions to segments
 - Added recurring sendouts (pro version)
-- Added syncing of mailing lists with user groups (pro version)
+- Added ability to sync contacts with users by syncing mailing lists with user groups (pro version)
 - Added info tooltip with available template tags to all template settings 
 - Added utility to queue pending sendouts
 - Added sendgrid to webhooks in general settings

@@ -393,15 +393,11 @@ class Campaign extends Plugin
                     'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
                 ],
             ],
-            'campaign:mailingLists' => [
-                'label' => Craft::t('campaign', 'Manage mailing lists'),
-                'nested' => [
-                    'campaign:syncContacts' => ['label' => Craft::t('campaign', 'Sync mailing lists')],
-                ],
-            ],
+            'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
         ];
 
         if ($this->getIsPro()) {
+            $permissions['campaign:contacts']['nested']['campaign:syncContacts'] = ['label' => Craft::t('campaign', 'Sync contacts')];
             $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
         }
 
