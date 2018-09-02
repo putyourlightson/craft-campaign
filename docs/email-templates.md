@@ -25,12 +25,12 @@ Email Optimization + Troubleshooting" by Litmus.
 
 ### HTML Templates
 Zurb offers an excellent range of free responsive HTML email templates that you can easily customise to match your site's design.  
-[https://foundation.zurb.com/emails/email-templates.html](https://foundation.zurb.com/emails/email-templates.html)
-<img src="/assets/images/zurb-email-templates.png" />
+[https://foundation.zurb.com/emails/email-templates.html](https://foundation.zurb.com/emails/email-templates.html)  
+<img src="https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/email-templates-zurb.png" />
 
 Litmus offers a wide range of free HTML email templates that you can easily customise yourself or using the Litmus Builder.  
-[https://litmus.com/community/templates](https://litmus.com/community/templates)
-<img src="/assets/images/litmus-email-templates.png" />
+[https://litmus.com/community/templates](https://litmus.com/community/templates)  
+<img src="https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/email-templates-litmus.png" />
 
 ### Testing
 A complete breakdown of the CSS support for the most popular mobile, web and desktop email clients.  

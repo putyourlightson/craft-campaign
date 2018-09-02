@@ -9,13 +9,14 @@ To **import** contacts in bulk, go to Contacts → Import and select a CSV file 
 
 To **export** contacts to a CSV file, go to Contacts → Export and select a mailing list and the fields to export.
 
-To **sync** contacts with users, go to Contacts → Sync and select a mailing list and user group to sync.
+To **sync** contacts with users, go to Contacts → Sync and select a mailing list and user group to sync. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. Modifications to contacts will NOT affect users.
 
 ### Getting Contacts
 You can get contacts from your templates with `craft.campaign.contacts` which returns an [Element Query](https://docs.craftcms.com/v3/element-queries.html).
 
     // Gets the first contact with the specified email address
     {% set contact = craft.campaign.contacts.email('jim@bean.com').one() %}
+    
     {% if contact %}
        <a href="mailto: {{ contact.email }}">{{ contact.name }}</a>
     {% endif %} 

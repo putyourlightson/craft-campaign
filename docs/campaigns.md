@@ -56,6 +56,7 @@ You can get campaigns from your templates with `craft.campaign.campaigns` which 
 
     // Gets all campaigns that are of the specified campaign type
     {% set campaigns = craft.campaign.campaigns.campaignType('newsletter').all() %}
+    
     {% for campaign in campaigns %}
        <a href="{{ campaign.url }}">{{ campaign.title }}</a>
     {% endfor %}  

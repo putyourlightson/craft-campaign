@@ -52,6 +52,11 @@ class SendoutElementQuery extends ElementQuery
      */
     public $mailingListId;
 
+    /**
+     * @var int The segment ID that the resulting sendouts must contain.
+     */
+    public $segmentId;
+
     // Public Methods
     // =========================================================================
 
@@ -111,6 +116,20 @@ class SendoutElementQuery extends ElementQuery
         return $this;
     }
 
+    /**
+     * Sets the [[segmentId]] property.
+     *
+     * @param int $value The property value
+     *
+     * @return static self reference
+     */
+    public function segmentId(int $value)
+    {
+        $this->segmentId = $value;
+
+        return $this;
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -161,6 +180,14 @@ class SendoutElementQuery extends ElementQuery
             $expression = new Expression(
                 'FIND_IN_SET(:mailingListId, campaign_sendouts.mailingListIds)',
                 [':mailingListId' => $this->mailingListId]
+            );
+            $this->subQuery->andWhere($expression);
+        }
+
+        if ($this->segmentId) {
+            $expression = new Expression(
+                'FIND_IN_SET(:segmentId, campaign_sendouts.segmentIds)',
+                [':segmentId' => $this->segmentId]
             );
             $this->subQuery->andWhere($expression);
         }

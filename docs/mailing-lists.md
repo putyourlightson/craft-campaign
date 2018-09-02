@@ -32,6 +32,7 @@ You can get mailing lists from your templates with `craft.campaign.mailingLists`
 
     // Gets the first mailing list with the specified ID
     {% set mailingList = craft.campaign.mailingLists.id(7).one() %}
+    
     {% if mailingList %}
        Subscribe to {{ mailingList.title }}
     {% endif %} 
