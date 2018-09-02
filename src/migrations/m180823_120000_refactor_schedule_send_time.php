@@ -29,14 +29,9 @@ class m180823_120000_refactor_schedule_send_time extends Migration
         foreach ($sendoutRecords as $sendoutRecord) {
             $schedule = Json::decode($sendoutRecord->schedule);
 
-            if (!empty($schedule['specificTimeDays']) AND !empty($schedule['timeOfDay']['time'])) {
-                // Set the send date time to the time of day
-                $time = explode(':', $schedule['timeOfDay']['time']);
-                $sendoutRecord->sendDate = DateTimeHelper::toDateTime($sendoutRecord->sendDate);
-                $sendoutRecord->sendDate->setTime($time[0], $time[1]);
-
-                // Remove old attributes
-                unset($schedule['specificTimeDays'], $schedule['timeOfDay']);
+            if (isset($schedule['specificTimeDays'])) {
+                // Remove old attribute
+                unset($schedule['specificTimeDays']);
 
                 $sendoutRecord->schedule = $schedule;
                 $sendoutRecord->save();

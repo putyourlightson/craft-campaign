@@ -145,14 +145,12 @@ class SendoutsService extends Component
      */
     public function queuePendingSendouts()
     {
-        $currentTimeDb = Db::prepareDateForDb(new \DateTime());
-
-        // Find pending sendouts that are ready to be sent
+        // Find pending sendouts whose send date is in the past
         $sendouts = SendoutElement::find()
             ->where([
                 'and',
                 ['sendStatus' => 'pending'],
-                ['<=', 'sendDate', $currentTimeDb],
+                ['<=', 'sendDate', Db::prepareDateForDb(new \DateTime())],
             ])
             ->all();
 

@@ -64,6 +64,8 @@
 
 </div>
 
+{% include 'campaign/sendouts/_includes/schedule/timeOfDay' %}
+
 {{ forms.lightswitchField({
     label: "Can Send To Contacts Multiple Times"|t('campaign'),
     instructions: "Whether the sendout can be sent to contacts multiple times."|t('campaign'),

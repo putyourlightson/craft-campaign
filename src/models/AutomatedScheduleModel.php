@@ -35,11 +35,6 @@ class AutomatedScheduleModel extends ScheduleModel
      */
     public $timeDelayInterval = '';
 
-    /**
-     * @var array|null Days of the week
-     */
-    public $daysOfWeek;
-
     // Public Methods
     // =========================================================================
 
@@ -76,15 +71,15 @@ class AutomatedScheduleModel extends ScheduleModel
      */
     public function canSendNow(SendoutElement $sendout): bool
     {
-        $sendTimeToday = (new \DateTime())->setTime(
-            $sendout->sendDate->format('H'),
-            $sendout->sendDate->format('i'),
-            $sendout->sendDate->format('s')
-        );
+        if (parent::canSendNow($sendout) === false) {
+            return false;
+        }
 
-        // Ensure send time is in the past and day of the week is valid
+        $now = new \DateTime();
+
+        // Ensure day of the week is valid
         // N: Numeric representation of the day of the week: 1 to 7
-        if (DateTimeHelper::isInThePast($sendTimeToday) AND !empty($this->daysOfWeek[$sendTimeToday->format('N')])) {
+        if (!empty($this->daysOfWeek[$now->format('N')])) {
             return true;
         }
 

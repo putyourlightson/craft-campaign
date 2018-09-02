@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\base;
 
+use putyourlightson\campaign\elements\SendoutElement;
+
 /**
  * ScheduleModel
  *
@@ -26,9 +28,19 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public $canSendToContactsMultipleTimes = false;
 
     /**
-     * @var \DateTime|null End date
+     * @var \DateTime|null|bool End date
      */
     public $endDate;
+
+    /**
+     * @var array|null Days of the week
+     */
+    public $daysOfWeek;
+
+    /**
+     * @var \DateTime|null|bool Time of day
+     */
+    public $timeOfDay;
 
     // Public Methods
     // =========================================================================
@@ -40,6 +52,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     {
         $attributes = parent::datetimeAttributes();
         $attributes[] = 'endDate';
+        $attributes[] = 'timeOfDay';
 
         return $attributes;
     }
@@ -60,7 +73,23 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public function rules(): array
     {
         return [
-            [['canSendToContactsMultipleTimes'], 'boolean']
+            [['canSendToContactsMultipleTimes'], 'boolean'],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canSendNow(SendoutElement $sendout): bool
+    {
+        $now = new \DateTime();
+        $timeOfDayToday = DateTimeHelper::toDateTime($this->timeOfDay);
+
+        // Ensure send date is in the past and time of day is not set or is has past
+        if (DateTimeHelper::isInThePast($sendout->sendDate) AND (empty($this->timeOfDay) OR DateTimeHelper::isInThePast($timeOfDayToday))) {
+            return true;
+        }
+
+        return false;
     }
 }

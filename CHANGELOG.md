@@ -10,12 +10,12 @@
 - Added sendgrid to webhooks in general settings
 
 ### Changed
-- User interface improvements
-- Template refactoring and clearer instructions
+- Replaced Frappe charts with ApexCharts
+- Refactored templates and added clearer instructions
 - Changed "unsent" campaign status to "pending"
 - Updated some potentially long text fields to MEDIUMTEXT
 - Automated sendouts are now only sent to contacts who subscribe after the sendout creation date
-- Added quotes to cron job URL to ensure query parameters are respected
+- Added quotes to cron job URL to ensure that query parameters are respected
 
 ### Fixed
 - Fixed bug in Amazon SES webhook controller action

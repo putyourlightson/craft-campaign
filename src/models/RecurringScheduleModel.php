@@ -36,11 +36,6 @@ class RecurringScheduleModel extends ScheduleModel
     public $frequencyInterval = '';
 
     /**
-     * @var array|null Days of the week
-     */
-    public $daysOfWeek;
-
-    /**
      * @var array|null Days of the month
      */
     public $daysOfMonth;
@@ -79,37 +74,30 @@ class RecurringScheduleModel extends ScheduleModel
      */
     public function canSendNow(SendoutElement $sendout): bool
     {
-        if ($sendout->lastSent === null) {
-            return true;
-        }
-
-        $sendTimeToday = (new \DateTime())->setTime(
-            $sendout->sendDate->format('H'),
-            $sendout->sendDate->format('i'),
-            $sendout->sendDate->format('s')
-        );
-
-        // Ensure not already sent today
-        if ($sendTimeToday->diff($sendout->lastSent)->d == 0) {
+        if (parent::canSendNow($sendout) === false) {
             return false;
         }
 
-        // Ensure send time is in the past
-        if (!DateTimeHelper::isInThePast($sendTimeToday)) {
+        $now = new \DateTime();
+
+        // Ensure not already sent within a day of now
+        if ($now->diff($sendout->lastSent)->d == 0) {
             return false;
         }
 
-        $diff = $sendTimeToday->diff($sendout->sendDate);
+        $diff = $now->diff($sendout->sendDate);
 
         if ($this->frequencyInterval == 'days' AND ($this->frequency == 1 OR $diff->d % $this->frequency == 0)) {
             return true;
         }
+
         // N: Numeric representation of the day of the week: 1 to 7
-        else if ($this->frequencyInterval == 'weeks' AND !empty($this->daysOfWeek[$sendTimeToday->format('N')]) AND ($this->frequency == 1 OR floor($diff->d / 7) % $this->frequency == 0)) {
+        if ($this->frequencyInterval == 'weeks' AND !empty($this->daysOfWeek[$now->format('N')]) AND ($this->frequency == 1 OR floor($diff->d / 7) % $this->frequency == 0)) {
             return true;
         }
+
         // j: Numeric representation of the day of the month: 1 to 31
-        else if ($this->frequencyInterval == 'months' AND !empty($this->daysOfMonth[$sendTimeToday->format('j')]) AND ($this->frequency == 1 OR $diff->m % $this->frequency == 0)) {
+        if ($this->frequencyInterval == 'months' AND !empty($this->daysOfMonth[$now->format('j')]) AND ($this->frequency == 1 OR $diff->m % $this->frequency == 0)) {
             return true;
         }
 
