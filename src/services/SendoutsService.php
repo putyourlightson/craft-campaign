@@ -139,12 +139,15 @@ class SendoutsService extends Component
     /**
      * Queues pending sendouts
      *
+     * @return int
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws \Throwable
      */
-    public function queuePendingSendouts()
+    public function queuePendingSendouts(): int
     {
+        $count = 0;
+
         // Find pending sendouts whose send date is in the past
         $sendouts = SendoutElement::find()
             ->where([
@@ -171,8 +174,12 @@ class SendoutsService extends Component
 
                 // Save sendout
                 Craft::$app->getElements()->saveElement($sendout);
+
+                $count++;
             }
         }
+
+        return $count;
     }
 
     /**

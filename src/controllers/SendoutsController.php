@@ -72,7 +72,7 @@ class SendoutsController extends Controller
             throw new ForbiddenHttpException('Unauthorised access.');
         }
 
-        Campaign::$plugin->sendouts->queuePendingSendouts();
+        $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
         if ($request->getParam('run')) {
             App::maxPowerCaptain();
@@ -84,7 +84,7 @@ class SendoutsController extends Controller
         if (Craft::$app->getView()->templateMode == View::TEMPLATE_MODE_SITE) {
             // Prep the response
             $response = Craft::$app->getResponse();
-            $response->content = '1';
+            $response->content = $count;
 
             return $response;
         }
@@ -93,7 +93,7 @@ class SendoutsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Pending sendouts queued.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', '{count} pending sendouts queued.', ['count' => $count]));
 
         return $this->redirectToPostedUrl();
     }
@@ -351,6 +351,10 @@ class SendoutsController extends Controller
             else {
                 $sendout->schedule = new RecurringScheduleModel($schedule);
             }
+
+            // Convert end date and time of day or set to null
+            $sendout->schedule->endDate = DateTimeHelper::toDateTime($sendout->schedule->endDate) ?: null;
+            $sendout->schedule->timeOfDay = DateTimeHelper::toDateTime($sendout->schedule->timeOfDay) ?: null;
 
             // Validate schedule and sendout
             $sendout->schedule->validate();

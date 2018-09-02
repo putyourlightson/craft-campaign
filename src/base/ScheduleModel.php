@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\base;
 
+use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
@@ -28,7 +29,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public $canSendToContactsMultipleTimes = false;
 
     /**
-     * @var \DateTime|null|bool End date
+     * @var \DateTime|null End date
      */
     public $endDate;
 
@@ -38,7 +39,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public $daysOfWeek;
 
     /**
-     * @var \DateTime|null|bool Time of day
+     * @var \DateTime|null Time of day
      */
     public $timeOfDay;
 
@@ -82,14 +83,25 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
      */
     public function canSendNow(SendoutElement $sendout): bool
     {
-        $now = new \DateTime();
-        $timeOfDayToday = DateTimeHelper::toDateTime($this->timeOfDay);
-
-        // Ensure send date is in the past and time of day is not set or is has past
-        if (DateTimeHelper::isInThePast($sendout->sendDate) AND (empty($this->timeOfDay) OR DateTimeHelper::isInThePast($timeOfDayToday))) {
-            return true;
+        // Ensure send date is in the past
+        if (!DateTimeHelper::isInThePast($sendout->sendDate)) {
+            return false;
         }
 
-        return false;
+        // Ensure end date is not in the past
+        if ($this->endDate !== null AND DateTimeHelper::isInThePast($this->endDate)) {
+            return false;
+        }
+
+        // Ensure time of day has past
+        if ($this->timeOfDay !== null) {
+            $timeOfDayToday = DateTimeHelper::toDateTime($this->timeOfDay);
+
+            if (!DateTimeHelper::isInThePast($timeOfDayToday)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -31,7 +31,7 @@
                 value: schedule.endDate.date ?? '',
             }) }}
         {% else %}
-            <p>{{ schedule.endDate ? schedule.endDate|datetime : '-' }}</p>
+            <p>{{ schedule.endDate ? schedule.endDate|date : '-' }}</p>
         {% endif %}
     {% endset %}
     {{ forms.field({
