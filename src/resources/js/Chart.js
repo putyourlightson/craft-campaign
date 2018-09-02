@@ -16,8 +16,14 @@ Campaign.Chart = Garnish.Base.extend(
                 this.chart.refresh();
             }, this));
 
-            // Add listener to interval
+            // Add listener to interval select
             $('#interval').change($.proxy(function() {
+                this.getChart();
+            }, this));
+
+            // Add listener to refresh button
+            $('#refresh').click($.proxy(function(event) {
+                event.preventDefault();
                 this.getChart();
             }, this));
         },
@@ -38,12 +44,12 @@ Campaign.Chart = Garnish.Base.extend(
                         },
                         dataLabels: {
                             name: {
-                                offsetY: 0,
-                                fontSize: '16px',
+                                offsetY: -10,
+                                fontSize: '14px',
                             },
                             value: {
-                                offsetY: 5,
-                                fontSize: '16px',
+                                offsetY: 3,
+                                fontSize: '20px',
                             },
                         },
                     },
@@ -61,7 +67,8 @@ Campaign.Chart = Garnish.Base.extend(
             });
         },
 
-        getChart: function() {
+        getChart: function(){
+
             $('#chart').html('').css('min-height', '');
             $('.report-chart .spinner').show();
 
@@ -92,49 +99,58 @@ Campaign.Chart = Garnish.Base.extend(
             var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
 
             var chart = new ApexCharts(document.querySelector("#chart"), {
-                    chart: {
-                        type: 'line',
-                        height: 300,
-                        zoom: {
-                            enabled: true
-                        }
-                    },
-                    stroke: {
-                        width: 2,
-                        curve: 'smooth',
-                    },
-                    dataLabels: {
+                chart: {
+                    type: 'line',
+                    height: 300,
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                stroke: {
+                    width: 2,
+                    lineCap: 'round',
+                },
+                dataLabels: {
+                    enabled: false,
+                },
+                colors: data.colors,
+                series: data.series,
+                markers: {
+                    size: 3,
+                    hover: {
+                        size: 4,
+                    }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    tooltip: {
                         enabled: false,
                     },
-                    colors: data.colors,
-                    series: data.series,
-                    markers: {
-                        size: 0,
-                        hover: {
-                            size: 4
+                },
+                yaxis: {
+                    tickAmount: data.maxValue < 5 ? data.maxValue + 1 : 5,
+                    max: data.maxValue * 1.2,
+                },
+                grid: {
+                    show: true,
+                    strokeDashArray: 5,
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                },
+                tooltip: {
+                    x: {
+                        formatter: function(val) {
+                            return dateTimeFormat.format(val);
                         }
                     },
-                    xaxis: {
-                        type: 'datetime',
-                        tooltip: {
-                            enabled: false,
-                        },
-                    },
-                    yaxis: {
-                        tickAmount: data.maxValue < 5 ? data.maxValue + 1 : 5,
-                    },
-                    tooltip: {
-                        x: {
-                            formatter: function(val) {
-                                return dateTimeFormat.format(val);
-                            }
-                        },
-                    },
-                    legend: {
-                        show: false,
-                    }
+                },
+                legend: {
+                    show: false,
                 }
-            );
+            });
 
             chart.render();
         },

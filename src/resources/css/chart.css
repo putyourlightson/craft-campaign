@@ -19,12 +19,22 @@
     padding-bottom: 5px !important;
 }
 
+.report-chart .refresh {
+    float: left;
+    width: 18px;
+    height: 18px;
+    margin: 6px;
+    position: relative;
+    z-index: 1;
+}
+
 .report-chart .spinner {
     margin: 30px 80px 40px 0;
 }
 
 .apexcharts-tooltip {
     font-size: 13px !important;
+    color: #6E8190 !important;
 }
 
 .apexcharts-tooltip-title {
@@ -33,7 +43,6 @@
 
 .apexcharts-tooltip-series-group.active, .apexcharts-tooltip-series-group:last-child {
     line-height: 11px;
-    color: #8f98a3;
 }
 
 .percentage-chart {

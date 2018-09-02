@@ -15,6 +15,7 @@
 - Changed "unsent" campaign status to "pending"
 - Updated some potentially long text fields to MEDIUMTEXT
 - Automated sendouts are now only sent to contacts who subscribe after the sendout creation date
+- Added quotes to cron job URL to ensure query parameters are respected
 
 ### Fixed
 - Fixed bug in Amazon SES webhook controller action

@@ -40,7 +40,7 @@
     }) }}
 
     {% set code %}
-        <code>wget {{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: settings.apiKey, run: true }) }} >/dev/null 2>&1</code>
+        <code>wget "{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: settings.apiKey, run: true }) }}" >/dev/null 2>&1</code>
     {% endset %}
     {{ forms.field({
         label: "Cron Jobs"|t('campaign'),
