@@ -11,16 +11,19 @@
 
 ### Changed
 - Replaced Frappe charts with ApexCharts
-- Refactored templates and added clearer instructions
+- Improved reliability of pausing and cancelling sendouts when sending has already begun 
 - Changed "unsent" campaign status to "pending"
 - Updated some potentially long text fields to MEDIUMTEXT
 - Automated sendouts are now only sent to contacts who subscribe after the sendout creation date
 - Added quotes to cron job URL to ensure that query parameters are respected
+- Removed unuseful edit action from sendout element index page
+- Refactored templates and added clearer instructions
 
 ### Fixed
 - Fixed bug in Amazon SES webhook controller action
 - Fixed possible inaccurate first send date in campaign report
 - Fixed date picker bug in segment conditions
+- Fixed bug in sendout progress calculation
 
 ## 1.1.9 - 2018-08-21
 ### Added

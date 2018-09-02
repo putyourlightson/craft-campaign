@@ -21,7 +21,6 @@ use putyourlightson\campaign\records\SendoutRecord;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
@@ -202,11 +201,6 @@ class SendoutElement extends Element
     protected static function defineActions(string $source = null): array
     {
         $actions = [];
-
-        // Edit
-        $actions[] = Craft::$app->getElements()->createAction([
-            'type' => Edit::class,
-        ]);
 
         // Pause
         $actions[] = PauseSendouts::class;
@@ -524,7 +518,7 @@ class SendoutElement extends Element
         // Get expected recipients
         $expectedRecipients = \count($this->getPendingRecipients());
 
-        $progress = $expectedRecipients == 0 ?: $this->recipients / $expectedRecipients;
+        $progress = $expectedRecipients == 0 ?: $this->recipients / ($this->recipients + $expectedRecipients);
         $progress = $progress < 1 ? $progress : 1;
 
         return $progress;

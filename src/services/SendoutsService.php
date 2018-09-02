@@ -23,6 +23,7 @@ use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
+use putyourlightson\campaign\records\SendoutRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
@@ -324,33 +325,37 @@ class SendoutsService extends Component
         // Send message
         $success = $message->send();
 
+        // Get sendout record for updating (saving the entire element is overkill and will override paused send statuses)
+        /** @var SendoutRecord|null $sendoutRecord */
+        $sendoutRecord = SendoutRecord::find()->where(['id' => $sendout->id])->one();
+
+        if ($sendoutRecord === null) {
+            return;
+        }
+
         if ($success) {
             // Update sent date
             $contactCampaignRecord->sent = new \DateTime();
 
-            // Update recipients
-            $sendout->recipients++;
-
-            // Update last sent
-            $sendout->lastSent = new \DateTime();
+            // Update recipients and last sent
+            $sendoutRecord->recipients++;
+            $sendoutRecord->lastSent = new \DateTime();
         }
         else {
             // Update failed date
             $contactCampaignRecord->failed = new \DateTime();
 
-            // Update failed recipients
-            $sendout->failedRecipients++;
-
-            // Change status to failed and add status message
-            $sendout->sendStatus = 'failed';
-            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
+            // Update failed recipients and send status
+            $sendoutRecord->failedRecipients++;
+            $sendoutRecord->sendStatus = 'failed';
+            $sendoutRecord->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
         }
 
         // Save contact campaign record
         $contactCampaignRecord->save();
 
-        // Save sendout
-        Craft::$app->getElements()->saveElement($sendout);
+        // Save sendout record
+        $sendoutRecord->save();
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {

@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\jobs;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\SendoutEvent;
+use putyourlightson\campaign\records\SendoutRecord;
 use putyourlightson\campaign\services\SendoutsService;
 
 use Craft;
@@ -93,6 +94,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             return;
         }
 
+        // Ensure sendout is sendable
+        if (!$sendout->getIsSendable()) {
+            return false;
+        }
+
         // Fire a before event
         $event = new SendoutEvent([
             'sendout' => $sendout,
@@ -126,8 +132,8 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $count = 0;
         $total = \count($pendingRecipients);
 
-        // Loop as long as the there are pending recipients and the sendout is sendable
-        while ($sendout->getIsSendable() AND \count($pendingRecipients)) {
+        // Loop as long as the there are pending recipients
+        while (\count($pendingRecipients)) {
             // Set progress
             $this->setProgress($queue, $count / $total);
 
@@ -160,8 +166,13 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
                 return;
             }
 
-            // Get fresh version of sendout
-            $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
+            /** @var SendoutRecord|null $sendoutRecord */
+            $sendoutRecord = SendoutRecord::findOne($sendout->id);
+
+            // Ensure sendout record still exists and is sendable (it may have been deleted or its send status changed in the meantime)
+            if ($sendoutRecord === null OR $sendoutRecord->sendStatus != 'sending') {
+                return;
+            }
         }
 
         // Finalise sending

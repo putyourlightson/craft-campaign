@@ -93,7 +93,7 @@ class SendoutsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', '{count} pending sendouts queued.', ['count' => $count]));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]));
 
         return $this->redirectToPostedUrl();
     }
