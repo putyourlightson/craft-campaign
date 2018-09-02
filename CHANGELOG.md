@@ -20,6 +20,7 @@
 ### Fixed
 - Fixed bug in Amazon SES webhook controller action
 - Fixed possible inaccurate first send date in campaign report
+- Fixed date picker bug in segment conditions
 
 ## 1.1.9 - 2018-08-21
 ### Added

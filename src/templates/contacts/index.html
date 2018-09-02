@@ -4,25 +4,6 @@
 
 {% set title = 'Contacts'|t('campaign') %}
 
-{% if currentUser.can('campaign:importContacts') or currentUser.can('campaign:exportContacts') %}
-    {% set tabs = {'view': {'label': 'View', 'url': url('campaign/contacts')}} %}
-    {% if currentUser.can('campaign:importContacts') %}
-        {% set tabs = tabs|merge({
-            'import': {'label': 'Import', 'url': url('campaign/contacts/import')}
-        }) %}
-    {% endif %}
-    {% if currentUser.can('campaign:exportContacts') %}
-        {% set tabs = tabs|merge({
-            'export': {'label': 'Export', 'url': url('campaign/contacts/export')}
-        }) %}
-    {% endif %}
-    {% if craft.campaign.getIsPro() and currentUser.can('campaign:syncContacts') %}
-        {% set tabs = tabs|merge({
-            'sync': {'label': 'Sync', 'url': url('campaign/contacts/sync')},
-        }) %}
-    {% endif %}
-{% endif %}
-
 
 {% block actionButton %}
     <div id="extra-headers">
