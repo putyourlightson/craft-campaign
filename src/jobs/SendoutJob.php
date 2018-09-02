@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\jobs;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\records\SendoutRecord;
 use putyourlightson\campaign\services\SendoutsService;
@@ -170,7 +171,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             $sendoutRecord = SendoutRecord::findOne($sendout->id);
 
             // Ensure sendout record still exists and is sendable (it may have been deleted or its send status changed in the meantime)
-            if ($sendoutRecord === null OR $sendoutRecord->sendStatus != 'sending') {
+            if ($sendoutRecord === null OR $sendoutRecord->sendStatus != SendoutElement::STATUS_SENDING) {
                 return;
             }
         }

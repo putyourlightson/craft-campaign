@@ -141,8 +141,6 @@ class SendoutsService extends Component
      * Queues pending sendouts
      *
      * @return int
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws \Throwable
      */
     public function queuePendingSendouts(): int
@@ -160,8 +158,6 @@ class SendoutsService extends Component
 
         /** @var SendoutElement[] $sendouts */
         foreach ($sendouts as $sendout) {
-            $queueSendout = false;
-
             // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now and there are pending recipients
             if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow() AND $sendout->getHasPendingRecipients())) {
                 // Add sendout job to queue
@@ -170,11 +166,9 @@ class SendoutsService extends Component
                     'title' => $sendout->title,
                 ]));
 
-                // Update send status
-                $sendout->sendStatus = 'queued';
+                $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
 
-                // Save sendout
-                Craft::$app->getElements()->saveElement($sendout);
+                $this->_updateSendoutRecord($sendout, ['sendStatus']);
 
                 $count++;
             }
@@ -236,7 +230,6 @@ class SendoutsService extends Component
      * @param int $mailingListId
      *
      * @throws \Throwable
-     * @throws ElementNotFoundException
      * @throws Exception
      */
     public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId)
@@ -325,37 +318,29 @@ class SendoutsService extends Component
         // Send message
         $success = $message->send();
 
-        // Get sendout record for updating (saving the entire element is overkill and will override paused send statuses)
-        /** @var SendoutRecord|null $sendoutRecord */
-        $sendoutRecord = SendoutRecord::find()->where(['id' => $sendout->id])->one();
-
-        if ($sendoutRecord === null) {
-            return;
-        }
-
         if ($success) {
             // Update sent date
             $contactCampaignRecord->sent = new \DateTime();
 
             // Update recipients and last sent
-            $sendoutRecord->recipients++;
-            $sendoutRecord->lastSent = new \DateTime();
+            $sendout->recipients++;
+            $sendout->lastSent = new \DateTime();
+
+            $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         }
         else {
             // Update failed date
             $contactCampaignRecord->failed = new \DateTime();
 
             // Update failed recipients and send status
-            $sendoutRecord->failedRecipients++;
-            $sendoutRecord->sendStatus = 'failed';
-            $sendoutRecord->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
+            $sendout->failedRecipients++;
+            $sendout->sendStatus = 'failed';
+            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
+
+            $this->_updateSendoutRecord($sendout, ['recipients', 'sendStatus', 'sendStatusMessage']);
         }
 
-        // Save contact campaign record
         $contactCampaignRecord->save();
-
-        // Save sendout record
-        $sendoutRecord->save();
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
@@ -424,17 +409,13 @@ class SendoutsService extends Component
      *
      * @param SendoutElement $sendout
      *
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws \Throwable
      */
     public function prepareSending(SendoutElement $sendout)
     {
-        // Update send status
-        if ($sendout->sendStatus != 'sending') {
-            $sendout->sendStatus = 'sending';
-            Craft::$app->getElements()->saveElement($sendout);
-        }
+        $sendout->sendStatus = SendoutElement::STATUS_SENDING;
+
+        $this->_updateSendoutRecord($sendout, ['sendStatus']);
     }
 
     /**
@@ -450,26 +431,24 @@ class SendoutsService extends Component
     public function finaliseSending(SendoutElement $sendout)
     {
         // Reset send status
-        $sendout->sendStatus = 'pending';
+        $sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
         // Update send status if not automated or recurring and fully complete
         if ($sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring' AND !$sendout->getHasPendingRecipients()) {
-            $sendout->sendStatus = 'sent';
+            $sendout->sendStatus = SendoutElement::STATUS_SENT;
         }
 
         // Get campaign
         $campaign = $sendout->getCampaign();
 
-        if ($campaign === null) {
-            return;
+        if ($campaign !== null) {
+            // Update HTML and plaintext body
+            $contact = new ContactElement();
+            $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
+            $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
         }
 
-        // Update HTML and plaintext body
-        $contact = new ContactElement();
-        $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
-        $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
-
-        Craft::$app->getElements()->saveElement($sendout);
+        $this->_updateSendoutRecord($sendout, ['sendStatus', 'htmlBody', 'plaintextBody']);
 
         // Update campaign recipients
         $recipients = ContactCampaignRecord::find()
@@ -490,19 +469,17 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @return bool Whether the action was successful
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws \Throwable
      */
     public function pauseSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->getIsPausable()) {
-            $sendout->sendStatus = 'paused';
-
-            return Craft::$app->getElements()->saveElement($sendout);
+        if (!$sendout->getIsPausable()) {
+            return false;
         }
 
-        return false;
+        $sendout->sendStatus = SendoutElement::STATUS_PAUSED;
+
+        return $this->_updateSendoutRecord($sendout, ['sendStatus']);
     }
 
     /**
@@ -511,19 +488,17 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @return bool Whether the action was successful
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws \Throwable
      */
     public function cancelSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->getIsCancellable()) {
-            $sendout->sendStatus = 'cancelled';
-
-            return Craft::$app->getElements()->saveElement($sendout);
+        if (!$sendout->getIsCancellable()) {
+            return false;
         }
 
-        return false;
+        $sendout->sendStatus = SendoutElement::STATUS_CANCELLED;
+
+        return $this->_updateSendoutRecord($sendout, ['sendStatus']);
     }
 
     /**
@@ -536,15 +511,38 @@ class SendoutsService extends Component
      */
     public function deleteSendout(SendoutElement $sendout): bool
     {
-        if ($sendout->getIsDeletable()) {
-            return Craft::$app->getElements()->deleteElement($sendout);
+        if (!$sendout->getIsDeletable()) {
+            return false;
         }
 
-        return false;
+        return Craft::$app->getElements()->deleteElement($sendout);
     }
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Updates a sendout's record with the provided fields
+     *
+     * @param SendoutElement $sendout
+     * @param array $fields
+     *
+     * @return bool
+     */
+    private function _updateSendoutRecord(SendoutElement $sendout, array $fields): bool
+    {
+        /** @var SendoutRecord|null $sendoutRecord */
+        $sendoutRecord = SendoutRecord::find()->where(['id' => $sendout->id])->one();
+
+        if ($sendoutRecord === null) {
+            return false;
+        }
+
+        // Set attributes from sendout's fields
+        $sendoutRecord->setAttributes($sendout->toArray($fields), false);
+
+        return $sendoutRecord->save();
+    }
 
     /**
      * Add webhooks to message

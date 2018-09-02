@@ -28,6 +28,8 @@ use DateTime;
  * @property int         $recipients                 Recipients
  * @property int         $failedRecipients           Failed recipients
  * @property mixed       $schedule                   Schedule
+ * @property string      $htmlBody                   HTML body
+ * @property string      $plaintextBody              Plaintext body
  * @property DateTime    $sendDate                   Send date
  * @property DateTime    $lastSent                   Last sent
  *
