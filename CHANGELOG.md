@@ -1,6 +1,6 @@
 # Campaign Changelog
 
-## 1.2.0 - Unreleased
+## 1.2.0 - 2018-09-03
 ### Added
 - Added custom template conditions to segments
 - Added recurring sendouts (pro version)
