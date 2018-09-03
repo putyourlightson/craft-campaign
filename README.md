@@ -10,9 +10,9 @@ Campaign is an email marketing plugin built specifically for Craft 3. It aims to
  
 Learn more at [craftcampaign.com](https://craftcampaign.com).
 
-View the documentation at [craftcampaign.com/docs](https://craftcampaign.com/docs).
+Read the documentation at [craftcampaign.com/docs](https://craftcampaign.com/docs).
   
-View more about the pro features at [craftcampaign.com/docs/pro-features](https://craftcampaign.com/docs/pro-features).
+Read more about the pro features at [craftcampaign.com/docs/pro-features](https://craftcampaign.com/docs/pro-features).
 
 ## Requirements
 
@@ -24,4 +24,4 @@ To install the plugin, search for "Campaign" in the Craft Plugin Store, or insta
 
         composer require putyourlightson/craft-campaign
 
-<small>Created by [PutYourLightsOn](https://www.putyourlightson.net/).</small>
+<small>Created by [PutYourLightsOn](https://putyourlightson.com/).</small>
