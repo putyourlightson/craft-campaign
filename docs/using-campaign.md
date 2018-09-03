@@ -30,24 +30,24 @@ Before sending to large mailing lists it is important to test that your campaign
 
 ### Email Templates
 The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.  
-[&raquo; More details](https://craftcampaign.com/docs/email-templates)
+[More details &raquo;](https://craftcampaign.com/docs/email-templates)
 
 ### Campaigns
 Campaigns, just like entries, have their own custom field layout (limited to a single tab), determined by the campaign type they belong to. They each have their own URL and work with live preview. A campaign can be sent to one or more mailing lists by creating and assigning it to a sendout.  
-[&raquo; More details](https://craftcampaign.com/docs/campaigns)
+[More details &raquo;](https://craftcampaign.com/docs/campaigns)
 
 ### Contacts
 Contacts, just like users, have their own custom field layout (limited to a single tab). They can be subscribed to multiple mailing lists and can be segmented using conditions. They can be imported from CSV files and user groups, and exported in CSV format.  
-[&raquo; More details](https://craftcampaign.com/docs/contacts)
+[More details &raquo;](https://craftcampaign.com/docs/contacts)
 
 ### Mailing Lists
 Mailing lists have their own custom field layout (limited to a single tab), determined by the mailing list type they belong to. They can contain an unlimited amount of subscribed contacts.  
-[&raquo; More details](https://craftcampaign.com/docs/mailing-lists)
+[More details &raquo;](https://craftcampaign.com/docs/mailing-lists)
 
 ### Segments
 Segments are sets of conditions that filter contacts by specific fields, operators and values. They can contain an unlimited amount of AND and OR conditions, and can be applied to sendouts.  
-[&raquo; More details](https://craftcampaign.com/docs/segments)
+[More details &raquo;](https://craftcampaign.com/docs/segments)
 
 ### Sendouts
 Sendouts are how you send campaigns to your mailing lists. Sendouts can be sent immediately, on a scheduled date and time, or at a specific delayed interval after a contact subscribes to a mailing list.  
-[&raquo; More details](https://craftcampaign.com/docs/sendouts)
+[More details &raquo;](https://craftcampaign.com/docs/sendouts)
