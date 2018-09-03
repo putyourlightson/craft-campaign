@@ -1,4 +1,4 @@
-# Campaign Changelog
+# Changelog
 
 ## 1.2.0 - 2018-09-03
 ### Added

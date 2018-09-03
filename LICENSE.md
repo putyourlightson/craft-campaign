@@ -1,3 +1,5 @@
+# License
+
 Copyright © PutYourLightsOn
 
 Permission is hereby granted to any person obtaining a copy of this software
