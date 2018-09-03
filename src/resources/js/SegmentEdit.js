@@ -8,10 +8,6 @@ Campaign.SegmentEdit = Garnish.Base.extend(
         init: function() {
             this.addListeners($('#fields'));
 
-            if ($('.andCondition:not(#newCondition)').length === 0) {
-                this.addAndCondition({target: $('#newCondition')});
-            }
-
             this.refreshConditions();
         },
 
