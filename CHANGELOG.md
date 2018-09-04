@@ -26,6 +26,8 @@
 - Fixed date picker bug in segment conditions
 - Fixed bug in sendout progress calculation
 
+_Thank you to [Story Group](https://story.com.au/) for partly funding the features in this version._
+
 ## 1.1.9 - 2018-08-21
 ### Added
 - Added "Verify Email Template" and "Verify Success Template" settings to mailing list types
