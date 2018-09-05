@@ -81,7 +81,7 @@ class RecurringScheduleModel extends ScheduleModel
         $now = new \DateTime();
 
         // Ensure not already sent within a day of now
-        if ($now->diff($sendout->lastSent)->d == 0) {
+        if ($sendout->lastSent !== null AND $now->diff($sendout->lastSent)->d == 0) {
             return false;
         }
 

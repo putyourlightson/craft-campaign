@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 - 2018-09-05
+### Fixed
+- Fixed bug in determining when recurring sendouts are allowed to be sent
+
 ## 1.2.0 - 2018-09-03
 ### Added
 - Added custom template conditions to segments
