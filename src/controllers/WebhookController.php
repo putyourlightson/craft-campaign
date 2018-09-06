@@ -35,7 +35,7 @@ class WebhookController extends Controller
     // Properties
     // =========================================================================
 
-    const HEADER_NAME = 'Putyourlightson-Campaign-Sid';
+    const HEADER_NAME = 'Craft-Campaign-Sid';
 
     /**
      * @inheritdoc
@@ -99,24 +99,29 @@ class WebhookController extends Controller
             /** @var array $headers */
             $headers = $message['mail']['headers'];
 
-            // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
-            $sid = '';
-            foreach ($headers as $header) {
-                if ($header['name'] == self::HEADER_NAME) {
-                    $sid = $header['value'];
-                    break;
+            if (is_array($headers)) {
+                // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
+                $sid = '';
+
+                foreach ($headers as $header) {
+                    if ($header['name'] == self::HEADER_NAME) {
+                        $sid = $header['value'];
+                        break;
+                    }
                 }
-            }
 
-            $eventType = $message['notificationType'];
+                if ($sid != '') {
+                    $eventType = $message['notificationType'];
 
-            if ($eventType == 'Complaint') {
-                $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
-                return $this->_callWebhook('complained', $email, $sid);
-            }
-            if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
-                $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
-                return $this->_callWebhook('bounced', $email, $sid);
+                    if ($eventType == 'Complaint') {
+                        $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
+                        return $this->_callWebhook('complained', $email, $sid);
+                    }
+                    if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
+                        $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
+                        return $this->_callWebhook('bounced', $email, $sid);
+                    }
+                }
             }
         }
 

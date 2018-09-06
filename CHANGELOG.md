@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.2 - 2018-09-06
+### Added
+- Added info text next to Amazon SES webhook in settings 
+
+### Changed
+- Changed email header name for SID and improved Amazon SES webhook
+
 ## 1.2.1 - 2018-09-05
 ### Fixed
 - Fixed bug in determining when recurring sendouts are allowed to be sent

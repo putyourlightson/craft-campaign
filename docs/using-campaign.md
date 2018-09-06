@@ -12,17 +12,18 @@ The Campaign plugin requires Craft CMS 3.0.1 or later.
 2. Adjust your email settings in Campaign → Settings → Email Settings.
 3. Add any custom fields you would like to contacts in Campaign → Settings → Contact Settings.
 4. Enable GeoIP if you would like to geolocate contacts by their IP addresses in Campaign → Settings → GeoIP Settings.
-5. Enable reCAPTCHA if you would like to protect mailing list subscription forms from bots in Campaign → Settings → reCAPTCHA Settings.
-6. Create at least one campaign type in Campaign → Settings → Campaign Types.
-7. Create at least one mailing list type in Campaign → Settings → Mailing List Types.
-8. If you plan on using scheduled or automated sendouts then create a cron job on your web server as explained in Campaign → Settings → General Settings.
+5. Create at least one campaign type in Campaign → Settings → Campaign Types.
+6. Create at least one mailing list type in Campaign → Settings → Mailing List Types.
+7. Create a cron job on your web server as explained in Campaign → Settings → General Settings.
 
 ### Getting Started
 1. Create a new campaign in Campaign → Campaigns.
 2. Create a new mailing list in Campaign → Mailing Lists.
-3. Add contacts to your mailing list by either:
-    - Creating contacts in Campaign → Contacts and manually subscribe them in the Mailing Lists tab.
-    - Or importing contacts from a CSV file in Campaign → Contacts → Import.
+3. Add contacts to your mailing list using one or more of the following techniques:
+    - Create contacts in Campaign → Contacts and manually subscribe them in the Mailing Lists tab.
+    - Import contacts from a CSV file in Campaign → Contacts → Import.
+    - Import contacts from a user group in Campaign → Contacts → Import.
+    - Sync contacts from users by syncing a mailing list with a user group in Campaign → Contacts → Sync (pro feature).
 4. Create a new sendout in Campaign → Sendouts.
 
 ### Testing
@@ -32,6 +33,25 @@ Before sending to large mailing lists it is important to test that your campaign
 The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.  
 [More details &raquo;](https://craftcampaign.com/docs/email-templates)
 
+### Email Delivery
+Campaign has its own email settings and can use any email delivery service that Craft supports. Craft natively supports Sendmail, SMTP and Gmail, and there are many plugins freely available which add third-party integrations (see "Mailer Transports" in the plugin store). SMTP can generally be used with most email delivery services, however using an API usually results in better performance, therefore the following plugins are recommended:
+
+1. [Amazon SES](https://github.com/putyourlightson/craft-amazon-ses) by PutYourLightsOn
+2. [Mailgun](https://github.com/craftcms/mailgun) by Pixel & Tonic
+3. [Mandrill](https://github.com/craftcms/mandrill) by Pixel & Tonic
+
+### Bounce and Complaint Handling
+
+Campaign includes webhooks to handle bounce and complain notifications for the following services:
+
+1. [Amazon SES](https://aws.amazon.com/ses/)
+2. [Mailgun](https://www.mailgun.com/) _(our personal recommendation)_
+3. [Mandrill](https://www.mandrill.com/)
+4. [Postmark](https://postmarkapp.com/)
+5. [Sendgrid](https://sendgrid.com/)
+
+To set up webhooks, copy the appropriate webhook URL from Campaign → Settings → General Settings and add it to the service you use (view each service's documentation for instructions). 
+ 
 ### Campaigns
 Campaigns, just like entries, have their own custom field layout (limited to a single tab), determined by the campaign type they belong to. They each have their own URL and work with live preview. A campaign can be sent to one or more mailing lists by creating and assigning it to a sendout.  
 [More details &raquo;](https://craftcampaign.com/docs/campaigns)

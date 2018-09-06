@@ -57,7 +57,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <th class="thin">Amazon SES</th>
+                    <th class="thin">
+                        Amazon SES
+                        <span class="info">
+                            "Include original headers" must be enabled for each notification type. <br/>
+                            See this <a href="https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/" target="_blank">article</a> for details on where and how to enable this.
+                        </span>
+                    </th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: settings.apiKey }) }}</textarea>
                     </td>
