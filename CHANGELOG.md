@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3 - 2018-09-10
+### Fixed
+- Fixed bug in determining whether a recurring sendout can be sent based on the last send date
+
 ## 1.2.2 - 2018-09-06
 ### Added
 - Added info text next to Amazon SES webhook in settings 

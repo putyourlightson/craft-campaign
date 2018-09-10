@@ -80,8 +80,8 @@ class RecurringScheduleModel extends ScheduleModel
 
         $now = new \DateTime();
 
-        // Ensure not already sent within a day of now
-        if ($sendout->lastSent !== null AND $now->diff($sendout->lastSent)->d == 0) {
+        // Ensure not already sent today
+        if ($sendout->lastSent !== null AND $sendout->lastSent->format('Ymd') == $now->format('Ymd')) {
             return false;
         }
 

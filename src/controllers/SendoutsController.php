@@ -53,7 +53,6 @@ class SendoutsController extends Controller
      * Queues pending sendouts
      *
      * @return Response
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws ForbiddenHttpException
      * @throws \Throwable
@@ -488,7 +487,6 @@ class SendoutsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
@@ -518,7 +516,6 @@ class SendoutsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws \Throwable
