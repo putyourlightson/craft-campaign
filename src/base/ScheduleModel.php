@@ -95,9 +95,10 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
 
         // Ensure time of day has past
         if ($this->timeOfDay !== null) {
-            $timeOfDayToday = DateTimeHelper::toDateTime($this->timeOfDay);
+            $now = new \DateTime();
+            $format = 'H:i';
 
-            if (!DateTimeHelper::isInThePast($timeOfDayToday)) {
+            if ($this->timeOfDay->format($format) > $now->format($format)) {
                 return false;
             }
         }
