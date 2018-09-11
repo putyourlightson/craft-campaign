@@ -30,7 +30,8 @@ abstract class BaseModel extends Model
      */
     public static function populateModel($values, bool $safeOnly = true): Model
     {
-        if ($values instanceof Model) {
+        // If an instance of a Yii model
+        if ($values instanceof \yii\base\Model) {
             $values = $values->getAttributes();
         }
 
@@ -38,7 +39,7 @@ abstract class BaseModel extends Model
 
         /** @var Model $model */
         $model = new $class();
-        $model->setAttributes($values->getAttributes(), $safeOnly);
+        $model->setAttributes($values, $safeOnly);
 
         // Re-initialise model
         $model->init();

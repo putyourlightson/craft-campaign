@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -58,12 +59,12 @@ class ImportModel extends BaseModel
     public $userId;
 
     /**
-     * @var int Email field index
+     * @var string Email field index
      */
     public $emailFieldIndex;
 
     /**
-     * @var array|null Field indexes
+     * @var mixed Field indexes
      */
     public $fieldIndexes;
 
@@ -90,7 +91,7 @@ class ImportModel extends BaseModel
     /**
      * @var mixed Failures
      */
-    public $failures = [];
+    public $failures;
 
     /**
      * @var \DateTime|null Date imported
@@ -99,6 +100,18 @@ class ImportModel extends BaseModel
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Decode JSON properties
+        $this->fieldIndexes = empty($this->fieldIndexes) ? [] : Json::decode($this->fieldIndexes);
+        $this->failures = empty($this->failures) ? [] : Json::decode($this->failures);
+    }
 
     /**
      * Use the handle as the string representation.
@@ -188,16 +201,5 @@ class ImportModel extends BaseModel
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
 
         return $mailingList;
-    }
-
-    /**
-     * Returns the failed rows as an array
-     *
-     * @return array
-     */
-    public function getFailures(): array
-    {
-        // JSON decode
-        return empty($this->failures) ? [] : json_decode($this->failures, true);
     }
 }

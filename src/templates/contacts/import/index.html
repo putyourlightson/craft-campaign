@@ -81,10 +81,10 @@
             </thead>
             <tbody>
             {% for import in imports %}
-                {% set user = import.user %}
+                {% set userGroup = import.getUserGroup() %}
                 <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
                     <th scope="row" data-title="{{ 'Source'|t('campaign') }}"><a href="{{ import.cpViewUrl }}">{{ import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign') }}</a></th>
-                    <td><a href="{{ import.fileName ? actionUrl('campaign/imports/download-file', {importId: import.id}) : cpUrl('users') }}" class="go" target="_blank">{{ import.fileName ? import.fileName : import.userGroup.name }}</a></td>
+                    <td><a href="{{ import.fileName ? actionUrl('campaign/imports/download-file', {importId: import.id}) : cpUrl('users') }}" class="go" target="_blank">{{ import.fileName ? import.fileName : (userGroup is not null ? userGroup.name) }}</a></td>
                     <td><a href="{{ import.mailingList.cpEditUrl }}" class="go" target="_blank">{{ import.mailingList.title }}</a></td>
                     <td>{{ import.added }}</td>
                     <td>{{ import.updated }}</td>

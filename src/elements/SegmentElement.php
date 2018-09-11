@@ -202,8 +202,8 @@ class SegmentElement extends Element
     {
         parent::init();
 
-        // Decode conditions if not null
-        $this->conditions = $this->conditions !== null ? Json::decode($this->conditions) : [];
+        // Decode JSON properties
+        $this->conditions = empty($this->conditions) ? [] : Json::decode($this->conditions);
     }
 
     /**

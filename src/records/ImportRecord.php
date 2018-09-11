@@ -15,10 +15,11 @@ use craft\db\ActiveRecord;
  * @property int         $id                    ID
  * @property string      $fileName              File name
  * @property string      $filePath              File path
+ * @property int         $userGroupId           User group ID
  * @property int         $userId                User ID
  * @property int         $mailingListId         Mailing list ID
- * @property int         $emailFieldIndex       Email field index
- * @property mixed       $fieldIndexes          Field indexed
+ * @property string      $emailFieldIndex       Email field index
+ * @property mixed       $fieldIndexes          Field indexes
  * @property int         $added                 Added
  * @property int         $updated               Updated
  * @property int         $failed                Failed

@@ -102,10 +102,7 @@ class ImportsService extends Component
             return null;
         }
 
-        $import = new ImportModel();
-        $import->setAttributes($importRecord->getAttributes(), false);
-
-        return $import;
+        return ImportModel::populateModel($importRecord, false);
     }
 
     /**
@@ -191,7 +188,8 @@ class ImportsService extends Component
 
         // If user group
         else {
-            $rows = User::find()->groupId($import->userGroupId)->all();
+            // Get rows as arrays
+            $rows = User::find()->groupId($import->userGroupId)->asArray()->all();
         }
 
         return $rows;

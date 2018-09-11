@@ -21,19 +21,20 @@
         {% endset %}
         {{ forms.field({label: "CSV File"|t('campaign') ~ ':'}, input) }}
     {% else %}
+        {% set userGroup = import.getUserGroup() %}
         {% set input %}
-            <p><a href="{{ cpUrl('users') }}">{{ import.userGroup.name }}</a></p>
+            <p><a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup is not null ? userGroup.name }}</a></p>
         {% endset %}
         {{ forms.field({label: "User Group"|t('campaign') ~ ':'}, input) }}
     {% endif %}
 
+        {% set mailingList = import.getMailingList() %}
     {% set input %}
-        <span class="status {{ import.mailingList.status }}"></span>{{ import.mailingList.title }}<br/>
+        <span class="status {{ import.mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a><br/>
     {% endset %}
     {{ forms.field({label: "Mailing List"|t('campaign') ~ ':'}, input) }}
 
-    {% set failures = import.getFailures() %}
-    {% if failures|length %}
+    {% if import.failures|length %}
         {% set input %}
             <table id="imports" class="data fullwidth collapsible">
                 <thead>
@@ -43,7 +44,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for lineNumber, row in failures %}
+                    {% for lineNumber, row in import.failures %}
                         <tr>
                             <td>{{ lineNumber }}</td>
                             <td><code>{{ row }}</code></td>
@@ -64,7 +65,7 @@
         <div class="data first">
             <h5 class="heading">{{ "Imported By"|t('campaign') }}</h5>
             <div class="value">
-                {% include '_elements/element' with {'element': import.user} %}
+                {% include '_elements/element' with {'element': import.getUser()} %}
             </div>
         </div>
         <div class="data">
