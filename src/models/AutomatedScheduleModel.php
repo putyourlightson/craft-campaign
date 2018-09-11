@@ -7,7 +7,6 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
-use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 

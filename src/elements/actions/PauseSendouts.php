@@ -86,8 +86,6 @@ EOD;
      *
      * @return bool Whether the action was performed successfully.
      * @throws \Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function performAction(ElementQueryInterface $query): bool
     {

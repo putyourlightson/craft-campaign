@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\jobs\ImportJob;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\records\ImportRecord;
@@ -246,7 +245,7 @@ class ImportsService extends Component
     public function queueImport(ImportModel $import)
     {
         // Add import job to queue
-        Craft::$app->getQueue()->push(new ImportJob(['import' => $import]));
+        Craft::$app->getQueue()->push(new ImportJob(['importId' => $import->id]));
     }
 
     /**

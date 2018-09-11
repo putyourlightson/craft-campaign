@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5 - 2018-09-11
+### Fixed
+- Fixed a bug when creating import jobs
+
 ## 1.2.4 - 2018-09-11
 ### Fixed
 - Fixed a bug in the accuracy of determining whether a recurring sendout can be sent based on the time of day

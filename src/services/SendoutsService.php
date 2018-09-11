@@ -597,9 +597,6 @@ class SendoutsService extends Component
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/click';
         $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid, 'lid' => '']);
 
-        // Get all links in body
-        $links = [];
-
         // Use DOMDocument to parse links
         $dom = new \DOMDocument();
 
@@ -608,6 +605,7 @@ class SendoutsService extends Component
 
         /** @var \DOMElement[] $elements*/
         $elements = $dom->getElementsByTagName('a');
+
         foreach ($elements as $element) {
             $url = $element->getAttribute('href');
             $title = $element->getAttribute('title');
@@ -620,11 +618,6 @@ class SendoutsService extends Component
                 }
 
                 $key = $url.':'.$title;
-
-                $links[$key] = [
-                    'url' => $url,
-                    'title' => $title,
-                ];
 
                 // If link has not yet been converted
                 if (!isset($this->_links[$key])) {
