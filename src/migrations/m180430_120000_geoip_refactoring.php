@@ -3,12 +3,9 @@
 namespace putyourlightson\campaign\migrations;
 
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\records\ContactCampaignRecord;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use Craft;
 use craft\db\Migration;
-use craft\helpers\Json;
 
 /**
  * m180430_120000_geoip_refactoring migration.

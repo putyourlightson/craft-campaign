@@ -102,7 +102,10 @@ class ImportsService extends Component
             return null;
         }
 
-        return ImportModel::populateModel($importRecord, false);
+        /** @var ImportModel $import */
+        $import = ImportModel::populateModel($importRecord, false);
+
+        return $import;
     }
 
     /**

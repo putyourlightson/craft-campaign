@@ -11,9 +11,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 use Craft;
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
-use yii\base\Exception;
 
 /**
  * CancelSendouts

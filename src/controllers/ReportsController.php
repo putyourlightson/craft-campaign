@@ -8,8 +8,6 @@ namespace putyourlightson\campaign\controllers;
 
 use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\web\Controller;
