@@ -127,7 +127,7 @@ class ReportsService extends Component
         $data['dateFirstSent'] = $contactCampaignRecord === null ? null : $contactCampaignRecord->dateCreated;
 
         // Check if chart exists
-        $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, null, 1)) > 0;
+        $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, 'opened', 1)) > 0;
 
         return $data;
     }
@@ -552,7 +552,7 @@ class ReportsService extends Component
         // Get records within date range
         $records = $recordClass::find()
             ->where($condition)
-            ->andWhere(Db::parseDateParam('dateCreated', '<'.$endDateTime->format(\DateTime::W3C)))
+            ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
             ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
 

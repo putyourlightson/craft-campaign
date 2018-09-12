@@ -586,6 +586,7 @@ class CampaignElement extends Element
                 'campaign' => $this,
                 'browserVersionUrl' => $this->url,
                 'contact' => $contact,
+                'sendout' => $sendout,
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }

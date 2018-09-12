@@ -83,6 +83,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
     /**
      * @inheritdoc
+     * @return void
      * @throws \Exception
      * @throws \Throwable
      */
@@ -97,7 +98,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         // Ensure sendout is sendable
         if (!$sendout->getIsSendable()) {
-            return false;
+            return;
         }
 
         // Fire a before event
@@ -107,7 +108,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         Campaign::$plugin->sendouts->trigger(SendoutsService::EVENT_BEFORE_SEND, $event);
 
         if (!$event->isValid) {
-            return;
+            return null;
         }
 
         // Call for max power
@@ -164,15 +165,15 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
                     'batch' => $this->batch + 1,
                 ]));
 
-                return;
+                return null;
             }
 
             /** @var SendoutRecord|null $sendoutRecord */
             $sendoutRecord = SendoutRecord::findOne($sendout->id);
 
             // Ensure sendout record still exists and is sendable (it may have been deleted or its send status changed in the meantime)
-            if ($sendoutRecord === null OR $sendoutRecord->sendStatus != SendoutElement::STATUS_SENDING) {
-                return;
+            if ($sendoutRecord === null OR $sendoutRecord->sendStatus !== SendoutElement::STATUS_SENDING) {
+                return null;
             }
         }
 

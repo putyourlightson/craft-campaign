@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.6 - 2018-09-12
+### Changed
+- Put checks in place to ensure that the same contact cannot receive a recurring sendout more than once on the same day 
+- Made the current sendout available in the email template as `sendout`
+- Set the `auto_detect_line_endings` run-time configuration to true before importing from a CSV file to ensure that line endings are recognised when delimited with "\r"
+
+### Fixed
+- Fixed a bug that could prevent the campaign report chart from displaying
+
 ## 1.2.5 - 2018-09-11
 ### Fixed
 - Fixed a bug when importing contacts

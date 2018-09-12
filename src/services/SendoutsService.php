@@ -263,6 +263,15 @@ class SendoutsService extends Component
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
         }
+        else {
+            $now = new \DateTime();
+
+            /** @var ContactCampaignRecord $contactCampaignRecord */
+            // Ensure not already sent today
+            if ($contactCampaignRecord->sent > $now->format('Y-m-d')) {
+                return;
+            }
+        }
 
         $contactCampaignRecord->campaignId = $campaign->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
@@ -413,9 +422,11 @@ class SendoutsService extends Component
      */
     public function prepareSending(SendoutElement $sendout)
     {
-        $sendout->sendStatus = SendoutElement::STATUS_SENDING;
+        if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
+            $sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
-        $this->_updateSendoutRecord($sendout, ['sendStatus']);
+            $this->_updateSendoutRecord($sendout, ['sendStatus']);
+        }
     }
 
     /**

@@ -285,7 +285,7 @@ class ImportsService extends Component
         }
 
         // Map fields to values
-        if (is_array($import->fieldIndexes)) {
+        if (\is_array($import->fieldIndexes)) {
             $values = [];
             foreach ($import->fieldIndexes as $field => $index) {
                 if ($index !== '' AND isset($row[$index])) {
@@ -348,6 +348,9 @@ class ImportsService extends Component
         if ($this->_handle !== false) {
             return $this->_handle;
         }
+
+        // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
+        ini_set('auto_detect_line_endings', true);
 
         // Open file for reading
         $this->_handle = fopen($filePath, 'rb');

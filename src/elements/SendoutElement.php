@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\helpers\Db;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -732,10 +733,14 @@ class SendoutElement extends Element
             }
         }
 
-        // If not recurring sendout or can send to contacts multiple times is disabled then remove contacts that are already sent recipients
-        if ($this->sendoutType != 'recurring' OR !$this->schedule->canSendToContactsMultipleTimes) {
-            $recipients = array_diff_key($recipients, array_flip($this->getSentRecipientIds()));
-        }
+        // Check whether we should remove recipients that were sent to today only
+        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes);
+
+        // Get sent recipient IDs
+        $sentRecipientIds = $this->getSentRecipientIds($todayOnly);
+
+        // Remove contacts that are already sent recipients
+        $recipients = array_diff_key($recipients, array_flip($sentRecipientIds));
 
         foreach ($segments as $segment) {
             // Keep only contacts that exist in the segment
@@ -772,19 +777,28 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's sent recipient ID's
      *
+     * @param bool $todayOnly
      * @return array
      */
-    public function getSentRecipientIds(): array
+    public function getSentRecipientIds($todayOnly = false): array
     {
-        $contactCampaignRecords = ContactCampaignRecord::find()
+        $query = ContactCampaignRecord::find()
             ->select('contactId')
-            ->where(['sendoutId' => $this->id])
-            ->all();
+            ->where(['sendoutId' => $this->id]);
+
+        if ($todayOnly) {
+            $now = new \DateTime();
+
+            // Add condition that sent is today
+            $query->andWhere(Db::parseDateParam('sent', $now->format('Y-m-d'), '>'));
+        }
+
+        $contactCampaignRecords = $query->all();
 
         $sentRecipientIds = [];
 
+        /** @var ContactCampaignRecord $contactCampaignRecord */
         foreach ($contactCampaignRecords as $contactCampaignRecord) {
-            /** @var ContactCampaignRecord $contactCampaignRecord */
             $sentRecipientIds[] = $contactCampaignRecord->contactId;
         }
 
