@@ -225,7 +225,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Sending “{title}” sendout batch {batch}', [
+        return Craft::t('campaign', 'Sending “{title}” sendout [batch {batch}]', [
             'title' => $this->title,
             'batch' => $this->batch,
         ]);
