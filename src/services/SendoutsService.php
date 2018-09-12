@@ -250,7 +250,7 @@ class SendoutsService extends Component
             return;
         }
 
-        // Get or create contact campaign record
+        /** @var ContactCampaignRecord|null $contactCampaignRecord */
         $contactCampaignRecord = ContactCampaignRecord::find()
             ->where([
                 'contactId' => $contact->id,
@@ -263,10 +263,14 @@ class SendoutsService extends Component
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
         }
-        else {
+        else if ($contactCampaignRecord->sent !== null) {
+            // Ensure this is a recurring sendout that cen be sent to contacts multiple times
+            if ($sendout->sendoutType != 'recurring' OR $sendout->schedule->canSendToContactsMultipleTimes === false) {
+                return;
+            }
+
             $now = new \DateTime();
 
-            /** @var ContactCampaignRecord $contactCampaignRecord */
             // Ensure not already sent today
             if ($contactCampaignRecord->sent > $now->format('Y-m-d')) {
                 return;

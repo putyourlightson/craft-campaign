@@ -734,7 +734,7 @@ class SendoutElement extends Element
         }
 
         // Check whether we should remove recipients that were sent to today only
-        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes);
+        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes === true);
 
         // Get sent recipient IDs
         $sentRecipientIds = $this->getSentRecipientIds($todayOnly);
