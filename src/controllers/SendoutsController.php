@@ -74,9 +74,7 @@ class SendoutsController extends Controller
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
         if ($request->getParam('run')) {
-            App::maxPowerCaptain();
-
-            Craft::$app->getQueue()->run();
+            $queue = Craft::$app->getQueue()->run();
         }
 
         // If front-end site request

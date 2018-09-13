@@ -91,8 +91,6 @@ class WebhookController extends Controller
                 $response = $client->get($message['SubscribeURL']);
             }
             catch (ConnectException $e) {}
-
-            die();
         }
 
         if ($message['Type'] === 'Notification') {

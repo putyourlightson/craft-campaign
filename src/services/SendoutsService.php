@@ -146,14 +146,12 @@ class SendoutsService extends Component
     public function queuePendingSendouts(): int
     {
         $count = 0;
+        $now = new \DateTime();
 
         // Find pending sendouts whose send date is in the past
         $sendouts = SendoutElement::find()
-            ->where([
-                'and',
-                ['sendStatus' => 'pending'],
-                ['<=', 'sendDate', Db::prepareDateForDb(new \DateTime())],
-            ])
+            ->status(SendoutElement::STATUS_PENDING)
+            ->where(Db::parseDateParam('sendDate', $now, '<='))
             ->all();
 
         /** @var SendoutElement[] $sendouts */
@@ -348,7 +346,7 @@ class SendoutsService extends Component
             // Update failed recipients and send status
             $sendout->failedRecipients++;
             $sendout->sendStatus = 'failed';
-            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check  your email settings.', ['email' => $contact->email]);
+            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending to {email} failed. Please check your email settings.', ['email' => $contact->email]);
 
             $this->_updateSendoutRecord($sendout, ['recipients', 'sendStatus', 'sendStatusMessage']);
         }

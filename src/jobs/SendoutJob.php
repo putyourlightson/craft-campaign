@@ -66,11 +66,10 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Get settings
         $settings = Campaign::$plugin->getSettings();
 
-        // Get time limit with threshold if unlimited
+        // Get time limit
         $timeLimit = ini_get('max_execution_time');
-        $timeLimit = $timeLimit === 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
 
-        return $timeLimit;
+        return $timeLimit === 0 ? $this->unlimitedTimeLimit : $timeLimit;
     }
 
     public function canRetry($attempt, $error): bool
@@ -201,7 +200,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
     private function _memoryInBytes(string $value): int
     {
         $unit = strtolower(substr($value, -1, 1));
-        $value = (int) $value;
+        $value = (int)$value;
         switch($unit) {
             case 'g':
                 $value *= pow(1024, 3);
