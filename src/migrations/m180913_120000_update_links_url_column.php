@@ -4,10 +4,7 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180830_120000_update_sendouts_htmlbody_column migration.
- */
-class m180830_120000_update_sendouts_htmlbody_column extends Migration
+class m180913_120000_update_links_url_column extends Migration
 {
     // Public Methods
     // =========================================================================
@@ -17,12 +14,8 @@ class m180830_120000_update_sendouts_htmlbody_column extends Migration
      */
     public function safeUp()
     {
-        if ($this->db->columnExists('{{%campaign_sendouts}}', 'htmlBody')) {
-            $this->alterColumn('{{%campaign_sendouts}}', 'htmlBody', $this->mediumText());
-        }
-
-        if ($this->db->columnExists('{{%campaign_sendouts}}', 'plaintextBody')) {
-            $this->alterColumn('{{%campaign_sendouts}}', 'plaintextBody', $this->mediumText());
+        if ($this->db->columnExists('{{%campaign_links}}', 'url')) {
+            $this->alterColumn('{{%campaign_links}}', 'url', $this->text());
         }
     }
 
@@ -31,7 +24,7 @@ class m180830_120000_update_sendouts_htmlbody_column extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180830_120000_update_sendouts_htmlbody_column cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

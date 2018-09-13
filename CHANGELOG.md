@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.7 - 2018-09-13
+### Changed
+- Improved checks for contacts that were sent to
+
+### Fixed
+- Fixed a bug that could cause the sendout job to silently stall if a URL in a campaign was more than 255 characters 
+
 ## 1.2.6 - 2018-09-12
 ### Changed
 - Put checks in place to ensure that the same contact cannot receive a recurring sendout more than once on the same day 
