@@ -44,7 +44,7 @@
     {% endset %}
     {{ forms.field({
         label: "Cron Jobs"|t('campaign'),
-        instructions: "Create a cron job with the following command to trigger checks on a scheduled basis (every 10 minutes for example). Adding the optional `run` parameter will also immediately run any queued jobs."|t('campaign'),
+        instructions: "Create a cron job with the following command to trigger checks on a scheduled basis (every 5 minutes for example). Adding the optional `run` parameter will also immediately run any queued jobs."|t('campaign'),
     }, code) }}
 
     {% set table %}
