@@ -270,7 +270,7 @@ class SendoutsService extends Component
             $now = new \DateTime();
 
             // Ensure not already sent today
-            if ($contactCampaignRecord->sent > $now->format('Y-m-d')) {
+            if ($contactCampaignRecord->sent !== null AND $contactCampaignRecord->sent > $now->format('Y-m-d')) {
                 return;
             }
         }

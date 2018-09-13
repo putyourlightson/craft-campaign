@@ -784,7 +784,8 @@ class SendoutElement extends Element
     {
         $query = ContactCampaignRecord::find()
             ->select('contactId')
-            ->where(['sendoutId' => $this->id]);
+            ->where(['sendoutId' => $this->id])
+            ->andWhere(['not', ['sent' => null]]);
 
         if ($todayOnly) {
             $now = new \DateTime();
