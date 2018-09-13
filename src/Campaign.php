@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign;
 
 use craft\events\RegisterComponentTypesEvent;
+use craft\queue\Queue;
 use craft\services\Utilities;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
@@ -45,6 +46,7 @@ use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
+use yii\queue\ExecEvent;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -126,20 +128,16 @@ class Campaign extends Plugin
         });
 
         // Register utility
-        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function(RegisterComponentTypesEvent $event) {
-                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
-                    $event->types[] = CampaignUtility::class;
-                }
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES, function(RegisterComponentTypesEvent $event) {
+            if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
+                $event->types[] = CampaignUtility::class;
             }
-        );
+        });
 
         // Register CP URL rules event
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function(RegisterUrlRulesEvent $event) {
-                $event->rules = array_merge($event->rules, $this->getCpRoutes());
-            }
-        );
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
+            $event->rules = array_merge($event->rules, $this->getCpRoutes());
+        });
 
         // If edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
@@ -153,6 +151,11 @@ class Campaign extends Plugin
             // Register user events
             $this->sync->registerUserEvents();
         }
+
+        // TODO: Remove test code below
+        Event::on(Queue::class, Queue::EVENT_BEFORE_EXEC, function(ExecEvent $e) {
+            Craft::info('Queue job executed: '.json_encode($e), 'Campaign');
+        });
     }
 
     /**
