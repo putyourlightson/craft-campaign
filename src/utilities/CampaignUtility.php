@@ -45,13 +45,8 @@ class CampaignUtility extends Utility
      */
     public static function contentHtml(): string
     {
-        $pendingSendouts = SendoutElement::find()
-            ->status('pending')
-            ->count();
-
         return Craft::$app->getView()->renderTemplate('campaign/_utility', [
             'settings' => Campaign::$plugin->getSettings(),
-            'pendingSendouts' => $pendingSendouts,
         ]);
     }
 }

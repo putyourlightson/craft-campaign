@@ -21,7 +21,6 @@ use putyourlightson\campaign\records\LinkRecord;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property string $countryCode
  * @property ContactElement $contact
  * @property string $interaction
  * @property CampaignElement $campaign
@@ -225,16 +224,6 @@ class ContactCampaignModel extends BaseModel
         }
 
         return $links;
-    }
-
-    /**
-     * Returns the country code
-     *
-     * @return string
-     */
-    public function getCountryCode(): string
-    {
-        return $this->geoIp['countryCode'] ?? '';
     }
 
     /**

@@ -28,7 +28,7 @@ abstract class BaseModel extends Model
      *
      * @return Model
      */
-    public static function populateModel($values, bool $safeOnly = true): Model
+    public static function populateModel($values, $safeOnly = true): Model
     {
         // If an instance of a Yii model
         if ($values instanceof \yii\base\Model) {
@@ -56,7 +56,7 @@ abstract class BaseModel extends Model
      *
      * @return array
      */
-    public static function populateModels(array $data, bool $safeOnly = true, string $indexBy = null): array
+    public static function populateModels(array $data, $safeOnly = true, $indexBy = null): array
     {
         $models = [];
 

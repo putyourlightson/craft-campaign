@@ -18,7 +18,6 @@ use putyourlightson\campaign\elements\MailingListElement;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property string             $countryCode
  * @property ContactElement     $contact
  * @property string             $interaction
  * @property array              $location
@@ -115,16 +114,6 @@ class ContactMailingListModel extends BaseModel
     public function getMailingList(): MailingListElement
     {
         return Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
-    }
-
-    /**
-     * Returns the country code
-     *
-     * @return string
-     */
-    public function getCountryCode(): string
-    {
-        return $this->geoIp['countryCode'] ?? '';
     }
 
     /**
