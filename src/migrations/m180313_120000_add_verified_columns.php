@@ -5,9 +5,6 @@ namespace putyourlightson\campaign\migrations;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;
 
-/**
- * m180313_120000_add_verified_columns migration.
- */
 class m180313_120000_add_verified_columns extends Migration
 {
     // Public Methods
@@ -32,7 +29,7 @@ class m180313_120000_add_verified_columns extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180313_120000_add_verified_columns cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

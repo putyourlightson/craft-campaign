@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180520_120000_remove_duplicate_columns migration.
- */
 class m180520_120000_remove_duplicate_columns extends Migration
 {
     // Public Methods
@@ -35,7 +32,7 @@ class m180520_120000_remove_duplicate_columns extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180520_120000_remove_duplicate_columns cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

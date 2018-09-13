@@ -6,9 +6,6 @@ use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use craft\db\Migration;
 
-/**
- * m180430_120000_source_columns migration.
- */
 class m180430_120000_source_columns extends Migration
 {
     // Public Methods
@@ -42,7 +39,7 @@ class m180430_120000_source_columns extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180430_120000_source_columns cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

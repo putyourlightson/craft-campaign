@@ -6,9 +6,6 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 
-/**
- * m180410_120000_pending_contacts migration.
- */
 class m180410_120000_pending_contacts extends Migration
 {
     // Public Methods
@@ -53,7 +50,7 @@ class m180410_120000_pending_contacts extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180410_120000_pending_contacts cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

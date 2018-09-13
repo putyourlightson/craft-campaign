@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180507_120000_mlid migration.
- */
 class m180507_120000_mlid extends Migration
 {
     // Public Methods
@@ -26,7 +23,7 @@ class m180507_120000_mlid extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180507_120000_mlid cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

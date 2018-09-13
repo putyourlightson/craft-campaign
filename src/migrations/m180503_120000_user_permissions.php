@@ -6,9 +6,6 @@ use craft\records\UserPermission;
 
 use craft\db\Migration;
 
-/**
- * m180503_120000_user_permissions migration.
- */
 class m180503_120000_user_permissions extends Migration
 {
     // Public Methods
@@ -36,7 +33,7 @@ class m180503_120000_user_permissions extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180503_120000_user_permissions cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

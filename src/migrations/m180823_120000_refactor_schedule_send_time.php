@@ -6,9 +6,6 @@ use craft\db\Migration;
 use craft\helpers\Json;
 use putyourlightson\campaign\records\SendoutRecord;
 
-/**
- * m180823_120000_refactor_schedule_send_time migration.
- */
 class m180823_120000_refactor_schedule_send_time extends Migration
 {
     // Public Methods
@@ -43,7 +40,7 @@ class m180823_120000_refactor_schedule_send_time extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180823_120000_refactor_schedule_send_time cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

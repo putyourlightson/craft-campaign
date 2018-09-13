@@ -7,9 +7,6 @@ use putyourlightson\campaign\elements\ContactElement;
 use Craft;
 use craft\db\Migration;
 
-/**
- * m180430_120000_geoip_refactoring migration.
- */
 class m180430_120000_geoip_refactoring extends Migration
 {
     // Public Methods
@@ -52,7 +49,7 @@ class m180430_120000_geoip_refactoring extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180430_120000_geoip_refactoring cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

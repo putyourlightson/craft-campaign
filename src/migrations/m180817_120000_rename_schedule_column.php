@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180817_120000_rename_schedule_column migration.
- */
 class m180817_120000_rename_schedule_column extends Migration
 {
     // Public Methods
@@ -25,7 +22,7 @@ class m180817_120000_rename_schedule_column extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180817_120000_rename_schedule_column cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180329_120000_sendout_sending migration.
- */
 class m180329_120000_sendout_sending extends Migration
 {
     // Public Methods
@@ -37,7 +34,7 @@ class m180329_120000_sendout_sending extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180329_120000_sendout_sending cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

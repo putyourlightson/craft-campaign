@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180821_120000_add_mailinglisttype_template_columns migration.
- */
 class m180821_120000_add_mailinglisttype_template_columns extends Migration
 {
     // Public Methods
@@ -30,7 +27,7 @@ class m180821_120000_add_mailinglisttype_template_columns extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180821_120000_add_mailinglisttype_template_columns cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }
