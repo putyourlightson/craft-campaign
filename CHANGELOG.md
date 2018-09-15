@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.8 - 2018-09-15
+### Fixed
+- Fixed a bug which prevented recurring sendouts to be sent to contacts multiple times even if the setting was enabled
+
 ## 1.2.7 - 2018-09-13
 ### Changed
 - Improved checks for contacts that were sent to

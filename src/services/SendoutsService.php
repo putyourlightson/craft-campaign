@@ -262,8 +262,8 @@ class SendoutsService extends Component
             $contactCampaignRecord->sendoutId = $sendout->id;
         }
         else if ($contactCampaignRecord->sent !== null) {
-            // Ensure this is a recurring sendout that cen be sent to contacts multiple times
-            if ($sendout->sendoutType != 'recurring' OR $sendout->schedule->canSendToContactsMultipleTimes === false) {
+            // Ensure this is a recurring sendout that can be sent to contacts multiple times
+            if (!($sendout->sendoutType == 'recurring' AND $sendout->schedule->canSendToContactsMultipleTimes)) {
                 return;
             }
 

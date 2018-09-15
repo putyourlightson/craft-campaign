@@ -18,7 +18,6 @@ use Craft;
 use craft\web\Controller;
 use craft\errors\ElementNotFoundException;
 use craft\errors\MissingComponentException;
-use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;

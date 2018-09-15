@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\utilities;
 use Craft;
 use craft\base\Utility;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\SendoutElement;
 
 class CampaignUtility extends Utility
 {
