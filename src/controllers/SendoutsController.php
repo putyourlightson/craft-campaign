@@ -66,7 +66,7 @@ class SendoutsController extends Controller
         // Verify API key
         $apiKey = $request->getParam('key');
 
-        if (!$apiKey OR $apiKey != $settings->apiKey) {
+        if ($apiKey === null OR $apiKey != $settings->apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
 
