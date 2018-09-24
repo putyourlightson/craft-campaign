@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 - 2018-09-19
+### Added
+- Added a console command to run pending sendouts in order to avoid server limits being exceeded through web-based controller actions
+
 ## 1.2.8 - 2018-09-15
 ### Fixed
 - Fixed a bug which prevented recurring sendouts to be sent to contacts multiple times even if the setting was enabled

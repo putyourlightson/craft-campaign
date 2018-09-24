@@ -25,10 +25,18 @@ Recurring sendouts allow you to automate the sending of a campaign to contacts o
 ![Recurring Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/develop/docs/images/sendout-recurring-1.2.0.png)
 
 ### How Sendouts Are Sent
-Once a sendout is queued for sending, it will begin sending the next time that the queue is run. If Craft's `runQueueAutomatically`config setting is set to `true` (the default value), then this will happen immediately, otherwise it will happen on the next manual `queue/run` call (initiated from a cron job, for example). The sendout is sent in a background process, so the site will remain usable for all visitors. 
+Once a sendout is queued for sending, it will begin sending the next time that the queue is run. If Craft's `runQueueAutomatically`config setting is set to `true` (the default value), then this will happen immediately, otherwise it will happen the next time the queue is run (initiated from a cron job, for example). The sendout is sent in a background process, so the site will remain usable for all visitors. 
 
-#### Queueing Pending Sendouts
-Sendouts that are not immediately sent (scheduled, automated or recurring), require a cron job in order to be pushed onto the queue at the appropriate time. If you plan on using these sendout types then you should create a cron job as described in Settings → General Settings. You can also manually queue pending sendouts at any time using the utility at Utilities → Campaign.
+#### Running Pending Sendouts
+Sendouts that are not immediately sent (scheduled, automated or recurring), require a cron job in order to be queued and run at the appropriate time. If you plan on using these sendout types then you should create a cron job to run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to your PHP path (if different) and `/var/www/my_craft_project` to your craft project path.
+
+    5 * * * * /usr/bin/php /var/www/my_project/craft campaign/sendouts/run-pending-sendouts
+
+You can queue pending sendouts with a controller action through a unique URL, see Settings → General Settings. You can also manually queue pending sendouts at any time using the utility at Utilities → Campaign.
+
+A command line utility can also be used to queue and run pending sendouts with the following console command:
+
+    ./craft campaign/sendouts/run-pending-sendouts
 
 #### Delayed Batch Sending
 In order to avoid a timeout or the memory limit being exceeded while sending, the plugin will initiate a new delayed batch job when it exceeds a threshold of either of the limits. The thresholds, the limits, the max batch size and the batch job delay can all be defined in the plugin's config settings.

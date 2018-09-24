@@ -28,10 +28,17 @@
 
     <hr/>
 
+    {% set code %}
+        <code>5 * * * * /usr/bin/php {{ alias('@root/craft') }} campaign/sendouts/run-pending-sendouts</code>
+    {% endset %}
+    {{ forms.field({
+        label: "Cron Job"|t('campaign'),
+        instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to the PHP path (if different)."|t('campaign'),
+    }, code) }}
+
     {{ forms.textField({
-        required: true,
         label: "API Key"|t('campaign'),
-        instructions: "An API key to use for triggerring tasks and notifications (min. 16 characters)."|t('campaign'),
+        instructions: "An API key to use for triggerring tasks and notifications through a URL (min. 16 characters)."|t('campaign'),
         warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
         id: 'apiKey',
         name: 'apiKey',
@@ -39,13 +46,14 @@
         errors: settings.getErrors('apiKey')
     }) }}
 
-    {% set code %}
-        <code>wget "{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: settings.apiKey, run: true }) }}" >/dev/null 2>&1</code>
-    {% endset %}
-    {{ forms.field({
-        label: "Cron Jobs"|t('campaign'),
-        instructions: "Create a cron job with the following command to trigger checks on a scheduled basis (every 5 minutes for example). Adding the optional `run` parameter will also immediately run any queued jobs."|t('campaign'),
-    }, code) }}
+    {% if settings.apiKey and not settings.getErrors('apiKey') %}
+        {% set code %}
+            <code>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: settings.apiKey, run: 1 }) }}</code>
+        {% endset %}
+        {{ forms.field({
+            instructions: "You can use the following URL to queue pending sendouts. Adding the optional `run` parameter will also immediately run any queued jobs."|t('campaign'),
+        }, code) }}
+    {% endif %}
 
     {% set table %}
         <table class="shadow-box editable">

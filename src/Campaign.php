@@ -115,6 +115,12 @@ class Campaign extends Plugin
         // Register tracker controller shorthand
         $this->controllerMap = ['t' => TrackerController::class];
 
+        // Console request
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            // Add console commands
+            $this->controllerNamespace = 'putyourlightson\campaign\console\controllers';
+        }
+
         // Register Twig extension
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
 
