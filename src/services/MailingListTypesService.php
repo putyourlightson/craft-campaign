@@ -232,8 +232,10 @@ class MailingListTypesService extends Component
             // Delete the mailing lists
             $mailingLists = MailingListElement::findAll(['mailingListTypeId' => $mailingListType->id]);
 
+            $elements = Craft::$app->getElements();
+
             foreach ($mailingLists as $mailingList) {
-                Craft::$app->getElements()->deleteElement($mailingList);
+                $elements->deleteElement($mailingList);
             }
 
             // Delete the mailing list type

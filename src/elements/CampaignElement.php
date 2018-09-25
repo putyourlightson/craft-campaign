@@ -224,7 +224,7 @@ class CampaignElement extends Element
             $attributes[] = 'campaignType';
         }
 
-        $attributes = array_merge($attributes, ['recipients', 'opened', 'clicked', 'link']);
+        array_push($attributes, 'recipients', 'opened', 'clicked', 'link');
 
         return $attributes;
     }

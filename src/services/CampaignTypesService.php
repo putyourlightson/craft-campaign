@@ -243,8 +243,10 @@ class CampaignTypesService extends Component
                 ->campaignTypeId($campaignType->id)
                 ->all();
 
+            $elements = Craft::$app->getElements();
+
             foreach ($campaigns as $campaign) {
-                Craft::$app->getElements()->deleteElement($campaign);
+                $elements->deleteElement($campaign);
             }
 
             // Delete the campaign type

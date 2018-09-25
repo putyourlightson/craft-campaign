@@ -233,7 +233,7 @@ class ContactElement extends Element
             $attributes[] = 'subscriptionStatus';
         }
 
-        $attributes = array_merge($attributes, ['country', 'lastActivity']);
+        array_push($attributes, 'country', 'lastActivity');
 
         return $attributes;
     }

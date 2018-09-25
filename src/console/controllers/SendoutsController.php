@@ -32,7 +32,7 @@ class SendoutsController extends Controller
     {
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
-        $queue = Craft::$app->getQueue()->run();
+        Craft::$app->getQueue()->run();
 
         $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]).PHP_EOL, Console::FG_GREEN);
     }

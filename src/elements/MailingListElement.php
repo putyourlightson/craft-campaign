@@ -189,7 +189,7 @@ class MailingListElement extends Element
             $attributes[] = 'mailingListType';
         }
 
-        $attributes = array_merge($attributes, ['subscribed', 'unsubscribed', 'complained', 'bounced']);
+        array_push($attributes, 'subscribed', 'unsubscribed', 'complained', 'bounced');
 
         return $attributes;
     }
