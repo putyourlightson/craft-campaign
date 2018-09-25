@@ -60,14 +60,20 @@ class SendoutsController extends Controller
     {
         $request = Craft::$app->getRequest();
 
-        // Get plugin settings
-        $settings = Campaign::$plugin->getSettings();
+        // Require permission if posted from utility
+        if ($request->getIsPost() AND $request->getParam('utility')) {
+            $this->requirePermission('campaign:utility');
+        }
+        else {
+            // Verify API key
+            $apiKey = $request->getParam('key');
 
-        // Verify API key
-        $apiKey = $request->getParam('key');
+            // Get plugin settings
+            $settings = Campaign::$plugin->getSettings();
 
-        if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
-            throw new ForbiddenHttpException('Unauthorised access.');
+            if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+                throw new ForbiddenHttpException('Unauthorised access.');
+            }
         }
 
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
