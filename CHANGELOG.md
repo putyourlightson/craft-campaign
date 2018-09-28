@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.2 - Unreleased
+### Added
+- Added warning to console command regarding the use of the `@web` alias
+
 ## 1.3.1 - 2018-09-25
 ### Changed
 - Allowed utility to be used even if API key is not set 

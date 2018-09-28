@@ -34,6 +34,7 @@
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
         instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to the PHP path (if different)."|t('campaign'),
+        warning: "When using the console command, the `@web` alias is unavailable and will return a blank string. For that reason, is it best not to rely on the `@web` alias in your site and asset volume settings."|t('campaign'),
     }, code) }}
 
     {{ forms.textField({

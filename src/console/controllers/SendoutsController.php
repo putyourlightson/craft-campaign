@@ -6,9 +6,9 @@
 
 namespace putyourlightson\campaign\console\controllers;
 
+use Craft;
 use craft\helpers\Console;
 use putyourlightson\campaign\Campaign;
-use Craft;
 use yii\console\Controller;
 
 /**

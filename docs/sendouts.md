@@ -32,6 +32,8 @@ Sendouts that are not immediately sent (scheduled, automated or recurring), requ
 
     5 * * * * /usr/bin/php /var/www/my_project/craft campaign/sendouts/run-pending-sendouts
 
+*Warning: when using the console command, the `@web` alias is unavailable and will return a blank string. For that reason, is it best not to rely on the `@web` alias in your site and asset volume settings.*
+
 You can queue pending sendouts with a controller action through a unique URL, see Settings → General Settings. You can also manually queue pending sendouts at any time using the utility at Utilities → Campaign.
 
 A command line utility can also be used to queue and run pending sendouts with the following console command:

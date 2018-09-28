@@ -118,7 +118,7 @@ class Campaign extends Plugin
         // Console request
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
             // Add console commands
-            $this->controllerNamespace = 'putyourlightson\campaign\console\controllers';
+            $this->controllerNamespace = __NAMESPACE__.'\console\controllers';
         }
 
         // Register Twig extension
