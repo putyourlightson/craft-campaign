@@ -51,6 +51,22 @@ class WebhookController extends Controller
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // Get plugin settings
+        $settings = Campaign::$plugin->getSettings();
+
+        // Verify API key
+        $apiKey = Craft::$app->getRequest()->getParam('key');
+
+        if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+            throw new ForbiddenHttpException('Unauthorised access.');
+        }
+    }
+
+    /**
      * Test
      */
     public function actionTest(): Response
@@ -272,16 +288,6 @@ class WebhookController extends Controller
 
         if ($sid === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
-        }
-
-        // Get plugin settings
-        $settings = Campaign::$plugin->getSettings();
-
-        // Verify API key
-        $apiKey = Craft::$app->getRequest()->getQueryParam('key');
-
-        if (!$apiKey OR $apiKey != $settings->apiKey) {
-            throw new ForbiddenHttpException('Unauthorised access.');
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);

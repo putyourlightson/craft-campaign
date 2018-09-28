@@ -268,10 +268,8 @@ class SendoutsController extends Controller
             $variables['intervalOptions'] = $sendout->schedule->getIntervalOptions();
         }
 
-        // Get the settings
         $variables['settings'] = Campaign::$plugin->getSettings();
 
-        // Set full page form variable
         $variables['fullPageForm'] = true;
 
         // Render the template
@@ -287,6 +285,8 @@ class SendoutsController extends Controller
             'memoryLimit' => ini_get('memory_limit'),
             'timeLimit' => ini_get('max_execution_time'),
         ];
+
+        $variables['webAliasUsed'] = Campaign::$plugin->settings->getWebAliasUsed();
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }

@@ -37,11 +37,25 @@
             <h1>{{ saveLabel }}</h1>
             <p>{{ confirmMessage }}</p>
             <p>
-                {{ 'All systems are GO!!'|t('campaign') }}
+                {% if webAliasUsed %}
+                    <span class="warning">
+                        {{ 'System issues found!'|t('campaign') }}
+                    </span>
+                {% else %}
+                    {{ 'All systems are GO!'|t('campaign') }}
+                {% endif %}
                 <span class="info">
                     {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
-                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}
+                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
+                    {{ 'Alias Check'|t('campaign') }}:
+                    {% if webAliasUsed %}
+                        <span class="warning">
+                            {{ 'Failed'|t('campaign') }}
+                        </span>
+                    {% else %}
+                        {{ 'Passed'|t('campaign') }}
+                    {% endif %}
                 </span>
             </p>
             <p><input type="submit" class="btn submit launch" value="{{ saveLabel }}"></p>

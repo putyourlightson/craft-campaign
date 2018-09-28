@@ -1,8 +1,8 @@
 # Changelog
 
-## 1.3.2 - Unreleased
+## 1.3.2 - 2018-09-28
 ### Added
-- Added warning to console command regarding the use of the `@web` alias
+- Added warning to general settings and preflight if `@web` alias is used in the base URL of any site or volume
 
 ## 1.3.1 - 2018-09-25
 ### Changed
