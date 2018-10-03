@@ -52,6 +52,8 @@ class WebhookController extends Controller
 
     /**
      * @inheritdoc
+     *
+     * @throws ForbiddenHttpException
      */
     public function init()
     {
@@ -110,7 +112,6 @@ class WebhookController extends Controller
         }
 
         if ($message['Type'] === 'Notification') {
-            /** @var array $headers */
             $headers = $message['mail']['headers'];
 
             if (is_array($headers)) {
@@ -272,7 +273,6 @@ class WebhookController extends Controller
      * @param string|null $sid
      *
      * @return Response
-     * @throws ForbiddenHttpException
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
