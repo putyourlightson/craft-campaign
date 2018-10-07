@@ -294,8 +294,10 @@ class Campaign extends Plugin
      * @param array $params
      * @param string|null $category
      */
-    public function logUserAction(string $message, array $params, string $category = 'Campaign')
+    public function logUserAction(string $message, array $params, string $category = null)
     {
+        $category = $category ?? 'Campaign';
+
         $params['username'] = Craft::$app->getUser()->getIdentity()->username;
 
         Craft::warning(Craft::t('campaign', $message, $params), $category);

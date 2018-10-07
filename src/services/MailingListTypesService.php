@@ -110,13 +110,15 @@ class MailingListTypesService extends Component
      * Saves a mailing list type.
      *
      * @param MailingListTypeModel $mailingListType  The mailing list type to be saved
-     * @param bool              $runValidation Whether the mailing list type should be validated
+     * @param bool|null $runValidation Whether the mailing list type should be validated
      *
      * @return bool Whether the mailing list type was saved successfully
      * @throws \Throwable if reasons
      */
-    public function saveMailingListType(MailingListTypeModel $mailingListType, bool $runValidation = true): bool
+    public function saveMailingListType(MailingListTypeModel $mailingListType, bool $runValidation = null): bool
     {
+        $runValidation = $runValidation ?? true;
+
         $isNew = $mailingListType->id === null;
 
         // Fire a before event

@@ -117,14 +117,16 @@ class CampaignTypesService extends Component
      * Saves a campaign type.
      *
      * @param CampaignTypeModel $campaignType  The campaign type to be saved
-     * @param bool              $runValidation Whether the campaign type should be validated
+     * @param bool|null $runValidation Whether the campaign type should be validated
      *
      * @return bool Whether the campaign type was saved successfully
      * @throws NotFoundHttpException if $campaignType->id is invalid
      * @throws \Throwable if reasons
      */
-    public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = true): bool
+    public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = null): bool
     {
+        $runValidation = $runValidation ?? true;
+
         $isNew = $campaignType->id === null;
 
         // Fire a before event

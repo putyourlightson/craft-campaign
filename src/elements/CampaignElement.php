@@ -551,7 +551,7 @@ class CampaignElement extends Element
     /**
      * Returns the campaign's body
      *
-     * @param string         $templateType
+     * @param string|null $templateType
      * @param ContactElement|null $contact
      * @param SendoutElement|null $sendout
      *
@@ -559,8 +559,10 @@ class CampaignElement extends Element
      * @throws InvalidConfigException
      * @throws Exception
      */
-    private function _getBody($templateType = 'html', ContactElement $contact = null, SendoutElement $sendout = null): string
+    private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null): string
     {
+        $templateType = $templateType ?? 'html';
+
         if ($contact === null) {
             $contact = new ContactElement();
         }

@@ -28,8 +28,10 @@ abstract class BaseModel extends Model
      *
      * @return Model
      */
-    public static function populateModel($values, $safeOnly = true): Model
+    public static function populateModel($values, bool $safeOnly = null): Model
     {
+        $safeOnly = $safeOnly ?? true;
+
         // If an instance of a Yii model
         if ($values instanceof \yii\base\Model) {
             $values = $values->getAttributes();
@@ -56,8 +58,10 @@ abstract class BaseModel extends Model
      *
      * @return array
      */
-    public static function populateModels(array $data, $safeOnly = true, $indexBy = null): array
+    public static function populateModels(array $data, bool $safeOnly = null, string $indexBy = null): array
     {
+        $safeOnly = $safeOnly ?? true;
+
         $models = [];
 
         if (\is_array($data))
@@ -65,9 +69,10 @@ abstract class BaseModel extends Model
             foreach ($data as $values)
             {
                 $model = static::populateModel($values, $safeOnly);
-                if ($indexBy)
+
+                if ($indexBy !== null)
                 {
-                    $models[$model->$indexBy] = $model;
+                    $models[$model->{$indexBy}] = $model;
                 }
                 else
                 {

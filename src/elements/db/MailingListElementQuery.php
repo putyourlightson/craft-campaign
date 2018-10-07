@@ -119,12 +119,14 @@ class MailingListElementQuery extends ElementQuery
     /**
      * Sets the [[synced]] property.
      *
-     * @param bool $value The property value
+     * @param bool|null $value The property value
      *
      * @return static self reference
      */
-    public function synced(bool $value = true)
+    public function synced(bool $value = null)
     {
+        $value = $value ?? true;
+
         $this->synced = $value;
 
         return $this;

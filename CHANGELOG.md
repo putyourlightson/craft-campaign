@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.3 - Unreleased
+### Changed
+- Improved how elements are output in exported CSV file 
+
+### Fixed
+- Fixed a bug in which a completed sendout could be marked as pending if complained or bounced contacts existed in the selected mailing lists 
+- Fixed a bug in which an exception could be thrown if a logged-in user was not found when trying to import contacts
+
 ## 1.3.2 - 2018-09-28
 ### Added
 - Added warning to general settings and preflight if `@web` alias is used in the base URL of any site or volume

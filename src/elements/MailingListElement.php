@@ -443,12 +443,14 @@ class MailingListElement extends Element
     /**
      * Returns the number of contacts in this mailing list
      *
-     * @param string|null
+     * @param string|null $subscriptionStatus
      *
      * @return int
      */
-    private function _getContactCount(string $subscriptionStatus = ''): int
+    private function _getContactCount(string $subscriptionStatus = null): int
     {
+        $subscriptionStatus = $subscriptionStatus ?? '';
+
         $condition = ['mailingListId' => $this->id];
 
         if ($subscriptionStatus) {

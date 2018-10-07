@@ -715,12 +715,14 @@ class ContactElement extends Element
     /**
      * Returns the number of mailing lists that this contact is in
      *
-     * @param string|null
+     * @param string|null $subscriptionStatus
      *
      * @return int
      */
-    private function _getMailingListCount(string $subscriptionStatus = ''): int
+    private function _getMailingListCount(string $subscriptionStatus = null): int
     {
+        $subscriptionStatus = $subscriptionStatus ?? '';
+
         $condition = ['contactId' => $this->id];
 
         if ($subscriptionStatus) {
@@ -737,12 +739,14 @@ class ContactElement extends Element
     /**
      * Returns the mailing lists that this contact is in
      *
-     * @param string|null
+     * @param string|null $subscriptionStatus
      *
      * @return MailingListElement[]
      */
-    private function _getMailingLists(string $subscriptionStatus = ''): array
+    private function _getMailingLists(string $subscriptionStatus = null): array
     {
+        $subscriptionStatus = $subscriptionStatus ?? '';
+
         $mailingLists = [];
 
         $condition = ['contactId' => $this->id];
