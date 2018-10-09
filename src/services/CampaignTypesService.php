@@ -8,11 +8,13 @@ namespace putyourlightson\campaign\services;
 
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\models\CampaignTypeModel;
+use putyourlightson\campaign\models\CampaignTypeSiteModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\base\Component;
+use putyourlightson\campaign\records\CampaignTypeSiteRecord;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -111,6 +113,25 @@ class CampaignTypesService extends Component
         $campaignType = CampaignTypeModel::populateModel($campaignTypeRecord, false);
 
         return $campaignType;
+    }
+
+    /**
+     * Returns a campaign type’s site-specific settings.
+     *
+     * @param int $campaignTypeId
+     *
+     * @return CampaignTypeSiteModel[]
+     */
+    public function getCampaignTypeSites(int $campaignTypeId): array
+    {
+        $campaignTypeSiteRecords = CampaignTypeSiteRecord::find()
+            ->where(['campaignTypeId' => $campaignTypeId])
+            ->all();
+
+        /** @var CampaignTypeSiteModel[] $campaignTypeSiteModels */
+        $campaignTypeSiteModels = CampaignTypeSiteModel::populateModels($campaignTypeSiteRecords);
+
+        return $campaignTypeSiteModels;
     }
 
     /**

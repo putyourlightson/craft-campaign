@@ -16,9 +16,6 @@ use craft\db\ActiveRecord;
  * @property int         $fieldLayoutId         Field layout ID
  * @property string      $name                  Name
  * @property string      $handle                Handle
- * @property string      $uriFormat             URI format
- * @property string      $htmlTemplate          HTML template
- * @property string      $plaintextTemplate     Plaintext template
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -37,5 +34,15 @@ class CampaignTypeRecord extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_campaigntypes}}';
+    }
+
+    /**
+     * Returns the associated sites.
+     *
+     * @return ActiveQueryInterface The relational query object.
+     */
+    public function getSites(): ActiveQueryInterface
+    {
+        return $this->hasMany(CampaignTypeSiteRecord::class, ['campaignTypeId' => 'id']);
     }
 }

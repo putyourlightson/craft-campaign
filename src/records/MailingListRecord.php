@@ -33,4 +33,14 @@ class MailingListRecord extends ActiveRecord
     {
         return '{{%campaign_mailinglists}}';
     }
+
+    /**
+     * Returns the associated sites.
+     *
+     * @return ActiveQueryInterface The relational query object.
+     */
+    public function getSites(): ActiveQueryInterface
+    {
+        return $this->hasMany(MailingListTypeSiteRecord::class, ['mailingListTypeId' => 'id']);
+    }
 }

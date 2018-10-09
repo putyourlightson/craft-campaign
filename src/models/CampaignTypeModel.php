@@ -52,21 +52,6 @@ class CampaignTypeModel extends BaseModel
      */
     public $handle;
 
-    /**
-     * @var string|null URI format
-     */
-    public $uriFormat;
-
-    /**
-     * @var string|null HTML template
-     */
-    public $htmlTemplate;
-
-    /**
-     * @var string|null Plaintext template
-     */
-    public $plaintextTemplate;
-
     // Public Methods
     // =========================================================================
 
@@ -100,8 +85,8 @@ class CampaignTypeModel extends BaseModel
     {
         return [
             [['id', 'fieldLayoutId'], 'integer'],
-            [['name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
-            [['name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'string', 'max' => 255],
+            [['name', 'handle'], 'required'],
+            [['name', 'handle'], 'string', 'max' => 255],
             [
                 ['handle'],
                 HandleValidator::class,

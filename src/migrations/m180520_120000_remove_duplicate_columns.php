@@ -3,6 +3,8 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
+use putyourlightson\campaign\records\CampaignTypeRecord;
+use putyourlightson\campaign\records\MailingListTypeRecord;
 
 class m180520_120000_remove_duplicate_columns extends Migration
 {

@@ -17,10 +17,6 @@ use craft\db\ActiveRecord;
  * @property string      $name                          Name
  * @property string      $handle                        Handle
  * @property bool        $doubleOptIn                   Double opt-in
- * @property string      $verifyEmailTemplate           Verify email template
- * @property string      $verifySuccessTemplate         Verify success template
- * @property string      $subscribeSuccessTemplate      Subscribe success template
- * @property string      $unsubscribeSuccessTemplate    Unsubscribe success template
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -39,5 +35,15 @@ class MailingListTypeRecord extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_mailinglisttypes}}';
+    }
+
+    /**
+     * Returns the associated site settings.
+     *
+     * @return ActiveQueryInterface The relational query object.
+     */
+    public function getSiteSettings(): ActiveQueryInterface
+    {
+        return $this->hasMany(MailingListTypeSiteModel::class, ['mailingListTypeId' => 'id']);
     }
 }

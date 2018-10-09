@@ -112,6 +112,20 @@ class Install extends Migration
             ]);
         }
 
+        if (!$this->db->tableExists('{{%campaign_campaigntypes_sites}}')) {
+            $this->createTable('{{%campaign_campaigntypes_sites}}', [
+                'id' => $this->primaryKey(),
+                'campaignTypeId' => $this->integer()->notNull(),
+                'siteId' => $this->integer()->notNull(),
+                'uriFormat' => $this->text(),
+                'htmlTemplate' => $this->string(500),
+                'plaintextTemplate' => $this->string(500),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+        }
+
         if (!$this->db->tableExists('{{%campaign_links}}')) {
             $this->createTable('{{%campaign_links}}', [
                 'id' => $this->primaryKey(),
@@ -202,10 +216,20 @@ class Install extends Migration
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'doubleOptIn' => $this->boolean()->defaultValue(true)->notNull(),
-                'verifyEmailTemplate' => $this->string(),
-                'verifySuccessTemplate' => $this->string(),
-                'subscribeSuccessTemplate' => $this->string(),
-                'unsubscribeSuccessTemplate' => $this->string(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
+        }
+
+        if (!$this->db->tableExists('{{%campaign_mailinglisttypes_sites}}')) {
+            $this->createTable('{{%campaign_mailinglisttypes_sites}}', [
+                'id' => $this->primaryKey(),
+                'sectionId' => $this->integer()->notNull(),
+                'siteId' => $this->integer()->notNull(),
+                'verifyEmailTemplate' => $this->string(500),
+                'subscribeSuccessTemplate' => $this->string(500),
+                'unsubscribeSuccessTemplate' => $this->string(500),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
