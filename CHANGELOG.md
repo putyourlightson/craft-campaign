@@ -1,8 +1,9 @@
 # Changelog
 
-## 1.3.3 - Unreleased
+## 1.3.3 - 2018-10-09
 ### Changed
-- Improved how elements are output in exported CSV file 
+- Improved how elements are output in exported CSV file
+- Set a `$enableSnaptchaValidation` parameter to `false` in the webhook controller
 
 ### Fixed
 - Fixed a bug in which a completed sendout could be marked as pending if complained or bounced contacts existed in the selected mailing lists 

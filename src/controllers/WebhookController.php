@@ -43,6 +43,11 @@ class WebhookController extends Controller
     public $enableCsrfValidation = false;
 
     /**
+     * @var bool Disable Snaptcha validation
+     */
+    public $enableSnaptchaValidation = false;
+
+    /**
      * @inheritdoc
      */
     protected $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
