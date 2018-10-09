@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.3.3 - 2018-10-09
+### Changed
+- Improved how elements are output in exported CSV file
+- Set a `$enableSnaptchaValidation` parameter to `false` in the webhook controller
+
+### Fixed
+- Fixed a bug in which a completed sendout could be marked as pending if complained or bounced contacts existed in the selected mailing lists 
+- Fixed a bug in which an exception could be thrown if a logged-in user was not found when trying to import contacts
+
+## 1.3.2 - 2018-09-28
+### Added
+- Added warning to general settings and preflight if `@web` alias is used in the base URL of any site or volume
+
+## 1.3.1 - 2018-09-25
+### Changed
+- Allowed utility to be used even if API key is not set 
+
+## 1.3.0 - 2018-09-25
+### Added
+- Added a console command to run pending sendouts in order to avoid server limits being exceeded through web-based controller actions
+
+## 1.2.8 - 2018-09-15
+### Fixed
+- Fixed a bug which prevented recurring sendouts to be sent to contacts multiple times even if the setting was enabled
+
+## 1.2.7 - 2018-09-13
+### Changed
+- Improved checks for contacts that were sent to
+
+### Fixed
+- Fixed a bug that could cause the sendout job to silently stall if a URL in a campaign was more than 255 characters 
+
 ## 1.2.6 - 2018-09-12
 ### Changed
 - Put checks in place to ensure that the same contact cannot receive a recurring sendout more than once on the same day 

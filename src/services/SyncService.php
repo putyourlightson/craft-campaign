@@ -112,10 +112,12 @@ class SyncService extends Component
      * Syncs a user
      *
      * @param User $user
-     * @param bool $remove
+     * @param bool|null $remove
      */
-    public function syncUser(User $user, bool $remove = false)
+    public function syncUser(User $user, bool $remove = null)
     {
+        $remove = $remove ?? false;
+
         // Get user's user group IDs
         $userGroupIds = [];
         $userGroups = $user->getGroups();

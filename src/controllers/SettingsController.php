@@ -71,6 +71,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+            'webAliasUsed' => Campaign::$plugin->settings->getWebAliasUsed(),
         ]);
     }
 

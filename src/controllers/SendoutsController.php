@@ -18,7 +18,6 @@ use Craft;
 use craft\web\Controller;
 use craft\errors\ElementNotFoundException;
 use craft\errors\MissingComponentException;
-use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
@@ -61,14 +60,20 @@ class SendoutsController extends Controller
     {
         $request = Craft::$app->getRequest();
 
-        // Get plugin settings
-        $settings = Campaign::$plugin->getSettings();
+        // Require permission if posted from utility
+        if ($request->getIsPost() AND $request->getParam('utility')) {
+            $this->requirePermission('campaign:utility');
+        }
+        else {
+            // Verify API key
+            $apiKey = $request->getParam('key');
 
-        // Verify API key
-        $apiKey = $request->getParam('key');
+            // Get plugin settings
+            $settings = Campaign::$plugin->getSettings();
 
-        if (!$apiKey OR $apiKey != $settings->apiKey) {
-            throw new ForbiddenHttpException('Unauthorised access.');
+            if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+                throw new ForbiddenHttpException('Unauthorised access.');
+            }
         }
 
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
@@ -263,10 +268,8 @@ class SendoutsController extends Controller
             $variables['intervalOptions'] = $sendout->schedule->getIntervalOptions();
         }
 
-        // Get the settings
         $variables['settings'] = Campaign::$plugin->getSettings();
 
-        // Set full page form variable
         $variables['fullPageForm'] = true;
 
         // Render the template
@@ -282,6 +285,8 @@ class SendoutsController extends Controller
             'memoryLimit' => ini_get('memory_limit'),
             'timeLimit' => ini_get('max_execution_time'),
         ];
+
+        $variables['webAliasUsed'] = Campaign::$plugin->settings->getWebAliasUsed();
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }

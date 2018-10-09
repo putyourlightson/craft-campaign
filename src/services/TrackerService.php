@@ -128,8 +128,12 @@ class TrackerService extends Component
      * @throws Exception
      * @throws \Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, $sourceType = '', $source = '', $verify = false)
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
+        $sourceType = $sourceType ?? '';
+        $source = $source ?? '';
+        $verify = $verify ?? false;
+
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_BEFORE_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
@@ -270,8 +274,10 @@ class TrackerService extends Component
      * @return array|null
      * @throws InvalidConfigException
      */
-    private function _getGeoIp(int $timeout = 5)
+    private function _getGeoIp(int $timeout = null)
     {
+        $timeout = $timeout ?? 5;
+
         $geoIp = null;
 
         $client = new Client([

@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180320_120000_add_default_values migration.
- */
 class m180320_120000_add_default_values extends Migration
 {
     // Public Methods
@@ -36,7 +33,7 @@ class m180320_120000_add_default_values extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180320_120000_add_default_values cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

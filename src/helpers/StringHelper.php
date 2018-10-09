@@ -25,8 +25,10 @@ class StringHelper extends \craft\helpers\StringHelper
      *
      * @return string
      */
-    public static function uniqueId(string $prefix = ''): string
+    public static function uniqueId(string $prefix = null): string
     {
+        $prefix = $prefix ?? '';
+
         return uniqid($prefix, false).self::randomString(3);
     }
 

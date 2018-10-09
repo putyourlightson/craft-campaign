@@ -189,7 +189,7 @@ class MailingListElement extends Element
             $attributes[] = 'mailingListType';
         }
 
-        $attributes = array_merge($attributes, ['subscribed', 'unsubscribed', 'complained', 'bounced']);
+        array_push($attributes, 'subscribed', 'unsubscribed', 'complained', 'bounced');
 
         return $attributes;
     }
@@ -443,12 +443,14 @@ class MailingListElement extends Element
     /**
      * Returns the number of contacts in this mailing list
      *
-     * @param string|null
+     * @param string|null $subscriptionStatus
      *
      * @return int
      */
-    private function _getContactCount(string $subscriptionStatus = ''): int
+    private function _getContactCount(string $subscriptionStatus = null): int
     {
+        $subscriptionStatus = $subscriptionStatus ?? '';
+
         $condition = ['mailingListId' => $this->id];
 
         if ($subscriptionStatus) {

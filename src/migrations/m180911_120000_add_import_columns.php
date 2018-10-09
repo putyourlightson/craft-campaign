@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180911_120000_add_import_columns migration.
- */
 class m180911_120000_add_import_columns extends Migration
 {
     // Public Methods
@@ -31,7 +28,7 @@ class m180911_120000_add_import_columns extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180911_120000_add_import_columns cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

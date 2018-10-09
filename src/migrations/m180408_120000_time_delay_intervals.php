@@ -8,9 +8,6 @@ use Craft;
 use craft\db\Migration;
 use craft\helpers\DateTimeHelper;
 
-/**
- * m180408_120000_time_delay_intervals migration.
- */
 class m180408_120000_time_delay_intervals extends Migration
 {
     // Public Methods
@@ -42,7 +39,7 @@ class m180408_120000_time_delay_intervals extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180408_120000_time_delay_intervals cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

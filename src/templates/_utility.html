@@ -5,7 +5,7 @@
     {{ redirectInput('utilities/campaign') }}
     {{ csrfInput() }}
 
-    <input type="hidden" name="key" value="{{ settings.apiKey }}" />
+    <input type="hidden" name="utility" value="1" />
 
     <p class="light">
         {{ 'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.'|t('campaign') }}

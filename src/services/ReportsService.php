@@ -140,8 +140,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getCampaignChartData(int $campaignId, string $interval = 'hours'): array
+    public function getCampaignChartData(int $campaignId, string $interval = null): array
     {
+        $interval = $interval ?? 'hours';
+
         return $this->_getChartData(
             ContactCampaignRecord::class,
             ['campaignId' => $campaignId],
@@ -159,8 +161,10 @@ class ReportsService extends Component
      *
      * @return ContactActivityModel[]
      */
-    public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = 100): array
+    public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get contact campaigns
         $query = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
@@ -187,8 +191,10 @@ class ReportsService extends Component
      *
      * @return LinkModel[]
      */
-    public function getCampaignLinks(int $campaignId, int $limit = 100): array
+    public function getCampaignLinks(int $campaignId, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get campaign links
         $linkRecords = LinkRecord::find()
             ->where(['campaignId' => $campaignId])
@@ -207,8 +213,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getCampaignLocations(int $campaignId, int $limit = 100): array
+    public function getCampaignLocations(int $campaignId, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
@@ -224,13 +232,16 @@ class ReportsService extends Component
      * Returns campaign devices
      *
      * @param int
-     * @param bool
+     * @param bool|null
      * @param int|null
      *
      * @return array
      */
-    public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = 100): array
+    public function getCampaignDevices(int $campaignId, bool $detailed = null, int $limit = null): array
     {
+        $detailed = $detailed ?? false;
+        $limit = $limit ?? 100;
+
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
@@ -274,8 +285,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getContactsActivity(int $limit = 100): array
+    public function getContactsActivity(int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get recently active contacts
         return ContactElement::find()
             ->orderBy(['lastActivity' => SORT_DESC])
@@ -290,8 +303,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getContactsLocations(int $limit = 100): array
+    public function getContactsLocations(int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get total active contacts
         $total = ContactElement::find()
             ->where(['complained' => null, 'bounced' => null])
@@ -304,13 +319,16 @@ class ReportsService extends Component
     /**
      * Returns contacts devices
      *
-     * @param bool
+     * @param bool|null
      * @param int|null
      *
      * @return array
      */
-    public function getContactsDevices(bool $detailed = false, int $limit = 100): array
+    public function getContactsDevices(bool $detailed = null, int $limit = null): array
     {
+        $detailed = $detailed ?? false;
+        $limit = $limit ?? 100;$limit = $limit ?? 100;
+
         // Get total active contacts
         $total = ContactElement::find()
             ->where(['complained' => null, 'bounced' => null])
@@ -328,8 +346,10 @@ class ReportsService extends Component
      *
      * @return ContactActivityModel[]
      */
-    public function getContactCampaignActivity(int $contactId, int $limit = 100): array
+    public function getContactCampaignActivity(int $contactId, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['contactId' => $contactId])
@@ -351,8 +371,10 @@ class ReportsService extends Component
      *
      * @return ContactActivityModel[]
      */
-    public function getContactMailingListActivity(int $contactId, int $limit = 100): array
+    public function getContactMailingListActivity(int $contactId, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['contactId' => $contactId])
@@ -431,8 +453,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getMailingListChartData(int $mailingListId, string $interval = 'days'): array
+    public function getMailingListChartData(int $mailingListId, string $interval = null): array
     {
+        $interval = $interval ?? 'days';
+
         return $this->_getChartData(
             ContactMailingListRecord::class,
             ['mailingListId' => $mailingListId],
@@ -450,8 +474,10 @@ class ReportsService extends Component
      *
      * @return ContactMailingListModel[]
      */
-    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
+    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get contact mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
@@ -473,8 +499,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    public function getMailingListLocations(int $mailingListId, int $limit = 100): array
+    public function getMailingListLocations(int $mailingListId, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
@@ -490,13 +518,16 @@ class ReportsService extends Component
      * Returns mailing list devices
      *
      * @param int
-     * @param bool
+     * @param bool|null
      * @param int|null
      *
      * @return array
      */
-    public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = 100): array
+    public function getMailingListDevices(int $mailingListId, bool $detailed = null, int $limit = null): array
     {
+        $detailed = $detailed ?? false;
+        $limit = $limit ?? 100;
+
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
@@ -605,8 +636,10 @@ class ReportsService extends Component
      *
      * @return ContactActivityModel[]
      */
-    private function _getActivity(array $models, string $interaction = null, int $limit = 100): array
+    private function _getActivity(array $models, string $interaction = null, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         $activity = [];
 
         foreach ($models as $model) {
@@ -668,8 +701,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
+    private function _getLocations(string $table, array $conditions, int $total, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         $countArray = [];
 
         $query = (new Query())
@@ -704,6 +739,9 @@ class ReportsService extends Component
             $countArray[] = $result['count'];
         }
 
+        // Unset variable reference to avoid possible side-effects
+        unset($result);
+
         // If there is an unknown count then add it to results
         if ($unknownCount > 0) {
             $results[] = [
@@ -735,8 +773,10 @@ class ReportsService extends Component
      *
      * @return array
      */
-    private function _getDevices(string $table, array $conditions, bool $detailed, int $count, int $limit = 100): array
+    private function _getDevices(string $table, array $conditions, bool $detailed, int $count, int $limit = null): array
     {
+        $limit = $limit ?? 100;
+
         $countArray = [];
 
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
@@ -758,6 +798,9 @@ class ReportsService extends Component
             $result['countRate'] = $count ? number_format($result['count'] / $count * 100, 1) : 0;
             $countArray[] = $result['count'];
         }
+
+        // Unset variable reference to avoid possible side-effects
+        unset($result);
 
         // Sort results by count array descending
         array_multisort($countArray, SORT_DESC, $results);

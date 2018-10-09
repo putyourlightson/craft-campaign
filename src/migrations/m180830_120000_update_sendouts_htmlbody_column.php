@@ -4,9 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-/**
- * m180830_120000_update_sendouts_htmlbody_column migration.
- */
 class m180830_120000_update_sendouts_htmlbody_column extends Migration
 {
     // Public Methods
@@ -31,7 +28,7 @@ class m180830_120000_update_sendouts_htmlbody_column extends Migration
      */
     public function safeDown(): bool
     {
-        echo "m180830_120000_update_sendouts_htmlbody_column cannot be reverted.\n";
+        echo self::class." cannot be reverted.\n";
 
         return false;
     }

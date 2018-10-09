@@ -117,7 +117,7 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'lid' => $this->uid(),
                 'campaignId' => $this->integer()->notNull(),
-                'url' => $this->string()->notNull(),
+                'url' => $this->text(),
                 'title' => $this->string()->notNull(),
                 'clicked' => $this->integer()->defaultValue(0)->notNull(),
                 'clicks' => $this->integer()->defaultValue(0)->notNull(),

@@ -713,6 +713,11 @@ class SendoutElement extends Element
             /** @var MailingListElement $mailingList */
             $contacts = $mailingList->getSubscribedContacts();
             foreach ($contacts as $contact) {
+                // If contact has complained or bounced
+                if ($contact->complained !== null OR $contact->bounced !== null) {
+                    continue;
+                }
+
                 // If contact has not yet been added
                 /** @var ContactElement $contact */
                 if (empty($recipients[$contact->id])) {
@@ -734,7 +739,7 @@ class SendoutElement extends Element
         }
 
         // Check whether we should remove recipients that were sent to today only
-        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes === true);
+        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes);
 
         // Get sent recipient IDs
         $sentRecipientIds = $this->getSentRecipientIds($todayOnly);
@@ -777,14 +782,18 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's sent recipient ID's
      *
-     * @param bool $todayOnly
+     * @param bool|null $todayOnly
+     *
      * @return array
      */
-    public function getSentRecipientIds($todayOnly = false): array
+    public function getSentRecipientIds(bool $todayOnly = null): array
     {
+        $todayOnly = $todayOnly ?? false;
+
         $query = ContactCampaignRecord::find()
             ->select('contactId')
-            ->where(['sendoutId' => $this->id]);
+            ->where(['sendoutId' => $this->id])
+            ->andWhere(['not', ['sent' => null]]);
 
         if ($todayOnly) {
             $now = new \DateTime();

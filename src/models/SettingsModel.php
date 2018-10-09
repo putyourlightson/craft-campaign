@@ -179,7 +179,7 @@ class SettingsModel extends Model
     public function rules(): array
     {
         return [
-            [['apiKey', 'defaultFromName', 'defaultFromEmail', 'transportType', 'emailFieldLabel'], 'required'],
+            [['defaultFromName', 'defaultFromEmail', 'transportType', 'emailFieldLabel'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['ipstackApiKey'], 'required', 'when' => function($model) {
                 return $model->geoIp;

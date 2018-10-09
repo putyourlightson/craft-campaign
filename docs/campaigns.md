@@ -7,14 +7,17 @@ Before you can create a campaign, you must create at least one campaign type. Ea
 
 **Campaign URI Format**  
 What the campaign URIs should look like. You can include tags that output campaign properties.
+
     newsletter/{slug}
 
 **HTML Template**  
 The HTML template to use when a campaign’s URL is requested, located in the main templates folder.
+
     _newsletter/html
 
 **Plaintext Template**  
 The plaintext template to use when sending a plaintext version, located in the main templates folder.
+
     _newsletter/plaintext
 
 To create a new campaign type, go to Settings → Campaign Types and click the “New campaign type” button.

@@ -6,6 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Element;
+use craft\elements\db\ElementQuery;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
@@ -79,7 +81,24 @@ class ExportsService extends Component
                     // Populate row with contact fields
                     $row = [];
                     foreach ($export->fields as $field) {
-                        $row[] = $contact->$field;
+                        $value = $contact->$field;
+
+                        if ($value instanceof ElementQuery) {
+                            $elements = $value->all();
+
+                            // Use the string representation of each element
+                            /** @var Element $element */
+                            foreach ($elements as &$element) {
+                                $element = $element->__toString();
+                            }
+
+                            // Unset variable reference to avoid possible side-effects
+                            unset($element);
+
+                            $value = implode(',', $elements);
+                        }
+
+                        $row[] = $value;
                     }
 
                     // Write contact fields to file

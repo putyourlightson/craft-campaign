@@ -157,8 +157,10 @@ class ImportsService extends Component
      *
      * @return array
      */
-    public function getRows(ImportModel $import, int $offset = 0, int $length = null): array
+    public function getRows(ImportModel $import, int $offset = null, int $length = null): array
     {
+        $offset = $offset ?? 0;
+
         $rows = [];
 
         // If CSV file

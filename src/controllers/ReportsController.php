@@ -108,7 +108,7 @@ class ReportsController extends Controller
             $timestamps[] = DateTimeHelper::toDateTime($dateTime->format($data['format']))->getTimestamp();
 
             // Break loop if datetime is in the future or after last interaction and loop index is at least the min intervals
-            if ($dateTime > $now OR ($data['lastInteraction'] !== null AND $dateTime > $data['lastInteraction'] AND $i >= ReportsService::MIN_INTERVALS )) {
+            if ($dateTime > $now OR ($data['lastInteraction'] !== null AND $dateTime > $data['lastInteraction'] AND $i >= ReportsService::MIN_INTERVALS)) {
                 break;
             }
 

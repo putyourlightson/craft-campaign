@@ -4,7 +4,7 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 
-class m180825_120000_add_mailinglist_syncedusergroupid_column extends Migration
+class m180913_120000_update_links_url_column extends Migration
 {
     // Public Methods
     // =========================================================================
@@ -14,10 +14,8 @@ class m180825_120000_add_mailinglist_syncedusergroupid_column extends Migration
      */
     public function safeUp()
     {
-        if (!$this->db->columnExists('{{%campaign_mailinglists}}', 'syncedUserGroupId')) {
-            $this->addColumn('{{%campaign_mailinglists}}', 'syncedUserGroupId', $this->integer()->after('mailingListTypeId'));
-
-            $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'syncedUserGroupId', '{{%usergroups}}', 'id', 'SET NULL');
+        if ($this->db->columnExists('{{%campaign_links}}', 'url')) {
+            $this->alterColumn('{{%campaign_links}}', 'url', $this->text());
         }
     }
 

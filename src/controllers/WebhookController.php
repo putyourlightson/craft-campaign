@@ -43,12 +43,35 @@ class WebhookController extends Controller
     public $enableCsrfValidation = false;
 
     /**
+     * @var bool Disable Snaptcha validation
+     */
+    public $enableSnaptchaValidation = false;
+
+    /**
      * @inheritdoc
      */
     protected $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     *
+     * @throws ForbiddenHttpException
+     */
+    public function init()
+    {
+        // Get plugin settings
+        $settings = Campaign::$plugin->getSettings();
+
+        // Verify API key
+        $apiKey = Craft::$app->getRequest()->getParam('key');
+
+        if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+            throw new ForbiddenHttpException('Unauthorised access.');
+        }
+    }
 
     /**
      * Test
@@ -94,7 +117,6 @@ class WebhookController extends Controller
         }
 
         if ($message['Type'] === 'Notification') {
-            /** @var array $headers */
             $headers = $message['mail']['headers'];
 
             if (is_array($headers)) {
@@ -256,7 +278,6 @@ class WebhookController extends Controller
      * @param string|null $sid
      *
      * @return Response
-     * @throws ForbiddenHttpException
      * @throws \Throwable
      * @throws ElementNotFoundException
      * @throws Exception
@@ -272,16 +293,6 @@ class WebhookController extends Controller
 
         if ($sid === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
-        }
-
-        // Get plugin settings
-        $settings = Campaign::$plugin->getSettings();
-
-        // Verify API key
-        $apiKey = Craft::$app->getRequest()->getQueryParam('key');
-
-        if (!$apiKey OR $apiKey != $settings->apiKey) {
-            throw new ForbiddenHttpException('Unauthorised access.');
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);

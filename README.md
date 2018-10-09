@@ -14,6 +14,10 @@ Read the documentation at [craftcampaign.com/docs](https://craftcampaign.com/doc
   
 Read more about the pro features at [craftcampaign.com/docs/pro-features](https://craftcampaign.com/docs/pro-features).
 
+## License
+
+This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $149 plus $39 per subsequent year for updates (optional). The license fee for the pro version is an additional $99 plus $29 per subsequent year for updates (optional).
+
 ## Requirements
 
 Craft CMS 3.0.1 or later.
