@@ -250,7 +250,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact campaigns
-        return $this->_getDevices(ContactCampaignRecord::tableName(), ['campaignId' => $campaignId], $detailed, $campaign->opened, $limit);
+        return $this->_getDevices(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $detailed, $campaign->opened, $limit);
     }
 
     /**
@@ -511,7 +511,7 @@ class ReportsService extends Component
         }
 
         // Return locations of contact mailing lists
-        return $this->_getLocations(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $mailingList->getSubscribedCount(), $limit);
+        return $this->_getLocations(ContactMailingListRecord::tableName(), ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $mailingList->getSubscribedCount(), $limit);
     }
 
     /**
@@ -536,7 +536,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact mailing lists
-        return $this->_getDevices(ContactMailingListRecord::tableName(), ['mailingListId' => $mailingListId], $detailed, $mailingList->getSubscribedCount(), $limit);
+        return $this->_getDevices(ContactMailingListRecord::tableName(), ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
 
     // Private Methods
@@ -773,7 +773,7 @@ class ReportsService extends Component
      *
      * @return array
      */
-    private function _getDevices(string $table, array $conditions, bool $detailed, int $count, int $limit = null): array
+    private function _getDevices(string $table, array $conditions, bool $detailed, int $total, int $limit = null): array
     {
         $limit = $limit ?? 100;
 
@@ -795,7 +795,7 @@ class ReportsService extends Component
         $results = $query->all();
 
         foreach ($results as &$result) {
-            $result['countRate'] = $count ? number_format($result['count'] / $count * 100, 1) : 0;
+            $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
             $countArray[] = $result['count'];
         }
 

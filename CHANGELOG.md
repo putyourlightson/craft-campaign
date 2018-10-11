@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.4 - 2018-10-11
+### Fixed
+- Fixed a bug in which counts and percentages in location and device reports could be incorrectly calculated
+
 ## 1.3.3 - 2018-10-09
 ### Changed
 - Improved how elements are output in exported CSV file
