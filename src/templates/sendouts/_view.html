@@ -19,12 +19,22 @@
 
     {{ parent() }}
 
+{% endblock %}
+
+
+{% block contextMenu %}
+
+    {% if craft.app.isMultiSite %}
+        <div class="btn disabled" data-icon="world">{{ sendout.site.name }}</div>
+    {% endif %}
+
+    &nbsp;
+
     {% if sendout.isEditable %}
         <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
 
 {% endblock %}
-
 
 {% block actionButton %}
 
