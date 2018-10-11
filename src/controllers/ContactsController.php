@@ -486,7 +486,7 @@ class ContactsController extends Controller
 
         $contact = $this->_getPostedContact();
 
-        $contact->$status = new \DateTime();
+        $contact->{$status} = new \DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
@@ -530,7 +530,7 @@ class ContactsController extends Controller
 
         $contact = $this->_getPostedContact();
 
-        $contact->$status = null;
+        $contact->{$status} = null;
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {

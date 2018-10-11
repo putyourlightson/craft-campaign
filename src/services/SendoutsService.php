@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\controllers\WebhookController;
 use putyourlightson\campaign\elements\ContactElement;
@@ -86,12 +87,19 @@ class SendoutsService extends Component
      */
     public function getSendoutById(int $sendoutId)
     {
-        if (!$sendoutId) {
+        // Get site ID from element site settings
+        $siteId = Element_SiteSettings::find()
+            ->select('siteId')
+            ->where(['elementId' => $sendoutId])
+            ->scalar();
+
+        if ($siteId === null) {
             return null;
         }
 
         $sendout = SendoutElement::find()
             ->id($sendoutId)
+            ->siteId($siteId)
             ->status(null)
             ->one();
 

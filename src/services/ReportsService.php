@@ -596,9 +596,9 @@ class ReportsService extends Component
         foreach ($records as $record) {
             foreach ($interactions as $interaction) {
                 // If the interaction exists for the record
-                if ($record->$interaction) {
+                if ($record->{$interaction}) {
                     // Convert interaction to datetime
-                    $interactionDateTime = DateTimeHelper::toDateTime($record->$interaction);
+                    $interactionDateTime = DateTimeHelper::toDateTime($record->{$interaction});
 
                     // If interaction datetime is before the specified end time
                     if ($interactionDateTime < $endDateTime) {
@@ -647,11 +647,11 @@ class ReportsService extends Component
             $interactionTypes = ($interaction !== null AND \in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
 
             foreach ($interactionTypes as $key => $interactionType) {
-                if ($model->$interactionType !== null) {
+                if ($model->{$interactionType} !== null) {
                     $contactActivityModel = new ContactActivityModel([
                         'model' => $model,
                         'interaction' => $interactionType,
-                        'date' => $model->$interactionType,
+                        'date' => $model->{$interactionType},
                         'links' => $interactionType == 'clicked' ? $model->getLinks() : [],
                         'count' => 1,
                     ]);

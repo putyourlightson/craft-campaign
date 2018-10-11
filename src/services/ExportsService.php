@@ -81,7 +81,7 @@ class ExportsService extends Component
                     // Populate row with contact fields
                     $row = [];
                     foreach ($export->fields as $field) {
-                        $value = $contact->$field;
+                        $value = $contact->{$field};
 
                         if ($value instanceof ElementQuery) {
                             $elements = $value->all();

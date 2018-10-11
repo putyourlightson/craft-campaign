@@ -9,6 +9,12 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend(
         $newCampaignBtnGroup: null,
         $newCampaignBtn: null,
 
+        init: function(elementType, $container, settings) {
+            this.on('selectSource', $.proxy(this, 'updateButton'));
+            this.on('selectSite', $.proxy(this, 'updateButton'));
+            this.base(elementType, $container, settings);
+        },
+
         afterInit: function() {
             // Get publishable campaign types
             this.publishableCampaignTypes = [];
@@ -39,7 +45,11 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend(
             return this.base();
         },
 
-        onSelectSource: function() {
+        updateButton: function() {
+            if (!this.$source) {
+                return;
+            }
+
             var handle;
 
             // Get the handle of the selected source
@@ -96,7 +106,10 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend(
                     for (var i = 0; i < this.publishableCampaignTypes.length; i++) {
                         var campaignType = this.publishableCampaignTypes[i];
 
-                        if (this.settings.context == 'index' || campaignType != selectedCampaignType) {
+                        if (
+                            (this.settings.context === 'index' && this.siteId == campaignType.siteId) ||
+                            (this.settings.context !== 'index' && campaignType != selectedCampaignType)
+                        ) {
                             var href = this._getCampaignTypeTriggerHref(campaignType),
                                 label = (this.settings.context == 'index' ? campaignType.name : Craft.t('campaign', 'New {campaignType} campaign', {campaignType: campaignType.name}));
                             menuHtml += '<li><a ' + href + '">' + Craft.escapeHtml(label) + '</a></li>';
@@ -130,8 +143,6 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend(
 
                 history.replaceState({}, '', Craft.getUrl(uri));
             }
-
-            this.base();
         },
 
         _getCampaignTypeTriggerHref: function(campaignType) {

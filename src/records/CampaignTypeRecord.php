@@ -7,15 +7,21 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use craft\records\Site;
+use yii\db\ActiveQueryInterface;
 
 
 /**
  * CampaignTypeRecord
  *
  * @property int         $id                    ID
+ * @property int         $siteId                Site ID
  * @property int         $fieldLayoutId         Field layout ID
  * @property string      $name                  Name
  * @property string      $handle                Handle
+ * @property string      $uriFormat             URI format
+ * @property string      $htmlTemplate          HTML template
+ * @property string      $plaintextTemplate     Plaintext template
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -37,12 +43,12 @@ class CampaignTypeRecord extends ActiveRecord
     }
 
     /**
-     * Returns the associated sites.
+     * Returns the associated site.
      *
      * @return ActiveQueryInterface The relational query object.
      */
-    public function getSites(): ActiveQueryInterface
+    public function getSite(): ActiveQueryInterface
     {
-        return $this->hasMany(CampaignTypeSiteRecord::class, ['campaignTypeId' => 'id']);
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 }

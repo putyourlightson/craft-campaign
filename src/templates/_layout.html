@@ -7,6 +7,7 @@
         {% for campaignType in craft.campaign.getAllCampaignTypes() %}
             {
                 id: {{ campaignType.id }},
+                siteId: {{ campaignType.siteId }},
                 name: "{{ campaignType.name|e('js') }}",
                 handle: "{{ campaignType.handle|e('js') }}"
             }{% if not loop.last %},{% endif %}
@@ -16,6 +17,7 @@
         {% for mailingListType in craft.campaign.getAllMailingListTypes() %}
             {
                 id: {{ mailingListType.id }},
+                siteId: {{ mailingListType.siteId }},
                 name: "{{ mailingListType.name|e('js') }}",
                 handle: "{{ mailingListType.handle|e('js') }}"
             }{% if not loop.last %},{% endif %}

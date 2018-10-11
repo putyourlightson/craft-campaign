@@ -22,6 +22,9 @@
             <thead>
                 <th scope="col">{{ "Name"|t('app') }}</th>
                 <th scope="col">{{ "Handle"|t('app') }}</th>
+                {% if isMultiSite %}
+                    <th scope="col">{{ "Site"|t('app') }}</th>
+                {% endif %}
                 <td class="thin"></td>
                 <td class="thin"></td>
             </thead>
@@ -30,6 +33,9 @@
                 <tr data-id="{{ mailingListType.id }}" data-name="{{ mailingListType.name }}">
                     <th scope="row" data-title="{{ 'Name'|t('app') }}"><a href="{{ mailingListType.cpEditUrl }}">{{ mailingListType.name }}</a></th>
                     <td data-title="{{ 'Handle'|t('app') }}"><code>{{ mailingListType.handle }}</code></td>
+                    {% if isMultiSite %}
+                        <td data-title="{{ 'Site'|t('app') }}"><code>{{ mailingListType.getSite().name }}</code></td>
+                    {% endif %}
                     <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                 </tr>
             {% endfor %}

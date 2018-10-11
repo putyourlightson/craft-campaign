@@ -6,9 +6,23 @@
 
 namespace putyourlightson\campaign;
 
+use Craft;
+use craft\base\Plugin;
+use craft\errors\MissingComponentException;
 use craft\events\RegisterComponentTypesEvent;
-use craft\queue\Queue;
+use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\ConfigHelper;
+use craft\helpers\UrlHelper;
+use craft\helpers\StringHelper;
+use craft\helpers\MailerHelper;
+use craft\mail\Mailer;
+use craft\mail\Message;
+use craft\mail\transportadapters\Sendmail;
+use craft\services\UserPermissions;
 use craft\services\Utilities;
+use craft\web\UrlManager;
+use craft\web\twig\variables\CraftVariable;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
@@ -28,25 +42,8 @@ use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
-
-use Craft;
-use craft\base\Plugin;
-use craft\errors\MissingComponentException;
-use craft\events\RegisterUrlRulesEvent;
-use craft\events\RegisterUserPermissionsEvent;
-use craft\helpers\ConfigHelper;
-use craft\helpers\UrlHelper;
-use craft\helpers\StringHelper;
-use craft\helpers\MailerHelper;
-use craft\mail\Mailer;
-use craft\mail\Message;
-use craft\mail\transportadapters\Sendmail;
-use craft\services\UserPermissions;
-use craft\web\UrlManager;
-use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 use yii\base\InvalidConfigException;
-use yii\queue\ExecEvent;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -157,11 +154,6 @@ class Campaign extends Plugin
             // Register user events
             $this->sync->registerUserEvents();
         }
-
-        // TODO: Remove test code below
-        Event::on(Queue::class, Queue::EVENT_BEFORE_EXEC, function(ExecEvent $e) {
-            Craft::info('Queue job executed: '.json_encode($e), 'Campaign');
-        });
     }
 
     /**
@@ -374,7 +366,9 @@ class Campaign extends Plugin
             'campaign/segments/<segmentId:\d+>' => 'campaign/segments/edit-segment',
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
             'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/edit-sendout',
+            'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/edit-sendout',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit-sendout',
+            'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit-sendout',
             'campaign/settings/general' => 'campaign/settings/edit-general',
             'campaign/settings/email' => 'campaign/settings/edit-email',
             'campaign/settings/contact' => 'campaign/settings/edit-contact',

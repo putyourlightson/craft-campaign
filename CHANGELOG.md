@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 - Unreleased
+### Added
+- Added site select field to campaign types and mailing list types
+
 ## 1.3.4 - 2018-10-11
 ### Fixed
 - Fixed a bug in which counts and percentages in location and device reports could be incorrectly calculated

@@ -7,12 +7,14 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQueryInterface;
 
 
 /**
  * MailingListTypeRecord
  *
  * @property int         $id                            ID
+ * @property int         $siteId                        Site ID
  * @property int         $fieldLayoutId                 Field layout ID
  * @property string      $name                          Name
  * @property string      $handle                        Handle
@@ -38,12 +40,12 @@ class MailingListTypeRecord extends ActiveRecord
     }
 
     /**
-     * Returns the associated site settings.
+     * Returns the associated site.
      *
      * @return ActiveQueryInterface The relational query object.
      */
-    public function getSiteSettings(): ActiveQueryInterface
+    public function getSite(): ActiveQueryInterface
     {
-        return $this->hasMany(MailingListTypeSiteModel::class, ['mailingListTypeId' => 'id']);
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 }

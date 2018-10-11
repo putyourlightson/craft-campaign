@@ -43,6 +43,19 @@
         required: true
     }) }}
 
+    {% if siteOptions|length > 1 %}
+        {{ forms.selectField({
+            label: "Site"|t('campaign'),
+            instructions: "The site to associate this mailing list type with."|t('campaign'),
+            id: 'siteId',
+            name: 'siteId',
+            options: siteOptions,
+            value: campaignType.siteId,
+            errors: campaignType.getErrors('siteId'),
+            required: true
+        }) }}
+    {% endif %}
+
     {{ forms.lightswitchField({
         label: "Double Opt-In"|t('campaign'),
         instructions: "Whether the user needs to verify their email address by clicking on a link in an email that will be sent to them (highly recommended)."|t('campaign'),

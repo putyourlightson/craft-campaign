@@ -88,8 +88,8 @@ class WebhookService extends Component
         }
 
         // Update contact
-        if ($contact->$interaction === null) {
-            $contact->$interaction = new \DateTime();
+        if ($contact->{$interaction} === null) {
+            $contact->{$interaction} = new \DateTime();
             Craft::$app->getElements()->saveElement($contact);
         }
     }

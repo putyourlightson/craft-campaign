@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQueryInterface;
 
 /**
  * MailingListRecord
@@ -35,12 +36,12 @@ class MailingListRecord extends ActiveRecord
     }
 
     /**
-     * Returns the associated sites.
+     * Returns the campaign type.
      *
      * @return ActiveQueryInterface The relational query object.
      */
-    public function getSites(): ActiveQueryInterface
+    public function getMailingListType(): ActiveQueryInterface
     {
-        return $this->hasMany(MailingListTypeSiteRecord::class, ['mailingListTypeId' => 'id']);
+        return $this->hasOne(MailingListTypeRecord::class, ['id' => 'mailingListTypeId']);
     }
 }

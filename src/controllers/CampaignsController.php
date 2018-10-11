@@ -504,6 +504,9 @@ class CampaignsController extends Controller
         $campaign->slug = $request->getBodyParam('slug', $campaign->slug);
         $campaign->enabled = (bool)$request->getBodyParam('enabled', $campaign->enabled);
 
+        // Set the site ID
+        $campaign->siteId = $campaign->getCampaignType()->siteId;
+
         // Set the field layout ID
         $campaign->fieldLayoutId = $campaign->getCampaignType()->fieldLayoutId;
 

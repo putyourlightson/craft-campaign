@@ -81,6 +81,14 @@ class CampaignTypesController extends Controller
             $variables['title'] = $campaignType->name;
         }
 
+        // Get the site options
+        $sites = Craft::$app->getSites()->getAllSites();
+        $variables['siteOptions'] = [];
+
+        foreach ($sites as $site) {
+            $variables['siteOptions'][$site->id] = $site->name;
+        }
+
         // Full page form variables
         $variables['fullPageForm'] = true;
 
@@ -113,6 +121,7 @@ class CampaignTypesController extends Controller
         }
 
         // Set the simple stuff
+        $campaignType->siteId = $request->getBodyParam('siteId', $campaignType->siteId);
         $campaignType->name = $request->getBodyParam('name', $campaignType->name);
         $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
         $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);

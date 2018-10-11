@@ -78,6 +78,14 @@ class MailingListTypesController extends Controller
             $variables['title'] = $mailingListType->name;
         }
 
+        // Get the site options
+        $sites = Craft::$app->getSites()->getAllSites();
+        $variables['siteOptions'] = [];
+
+        foreach ($sites as $site) {
+            $variables['siteOptions'][$site->id] = $site->name;
+        }
+
         // Full page form variables
         $variables['fullPageForm'] = true;
 
@@ -109,6 +117,7 @@ class MailingListTypesController extends Controller
         }
 
         // Set the simple stuff
+        $mailingListType->siteId = $request->getBodyParam('siteId', $mailingListType->siteId);
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
         $mailingListType->doubleOptIn = (bool)$request->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);

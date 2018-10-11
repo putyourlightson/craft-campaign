@@ -100,23 +100,10 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_campaigntypes}}')) {
             $this->createTable('{{%campaign_campaigntypes}}', [
                 'id' => $this->primaryKey(),
+                'siteId' => $this->integer()->notNull(),
                 'fieldLayoutId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
-                'htmlTemplate' => $this->string(),
-                'plaintextTemplate' => $this->string(),
-                'uriFormat' => $this->string(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]);
-        }
-
-        if (!$this->db->tableExists('{{%campaign_campaigntypes_sites}}')) {
-            $this->createTable('{{%campaign_campaigntypes_sites}}', [
-                'id' => $this->primaryKey(),
-                'campaignTypeId' => $this->integer()->notNull(),
-                'siteId' => $this->integer()->notNull(),
                 'uriFormat' => $this->text(),
                 'htmlTemplate' => $this->string(500),
                 'plaintextTemplate' => $this->string(500),
@@ -212,22 +199,13 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_mailinglisttypes}}')) {
             $this->createTable('{{%campaign_mailinglisttypes}}', [
                 'id' => $this->primaryKey(),
+                'siteId' => $this->integer()->notNull(),
                 'fieldLayoutId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
                 'doubleOptIn' => $this->boolean()->defaultValue(true)->notNull(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]);
-        }
-
-        if (!$this->db->tableExists('{{%campaign_mailinglisttypes_sites}}')) {
-            $this->createTable('{{%campaign_mailinglisttypes_sites}}', [
-                'id' => $this->primaryKey(),
-                'sectionId' => $this->integer()->notNull(),
-                'siteId' => $this->integer()->notNull(),
                 'verifyEmailTemplate' => $this->string(500),
+                'verifySuccessTemplate' => $this->string(500),
                 'subscribeSuccessTemplate' => $this->string(500),
                 'unsubscribeSuccessTemplate' => $this->string(500),
                 'dateCreated' => $this->dateTime()->notNull(),
@@ -350,6 +328,7 @@ class Install extends Migration
     {
         $this->addForeignKey(null, '{{%campaign_campaigns}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_campaigns}}', 'campaignTypeId', '{{%campaign_campaigntypes}}', 'id', 'CASCADE');
+        $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
         $this->addForeignKey(null, '{{%campaign_contacts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');
@@ -361,6 +340,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'mailingListTypeId', '{{%campaign_mailinglisttypes}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'syncedUserGroupId', '{{%usergroups}}', 'id', 'SET NULL');
+        $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_segments}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_sendouts}}', 'id', '{{%elements}}', 'id', 'CASCADE');

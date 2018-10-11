@@ -9,6 +9,12 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend(
         $newSendoutBtnGroup: null,
         $newSendoutBtn: null,
 
+        init: function(elementType, $container, settings) {
+            this.on('selectSource', $.proxy(this, 'updateButton'));
+            this.on('selectSite', $.proxy(this, 'updateButton'));
+            this.base(elementType, $container, settings);
+        },
+
         afterInit: function() {
             // Get publishable sendout types
             this.publishableSendoutTypes = [];
@@ -39,7 +45,11 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend(
             return this.base();
         },
 
-        onSelectSource: function() {
+        updateButton: function() {
+            if (!this.$source) {
+                return;
+            }
+
             var handle;
 
             // Get the handle of the selected source
@@ -130,13 +140,19 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend(
 
                 history.replaceState({}, '', Craft.getUrl(uri));
             }
-
-            this.base();
         },
 
         _getSendoutTypeTriggerHref: function(sendoutType) {
             if (this.settings.context == 'index') {
-                return 'href="' + Craft.getUrl('campaign/sendouts/' + sendoutType.handle + '/new') + '"';
+                var uri = 'campaign/sendouts/' + sendoutType.handle + '/new';
+                if (this.siteId && this.siteId != Craft.siteId) {
+                    for (var i = 0; i < Craft.sites.length; i++) {
+                        if (Craft.sites[i].id == this.siteId) {
+                            uri += '/' + Craft.sites[i].handle;
+                        }
+                    }
+                }
+                return 'href="' + Craft.getUrl(uri) + '"';
             }
             else {
                 return 'data-id="' + sendoutType.id + '"';

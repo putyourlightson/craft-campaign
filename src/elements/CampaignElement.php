@@ -80,6 +80,14 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public static function isLocalized(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasStatuses(): bool
     {
         return true;
@@ -130,6 +138,7 @@ class CampaignElement extends Element
             $sources[] = [
                 'key' => 'campaignType:'.$campaignType->id,
                 'label' => $campaignType->name,
+                'sites' => [$campaignType->siteId],
                 'data' => [
                     'handle' => $campaignType->handle
                 ],
@@ -319,6 +328,15 @@ class CampaignElement extends Element
      * @inheritdoc
      * @throws InvalidConfigException
      */
+    public function getSupportedSites(): array
+    {
+        return [$this->getCampaignType()->siteId];
+    }
+
+    /**
+     * @inheritdoc
+     * @throws InvalidConfigException
+     */
     public function getUriFormat()
     {
         return $this->getCampaignType()->uriFormat;
@@ -409,7 +427,7 @@ class CampaignElement extends Element
      */
     public function getRate(string $field): int
     {
-        return $this->recipients > 0 ? floor(($this->$field / $this->recipients) * 100) : 0;
+        return $this->recipients > 0 ? floor(($this->{$field} / $this->recipients) * 100) : 0;
     }
 
     /**

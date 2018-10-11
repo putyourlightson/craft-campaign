@@ -9,6 +9,12 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend(
         $newMailingListBtnGroup: null,
         $newMailingListBtn: null,
 
+        init: function(elementType, $container, settings) {
+            this.on('selectSource', $.proxy(this, 'updateButton'));
+            this.on('selectSite', $.proxy(this, 'updateButton'));
+            this.base(elementType, $container, settings);
+        },
+
         afterInit: function() {
             // Get publishable mailing list types
             this.publishableMailingListTypes = [];
@@ -39,7 +45,11 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend(
             return this.base();
         },
 
-        onSelectSource: function() {
+        updateButton: function() {
+            if (!this.$source) {
+                return;
+            }
+
             var handle;
 
             // Get the handle of the selected source
@@ -96,7 +106,10 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend(
                     for (var i = 0; i < this.publishableMailingListTypes.length; i++) {
                         var mailingListType = this.publishableMailingListTypes[i];
 
-                        if (this.settings.context == 'index' || mailingListType != selectedMailingListType) {
+                        if (
+                            (this.settings.context === 'index' && this.siteId == mailingListType.siteId) ||
+                            (this.settings.context !== 'index' && mailingListType != selectedMailingListType)
+                        ) {
                             var href = this._getMailingListTypeTriggerHref(mailingListType),
                                 label = (this.settings.context == 'index' ? mailingListType.name : Craft.t('campaign', 'New {mailingListType} mailing list', {mailingListType: mailingListType.name}));
                             menuHtml += '<li><a ' + href + '">' + Craft.escapeHtml(label) + '</a></li>';
@@ -130,8 +143,6 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend(
 
                 history.replaceState({}, '', Craft.getUrl(uri));
             }
-
-            this.base();
         },
 
         _getMailingListTypeTriggerHref: function(mailingListType) {

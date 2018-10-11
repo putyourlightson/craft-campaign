@@ -126,6 +126,7 @@ class SendoutsController extends Controller
     /**
      * @param string $sendoutType The sendout type
      * @param int|null $sendoutId The sendout’s ID, if editing an existing sendout.
+     * @param string|null $siteHandle The site handle, if specified.
      * @param SendoutElement|null $sendout The sendout being edited, if there were any validation errors.
      *
      * @return Response
@@ -133,7 +134,7 @@ class SendoutsController extends Controller
      * @throws ForbiddenHttpException
      * @throws InvalidConfigException
      */
-    public function actionEditSendout(string $sendoutType, int $sendoutId = null, SendoutElement $sendout = null): Response
+    public function actionEditSendout(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');
@@ -164,7 +165,7 @@ class SendoutsController extends Controller
                 $sendout = new SendoutElement();
                 $sendout->sendoutType = $sendoutType;
 
-                // If a campaign ID was passed in as a param
+                // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
                 $campaignId = $request->getParam('campaignId');
                 if ($campaignId) {
                     // Set campaign ID
@@ -186,6 +187,19 @@ class SendoutsController extends Controller
             $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
         }
 
+        // Get the site
+        $site = null;
+
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+        }
+
+        if ($site === null) {
+            $site = Craft::$app->getSites()->getCurrentSite();
+        }
+
+        $sendout->siteId = $site->id;
+
         // Set the variables
         // ---------------------------------------------------------------------
 
@@ -198,12 +212,14 @@ class SendoutsController extends Controller
         // Campaign element selector variables
         $variables['campaignElementType'] = CampaignElement::class;
         $variables['campaignElementCriteria'] = [
+            'siteId' => $site->id,
             'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
         ];
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;
         $variables['mailingListElementCriteria'] = [
+            'siteId' => $site->id,
             'status' => MailingListElement::STATUS_ENABLED,
         ];
 

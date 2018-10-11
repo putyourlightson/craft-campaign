@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\models\Site;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\MailingListTypeRecord;
@@ -38,6 +39,11 @@ class MailingListTypeModel extends BaseModel
     public $id;
 
     /**
+     * @var int|null Site ID
+     */
+    public $siteId;
+
+    /**
      * @var int|null Field layout ID
      */
     public $fieldLayoutId;
@@ -56,6 +62,26 @@ class MailingListTypeModel extends BaseModel
      * @var bool Double opt-in
      */
     public $doubleOptIn = true;
+
+    /**
+     * @var string|null Verify email template
+     */
+    public $verifyEmailTemplate;
+
+    /**
+     * @var string|null Verify success template
+     */
+    public $verifySuccessTemplate;
+
+    /**
+     * @var string|null Subscribe success template
+     */
+    public $subscribeSuccessTemplate;
+
+    /**
+     * @var string|null Unsubscribe success template
+     */
+    public $unsubscribeSuccessTemplate;
 
     // Public Methods
     // =========================================================================
@@ -89,29 +115,13 @@ class MailingListTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'fieldLayoutId'], 'integer'],
-            [['name', 'handle'], 'required'],
+            [['id', 'siteId', 'fieldLayoutId'], 'integer'],
+            [['siteId'], SiteIdValidator::class],
+            [['siteId', 'name', 'handle'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
+            [['name', 'handle'], UniqueValidator::class, 'targetClass' => MailingListTypeRecord::class],
+            [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
             [['doubleOptIn'], 'boolean'],
-            [
-                ['handle'],
-                HandleValidator::class,
-                'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']
-            ],
-            [
-                ['name'],
-                UniqueValidator::class,
-                'targetClass' => MailingListTypeRecord::class,
-                'targetAttribute' => ['name'],
-                'comboNotUnique' => Craft::t('yii', '{attribute} "{value}" has already been taken.'),
-            ],
-            [
-                ['handle'],
-                UniqueValidator::class,
-                'targetClass' => MailingListTypeRecord::class,
-                'targetAttribute' => ['handle'],
-                'comboNotUnique' => Craft::t('yii', '{attribute} "{value}" has already been taken.'),
-            ],
         ];
     }
 
@@ -123,5 +133,19 @@ class MailingListTypeModel extends BaseModel
     public function getCpEditUrl(): string
     {
         return UrlHelper::cpUrl('campaign/settings/mailinglisttypes/'.$this->id);
+    }
+
+    /**
+     * Returns the site.
+     *
+     * @return Site|null
+     */
+    public function getSite()
+    {
+        if ($this->siteId === null) {
+            return Craft::$app->getSites()->getPrimarySite();
+        }
+
+        return Craft::$app->getSites()->getSiteById($this->siteId);
     }
 }

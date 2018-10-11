@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -41,8 +42,19 @@ class CampaignsService extends Component
      */
     public function getCampaignById(int $campaignId)
     {
+        // Get site ID from element site settings
+        $siteId = Element_SiteSettings::find()
+            ->select('siteId')
+            ->where(['elementId' => $campaignId])
+            ->scalar();
+
+        if ($siteId === null) {
+            return null;
+        }
+
         $campaign = CampaignElement::find()
             ->id($campaignId)
+            ->siteId($siteId)
             ->status(null)
             ->one();
 
@@ -85,9 +97,9 @@ class CampaignsService extends Component
         }
 
         // If first time for this interaction
-        if ($contactCampaignRecord->$interaction === null) {
-            $contactCampaignRecord->$interaction = new \DateTime();
-            $campaign->$interaction++;
+        if ($contactCampaignRecord->{$interaction} === null) {
+            $contactCampaignRecord->{$interaction} = new \DateTime();
+            $campaign->{$interaction}++;
         }
 
         // If opened

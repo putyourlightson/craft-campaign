@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\records;
 
-use craft\base\Element;
 use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 
@@ -46,12 +45,12 @@ class CampaignRecord extends ActiveRecord
     }
 
     /**
-     * Returns the element.
+     * Returns the campaign type.
      *
      * @return ActiveQueryInterface The relational query object.
      */
-    public function getElement(): ActiveQueryInterface
+    public function getCampaignType(): ActiveQueryInterface
     {
-        return $this->hasOne(Element::class, ['id' => 'id']);
+        return $this->hasOne(CampaignTypeRecord::class, ['id' => 'campaignTypeId']);
     }
 }

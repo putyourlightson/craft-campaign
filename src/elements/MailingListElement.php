@@ -67,6 +67,14 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
+    public static function isLocalized(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasStatuses(): bool
     {
         return true;
@@ -111,6 +119,7 @@ class MailingListElement extends Element
             $sources[] = [
                 'key' => 'mailingListType:'.$mailingListType->id,
                 'label' => $mailingListType->name,
+                'sites' => [$mailingListType->siteId],
                 'data' => [
                     'handle' => $mailingListType->handle
                 ],
@@ -119,6 +128,7 @@ class MailingListElement extends Element
                 ]
             ];
         }
+
         return $sources;
     }
 
@@ -221,6 +231,15 @@ class MailingListElement extends Element
         $rules[] = [['mailingListTypeId'], 'integer'];
 
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     * @throws InvalidConfigException
+     */
+    public function getSupportedSites(): array
+    {
+        return [$this->getMailingListType()->siteId];
     }
 
     /**
@@ -370,6 +389,7 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     protected function tableAttributeHtml(string $attribute): string
     {

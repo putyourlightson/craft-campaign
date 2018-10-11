@@ -237,7 +237,7 @@ class ContactCampaignModel extends BaseModel
         $return = '';
 
         foreach ($interactions as $interaction) {
-            if ($this->$interaction !== null) {
+            if ($this->{$interaction} !== null) {
                 $return = $this->interaction;
                 break;
             }
@@ -256,7 +256,7 @@ class ContactCampaignModel extends BaseModel
         $interactions = [];
 
         foreach (self::INTERACTIONS as $interaction) {
-            if ($this->$interaction !== null) {
+            if ($this->{$interaction} !== null) {
                 $interactions[] = $interaction;
             }
         }

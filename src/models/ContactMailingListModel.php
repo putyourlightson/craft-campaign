@@ -126,7 +126,7 @@ class ContactMailingListModel extends BaseModel
         $interactions = ['bounced', 'complained', 'unsubscribed', 'subscribed'];
 
         foreach ($interactions as $interaction) {
-            if ($this->$interaction !== null) {
+            if ($this->{$interaction} !== null) {
                 return $interaction;
             }
         }
