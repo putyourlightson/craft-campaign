@@ -43,6 +43,20 @@
         required: true
     }) }}
 
+    {% if siteOptions|length > 1 %}
+        {{ forms.selectField({
+            label: "Site"|t('campaign'),
+            instructions: "The site to associate this campaign type with."|t('campaign'),
+            warning: campaignType.id ? "Changing this can lead to sent campaigns not being reachable any more."|t('campaign'),
+            id: 'siteId',
+            name: 'siteId',
+            options: siteOptions,
+            value: campaignType.siteId,
+            errors: campaignType.getErrors('siteId'),
+            required: true
+        }) }}
+    {% endif %}
+
     {{ forms.textField({
         label: "Campaign URI Format"|t('campaign'),
         instructions: "What the campaign URIs should look like. You can include tags that output campaign properties, such as `{slug}`."|t('campaign'),
@@ -77,81 +91,6 @@
         errors: campaignType.getErrors('plaintextTemplate'),
         autocomplete: true,
         required: true
-    }) }}
-
-    {% set siteRows = [] %}
-    {% set siteErrors = campaignType.getErrors('siteSettings') %}
-
-    {% for site in craft.app.sites.getAllSites() %}
-        {% set siteSettings = campaignType.siteSettings[site.id] ?? null %}
-        {% if siteSettings %}
-            {% for attribute, errors in siteSettings.getErrors() %}
-                {% set siteErrors = siteErrors|merge(errors) %}
-            {% endfor %}
-        {% endif %}
-        {% set siteRows = siteRows|merge({
-            (site.handle): {
-                heading: site.name|t('site'),
-                enabled: include('_includes/forms/lightswitch', {
-                    name: 'sites['~site.handle~'][enabled]',
-                    on: 1 or siteSettings,
-                    value: site.id,
-                    small: true
-                }),
-                uriFormat: {
-                    value: siteSettings ? siteSettings.uriFormat,
-                    hasErrors: (siteSettings ? siteSettings.hasErrors('uriFormat'))
-                },
-                template: {
-                    value: siteSettings ? siteSettings.template,
-                    hasErrors: siteSettings ? siteSettings.hasErrors('template'),
-                },
-                enabledByDefault: siteSettings ? siteSettings.enabledByDefault : true,
-            }
-        }) %}
-    {% endfor %}
-
-    {{ forms.editableTableField({
-        label: "Site Settings"|t('app'),
-        instructions: "Choose which sites this campaign type should be available in, and configure the site-specific settings."|t('app'),
-        id: 'sites',
-        name: 'sites',
-        cols: {
-            heading: {
-                type: 'heading',
-                heading: "Site"|t('app'),
-                class: 'thin'
-            },
-            enabled: {
-                type: 'heading',
-                class: 'thin'~(not craft.app.getIsMultiSite() ? ' hidden')
-            },
-            uriFormat: {
-                type: 'singleline',
-                heading: "URI Format"|t('app'),
-                info: "What the entry URI should be for the site. Leave blank if this is the homepage."|t('app'),
-                placeholder: ""|t('app'),
-                code: true,
-                class: 'type-single'
-            },
-            htmlTemplate: {
-                type: 'singleline',
-                heading: "HTML Template"|t('app'),
-                info: "What entry URIs should look like for the site. Leave blank if entries don’t have URLs."|t('app'),
-                placeholder: ""|t('app'),
-                code: true,
-                class: 'type-channel type-structure'
-            },
-            plaintextTemplate: {
-                type: 'singleline',
-                heading: "Plaintext Template"|t('app'),
-                info: "Which template should be loaded when an entry’s URL is requested."|t('app'),
-                code: true
-            }
-        },
-        rows: siteRows,
-        staticRows: true,
-        errors: siteErrors|unique
     }) }}
 
     <hr>

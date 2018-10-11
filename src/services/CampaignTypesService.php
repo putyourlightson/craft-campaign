@@ -116,7 +116,7 @@ class CampaignTypesService extends Component
     }
 
     /**
-     * Returns a campaign type’s site-specific settings.
+     * Returns a campaign type’s sites.
      *
      * @param int $campaignTypeId
      *

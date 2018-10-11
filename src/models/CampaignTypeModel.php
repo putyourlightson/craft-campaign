@@ -6,15 +6,18 @@
 
 namespace putyourlightson\campaign\models;
 
-use putyourlightson\campaign\base\BaseModel;
-use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\records\CampaignTypeRecord;
-
 use Craft;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\UrlHelper;
 use craft\validators\HandleValidator;
 use craft\validators\UniqueValidator;
+use craft\models\Site;
+use craft\validators\SiteIdValidator;
+use craft\validators\UriFormatValidator;
+use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\records\CampaignTypeRecord;
+use putyourlightson\campaign\records\CampaignTypeSiteRecord;
 
 /**
  * CampaignTypeModel
@@ -38,6 +41,11 @@ class CampaignTypeModel extends BaseModel
     public $id;
 
     /**
+     * @var int|null Site ID
+     */
+    public $siteId;
+
+    /**
      * @var int|null Field layout ID
      */
     public $fieldLayoutId;
@@ -51,6 +59,21 @@ class CampaignTypeModel extends BaseModel
      * @var string|null Handle
      */
     public $handle;
+
+    /**
+     * @var string|null URI format
+     */
+    public $uriFormat;
+
+    /**
+     * @var string|null HTML template
+     */
+    public $htmlTemplate;
+
+    /**
+     * @var string|null Plaintext template
+     */
+    public $plaintextTemplate;
 
     // Public Methods
     // =========================================================================
@@ -84,28 +107,13 @@ class CampaignTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'fieldLayoutId'], 'integer'],
-            [['name', 'handle'], 'required'],
+            [['id', 'siteId', 'fieldLayoutId'], 'integer'],
+            [['siteId'], SiteIdValidator::class],
+            [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
-            [
-                ['handle'],
-                HandleValidator::class,
-                'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']
-            ],
-            [
-                ['name'],
-                UniqueValidator::class,
-                'targetClass' => CampaignTypeRecord::class,
-                'targetAttribute' => ['name'],
-                'comboNotUnique' => Craft::t('yii', '{attribute} "{value}" has already been taken.'),
-            ],
-            [
-                ['handle'],
-                UniqueValidator::class,
-                'targetClass' => CampaignTypeRecord::class,
-                'targetAttribute' => ['handle'],
-                'comboNotUnique' => Craft::t('yii', '{attribute} "{value}" has already been taken.'),
-            ],
+            [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignTypeRecord::class],
+            [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
+            [['uriFormat'], UriFormatValidator::class],
         ];
     }
 
@@ -117,5 +125,19 @@ class CampaignTypeModel extends BaseModel
     public function getCpEditUrl(): string
     {
         return UrlHelper::cpUrl('campaign/settings/campaigntypes/'.$this->id);
+    }
+
+    /**
+     * Returns the site.
+     *
+     * @return Site|null
+     */
+    public function getSite()
+    {
+        if ($this->siteId === null) {
+            return Craft::$app->getSites()->getPrimarySite();
+        }
+
+        return Craft::$app->getSites()->getSiteById($this->siteId);
     }
 }

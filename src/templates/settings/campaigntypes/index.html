@@ -5,6 +5,7 @@
 {% set crumbs = [] %}
 
 {% set campaignTypes = craft.campaign.getAllCampaignTypes() %}
+{% set isMultiSite = craft.app.getIsMultiSite() %}
 
 
 {% block actionButton %}
@@ -22,8 +23,9 @@
             <thead>
                 <th scope="col">{{ "Name"|t('app') }}</th>
                 <th scope="col">{{ "Handle"|t('app') }}</th>
-                <th scope="col">{{ "HTML Template"|t('campaign') }}</th>
-                <th scope="col">{{ "Plaintext Template"|t('campaign') }}</th>
+                {% if isMultiSite %}
+                    <th scope="col">{{ "Site"|t('app') }}</th>
+                {% endif %}
                 <td class="thin"></td>
                 <td class="thin"></td>
             </thead>
@@ -32,8 +34,9 @@
                 <tr data-id="{{ campaignType.id }}" data-name="{{ campaignType.name }}">
                     <th scope="row" data-title="{{ 'Name'|t('app') }}"><a href="{{ campaignType.cpEditUrl }}">{{ campaignType.name }}</a></th>
                     <td data-title="{{ 'Handle'|t('app') }}"><code>{{ campaignType.handle }}</code></td>
-                    <td data-title="{{ 'HTML Template'|t('campaign') }}"><code>{{ campaignType.htmlTemplate }}</code></td>
-                    <td data-title="{{ 'Plaintext Template'|t('campaign') }}"><code>{{ campaignType.plaintextTemplate }}</code></td>
+                    {% if isMultiSite %}
+                        <td data-title="{{ 'Site'|t('app') }}"><code>{{ campaignType.getSite().name }}</code></td>
+                    {% endif %}
                     <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                 </tr>
             {% endfor %}
