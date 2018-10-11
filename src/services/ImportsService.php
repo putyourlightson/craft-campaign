@@ -227,7 +227,7 @@ class ImportsService extends Component
         $importRecord->setAttributes($import->getAttributes(), false);
 
         // Get user ID
-        $importRecord->userId = Craft::$app->getUser()->getIdentity()->id;
+        $importRecord->userId = Craft::$app->getUser()->getId();
 
         // Save import
         if ($importRecord->save(false) === false) {

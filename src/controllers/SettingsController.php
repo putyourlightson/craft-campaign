@@ -408,7 +408,7 @@ class SettingsController extends Controller
 
             $message = $mailer->compose()
                 ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
-                ->setTo(Craft::$app->getUser()->getIdentity())
+                ->setTo(Craft::$app->getUser()->getIdentity()->email)
                 ->setSubject($subject)
                 ->setHtmlBody($body)
                 ->setTextBody($body);
