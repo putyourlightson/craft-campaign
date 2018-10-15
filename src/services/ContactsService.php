@@ -183,10 +183,13 @@ class ContactsService extends Component
             catch (Exception $e) {}
         }
 
+        // Get first from name and email
+        $fromNameEmail = Campaign::$plugin->settings->getFirstFromNameEmail($mailingList->siteId);
+
         // Create message
         /** @var Message $message */
         $message = $mailer->compose()
-            ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
+            ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($pendingContact->email)
             ->setSubject($subject)
             ->setHtmlBody($body)

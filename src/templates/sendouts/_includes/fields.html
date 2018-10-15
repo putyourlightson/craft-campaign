@@ -44,17 +44,26 @@
 }, input) }}
 
 {% if editable %}
-    {{ forms.selectField({
-        label: "From"|t('campaign'),
-        instructions: "The name and email to send from."|t('campaign'),
-        id: 'fromNameEmail',
-        name: 'fromNameEmail',
-        options: fromNameEmailOptions,
-        warning: fromNameEmailOptions|length == 0 ? "No from name and email exists for this site."|t('campaign'),
-        value: sendout.getFromNameEmail(),
-        errors: sendout.getErrors('fromName'),
-        required: true,
-    }) }}
+    {% if fromNameEmailOptions|length %}
+        {{ forms.selectField({
+            label: "From"|t('campaign'),
+            instructions: "The name and email to send from."|t('campaign'),
+            id: 'fromNameEmail',
+            name: 'fromNameEmail',
+            options: fromNameEmailOptions,
+            value: sendout.getFromNameEmail(),
+            errors: sendout.getErrors('fromName'),
+            required: true,
+        }) }}
+    {% else %}
+        {{ forms.field({
+            label: "From"|t('campaign'),
+            instructions: "The name and email to send from."|t('campaign'),
+            warning: fromNameEmailOptions|length == 0 ? "No from name and email exists for this site."|t('campaign'),
+            errors: sendout.getErrors('fromName'),
+            required: true,
+        }) }}
+    {% endif %}
 {% else %}
     {% set input %}
         <p>{{ sendout.fromName }} &lt;{{ sendout.fromEmail }}&gt;</p>

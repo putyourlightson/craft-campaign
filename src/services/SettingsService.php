@@ -44,7 +44,39 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns from names and emails that can be used for options
+     * Returns first from name and email for the given site if provided
+     *
+     * @param int|null $siteId
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getFirstFromNameEmail(int $siteId = null): array
+    {
+        $firstFromNameEmail = [];
+        $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
+
+        foreach ($fromNamesEmails as $fromNameEmail) {
+            if ($siteId === null || empty($fromNameEmail[2]) || $fromNameEmail[2] == $siteId) {
+                $firstFromNameEmail = ['name' => $fromNameEmail[0], 'email' => $fromNameEmail[1]];
+
+                break;
+            }
+        }
+
+        // If still not set then default to system settings
+        if (empty($firstFromNameEmail)) {
+            $firstFromNameEmail = [
+                'name' => Craft::$app->getSystemSettings()->getEmailSettings()->fromName,
+                'email' => Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail,
+            ];
+        }
+
+        return $firstFromNameEmail;
+    }
+
+    /**
+     * Returns from names and emails that can be used for options for the given site if provided
      *
      * @param int|null $siteId
      *
@@ -57,7 +89,7 @@ class SettingsService extends Component
         $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
-            if ($siteId === null || (isset($fromNameEmail[2]) && $fromNameEmail[2] == $siteId)) {
+            if ($siteId === null || empty($fromNameEmail[2]) || $fromNameEmail[2] == $siteId) {
                 $fromNameEmailOptions[$fromNameEmail[0].':'.$fromNameEmail[1]] = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
             }
         }

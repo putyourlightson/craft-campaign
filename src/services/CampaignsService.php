@@ -164,10 +164,13 @@ class CampaignsService extends Component
         // Get mailer
         $mailer = Campaign::$plugin->createMailer();
 
+        // Get first from name and email
+        $fromNameEmail = Campaign::$plugin->settings->getFirstFromNameEmail($campaign->siteId);
+
         // Compose message
         /** @var Message $message*/
         $message = $mailer->compose()
-            ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
+            ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($contact->email)
             ->setSubject('[Test] '.$campaign->title)
             ->setHtmlBody($htmlBody)

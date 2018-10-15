@@ -406,7 +406,7 @@ class SettingsController extends Controller
             $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
 
             $message = $mailer->compose()
-                ->setFrom([$settings->fromNamesEmails[0][0] => $settings->fromNamesEmails[0][1]])
+                ->setFrom([$settings->fromNamesEmails[0][1] => $settings->fromNamesEmails[0][0]])
                 ->setTo(Craft::$app->getUser()->getIdentity()->email)
                 ->setSubject($subject)
                 ->setHtmlBody($body)

@@ -307,12 +307,14 @@ class Campaign extends Plugin
     protected function createSettingsModel(): SettingsModel
     {
         $settings = new SettingsModel();
+        $systemSettings = Craft::$app->getSystemSettings();
 
         // Set defaults
         $settings->apiKey = StringHelper::randomString(16);
         $settings->fromNamesEmails = [[
-            Craft::$app->getSystemSettings()->getEmailSettings()->fromName,
-            Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail,
+            $systemSettings->getEmailSettings()->fromName,
+            $systemSettings->getEmailSettings()->fromEmail,
+            Craft::$app->getSites()->getPrimarySite()->id,
         ]];
         $settings->transportType = Sendmail::class;
 

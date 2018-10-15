@@ -2,7 +2,6 @@
 
 namespace putyourlightson\campaign\migrations;
 
-use Craft;
 use craft\db\Migration;
 use craft\helpers\Json;
 use craft\records\Plugin;
