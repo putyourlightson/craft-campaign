@@ -98,12 +98,12 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns whether the URL of the site provided, or all sites, or any volume is invalid
+     * Returns whether the `@web` alias is used in the URL of the site provided, or all sites, or volume
      *
      * @param int|null $siteId
      * @return bool
      */
-    public function isSiteVolumesUrlInvalid(int $siteId = null): bool
+    public function isWebAliasUsed(int $siteId = null): bool
     {
         $sites = [];
 
@@ -119,7 +119,7 @@ class SettingsService extends Component
         }
 
         foreach ($sites as $site) {
-            if (stripos($site->baseUrl, 'http') !== 0) {
+            if (stripos($site->baseUrl, '@web') !== false) {
                  return true;
             }
         }
@@ -128,7 +128,7 @@ class SettingsService extends Component
 
         /** @var Volume $volume */
         foreach ($volumes as $volume) {
-            if (stripos($volume->url, 'http') !== 0) {
+            if (stripos($volume->url, '@web') !== false) {
                  return true;
             }
         }

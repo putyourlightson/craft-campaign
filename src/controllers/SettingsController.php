@@ -71,7 +71,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'isSiteVolumesUrlInvalid' => Campaign::$plugin->settings->isSiteVolumesUrlInvalid(),
+            'isWebAliasUsed' => Campaign::$plugin->settings->isWebAliasUsed(),
         ]);
     }
 

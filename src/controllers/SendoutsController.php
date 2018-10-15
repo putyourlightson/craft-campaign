@@ -301,7 +301,7 @@ class SendoutsController extends Controller
             'timeLimit' => ini_get('max_execution_time'),
         ];
 
-        $variables['isSiteVolumesUrlInvalid'] = Campaign::$plugin->settings->isSiteVolumesUrlInvalid($sendout->siteId);
+        $variables['isWebAliasUsed'] = Campaign::$plugin->settings->isWebAliasUsed($sendout->siteId);
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }

@@ -37,7 +37,7 @@
             <h1>{{ saveLabel }}</h1>
             <p>{{ confirmMessage }}</p>
             <p>
-                {% if isSiteVolumesUrlInvalid %}
+                {% if isWebAliasUsed %}
                     <span class="warning">
                         {{ 'System issues found!'|t('campaign') }}
                     </span>
@@ -49,9 +49,9 @@
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
                     {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
                     {{ 'Alias Check'|t('campaign') }}:
-                    {% if isSiteVolumesUrlInvalid %}
+                    {% if isWebAliasUsed %}
                         <span class="warning">
-                            {{ 'Failed – one of your site or volume URLs is not an absolute URL.'|t('campaign') }}
+                            {{ 'Failed – one of your site or volume URLs is using the `@web` alias.'|t('campaign') }}
                         </span>
                     {% else %}
                         {{ 'Passed'|t('campaign') }}
