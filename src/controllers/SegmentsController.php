@@ -49,13 +49,14 @@ class SegmentsController extends Controller
 
     /**
      * @param int|null $segmentId The segment’s ID, if editing an existing segment.
+     * @param string|null $siteHandle
      * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
      *
      * @return Response
-     * @throws NotFoundHttpException if the requested segment is not found
      * @throws InvalidConfigException
+     * @throws NotFoundHttpException if the requested segment is not found
      */
-    public function actionEditSegment(int $segmentId = null, SegmentElement $segment = null): Response
+    public function actionEditSegment(int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
     {
         $variables = [];
 
@@ -74,6 +75,13 @@ class SegmentsController extends Controller
                 $segment = new SegmentElement();
                 $segment->enabled = true;
             }
+        }
+
+        // Get the site if site handle is set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            $segment->siteId = $site->id;
         }
 
         // Set the variables
@@ -142,12 +150,11 @@ class SegmentsController extends Controller
             }
         }
 
-        // Set the title and slug
+        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
+        $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
+        $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
         $segment->title = $request->getBodyParam('title', $segment->title);
         $segment->slug = $request->getBodyParam('slug', $segment->slug);
-
-        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
 
         // Get the conditions
         $segment->conditions = Craft::$app->getRequest()->getBodyParam('conditions', $segment->conditions);

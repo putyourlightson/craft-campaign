@@ -2,7 +2,7 @@
 
 ## 1.4.0 - Unreleased
 ### Added
-- Added multi-site functionality to campaign types, mailing list types, segments and sendouts
+- Added multi-site functionality to campaigns, mailing lists, segments and sendouts
 - Added editable table field for adding from name and email addresses
 
 ### Changed

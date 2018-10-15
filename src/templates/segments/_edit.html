@@ -12,6 +12,18 @@
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SegmentEditAsset') %}
 
 
+{% block contextMenu %}
+
+    {% if craft.app.getIsMultiSite() and segment.id is null %}
+        {% include "_elements/sitemenu" with {
+            selectedSiteId: segment.siteId,
+            urlFormat: url('campaign/segments/new/{handle}'),
+        } only %}
+    {% endif %}
+
+{% endblock %}
+
+
 {% block actionButton %}
 
     <div class="btngroup">
@@ -44,12 +56,9 @@
 {% block content %}
 
     <input type="hidden" name="action" value="campaign/segments/save-segment">
-
+    <input type="hidden" name="segmentId" value="{{ segment.id }}">
+    <input type="hidden" name="siteId" value="{{ segment.siteId }}">
     {{ redirectInput('campaign/segments') }}
-
-    {% if segment.id %}
-        <input type="hidden" name="segmentId" value="{{ segment.id }}">
-    {% endif %}
 
     <div id="fields">
         <div>

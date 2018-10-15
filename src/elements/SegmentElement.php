@@ -70,14 +70,6 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public static function hasStatuses(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function hasContent(): bool
     {
         return true;
@@ -87,6 +79,22 @@ class SegmentElement extends Element
      * @inheritdoc
      */
     public static function hasTitles(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function isLocalized(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function hasStatuses(): bool
     {
         return true;
     }
@@ -204,6 +212,18 @@ class SegmentElement extends Element
 
         // Decode JSON properties
         $this->conditions = empty($this->conditions) ? [] : Json::decode($this->conditions);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupportedSites(): array
+    {
+        if ($this->siteId !== null) {
+            return [$this->siteId];
+        }
+
+        return parent::getSupportedSites();
     }
 
     /**

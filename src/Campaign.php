@@ -374,6 +374,7 @@ class Campaign extends Plugin
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/new' => 'campaign/mailing-lists/edit-mailing-list',
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+>' => 'campaign/mailing-lists/edit-mailing-list',
             'campaign/segments/new' => 'campaign/segments/edit-segment',
+            'campaign/segments/new/<siteHandle:{handle}>' => 'campaign/segments/edit-segment',
             'campaign/segments/<segmentId:\d+>' => 'campaign/segments/edit-segment',
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
             'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/edit-sendout',

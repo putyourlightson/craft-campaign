@@ -225,6 +225,7 @@ class SendoutsController extends Controller
             // Segment element selector variables
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
+                'siteId' => $sendout->site->id,
                 'status' => SegmentElement::STATUS_ENABLED,
             ];
         }

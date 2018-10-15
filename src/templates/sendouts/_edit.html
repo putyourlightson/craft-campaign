@@ -17,7 +17,7 @@
 
 {% block contextMenu %}
 
-    {% if craft.app.getIsMultiSite() %}
+    {% if craft.app.getIsMultiSite() and sendout.id is null %}
         {% include "_elements/sitemenu" with {
             selectedSiteId: sendout.siteId,
             urlFormat: url('campaign/sendouts/' ~ sendout.sendoutType ~ '/new/{handle}'),

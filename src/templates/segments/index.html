@@ -6,11 +6,3 @@
 
 {% set title = 'Segments'|t('campaign') %}
 {% set selectedSubnavItem = 'segments' %}
-
-{% block actionButton %}
-    <div id="extra-headers">
-        <div class="buttons right">
-            <a href="{{ url('campaign/segments/new') }}" class="btn submit add icon">{{ "New segment"|t('campaign') }}</a>
-        </div>
-    </div>
-{% endblock %}

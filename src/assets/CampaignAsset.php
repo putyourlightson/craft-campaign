@@ -35,6 +35,7 @@ class CampaignAsset extends AssetBundle
             'js/Cp.js',
             'js/CampaignIndex.js',
             'js/MailingListIndex.js',
+            'js/SegmentIndex.js',
             'js/SendoutIndex.js',
         ];
 
