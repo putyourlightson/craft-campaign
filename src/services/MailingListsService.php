@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
 use craft\base\Component;
 use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\elements\ContactElement;
@@ -51,6 +52,25 @@ class MailingListsService extends Component
             ->one();
 
         return $mailingList;
+    }
+
+    /**
+     * Returns all mailing lists across all sites
+     *
+     * @return MailingListElement[]
+     */
+    public function getAllMailingLists(): array
+    {
+        $mailingLists = [];
+
+        // Get sites to loop through so we can ensure that we get all sendouts
+        $sites = Craft::$app->getSites()->getAllSites();
+
+        foreach ($sites as $site) {
+            $mailingLists = array_merge($mailingLists, MailingListElement::find()->site($site)->all());
+        }
+
+        return $mailingLists;
     }
 
     /**

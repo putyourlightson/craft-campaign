@@ -17,37 +17,11 @@
 
 {% block contextMenu %}
 
-    {% if craft.app.isMultiSite %}
-        <div class="btn {{ sendout.id is null ? 'menubtn' : 'disabled' }}" data-icon="world">{{ sendout.site.name }}</div>
-
-        {% if sendout.id is null %}
-            <div class="menu">
-                {% set siteGroups = craft.app.sites.getAllGroups() %}
-                {% for group in siteGroups %}
-                    {% set groupSiteIds = group.getSiteIds() %}
-                    {% if groupSiteIds %}
-                        {% if siteGroups|length > 1 %}<h6>{{ group.name|t('site') }}</h6>{% endif %}
-                        <ul class="padded">
-                            {% for siteId in groupSiteIds %}
-                                {% set site = craft.app.sites.getSiteById(siteId) %}
-                                <li>
-                                    {% if siteId == sendout.siteId %}
-                                        <a class="sel">
-                                            {{ site.name|t('site') }}
-                                        </a>
-                                    {% else %}
-                                        {% set url = url('campaign/sendouts/' ~ craft.app.request.getSegment(3) ~ '/' ~ craft.app.request.getSegment(4) ~ '/' ~ site.handle) %}
-                                        <a href="{{ url }}">
-                                            {{ site.name|t('site') }}
-                                        </a>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
+    {% if craft.app.getIsMultiSite() %}
+        {% include "_elements/sitemenu" with {
+            selectedSiteId: sendout.siteId,
+            urlFormat: url('campaign/sendouts/' ~ sendout.sendoutType ~ '/new/{handle}'),
+        } only %}
     {% endif %}
 
 {% endblock %}

@@ -14,6 +14,7 @@ use craft\base\Field;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
+use putyourlightson\campaign\elements\MailingListElement;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -41,6 +42,26 @@ class ContactsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:contacts');
+    }
+
+    /**
+     * @param string|null $siteHandle
+     *
+     * @return Response
+     */
+    public function actionIndex(string $siteHandle = null): Response
+    {
+        // Set the current site to the site handle if set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
+        }
+
+        // Render the template
+        return $this->renderTemplate('campaign/contacts/view');
     }
 
     /**

@@ -179,6 +179,16 @@ class CampaignVariable
     }
 
     /**
+     * Returns all mailing lists across all sites
+     *
+     * @return MailingListElement[]
+     */
+    public function getAllMailingLists(): array
+    {
+        return Campaign::$plugin->mailingLists->getAllMailingLists();
+    }
+
+    /**
      * Returns all mailing list types
      *
      * @return array

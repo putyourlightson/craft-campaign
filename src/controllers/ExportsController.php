@@ -43,12 +43,13 @@ class ExportsController extends Controller
     }
 
     /**
+     * @param string|null $siteHandle
      * @param ExportModel|null $export The export, if there were any validation errors.
      *
      * @return Response
      * @throws InvalidConfigException
      */
-    public function actionNewExport(ExportModel $export = null): Response
+    public function actionIndex(string $siteHandle = null, ExportModel $export = null): Response
     {
         if ($export === null) {
             $export = new ExportModel();
@@ -56,6 +57,15 @@ class ExportsController extends Controller
 
         $variables = [];
         $variables['export'] = $export;
+
+        // Set the current site to the site handle if set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
+        }
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;

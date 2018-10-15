@@ -393,11 +393,11 @@ class SendoutsController extends Controller
             }
         }
 
-        // Save it without propogating across all sites
+        // Save it without propagating across all sites
         if (!Craft::$app->getElements()->saveElement($sendout, true, false)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
-            // Send the sendout and schedule back to the template
+            // Send the sendout back to the template
             Craft::$app->getUrlManager()->setRouteParams([
                 'sendout' => $sendout,
             ]);

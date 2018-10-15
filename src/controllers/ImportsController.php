@@ -44,6 +44,28 @@ class ImportsController extends Controller
     }
 
     /**
+     * @param string|null $siteHandle
+     *
+     * @return Response
+     */
+    public function actionIndex(string $siteHandle = null): Response
+    {
+        $variables = [];
+
+        // Set the current site to the site handle if set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
+        }
+
+        // Render the template
+        return $this->renderTemplate('campaign/contacts/import');
+    }
+
+    /**
      * Uploads a file
      *
      * @param ImportModel|null $import The import, if there were any validation errors.
@@ -51,6 +73,8 @@ class ImportsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \craft\errors\MissingComponentException
      */
     public function actionUploadFile(ImportModel $import = null)
     {
@@ -269,11 +293,23 @@ class ImportsController extends Controller
      *
      * @return Response
      * @throws InvalidConfigException
+     * @throws \craft\errors\SiteNotFoundException
      */
     private function _returnFieldsTemplate(ImportModel $import): Response
     {
         $variables = [];
         $variables['import'] = $import;
+
+        // Set the current site to the site handle if set
+        $siteHandle = Craft::$app->getRequest()->getSegment(4);
+
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
+        }
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;

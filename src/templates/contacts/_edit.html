@@ -1,8 +1,12 @@
-{% extends 'campaign/contacts/_layout' %}
+{% extends 'campaign/_layout' %}
 
 {% import '_includes/forms' as forms %}
 
-{% set crumbs = [] %}
+{% set selectedSubnavItem = 'contacts' %}
+
+{% set crumbs = [
+    { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') }
+] %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ContactEditAsset') %}
 
@@ -45,7 +49,7 @@
         {% include "campaign/contacts/_includes/fields" %}
 
         {% if contact.id %}
-            {% set mailingLists = craft.campaign.getMailingLists().all() %}
+            {% set mailingLists = craft.campaign.getAllMailingLists() %}
             <div id="tab-mailinglists" class="hidden">
                 <div id="nomailinglists"{% if mailingLists|length %}class="hidden"{% endif %}>
                     <p>{{ "No mailing lists exist."|t('campaign') }}</p>

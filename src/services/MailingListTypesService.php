@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\queue\jobs\ResaveElements;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\MailingListTypeSiteModel;
@@ -203,6 +204,18 @@ class MailingListTypesService extends Component
             $this->trigger(self::EVENT_AFTER_SAVE_MAILINGLIST_TYPE, new MailingListTypeEvent([
                 'mailingListType' => $mailingListType,
                 'isNew' => $isNew,
+            ]));
+        }
+
+        if (!$isNew) {
+            // Re-save the mailing lists in this mailing list type
+            Craft::$app->getQueue()->push(new ResaveElements([
+                'description' => Craft::t('campaign', 'Resaving mailing lists.'),
+                'elementType' => CampaignElement::class,
+                'criteria' => [
+                    'mailingListType' => $mailingListType->id,
+                    'status' => null,
+                ],
             ]));
         }
 

@@ -10,6 +10,7 @@ use putyourlightson\campaign\Campaign;
 
 use Craft;
 use craft\web\Controller;
+use putyourlightson\campaign\elements\MailingListElement;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -34,6 +35,31 @@ class SyncController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:syncContacts');
+    }
+
+    /**
+     * @param string|null $siteHandle
+     *
+     * @return Response
+     */
+    public function actionIndex(string $siteHandle = null): Response
+    {
+        $variables = [];
+
+        // Set the current site to the site handle if set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+
+            if ($site !== null) {
+                Craft::$app->getSites()->setCurrentSite($site);
+            }
+        }
+
+        // Mailing list element selector variables
+        $variables['mailingListElementType'] = MailingListElement::class;
+
+        // Render the template
+        return $this->renderTemplate('campaign/contacts/sync', $variables);
     }
 
     /**

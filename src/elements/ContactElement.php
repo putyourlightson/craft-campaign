@@ -121,12 +121,14 @@ class ContactElement extends Element
 
         $sources[] = ['heading' => Craft::t('campaign', 'Mailing Lists')];
 
-        $mailingLists = MailingListElement::findAll();
+        $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
 
+        /** @var MailingListElement $mailingList */
         foreach ($mailingLists as $mailingList) {
             $sources[] = [
                 'key' => 'mailingList:'.$mailingList->id,
                 'label' => $mailingList->title,
+                'sites' => [$mailingList->siteId],
                 'data' => [
                     'id' => $mailingList->id
                 ],
@@ -401,6 +403,14 @@ class ContactElement extends Element
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
 
         return $fieldLayoutBehavior->getFieldLayout();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupportedSites(): array
+    {
+        return Craft::$app->getSites()->getAllSiteIds();
     }
 
     /**

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\queue\jobs\ResaveElements;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\CampaignTypeSiteModel;
@@ -207,11 +208,24 @@ class CampaignTypesService extends Component
             throw $e;
         }
 
+
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
                 'isNew' => $isNew,
+            ]));
+        }
+
+        if (!$isNew) {
+            // Re-save the campaigns in this campaign type
+            Craft::$app->getQueue()->push(new ResaveElements([
+                'description' => Craft::t('campaign', 'Resaving campaigns.'),
+                'elementType' => CampaignElement::class,
+                'criteria' => [
+                    'campaignTypeId' => $campaignType->id,
+                    'status' => null,
+                ],
             ]));
         }
 
