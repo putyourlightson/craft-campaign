@@ -179,17 +179,9 @@ class SendoutsController extends Controller
             }
         }
 
-        // Get the site if null
-        if ($sendout->siteId === null) {
-            $site = null;
-
-            if ($siteHandle !== null) {
-                $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-            }
-
-            if ($site === null) {
-                $site = Craft::$app->getSites()->getCurrentSite();
-            }
+        // Get the site if site handle is set
+        if ($siteHandle !== null) {
+            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
 
             $sendout->siteId = $site->id;
         }

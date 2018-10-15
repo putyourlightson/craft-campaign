@@ -156,27 +156,33 @@ class SendoutsService extends Component
         $count = 0;
         $now = new \DateTime();
 
-        // Find pending sendouts whose send date is in the past
-        $sendouts = SendoutElement::find()
-            ->status(SendoutElement::STATUS_PENDING)
-            ->where(Db::parseDateParam('sendDate', $now, '<='))
-            ->all();
+        // Get sites to loop through so we can ensure that we get all sendouts
+        $sites = Craft::$app->getSites()->getAllSites();
 
-        /** @var SendoutElement[] $sendouts */
-        foreach ($sendouts as $sendout) {
-            // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now and there are pending recipients
-            if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow() AND $sendout->getHasPendingRecipients())) {
-                // Add sendout job to queue
-                Craft::$app->getQueue()->push(new SendoutJob([
-                    'sendoutId' => $sendout->id,
-                    'title' => $sendout->title,
-                ]));
+        foreach ($sites as $site) {
+            // Find pending sendouts whose send date is in the past
+            $sendouts = SendoutElement::find()
+                ->site($site)
+                ->status(SendoutElement::STATUS_PENDING)
+                ->where(Db::parseDateParam('sendDate', $now, '<='))
+                ->all();
 
-                $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
+            /** @var SendoutElement[] $sendouts */
+            foreach ($sendouts as $sendout) {
+                // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
+                if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow())) {
+                    // Add sendout job to queue
+                    Craft::$app->getQueue()->push(new SendoutJob([
+                        'sendoutId' => $sendout->id,
+                        'title' => $sendout->title,
+                    ]));
 
-                $this->_updateSendoutRecord($sendout, ['sendStatus']);
+                    $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
 
-                $count++;
+                    $this->_updateSendoutRecord($sendout, ['sendStatus']);
+
+                    $count++;
+                }
             }
         }
 

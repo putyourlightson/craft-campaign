@@ -58,7 +58,7 @@ class SettingsService extends Component
 
         foreach ($fromNamesEmails as $fromNameEmail) {
             if ($siteId === null || (isset($fromNameEmail[2]) && $fromNameEmail[2] == $siteId)) {
-                $fromNameEmailOptions[$fromNameEmail[0].':'.$fromNameEmail[1].'>'] = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
+                $fromNameEmailOptions[$fromNameEmail[0].':'.$fromNameEmail[1]] = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
             }
         }
 
