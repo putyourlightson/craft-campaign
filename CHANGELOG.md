@@ -3,7 +3,7 @@
 ## 1.4.0 - Unreleased
 ### Added
 - Added multi-site functionality to campaigns, mailing lists, segments and sendouts
-- Added editable table field for adding from name and email addresses
+- Added editable table field for adding from name and email addresses on a per-site basis
 
 ### Changed
 - Changed minimum version of Craft to 3.0.16 due to addition of `DateTime` parameters to the `parseDateParam` method

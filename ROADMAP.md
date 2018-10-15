@@ -4,4 +4,4 @@
 - Add approval levels to mailer transports
 - Add campaign type and mailing list type specific user group permissions
 - Add campaign versioning
-- Record all individual contact interactions
+- Add recording of all individual contact interactions
