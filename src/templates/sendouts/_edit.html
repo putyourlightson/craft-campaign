@@ -75,6 +75,7 @@
 
     <input type="hidden" name="action" value="campaign/sendouts/save-sendout">
     <input type="hidden" name="sendoutId" value="{{ sendout.id }}">
+    <input type="hidden" name="siteId" value="{{ sendout.siteId }}">
     <input type="hidden" name="sendoutType" value="{{ sendoutType }}">
     {{ redirectInput('campaign/sendouts/{sendoutType}/{id}?preview=1') }}
 

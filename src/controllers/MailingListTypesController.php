@@ -79,12 +79,7 @@ class MailingListTypesController extends Controller
         }
 
         // Get the site options
-        $sites = Craft::$app->getSites()->getAllSites();
-        $variables['siteOptions'] = [];
-
-        foreach ($sites as $site) {
-            $variables['siteOptions'][$site->id] = $site->name;
-        }
+        $variables['siteOptions'] = Campaign::$plugin->settings->getSiteOptions();
 
         // Full page form variables
         $variables['fullPageForm'] = true;
@@ -116,7 +111,7 @@ class MailingListTypesController extends Controller
             $mailingListType = new MailingListTypeModel();
         }
 
-        // Set the simple stuff
+        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
         $mailingListType->siteId = $request->getBodyParam('siteId', $mailingListType->siteId);
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);

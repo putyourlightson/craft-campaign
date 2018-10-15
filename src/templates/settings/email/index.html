@@ -14,31 +14,39 @@
 
     <input type="hidden" name="action" value="campaign/settings/save-email">
 
-    {{ forms.textField({
-        label: "Default From Name"|t('campaign'),
-        instructions: "The default name to send emails from."|t('campaign'),
-        warning: (config.defaultFromName is defined ? macros.configWarning('defaultFromName')),
-        id: 'defaultFromName',
-        name: 'defaultFromName',
-        value: settings.defaultFromName,
-        errors: settings.getErrors('defaultFromName'),
-        first: true,
-        autofocus: true,
-        required: true,
-        autocomplete: true,
-    }) }}
+    {% set cols = [
+        {
+            type: 'singleline',
+            heading: 'Name'|t('campaign'),
+        },
+        {
+            type: 'singleline',
+            heading: 'Email'|t('campaign'),
+        },
+    ] %}
+    {% if craft.app.getIsMultiSite() %}
+        {% set cols = cols|merge([
+            {
+                type: 'select',
+                heading: 'Site'|t('campaign'),
+                options: siteOptions,
+            },
+        ]) %}
+    {% endif %}
 
-    {{ forms.textField({
-        label: "Default From Email Address"|t('campaign'),
-        instructions: "The default email address to send emails from."|t('campaign'),
-        warning: (config.defaultFromEmail is defined ? macros.configWarning('defaultFromEmail')),
-        id: 'defaultFromEmail',
-        name: 'defaultFromEmail',
-        type: 'email',
-        value: settings.defaultFromEmail,
-        errors: settings.getErrors('defaultFromEmail'),
+    <input type="hidden" name="fromNamesEmails" value="" />
+    {{ forms.editableTableField({
+        label: "From Names and Emails"|t('campaign'),
+        instructions: "The names and email addresses that sendouts can be sent from."|t('campaign'),
+        warning: (config.cachingEnabled is defined ? macros.configWarning('fromNamesEmails')),
+        name: 'fromNamesEmails',
+        id: 'fromNamesEmails',
+        cols: cols,
+        rows: settings.fromNamesEmails,
+        addRowLabel: "Add a name and email"|t('campaign'),
+        errors: settings.getErrors('fromNamesEmails'),
         required: true,
-        autocomplete: true,
+        first: true,
     }) }}
 
     <hr/>
@@ -66,7 +74,7 @@
 
     <hr>
 
-    {% if settings.defaultFromEmail %}
+    {% if settings.fromNamesEmails|length %}
         <div class="btn formsubmit" data-action="campaign/settings/send-test-email">{{ "Send Test Email"|t('campaign') }}</div>
     {% else %}
         {% set input %}

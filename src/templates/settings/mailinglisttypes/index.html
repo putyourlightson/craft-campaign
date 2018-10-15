@@ -3,6 +3,7 @@
 {% set title = 'Mailing List Types'|t('campaign') %}
 
 {% set mailingListTypes = craft.campaign.getAllMailingListTypes() %}
+{% set isMultiSite = craft.app.getIsMultiSite() %}
 
 {% set crumbs = [] %}
 

@@ -34,7 +34,7 @@
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
         instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to the PHP path (if different)."|t('campaign'),
-        warning: webAliasUsed ? "It appears that the `@web` alias is being used in one or more sites or asset volumes. The `@web` alias is unavailable with console commands and will return a blank string. Fix this by using absolute URLs instead."|t('campaign'),
+        warning: isSiteVolumesUrlInvalid ? "It appears that one or more of your sites or volumes are not using an absolute URL. To avoid issues when sending campaigns, you should set your sites and volumes to use absolute URLs."|t('campaign'),
     }, code) }}
 
     {{ forms.textField({

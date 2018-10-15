@@ -12,6 +12,7 @@ use putyourlightson\campaign\models\SettingsModel;
 
 use Craft;
 use craft\helpers\Component;
+use yii\base\InvalidConfigException;
 
 /**
  * SettingsService
@@ -26,16 +27,67 @@ class SettingsService extends Component
     // =========================================================================
 
     /**
-     * Gets whether the `@web` alias is used in the base URL of any site or volume
+     * Returns all of the sites as an array that can be used for options
      *
-     * @return bool
+     * @return array
      */
-    public function getWebAliasUsed(): bool
+    public function getSiteOptions(): array
     {
+        $siteOptions = [];
         $sites = Craft::$app->getSites()->getAllSites();
 
         foreach ($sites as $site) {
-            if (stripos($site->baseUrl, '@web') !== false) {
+            $siteOptions[$site->id] = $site->name;
+        }
+
+        return $siteOptions;
+    }
+
+    /**
+     * Returns from names and emails that can be used for options
+     *
+     * @param int|null $siteId
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getFromNameEmailOptions(int $siteId = null): array
+    {
+        $fromNameEmailOptions = [];
+        $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
+
+        foreach ($fromNamesEmails as $fromNameEmail) {
+            if ($siteId === null || (isset($fromNameEmail[2]) && $fromNameEmail[2] == $siteId)) {
+                $fromNameEmailOptions[$fromNameEmail[0].':'.$fromNameEmail[1].'>'] = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
+            }
+        }
+
+        return $fromNameEmailOptions;
+    }
+
+    /**
+     * Returns whether the URL of the site provided, or all sites, or any volume is invalid
+     *
+     * @param int|null $siteId
+     * @return bool
+     */
+    public function isSiteVolumesUrlInvalid(int $siteId = null): bool
+    {
+        $sites = [];
+
+        if ($siteId !== null) {
+            $site = Craft::$app->getSites()->getSiteById($siteId);
+
+            if ($site !== null) {
+                $sites[] = $site;
+            }
+        }
+        else {
+            $sites = Craft::$app->getSites()->getAllSites();
+        }
+
+        foreach ($sites as $site) {
+            if (stripos($site->baseUrl, 'http') !== 0) {
                  return true;
             }
         }
@@ -44,7 +96,7 @@ class SettingsService extends Component
 
         /** @var Volume $volume */
         foreach ($volumes as $volume) {
-            if (stripos($volume->url, '@web') !== false) {
+            if (stripos($volume->url, 'http') !== 0) {
                  return true;
             }
         }

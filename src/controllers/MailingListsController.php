@@ -204,6 +204,9 @@ class MailingListsController extends Controller
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
         $mailingList->enabled = (bool)$request->getBodyParam('enabled', $mailingList->enabled);
 
+        // Set the site ID
+        $mailingList->siteId = $mailingList->getMailingListType()->siteId;
+
         // Set the field layout ID
         $mailingList->fieldLayoutId = $mailingList->getMailingListType()->fieldLayoutId;
 

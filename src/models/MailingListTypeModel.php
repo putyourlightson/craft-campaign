@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\models;
 
 use craft\models\Site;
+use craft\validators\SiteIdValidator;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\MailingListTypeRecord;

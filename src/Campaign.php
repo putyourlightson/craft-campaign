@@ -310,8 +310,10 @@ class Campaign extends Plugin
 
         // Set defaults
         $settings->apiKey = StringHelper::randomString(16);
-        $settings->defaultFromName = Craft::$app->getSystemSettings()->getEmailSettings()->fromName;
-        $settings->defaultFromEmail = Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail;
+        $settings->fromNamesEmails = [[
+            Craft::$app->getSystemSettings()->getEmailSettings()->fromName,
+            Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail,
+        ]];
         $settings->transportType = Sendmail::class;
 
         return $settings;

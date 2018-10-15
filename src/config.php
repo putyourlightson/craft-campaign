@@ -25,11 +25,8 @@ return [
     // An API key to use for triggering tasks and notifications (min. 16 characters)
     //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
-    // The default name to send emails from
-    //'defaultFromName' => 'Zorro',
-
-    // The default email address to send emails from
-    //'defaultFromEmail' => 'legend@zorro.com',
+    // The from names and emails that sendouts can be sent from
+    //'fromNamesEmails' => [['Zorro','legend@zorro.com']],
 
     // A label to use for the email field
     //'emailFieldLabel' => 'Email',

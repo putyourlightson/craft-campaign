@@ -71,7 +71,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'webAliasUsed' => Campaign::$plugin->settings->getWebAliasUsed(),
+            'isSiteVolumesUrlInvalid' => Campaign::$plugin->settings->isSiteVolumesUrlInvalid(),
         ]);
     }
 
@@ -129,6 +129,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/email', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
             'adapter' => $adapter,
             'allTransportAdapters' => $allTransportAdapters,
             'transportTypeOptions' => $transportTypeOptions,
@@ -229,8 +230,7 @@ class SettingsController extends Controller
         $settings = $this->_settings;
 
         // Set the simple stuff
-        $settings->defaultFromName = Craft::$app->getRequest()->getBodyParam('defaultFromName', $settings->defaultFromName);
-        $settings->defaultFromEmail = Craft::$app->getRequest()->getBodyParam('defaultFromEmail', $settings->defaultFromEmail);
+        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
@@ -380,8 +380,7 @@ class SettingsController extends Controller
         $settings = $this->_settings;
 
         // Set the simple stuff
-        $settings->defaultFromName = Craft::$app->getRequest()->getBodyParam('defaultFromName', $settings->defaultFromName);
-        $settings->defaultFromEmail = Craft::$app->getRequest()->getBodyParam('defaultFromEmail', $settings->defaultFromEmail);
+        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
@@ -407,7 +406,7 @@ class SettingsController extends Controller
             $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
 
             $message = $mailer->compose()
-                ->setFrom([$settings->defaultFromEmail => $settings->defaultFromName])
+                ->setFrom([$settings->fromNamesEmails[0][0] => $settings->fromNamesEmails[0][1]])
                 ->setTo(Craft::$app->getUser()->getIdentity()->email)
                 ->setSubject($subject)
                 ->setHtmlBody($body)

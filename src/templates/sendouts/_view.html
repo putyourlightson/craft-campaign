@@ -26,9 +26,8 @@
 
     {% if craft.app.isMultiSite %}
         <div class="btn disabled" data-icon="world">{{ sendout.site.name }}</div>
+        &nbsp;
     {% endif %}
-
-    &nbsp;
 
     {% if sendout.isEditable %}
         <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>

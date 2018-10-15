@@ -502,6 +502,18 @@ class SendoutElement extends Element
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getSupportedSites(): array
+    {
+        if ($this->siteId !== null) {
+            return [$this->siteId];
+        }
+
+        return parent::getSupportedSites();
+    }
+
+    /**
      * Returns the sendout type label for the given sendout type.
      *
      * @return string
@@ -511,6 +523,16 @@ class SendoutElement extends Element
         $sendoutTypes = self::sendoutTypes();
 
         return $sendoutTypes[$this->sendoutType];
+    }
+
+    /**
+     * Returns the from name and email
+     *
+     * @return string
+     */
+    public function getFromNameEmail(): string
+    {
+        return $this->fromName ? $this->fromName.' <'.$this->fromEmail.'>' : '';
     }
 
     /**

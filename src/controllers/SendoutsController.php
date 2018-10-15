@@ -179,6 +179,24 @@ class SendoutsController extends Controller
             }
         }
 
+        // Get the site if null
+        if ($sendout->siteId === null) {
+            $site = null;
+
+            if ($siteHandle !== null) {
+                $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+            }
+
+            if ($site === null) {
+                $site = Craft::$app->getSites()->getCurrentSite();
+            }
+
+            $sendout->siteId = $site->id;
+        }
+
+        // Get from name and email options
+        $fromNameEmailOptions = Campaign::$plugin->settings->getFromNameEmailOptions($sendout->siteId);
+
         // Get the schedule
         if ($sendoutType == 'automated') {
             $sendout->schedule = new AutomatedScheduleModel($sendout->schedule);
@@ -187,19 +205,6 @@ class SendoutsController extends Controller
             $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
         }
 
-        // Get the site
-        $site = null;
-
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-        }
-
-        if ($site === null) {
-            $site = Craft::$app->getSites()->getCurrentSite();
-        }
-
-        $sendout->siteId = $site->id;
-
         // Set the variables
         // ---------------------------------------------------------------------
 
@@ -207,19 +212,20 @@ class SendoutsController extends Controller
             'sendoutType' => $sendoutType,
             'sendoutId' => $sendoutId,
             'sendout' => $sendout,
+            'fromNameEmailOptions' => $fromNameEmailOptions,
         ];
 
         // Campaign element selector variables
         $variables['campaignElementType'] = CampaignElement::class;
         $variables['campaignElementCriteria'] = [
-            'siteId' => $site->id,
+            'siteId' => $sendout->site->id,
             'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
         ];
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;
         $variables['mailingListElementCriteria'] = [
-            'siteId' => $site->id,
+            'siteId' => $sendout->site->id,
             'status' => MailingListElement::STATUS_ENABLED,
         ];
 
@@ -302,7 +308,7 @@ class SendoutsController extends Controller
             'timeLimit' => ini_get('max_execution_time'),
         ];
 
-        $variables['webAliasUsed'] = Campaign::$plugin->settings->getWebAliasUsed();
+        $variables['isSiteVolumesUrlInvalid'] = Campaign::$plugin->settings->isSiteVolumesUrlInvalid($sendout->siteId);
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }
@@ -334,13 +340,18 @@ class SendoutsController extends Controller
             $sendout = new SendoutElement();
         }
 
-        $sendout->title = $request->getBodyParam('title', $sendout->title);
+        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
+        $sendout->siteId = $request->getBodyParam('siteId', $sendout->siteId);
         $sendout->sendoutType = $request->getBodyParam('sendoutType', $sendout->sendoutType);
-        $sendout->fromName = $request->getBodyParam('fromName', $sendout->fromName);
-        $sendout->fromEmail = $request->getBodyParam('fromEmail', $sendout->fromEmail);
+        $sendout->title = $request->getBodyParam('title', $sendout->title);
         $sendout->subject = $request->getBodyParam('subject', $sendout->subject);
         $sendout->notificationEmailAddress = $request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
         $sendout->googleAnalyticsLinkTracking = (bool)$request->getBodyParam('googleAnalyticsLinkTracking', $sendout->googleAnalyticsLinkTracking);
+
+        // Get from name and email
+        $fromNameEmail = explode(':', $request->getBodyParam('fromNameEmail', ''));
+        $sendout->fromName = $fromNameEmail[0] ?? '';
+        $sendout->fromEmail = $fromNameEmail[1] ?? '';
 
         // Get the selected campaign ID
         $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);
@@ -390,8 +401,8 @@ class SendoutsController extends Controller
             }
         }
 
-        // Save it
-        if (!Craft::$app->getElements()->saveElement($sendout)) {
+        // Save it without propogating across all sites
+        if (!Craft::$app->getElements()->saveElement($sendout, true, false)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
             // Send the sendout and schedule back to the template

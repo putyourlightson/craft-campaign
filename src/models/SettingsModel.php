@@ -11,6 +11,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
+use yii\validators\EmailValidator;
 
 /**
  * SettingsModel
@@ -37,14 +38,9 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
-     * @var string|null The default name to send emails from
+     * @var mixed|null The from names and emails that sendouts can be sent from
      */
-    public $defaultFromName;
-
-    /**
-     * @var string|null The default email address to send emails from
-     */
-    public $defaultFromEmail;
+    public $fromNamesEmails;
 
     /**
      * @var string|null The transport type that should be used
@@ -179,16 +175,16 @@ class SettingsModel extends Model
     public function rules(): array
     {
         return [
-            [['defaultFromName', 'defaultFromEmail', 'transportType', 'emailFieldLabel'], 'required'],
+            [['fromNamesEmails', 'transportType', 'emailFieldLabel'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
+            [['fromNamesEmails'], 'validateFromNamesEmails'],
+            [['contactFieldLayoutId'], 'integer'],
             [['ipstackApiKey'], 'required', 'when' => function($model) {
                 return $model->geoIp;
             }],
             [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => function($model) {
                 return $model->reCaptcha;
             }],
-            [['defaultFromName', 'defaultFromEmail'], 'string', 'max' => 255],
-            [['contactFieldLayoutId'], 'integer']
         ];
     }
 
@@ -200,6 +196,7 @@ class SettingsModel extends Model
         $labels = parent::attributeLabels();
 
         // Set the field labels
+        $labels['fromNamesEmails'] = Craft::t('campaign', 'From Names and Emails');
         $labels['reCaptchaSiteKey'] = Craft::t('campaign', 'reCAPTCHA Site Key');
         $labels['reCaptchaSecretKey'] = Craft::t('campaign', 'reCAPTCHA Secret Key');
         $labels['reCaptchaErrorMessage'] = Craft::t('campaign', 'reCAPTCHA Error Message');
@@ -207,4 +204,30 @@ class SettingsModel extends Model
         return $labels;
     }
 
+    /**
+     * Validates the from names and emails
+     *
+     * @param $attribute
+     */
+    public function validateFromNamesEmails($attribute)
+    {
+        if (empty($this->fromNamesEmails)) {
+            $this->addError($attribute, Craft::t('campaign', 'You must enter at least one name and email.'));
+            return;
+        }
+
+        foreach ($this->fromNamesEmails as $fromNameEmail) {
+            if ($fromNameEmail[0] === '' || $fromNameEmail[1] === '') {
+                $this->addError($attribute, Craft::t('campaign', 'The name and email cannot be blank.'));
+                return;
+            }
+
+            $emailValidator = new EmailValidator();
+
+            if (!$emailValidator->validate($fromNameEmail[1])) {
+                $this->addError($attribute, Craft::t('campaign', 'An invalid email was entered.'));
+                return;
+            }
+        }
+    }
 }

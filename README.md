@@ -20,7 +20,7 @@ This plugin requires a commercial license which can be purchased through the Cra
 
 ## Requirements
 
-Craft CMS 3.0.1 or later.
+Craft CMS 3.0.16 or later.
 
 ## Installation
 

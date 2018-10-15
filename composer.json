@@ -16,7 +16,7 @@
         "contact"
     ],
     "require": {
-        "craftcms/cms": "^3.0.1",
+        "craftcms/cms": "^3.0.16",
         "piwik/device-detector": "^3.9.1",
         "purplebooth/htmlstrip": "^1.0.0",
         "aws/aws-php-sns-message-validator": "^1.5.0",

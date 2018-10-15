@@ -44,25 +44,16 @@
 }, input) }}
 
 {% if editable %}
-    {{ forms.textField({
-        label: "From Name"|t('campaign'),
-        instructions: "The name to send from."|t('campaign'),
-        id: 'fromName',
-        name: 'fromName',
-        value: sendout.fromName ? sendout.fromName : settings.defaultFromName,
+    {{ forms.selectField({
+        label: "From"|t('campaign'),
+        instructions: "The name and email to send from."|t('campaign'),
+        id: 'fromNameEmail',
+        name: 'fromNameEmail',
+        options: fromNameEmailOptions,
+        warning: fromNameEmailOptions|length == 0 ? "No from name and email exists for this site."|t('campaign'),
+        value: sendout.getFromNameEmail(),
         errors: sendout.getErrors('fromName'),
         required: true,
-        autocomplete: true
-    }) }}
-    {{ forms.textField({
-        label: "From Email Address"|t('campaign'),
-        instructions: "The email address to send from."|t('campaign'),
-        id: 'fromEmail',
-        name: 'fromEmail',
-        value: sendout.fromEmail ? sendout.fromEmail : settings.defaultFromEmail,
-        errors: sendout.getErrors('fromEmail'),
-        required: true,
-        autocomplete: true
     }) }}
 {% else %}
     {% set input %}
