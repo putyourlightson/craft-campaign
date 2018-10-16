@@ -29,12 +29,12 @@
     <hr/>
 
     {% set code %}
-        <code>5 * * * * /usr/bin/php {{ alias('@root/craft') }} campaign/sendouts/run-pending-sendouts</code>
+        <code>5 * * * * {{ phpBinPath }} {{ alias('@root/craft') }} campaign/sendouts/run-pending-sendouts</code>
     {% endset %}
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
-        instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to the PHP path (if different)."|t('campaign'),
-        warning: isWebAliasUsed ? "It appears that one or more of your site or volume URLs is using the `@web` alias. The `@web` alias is unavailable with console commands and will return a blank string. Fix this by using absolute URLs instead."|t('campaign'),
+        instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 5 minutes for example). Change `{phpBinPath}` to the PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
+        warning: isWebAliasUsed ? "It appears that one or more of your site or asset volume URLs is using the `@web` alias. The `@web` alias is unavailable with console commands and will return a blank string. Fix this by using absolute URLs instead."|t('campaign'),
     }, code) }}
 
     {{ forms.textField({

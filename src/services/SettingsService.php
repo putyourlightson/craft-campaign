@@ -98,7 +98,7 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns whether the `@web` alias is used in the URL of the site provided, or all sites, or volume
+     * Returns whether the `@web` alias is used in the URL of the site provided, or all sites, or asset volume
      *
      * @param int|null $siteId
      * @return bool

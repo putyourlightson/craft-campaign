@@ -5,6 +5,7 @@
 - Added multi-site functionality to campaigns, mailing lists, segments and sendouts
 - Added editable table field for adding from name and email addresses on a per-site basis
 - Added checks to determine whether the live preview and share buttons should be shown on campaign edit page
+- Added PHP binary path to cron job instructions in general settings if it exists
 
 ### Changed
 - Changed minimum version of Craft to 3.0.16 due to addition of `DateTime` parameters to the `parseDateParam` method
