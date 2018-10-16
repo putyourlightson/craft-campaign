@@ -36,9 +36,10 @@
 {% block contextMenu %}
 
     {% if craft.app.getIsMultiSite() %}
+        {% set segment3 = craft.app.request.getSegment(3) ? craft.app.request.getSegment(3) ~ '/' : '' %}
         {% include "_elements/sitemenu" with {
             selectedSiteId: craft.app.sites.getCurrentSite().id,
-            urlFormat: url('campaign/contacts/' ~ (craft.app.request.getSegment(3) ? craft.app.request.getSegment(3) ~ '/') ~ '{handle}'),
+            urlFormat: url('campaign/contacts/' ~ segment3 ~ '{handle}'),
         } only %}
     {% endif %}
 

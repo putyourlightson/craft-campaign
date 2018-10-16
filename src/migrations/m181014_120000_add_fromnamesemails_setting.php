@@ -27,7 +27,9 @@ class m181014_120000_add_fromnamesemails_setting extends Migration
             return;
         }
 
-        $oldSettings = Json::decode($plugin->settings);
+        /** @var string $oldSettingsRaw */
+        $oldSettingsRaw = $plugin->settings;
+        $oldSettings = Json::decode($oldSettingsRaw);
 
         $settings = Campaign::$plugin->getSettings();
         $settings->fromNamesEmails = [[$oldSettings['defaultFromName'], $oldSettings['defaultFromEmail']]];

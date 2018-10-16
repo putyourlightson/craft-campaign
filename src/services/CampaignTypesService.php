@@ -6,8 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\queue\jobs\ResaveElements;
 use putyourlightson\campaign\events\CampaignTypeEvent;
+use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\CampaignTypeSiteModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
@@ -176,6 +176,9 @@ class CampaignTypesService extends Component
             $campaignTypeRecord = new CampaignTypeRecord();
         }
 
+        // Save old site ID for resaving elements later
+        $oldSiteId = $campaignTypeRecord->siteId;
+
         $campaignTypeRecord->setAttributes($campaignType->getAttributes(), false);
 
         // Unset ID if null to avoid making postgres mad
@@ -189,6 +192,7 @@ class CampaignTypesService extends Component
             // Save the field layout
             $fieldLayout = $campaignType->getFieldLayout();
             Craft::$app->getFields()->saveLayout($fieldLayout);
+
             $campaignType->fieldLayoutId = $fieldLayout->id;
             $campaignTypeRecord->fieldLayoutId = $fieldLayout->id;
 
@@ -219,14 +223,21 @@ class CampaignTypesService extends Component
 
         if (!$isNew) {
             // Re-save the campaigns in this campaign type
-            Craft::$app->getQueue()->push(new ResaveElements([
-                'description' => Craft::t('campaign', 'Resaving campaigns.'),
+            Craft::$app->getQueue()->push(new ResaveElementsJob([
+                'description' => Craft::t('app', 'Resaving {type} campaigns ({site})', [
+                    'type' => $campaignType->name,
+                    'site' => $campaignType->getSite()->name,
+                ]),
                 'elementType' => CampaignElement::class,
                 'criteria' => [
+                    'siteId' => $oldSiteId,
                     'campaignTypeId' => $campaignType->id,
                     'status' => null,
                 ],
+                'siteId' => $campaignType->siteId,
             ]));
+
+            // TODO: delete any leftover entries in the old site
         }
 
         return true;

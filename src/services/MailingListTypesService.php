@@ -167,6 +167,9 @@ class MailingListTypesService extends Component
             $mailingListTypeRecord = new MailingListTypeRecord();
         }
 
+        // Save old site ID for resaving elements later
+        $oldSiteId = $mailingListTypeRecord->siteId;
+
         $mailingListTypeRecord->setAttributes($mailingListType->getAttributes(), false);
 
         // Unset ID if null to avoid making postgres mad
@@ -210,12 +213,17 @@ class MailingListTypesService extends Component
         if (!$isNew) {
             // Re-save the mailing lists in this mailing list type
             Craft::$app->getQueue()->push(new ResaveElements([
-                'description' => Craft::t('campaign', 'Resaving mailing lists.'),
+                'description' => Craft::t('app', 'Resaving {type} mailing lists ({site})', [
+                    'type' => $mailingListType->name,
+                    'site' => $mailingListType->getSite()->name,
+                ]),
                 'elementType' => CampaignElement::class,
                 'criteria' => [
+                    'siteId' => $oldSiteId,
                     'mailingListType' => $mailingListType->id,
                     'status' => null,
                 ],
+                'siteId' => $mailingListType->siteId,
             ]));
         }
 

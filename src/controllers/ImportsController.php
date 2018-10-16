@@ -293,7 +293,6 @@ class ImportsController extends Controller
      *
      * @return Response
      * @throws InvalidConfigException
-     * @throws \craft\errors\SiteNotFoundException
      */
     private function _returnFieldsTemplate(ImportModel $import): Response
     {

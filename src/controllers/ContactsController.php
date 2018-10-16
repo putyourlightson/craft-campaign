@@ -14,7 +14,6 @@ use craft\base\Field;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
-use putyourlightson\campaign\elements\MailingListElement;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
