@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\elements\SegmentElement;
 
 use craft\base\Component;
@@ -34,12 +35,19 @@ class SegmentsService extends Component
      */
     public function getSegmentById(int $segmentId)
     {
-        if (!$segmentId) {
+        // Get site ID from element site settings
+        $siteId = Element_SiteSettings::find()
+            ->select('siteId')
+            ->where(['elementId' => $segmentId])
+            ->scalar();
+
+        if ($siteId === null) {
             return null;
         }
 
         $segment = SegmentElement::find()
             ->id($segmentId)
+            ->siteId($siteId)
             ->status(null)
             ->one();
 
