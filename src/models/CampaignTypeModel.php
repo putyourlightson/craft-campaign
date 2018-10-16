@@ -140,4 +140,29 @@ class CampaignTypeModel extends BaseModel
 
         return Craft::$app->getSites()->getSiteById($this->siteId);
     }
+
+    /**
+     * Returns whether the URI format is set and if the template paths are valid.
+     *
+     * @return bool
+     */
+    public function hasValidTemplates(): bool
+    {
+        if ($this->uriFormat === null) {
+            return false;
+        }
+
+        // Set Craft to the site template mode
+        $view = Craft::$app->getView();
+        $oldTemplateMode = $view->getTemplateMode();
+        $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
+
+        // Do the templates exist?
+        $templatesExist = $this->htmlTemplate !== null && $view->doesTemplateExist((string)$this->htmlTemplate) && $this->plaintextTemplate !== null && $view->doesTemplateExist((string)$this->plaintextTemplate);
+
+        // Restore the original template mode
+        $view->setTemplateMode($oldTemplateMode);
+
+        return $templatesExist;
+    }
 }

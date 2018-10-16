@@ -150,7 +150,7 @@ class CampaignsController extends Controller
         }
 
         // Enable live preview?
-        if (!$request->isMobileBrowser(true) AND $campaignType->uriFormat !== null) {
+        if (!$request->isMobileBrowser(true) && $campaignType->hasValidTemplates()) {
             $this->getView()->registerJs('Craft.LivePreview.init('.Json::encode([
                     'fields' => '#title-field, #fields > div > div > .field',
                     'extraFields' => '#settings',
@@ -165,7 +165,7 @@ class CampaignsController extends Controller
             $variables['showPreviewBtn'] = true;
 
             // Set share URL
-            if ($campaign->id !== null) {
+            if ($campaign->id !== null && $campaign->enabled) {
                 $variables['shareUrl'] = $campaign->getUrl();
             }
         }

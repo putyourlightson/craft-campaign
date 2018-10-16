@@ -4,11 +4,12 @@
 ### Added
 - Added multi-site functionality to campaigns, mailing lists, segments and sendouts
 - Added editable table field for adding from name and email addresses on a per-site basis
+- Added checks to determine whether the live preview and share buttons should be shown on campaign edit page
 
 ### Changed
 - Changed minimum version of Craft to 3.0.16 due to addition of `DateTime` parameters to the `parseDateParam` method
 
-> {tip} This version adds multi-site functionality to campaign types, mailing list types and sendouts. All existing campaign types, mailing list types and sendouts will be assigned to the primary site by default.
+> {tip} This version adds multi-site functionality to campaign types, mailing list types, segments and sendouts. All existing elements will be assigned to the primary site by default.
 
 ## 1.3.4 - 2018-10-11
 ### Fixed

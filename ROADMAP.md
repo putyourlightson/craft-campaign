@@ -5,3 +5,4 @@
 - Add campaign type and mailing list type specific user group permissions
 - Add campaign versioning
 - Add recording of all individual contact interactions
+- Add campaign share link with token for disabled campaigns 
