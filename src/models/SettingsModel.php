@@ -175,7 +175,7 @@ class SettingsModel extends Model
     public function rules(): array
     {
         return [
-            [['fromNamesEmails', 'transportType', 'emailFieldLabel'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'emailFieldLabel'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
             [['contactFieldLayoutId'], 'integer'],
