@@ -13,7 +13,8 @@ Campaign.Chart = Garnish.Base.extend(
 
             // Add listener to report tab
             $('.tab-report').click($.proxy(function() {
-                this.chart.refresh();
+                this.getChart();
+                this.drawPercentageCharts();
             }, this));
 
             // Add listener to interval select

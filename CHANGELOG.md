@@ -9,6 +9,9 @@
 ### Changed
 - Changed minimum version of Craft to 3.0.16 due to addition of `DateTime` parameters to the `parseDateParam` method
 
+### Fixed
+- Fixed a bug with campaign and mailing list charts not appearing correctly in reports tab on edit pages
+
 > {tip} This version adds multi-site functionality to campaign types, mailing list types, segments and sendouts. All existing elements will be assigned to the primary site by default.
 
 ## 1.3.4 - 2018-10-11
