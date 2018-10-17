@@ -2,7 +2,7 @@
     <table id="contact-activity" class="data fullwidth collapsible">
         <thead>
             <th scope="col">{{ "Email"|t('campaign') }}</th>
-            <th scope="col">{{ "Subscription Status"|t('campaign') }}</th>
+            <th scope="col">{{ "Interaction"|t('campaign') }}</th>
             <th scope="col">{{ "Source"|t('campaign') }}</th>
             <th scope="col">{{ "First Interaction"|t('campaign') }}</th>
         </thead>
@@ -11,7 +11,7 @@
                 {% set contact = activity.model.contact %}
                 <tr>
                     <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
-                    <td data-title="{{ 'Subscription Status'|t('campaign') }}">{{ activity.model.subscriptionStatus|ucfirst|t('campaign') }}</td>
+                    <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
                     <td data-title="{{ 'Source'|t('campaign') }}">
                         {% if activity.model.sourceType %}
                             <a href="{{ activity.sourceUrl }}" class="go" target="_blank">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>

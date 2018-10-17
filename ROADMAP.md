@@ -8,3 +8,4 @@
 - Add campaign share link with token for disabled campaigns
 - Add ability for contacts to change thier own mailing list subscriptions 
 - Add segment templates to settings
+- Add sample campaign template code to docs

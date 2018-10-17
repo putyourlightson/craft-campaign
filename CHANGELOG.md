@@ -13,6 +13,7 @@
 
 ### Fixed
 - Fixed a bug with campaign and mailing list charts not appearing correctly in reports tab on edit pages
+- Fixed a bug with contact activity in mailing list reports
 
 > {tip} This version adds multi-site functionality to campaign types, mailing list types, segments and sendouts. All existing elements will be assigned to the primary site by default.
 

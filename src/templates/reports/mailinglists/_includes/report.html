@@ -55,7 +55,7 @@
 {% set limit = 5 %}
 
 <h2>{{ "Contact Activity"|t('campaign') }}</h2>
-{% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getMailingListContactActivity(mailingListId, limit), reportUrl: url('campaign/reports/mailinglists/' ~ mailingListId ~ '/contact-activity') } %}
+{% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getMailingListContactActivity(mailingListId, null, limit), reportUrl: url('campaign/reports/mailinglists/' ~ mailingListId ~ '/contact-activity') } %}
 
 <div class="cols">
     <div class="half">
@@ -65,7 +65,7 @@
 
     <div class="half">
         <h2>{{ "Devices"|t('campaign') }}</h2>
-        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getMailingListDevices(mailingListId, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/' ~ mailingListId ~ '/devices') } %}
+        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getMailingListDevices(mailingListId, false, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/' ~ mailingListId ~ '/devices') } %}
     </div>
 </div>
 <div class="clear"></div>
