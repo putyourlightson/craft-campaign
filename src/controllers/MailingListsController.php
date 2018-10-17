@@ -59,11 +59,9 @@ class MailingListsController extends Controller
         // Get the mailing list type
         // ---------------------------------------------------------------------
 
-        if (!empty($mailingListTypeHandle)) {
-            $variables['mailingListType'] = Campaign::$plugin->mailingListTypes->getMailingListTypeByHandle($mailingListTypeHandle);
-        }
+        $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeByHandle($mailingListTypeHandle);
 
-        if (empty($variables['mailingListType'])) {
+        if ($mailingListType === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
         }
 
@@ -85,7 +83,7 @@ class MailingListsController extends Controller
             }
         }
 
-        $mailingList->fieldLayoutId = $variables['mailingListType']->fieldLayoutId;
+        $mailingList->fieldLayoutId = $mailingListType->fieldLayoutId;
 
 
         // Set the variables
@@ -94,6 +92,7 @@ class MailingListsController extends Controller
         $variables['mailingListTypeHandle'] = $mailingListTypeHandle;
         $variables['mailingListId'] = $mailingListId;
         $variables['mailingList'] = $mailingList;
+        $variables['mailingListType'] = $mailingListType;
 
         // Set the title and slug
         // ---------------------------------------------------------------------
@@ -105,48 +104,10 @@ class MailingListsController extends Controller
             $variables['slug'] = $mailingList->slug;
         }
 
-        // Define the content tabs
-        // ---------------------------------------------------------------------
-
-        $variables['tabs'] = [];
-
-        foreach ($variables['mailingListType']->getFieldLayout()->getTabs() as $index => $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
-
-            if ($mailingList->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    /** @var Field $field */
-                    if ($mailingList->getErrors($field->handle)) {
-                        $hasErrors = true;
-                        break;
-                    }
-                }
-            }
-
-            $variables['tabs'][] = [
-                'label' => Craft::t('site', $tab->name),
-                'url' => '#tab'.($index + 1),
-                'class' => $hasErrors ? 'error' : null,
-            ];
-        }
-
-        // Add default tab if missing
-        if (empty($variables['tabs'])) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Mailing List'),
-                'url' => '#tab1',
-            ];
-        }
-
-        // Add report tab
-        if ($mailingListId !== null) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Report'),
-                'url' => '#tab-report',
-                'class' => 'tab-report',
-            ];
-        }
+        // Add fields from first field layout tab
+        $fieldLayoutTabs = $mailingListType->getFieldLayout()->getTabs();
+        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
+        $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
 
         // Get the settings
         $variables['settings'] = Campaign::$plugin->getSettings();

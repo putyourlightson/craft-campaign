@@ -9,6 +9,13 @@
     { label: mailingListType.name, url: url('campaign/mailinglists/' ~ mailingListType.handle) }
 ] %}
 
+{% set tabs = {'mailinglist': {'label': 'Mailing List'|t('campaign'), 'url': '#mailinglist'}} %}
+{% if mailingList.id %}
+    {% set tabs = tabs|merge({'report': {'label': 'Report', 'url': '#report'}}) %}
+{% endif %}
+
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
+
 
 {% block actionButton %}
 
@@ -51,12 +58,19 @@
     {% endif %}
 
     <div id="fields">
-        {% include 'campaign/mailinglists/_includes/fields' %}
+        <div id="mailinglist">
+            {% include "campaign/mailinglists/_includes/titlefield" %}
+            {% include '_includes/fields' with {
+                fields:  fields,
+                element: mailingList
+            } only %}
+        </div>
 
         {% if mailingList.id %}
-            {% include 'campaign/mailinglists/_includes/report' %}
+            <div id="report" class="hidden">
+                {% include 'campaign/reports/mailinglists/_includes/report' %}
+            </div>
         {% endif %}
-
     </div>
 
 {% endblock %}

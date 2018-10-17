@@ -8,7 +8,16 @@
     { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') }
 ] %}
 
+{% set tabs = {
+    'contact': {'label': 'Contact'|t('campaign'), 'url': '#contact'},
+    'mailinglists': {'label': 'Mailing Lists'|t('campaign'), 'url': '#mailinglists'},
+} %}
+{% if campaign.id %}
+    {% set tabs = tabs|merge({'report': {'label': 'Report'|t('campaign'), 'url': '#report'}}) %}
+{% endif %}
+
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ContactEditAsset') %}
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
 
 
 {% block actionButton %}
@@ -46,11 +55,17 @@
     {% endif %}
 
     <div id="fields">
-        {% include "campaign/contacts/_includes/fields" %}
+        <div id="contact">
+            {% include "campaign/contacts/_includes/titlefield" %}
+            {% include '_includes/fields' with {
+                fields:  fields,
+                element: contact
+            } only %}
+        </div>
 
         {% if contact.id %}
             {% set mailingLists = craft.campaign.getAllMailingLists() %}
-            <div id="tab-mailinglists" class="hidden">
+            <div id="mailinglists" class="hidden">
                 <div id="nomailinglists"{% if mailingLists|length %}class="hidden"{% endif %}>
                     <p>{{ "No mailing lists exist."|t('campaign') }}</p>
                 </div>
@@ -88,9 +103,10 @@
             </div>
 
             {% if contact.id %}
-                {% include 'campaign/contacts/_includes/report' %}
+                <div id="report" class="hidden">
+                    {% include 'campaign/reports/contacts/_includes/report' %}
+                </div>
             {% endif %}
-
         {% endif %}
     </div>
 

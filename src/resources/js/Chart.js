@@ -12,7 +12,7 @@ Campaign.Chart = Garnish.Base.extend(
             this.drawPercentageCharts();
 
             // Add listener to report tab
-            $('.tab-report').click($.proxy(function() {
+            $('#tab-report').click($.proxy(function() {
                 this.getChart();
                 this.drawPercentageCharts();
             }, this));

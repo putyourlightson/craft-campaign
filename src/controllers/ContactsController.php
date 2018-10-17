@@ -108,59 +108,10 @@ class ContactsController extends Controller
             $variables['title'] = $contact->email;
         }
 
-        // Define the content tabs
-        // ---------------------------------------------------------------------
-
-        $variables['tabs'] = [];
-        $fieldLayout = $contact->getFieldLayout();
-
-        if ($fieldLayout) {
-            foreach ($fieldLayout->getTabs() as $index => $tab) {
-                // Do any of the fields on this tab have errors?
-                $hasErrors = false;
-
-                if ($contact->hasErrors()) {
-                    foreach ($tab->getFields() as $field) {
-                        /** @var Field $field */
-                        if ($contact->getErrors($field->handle)) {
-                            $hasErrors = true;
-                            break;
-                        }
-                    }
-                }
-
-                $variables['tabs'][] = [
-                    'label' => Craft::t('site', $tab->name),
-                    'url' => '#tab'.($index + 1),
-                    'class' => $hasErrors ? 'error' : null,
-                ];
-            }
-        }
-
-        // Add default tab if missing
-        if (empty($variables['tabs'])) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Contact'),
-                'url' => '#tab1',
-            ];
-        }
-
-        // Add mailing lists tab
-        if ($contactId !== null) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Mailing Lists'),
-                'url' => '#tab-mailinglists',
-            ];
-        }
-
-        // Add report tab
-        if ($contactId !== null) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Report'),
-                'url' => '#tab-report',
-                'class' => 'tab-report',
-            ];
-        }
+        // Add fields from first field layout tab
+        $fieldLayoutTabs = $contact->getFieldLayout()->getTabs();
+        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
+        $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------

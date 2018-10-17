@@ -8,6 +8,11 @@
     { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 
+{% set tabs = {
+    'sendout': {'label': 'Sendout', 'url': '#sendout'},
+    'preview': {'label': 'Preview', 'url': '#preview'},
+} %}
+
 {% set pendingRecipients = sendout.pendingRecipients %}
 {% set mailingLists = sendout.mailingLists %}
 {% set schedule = sendout.schedule %}
@@ -64,25 +69,27 @@
 
     <div id="fields">
 
-        {% include 'campaign/sendouts/_includes/fields' %}
+        <div id="sendout">
+            {% include 'campaign/sendouts/_includes/fields' %}
+        </div>
 
-        <hr/>
+        <div id="preview" class="hidden">
+            {% set input %}
+                <iframe class="email-body" src="{{ actionUrl('/campaign/sendouts/get-html-body', { sendoutId: sendout.id }) }}"></iframe>
+            {% endset %}
+            {{ forms.field({
+                label: "HTML Body"|t('campaign'),
+                instructions: "A preview of the HTML version of the email body."|t('campaign'),
+            }, input) }}
 
-        {% set input %}
-            <iframe class="email-body" src="{{ actionUrl('/campaign/sendouts/get-html-body', { sendoutId: sendout.id }) }}"></iframe>
-        {% endset %}
-        {{ forms.field({
-            label: "HTML Body"|t('campaign'),
-            instructions: "A preview of the HTML version of the email body."|t('campaign'),
-        }, input) }}
-
-        {% set input %}
-            <textarea class="email-body" disabled>{{ sendout.getPlaintextBody() }}</textarea>
-        {% endset %}
-        {{ forms.field({
-            label: "Plaintext Body"|t('campaign'),
-            instructions: "A preview of the plaintext version of the email body."|t('campaign'),
-        }, input) }}
+            {% set input %}
+                <textarea class="email-body" disabled>{{ sendout.getPlaintextBody() }}</textarea>
+            {% endset %}
+            {{ forms.field({
+                label: "Plaintext Body"|t('campaign'),
+                instructions: "A preview of the plaintext version of the email body."|t('campaign'),
+            }, input) }}
+        </div>
 
     </div>
 

@@ -106,48 +106,10 @@ class CampaignsController extends Controller
             $variables['title'] = $campaign->title;
         }
 
-        // Define the content tabs
-        // ---------------------------------------------------------------------
-
-        $variables['tabs'] = [];
-
-        foreach ($variables['campaignType']->getFieldLayout()->getTabs() as $index => $tab) {
-            // Do any of the fields on this tab have errors?
-            $hasErrors = false;
-
-            if ($campaign->hasErrors()) {
-                foreach ($tab->getFields() as $field) {
-                    /** @var Field $field */
-                    if ($campaign->getErrors($field->handle)) {
-                        $hasErrors = true;
-                        break;
-                    }
-                }
-            }
-
-            $variables['tabs'][] = [
-                'label' => Craft::t('site', $tab->name),
-                'url' => '#tab'.($index + 1),
-                'class' => $hasErrors ? 'error' : null,
-            ];
-        }
-
-        // Add default tab if missing
-        if (empty($variables['tabs'])) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Campaign'),
-                'url' => '#tab1',
-            ];
-        }
-
-        // Add report tab
-        if ($campaignId !== null) {
-            $variables['tabs'][] = [
-                'label' => Craft::t('campaign', 'Report'),
-                'url' => '#tab-report',
-                'class' => 'tab-report',
-            ];
-        }
+        // Get fields from first field layout tab
+        $fieldLayoutTabs = $campaignType->getFieldLayout()->getTabs();
+        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
+        $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
 
         // Enable live preview?
         if (!$request->isMobileBrowser(true) && $campaignType->hasValidTemplates()) {

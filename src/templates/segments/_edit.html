@@ -62,9 +62,7 @@
 
     <div id="fields">
         <div>
-            <div id="tab1">
-                {% include "campaign/segments/_includes/titlefield" %}
-            </div>
+            {% include "campaign/segments/_includes/titlefield" %}
 
             {% set fieldOperators = segment.getFieldOperators() %}
             {% set availableFields = segment.getAvailableFields() %}

@@ -9,7 +9,13 @@
     { label: campaignType.name, url: url('campaign/campaigns/' ~ campaignType.handle) }
 ] %}
 
+{% set tabs = {'campaign': {'label': 'Campaign'|t('campaign'), 'url': '#campaign'}} %}
+{% if campaign.id %}
+    {% set tabs = tabs|merge({'report': {'label': 'Report'|t('campaign'), 'url': '#report'}}) %}
+{% endif %}
+
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\CampaignEditAsset') %}
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
 
 
 {% block actionButton %}
@@ -73,10 +79,18 @@
     {% endif %}
 
     <div id="fields">
-        {% include "campaign/campaigns/_includes/fields" %}
+        <div id="campaign">
+            {% include "campaign/campaigns/_includes/titlefield" %}
+            {% include '_includes/fields' with {
+                fields:  fields,
+                element: campaign
+            } only %}
+        </div>
 
         {% if campaign.id %}
-            {% include 'campaign/campaigns/_includes/report' %}
+            <div id="report" class="hidden">
+                {% include 'campaign/reports/campaigns/_includes/report' %}
+            </div>
         {% endif %}
     </div>
 

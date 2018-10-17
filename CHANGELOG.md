@@ -11,6 +11,7 @@
 - Changed minimum version of Craft to 3.0.16 due to addition of `DateTime` parameters to the `parseDateParam` method
 - Changed API key back to being a required field
 - Changed report rates to round percentages up rather than down
+- Moved HTML and plaintext iframes into new tab in sendout view
 
 ### Fixed
 - Fixed a bug with campaign and mailing list charts not appearing correctly in reports tab on edit pages
