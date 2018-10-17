@@ -29,10 +29,6 @@ The Campaign plugin requires Craft CMS 3.0.16 or later.
 ### Testing
 Before sending to large mailing lists it is important to test that your campaign is correctly set up. By enabling on "Test Mode" in Campaign → Settings → General Settings, live sending of emails will be disabled and sendout emails  will instead be saved into local files (in storage/runtime/debug/mail) rather that actually being sent. You can also send a test email on both the campaign as well as the sendout edit page. Email testing services such as [Mailtrap](https://mailtrap.io/) can also be used for testing sendouts.
 
-### Email Templates
-The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.  
-[More details &raquo;](https://craftcampaign.com/docs/email-templates)
-
 ### Email Delivery
 Campaign has its own email settings and can use any email delivery service that Craft supports. Craft natively supports Sendmail, SMTP and Gmail, and there are many plugins freely available which add third-party integrations (see "Mailer Transports" in the plugin store). SMTP can generally be used with most email delivery services, however using an API usually results in better performance, therefore the following plugins are recommended:
 
@@ -52,6 +48,13 @@ Campaign includes webhooks to handle bounce and complain notifications for the f
 
 To set up webhooks, copy the appropriate webhook URL from Campaign → Settings → General Settings and add it to the service you use (view each service's documentation for instructions). 
  
+### Multi-Site Functionality
+Campaign works with a multi-site set up by allowing campaigns, mailing lists, segments and sendouts to each be assignable to one and only one site. This enables the management of each of the above elements on a site by site basis.
+
+### Email Templates
+Email templates are defined in the campaign type's settings page. A HTML as well as a plaintext email template should be provided that exist in the site's `templates` folder. Several template tags are available and email templates should be built in a way that is supported by email clients.     
+[More details &raquo;](https://craftcampaign.com/docs/email-templates)
+
 ### Campaigns
 Campaigns, just like entries, have their own custom field layout (limited to a single tab), determined by the campaign type they belong to. They each have their own URL and work with live preview. A campaign can be sent to one or more mailing lists by creating and assigning it to a sendout.  
 [More details &raquo;](https://craftcampaign.com/docs/campaigns)

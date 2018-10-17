@@ -1,5 +1,32 @@
 # Email Templates
 
+Email templates are defined in the campaign type's settings page. A HTML as well as a plaintext email template should be provided that exist in the site's `templates` folder. 
+
+The following template tags are available to email templates:  
+`campaign`, `browserVersionUrl`, `contact`, `unsubscribeUrl`
+
+### Sample Code
+
+The following sample code shows how the tags can be used. Checking for the existance of the tags will ensure that they are only output when not blank, as may be the case for test emails and web versions.
+
+    {% if browserVersionUrl %}
+      <a href="{{ browserVersionUrl }}">View this email in your browser</a>
+    {% endif %}
+    
+    {% if contact.firstName %}
+      Hello {{ contact.firstName }},
+    {% endif %}
+    
+    Welcome to this month's newsletter in which we have some fascintaing announcements!
+    
+    {{ campaign.announcements }}
+    
+    {% if unsubscribeUrl %}
+      <a href="{{ unsubscribeUrl }}">Unsubscribe from this mailing list</a>
+    {% endif %}
+    
+### Designing Templates 
+
 The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some recommended resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.
 
 ### Frameworks
