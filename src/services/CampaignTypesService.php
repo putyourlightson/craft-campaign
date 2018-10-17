@@ -236,8 +236,6 @@ class CampaignTypesService extends Component
                 ],
                 'siteId' => $campaignType->siteId,
             ]));
-
-            // TODO: delete any leftover entries in the old site
         }
 
         return true;

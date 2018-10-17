@@ -427,7 +427,7 @@ class CampaignElement extends Element
      */
     public function getRate(string $field): int
     {
-        return $this->recipients > 0 ? floor(($this->{$field} / $this->recipients) * 100) : 0;
+        return $this->recipients > 0 ? ceil(($this->{$field} / $this->recipients) * 100) : 0;
     }
 
     /**
@@ -437,7 +437,7 @@ class CampaignElement extends Element
      */
     public function getClickThroughRate(): int
     {
-        return $this->opened > 0 ? floor(($this->clicked / $this->opened) * 100) : 0;
+        return $this->opened > 0 ? ceil(($this->clicked / $this->opened) * 100) : 0;
     }
 
     /**
