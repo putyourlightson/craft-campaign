@@ -24,11 +24,6 @@
 
 {% block contextMenu %}
 
-    {% if craft.app.isMultiSite %}
-        <div class="btn disabled" data-icon="world">{{ sendout.site.name }}</div>
-        &nbsp;
-    {% endif %}
-
     {% if sendout.isEditable %}
         <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
@@ -173,8 +168,10 @@
     {% if sendout.sendStatus != 'sent' %}
         <hr/>
         <div class="meta">
-            {{ forms.elementSelectField({
-                label: "Test Email"|t('campaign'),
+            {{ forms.field({
+                label: "Send Test Email"|t('campaign'),
+            }) }}
+            {{ forms.elementSelect({
                 id: 'testContact',
                 name: 'testContact',
                 elementType: contactElementType,
@@ -183,7 +180,7 @@
                 elements: [testContact],
                 limit: 1
             }) }}
-            <a class="send-test btn right">{{ 'Send Test Email'|t('campaign') }}</a>
+            <a class="send-test btn">{{ 'Send Test'|t('campaign') }}</a>
         </div>
     {% endif %}
 

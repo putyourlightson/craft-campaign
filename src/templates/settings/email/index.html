@@ -80,7 +80,7 @@
             <div class="btn disabled">{{ "Send Test Email"|t('campaign') }}</div>
         {% endset %}
         {{ forms.field({
-            warning: "You must add a Default Send From Email Address before you can send a test email."|t('campaign')
+            warning: "You must add at least one from name and email before you can send a test email."|t('campaign')
         }, input) }}
     {% endif %}
 
