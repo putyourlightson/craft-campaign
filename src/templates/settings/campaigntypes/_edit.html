@@ -47,7 +47,7 @@
         {{ forms.selectField({
             label: "Site"|t('campaign'),
             instructions: "The site to associate this campaign type with."|t('campaign'),
-            warning: campaignType.id ? "Changing this can lead to sent campaigns not being reachable any more."|t('campaign'),
+            warning: campaignType.id ? "Changing this can lead to sent campaigns not being reachable and other undesirable results."|t('campaign'),
             id: 'siteId',
             name: 'siteId',
             options: siteOptions,

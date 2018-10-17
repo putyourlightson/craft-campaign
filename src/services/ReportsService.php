@@ -124,7 +124,7 @@ class ReportsService extends Component
             ->one();
 
         /** @var ContactCampaignRecord $contactCampaignRecord */
-        $data['dateFirstSent'] = $contactCampaignRecord === null ? null : $contactCampaignRecord->dateCreated;
+        $data['dateFirstSent'] = $contactCampaignRecord === null ? null : DateTimeHelper::toDateTime($contactCampaignRecord->dateCreated);
 
         // Check if chart exists
         $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, 'opened', 1)) > 0;
