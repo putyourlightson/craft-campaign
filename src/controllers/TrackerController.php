@@ -373,6 +373,7 @@ class TrackerController extends Controller
             'title' => 'Verified',
             'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
             'mailingList' => $mailingList,
+            'contact' => $contact,
         ]);
     }
 
