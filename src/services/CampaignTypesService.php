@@ -212,7 +212,6 @@ class CampaignTypesService extends Component
             throw $e;
         }
 
-
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([

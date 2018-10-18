@@ -163,7 +163,8 @@ class MailingListTypesService extends Component
             if ($mailingListTypeRecord === null) {
                 throw new NotFoundHttpException("No mailing list type exists with the ID '{$mailingListType->id}'");
             }
-        } else {
+        }
+        else {
             $mailingListTypeRecord = new MailingListTypeRecord();
         }
 
@@ -183,6 +184,7 @@ class MailingListTypesService extends Component
             // Save the field layout
             $fieldLayout = $mailingListType->getFieldLayout();
             Craft::$app->getFields()->saveLayout($fieldLayout);
+
             $mailingListType->fieldLayoutId = $fieldLayout->id;
             $mailingListTypeRecord->fieldLayoutId = $fieldLayout->id;
 
@@ -220,7 +222,7 @@ class MailingListTypesService extends Component
                 'elementType' => MailingListElement::class,
                 'criteria' => [
                     'siteId' => $oldSiteId,
-                    'mailingListType' => $mailingListType->id,
+                    'mailingListTypeId' => $mailingListType->id,
                     'status' => null,
                 ],
                 'siteId' => $mailingListType->siteId,
