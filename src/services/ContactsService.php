@@ -177,6 +177,7 @@ class ContactsService extends Component
                     'message' => $bodyText,
                     'url' => $url,
                     'mailingList' => $mailingList,
+                    'pendingContact' => $pendingContact,
                 ]);
             }
             catch (\Twig_Error_Loader $e) {}

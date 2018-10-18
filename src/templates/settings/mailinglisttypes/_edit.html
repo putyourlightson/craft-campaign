@@ -72,7 +72,7 @@
 
         {{ forms.textField({
             label: "Verify Email Template"|t('campaign'),
-            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`'}),
+            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, '`url`, `mailingList`, `pendingContact`'}),
             name: 'verifyEmailTemplate',
             value: mailingListType.verifyEmailTemplate,
             errors: mailingListType.getErrors('verifyEmailTemplate'),
