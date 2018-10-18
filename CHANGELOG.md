@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.4.0 - Unreleased
+## 1.4.0 - 2018-10-18
 ### Added
 - Added multi-site functionality to campaigns, mailing lists, segments and sendouts
 - Added editable table field for adding from name and email addresses on a per-site basis
