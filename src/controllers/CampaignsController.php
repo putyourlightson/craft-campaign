@@ -12,7 +12,6 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
 use Craft;
-use craft\base\Field;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use craft\helpers\Json;

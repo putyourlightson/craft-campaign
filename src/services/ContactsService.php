@@ -184,8 +184,8 @@ class ContactsService extends Component
             catch (Exception $e) {}
         }
 
-        // Get first from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFirstFromNameEmail($mailingList->siteId);
+        // Get from name and email
+        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($mailingList->siteId);
 
         // Create message
         /** @var Message $message */

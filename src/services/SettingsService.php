@@ -44,15 +44,16 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns first from name and email for the given site if provided
+     * Returns from name and email for the given site if provided
      *
      * @param int|null $siteId
      *
      * @return array
      * @throws InvalidConfigException
      */
-    public function getFirstFromNameEmail(int $siteId = null): array
+    public function getFromNameEmail(int $siteId = null): array
     {
+        // Get first from name and email
         $firstFromNameEmail = [];
         $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
 

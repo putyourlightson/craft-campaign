@@ -12,7 +12,7 @@
     'contact': {'label': 'Contact'|t('campaign'), 'url': '#contact'},
     'mailinglists': {'label': 'Mailing Lists'|t('campaign'), 'url': '#mailinglists'},
 } %}
-{% if campaign.id %}
+{% if contact.id %}
     {% set tabs = tabs|merge({'report': {'label': 'Report'|t('campaign'), 'url': '#report'}}) %}
 {% endif %}
 

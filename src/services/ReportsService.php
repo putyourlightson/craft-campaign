@@ -15,6 +15,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\models\ContactActivityModel;
 use putyourlightson\campaign\models\LinkModel;
 use putyourlightson\campaign\models\ContactCampaignModel;
@@ -90,7 +91,7 @@ class ReportsService extends Component
             $data['clicked'] += $campaign->clicked;
         }
 
-        $data['clickThroughRate'] = $data['opened'] ? (float)number_format($data['clicked'] / $data['opened'] * 100, 1) : 0;
+        $data['clickThroughRate'] = $data['opened'] ? NumberHelper::floorOrOne($data['clicked'] / $data['opened'] * 100) : 0;
 
         // Get sendouts count
         $data['sendouts'] = SendoutElement::find()->count();
@@ -734,7 +735,7 @@ class ReportsService extends Component
             $geoIp = $result['geoIp'] ? Json::decodeIfJson($result['geoIp']) : [];
 
             $result['countryCode'] = strtolower($geoIp['countryCode'] ?? '');
-            $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
+            $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
 
             $countArray[] = $result['count'];
         }
@@ -748,7 +749,7 @@ class ReportsService extends Component
                 'country' => '',
                 'countryCode' => '',
                 'count' => $unknownCount,
-                'countRate' => $total ? number_format($unknownCount / $total * 100, 1) : 0,
+                'countRate' => $total ? NumberHelper::floorOrOne($unknownCount / $total * 100) : 0,
             ];
             $countArray[] = $unknownCount;
         }
@@ -795,7 +796,7 @@ class ReportsService extends Component
         $results = $query->all();
 
         foreach ($results as &$result) {
-            $result['countRate'] = $total ? number_format($result['count'] / $total * 100, 1) : 0;
+            $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
             $countArray[] = $result['count'];
         }
 

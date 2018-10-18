@@ -35,7 +35,7 @@
                     <th scope="row" data-title="{{ 'Name'|t('app') }}"><a href="{{ campaignType.cpEditUrl }}">{{ campaignType.name }}</a></th>
                     <td data-title="{{ 'Handle'|t('app') }}"><code>{{ campaignType.handle }}</code></td>
                     {% if isMultiSite %}
-                        <td data-title="{{ 'Site'|t('app') }}"><code>{{ campaignType.getSite().name }}</code></td>
+                        <td data-title="{{ 'Site'|t('app') }}">{{ campaignType.getSite().name }}</td>
                     {% endif %}
                     <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                 </tr>

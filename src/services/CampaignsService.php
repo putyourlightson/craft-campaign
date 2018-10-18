@@ -164,8 +164,8 @@ class CampaignsService extends Component
         // Get mailer
         $mailer = Campaign::$plugin->createMailer();
 
-        // Get first from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFirstFromNameEmail($campaign->siteId);
+        // Get from name and email
+        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($campaign->siteId);
 
         // Compose message
         /** @var Message $message*/

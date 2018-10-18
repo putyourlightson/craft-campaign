@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\elements;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
+use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\models\CampaignTypeModel;
 
@@ -427,7 +428,7 @@ class CampaignElement extends Element
      */
     public function getRate(string $field): int
     {
-        return $this->recipients > 0 ? number_format(($this->{$field} / $this->recipients) * 100, 1) : 0;
+        return $this->recipients > 0 ? NumberHelper::floorOrOne(($this->{$field} / $this->recipients) * 100) : 0;
     }
 
     /**
@@ -437,7 +438,7 @@ class CampaignElement extends Element
      */
     public function getClickThroughRate(): int
     {
-        return $this->opened > 0 ? number_format(($this->clicked / $this->opened) * 100, 1) : 0;
+        return $this->opened > 0 ? NumberHelper::floorOrOne(($this->clicked / $this->opened) * 100) : 0;
     }
 
     /**

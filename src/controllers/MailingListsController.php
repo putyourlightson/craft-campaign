@@ -10,7 +10,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
-use craft\base\Field;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use yii\base\Exception;
