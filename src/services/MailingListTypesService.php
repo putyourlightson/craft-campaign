@@ -6,8 +6,8 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\queue\jobs\ResaveElements;
 use putyourlightson\campaign\events\MailingListTypeEvent;
+use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\MailingListTypeSiteModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
@@ -212,12 +212,12 @@ class MailingListTypesService extends Component
 
         if (!$isNew) {
             // Re-save the mailing lists in this mailing list type
-            Craft::$app->getQueue()->push(new ResaveElements([
+            Craft::$app->getQueue()->push(new ResaveElementsJob([
                 'description' => Craft::t('app', 'Resaving {type} mailing lists ({site})', [
                     'type' => $mailingListType->name,
                     'site' => $mailingListType->getSite()->name,
                 ]),
-                'elementType' => CampaignElement::class,
+                'elementType' => MailingListElement::class,
                 'criteria' => [
                     'siteId' => $oldSiteId,
                     'mailingListType' => $mailingListType->id,
