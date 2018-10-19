@@ -209,6 +209,9 @@ class SendoutsService extends Component
             return false;
         }
 
+        // Set the current site from the sendout's site ID
+        Craft::$app->sites->setCurrentSite($sendout->siteId);
+
         // Get body
         $htmlBody = $campaign->getHtmlBody($contact, $sendout);
         $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);

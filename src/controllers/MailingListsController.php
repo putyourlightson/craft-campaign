@@ -77,7 +77,7 @@ class MailingListsController extends Controller
             }
             else {
                 $mailingList = new MailingListElement();
-                $mailingList->mailingListTypeId = $variables['mailingListType']->id;
+                $mailingList->mailingListTypeId = $mailingListType->id;
                 $mailingList->enabled = true;
             }
         }

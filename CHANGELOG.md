@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.4.1 - 2018-10-19
+### Fixed
+- Fixed error when creating a new mailing list
+- Fixed a bug with site URLs not being respected in sendout emails that were not in the primary site  
+
 ## 1.4.0 - 2018-10-18
 ### Added
 - Added multi-site functionality to campaigns, mailing lists, segments and sendouts

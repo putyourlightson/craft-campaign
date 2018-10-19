@@ -602,6 +602,9 @@ class CampaignElement extends Element
 
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
 
+        // Set the current site from the campaign's site ID
+        Craft::$app->sites->setCurrentSite($this->siteId);
+
         try {
             $body = $view->renderTemplate($template, [
                 'campaign' => $this,

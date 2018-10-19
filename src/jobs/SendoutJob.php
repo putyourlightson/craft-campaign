@@ -124,6 +124,9 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $timeLimit = ini_get('max_execution_time');
         $timeLimit = $timeLimit === 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
 
+        // Set the current site from the sendout's site ID
+        Craft::$app->sites->setCurrentSite($sendout->siteId);
+
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
 

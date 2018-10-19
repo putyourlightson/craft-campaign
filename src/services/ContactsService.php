@@ -145,15 +145,18 @@ class ContactsService extends Component
      * Sends a verification email
      *
      * @param PendingContactModel $pendingContact
-     * @param MailingListElement|null $mailingList
+     * @param MailingListElement $mailingList
      *
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
      * @throws \yii\base\InvalidConfigException
      */
-    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList = null): bool
+    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
+        // Set the current site from the mailing list's site ID
+        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
         $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
 
@@ -166,7 +169,7 @@ class ContactsService extends Component
         $body = $bodyText."\n".$url;
 
         // Get body from template if defined
-        if ($mailingList !== null AND $mailingList->mailingListType->verifyEmailTemplate !== null) {
+        if ($mailingList->mailingListType->verifyEmailTemplate !== null) {
             $view = Craft::$app->getView();
 
             // Set template mode to site
