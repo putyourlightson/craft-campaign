@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.4.2 - Unreleased
+### Fixed
+- Fixed missing table to drop on uninstall
+- Fixed migration from beta that didn't check for the existance of columns before adding them
+
 ## 1.4.1 - 2018-10-19
 ### Fixed
 - Fixed error when creating a new mailing list
