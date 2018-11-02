@@ -344,16 +344,23 @@ class ReportsService extends Component
      *
      * @param int
      * @param int|null
+     * @param int|int[]|null
      *
      * @return ContactActivityModel[]
      */
-    public function getContactCampaignActivity(int $contactId, int $limit = null): array
+    public function getContactCampaignActivity(int $contactId, int $limit = null, $campaignId = null): array
     {
         $limit = $limit ?? 100;
 
+        $conditions = ['contactId' => $contactId];
+
+        if ($campaignId !== null) {
+            $conditions['campaignId'] = $campaignId;
+        }
+
         // Get contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()
-            ->where(['contactId' => $contactId])
+            ->where($conditions)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();
@@ -369,16 +376,23 @@ class ReportsService extends Component
      *
      * @param int
      * @param int|null
+     * @param int|int[]|null
      *
      * @return ContactActivityModel[]
      */
-    public function getContactMailingListActivity(int $contactId, int $limit = null): array
+    public function getContactMailingListActivity(int $contactId, int $limit = null, $mailingListId = null): array
     {
         $limit = $limit ?? 100;
 
+        $conditions = ['contactId' => $contactId];
+
+        if ($mailingListId !== null) {
+            $conditions['mailingListId'] = $mailingListId;
+        }
+
         // Get mailing lists
         $contactMailingListRecords = ContactMailingListRecord::find()
-            ->where(['contactId' => $contactId])
+            ->where($conditions)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->limit($limit)
             ->all();

@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.4.3 - 2018-11-02
+### Added
+- Added an optional `$campaignId` parameter to the `getContactCampaignActivity` method in the reports service
+- Added an optional `$mailingListId` parameter to the `getContactMailingListActivity` method in the reports service
+
 ## 1.4.2 - 2018-11-02
 ### Fixed
 - Fixed bug with campaign fields not appearing in live preview 
