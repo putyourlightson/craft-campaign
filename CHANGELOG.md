@@ -1,7 +1,8 @@
 # Release Notes for Campaign
 
-## 1.4.2 - Unreleased
+## 1.4.2 - 2018-11-02
 ### Fixed
+- Fixed bug with campaign fields not appearing in live preview 
 - Fixed missing table to drop on uninstall
 - Fixed migration from beta that didn't check for the existance of columns before adding them
 

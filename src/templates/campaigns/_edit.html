@@ -81,10 +81,12 @@
     <div id="fields">
         <div id="campaign">
             {% include "campaign/campaigns/_includes/titlefield" %}
-            {% include '_includes/fields' with {
-                fields:  fields,
-                element: campaign
-            } only %}
+            <div>
+                {% include '_includes/fields' with {
+                    fields:  fields,
+                    element: campaign
+                } only %}
+            </div>
         </div>
 
         {% if campaign.id %}
