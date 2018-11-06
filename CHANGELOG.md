@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.4.4 - 2018-11-06
+### Fixed
+- Fixed bug with campaign types and mailing list types not being assigned a default site ID
+
 ## 1.4.3 - 2018-11-02
 ### Added
 - Added an optional `$campaignId` parameter to the `getContactCampaignActivity` method in the reports service

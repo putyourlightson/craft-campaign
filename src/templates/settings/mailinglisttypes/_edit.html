@@ -54,6 +54,8 @@
             errors: mailingListType.getErrors('siteId'),
             required: true
         }) }}
+    {% else %}
+        <input type="hidden" name="siteId" value="{{ currentSite.id }}" />
     {% endif %}
 
     {{ forms.lightswitchField({

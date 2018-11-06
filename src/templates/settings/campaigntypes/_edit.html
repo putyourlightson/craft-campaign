@@ -12,7 +12,7 @@
 
 {% block content %}
 
-    <input type="hidden" name="action" value="campaign/campaign-types/save-campaign-type">
+    <input type="hidden" name="action" value="campaign/campaign-types/save-campaign-type" />
 
     {{ redirectInput('campaign/settings/campaigntypes') }}
 
@@ -55,6 +55,8 @@
             errors: campaignType.getErrors('siteId'),
             required: true
         }) }}
+    {% else %}
+        <input type="hidden" name="siteId" value="{{ currentSite.id }}" />
     {% endif %}
 
     {{ forms.textField({
