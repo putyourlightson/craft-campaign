@@ -204,7 +204,7 @@ class ContactsController extends Controller
         // Set the field layout ID
         $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
 
-        // Set the field locations
+        // Set the field values using the fields location
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $contact->setFieldValuesFromRequest($fieldsLocation);
 

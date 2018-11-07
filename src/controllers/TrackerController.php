@@ -43,7 +43,7 @@ class TrackerController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['open', 'click', 'subscribe', 'unsubscribe', 'verify-email'];
+    protected $allowAnonymous = ['open', 'click', 'subscribe', 'unsubscribe', 'verify-email', 'update-contact'];
 
     // Public Methods
     // =========================================================================
@@ -377,11 +377,67 @@ class TrackerController extends Controller
         ]);
     }
 
+    /**
+     * Update Contact
+     *
+     * @return Response|null
+     */
+    public function actionUpdateContact()
+    {
+        $this->requirePostRequest();
+
+        $request = Craft::$app->getRequest();
+
+        // Get contact
+        $contact = $this->_getContact();
+
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+        }
+
+        $uid = $request->getBodyParam('uid');
+
+        // Verify UID
+        if ($uid === null || $contact->uid !== $uid) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact could not be verified.'));
+        }
+
+        // Set the field values using the fields location
+        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
+        $contact->setFieldValuesFromRequest($fieldsLocation);
+
+        // Save it
+        if (!Craft::$app->getElements()->saveElement($contact)) {
+            if ($request->getAcceptsJson()) {
+                return $this->asJson([
+                    'errors' => $contact->getErrors(),
+                ]);
+            }
+
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact.'));
+
+            // Send the contact back to the template
+            Craft::$app->getUrlManager()->setRouteParams([
+                'contact' => $contact
+            ]);
+
+            return null;
+        }
+
+        if ($request->getAcceptsJson()) {
+            return $this->asJson(['success' => true]);
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact saved.'));
+
+        return $this->redirectToPostedUrl($contact);
+    }
+
     // Private Methods
     // =========================================================================
 
     /**
-     * Gets contact by CID in query param
+     * Gets contact by CID in param
      *
      * @return ContactElement|null
      */
@@ -397,7 +453,7 @@ class TrackerController extends Controller
     }
 
     /**
-     * Gets sendout by SID in query param
+     * Gets sendout by SID in param
      *
      * @return SendoutElement|null
      */
@@ -413,7 +469,7 @@ class TrackerController extends Controller
     }
 
     /**
-     * Gets link by LID in query param
+     * Gets link by LID in param
      *
      * @return LinkRecord|null
      */

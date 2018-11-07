@@ -68,7 +68,7 @@ class ContactsService extends Component
         }
 
         $contact = ContactElement::find()
-            ->where(['cid' => $cid])
+            ->cid($cid)
             ->status(null)
             ->one();
 
