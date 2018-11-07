@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.5.0 - Unreleased
+### Added
+- Added `campaign/tracker/update-contact` controller action for allowing contacts to update their details on the front-end
+
+### Fixed
+- Fixed error that could occur when sending a test email from the email settings page ([#30](https://github.com/putyourlightson/craft-campaign/issues/30))
+
 ## 1.4.4 - 2018-11-06
 ### Fixed
 - Fixed bug with campaign types and mailing list types not being assigned a default site ID

@@ -402,6 +402,8 @@ class TrackerController extends Controller
             throw new NotFoundHttpException(Craft::t('campaign', 'Contact could not be verified.'));
         }
 
+        // TODO: allow updating of cemail address?
+
         // Set the field values using the fields location
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $contact->setFieldValuesFromRequest($fieldsLocation);
