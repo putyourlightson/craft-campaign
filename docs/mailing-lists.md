@@ -23,9 +23,50 @@ The template to use when a user unsubscribes from a mailing list (leave blank fo
 To create a new mailing list type, go to Settings → Mailing List Types and click the “New mailing list type” button.
 
 ### Mailing List Subscribe Form
-You can create a mailing list subscribe form as follows. To avoid spam, we highly recommend you enable reCAPTCHA in Campaign → Settings → reCAPTCHA Settings.
+You can create a mailing list subscribe form as follows. To avoid spam, we recommend you enable reCAPTCHA in Campaign → Settings → reCAPTCHA Settings or use the excellent [Snaptcha](https://putyourlightson.com/craft-plugins/snaptcha) plugin.
 
-{{ mailingListForm }}
+    {% set mailingList = craft.campaign.mailingLists.id(7).one() %}
+
+    <form id="subscribe-form" method="post" action="">
+        {{ csrfInput() }}
+        <input type="hidden" name="action" value="campaign/t/subscribe" />
+        <input type="hidden" name="mailingList" value="{{ mailingList.slug }}" />
+        <input type="hidden" name="redirect" value="subscribe-success" />
+    
+        <h3><label for="email">Email</label></h3>
+        <input id="email" type="email" name="email" value="" required />
+    
+        <h3><label for="name">First Name</label></h3>
+        <input id="name" type="text" name="fields[firstName]" value="" required />
+    
+        <h3><label for="name">Last Name</label></h3>
+        <input id="name" type="text" name="fields[lastName]" value="" required />
+    
+        <h3><label for="name">Other Custom Field</label></h3>
+        <input id="name" type="text" name="fields[customFieldName]" value="" />
+    
+        <!-- Required if reCAPTCHA is enabled in plugin settings -->
+        {{ craft.campaign.recaptcha }}
+    
+        <input type="submit" value="Subscribe" />
+    </form>
+
+To submit the form using an AJAX request, you'll need to send a POST request containing the fields. Here's an example using [jQuery.post()](http://api.jquery.com/jquery.post/).
+
+    <script>
+        // Get data by serializing form 
+        var data = $('#subscribe-form').serialize();
+        
+        // Post to base URL
+        $.post('/', data, function(response) {
+            if (response.success) {
+                alert('You have successfully subscribed to the mailing list.');
+            }
+            else {
+                alert(response.error);
+            }
+        });
+    </script>
 
 ### Getting Mailing Lists
 You can get mailing lists from your templates with `craft.campaign.mailingLists` which returns an [Element Query](https://docs.craftcms.com/v3/element-queries.html).
