@@ -378,7 +378,7 @@ class TrackerController extends Controller
     }
 
     /**
-     * Update Contact
+     * Updates a contact
      *
      * @return Response|null
      */
@@ -402,14 +402,12 @@ class TrackerController extends Controller
             throw new NotFoundHttpException(Craft::t('campaign', 'Contact could not be verified.'));
         }
 
-        // TODO: allow updating of cemail address?
-
         // Set the field values using the fields location
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $contact->setFieldValuesFromRequest($fieldsLocation);
 
         // Save it
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        if (!Campaign::$plugin->tracker->updateContact($contact)) {
             if ($request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => $contact->getErrors(),
@@ -429,8 +427,6 @@ class TrackerController extends Controller
         if ($request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact saved.'));
 
         return $this->redirectToPostedUrl($contact);
     }

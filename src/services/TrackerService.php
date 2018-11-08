@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
+use putyourlightson\campaign\events\UpdateContactEvent;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -60,6 +61,16 @@ class TrackerService extends Component
      */
     const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
 
+    /**
+     * @event UpdateContactEvent
+     */
+    const EVENT_BEFORE_UPDATE_CONTACT = 'beforeUpdateContact';
+
+    /**
+     * @event UpdateContactEvent
+     */
+    const EVENT_AFTER_UPDATE_CONTACT = 'afterUpdateContact';
+
     // Properties
     // =========================================================================
 
@@ -91,8 +102,8 @@ class TrackerService extends Component
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
 
-        // Update contact
-        $this->_updateContact($contact);
+        // Update contact activity
+        $this->_updateContactActivity($contact);
     }
 
     /**
@@ -111,8 +122,8 @@ class TrackerService extends Component
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);
 
-        // Update contact
-        $this->_updateContact($contact);
+        // Update contact activity
+        $this->_updateContactActivity($contact);
     }
 
     /**
@@ -146,10 +157,10 @@ class TrackerService extends Component
 
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verify);
 
-        // Update contact
-        $this->_updateContact($contact);
+        // Update contact activity
+        $this->_updateContactActivity($contact);
 
-        // Fire a 'afterSubscribeContact' event
+        // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_AFTER_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
                 'contact' => $contact,
@@ -201,9 +212,10 @@ class TrackerService extends Component
 
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
 
-        $this->_updateContact($contact);
+        // Update contact activity
+        $this->_updateContactActivity($contact);
 
-        // Fire a 'afterUnubscribeContact' event
+        // Fire an after event
         if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
                 'contact' => $contact,
@@ -214,11 +226,44 @@ class TrackerService extends Component
         return $mailingList;
     }
 
+    /**
+     * Updates a contact
+     *
+     * @param ContactElement $contact
+     *
+     * @return bool
+     */
+    public function updateContact(ContactElement $contact): bool
+    {
+        // Fire a before event
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_UPDATE_CONTACT)) {
+            $this->trigger(self::EVENT_BEFORE_UPDATE_CONTACT, new UpdateContactEvent([
+                'contact' => $contact,
+            ]));
+        }
+
+        if (!Craft::$app->getElements()->saveElement($contact)) {
+            return false;
+        }
+
+        // Update contact activity
+        $this->_updateContactActivity($contact);
+
+        // Fire an after event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_UPDATE_CONTACT)) {
+            $this->trigger(self::EVENT_AFTER_UPDATE_CONTACT, new UpdateContactEvent([
+                'contact' => $contact,
+            ]));
+        }
+
+        return true;
+    }
+
     // Private Methods
     // =========================================================================
 
     /**
-     * Update contact
+     * Update contact activity
      *
      * @param ContactElement $contact
      *
@@ -226,7 +271,7 @@ class TrackerService extends Component
      * @throws Exception
      * @throws \Throwable
      */
-    private function _updateContact(ContactElement $contact)
+    private function _updateContactActivity(ContactElement $contact)
     {
         $contact->lastActivity = new \DateTime();
 
