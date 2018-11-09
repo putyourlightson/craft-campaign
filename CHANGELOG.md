@@ -2,6 +2,7 @@
 
 ## 1.5.0 - Unreleased
 ### Added
+- Added verify email subject field to mailing list type settings page 
 - Added `campaign/tracker/update-contact` controller action for allowing contacts to update their details on the front-end
 
 ### Fixed

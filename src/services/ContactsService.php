@@ -168,8 +168,11 @@ class ContactsService extends Component
         $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
         $body = $bodyText."\n".$url;
 
+        // Get subject from setting if defined
+        $subject = $mailingList->mailingListType->verifyEmailSubject ?: $subject;
+
         // Get body from template if defined
-        if ($mailingList->mailingListType->verifyEmailTemplate !== null) {
+        if ($mailingList->mailingListType->verifyEmailTemplate) {
             $view = Craft::$app->getView();
 
             // Set template mode to site

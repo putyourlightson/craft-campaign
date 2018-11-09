@@ -54,11 +54,11 @@ You can create a mailing list subscribe form as follows. To avoid spam, we recom
 To submit the form using an AJAX request, you'll need to send a POST request containing the fields. Here's an example using [jQuery.post()](http://api.jquery.com/jquery.post/).
 
     <script>
-        // Get data by serializing form 
+        // Get data by serializing the form 
         var data = $('#subscribe-form').serialize();
         
-        // Post to base URL
-        $.post('/', data, function(response) {
+        // Post the data to the current URL
+        $.post('', data, function(response) {
             if (response.success) {
                 alert('You have successfully subscribed to the mailing list.');
             }

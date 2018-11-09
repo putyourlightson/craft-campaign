@@ -116,6 +116,7 @@ class MailingListTypesController extends Controller
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
         $mailingListType->doubleOptIn = (bool)$request->getBodyParam('doubleOptIn', $mailingListType->doubleOptIn);
+        $mailingListType->verifyEmailSubject = $request->getBodyParam('verifyEmailSubject', $mailingListType->verifyEmailSubject);
         $mailingListType->verifyEmailTemplate = $request->getBodyParam('verifyEmailTemplate', $mailingListType->verifyEmailTemplate);
         $mailingListType->verifySuccessTemplate = $request->getBodyParam('verifySuccessTemplate', $mailingListType->verifySuccessTemplate);
         $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);

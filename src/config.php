@@ -26,7 +26,7 @@ return [
     //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
     // The from names and emails that sendouts can be sent from
-    //'fromNamesEmails' => [['Zorro','legend@zorro.com']],
+    //'fromNamesEmails' => [['Zorro','legend@zorro.com'], ['Don Diego','dondiego@zorro.com']],
 
     // A label to use for the email field
     //'emailFieldLabel' => 'Email',

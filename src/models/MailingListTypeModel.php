@@ -65,6 +65,11 @@ class MailingListTypeModel extends BaseModel
     public $doubleOptIn = true;
 
     /**
+     * @var string|null Verify email subject
+     */
+    public $verifyEmailSubject;
+
+    /**
      * @var string|null Verify email template
      */
     public $verifyEmailTemplate;

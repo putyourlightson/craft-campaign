@@ -9,6 +9,8 @@
     { label: 'Mailing List Types'|t('campaign'), url: url('campaign/settings/mailinglisttypes') }
 ] %}
 
+{% set infoText = 'Available template tags: {tags}' %}
+
 
 {% block content %}
 
@@ -70,7 +72,14 @@
 
     <div id="verifyEmailFields" {{ not mailingListType.doubleOptIn ? 'class="hidden"' }}>
 
-        {% set infoText = 'Available template tags: {tags}' %}
+        {{ forms.textField({
+            label: "Verify Email Subject"|t('campaign'),
+            instructions: "The subject to use for the verification email that is sent to users (leave blank for default subject)."|t('campaign'),
+            name: 'verifyEmailSubject',
+            value: mailingListType.verifyEmailSubject,
+            errors: mailingListType.getErrors('verifyEmailSubject'),
+            autocomplete: true
+        }) }}
 
         {{ forms.textField({
             label: "Verify Email Template"|t('campaign'),

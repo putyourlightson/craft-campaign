@@ -19,6 +19,11 @@ use yii\db\ActiveQueryInterface;
  * @property string      $name                          Name
  * @property string      $handle                        Handle
  * @property bool        $doubleOptIn                   Double opt-in
+ * @property string      $verifyEmailSubject
+ * @property string      $verifyEmailTemplate
+ * @property string      $verifySuccessTemplate
+ * @property string      $subscribeSuccessTemplate
+ * @property string      $unsubscribeSuccessTemplate
  *
  * @author    PutYourLightsOn
  * @package   Campaign
