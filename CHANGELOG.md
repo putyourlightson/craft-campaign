@@ -2,8 +2,8 @@
 
 ## 1.5.0 - Unreleased
 ### Added
-- Added verify email subject field to mailing list type settings page 
-- Added `campaign/tracker/update-contact` controller action for allowing contacts to update their details on the front-end
+- Added verify email subject field to mailing list type settings page [[#31](https://github.com/putyourlightson/craft-campaign/issues/31)]
+- Added `campaign/tracker/update-contact` controller action for allowing contacts to update their details on the front-end [[#19](https://github.com/putyourlightson/craft-campaign/issues/19)]
 
 ### Fixed
 - Fixed error that could occur when sending a test email from the email settings page ([#30](https://github.com/putyourlightson/craft-campaign/issues/30))
