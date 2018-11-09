@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.5.0 - Unreleased
+## 1.5.0 - 2018-11-09
 ### Added
 - Added verify email subject field to mailing list type settings page [[#31](https://github.com/putyourlightson/craft-campaign/issues/31)]
 - Added `campaign/tracker/update-contact` controller action for allowing contacts to update their details on the front-end [[#19](https://github.com/putyourlightson/craft-campaign/issues/19)]
