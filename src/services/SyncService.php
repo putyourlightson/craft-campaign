@@ -54,7 +54,6 @@ class SyncService extends Component
             [Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT],
             [Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT],
             [Users::class, Users::EVENT_AFTER_ACTIVATE_USER],
-            [Users::class, Users::EVENT_AFTER_ASSIGN_USER_TO_DEFAULT_GROUP],
             [Users::class, Users::EVENT_AFTER_ASSIGN_USER_TO_GROUPS],
             [Users::class, Users::EVENT_AFTER_SUSPEND_USER],
             [Users::class, Users::EVENT_AFTER_UNSUSPEND_USER],
@@ -78,7 +77,7 @@ class SyncService extends Component
             return;
         }
 
-        if ($event instanceof UserEvent OR $event instanceof UserAssignGroupEvent) {
+        if ($event instanceof UserEvent) {
             $this->syncUser($event->user);
         }
         else if ($event instanceof ElementEvent AND $event->element instanceof User) {
@@ -183,7 +182,9 @@ class SyncService extends Component
             $contactMailingListRecord->sourceType = 'user';
             $contactMailingListRecord->source = $user->id;
 
-            $contactMailingListRecord->save();
+            $success = $contactMailingListRecord->save();
+
+            echo $success;
         }
         // If user is not active and contact mailing list record exists then delete it
         else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {

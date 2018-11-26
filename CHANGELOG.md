@@ -5,6 +5,7 @@
 - Changed Guzzle client to use default config values.
 
 ### Fixed
+- Fixed bug that prevented users being assigned to the default user group from being added to a synced mailing list ([#35](https://github.com/putyourlightson/craft-campaign/issues/35)).
 - Fixed error that occured when deleting a mailing list that was previously used for an import ([#36](https://github.com/putyourlightson/craft-campaign/issues/36)).
 
 ## 1.5.0 - 2018-11-09
