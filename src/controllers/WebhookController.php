@@ -105,7 +105,7 @@ class WebhookController extends Controller
         // Check the type of the message and handle the subscription.
         if ($message['Type'] === 'SubscriptionConfirmation') {
             // Confirm the subscription by sending a GET request to the SubscribeURL
-            $client = new Client([
+            $client = Craft::createGuzzleClient([
                 'timeout' => 5,
                 'connect_timeout' => 5,
             ]);

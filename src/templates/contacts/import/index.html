@@ -84,8 +84,21 @@
                 {% set userGroup = import.getUserGroup() %}
                 <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
                     <th scope="row" data-title="{{ 'Source'|t('campaign') }}"><a href="{{ import.cpViewUrl }}">{{ import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign') }}</a></th>
-                    <td><a href="{{ import.fileName ? actionUrl('campaign/imports/download-file', {importId: import.id}) : cpUrl('users') }}" class="go" target="_blank">{{ import.fileName ? import.fileName : (userGroup is not null ? userGroup.name) }}</a></td>
-                    <td><a href="{{ import.mailingList.cpEditUrl }}" class="go" target="_blank">{{ import.mailingList.title }}</a></td>
+                    <td>
+                        {% if import.fileName %}
+                            <a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}" class="go" target="_blank">{{ import.fileName }}</a>
+                        {% elseif userGroup is not null %}
+                            <a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup.name }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if import.mailingList is not null %}
+                            <a href="{{ import.mailingList.cpEditUrl }}" class="go" target="_blank">{{ import.mailingList.title }}</a></td>
+                        {% else %}
+                            -
+                        {% endif %}
                     <td>{{ import.added }}</td>
                     <td>{{ import.updated }}</td>
                     <td>{{ import.failed }}</td>
@@ -106,5 +119,6 @@ new Craft.AdminTable({
     sortable: true,
     deleteAction: 'campaign/imports/delete-import',
     confirmDeleteMessage: '{{ 'Are you sure you want to delete this import? This will NOT delete the contacts that have already been imported.'|t('campaign') }}',
+    deleteSuccessMessage: '{{ 'Import successfully deleted.'|t('campaign') }}',
 });
 {% endjs %}

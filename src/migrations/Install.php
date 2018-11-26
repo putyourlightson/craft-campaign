@@ -41,8 +41,6 @@ class Install extends Migration
      */
     public function safeUp(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
-
         if ($this->createTables()) {
             $this->createIndexes();
             $this->addForeignKeys();
@@ -60,7 +58,6 @@ class Install extends Migration
      */
     public function safeDown(): bool
     {
-        $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->deleteElements();
         $this->deleteFieldLayouts();
         $this->deleteTables();
@@ -337,6 +334,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_contacts_mailinglists}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_mailinglists}}', 'mailingListId', '{{%campaign_mailinglists}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_imports}}', 'userId', '{{%users}}', 'id', 'SET NULL');
+        $this->addForeignKey(null, '{{%campaign_imports}}', 'mailingListId', '{{%campaign_mailinglists}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_links}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'mailingListTypeId', '{{%campaign_mailinglisttypes}}', 'id', 'CASCADE');

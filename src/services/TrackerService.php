@@ -325,7 +325,7 @@ class TrackerService extends Component
 
         $geoIp = null;
 
-        $client = new Client([
+        $client = Craft::createGuzzleClient([
             'timeout' => $timeout,
             'connect_timeout' => $timeout,
         ]);

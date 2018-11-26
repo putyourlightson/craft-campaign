@@ -137,7 +137,7 @@ class TrackerController extends Controller
         {
             $result = '';
 
-            $client = new Client([
+            $client = Craft::createGuzzleClient([
                 'timeout' => 5,
                 'connect_timeout' => 5,
             ]);
