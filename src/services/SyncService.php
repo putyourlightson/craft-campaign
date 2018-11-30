@@ -7,7 +7,6 @@
 namespace putyourlightson\campaign\services;
 
 use craft\events\ElementEvent;
-use craft\events\UserAssignGroupEvent;
 use craft\events\UserEvent;
 use craft\events\UserGroupsAssignEvent;
 use craft\services\Elements;

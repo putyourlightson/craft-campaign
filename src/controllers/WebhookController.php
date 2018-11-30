@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\controllers;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\ContactCampaignModel;

@@ -7,7 +7,6 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\helpers\Json;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;

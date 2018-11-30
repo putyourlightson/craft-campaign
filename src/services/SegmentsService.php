@@ -53,4 +53,25 @@ class SegmentsService extends Component
 
         return $segment;
     }
+
+    /**
+     * Returns segments by IDs
+     *
+     * @param int $siteId
+     * @param int[] $segmentIds
+     *
+     * @return SegmentElement[]
+     */
+    public function getSegmentsByIds(int $siteId, array $segmentIds): array
+    {
+        if (empty($segmentIds)) {
+            return [];
+        }
+
+        return SegmentElement::find()
+            ->id($segmentIds)
+            ->siteId($siteId)
+            ->status(null)
+            ->all();
+    }
 }

@@ -55,6 +55,27 @@ class MailingListsService extends Component
     }
 
     /**
+     * Returns mailing lists by IDs
+     *
+     * @param int $siteId
+     * @param int[] $mailingListIds
+     *
+     * @return MailingListElement[]
+     */
+    public function getMailingListsByIds(int $siteId, array $mailingListIds): array
+    {
+        if (empty($mailingListIds)) {
+            return [];
+        }
+
+        return MailingListElement::find()
+            ->id($mailingListIds)
+            ->siteId($siteId)
+            ->status(null)
+            ->all();
+    }
+
+    /**
      * Returns all mailing lists across all sites
      *
      * @return MailingListElement[]

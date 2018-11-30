@@ -55,6 +55,25 @@ class ContactsService extends Component
     }
 
     /**
+     * Returns contacts by IDs
+     *
+     * @param int[] $contactIds
+     *
+     * @return ContactElement[]
+     */
+    public function getContactsByIds(array $contactIds): array
+    {
+        if (empty($contactIds)) {
+            return [];
+        }
+
+        return ContactElement::find()
+            ->id($contactIds)
+            ->status(null)
+            ->all();
+    }
+
+    /**
      * Returns contact by CID
      *
      * @param string $cid

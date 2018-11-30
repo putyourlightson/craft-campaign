@@ -493,20 +493,15 @@ class MailingListElement extends Element
      */
     private function _getContactsBySubscriptionStatus(string $subscriptionStatus): array
     {
-        $contacts = [];
+        $contactIds = ContactMailingListRecord::find()
+            ->select('contactId')
+            ->where([
+                'mailingListId' => $this->id,
+                'subscriptionStatus' => $subscriptionStatus
+            ])
+            ->column();
 
-        $contactMailingListRecords = ContactMailingListRecord::findAll([
-            'mailingListId' => $this->id,
-            'subscriptionStatus' => $subscriptionStatus
-        ]);
-
-        foreach ($contactMailingListRecords as $contactMailingListRecord) {
-            $contact = Campaign::$plugin->contacts->getContactById($contactMailingListRecord->contactId);
-
-            if ($contact !== null) {
-                $contacts[] = $contact;
-            }
-        }
+        $contacts = Campaign::$plugin->contacts->getContactsByIds($contactIds);
 
         return $contacts;
     }

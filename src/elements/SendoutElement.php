@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\elements;
 
-use craft\helpers\Db;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -15,8 +14,6 @@ use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
-use putyourlightson\campaign\records\ContactCampaignRecord;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 
 use Craft;
@@ -24,7 +21,6 @@ use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
 use craft\elements\User;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\Json;
 use craft\validators\DateTimeValidator;
@@ -412,19 +408,9 @@ class SendoutElement extends Element
     private $_sender;
 
     /**
-     * @var int|null
-     */
-    private $_mailingListCount;
-
-    /**
      * @var MailingListElement[]|null
      */
     private $_mailingLists;
-
-    /**
-     * @var int|null
-     */
-    private $_excludedMailingListCount;
 
     /**
      * @var MailingListElement[]|null
@@ -435,6 +421,11 @@ class SendoutElement extends Element
      * @var SegmentElement[]|null
      */
     private $_segments;
+
+    /**
+     * @var array|null
+     */
+    private $_pendingRecipients;
 
     // Public Methods
     // =========================================================================
@@ -612,19 +603,23 @@ class SendoutElement extends Element
     }
 
     /**
+     * Returns the sendout's mailing list IDs
+     *
+     * @return int[]
+     */
+    public function getMailingListIds(): array
+    {
+        return $this->mailingListIds ? explode(',', $this->mailingListIds) : [];
+    }
+
+    /**
      * Returns the sendout's mailing list count
      *
      * @return int
      */
     public function getMailingListCount(): int
     {
-        if ($this->_mailingListCount !== null) {
-            return $this->_mailingListCount;
-        }
-
-        $this->_mailingListCount = $this->mailingListIds ? substr_count($this->mailingListIds, ',') + 1 : 0;
-
-        return $this->_mailingListCount;
+        return count($this->getMailingListIds());
     }
 
     /**
@@ -638,19 +633,19 @@ class SendoutElement extends Element
             return $this->_mailingLists;
         }
 
-        $this->_mailingLists = [];
-
-        $mailingListIds = $this->mailingListIds ? explode(',', $this->mailingListIds) : [];
-
-        foreach ($mailingListIds as $mailingListId) {
-            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
-
-            if ($mailingList !== null) {
-                $this->_mailingLists[] = $mailingList;
-            }
-        }
+        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->siteId, $this->getMailingListIds());
 
         return $this->_mailingLists;
+    }
+
+    /**
+     * Returns the sendout's excluded mailing list IDs
+     *
+     * @return int[]
+     */
+    public function getExcludedMailingListIds(): array
+    {
+        return $this->excludedMailingListIds ? explode(',', $this->excludedMailingListIds) : [];
     }
 
     /**
@@ -660,13 +655,7 @@ class SendoutElement extends Element
      */
     public function getExcludedMailingListCount(): int
     {
-        if ($this->_excludedMailingListCount !== null) {
-            return $this->_excludedMailingListCount;
-        }
-
-        $this->_excludedMailingListCount = $this->excludedMailingListIds ? substr_count($this->excludedMailingListIds, ',') + 1 : 0;
-
-        return $this->_excludedMailingListCount;
+        return count($this->getExcludedMailingListIds());
     }
 
     /**
@@ -680,19 +669,29 @@ class SendoutElement extends Element
             return $this->_excludedMailingLists;
         }
 
-        $this->_excludedMailingLists = [];
-
-        $excludedMailingListIds = $this->excludedMailingListIds ? explode(',', $this->excludedMailingListIds) : [];
-
-        foreach ($excludedMailingListIds as $excludedMailingListId) {
-            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($excludedMailingListId);
-
-            if ($mailingList !== null) {
-                $this->_excludedMailingLists[] = $mailingList;
-            }
-        }
+        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->siteId, $this->getExcludedMailingListIds());
 
         return $this->_excludedMailingLists;
+    }
+
+    /**
+     * Returns the sendout's segment IDs
+     *
+     * @return int[]
+     */
+    public function getSegmentIds(): array
+    {
+        return $this->segmentIds ? explode(',', $this->segmentIds) : [];
+    }
+
+    /**
+     * Returns the sendout's segment count
+     *
+     * @return int
+     */
+    public function getSegmentCount(): int
+    {
+        return count($this->getSegmentIds());
     }
 
     /**
@@ -710,138 +709,35 @@ class SendoutElement extends Element
             return $this->_segments;
         }
 
-        $this->_segments = [];
-
-        $segmentIds = $this->segmentIds ? explode(',', $this->segmentIds) : [];
-
-        foreach ($segmentIds as $segmentId) {
-            $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
-
-            if ($segment !== null) {
-                $this->_segments[] = $segment;
-            }
-        }
+        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->siteId, $this->getSegmentIds());
 
         return $this->_segments;
     }
 
     /**
-     * Returns the sendout's pending recipients based on its mailing lists, segments and schedule
+     * Returns the sendout's pending recipient contact and mailing list IDs based on its mailing lists, segments and schedule
      *
      * @return array
      */
     public function getPendingRecipients(): array
     {
-        $recipients = [];
-
-        $mailingLists = $this->getMailingLists();
-        $excludedMailingLists = $this->getExcludedMailingLists();
-        $segments = $this->getSegments();
-
-        // Add mailing list subscribers
-        foreach ($mailingLists as $mailingList) {
-            /** @var MailingListElement $mailingList */
-            $contacts = $mailingList->getSubscribedContacts();
-            foreach ($contacts as $contact) {
-                // If contact has complained or bounced
-                if ($contact->complained !== null OR $contact->bounced !== null) {
-                    continue;
-                }
-
-                // If contact has not yet been added
-                /** @var ContactElement $contact */
-                if (empty($recipients[$contact->id])) {
-                    $recipients[$contact->id] = ['contactId' => $contact->id, 'mailingListId' => $mailingList->id];
-                }
-            }
+        if ($this->_pendingRecipients !== null) {
+            return $this->_pendingRecipients;
         }
 
-        // Remove excluded mailing list subscribers
-        foreach ($excludedMailingLists as $mailingList) {
-            /** @var MailingListElement $mailingList */
-            $contacts = $mailingList->getSubscribedContacts();
-            foreach ($contacts as $contact) {
-                // If contact has been added then unset
-                if (isset($recipients[$contact->id])) {
-                    unset($recipients[$contact->id]);
-                }
-            }
-        }
+        $this->_pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this);
 
-        // Check whether we should remove recipients that were sent to today only
-        $todayOnly = ($this->sendoutType == 'recurring' AND $this->schedule->canSendToContactsMultipleTimes);
-
-        // Get sent recipient IDs
-        $sentRecipientIds = $this->getSentRecipientIds($todayOnly);
-
-        // Remove contacts that are already sent recipients
-        $recipients = array_diff_key($recipients, array_flip($sentRecipientIds));
-
-        foreach ($segments as $segment) {
-            // Keep only contacts that exist in the segment
-            $recipients = array_intersect_key($recipients, array_flip($segment->getContactIds()));
-        }
-
-        if ($this->sendoutType == 'automated') {
-            /** @var AutomatedScheduleModel $automatedSchedule */
-            $automatedSchedule = $this->schedule;
-
-            // Remove any contacts that do not meet the conditions
-            foreach ($recipients as $key => $recipientData) {
-                /** @var ContactMailingListRecord $contactMailingListRecord */
-                $contactMailingListRecord = ContactMailingListRecord::findOne($recipientData);
-
-                if ($contactMailingListRecord === null) {
-                    unset($recipients[$key]);
-                    continue;
-                }
-
-                $subscribedDateTime = DateTimeHelper::toDateTime($contactMailingListRecord->subscribed);
-                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
-
-                // If subscribed date was before sendout was created or time plus delay has not yet passed
-                if ($subscribedDateTime < $this->dateCreated OR !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
-                    unset($recipients[$key]);
-                }
-            }
-        }
-
-        return $recipients;
+        return $this->_pendingRecipients;
     }
 
     /**
-     * Returns the sendout's sent recipient ID's
+     * Returns the sendout's pending recipient count
      *
-     * @param bool|null $todayOnly
-     *
-     * @return array
+     * @return int
      */
-    public function getSentRecipientIds(bool $todayOnly = null): array
+    public function getPendingRecipientCount(): int
     {
-        $todayOnly = $todayOnly ?? false;
-
-        $query = ContactCampaignRecord::find()
-            ->select('contactId')
-            ->where(['sendoutId' => $this->id])
-            ->andWhere(['not', ['sent' => null]]);
-
-        if ($todayOnly) {
-            $now = new \DateTime();
-
-            // Add condition that sent is today
-            $query->andWhere(Db::parseDateParam('sent', $now->format('Y-m-d'), '>'));
-        }
-
-        $contactCampaignRecords = $query->all();
-
-        $sentRecipientIds = [];
-
-        /** @var ContactCampaignRecord $contactCampaignRecord */
-        foreach ($contactCampaignRecords as $contactCampaignRecord) {
-            $sentRecipientIds[] = $contactCampaignRecord->contactId;
-        }
-
-        return $sentRecipientIds;
+        return \count($this->getPendingRecipients());
     }
 
     /**
@@ -902,16 +798,6 @@ class SendoutElement extends Element
     public function getIsEditable(): bool
     {
         return ($this->getStatus() == self::STATUS_DRAFT OR $this->getStatus() == self::STATUS_PAUSED);
-    }
-
-    /**
-     * Returns whether the sendout has pending recipients
-     *
-     * @return bool
-     */
-    public function getHasPendingRecipients(): bool
-    {
-        return \count($this->getPendingRecipients()) > 0;
     }
 
     /**

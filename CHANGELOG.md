@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.5.2 - Unreleased
+### Changed
+- Optimised sendout methods for improved performance in the control panel and sending.
+
 ## 1.5.1 - 2018-11-26
 ### Changed
 - Changed Guzzle client to use default config values.

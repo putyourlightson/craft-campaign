@@ -18,8 +18,6 @@ use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
 use DeviceDetector\DeviceDetector;
-
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 
 use Craft;
