@@ -2,7 +2,10 @@
 
 ## 1.5.2 - Unreleased
 ### Changed
-- Optimised sendout methods for improved performance in the control panel and sending.
+- Optimised sendout methods for improved performance in the control panel and sending ([#39](https://github.com/putyourlightson/craft-campaign/issues/39)).
+
+### Fixed
+- Fixed bug that could prevent the correct from name and email from being selected on the sendout edit page ([#38](https://github.com/putyourlightson/craft-campaign/issues/38)).
 
 ## 1.5.1 - 2018-11-26
 ### Changed

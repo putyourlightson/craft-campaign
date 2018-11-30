@@ -523,7 +523,7 @@ class SendoutElement extends Element
      */
     public function getFromNameEmail(): string
     {
-        return $this->fromName ? $this->fromName.' <'.$this->fromEmail.'>' : '';
+        return $this->fromName ? $this->fromName.':'.$this->fromEmail : '';
     }
 
     /**
