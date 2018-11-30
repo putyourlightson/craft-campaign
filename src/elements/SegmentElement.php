@@ -20,11 +20,8 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
-use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
-use craft\web\View;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
@@ -200,6 +197,11 @@ class SegmentElement extends Element
      */
     public $conditions;
 
+    /**
+     * @var array|null
+     */
+    private $_contacts;
+
     // Public Methods
     // =========================================================================
 
@@ -352,13 +354,19 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the number of contacts
+     * Returns the contacts
      *
-     * @return int
+     * @return ContactElement[]
      */
-    public function getContactCount(): int
+    public function getContacts(): array
     {
-        return count($this->getContacts());
+        if ($this->_contacts !== null) {
+            return $this->_contacts;
+        }
+
+        $this->_contacts = Campaign::$plugin->segments->getContacts($this);
+
+        return $this->_contacts;
     }
 
     /**
@@ -378,95 +386,13 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the contacts
+     * Returns the number of contacts
      *
-     * @return ContactElement[]
+     * @return int
      */
-    public function getContacts(): array
+    public function getContactCount(): int
     {
-        $templateConditions = [];
-        $condition = ['and'];
-
-        foreach ($this->conditions as $andCondition) {
-            $conditions = ['or'];
-
-            /* @var array $andCondition */
-            foreach ($andCondition as $orCondition) {
-                // Deal with template conditions later
-                if ($orCondition[1] == 'template') {
-                    $templateConditions[] = $orCondition;
-                    continue;
-                }
-
-                $operator = $orCondition[0];
-
-                // If operator contains %v
-                if (strpos($operator, '%v') !== false) {
-                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
-                    $orCondition[2] = '%'.$orCondition[2];
-                    $orCondition[3] = false;
-                }
-
-                // If operator contains v%
-                if (strpos($operator, 'v%') !== false) {
-                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
-                    $orCondition[2] .= '%';
-                    $orCondition[3] = false;
-                }
-
-                // Convert value if is a date
-                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
-                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
-                }
-
-                $conditions[] = $orCondition;
-            }
-
-            $condition[] = $conditions;
-        }
-
-        $contacts = ContactElement::find()
-            ->where($condition)
-            ->all();
-
-        if (count($templateConditions)) {
-            $view = Craft::$app->getView();
-
-            // Get template mode so we can reset later
-            $templateMode = $view->getTemplateMode();
-
-            // Set template mode to site
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-            // Evaluate template conditions
-            foreach ($templateConditions as $templateCondition) {
-                foreach ($contacts as $key => $contact) {
-                    $operand = (bool)$templateCondition[0];
-                    $evaluatedTemplate = null;
-
-                    try {
-                        $renderedTemplate = $view->renderTemplate($templateCondition[2], [
-                            'contact' => $contact,
-                        ]);
-
-                        // Convert rendered template to boolean
-                        $evaluatedTemplate = (bool)trim($renderedTemplate);
-                    }
-                    catch (\Twig_Error_Loader $e) {}
-                    catch (Exception $e) {}
-
-                    // Remove if evaluated template does not equal operand
-                    if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {
-                        unset($contacts[$key]);
-                    }
-                }
-            }
-
-            // Reset template mode
-            $view->setTemplateMode($templateMode);
-        }
-
-        return $contacts;
+        return count($this->getContacts());
     }
 
     /**
