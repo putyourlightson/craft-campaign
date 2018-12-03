@@ -33,27 +33,6 @@ use yii\base\InvalidConfigException;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
- *
- * @property string $sendoutTypeLabel
- * @property float $progressFraction
- * @property MailingListElement[] $excludedMailingLists
- * @property User|null $sender
- * @property CampaignElement|null $campaign
- * @property string $progress
- * @property int $excludedMailingListCount
- * @property int $mailingListCount
- * @property MailingListElement[] $mailingLists
- * @property SegmentElement[] $segments
- * @property array $recipientIds
- * @property array $sentRecipientIds
- * @property array $pendingRecipients
- * @property bool $isCancellable
- * @property bool $isSendable
- * @property bool $canSendNow
- * @property bool $hasPendingRecipients
- * @property bool $isPausable
- * @property bool $isDeletable
- * @property bool $isResumable
  */
 class SendoutElement extends Element
 {
