@@ -33,6 +33,10 @@ The majority of email clients either offer no support at all for CSS and floated
 **Our top pick:** MJML is a markup language and framework for building responsive email templates.  
 [https://mjml.io/](https://mjml.io/)
 
+Watch the video below about using MJML to create responsive email templates, kindly created by Philip Thygesen of [Boomy](https://www.boomy.co.uk/).
+
+
+
 Foundation for Emails 2 is a framework for building responsive email templates using CSS or SASS without having to code tables by hand.  
 [https://foundation.zurb.com/emails.html](https://foundation.zurb.com/emails.html)  
 

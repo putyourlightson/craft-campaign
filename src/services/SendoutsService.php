@@ -168,21 +168,31 @@ class SendoutsService extends Component
         // Check whether we should remove recipients that were sent to today only
         $todayOnly = $sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes;
 
-        // Get contacts subscribed to sendout's mailing lists who have not complained or bounced
-        $recipientsQuery = ContactMailingListRecord::find()
-            ->select(['contactId', 'mailingListId', 'subscribed'])
+        // Set columns to select and group by
+        $columns = ['contactId', 'mailingListId'];
+
+        // Get contacts subscribed to sendout's mailing lists
+        $query = ContactMailingListRecord::find()
+            ->select($columns)
+            ->groupBy($columns)
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),
                 'subscriptionStatus' => 'subscribed',
-                'complained' => null,
-                'bounced' => null,
             ]);
 
+         // Ensure contacts have not complained or bounced (check in contact record)
+         $query->innerJoinWith(['contact c' => function (ActiveQuery $query) {
+                $query->andWhere([
+                    'c.complained' => null,
+                    'c.bounced' => null,
+                ]);
+            }]);
+
         // Exclude contacts subscribed to sendout's excluded mailing lists and sent recipients
-        $recipientsQuery->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
+        $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
 
         // Exclude sent recipients
-        $recipientsQuery->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $todayOnly)]]);
+        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $todayOnly)]]);
 
         // Check if we should apply segment filters
         $segments = $sendout->getSegments();
@@ -195,13 +205,11 @@ class SendoutsService extends Component
             }
 
             // Add unique contact IDs to condition
-            $recipientsQuery->andWhere(['contactId' => array_unique($contactIds)]);
+            $query->andWhere(['contactId' => array_unique($contactIds)]);
         }
 
-        // Get recipients grouped by contact ID and as array
-        $recipients = $recipientsQuery->groupBy('contactId')
-            ->asArray()
-            ->all();
+        // Get recipients as array
+        $recipients = $query->asArray()->all();
 
         if ($sendout->sendoutType == 'automated') {
             /** @var AutomatedScheduleModel $automatedSchedule */

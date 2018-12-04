@@ -133,13 +133,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}
-                <div class="data">
-                    <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                    <div class="value">{{ pendingRecipientCount }}</div>
-                </div>
-            {% endif %}
-            {% if sendout.status == 'sent' %}
+            {% if sendout.status == 'sent' or sendout.recipients > 0 %}
                 <div class="data">
                     <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
                     <div class="value">{{ sendout.recipients }}</div>
@@ -147,6 +141,12 @@
                 <div class="data">
                     <h5 class="heading">{{ "Failed Recipients"|t('campaign') }}</h5>
                     <div class="value">{{ sendout.failedRecipients }}</div>
+                </div>
+            {% endif %}
+            {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
+                    <div class="value">{{ pendingRecipientCount }}</div>
                 </div>
             {% endif %}
             <div class="data">

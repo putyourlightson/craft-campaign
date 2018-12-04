@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQueryInterface;
 
 /**
  * ContactMailingListRecord
@@ -40,5 +41,15 @@ class ContactMailingListRecord extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_contacts_mailinglists}}';
+    }
+
+    /**
+     * Returns the related contact record
+     *
+     * @return ActiveQueryInterface
+     */
+    public function getContact(): ActiveQueryInterface
+    {
+        return $this->hasOne(ContactRecord::class, ['id' => 'contactId']);
     }
 }
