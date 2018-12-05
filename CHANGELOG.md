@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.5.2 - Unreleased
+## 1.5.2 - 2018-12-05
 ### Changed
 - Optimised sendout methods for improved performance in the control panel and sending ([#39](https://github.com/putyourlightson/craft-campaign/issues/39)).
 
