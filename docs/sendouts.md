@@ -12,17 +12,17 @@ Regular sendouts are queued for sending immediately after being saved and sent.
 #### Scheduled
 Scheduled sendouts allow you an exact date and time on which to send a campaign. As soon as the send date is reached, the sendout will be queued for sending.  
 *Note: Scheduled sendouts require that you create a cron job as described in Settings → General Settings.*  
-![Scheduled Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/develop/docs/images/sendout-scheduled-1.2.0.png)
+![Scheduled Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/sendout-scheduled-1.2.0.png)
 
 #### Automated (pro feature)
 Automated sendouts allow you to automate the delayed sending of a campaign to contacts, a specific amount of time after they subscribe to one or more mailing lists. As soon as the delayed period of time has passed, the sendout will be automatically queued for sending according to the schedule that you set.  
 *Note: Automated sendouts require that you create a cron job as described in Settings → General Settings.*  
-![Automated Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/develop/docs/images/sendout-automated-1.2.0.png)
+![Automated Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/sendout-automated-1.2.0.png)
 
 #### Recurring (pro feature)
 Recurring sendouts allow you to automate the sending of a campaign to contacts on a recurring schedule. You must consider and select whether the sendout can be sent to contacts multiple times. The sendout will be automatically queued for sending according to the schedule that you set.  
 *Note: Recurring sendouts require that you create a cron job as described in Settings → General Settings.*  
-![Recurring Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/develop/docs/images/sendout-recurring-1.2.0.png)
+![Recurring Sendout](https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/sendout-recurring-1.2.0.png)
 
 ### How Sendouts Are Sent
 Once a sendout is queued for sending, it will begin sending the next time that the queue is run. If Craft's `runQueueAutomatically`config setting is set to `true` (the default value), then this will happen immediately, otherwise it will happen the next time the queue is run (initiated from a cron job, for example). The sendout is sent in a background process, so the site will remain usable for all visitors. 
