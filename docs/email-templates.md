@@ -29,14 +29,12 @@ The following sample code shows how the tags can be used. Checking for the exist
 
 The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some recommended resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.
 
+### Recommended
+We highly recommend [MJML](https://mjml.io/), a markup language and framework for building responsive email templates. The free [MJML desktop app](https://mjmlio.github.io/mjml-app/) makes coding email templates quick and easy. Watch the video created by Philip Thygesen of [Boomy](https://www.boomy.co.uk/).
+
+<iframe src="https://drive.google.com/file/d/1WYG5-6RNB_5D8F_q6RoXH9gQZzcodTgp/preview" width="640" height="480"></iframe>
+
 ### Frameworks
-**Our top pick:** MJML is a markup language and framework for building responsive email templates.  
-[https://mjml.io/](https://mjml.io/)
-
-Watch the video below about using MJML to create responsive email templates, kindly created by Philip Thygesen of [Boomy](https://www.boomy.co.uk/).
-
-
-
 Foundation for Emails 2 is a framework for building responsive email templates using CSS or SASS without having to code tables by hand.  
 [https://foundation.zurb.com/emails.html](https://foundation.zurb.com/emails.html)  
 
