@@ -29,10 +29,12 @@ The following sample code shows how the tags can be used. Checking for the exist
 
 The majority of email clients either offer no support at all for CSS and floated elements or are inconsistent in how they display them, so email templates should be built using tables. Since designing, building and testing a reliable email template (that works in all email clients) can be a daunting, time-consuming task, we've collected some recommended resources that provide lots of useful information as well as some links to free tried-and-tested email templates that you can customise to your specific needs.
 
-### Recommended
-We highly recommend [MJML](https://mjml.io/), a markup language and framework for building responsive email templates. The free [MJML desktop app](https://mjmlio.github.io/mjml-app/) makes coding email templates quick and easy. Watch the video created by Philip Thygesen of [Boomy](https://www.boomy.co.uk/).
+### MJML
+We recommend using [MJML](https://mjml.io/), a markup language and framework for building responsive email templates. The free [MJML desktop app](https://mjmlio.github.io/mjml-app/) makes coding email templates quick and easy. Watch the video created by Philip Thygesen of [Boomy](https://www.boomy.co.uk/).
 
 [![MJML Video](https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/docs/images/mjml-video-1.5.2.jpg)](https://drive.google.com/file/d/1WYG5-6RNB_5D8F_q6RoXH9gQZzcodTgp/view)
+
+If you would like to integrate MJML with Craft CMS then there is the [MJML plugin](https://github.com/superbigco/craft-mjml) by [Superbig](https://superbig.co/).
 
 ### Frameworks
 Foundation for Emails 2 is a framework for building responsive email templates using CSS or SASS without having to code tables by hand.  

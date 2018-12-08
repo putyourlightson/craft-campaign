@@ -6,6 +6,5 @@
 - Add campaign versioning
 - Add recording of all individual contact interactions
 - Add campaign share link with token for disabled campaigns
-- Add ability for contacts to change thier own mailing list subscriptions 
 - Add segment templates to settings
 - Add ability to seed sample data on plugin install
