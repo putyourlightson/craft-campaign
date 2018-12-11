@@ -36,7 +36,10 @@
                     <a class="formsubmit" data-redirect="{{ url('campaign/campaigns/' ~ campaignType.handle ~ '/new')|hash }}">{{ "Save and add another"|t('app') }}</a>
                 </li>
                 <li>
-                    <a class="formsubmit" data-redirect="{{ url('campaign/sendouts/regular/new?campaignId={id}')|hash }}">{{ "Save and create new sendout"|t('campaign') }}</a>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/sendouts/regular/new?campaignId={id}')|hash }}">{{ "Save and create new regular sendout"|t('campaign') }}</a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ url('campaign/sendouts/scheduled/new?campaignId={id}')|hash }}">{{ "Save and create new scheduled sendout"|t('campaign') }}</a>
                 </li>
                 {% if campaign.id %}
                     <li>

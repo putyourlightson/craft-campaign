@@ -4,7 +4,7 @@
     {% if editable %}
         {{ forms.time({
             name: 'schedule[timeOfDay]',
-            value: schedule.timeOfDay.date ?? '',
+            value: schedule.timeOfDay ?? '',
         }) }}
         {{ schedule.timeOfDay.timezone ?? craft.app.timezone }}
     {% else %}

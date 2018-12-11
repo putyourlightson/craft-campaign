@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.5.3 - 2018-12-11
+### Added
+- Added ability to save campaign and create scheduled sendout ([#33](https://github.com/putyourlightson/craft-campaign/issues/33)).
+
+### Fixed
+- Fixed error that could be thrown when editing automated sendouts ([#41](https://github.com/putyourlightson/craft-campaign/issues/41)).
+ 
 ## 1.5.2 - 2018-12-05
 ### Changed
 - Optimised sendout methods for improved performance in the control panel and sending ([#39](https://github.com/putyourlightson/craft-campaign/issues/39)).

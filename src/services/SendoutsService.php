@@ -169,7 +169,7 @@ class SendoutsService extends Component
         $todayOnly = $sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes;
 
         // Set columns to select and group by
-        $columns = ['contactId', 'mailingListId'];
+        $columns = ['contactId', 'mailingListId', 'subscribed'];
 
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
