@@ -16,7 +16,7 @@ Read more about the pro features at [craftcampaign.com/docs/pro-features](https:
 
 ## License
 
-This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $149 plus $39 per subsequent year for updates (optional). The license fee for the pro version is an additional $99 plus $29 per subsequent year for updates (optional).
+This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $149 plus $49 per subsequent year for updates (optional). The license fee for the pro version is an additional $99 plus $39 per subsequent year for updates (optional).
 
 ## Requirements
 
