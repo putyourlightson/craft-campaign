@@ -31,7 +31,7 @@ You can create a mailing list subscribe form as follows. To avoid spam, we recom
         {{ csrfInput() }}
         <input type="hidden" name="action" value="campaign/t/subscribe" />
         <input type="hidden" name="mailingList" value="{{ mailingList.slug }}" />
-        <input type="hidden" name="redirect" value="subscribe-success" />
+        <input type="hidden" name="redirect" value="{{ 'subscribe-success'|hash }}" />
     
         <h3><label for="email">Email</label></h3>
         <input id="email" type="email" name="email" value="" required />
