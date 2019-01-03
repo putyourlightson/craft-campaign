@@ -15,12 +15,13 @@ Campaign.CampaignEdit = Garnish.Base.extend(
                 campaignId: $('input[name=campaignId]').val()
             };
 
-            Craft.postActionRequest('campaign/campaigns/send-test', data, function(response) {
-                if (response.success) {
-                    Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
-                }
-                else {
-                    Craft.cp.displayError(response.error);
+            Craft.postActionRequest('campaign/campaigns/send-test', data, function(response, textStatus) {
+                if (textStatus === 'success') {
+                    if (response.success) {
+                        Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
+                    } else {
+                        Craft.cp.displayError(response.error);
+                    }
                 }
             });
         },

@@ -12,7 +12,7 @@ use putyourlightson\campaign\Campaign;
 use yii\console\Controller;
 
 /**
- * SendoutsController
+ * Allows you to run pending sendouts.
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -24,16 +24,19 @@ class SendoutsController extends Controller
     // =========================================================================
 
     /**
-     * Run pending sendouts
+     * Runs pending sendouts.
      *
+     * @return int
      * @throws \Throwable
      */
-    public function actionRunPendingSendouts()
+    public function actionRunPendingSendouts(): int
     {
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
         Craft::$app->getQueue()->run();
 
         $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]).PHP_EOL, Console::FG_GREEN);
+
+        return ExitCode::OK;
     }
 }

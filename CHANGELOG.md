@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 1.5.4 - Unreleased
+### Changed
+- Changed some text fields to code fields within the plugin settings. 
+- Improved console command instructions.
+
+### Fixed
+- Fixed a bug that could occur when sending test emails failed.
+
 ## 1.5.3 - 2018-12-11
 ### Added
 - Added ability to save campaign and create scheduled sendout ([#33](https://github.com/putyourlightson/craft-campaign/issues/33)).

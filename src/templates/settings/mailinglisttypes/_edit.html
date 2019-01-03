@@ -38,8 +38,8 @@
         label: "Handle"|t('campaign'),
         instructions: "How you’ll refer to this mailing list type in the templates."|t('campaign'),
         id: 'handle',
-        class: 'code',
         name: 'handle',
+        class: 'code',
         value: mailingListType.handle,
         errors: mailingListType.getErrors('handle'),
         required: true
@@ -85,6 +85,7 @@
             label: "Verify Email Template"|t('campaign'),
             instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`, `pendingContact`'}),
             name: 'verifyEmailTemplate',
+            class: 'code',
             value: mailingListType.verifyEmailTemplate,
             errors: mailingListType.getErrors('verifyEmailTemplate'),
             autocomplete: true
@@ -94,6 +95,7 @@
             label: "Verify Success Template"|t('campaign'),
             instructions: "The template to use when a user verifies their email address (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`, `contact`'}),
             name: 'verifySuccessTemplate',
+            class: 'code',
             value: mailingListType.verifySuccessTemplate,
             errors: mailingListType.getErrors('verifySuccessTemplate'),
             autocomplete: true
@@ -106,6 +108,7 @@
         instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`'}),
         id: 'subscribeSuccessTemplate',
         name: 'subscribeSuccessTemplate',
+        class: 'code',
         value: mailingListType.subscribeSuccessTemplate,
         errors: mailingListType.getErrors('subscribeSuccessTemplate'),
         autocomplete: true
@@ -116,6 +119,7 @@
         instructions: "The template to use when a user unsubscribes from a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`'}),
         id: 'unsubscribeSuccessTemplate',
         name: 'unsubscribeSuccessTemplate',
+        class: 'code',
         value: mailingListType.unsubscribeSuccessTemplate,
         errors: mailingListType.getErrors('unsubscribeSuccessTemplate'),
         autocomplete: true

@@ -111,8 +111,10 @@ class Campaign extends Plugin
             'webhook' => WebhookService::class,
         ]);
 
-        // Register tracker controller shorthand
-        $this->controllerMap = ['t' => TrackerController::class];
+        // Register tracker controller shorthand for site requests
+        if (Craft::$app->getRequest()->getIsSiteRequest()) {
+            $this->controllerMap = ['t' => TrackerController::class];
+        }
 
         // Register Twig extension
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
