@@ -1,8 +1,8 @@
 # Release Notes for Campaign
 
-## 1.5.5 - Unreleased
+## 1.5.5 - 2019-01-04
 ### Fixed
-- Fixed error that appeared when running pending sendouts console command.
+- Fixed error that appeared after running pending sendouts console command.
 
 ## 1.5.4 - 2019-01-04
 ### Added
