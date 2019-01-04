@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.5.5 - Unreleased
+### Fixed
+- Fixed error that appeared when running pending sendouts console command.
+
 ## 1.5.4 - 2019-01-04
 ### Added
 - Added subscribed date to exportable fields.

@@ -10,6 +10,7 @@ use Craft;
 use craft\helpers\Console;
 use putyourlightson\campaign\Campaign;
 use yii\console\Controller;
+use yii\console\ExitCode;
 
 /**
  * Allows you to run pending sendouts.
