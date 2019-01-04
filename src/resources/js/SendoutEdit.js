@@ -71,6 +71,12 @@ Campaign.SendoutEdit = Garnish.Base.extend(
         },
 
         sendTest: function(event) {
+            if ($('.send-test').hasClass('disabled')) {
+                return;
+            }
+
+            $('.send-test').addClass('disabled');
+
             var data = {
                 contactId: $('#testContact input').val(),
                 sendoutId: $('input[name=sendoutId]').val()
@@ -85,6 +91,8 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                         Craft.cp.displayError(response.error);
                     }
                 }
+
+                $('.send-test').removeClass('disabled');
             });
         },
     }

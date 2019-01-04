@@ -96,6 +96,7 @@ class ExportsController extends Controller
 
         $export = new ExportModel();
         $export->mailingListIds = $request->getBodyParam('mailingListIds');
+        $export->subscribedDate = $request->getBodyParam('subscribedDate');
 
         // Get fields to export
         $export->fields = [];

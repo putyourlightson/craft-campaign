@@ -28,9 +28,9 @@ Recurring sendouts allow you to automate the sending of a campaign to contacts o
 Once a sendout is queued for sending, it will begin sending the next time that the queue is run. If Craft's `runQueueAutomatically`config setting is set to `true` (the default value), then this will happen immediately, otherwise it will happen the next time the queue is run (initiated from a cron job, for example). The sendout is sent in a background process, so the site will remain usable for all visitors. 
 
 #### Running Pending Sendouts
-Sendouts that are not immediately sent (scheduled, automated or recurring), require a cron job in order to be queued and run at the appropriate time. If you plan on using these sendout types then you should create a cron job to run pending sendouts on a scheduled basis (every 5 minutes for example). Change `/usr/bin/php` to your PHP path (if different) and `/var/www/my_craft_project` to your craft project path.
+Sendouts that are not immediately sent (scheduled, automated or recurring), require a cron job in order to be queued and run at the appropriate time. If you plan on using these sendout types then you should create a cron job to run pending sendouts on a scheduled basis (every 10 minutes for example). Change `/usr/bin/php` to your PHP path (if different) and `/var/www/my_craft_project` to your craft project path.
 
-    5 * * * * /usr/bin/php /var/www/my_project/craft campaign/sendouts/run-pending-sendouts
+    */10 * * * * /usr/bin/php /var/www/my_project/craft campaign/sendouts/run-pending-sendouts
 
 *Warning: when using the console command, the `@web` alias is unavailable and will return a blank string. For that reason, is it best not to rely on the `@web` alias in your site and asset volume settings.*
 

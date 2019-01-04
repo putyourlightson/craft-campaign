@@ -1,9 +1,14 @@
 # Release Notes for Campaign
 
-## 1.5.4 - Unreleased
+## 1.5.4 - 2019-01-04
+### Added
+- Added subscribed date to exportable fields.
+
 ### Changed
 - Changed some text fields to code fields within the plugin settings. 
 - Improved console command instructions.
+- Improved cron job instructions.
+- The "Send Test" button is disabled when clicked and re-enabled on completion.
 
 ### Fixed
 - Fixed a bug that could occur when sending test emails failed.

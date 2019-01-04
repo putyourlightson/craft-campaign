@@ -13,6 +13,7 @@ use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
 
 use craft\base\Component;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 
 /**
  * ExportsService
@@ -66,7 +67,13 @@ class ExportsService extends Component
         $handle = fopen($export->filePath, 'wb');
 
         // Write field names to file
-        fputcsv($handle, $export->fields);
+        $fieldNames = $export->fields;
+
+        if ($export->subscribedDate) {
+            $fieldNames[] = 'subscribedDate';
+        }
+
+        fputcsv($handle, $fieldNames);
 
         $contactIds = [];
         $mailingLists = $export->getMailingLists();
@@ -99,6 +106,19 @@ class ExportsService extends Component
                         }
 
                         $row[] = $value;
+                    }
+
+                    // If subscribed date should be added
+                    if ($export->subscribedDate) {
+                        $subscribedDate = ContactMailingListRecord::find()
+                            ->select('subscribed')
+                            ->where([
+                                'contactId' => $contact->id,
+                                'mailingListId' => $mailingList->id,
+                            ])
+                            ->scalar();
+
+                        $row[] = $subscribedDate;
                     }
 
                     // Write contact fields to file

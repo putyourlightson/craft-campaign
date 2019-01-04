@@ -41,6 +41,11 @@ class ExportModel extends Model
      */
     public $fields;
 
+    /**
+     * @var bool|null
+     */
+    public $subscribedDate;
+
     // Public Methods
     // =========================================================================
 

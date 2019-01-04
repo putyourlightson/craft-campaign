@@ -10,6 +10,12 @@ Campaign.CampaignEdit = Garnish.Base.extend(
         },
 
         sendTest: function(event) {
+            if ($('.send-test').hasClass('disabled')) {
+                return;
+            }
+
+            $('.send-test').addClass('disabled');
+
             var data = {
                 contactId: $('#testContact input').val(),
                 campaignId: $('input[name=campaignId]').val()
@@ -19,10 +25,16 @@ Campaign.CampaignEdit = Garnish.Base.extend(
                 if (textStatus === 'success') {
                     if (response.success) {
                         Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
-                    } else {
+                    }
+                    else {
                         Craft.cp.displayError(response.error);
                     }
                 }
+                else if (typeof response.error !== 'undefined') {
+                    Craft.cp.displayError(response.error);
+                }
+
+                $('.send-test').removeClass('disabled');
             });
         },
     }
