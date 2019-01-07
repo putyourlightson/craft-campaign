@@ -549,7 +549,7 @@ class SendoutsService extends Component
         $sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
         // Update send status if not automated or recurring and fully complete
-        if ($sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring' AND $sendout->getPendingRecipientCount() == 0) {
+        if ($sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring' AND count($this->getPendingRecipients($sendout)) == 0) {
             $sendout->sendStatus = SendoutElement::STATUS_SENT;
         }
 

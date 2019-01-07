@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.5.6 - 2019-01-07
+### Fixed
+- Fixed bug that marked sendouts as pending even when they were completely sent.
+
 ## 1.5.5 - 2019-01-04
 ### Fixed
 - Fixed error that appeared after running pending sendouts console command.
