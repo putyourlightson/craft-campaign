@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use Craft;
+use craft\helpers\Db;
 use craft\records\Element_SiteSettings;
 use craft\web\View;
 use putyourlightson\campaign\elements\ContactElement;

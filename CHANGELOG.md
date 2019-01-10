@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.5.7 - 2019-01-10
+### Fixed
+- Fixed error when displaying segments that contain date conditionals in element index.
+
 ## 1.5.6 - 2019-01-07
 ### Fixed
 - Fixed bug that marked sendouts as pending even when they were completely sent.
