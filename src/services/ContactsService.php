@@ -181,8 +181,6 @@ class ContactsService extends Component
 
         $mailer = Campaign::$plugin->createMailer();
 
-        $settings = Campaign::$plugin->getSettings();
-
         $subject = Craft::t('campaign', 'Verify your email address');
         $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
         $body = $bodyText."\n".$url;

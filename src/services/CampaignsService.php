@@ -154,9 +154,6 @@ class CampaignsService extends Component
      */
     public function sendTest(CampaignElement $campaign, ContactElement $contact): bool
     {
-        // Get settings
-        $settings = Campaign::$plugin->getSettings();
-
         // Get body
         $htmlBody = $campaign->getHtmlBody($contact);
         $plaintextBody = $campaign->getPlaintextBody($contact);

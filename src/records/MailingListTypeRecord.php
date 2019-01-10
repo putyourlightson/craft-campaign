@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use craft\records\Site;
 use yii\db\ActiveQueryInterface;
 
 

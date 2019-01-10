@@ -63,13 +63,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
-        // Get settings
-        $settings = Campaign::$plugin->getSettings();
-
         // Get time limit
         $timeLimit = ini_get('max_execution_time');
+        $timeLimit = $timeLimit == 0 ? $this->unlimitedTimeLimit : $timeLimit;
 
-        return $timeLimit === 0 ? $this->unlimitedTimeLimit : $timeLimit;
+        return $timeLimit;
     }
 
     public function canRetry($attempt, $error): bool

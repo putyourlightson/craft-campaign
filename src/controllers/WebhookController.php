@@ -110,7 +110,7 @@ class WebhookController extends Controller
             ]);
 
             try {
-                $response = $client->get($message['SubscribeURL']);
+                $client->get($message['SubscribeURL']);
             }
             catch (ConnectException $e) {}
         }

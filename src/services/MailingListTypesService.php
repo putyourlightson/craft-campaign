@@ -9,13 +9,11 @@ namespace putyourlightson\campaign\services;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\MailingListTypeModel;
-use putyourlightson\campaign\models\MailingListTypeSiteModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\base\Component;
-use putyourlightson\campaign\records\MailingListTypeSiteRecord;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -107,25 +105,6 @@ class MailingListTypesService extends Component
         $mailingListType = MailingListTypeModel::populateModel($mailingListTypeRecord, false);
 
         return $mailingListType;
-    }
-
-    /**
-     * Returns a mailing list type’s site-specific settings.
-     *
-     * @param int $mailingListTypeId
-     *
-     * @return MailingListTypeSiteModel[]
-     */
-    public function getCampaignTypeSites(int $mailingListTypeId): array
-    {
-        $mailingListTypeSiteRecords = MailingListTypeSiteRecord::find()
-            ->where(['mailingListTypeId' => $mailingListTypeId])
-            ->all();
-
-        /** @var MailingListTypeSiteModel[] $mailingListTypeSiteModels */
-        $mailingListTypeSiteModels = MailingListTypeSiteModel::populateModels($mailingListTypeSiteRecords);
-
-        return $mailingListTypeSiteModels;
     }
 
     /**

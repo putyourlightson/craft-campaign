@@ -17,7 +17,6 @@ use craft\validators\UriFormatValidator;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\CampaignTypeRecord;
-use putyourlightson\campaign\records\CampaignTypeSiteRecord;
 
 /**
  * CampaignTypeModel

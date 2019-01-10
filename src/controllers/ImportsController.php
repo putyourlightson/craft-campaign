@@ -50,8 +50,6 @@ class ImportsController extends Controller
      */
     public function actionIndex(string $siteHandle = null): Response
     {
-        $variables = [];
-
         // Set the current site to the site handle if set
         if ($siteHandle !== null) {
             $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
