@@ -73,7 +73,7 @@ Campaign.SegmentEdit = Garnish.Base.extend(
                 });
             });
 
-            $('.conditions .conditionValue.date input:not(.hasDatepicker)').datepicker($.extend({
+            $('.conditions .conditionValue.field-date input:not(.hasDatepicker)').datepicker($.extend({
                 defaultDate: new Date()
             }, Craft.datepickerOptions));
 

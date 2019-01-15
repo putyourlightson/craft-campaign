@@ -28,10 +28,12 @@
             <input type="text" class="text fullwidth" name="{{ fieldName }}" value="{{ value }}" disabled />
         </div>
         <div class="conditionValue field-lightswitch hidden">
-            {{ forms.lightswitch({
-                name: fieldName,
-                on: value
-            }) }}
+            <div class="select">
+                <select name="{{ fieldName }}" disabled>
+                    <option value="1" {{ value == 1 ? 'selected' }}>{{ 'switched on'|t('campaign') }}</option>
+                    <option value="0" {{ value == 0 ? 'selected' }}>{{ 'switched off'|t('campaign') }}</option>
+                </select>
+            </div>
         </div>
         <div class="conditionValue field-date hidden">
             <div class="datewrapper">
