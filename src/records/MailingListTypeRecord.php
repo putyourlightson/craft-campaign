@@ -14,21 +14,22 @@ use yii\db\ActiveQueryInterface;
 /**
  * MailingListTypeRecord
  *
- * @property int         $id                            ID
- * @property int         $siteId                        Site ID
- * @property int         $fieldLayoutId                 Field layout ID
- * @property string      $name                          Name
- * @property string      $handle                        Handle
- * @property bool        $doubleOptIn                   Double opt-in
- * @property string      $verifyEmailSubject
- * @property string      $verifyEmailTemplate
- * @property string      $verifySuccessTemplate
- * @property string      $subscribeSuccessTemplate
- * @property string      $unsubscribeSuccessTemplate
+ * @property int $id
+ * @property int $siteId
+ * @property int $fieldLayoutId
+ * @property string $name
+ * @property string $handle
+ * @property bool $doubleOptIn
+ * @property string $verifyEmailSubject
+ * @property string $verifyEmailTemplate
+ * @property string $verifySuccessTemplate
+ * @property string $subscribeSuccessTemplate
+ * @property string $unsubscribeSuccessTemplate
+ * @property ActiveQueryInterface $site
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class MailingListTypeRecord extends ActiveRecord
 {

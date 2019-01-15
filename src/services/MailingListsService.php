@@ -19,7 +19,9 @@ use putyourlightson\campaign\records\ContactMailingListRecord;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
+ *
+ * @property MailingListElement[] $allMailingLists
  */
 class MailingListsService extends Component
 {

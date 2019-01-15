@@ -5,7 +5,7 @@
         <div class="select">
             <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
                 {% for field in availableFields %}
-                    <option data-field="{{ field.type }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
+                    <option data-field="field-{{ field.type }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -13,21 +13,29 @@
     <td>
         <div class="select">
             {% for fieldType, operators in fieldOperators %}
-                <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden {{ fieldType }}" disabled>
+                <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden field-{{ fieldType }}" disabled>
                     {% for value, label in operators %}
-                        <option class="{{ fieldType }}" value="{{ value }}" {{ condition is defined and condition[0] == value ? 'selected' }}>{{ label }}</option>
+                        <option value="{{ value }}" {{ condition is defined and condition[0] == value ? 'selected' }}>{{ label }}</option>
                     {% endfor %}
                 </select>
             {% endfor %}
         </div>
     </td>
     <td>
-        <div class="conditionValue plaintext number template hidden">
-            <input type="text" class="text fullwidth" name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][2]" value="{{ condition[2] ?? '' }}" disabled />
+        {% set fieldName = 'conditions[' ~ (andIndex ?? '') ~ '][' ~ (orIndex ?? '' ) ~ '][2]' %}
+        {% set value = condition[2] ?? '' %}
+        <div class="conditionValue field-plaintext field-number field-template hidden">
+            <input type="text" class="text fullwidth" name="{{ fieldName }}" value="{{ value }}" disabled />
         </div>
-        <div class="conditionValue date hidden">
+        <div class="conditionValue field-lightswitch hidden">
+            {{ forms.lightswitch({
+                name: fieldName,
+                on: value
+            }) }}
+        </div>
+        <div class="conditionValue field-date hidden">
             <div class="datewrapper">
-                <input class="text" type="text fullwidth" name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][2]" value="{{ condition[2] ?? '' }}" autocomplete="off" placeholder=" " disabled />
+                <input class="text" type="text fullwidth" name="{{ fieldName }}" value="{{ value }}" autocomplete="off" placeholder=" " disabled />
                 <div data-icon="date"></div>
             </div>
         </div>

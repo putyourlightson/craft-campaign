@@ -22,9 +22,6 @@ use yii\base\Exception;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
- *
- * @property array $segmentAvailableFields
- * @property array $segmentFieldOperators
  */
 class SegmentsService extends Component
 {

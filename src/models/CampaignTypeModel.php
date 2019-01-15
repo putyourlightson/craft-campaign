@@ -22,11 +22,12 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * CampaignTypeModel
  *
  * @mixin FieldLayoutBehavior
- * 
+ *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
  *
+ * @property Site|null $site
  * @property string $cpEditUrl
  */
 class CampaignTypeModel extends BaseModel

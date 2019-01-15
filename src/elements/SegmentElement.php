@@ -257,6 +257,9 @@ class SegmentElement extends Element
                 '<' => Craft::t('campaign', 'is before'),
                 '>' => Craft::t('campaign', 'is after'),
             ],
+            'lightswitch' => [
+                '=' => Craft::t('campaign', 'is'),
+            ],
             'template' => [
                 '1' => Craft::t('campaign', 'evaluates to true'),
                 '0' => Craft::t('campaign', 'evaluates to false'),
@@ -296,7 +299,7 @@ class SegmentElement extends Element
             foreach ($fields as $field) {
                 /* @var Field $field */
                 $fieldType = strtolower(StringHelper::getClassName(\get_class($field)));
-                if (isset($fieldOperators[$fieldType])) {
+                if (!empty($fieldOperators[$fieldType])) {
                     $availableFields[] = [
                         'type' => $fieldType,
                         'handle' => 'field_'.$field->handle,

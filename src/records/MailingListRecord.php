@@ -12,9 +12,10 @@ use yii\db\ActiveQueryInterface;
 /**
  * MailingListRecord
  *
- * @property int         $id                         ID
- * @property int|null    $mailingListTypeId          Mailing list type ID
- * @property int|null    $syncedUserGroupId          Synced user group ID
+ * @property int $id
+ * @property int|null $mailingListTypeId
+ * @property int|null $syncedUserGroupId
+ * @property ActiveQueryInterface $mailingListType
  *
  * @author    PutYourLightsOn
  * @package   Campaign

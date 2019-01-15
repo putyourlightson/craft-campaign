@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.5.8 - Unreleased
+### Added
+- Added lightswitch field support to segment condition fields.
+
+### Fixed
+- Fixed bug where translations were not being applied in the campaign’s site language ([#47](https://github.com/putyourlightson/craft-campaign/issues/47)).
+
 ## 1.5.7 - 2019-01-10
 ### Fixed
 - Fixed error when displaying segments that contain date conditionals in element index.

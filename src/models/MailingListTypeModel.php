@@ -27,6 +27,7 @@ use craft\validators\UniqueValidator;
  * @package   Campaign
  * @since     1.0.0
  *
+ * @property null|Site $site
  * @property string $cpEditUrl
  */
 class MailingListTypeModel extends BaseModel

@@ -12,17 +12,18 @@ use yii\db\ActiveQueryInterface;
 /**
  * ContactMailingListRecord
  *
- * @property int              $id                         ID
- * @property int              $contactId                  Contact ID
- * @property int              $mailingListId              Mailing list ID
- * @property string           $subscriptionStatus         Subscription status
- * @property \DateTime|null   $subscribed                 Subscribed
- * @property \DateTime|null   $unsubscribed               Unsubscribed
- * @property \DateTime|null   $complained                 Complained
- * @property \DateTime|null   $bounced                    Bounced
- * @property \DateTime|null   $verified                   Verified
- * @property string           $sourceType                 Source type
- * @property string           $source                     Source
+ * @property int $id
+ * @property int $contactId
+ * @property int $mailingListId
+ * @property string $subscriptionStatus
+ * @property \DateTime|null $subscribed
+ * @property \DateTime|null $unsubscribed
+ * @property \DateTime|null $complained
+ * @property \DateTime|null $bounced
+ * @property \DateTime|null $verified
+ * @property string $sourceType
+ * @property string $source
+ * @property ActiveQueryInterface $contact
  *
  * @author    PutYourLightsOn
  * @package   Campaign

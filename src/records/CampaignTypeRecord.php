@@ -14,14 +14,15 @@ use yii\db\ActiveQueryInterface;
 /**
  * CampaignTypeRecord
  *
- * @property int         $id                    ID
- * @property int         $siteId                Site ID
- * @property int         $fieldLayoutId         Field layout ID
- * @property string      $name                  Name
- * @property string      $handle                Handle
- * @property string      $uriFormat             URI format
- * @property string      $htmlTemplate          HTML template
- * @property string      $plaintextTemplate     Plaintext template
+ * @property int $id
+ * @property int $siteId
+ * @property int $fieldLayoutId
+ * @property string $name
+ * @property string $handleHandle
+ * @property string $uriFormat
+ * @property string $htmlTemplate
+ * @property string $plaintextTemplate
+ * @property Site|null $site
  *
  * @author    PutYourLightsOn
  * @package   Campaign

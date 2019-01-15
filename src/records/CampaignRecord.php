@@ -12,18 +12,18 @@ use yii\db\ActiveQueryInterface;
 /**
  * CampaignRecord
  *
- * @property int                          $id                         ID
- * @property int                          $campaignTypeId             Campaign Type ID
- * @property int                          $recipients                 Recipients
- * @property int                          $opened                     Opened
- * @property int                          $clicked                    Clicked
- * @property int                          $opens                      Opens
- * @property int                          $clicks                     Clicks
- * @property int                          $unsubscribed               Unsubscribed
- * @property int                          $complained                 Complained
- * @property int                          $bounced                    Bounced
- * @property ActiveQueryInterface         $element
- * @property \DateTime|null               $dateClosed                 Date closed
+ * @property int $id
+ * @property int $campaignTypeId
+ * @property int $recipients
+ * @property int $opened
+ * @property int $clicked
+ * @property int $opens
+ * @property int $clicks
+ * @property int $unsubscribed
+ * @property int $complained
+ * @property int $bounced
+ * @property \DateTime|null $dateClosed
+ * @property ActiveQueryInterface $campaignType
  *
  * @author    PutYourLightsOn
  * @package   Campaign
