@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.5.8 - Unreleased
+## 1.5.8 - 2019-01-17
 ### Added
 - Added lightswitch field support to segment condition fields.
 
