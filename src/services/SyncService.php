@@ -72,7 +72,7 @@ class SyncService extends Component
     public function handleUserEvent(Event $event)
     {
         // Ensure pro version
-        if (!Campaign::$plugin->getIsPro()) {
+        if (!Campaign::$plugin->is(Campaign::EDITION_PRO)) {
             return;
         }
 

@@ -12,6 +12,7 @@ use craft\errors\MissingComponentException;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\App;
 use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
@@ -76,7 +77,14 @@ use yii\web\ForbiddenHttpException;
  */
 class Campaign extends Plugin
 {
-    // Static Properties
+    // Constants
+    // =========================================================================
+
+    // Edition constants
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO = 'pro';
+
+    // Static
     // =========================================================================
 
     /**
@@ -84,9 +92,23 @@ class Campaign extends Plugin
      */
     public static $plugin;
 
+    /**
+     * @inheritdoc
+     */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
+
     // Public Methods
     // =========================================================================
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -138,7 +160,7 @@ class Campaign extends Plugin
             $event->rules = array_merge($event->rules, $this->getCpRoutes());
         });
 
-        // If edition is pro
+        // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
             // Register user permissions
             Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
@@ -187,7 +209,7 @@ class Campaign extends Plugin
         if ($user->checkPermission('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign:segments') AND $this->getIsPro()) {
+        if ($user->checkPermission('campaign:segments') AND $this->is(self::EDITION_PRO)) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
         if ($user->checkPermission('campaign:sendouts')) {
@@ -214,23 +236,13 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns true if pro version
-     *
-     * @return bool
-     */
-    public function getIsPro(): bool
-    {
-        return Craft::$app->plugins->getPlugin('campaign-pro') !== null;
-    }
-
-    /**
-     * Checks whether the plugin is the pro version
+     * Throws an exception if the plugin edition is not pro
      *
      * @throws ForbiddenHttpException
      */
     public function requirePro()
     {
-        if ($this->getIsPro() === false) {
+        if ($this->is(self::EDITION_PRO) === false) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action'));
         }
     }
@@ -303,13 +315,13 @@ class Campaign extends Plugin
     protected function createSettingsModel(): SettingsModel
     {
         $settings = new SettingsModel();
-        $systemSettings = Craft::$app->getSystemSettings();
+        $mailSettings = App::mailSettings();
 
         // Set defaults
         $settings->apiKey = StringHelper::randomString(16);
         $settings->fromNamesEmails = [[
-            $systemSettings->getEmailSettings()->fromName,
-            $systemSettings->getEmailSettings()->fromEmail,
+            $mailSettings->fromName,
+            $mailSettings->fromEmail,
             Craft::$app->getSites()->getPrimarySite()->id,
         ]];
         $settings->transportType = Sendmail::class;
@@ -409,7 +421,7 @@ class Campaign extends Plugin
             'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
         ];
 
-        if ($this->getIsPro()) {
+        if ($this->is(self::EDITION_PRO)) {
             $permissions['campaign:contacts']['nested']['campaign:syncContacts'] = ['label' => Craft::t('campaign', 'Sync contacts')];
             $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
         }

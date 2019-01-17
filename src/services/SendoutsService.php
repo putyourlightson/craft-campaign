@@ -255,7 +255,7 @@ class SendoutsService extends Component
             /** @var SendoutElement[] $sendouts */
             foreach ($sendouts as $sendout) {
                 // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
-                if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow())) {
+                if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->is(Campaign::EDITION_PRO) AND $sendout->getCanSendNow())) {
                     // Add sendout job to queue
                     Craft::$app->getQueue()->push(new SendoutJob([
                         'sendoutId' => $sendout->id,

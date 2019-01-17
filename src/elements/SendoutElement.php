@@ -84,7 +84,7 @@ class SendoutElement extends Element
             'scheduled' => Craft::t('campaign', 'Scheduled'),
         ];
 
-        if (Campaign::$plugin->getIsPro()) {
+        if (Campaign::$plugin->is(Campaign::EDITION_PRO)) {
             $sendoutTypes['automated'] = Craft::t('campaign', 'Automated');
             $sendoutTypes['recurring'] = Craft::t('campaign', 'Recurring');
         }
@@ -701,7 +701,7 @@ class SendoutElement extends Element
      */
     public function getSegments(): array
     {
-        if (!Campaign::$plugin->getIsPro()) {
+        if (!Campaign::$plugin->is(Campaign::EDITION_PRO)) {
             return [];
         }
 

@@ -47,11 +47,11 @@ class CampaignVariable
      */
     public function getIsPro(): bool
     {
-        return Campaign::$plugin->getIsPro();
+        return Campaign::$plugin->is(Campaign::EDITION_PRO);
     }
 
     /**
-     * Checks whether the plugin is the pro version
+     * Throws an exception if the plugin edition is not pro
      *
      * @throws ForbiddenHttpException
      */

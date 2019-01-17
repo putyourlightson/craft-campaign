@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\base\Volume;
+use craft\helpers\App;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\SettingsModel;
 
@@ -67,9 +68,11 @@ class SettingsService extends Component
 
         // If still not set then default to system settings
         if (empty($firstFromNameEmail)) {
+            $mailSettings = App::mailSettings();
+
             $firstFromNameEmail = [
-                'name' => Craft::$app->getSystemSettings()->getEmailSettings()->fromName,
-                'email' => Craft::$app->getSystemSettings()->getEmailSettings()->fromEmail,
+                'name' => $mailSettings->fromName,
+                'email' => $mailSettings->fromEmail,
             ];
         }
 

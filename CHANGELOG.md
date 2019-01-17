@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.0 - Unreleased
+### Added
+- Added support for editions in Craft 3.1.
+
 ## 1.5.8 - 2019-01-17
 ### Added
 - Added lightswitch field support to segment condition fields.
