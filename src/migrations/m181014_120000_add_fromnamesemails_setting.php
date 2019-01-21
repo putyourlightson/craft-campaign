@@ -23,7 +23,7 @@ class m181014_120000_add_fromnamesemails_setting extends Migration
             ->where(['handle' => 'campaign'])
             ->one();
 
-        if ($plugin === null || $plugin->settings === null) {
+        if ($plugin === null || empty($plugin->settings)) {
             return;
         }
 

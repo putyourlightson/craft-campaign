@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.5.9 - 2019-01-21
+### Fixed
+- Fixed error that could occur during updating the plugin when using Craft 3.1. 
+
 ## 1.5.8 - 2019-01-17
 ### Added
 - Added lightswitch field support to segment condition fields.
