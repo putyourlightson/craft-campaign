@@ -113,15 +113,15 @@ class CampaignsController extends Controller
         // Enable live preview?
         if (!$request->isMobileBrowser(true) && $campaignType->hasValidTemplates()) {
             $this->getView()->registerJs('Craft.LivePreview.init('.Json::encode([
-                    'fields' => '#title-field, #fields > div > div > .field',
-                    'extraFields' => '#settings',
-                    'previewUrl' => $campaign->getUrl(),
-                    'previewAction' => 'campaign/campaigns/preview-campaign',
-                    'previewParams' => [
-                        'campaignId' => $campaign->id,
-                        'campaignTypeId' => $campaignType->id,
-                    ]
-                ]).');');
+                'fields' => '#title-field, #fields > div > div > .field',
+                'extraFields' => '#settings',
+                'previewUrl' => $campaign->getUrl(),
+                'previewAction' => Craft::$app->security->hashData('campaign/campaigns/preview-campaign'),
+                'previewParams' => [
+                    'campaignId' => $campaign->id,
+                    'campaignTypeId' => $campaignType->id,
+                ]
+            ]).');');
 
             $variables['showPreviewBtn'] = true;
 
