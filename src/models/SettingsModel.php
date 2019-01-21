@@ -196,6 +196,7 @@ class SettingsModel extends Model
         $labels = parent::attributeLabels();
 
         // Set the field labels
+        $labels['apiKey'] = Craft::t('campaign', 'API Key');
         $labels['fromNamesEmails'] = Craft::t('campaign', 'From Names and Emails');
         $labels['reCaptchaSiteKey'] = Craft::t('campaign', 'reCAPTCHA Site Key');
         $labels['reCaptchaSecretKey'] = Craft::t('campaign', 'reCAPTCHA Secret Key');

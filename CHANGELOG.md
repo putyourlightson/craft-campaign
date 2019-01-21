@@ -2,7 +2,15 @@
 
 ## 1.6.0 - Unreleased
 ### Added
-- Added support for editions in Craft 3.1.
+- Added support for plugin editions.
+
+### Changed
+- Minimum requirement of Craft has been changed to version 3.1.0.
+- Removed deprecated code.
+
+## 1.5.9 - 2019-01-21
+### Fixed
+- Fixed error that could occur during updating the plugin when using Craft 3.1. 
 
 ## 1.5.8 - 2019-01-17
 ### Added
