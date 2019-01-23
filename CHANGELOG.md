@@ -13,7 +13,7 @@
 - Removed deprecated code.
 - Minimum requirement of Craft has been changed to version 3.1.0.
 
-> Warning: due to some significant changes in Craft 3.1, you should check that the email settings are correct after updating.
+> {warning} Due to some significant changes in Craft 3.1, you should check that the email settings are correct after updating.
 
 ## 1.5.9 - 2019-01-21
 ### Fixed
@@ -321,7 +321,7 @@ _Thank you to [Story Group](https://story.com.au/) for partly funding the featur
 - Fixed SQL bug when retrieving links report.
 
 ## 1.0.0-beta11 - 2018-04-11
-> Warning: this update will delete any currently pending contacts.
+> {warning} This update will delete any currently pending contacts.
 
 ### Added
 - Added maxPendingContacts config setting.
