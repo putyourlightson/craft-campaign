@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.6.0 - Unreleased
+## 1.6.0 - 2019-01-23
 ### Added
 - Added compatibility with live preview in Craft 3.1.
 - Added restore action to deleted elements.
