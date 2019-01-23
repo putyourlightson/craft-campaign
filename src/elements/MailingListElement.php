@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Restore;
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
@@ -139,17 +140,27 @@ class MailingListElement extends Element
     {
         $actions = [];
 
+        $elementsService = Craft::$app->getElements();
+
         // Edit
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit mailing list'),
         ]);
 
         // Delete
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected mailing lists? This action cannot be undone.'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected mailing lists?'),
             'successMessage' => Craft::t('campaign', 'Mailing lists deleted.'),
+        ]);
+
+        // Restore
+        $actions[] = $elementsService->createAction([
+            'type' => Restore::class,
+            'successMessage' => Craft::t('campaign', 'Mailing lists restored.'),
+            'partialSuccessMessage' => Craft::t('campaign', 'Some mailing lists restored.'),
+            'failMessage' => Craft::t('campaign', 'Mailing lists not restored.'),
         ]);
 
         return $actions;

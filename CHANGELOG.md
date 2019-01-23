@@ -3,6 +3,7 @@
 ## 1.6.0 - Unreleased
 ### Added
 - Added compatibility with live preview in Craft 3.1.
+- Added restore action to deleted elements.
 - Added auto suggest template fields to campaign types and mailing list types.
 - Added environment variables to API key field.
 - Added environment variables to ipstack.com API key field.

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Restore;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
@@ -169,17 +170,27 @@ class ContactElement extends Element
     {
         $actions = [];
 
+        $elementsService = Craft::$app->getElements();
+
         // Edit
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit contact'),
         ]);
 
         // Delete
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected contacts? This action cannot be undone.'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected contacts?'),
             'successMessage' => Craft::t('campaign', 'Contacts deleted.'),
+        ]);
+
+        // Restore
+        $actions[] = $elementsService->createAction([
+            'type' => Restore::class,
+            'successMessage' => Craft::t('campaign', 'Contacts restored.'),
+            'partialSuccessMessage' => Craft::t('campaign', 'Some contacts restored.'),
+            'failMessage' => Craft::t('campaign', 'Contacts not restored.'),
         ]);
 
         return $actions;

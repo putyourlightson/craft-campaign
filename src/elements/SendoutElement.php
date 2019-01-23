@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Restore;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -207,6 +208,8 @@ class SendoutElement extends Element
     {
         $actions = [];
 
+        $elementsService = Craft::$app->getElements();
+
         // Pause
         $actions[] = PauseSendouts::class;
 
@@ -214,10 +217,18 @@ class SendoutElement extends Element
         $actions[] = CancelSendouts::class;
 
         // Delete
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected sendouts? This action cannot be undone.'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected sendouts?'),
             'successMessage' => Craft::t('campaign', 'Sendouts deleted.'),
+        ]);
+
+        // Restore
+        $actions[] = $elementsService->createAction([
+            'type' => Restore::class,
+            'successMessage' => Craft::t('campaign', 'Sendouts restored.'),
+            'partialSuccessMessage' => Craft::t('campaign', 'Some sendouts restored.'),
+            'failMessage' => Craft::t('campaign', 'Sendouts not restored.'),
         ]);
 
         return $actions;

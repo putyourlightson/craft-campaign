@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Restore;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
@@ -129,17 +130,27 @@ class SegmentElement extends Element
     {
         $actions = [];
 
+        $elementsService = Craft::$app->getElements();
+
         // Edit
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit segment'),
         ]);
 
         // Delete
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected segments? This action cannot be undone.'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected segments?'),
             'successMessage' => Craft::t('campaign', 'Segments deleted.'),
+        ]);
+
+        // Restore
+        $actions[] = $elementsService->createAction([
+            'type' => Restore::class,
+            'successMessage' => Craft::t('campaign', 'Segments restored.'),
+            'partialSuccessMessage' => Craft::t('campaign', 'Some segments restored.'),
+            'failMessage' => Craft::t('campaign', 'Segments not restored.'),
         ]);
 
         return $actions;

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Restore;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
@@ -159,17 +160,27 @@ class CampaignElement extends Element
     {
         $actions = [];
 
+        $elementsService = Craft::$app->getElements();
+
         // Edit
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit campaign'),
         ]);
 
         // Delete
-        $actions[] = Craft::$app->getElements()->createAction([
+        $actions[] = $elementsService->createAction([
             'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected campaigns? This action cannot be undone.'),
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected campaigns?'),
             'successMessage' => Craft::t('campaign', 'Campaigns deleted.'),
+        ]);
+
+        // Restore
+        $actions[] = $elementsService->createAction([
+            'type' => Restore::class,
+            'successMessage' => Craft::t('campaign', 'Campaigns restored.'),
+            'partialSuccessMessage' => Craft::t('campaign', 'Some campaigns restored.'),
+            'failMessage' => Craft::t('campaign', 'Campaigns not restored.'),
         ]);
 
         return $actions;
