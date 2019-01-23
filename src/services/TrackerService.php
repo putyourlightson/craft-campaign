@@ -25,7 +25,6 @@ use craft\base\Component;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 
 /**
  * TrackerService
@@ -315,7 +314,6 @@ class TrackerService extends Component
      * @param int|null
      *
      * @return array|null
-     * @throws InvalidConfigException
      */
     private function _getGeoIp(int $timeout = null)
     {

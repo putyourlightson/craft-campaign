@@ -143,7 +143,6 @@ class SendoutsService extends Component
      *
      * @return Mailer
      * @throws MissingComponentException
-     * @throws InvalidConfigException
      */
     public function getMailer(): Mailer
     {
@@ -472,7 +471,6 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @throws MissingComponentException
-     * @throws InvalidConfigException
      */
     public function sendNotification(SendoutElement $sendout)
     {
@@ -712,7 +710,6 @@ class SendoutsService extends Component
      * @param string $sid
      *
      * @throws MissingComponentException
-     * @throws InvalidConfigException
      */
     private function _addWebhooks(Message $message, string $sid)
     {

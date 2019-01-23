@@ -129,7 +129,6 @@ class SendoutsController extends Controller
      * @return Response
      * @throws NotFoundHttpException
      * @throws ForbiddenHttpException
-     * @throws InvalidConfigException
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
     {

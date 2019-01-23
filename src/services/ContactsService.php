@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\ConfigHelper;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -169,7 +170,6 @@ class ContactsService extends Component
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
-     * @throws \yii\base\InvalidConfigException
      */
     public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
@@ -289,7 +289,8 @@ class ContactsService extends Component
             return;
         }
 
-        $interval = DateTimeHelper::secondsToInterval($settings->purgePendingContactsDuration);
+        $purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
+        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);
 

@@ -243,7 +243,6 @@ class ImportsController extends Controller
      *
      * @return Response|null
      * @throws BadRequestHttpException
-     * @throws InvalidConfigException
      */
     public function actionDownloadFile()
     {

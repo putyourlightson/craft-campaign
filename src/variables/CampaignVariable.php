@@ -281,7 +281,6 @@ class CampaignVariable
      * Returns reCAPTCHA markup
      *
      * @return \Twig_Markup|string
-     * @throws InvalidConfigException
      */
     public function getRecaptcha()
     {
@@ -312,7 +311,6 @@ class CampaignVariable
      * Returns reCAPTCHA site key
      *
      * @return string
-     * @throws InvalidConfigException
      */
     public function getRecaptchaSiteKey(): string
     {
@@ -323,7 +321,6 @@ class CampaignVariable
      * Returns plugin settings
      *
      * @return SettingsModel
-     * @throws InvalidConfigException
      */
     public function getSettings(): SettingsModel
     {

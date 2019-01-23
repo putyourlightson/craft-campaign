@@ -13,7 +13,6 @@ use putyourlightson\campaign\models\SettingsModel;
 
 use Craft;
 use craft\helpers\Component;
-use yii\base\InvalidConfigException;
 
 /**
  * SettingsService
@@ -50,7 +49,6 @@ class SettingsService extends Component
      * @param int|null $siteId
      *
      * @return array
-     * @throws InvalidConfigException
      */
     public function getFromNameEmail(int $siteId = null): array
     {
@@ -85,7 +83,6 @@ class SettingsService extends Component
      * @param int|null $siteId
      *
      * @return array
-     * @throws InvalidConfigException
      */
     public function getFromNameEmailOptions(int $siteId = null): array
     {

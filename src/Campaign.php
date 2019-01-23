@@ -13,7 +13,6 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\App;
-use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
@@ -44,7 +43,6 @@ use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -74,6 +72,8 @@ use yii\web\ForbiddenHttpException;
  * @property  array $cpPermissions
  * @property  bool $isPro
  * @property  mixed $settingsResponse
+ *
+ * @method SettingsModel getSettings()
  */
 class Campaign extends Plugin
 {
@@ -176,21 +176,6 @@ class Campaign extends Plugin
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
-     */
-    public function getSettings(): SettingsModel
-    {
-        /** @var SettingsModel $settings */
-        $settings = parent::getSettings();
-
-        // Normalize time duration settings
-        $settings->purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
-
-        return $settings;
-    }
-
-    /**
-     * @inheritdoc
      */
     public function getCpNavItem()
     {
@@ -264,7 +249,6 @@ class Campaign extends Plugin
      *
      * @return Mailer
      * @throws MissingComponentException
-     * @throws InvalidConfigException
      */
     public function createMailer(SettingsModel $settings = null): Mailer
     {
@@ -286,8 +270,6 @@ class Campaign extends Plugin
 
     /**
      * Sets memory and time limits
-     *
-     * @throws InvalidConfigException
      */
     public function maxPowerLieutenant()
     {
