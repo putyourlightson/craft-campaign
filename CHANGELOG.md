@@ -2,11 +2,11 @@
 
 ## 1.6.0 - Unreleased
 ### Added
-- Added support for plugin editions.
+- Added compatibility with live preview in Craft 3.1.
 
 ### Changed
-- Minimum requirement of Craft has been changed to version 3.1.0.
 - Removed deprecated code.
+- Minimum requirement of Craft has been changed to version 3.1.0.
 
 ## 1.5.9 - 2019-01-21
 ### Fixed

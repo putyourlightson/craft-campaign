@@ -139,7 +139,7 @@ class ContactElement extends Element
             ];
         }
 
-        if (Campaign::$plugin->is(Campaign::EDITION_PRO)) {
+        if (Campaign::$plugin->getIsPro()) {
             $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
 
             $segments = SegmentElement::findAll();

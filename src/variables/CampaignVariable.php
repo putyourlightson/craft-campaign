@@ -47,7 +47,7 @@ class CampaignVariable
      */
     public function getIsPro(): bool
     {
-        return Campaign::$plugin->is(Campaign::EDITION_PRO);
+        return Campaign::$plugin->getIsPro();
     }
 
     /**

@@ -220,7 +220,7 @@ class SendoutsController extends Controller
             'status' => MailingListElement::STATUS_ENABLED,
         ];
 
-        if (Campaign::$plugin->is(Campaign::EDITION_PRO)) {
+        if (Campaign::$plugin->getIsPro()) {
             // Segment element selector variables
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [

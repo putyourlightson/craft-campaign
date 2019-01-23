@@ -209,7 +209,7 @@ class Campaign extends Plugin
         if ($user->checkPermission('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign:segments') AND $this->is(self::EDITION_PRO)) {
+        if ($user->checkPermission('campaign:segments') AND $this->getIsPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
         if ($user->checkPermission('campaign:sendouts')) {
@@ -236,13 +236,23 @@ class Campaign extends Plugin
     }
 
     /**
+     * Returns true if pro version
+     *
+     * @return bool
+     */
+    public function getIsPro(): bool
+    {
+        return Craft::$app->plugins->getPlugin('campaign-pro') !== null;
+    }
+
+    /**
      * Throws an exception if the plugin edition is not pro
      *
      * @throws ForbiddenHttpException
      */
     public function requirePro()
     {
-        if ($this->is(self::EDITION_PRO) === false) {
+        if (!$this->getIsPro()) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action'));
         }
     }
@@ -421,7 +431,7 @@ class Campaign extends Plugin
             'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
         ];
 
-        if ($this->is(self::EDITION_PRO)) {
+        if ($this->getIsPro()) {
             $permissions['campaign:contacts']['nested']['campaign:syncContacts'] = ['label' => Craft::t('campaign', 'Sync contacts')];
             $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
         }
