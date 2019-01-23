@@ -50,7 +50,7 @@ class DeleteSendouts extends ElementAction
      */
     public function getConfirmationMessage()
     {
-        return Craft::t('campaign', 'Are you sure you want to delete the selected sendouts? This action cannot be undone.');
+        return Craft::t('campaign', 'Are you sure you want to delete the selected sendouts?');
     }
 
     /**

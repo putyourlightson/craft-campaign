@@ -165,7 +165,7 @@ class CampaignsController extends Controller
             'destructive' => 'true',
             'redirect' => 'campaign/campaigns',
             'label' => Craft::t('app', 'Delete…'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign. This action cannot be undone.')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign.')
         ];
 
         // Full page form variables

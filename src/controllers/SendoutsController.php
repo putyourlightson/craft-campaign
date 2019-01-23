@@ -272,7 +272,7 @@ class SendoutsController extends Controller
             'destructive' => 'true',
             'redirect' => 'campaign/sendouts',
             'label' => Craft::t('campaign', 'Delete…'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout? This action cannot be undone.'),
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
         ];
 
         if ($sendoutType == 'automated' OR $sendoutType == 'recurring') {
