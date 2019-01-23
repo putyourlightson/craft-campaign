@@ -293,7 +293,7 @@ class CampaignVariable
                 <script type="text/javascript">
                     var onloadCampaignRecaptchaCallback = function() {
                         var widgetId = grecaptcha.render("campaign-recaptcha", {
-                            sitekey : "'.$settings->reCaptchaSiteKey.'",
+                            sitekey : "'.Craft::parseEnv($settings->reCaptchaSiteKey).'",
                             size : "'.$settings->reCaptchaSize.'",
                             theme : "'.$settings->reCaptchaTheme.'",
                             badge : "'.$settings->reCaptchaBadge.'",
@@ -316,7 +316,7 @@ class CampaignVariable
      */
     public function getRecaptchaSiteKey(): string
     {
-        return Campaign::$plugin->getSettings()->reCaptchaSiteKey;
+        return Craft::parseEnv(Campaign::$plugin->getSettings()->reCaptchaSiteKey);
     }
 
     /**

@@ -26,12 +26,13 @@
         errors: settings.getErrors('geoIp')
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "ipstack.com API Key"|t('campaign'),
         instructions: "The ipstack.com API key for your account."|t('campaign'),
         warning: (config.ipstackApiKey is defined ? macros.configWarning('ipstackApiKey')),
         id: 'geoIpA',
         name: 'ipstackApiKey',
+        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.ipstackApiKey,
         errors: settings.getErrors('ipstackApiKey')
     }) }}

@@ -74,24 +74,26 @@
     {% set infoText = 'Available template tags: {tags}' %}
     {% set tags = '`campaign`, `browserVersionUrl`, `contact`, `unsubscribeUrl`' %}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "HTML Template"|t('campaign'),
         instructions: "The HTML template to use when a campaign’s URL is requested."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: tags}),
         id: 'htmlTemplate',
         name: 'htmlTemplate',
         class: 'code',
+        suggestions: craft.cp.getTemplateSuggestions(),
         value: campaignType.htmlTemplate,
         errors: campaignType.getErrors('htmlTemplate'),
         autocomplete: true,
         required: true
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "Plaintext Template"|t('campaign'),
         instructions: "The plaintext template to use when sending a plaintext version."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: tags}),
         id: 'plaintextTemplate',
         name: 'plaintextTemplate',
         class: 'code',
+        suggestions: craft.cp.getTemplateSuggestions(),
         value: campaignType.plaintextTemplate,
         errors: campaignType.getErrors('plaintextTemplate'),
         autocomplete: true,

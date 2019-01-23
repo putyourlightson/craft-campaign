@@ -329,7 +329,10 @@ class TrackerService extends Component
         ]);
 
         try {
-            $response = $client->get('http://api.ipstack.com/'.Craft::$app->getRequest()->getUserIP().'?access_key='.Campaign::$plugin->getSettings()->ipstackApiKey);
+            $ip = Craft::$app->getRequest()->getUserIP();
+            $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->ipstackApiKey);
+
+            $response = $client->get('http://api.ipstack.com/'.$ip.'?access_key='.$apiKey);
 
             if ($response->getStatusCode() == 200) {
                 $geoIp = Json::decodeIfJson($response->getBody());

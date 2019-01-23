@@ -61,13 +61,11 @@ class WebhookController extends Controller
      */
     public function init()
     {
-        // Get plugin settings
-        $settings = Campaign::$plugin->getSettings();
-
         // Verify API key
-        $apiKey = Craft::$app->getRequest()->getParam('key');
+        $key = Craft::$app->getRequest()->getParam('key');
+        $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
-        if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+        if ($key === null OR empty($apiKey) OR $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
     }

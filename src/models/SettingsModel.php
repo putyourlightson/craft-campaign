@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\behaviors\EnvAttributeParserBehavior;
 use putyourlightson\campaign\elements\ContactElement;
 
 use Craft;
@@ -161,6 +162,10 @@ class SettingsModel extends Model
     public function behaviors(): array
     {
         return [
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => ['apiKey'],
+            ],
             'contactFieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
                 'elementType' => ContactElement::class,
@@ -198,6 +203,7 @@ class SettingsModel extends Model
         // Set the field labels
         $labels['apiKey'] = Craft::t('campaign', 'API Key');
         $labels['fromNamesEmails'] = Craft::t('campaign', 'From Names and Emails');
+        $labels['ipstackApiKey'] = Craft::t('campaign', 'ipstack.com API Key');
         $labels['reCaptchaSiteKey'] = Craft::t('campaign', 'reCAPTCHA Site Key');
         $labels['reCaptchaSecretKey'] = Craft::t('campaign', 'reCAPTCHA Secret Key');
         $labels['reCaptchaErrorMessage'] = Craft::t('campaign', 'reCAPTCHA Error Message');

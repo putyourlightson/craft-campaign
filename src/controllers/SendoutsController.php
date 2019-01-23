@@ -65,12 +65,10 @@ class SendoutsController extends Controller
         }
         else {
             // Verify API key
-            $apiKey = $request->getParam('key');
+            $key = $request->getParam('key');
+            $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
-            // Get plugin settings
-            $settings = Campaign::$plugin->getSettings();
-
-            if ($apiKey === null OR empty($settings->apiKey) OR $apiKey != $settings->apiKey) {
+            if ($key === null OR empty($apiKey) OR $key != $apiKey) {
                 throw new ForbiddenHttpException('Unauthorised access.');
             }
         }

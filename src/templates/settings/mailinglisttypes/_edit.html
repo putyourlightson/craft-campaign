@@ -81,21 +81,23 @@
             autocomplete: true
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: "Verify Email Template"|t('campaign'),
             instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`, `pendingContact`'}),
             name: 'verifyEmailTemplate',
             class: 'code',
+            suggestions: craft.cp.getTemplateSuggestions(),
             value: mailingListType.verifyEmailTemplate,
             errors: mailingListType.getErrors('verifyEmailTemplate'),
             autocomplete: true
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: "Verify Success Template"|t('campaign'),
             instructions: "The template to use when a user verifies their email address (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`, `contact`'}),
             name: 'verifySuccessTemplate',
             class: 'code',
+            suggestions: craft.cp.getTemplateSuggestions(),
             value: mailingListType.verifySuccessTemplate,
             errors: mailingListType.getErrors('verifySuccessTemplate'),
             autocomplete: true
@@ -103,23 +105,25 @@
 
     </div>
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "Subscribe Success Template"|t('campaign'),
         instructions: "The template to use when a user subscribes to a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`'}),
         id: 'subscribeSuccessTemplate',
         name: 'subscribeSuccessTemplate',
         class: 'code',
+        suggestions: craft.cp.getTemplateSuggestions(),
         value: mailingListType.subscribeSuccessTemplate,
         errors: mailingListType.getErrors('subscribeSuccessTemplate'),
         autocomplete: true
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "Unsubscribe Success Template"|t('campaign'),
         instructions: "The template to use when a user unsubscribes from a mailing list (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`'}),
         id: 'unsubscribeSuccessTemplate',
         name: 'unsubscribeSuccessTemplate',
         class: 'code',
+        suggestions: craft.cp.getTemplateSuggestions(),
         value: mailingListType.unsubscribeSuccessTemplate,
         errors: mailingListType.getErrors('unsubscribeSuccessTemplate'),
         autocomplete: true

@@ -3,10 +3,16 @@
 ## 1.6.0 - Unreleased
 ### Added
 - Added compatibility with live preview in Craft 3.1.
+- Added auto suggest template fields to campaign types and mailing list types.
+- Added environment variables to API key field.
+- Added environment variables to ipstack.com API key field.
+- Added environment variables to reCAPTCHA fields.
 
 ### Changed
 - Removed deprecated code.
 - Minimum requirement of Craft has been changed to version 3.1.0.
+
+> Warning: due to some significant changes in Craft 3.1, you should check that the email settings are correct after updating.
 
 ## 1.5.9 - 2019-01-21
 ### Fixed

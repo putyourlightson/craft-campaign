@@ -144,7 +144,7 @@ class TrackerController extends Controller
             try {
                 $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
                     'form_params' => [
-                        'secret' => $settings->reCaptchaSecretKey,
+                        'secret' => Craft::parseEnv($settings->reCaptchaSecretKey),
                         'response' => $request->getParam('g-recaptcha-response'),
                         'remoteip' => $request->getUserIP(),
                     ]
@@ -157,7 +157,7 @@ class TrackerController extends Controller
             catch (ConnectException $e) {}
 
             if (empty($result['success'])) {
-                throw new ForbiddenHttpException($settings->reCaptchaErrorMessage);
+                throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
             }
         }
 

@@ -33,32 +33,35 @@
         instructions: "Add the following tag to all mailing list subscription forms (not doing so will prevent forms from submitting)."|t('campaign'),
     }, code) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "reCAPTCHA Site Key"|t('campaign'),
         instructions: "The reCAPTCHA site key for this domain."|t('campaign'),
         warning: (config.reCaptchaSiteKey is defined ? macros.configWarning('reCaptchaSiteKey')),
         id: 'reCaptchaSiteKey',
         name: 'reCaptchaSiteKey',
+        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaSiteKey,
         errors: settings.getErrors('reCaptchaSiteKey')
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "reCAPTCHA Secret Key"|t('campaign'),
         instructions: "The reCAPTCHA secret key for this domain."|t('campaign'),
         warning: (config.reCaptchaSecretKey is defined ? macros.configWarning('reCaptchaSecretKey')),
         id: 'reCaptchaSecretKey',
         name: 'reCaptchaSecretKey',
+        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaSecretKey,
         errors: settings.getErrors('reCaptchaSecretKey')
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "reCAPTCHA Error Message"|t('campaign'),
         instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
         warning: (config.reCaptchaErrorMessage is defined ? macros.configWarning('reCaptchaErrorMessage')),
         id: 'reCaptchaErrorMessage',
         name: 'reCaptchaErrorMessage',
+        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaErrorMessage,
         errors: settings.getErrors('reCaptchaErrorMessage')
     }) }}
