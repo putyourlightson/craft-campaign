@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.1 - 2019-01-28
+### Fixed
+- Fixed bug that could prevent sendouts from being marked as complete when the campaign body contained 4 byte Unicode characters ([#50](https://github.com/putyourlightson/craft-campaign/issues/50)).
+
 ## 1.6.0 - 2019-01-23
 ### Added
 - Added compatibility with live preview in Craft 3.1.

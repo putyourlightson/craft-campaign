@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\helpers\DateTimeHelper;
+use craft\helpers\StringHelper;
 use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\controllers\WebhookController;
@@ -559,6 +560,12 @@ class SendoutsService extends Component
             $contact = new ContactElement();
             $sendout->htmlBody = $campaign->getHtmlBody($contact, $sendout);
             $sendout->plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+
+            if (Craft::$app->getDb()->getIsMysql()) {
+                // Encode any 4-byte UTF-8 characters
+                $sendout->htmlBody = StringHelper::encodeMb4($sendout->htmlBody);
+                $sendout->plaintextBody = StringHelper::encodeMb4($sendout->plaintextBody);
+            }
         }
 
         $this->_updateSendoutRecord($sendout, ['sendStatus', 'htmlBody', 'plaintextBody']);
