@@ -69,7 +69,7 @@ Campaign.SegmentEdit = Garnish.Base.extend(
                     var field = $(this).find('.conditionField option:selected').attr('data-field');
                     $(this).closest('.orCondition').find('.conditionOperator:not(.' + field + ')').addClass('hidden').prop('disabled', true);
                     $(this).closest('.orCondition').find('.conditionValue').removeClass('hidden').find('input').prop('disabled', false);
-                    $(this).closest('.orCondition').find('.conditionValue:not(.' + field + ')').addClass('hidden').find('input').prop('disabled', true);
+                    $(this).closest('.orCondition').find('.conditionValue:not(.' + field + ')').addClass('hidden').find('input, select').prop('disabled', true);
                 });
             });
 

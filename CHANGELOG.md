@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.2 - 2019-01-29
+### Fixed
+- Fixed bug that changed the value to `0` when saving segment values.
+
 ## 1.6.1 - 2019-01-28
 ### Fixed
 - Fixed bug that could prevent sendouts from being marked as complete when the campaign body contained 4 byte Unicode characters ([#50](https://github.com/putyourlightson/craft-campaign/issues/50)).
