@@ -28,9 +28,14 @@
         {{ forms.field({label: "User Group"|t('campaign') ~ ':'}, input) }}
     {% endif %}
 
-        {% set mailingList = import.getMailingList() %}
+    {% set mailingList = import.getMailingList() %}
     {% set input %}
-        <span class="status {{ import.mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a><br/>
+        {% if mailingList %}
+            <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+        {% else %}
+            -
+        {% endif %}
+        <br/>
     {% endset %}
     {{ forms.field({label: "Mailing List"|t('campaign') ~ ':'}, input) }}
 

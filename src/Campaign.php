@@ -363,7 +363,7 @@ class Campaign extends Plugin
             'campaign/contacts/<contactId:\d+>' => 'campaign/contacts/edit-contact',
             'campaign/contacts/view' => 'campaign/contacts/index',
             'campaign/contacts/view/<siteHandle:{handle}>' => 'campaign/contacts/index',
-            'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/imports/_view'],
+            'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/import/_view'],
             'campaign/contacts/import' => 'campaign/imports/index',
             'campaign/contacts/import/<siteHandle:{handle}>' => 'campaign/imports/index',
             'campaign/contacts/export' => 'campaign/exports/index',

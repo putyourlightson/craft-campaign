@@ -94,8 +94,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if import.mailingList is not null %}
-                            <a href="{{ import.mailingList.cpEditUrl }}" class="go" target="_blank">{{ import.mailingList.title }}</a></td>
+                        {% set mailingList = import.getMailingList() %}
+                        {% if mailingList %}
+                            <a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a></td>
                         {% else %}
                             -
                         {% endif %}

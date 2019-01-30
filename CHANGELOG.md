@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.3 - 2019-01-29
+### Fixed
+- Fixed broken link for contact import view.
+
 ## 1.6.2 - 2019-01-29
 ### Fixed
 - Fixed bug that changed the value to `0` when saving segment values.
