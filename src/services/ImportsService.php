@@ -302,7 +302,7 @@ class ImportsService extends Component
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
             $import->failed++;
-            $import->failures[$lineNumber] = implode(',', $row);
+            $import->failures[$lineNumber] = $contact->getFirstError();
 
             return $import;
         }

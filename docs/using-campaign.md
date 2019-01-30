@@ -41,7 +41,7 @@ Campaign has its own email settings and can use any email delivery service that 
 Campaign includes webhooks to handle bounce and complain notifications for the following services:
 
 1. [Amazon SES](https://aws.amazon.com/ses/)
-2. [Mailgun](https://www.mailgun.com/) _(our personal recommendation)_
+2. [Mailgun](https://www.mailgun.com/)
 3. [Mandrill](https://www.mandrill.com/)
 4. [Postmark](https://postmarkapp.com/)
 5. [Sendgrid](https://sendgrid.com/)
