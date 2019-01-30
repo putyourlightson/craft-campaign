@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 1.6.3 - 2019-01-29
+## 1.6.3 - 2019-01-30
 ### Fixed
 - Fixed broken link for contact import view.
+- Fixed added count in case of contact import failure.
 
 ## 1.6.2 - 2019-01-29
 ### Fixed
