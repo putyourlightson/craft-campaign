@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use craft\records\Element;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -24,6 +25,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $bounced
  * @property \DateTime|null $dateClosed
  * @property ActiveQueryInterface $campaignType
+ * @property ActiveQueryInterface $element
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -44,13 +46,26 @@ class CampaignRecord extends ActiveRecord
         return '{{%campaign_campaigns}}';
     }
 
+    // Public Methods
+    // =========================================================================
+
     /**
      * Returns the campaign type.
      *
-     * @return ActiveQueryInterface The relational query object.
+     * @return ActiveQueryInterface
      */
     public function getCampaignType(): ActiveQueryInterface
     {
         return $this->hasOne(CampaignTypeRecord::class, ['id' => 'campaignTypeId']);
+    }
+
+    /**
+     * Returns the related element.
+     *
+     * @return ActiveQueryInterface
+     */
+    public function getElement(): ActiveQueryInterface
+    {
+        return $this->hasOne(Element::class, ['id' => 'id']);
     }
 }

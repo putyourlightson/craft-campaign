@@ -173,7 +173,7 @@ class ReportsService extends Component
             ->limit($limit);
 
         if ($interaction !== null) {
-            $query->andWhere(['not', [$interaction => null]]);
+            $query->andWhere(['not', [ContactCampaignRecord::tableName().'.'.$interaction => null]]);
         }
 
         $contactCampaignRecords = $query->all();
@@ -598,7 +598,9 @@ class ReportsService extends Component
         // Get records within date range
         $records = $recordClass::find()
             ->where($condition)
-            ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
+            ->andWhere(Db::parseDateParam(
+            $recordClass::tableName().'.dateCreated', $endDateTime, '<'
+            ))
             ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
 

@@ -39,6 +39,9 @@ class LinkRecord extends ActiveRecord
         return '{{%campaign_links}}';
     }
 
+    // Public Methods
+    // =========================================================================
+
     /**
      * @inheritdoc
      */

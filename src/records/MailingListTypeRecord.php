@@ -46,6 +46,9 @@ class MailingListTypeRecord extends ActiveRecord
         return '{{%campaign_mailinglisttypes}}';
     }
 
+    // Public Methods
+    // =========================================================================
+
     /**
      * Returns the associated site.
      *

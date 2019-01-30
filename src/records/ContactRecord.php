@@ -7,26 +7,29 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use craft\records\Element;
+use yii\db\ActiveQueryInterface;
 
 /**
  * ContactRecord
  *
- * @property int         $id                         ID
- * @property string      $cid                        Contact ID
- * @property string      $email                      Email
- * @property string      $country                    Country
- * @property string      $geoIp                      GeoIP
- * @property string      $device                     Device
- * @property string      $os                         OS
- * @property string      $client                     Client
- * @property \DateTime   $lastActivity               Last activity
- * @property \DateTime   $verified                   Verified
- * @property \DateTime   $complained                 Complained
- * @property \DateTime   $bounced                    Bounced
+ * @property int $id ID
+ * @property string $cid Contact ID
+ * @property string $email Email
+ * @property string $country Country
+ * @property string $geoIp GeoIP
+ * @property string $device Device
+ * @property string $os OS
+ * @property string $client Client
+ * @property \DateTime $lastActivity Last activity
+ * @property \DateTime $verified Verified
+ * @property \DateTime $complained Complained
+ * @property \DateTime $bounced Bounced
+ * @property ActiveQueryInterface $element
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactRecord extends ActiveRecord
 {
@@ -41,5 +44,18 @@ class ContactRecord extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_contacts}}';
+    }
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * Returns the related element.
+     *
+     * @return ActiveQueryInterface
+     */
+    public function getElement(): ActiveQueryInterface
+    {
+        return $this->hasOne(Element::class, ['id' => 'id']);
     }
 }

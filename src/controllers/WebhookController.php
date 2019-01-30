@@ -304,10 +304,12 @@ class WebhookController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
         }
 
-        $contactCampaignRecord = ContactCampaignRecord::findOne([
+        $contactCampaignRecord = ContactCampaignRecord::find()
+        ->where([
             'contactId' => $contact->id,
             'sendoutId' => $sendout->id,
-        ]);
+        ])
+        ->one();
 
         if ($contactCampaignRecord === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);

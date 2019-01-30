@@ -43,6 +43,9 @@ class CampaignTypeRecord extends ActiveRecord
         return '{{%campaign_campaigntypes}}';
     }
 
+    // Public Methods
+    // =========================================================================
+
     /**
      * Returns the associated site.
      *
