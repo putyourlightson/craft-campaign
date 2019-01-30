@@ -5,7 +5,7 @@ To install the plugin, search for "Campaign" in the Craft Plugin Store, or insta
     composer require putyourlightson/craft-campaign
 
 ### Requirements
-The Campaign plugin requires Craft CMS 3.0.16 or later.
+The Campaign plugin requires Craft CMS 3.1.0 or later.
 
 ### Setting Things Up
 1. Turn on "Test Mode" to disable live sending of emails in Campaign → Settings → General Settings.
