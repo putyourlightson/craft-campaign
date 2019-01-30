@@ -99,9 +99,9 @@ class ContactMailingListModel extends BaseModel
     /**
      * Returns the contact
      *
-     * @return ContactElement
+     * @return ContactElement"null
      */
-    public function getContact(): ContactElement
+    public function getContact()
     {
         return Campaign::$plugin->contacts->getContactById($this->contactId);
     }
@@ -109,9 +109,9 @@ class ContactMailingListModel extends BaseModel
     /**
      * Returns the mailing list
      *
-     * @return MailingListElement
+     * @return MailingListElement|null
      */
-    public function getMailingList(): MailingListElement
+    public function getMailingList()
     {
         return Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
     }

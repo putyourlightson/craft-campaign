@@ -274,14 +274,14 @@ class ImportsService extends Component
         $email = $row[$import->emailFieldIndex];
 
         // Check if contact exists
-        $newContact = false;
-
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+        $newContact = false;
 
         // If contact doesn't exist then create one
         if ($contact === null) {
             $contact = new ContactElement();
             $contact->email = $email;
+
             $newContact = true;
         }
 

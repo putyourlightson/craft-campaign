@@ -157,9 +157,9 @@ class ContactCampaignModel extends BaseModel
     /**
      * Returns the contact
      *
-     * @return ContactElement
+     * @return ContactElement|null
      */
-    public function getContact(): ContactElement
+    public function getContact()
     {
         return Campaign::$plugin->contacts->getContactById($this->contactId);
     }
@@ -167,9 +167,9 @@ class ContactCampaignModel extends BaseModel
     /**
      * Returns the campaign
      *
-     * @return CampaignElement
+     * @return CampaignElement|null
      */
-    public function getCampaign(): CampaignElement
+    public function getCampaign()
     {
         return Campaign::$plugin->campaigns->getCampaignById($this->campaignId);
     }
