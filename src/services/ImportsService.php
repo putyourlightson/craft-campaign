@@ -274,16 +274,15 @@ class ImportsService extends Component
         $email = $row[$import->emailFieldIndex];
 
         // Check if contact exists
+        $newContact = false;
+
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         // If contact doesn't exist then create one
         if ($contact === null) {
             $contact = new ContactElement();
             $contact->email = $email;
-            $import->added++;
-        }
-        else {
-            $import->updated++;
+            $newContact = true;
         }
 
         // Map fields to values
@@ -302,9 +301,16 @@ class ImportsService extends Component
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
             $import->failed++;
-            $import->failures[$lineNumber] = implode('; ', $contact->getErrorSummary(true));
+            $import->failures[$lineNumber] = implode(' ', $contact->getErrorSummary(true));
 
             return $import;
+        }
+
+        if ($newContact) {
+            $import->added++;
+        }
+        else {
+            $import->updated++;
         }
 
         // Save import
