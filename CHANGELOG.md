@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.6.4 - 2019-01-31
+## 1.6.4 - 2019-02-01
 ### Fixed
 - Fixed bug in which trashed campaigns, contacts and mailing lists were not being filtered out of report results. 
 
