@@ -305,4 +305,18 @@ class ContactsService extends Component
             Craft::info("Deleted pending contact {$pendingContactRecord->email}, because they took too long to verify their email.", __METHOD__);
         }
     }
+
+    /**
+     * Deletes a contact by email
+     *
+     * @param string $email
+     */
+    public function deleteContactByEmail(string $email)
+    {
+        $contact = $this->getContactByEmail($email);
+
+        if ($contact !== null) {
+            Craft::$app->getElements()->deleteElement($contact);
+        }
+    }
 }

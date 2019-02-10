@@ -80,11 +80,15 @@ class SyncService extends Component
             $this->syncUser($event->user);
         }
         else if ($event instanceof ElementEvent AND $event->element instanceof User) {
-            // If user was deleted then specify to remove from mailing list
+            // If user was deleted then delete contact
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
-                $this->syncUser($event->element, true);
+                /** @var User $user */
+                $user = $event->element;
+                Campaign::$plugin->contacts->deleteContactByEmail($user->email);
             }
-            $this->syncUser($event->element);
+            else {
+                $this->syncUser($event->element);
+            }
         }
         else if ($event instanceof UserGroupsAssignEvent) {
             $user = Craft::$app->getUsers()->getUserById($event->userId);
@@ -110,12 +114,9 @@ class SyncService extends Component
      * Syncs a user
      *
      * @param User $user
-     * @param bool|null $remove
      */
-    public function syncUser(User $user, bool $remove = null)
+    public function syncUser(User $user)
     {
-        $remove = $remove ?? false;
-
         // Get user's user group IDs
         $userGroupIds = [];
         $userGroups = $user->getGroups();
@@ -129,8 +130,8 @@ class SyncService extends Component
             ->all();
 
         foreach ($mailingLists as $mailingList) {
-            // If we should remove the user or the mailing list is not synced with user's user group ID
-            if ($remove OR !in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
+            // If the mailing list is not synced with user's user group ID
+            if (!in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
                 $this->removeUserMailingList($user, $mailingList);
             }
             else {
