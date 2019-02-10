@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\services;
 use craft\events\ElementEvent;
 use craft\events\UserEvent;
 use craft\events\UserGroupsAssignEvent;
+use craft\helpers\ArrayHelper;
 use craft\services\Elements;
 use craft\services\Users;
 use putyourlightson\campaign\Campaign;
@@ -116,24 +117,20 @@ class SyncService extends Component
     public function syncUser(User $user)
     {
         // Get user's user group IDs
-        $userGroupIds = [];
         $userGroups = $user->getGroups();
-
-        foreach ($userGroups as $userGroup) {
-            $userGroupIds[] = $userGroup->id;
-        }
+        $userGroupIds = ArrayHelper::getColumn($userGroups, 'id');
 
         $mailingLists = MailingListElement::find()
             ->synced(true)
             ->all();
 
         foreach ($mailingLists as $mailingList) {
-            // If the mailing list is not synced with user's user group ID
-            if (!in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
-                $this->removeUserMailingList($user, $mailingList);
+            // If the mailing list is synced with user's user group ID
+            if (in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
+                $this->syncUserMailingList($user, $mailingList);
             }
             else {
-                $this->syncUserMailingList($user, $mailingList);
+                $this->removeUserMailingList($user, $mailingList);
             }
         }
     }
