@@ -80,11 +80,9 @@ class SyncService extends Component
             $this->syncUser($event->user);
         }
         else if ($event instanceof ElementEvent AND $event->element instanceof User) {
-            // If user was deleted then delete contact
+            // If user was deleted
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
-                /** @var User $user */
-                $user = $event->element;
-                Campaign::$plugin->contacts->deleteContactByEmail($user->email);
+                $this->deleteUser($event->element);
             }
             else {
                 $this->syncUser($event->element);
@@ -141,6 +139,20 @@ class SyncService extends Component
     }
 
     /**
+     * Deletes a user
+     *
+     * @param User $user
+     */
+    public function deleteUser(User $user)
+    {
+        $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
+
+        if ($contact !== null) {
+            Craft::$app->getElements()->deleteElement($contact);
+        }
+    }
+
+    /**
      * Syncs a user to a contact in a mailing list
      *
      * @param User $user
@@ -148,15 +160,14 @@ class SyncService extends Component
      */
     public function syncUserMailingList(User $user, MailingListElement $mailingList)
     {
-        // Get contact with same email as user
-        $contact = ContactElement::find()
-            ->email($user->email)
-            ->one();
+        $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
         if ($contact === null) {
             $contact = new ContactElement();
-            $contact->email = $user->email;
         }
+
+        $contact->userId = $user->id;
+        $contact->email = $user->email;
 
         // Set contact's field values from user's field values
         $contact->setFieldValues($user->getFieldValues());
@@ -185,8 +196,7 @@ class SyncService extends Component
             $success = $contactMailingListRecord->save();
 
             echo $success;
-        }
-        // If user is not active and contact mailing list record exists then delete it
+        } // If user is not active and contact mailing list record exists then delete it
         else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
@@ -200,10 +210,7 @@ class SyncService extends Component
      */
     public function removeUserMailingList(User $user, MailingListElement $mailingList)
     {
-        // Get contact with same email as user
-        $contact = ContactElement::find()
-            ->email($user->email)
-            ->one();
+        $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
         if ($contact === null) {
             return;

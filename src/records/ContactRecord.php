@@ -8,12 +8,14 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use craft\records\Element;
+use craft\records\User;
 use yii\db\ActiveQueryInterface;
 
 /**
  * ContactRecord
  *
  * @property int $id ID
+ * @property int|null $userId User ID
  * @property string $cid Contact ID
  * @property string $email Email
  * @property string $country Country
@@ -26,6 +28,7 @@ use yii\db\ActiveQueryInterface;
  * @property \DateTime $complained Complained
  * @property \DateTime $bounced Bounced
  * @property ActiveQueryInterface $element
+ * @property ActiveQueryInterface $user
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -57,5 +60,15 @@ class ContactRecord extends ActiveRecord
     public function getElement(): ActiveQueryInterface
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
+    }
+
+    /**
+     * Returns the related user record.
+     *
+     * @return ActiveQueryInterface
+     */
+    public function getUser(): ActiveQueryInterface
+    {
+        return $this->hasOne(User::class, ['userId' => 'id']);
     }
 }

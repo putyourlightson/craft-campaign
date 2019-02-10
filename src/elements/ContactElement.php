@@ -255,6 +255,13 @@ class ContactElement extends Element
     // =========================================================================
 
     /**
+     * User ID
+     *
+     * @var int|null
+     */
+    public $userId;
+
+    /**
      * Contact ID
      *
      * @var string
@@ -705,6 +712,7 @@ class ContactElement extends Element
         if ($isNew) {
             $contactRecord = new ContactRecord();
             $contactRecord->id = $this->id;
+            $contactRecord->userId = $this->userId;
             $contactRecord->cid = $this->cid;
         }
         else {
@@ -713,6 +721,7 @@ class ContactElement extends Element
 
         if ($contactRecord) {
             // Set attributes
+            $contactRecord->userId = $this->userId;
             $contactRecord->email = $this->email;
             $contactRecord->country = $this->country;
             $contactRecord->geoIp = $this->geoIp;

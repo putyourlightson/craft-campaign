@@ -34,7 +34,12 @@ class ContactElementQuery extends ElementQuery
     // -------------------------------------------------------------------------
 
     /**
-     * @var string CID
+     * @var int
+     */
+    public $userId;
+
+    /**
+     * @var string
      */
     public $cid;
 
@@ -55,6 +60,20 @@ class ContactElementQuery extends ElementQuery
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Sets the [[userId]] property.
+     *
+     * @param int $value The property value
+     *
+     * @return static self reference
+     */
+    public function userId(int $value)
+    {
+        $this->userId = $value;
+
+        return $this;
+    }
 
     /**
      * Sets the [[cid]] property.
@@ -123,6 +142,7 @@ class ContactElementQuery extends ElementQuery
         $this->joinElementTable('campaign_contacts');
 
         $this->query->select([
+            'campaign_contacts.userId',
             'campaign_contacts.cid',
             'campaign_contacts.email',
             'campaign_contacts.country',
@@ -135,6 +155,10 @@ class ContactElementQuery extends ElementQuery
             'campaign_contacts.complained',
             'campaign_contacts.bounced',
         ]);
+
+        if ($this->userId) {
+            $this->subQuery->andWhere(Db::parseParam('campaign_contacts.userId', $this->userId));
+        }
 
         if ($this->cid) {
             $this->subQuery->andWhere(Db::parseParam('campaign_contacts.cid', $this->cid));

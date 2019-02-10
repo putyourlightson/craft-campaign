@@ -128,6 +128,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_contacts}}')) {
             $this->createTable('{{%campaign_contacts}}', [
                 'id' => $this->primaryKey(),
+                'userId' => $this->integer(),
                 'cid' => $this->uid(),
                 'email' => $this->string()->notNull(),
                 'country' => $this->string(),
@@ -329,6 +330,7 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
         $this->addForeignKey(null, '{{%campaign_contacts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
+        $this->addForeignKey(null, '{{%campaign_contacts}}', 'userId', '{{%users}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_mailinglists}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');

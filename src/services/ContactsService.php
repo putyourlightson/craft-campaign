@@ -75,6 +75,27 @@ class ContactsService extends Component
     }
 
     /**
+     * Returns contact by user ID
+     *
+     * @param int $userId
+     *
+     * @return ContactElement|null
+     */
+    public function getContactByUserId(int $userId)
+    {
+        if (!$userId) {
+            return null;
+        }
+
+        $contact = ContactElement::find()
+            ->userId($userId)
+            ->status(null)
+            ->one();
+
+        return $contact;
+    }
+
+    /**
      * Returns contact by CID
      *
      * @param string $cid
@@ -303,20 +324,6 @@ class ContactsService extends Component
 
             /** @var PendingContactRecord $pendingContactRecord */
             Craft::info("Deleted pending contact {$pendingContactRecord->email}, because they took too long to verify their email.", __METHOD__);
-        }
-    }
-
-    /**
-     * Deletes a contact by email
-     *
-     * @param string $email
-     */
-    public function deleteContactByEmail(string $email)
-    {
-        $contact = $this->getContactByEmail($email);
-
-        if ($contact !== null) {
-            Craft::$app->getElements()->deleteElement($contact);
         }
     }
 }
