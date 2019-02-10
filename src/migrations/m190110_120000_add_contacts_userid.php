@@ -2,9 +2,7 @@
 
 namespace putyourlightson\campaign\migrations;
 
-use Craft;
 use craft\db\Migration;
-use craft\elements\User;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
