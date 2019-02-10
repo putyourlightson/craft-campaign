@@ -163,6 +163,10 @@ class SyncService extends Component
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
         if ($contact === null) {
+            $contact = Campaign::$plugin->contacts->getContactByEmail($user->email);
+        }
+
+        if ($contact === null) {
             $contact = new ContactElement();
         }
 

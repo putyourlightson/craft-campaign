@@ -25,7 +25,7 @@
             {% set userGroupOptions = userGroupOptions|merge([{'value': userGroup.id, 'label': userGroup.name}]) %}
         {% endfor %}
 
-        <p>{{ "Sync mailing lists with user groups in order to keep contacts in sync with users. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. Modifications to contacts will NOT affect users."|t('campaign') }}</p>
+        <p>{{ "Sync mailing lists to user groups in order to keep contacts in sync with users. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. Modifications to contacts will NOT affect users."|t('campaign') }}</p>
 
         <form action="" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
             {{ csrfInput() }}
