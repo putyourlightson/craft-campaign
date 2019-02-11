@@ -181,6 +181,10 @@ class Campaign extends Plugin
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
+                    // Create and save default settings
+                    $settings = $this->createSettingsModel();
+                    $this->settings->saveSettings($settings);
+
                     if (Craft::$app->getRequest()->getIsCpRequest()) {
                         // Redirect to welcome page
                         Craft::$app->getResponse()->redirect(

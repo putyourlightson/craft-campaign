@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.7 - Unreleased
+### Changed
+- Reverted saving initial settings after plugin is installed.
+
 ## 1.6.6 - 2019-02-11
 ### Fixed
 - Fixed redirect to welcome screen after the plugin is installed.
