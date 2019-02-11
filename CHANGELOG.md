@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 1.6.6 - 2019-02-11
+### Fixed
+- Fixed redirect to welcome screen after the plugin is installed.
+- Fixed error that could occur when the plugin is uninstalled.
+- Fixed unused edition showing in plugin badge.
+
 ## 1.6.5 - 2019-02-10
 ### Changed
 - Improved contact syncing using the user ID.

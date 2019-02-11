@@ -9,6 +9,7 @@ namespace putyourlightson\campaign;
 use Craft;
 use craft\base\Plugin;
 use craft\errors\MissingComponentException;
+use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -19,6 +20,7 @@ use craft\helpers\MailerHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
+use craft\services\Plugins;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
 use craft\web\UrlManager;
@@ -97,10 +99,12 @@ class Campaign extends Plugin
      */
     public static function editions(): array
     {
-        return [
+        return [];
+
+        /*return [
             self::EDITION_LITE,
             self::EDITION_PRO,
-        ];
+        ];*/
     }
 
     // Public Methods
@@ -172,6 +176,20 @@ class Campaign extends Plugin
             // Register user events
             $this->sync->registerUserEvents();
         }
+
+        // Register after install event
+        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    if (Craft::$app->getRequest()->getIsCpRequest()) {
+                        // Redirect to welcome page
+                        Craft::$app->getResponse()->redirect(
+                            UrlHelper::cpUrl('campaign/welcome')
+                        )->send();
+                    }
+                }
+            }
+        );
     }
 
     /**
@@ -319,21 +337,6 @@ class Campaign extends Plugin
         $settings->transportType = Sendmail::class;
 
         return $settings;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function afterInstall()
-    {
-        // Create and save default settings
-        $settings = $this->createSettingsModel();
-        $this->settings->saveSettings($settings);
-
-        // Redirect to welcome page
-        $url = UrlHelper::cpUrl('campaign/welcome');
-
-        Craft::$app->getResponse()->redirect($url)->send();
     }
 
     /**

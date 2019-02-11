@@ -403,11 +403,11 @@ class Install extends Migration
         $this->dropTableIfExists('{{%campaign_campaigns}}');
         $this->dropTableIfExists('{{%campaign_campaigntypes}}');
         $this->dropTableIfExists('{{%campaign_contacts_mailinglists}}');
+        $this->dropTableIfExists('{{%campaign_imports}}');
         $this->dropTableIfExists('{{%campaign_mailinglists}}');
         $this->dropTableIfExists('{{%campaign_mailinglisttypes}}');
         $this->dropTableIfExists('{{%campaign_segments}}');
         $this->dropTableIfExists('{{%campaign_contacts}}');
-        $this->dropTableIfExists('{{%campaign_imports}}');
         $this->dropTableIfExists('{{%campaign_pendingcontacts}}');
     }
 }
