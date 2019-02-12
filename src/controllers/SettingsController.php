@@ -68,7 +68,6 @@ class SettingsController extends Controller
 
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
-            'parsedApiKey' => Craft::parseEnv($settings->apiKey),
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'phpBinPath' => PHP_BINARY ?: '/usr/bin/php',
             'isWebAliasUsed' => Campaign::$plugin->settings->isWebAliasUsed(),

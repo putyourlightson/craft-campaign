@@ -9,6 +9,8 @@
 
 {% set fullPageForm = true %}
 
+{% set apiKey = settings.apiKey|replace('$', '') %}
+
 
 {% block content %}
 
@@ -51,7 +53,7 @@
 
     {% if settings.apiKey and not settings.getErrors('apiKey') %}
         {% set code %}
-            <code>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: parsedApiKey, run: 1 }) }}</code>
+            <code>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: apiKey, run: 1 }) }}</code>
         {% endset %}
         {{ forms.field({
             instructions: "You can use the following URL to queue pending sendouts. Including the optional `run` parameter will  immediately run any queued jobs."|t('campaign'),
@@ -76,31 +78,31 @@
                         </span>
                     </th>
                     <td class="textual code">
-                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: settings.apiKey }) }}</textarea>
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: apiKey }) }}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <th class="thin">Mailgun</th>
                     <td class="textual code">
-                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: settings.apiKey }) }}</textarea>
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: apiKey }) }}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <th class="thin">Mandrill</th>
                     <td class="textual code">
-                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mandrill', { key: settings.apiKey }) }}</textarea>
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mandrill', { key: apiKey }) }}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <th class="thin">Postmark</th>
                     <td class="textual code">
-                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/postmark', { key: settings.apiKey }) }}</textarea>
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/postmark', { key: apiKey }) }}</textarea>
                     </td>
                 </tr>
                 <tr>
                     <th class="thin">Sendgrid</th>
                     <td class="textual code">
-                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/sendgrid', { key: settings.apiKey }) }}</textarea>
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/sendgrid', { key: apiKey }) }}</textarea>
                     </td>
                 </tr>
             </tbody>
