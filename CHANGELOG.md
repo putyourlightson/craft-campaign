@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.6.7 - Unreleased
+## 1.6.7 - 2019-02-17
 ### Changed
 - Reverted saving initial settings after plugin is installed.
+
+### Fixed
+- Fixed error that could occur when syncing a user group to a mailing list.
 
 ## 1.6.6 - 2019-02-11
 ### Fixed

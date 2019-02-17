@@ -173,7 +173,9 @@ class SyncService extends Component
         // Set contact's field values from user's field values
         $contact->setFieldValues($user->getFieldValues());
 
-        Craft::$app->getElements()->saveElement($contact);
+        if (!Craft::$app->getElements()->saveElement($contact)) {
+            return;
+        }
 
         // Get contact mailing list record
         $contactMailingListRecord = ContactMailingListRecord::find()
@@ -194,10 +196,10 @@ class SyncService extends Component
             $contactMailingListRecord->sourceType = 'user';
             $contactMailingListRecord->source = $user->id;
 
-            $success = $contactMailingListRecord->save();
+            $contactMailingListRecord->save();
+        }
 
-            echo $success;
-        } // If user is not active and contact mailing list record exists then delete it
+        // If user is not active and contact mailing list record exists then delete it
         else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
