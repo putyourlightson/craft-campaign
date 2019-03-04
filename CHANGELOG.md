@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.6.8 - 2019-03-04
+### Fixed
+- Fixed custom field values not being correctly applied when importing a user group into a mailing list.
+
 ## 1.6.7 - 2019-02-17
 ### Changed
 - Reverted saving initial settings after plugin is installed.

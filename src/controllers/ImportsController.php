@@ -220,6 +220,11 @@ class ImportsController extends Controller
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
 
+        // Prepend `field_` to each custom field index
+        foreach ($import->fieldIndexes as $key => $fieldIndex) {
+            $import->fieldIndexes[$key] = 'field_'.$import->fieldIndexes[$key];
+        }
+
         // Save it
         if (!Campaign::$plugin->imports->saveImport($import)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import user group.'));
