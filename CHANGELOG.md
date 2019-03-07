@@ -1,8 +1,12 @@
 # Release Notes for Campaign
 
+## 1.7.0 - 2019-03-07
+### Added
+- Added LITE and PRO editions that can be purchased from within the plugin store.
+
 ## 1.6.8 - 2019-03-04
 ### Fixed
-- Fixed custom field values not being correctly applied when importing a user group into a mailing list.
+- Fixed custom field values not being correctly applied when importing a user group into a mailing list ([#53](https://github.com/putyourlightson/craft-campaign/issues/53)).
 
 ## 1.6.7 - 2019-02-17
 ### Changed
@@ -49,10 +53,10 @@
 - Added environment variables to reCAPTCHA fields.
 
 ### Changed
-- Removed deprecated code.
 - Minimum requirement of Craft has been changed to version 3.1.0.
+- Removed deprecated code.
 
-> {warning} Due to some significant changes in Craft 3.1, you should check that the email settings are correct after updating.
+> {warning} Due to some significant changes in Craft 3.1, the email settings should be checked after updating.
 
 ## 1.5.9 - 2019-01-21
 ### Fixed
