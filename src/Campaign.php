@@ -99,12 +99,10 @@ class Campaign extends Plugin
      */
     public static function editions(): array
     {
-        return [];
-
-        /*return [
+        return [
             self::EDITION_LITE,
             self::EDITION_PRO,
-        ];*/
+        ];
     }
 
     // Public Methods
@@ -249,7 +247,7 @@ class Campaign extends Plugin
      */
     public function getIsPro(): bool
     {
-        return Craft::$app->plugins->getPlugin('campaign-pro') !== null;
+        return $this->is(Campaign::EDITION_PRO);
     }
 
     /**
