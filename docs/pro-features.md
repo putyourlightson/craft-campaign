@@ -1,8 +1,6 @@
 # Pro Features
 
-Campaign Pro unlocks the pro features of the Campaign plugin which must also be purchased and installed. Once plugin editions come to the plugin store, these will be merged into a single plugin with two editions.
-
-The following features will be unlocked in Campaign Pro:  
+The following features are available exclusively in Campaign Pro:  
 
 - **[Segments](https://craftcampaign.com/docs/segments)** – sets of conditions that filter contacts by specific fields, operators and values
 - **[Automated Sendouts](https://craftcampaign.com/docs/sendouts#sendout-types)** –  delayed sending of campaigns to contacts

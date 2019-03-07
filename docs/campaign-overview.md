@@ -4,8 +4,8 @@ Campaign is an email marketing plugin built specifically for Craft 3. It aims to
 
 ### Pricing
 The Campaign plugin is available to purchase in the official Craft Plugin Store.  
-**Campaign: $149 plus $49 per subsequent year for updates** (optional)  
-**Campaign Pro: an extra $99 plus $39 per subsequent year for updates** (optional, [view pro features](https://craftcampaign.com/docs/pro-features))
+**Campaign Lite: $149 plus $49 per subsequent year for updates** (optional)  
+**Campaign Pro: $249 plus $89 per subsequent year for updates** (optional, [view pro features](https://craftcampaign.com/docs/pro-features))
 
 ### The Story Behind Campaign
 We believe that while email marketing SaaS services such as MailChimp and Campaign Monitor fill an important gap, they are not necessarily the best choice when your content already exists in a CMS. With Craft, your content can be beautifully modular and reusable, so why would you (or your clients) ever want to have to copy-paste and reformat content into an email? We believe that the entire experience of creating, sending and monitoring campaigns, as well as managing contacts and mailing lists, belongs in the CMS.
