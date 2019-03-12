@@ -315,7 +315,7 @@ class Campaign extends Plugin
 
         $params['username'] = Craft::$app->getUser()->getIdentity()->username;
 
-        Craft::warning(Craft::t('campaign', $message, $params), $category);
+        Craft::info(Craft::t('campaign', $message, $params), $category);
     }
 
     // Protected Methods
