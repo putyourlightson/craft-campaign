@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.7.1 - Unreleased
+### Changed
+- Changed Craft::warning to Craft::info in `logUserAction` method.
+
 ## 1.7.0 - 2019-03-07
 ### Added
 - Added LITE and PRO editions that can be purchased from within the plugin store.
