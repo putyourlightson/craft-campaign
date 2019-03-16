@@ -2,7 +2,10 @@
 
 ## 1.7.1 - Unreleased
 ### Changed
-- Changed Craft::warning to Craft::info in `logUserAction` method.
+- Changed `Craft::warning` to `Craft::info` when logging user actions.
+
+### Fixed
+- Fixed error that could occur when returning tracking image ([#57](https://github.com/putyourlightson/craft-campaign/pull/57)).
 
 ## 1.7.0 - 2019-03-07
 ### Added
