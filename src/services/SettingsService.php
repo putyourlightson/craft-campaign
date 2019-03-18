@@ -120,7 +120,7 @@ class SettingsService extends Component
         }
 
         foreach ($sites as $site) {
-            if (stripos($site->baseUrl, '@web') !== false) {
+            if (stripos($site->getBaseUrl(), '@web') !== false) {
                  return true;
             }
         }
@@ -129,7 +129,7 @@ class SettingsService extends Component
 
         /** @var Volume $volume */
         foreach ($volumes as $volume) {
-            if (stripos($volume->url, '@web') !== false) {
+            if (stripos($volume->getRootUrl(), '@web') !== false) {
                  return true;
             }
         }

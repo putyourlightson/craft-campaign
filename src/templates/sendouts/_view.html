@@ -13,7 +13,6 @@
     'preview': {'label': 'Preview', 'url': '#preview'},
 } %}
 
-{% set pendingRecipientCount = sendout.pendingRecipientCount %}
 {% set mailingLists = sendout.mailingLists %}
 {% set schedule = sendout.schedule %}
 
@@ -113,7 +112,9 @@
 
             <div class="data">
                 <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                <div class="value">{{ pendingRecipientCount }}</div>
+                <div class="value">
+                    <div class="pendingRecipientCount spinner"></div>
+                </div>
             </div>
 
         {% else %}
@@ -146,7 +147,9 @@
             {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}
                 <div class="data">
                     <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
-                    <div class="value">{{ pendingRecipientCount }}</div>
+                    <div class="value pendingRecipientCount">
+                        <div class="spinner"></div>
+                    </div>
                 </div>
             {% endif %}
             <div class="data">

@@ -8,10 +8,26 @@ Campaign.SendoutEdit = Garnish.Base.extend(
         modal: null,
 
         init: function() {
+            this.getPendingRecipientCount();
             this.addListener($('.prepare'), 'click', 'preflight');
             this.addListener($('.preflight .cancel'), 'click', 'cancel');
             this.addListener($('.preflight .launch'), 'click', 'launch');
             this.addListener($('.send-test'), 'click', 'sendTest');
+        },
+
+        getPendingRecipientCount: function() {
+            if ($('.pendingRecipientCount').length) {
+                $('.preflight .message').html(
+                    $('.preflight .message').html().replace('{recipients}', '<span class="pendingRecipientCount"></span>')
+                );
+
+                var url = Craft.getActionUrl('campaign/sendouts/get-pending-recipient-count');
+                var sendoutId = $('input[name=sendoutId]').val();
+
+                $.get(url, {sendoutId: sendoutId}, function(data) {
+                    $('.pendingRecipientCount').replaceWith(data);
+                });
+            }
         },
 
         preflight: function(event) {

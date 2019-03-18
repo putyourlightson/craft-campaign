@@ -100,6 +100,22 @@ class SendoutsController extends Controller
     /**
      * @return Response
      * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionGetPendingRecipientCount(): Response
+    {
+        $sendout = $this->_getSendoutFromParamId();
+
+        // Prep the response
+        $response = Craft::$app->getResponse();
+        $response->content = $sendout->getPendingRecipientCount();
+
+        return $response;
+    }
+
+    /**
+     * @return Response
+     * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
@@ -323,7 +339,7 @@ class SendoutsController extends Controller
         $sendoutId = $request->getBodyParam('sendoutId');
 
         if ($sendoutId) {
-            $sendout = $this->_getSendoutFromPostedId();
+            $sendout = $this->_getSendoutFromParamId();
         }
         else {
             $sendout = new SendoutElement();
@@ -426,7 +442,7 @@ class SendoutsController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $sendout = $this->_getSendoutFromPostedId();
+        $sendout = $this->_getSendoutFromParamId();
 
         // Store current user ID
         $sendout->senderId = Craft::$app->getUser()->getId();
@@ -481,7 +497,7 @@ class SendoutsController extends Controller
         $this->requireAcceptsJson();
 
         $contactId = Craft::$app->getRequest()->getBodyParam('contactId');
-        $sendout = $this->_getSendoutFromPostedId();
+        $sendout = $this->_getSendoutFromParamId();
 
         // Validate test contact
         if (empty($contactId)) {
@@ -514,7 +530,7 @@ class SendoutsController extends Controller
     {
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromPostedId();
+        $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->pauseSendout($sendout)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be paused.'));
@@ -543,7 +559,7 @@ class SendoutsController extends Controller
     {
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromPostedId();
+        $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->cancelSendout($sendout)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be cancelled.'));
@@ -571,7 +587,7 @@ class SendoutsController extends Controller
     {
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromPostedId();
+        $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->deleteSendout($sendout)) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be deleted.'));
@@ -591,16 +607,16 @@ class SendoutsController extends Controller
     // =========================================================================
 
     /**
-     * Gets a sendout from a posted ID
+     * Gets a sendout from a param ID
      *
      * @return SendoutElement
      *
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      */
-    private function _getSendoutFromPostedId(): SendoutElement
+    private function _getSendoutFromParamId(): SendoutElement
     {
-        $sendoutId = Craft::$app->getRequest()->getRequiredBodyParam('sendoutId');
+        $sendoutId = Craft::$app->getRequest()->getRequiredParam('sendoutId');
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {

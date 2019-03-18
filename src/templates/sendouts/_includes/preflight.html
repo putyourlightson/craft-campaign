@@ -1,4 +1,4 @@
-{% set params = { recipients: pendingRecipientCount, mailingLists: mailingLists|length, sendDate: sendout.sendDate|datetime } %}
+{% set params = { recipients: '{recipients}', mailingLists: mailingLists|length, sendDate: sendout.sendDate|datetime } %}
 
 {% set prepLabel = 'Prepare to Send Now'|t('campaign') %}
 {% set saveLabel = 'Send Now'|t('campaign') %}
@@ -35,7 +35,7 @@
         {% endif %}
         <div class="body">
             <h1>{{ saveLabel }}</h1>
-            <p>{{ confirmMessage }}</p>
+            <p class="message">{{ confirmMessage }}</p>
             <p>
                 {% if isWebAliasUsed %}
                     <span class="warning">
@@ -51,7 +51,7 @@
                     {{ 'Alias Check'|t('campaign') }}:
                     {% if isWebAliasUsed %}
                         <span class="warning">
-                            {{ 'Failed – one of your site or asset volume URLs is using the `@web` alias.'|t('campaign') }}
+                            {{ 'Failed – one of your site or asset volume URLs is using the @web alias.'|t('campaign') }}
                         </span>
                     {% else %}
                         {{ 'Passed'|t('campaign') }}
