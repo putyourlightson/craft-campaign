@@ -139,6 +139,17 @@ class SettingsModel extends Model
     public $timeLimit = 300;
 
     /**
+     * @var mixed The memory usage limit to use when set to unlimited
+     */
+    public $unlimitedMemoryLimit = '3072M';
+
+    /**
+     * @var int The execution time limit to use when set to unlimited)
+     */
+    public $unlimitedTimeLimit = 3600;
+
+
+    /**
      * @var int The maximum size of sendout batches
      */
     public $maxBatchSize = 1000;

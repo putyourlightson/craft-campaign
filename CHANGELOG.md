@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.7.1 - Unreleased
+### Added
+- Added `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
+
 ### Changed
 - Number of expected recipients is now calculated in the background on the edit sendout screen to prevent slow page load.
 - Improved how the `@web` alias is determined to be in the site or asset URLs in the preflight check.

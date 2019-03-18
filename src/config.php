@@ -70,6 +70,12 @@ return [
     // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
     //'timeLimit' => 300,
 
+    // The memory usage limit to use when set to unlimited
+    //'unlimitedMemoryLimit' => '3072M',
+
+    // The execution time limit to use when set to unlimited
+    //'unlimitedTimeLimit' => 3600,
+
     // The maximum size of sendout batches
     //'maxBatchSize' => 1000,
 
