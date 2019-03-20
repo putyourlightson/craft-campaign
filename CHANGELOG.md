@@ -3,6 +3,7 @@
 ## 1.7.1 - Unreleased
 ### Added
 - Added `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
+- Added a phablet icon, since those are a thing.
 
 ### Changed
 - Number of expected recipients is now calculated in the background on the edit sendout screen to prevent slow page load.
@@ -11,6 +12,7 @@
 
 ### Fixed
 - Fixed error that could occur when returning tracking image ([#57](https://github.com/putyourlightson/craft-campaign/pull/57)).
+- Fixed bug with number of failed recipients not being incremented on failed sendouts.
 
 ## 1.7.0 - 2019-03-07
 ### Added

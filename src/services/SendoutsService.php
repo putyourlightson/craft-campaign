@@ -452,7 +452,7 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'failed';
             $sendout->sendStatusMessage = Craft::t('campaign', 'Sending to {email} failed. Please check your email settings.', ['email' => $contact->email]);
 
-            $this->_updateSendoutRecord($sendout, ['recipients', 'sendStatus', 'sendStatusMessage']);
+            $this->_updateSendoutRecord($sendout, ['failedRecipients', 'sendStatus', 'sendStatusMessage']);
         }
 
         $contactCampaignRecord->save();
