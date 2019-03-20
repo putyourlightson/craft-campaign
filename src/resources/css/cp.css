@@ -283,7 +283,7 @@ label.subscriptionStatus.bounced {
     background-image: url(../icons/desktop.svg);
 }
 
-.device.tablet {
+.device.tablet, .device.phablet {
     background-image: url(../icons/tablet.svg);
 }
 
