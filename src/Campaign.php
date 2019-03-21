@@ -199,31 +199,32 @@ class Campaign extends Plugin
      */
     public function getCpNavItem()
     {
-        $user = Craft::$app->getUser();
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
 
         $cpNavItem =  parent::getCpNavItem();
         $cpNavItem['subnav'] = [];
 
         // Show nav items based on permissions
-        if ($user->checkPermission('campaign:campaigns')) {
+        if ($currentUser->can('campaign:campaigns')) {
             $cpNavItem['subnav']['campaigns'] = ['label' => Craft::t('campaign', 'Campaigns'), 'url' => 'campaign/campaigns'];
         }
-        if ($user->checkPermission('campaign:contacts')) {
+        if ($currentUser->can('campaign:contacts')) {
             $cpNavItem['subnav']['contacts'] = ['label' => Craft::t('campaign', 'Contacts'), 'url' => 'campaign/contacts'];
         }
-        if ($user->checkPermission('campaign:mailingLists')) {
+        if ($currentUser->can('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($user->checkPermission('campaign:segments') AND $this->getIsPro()) {
+        if ($currentUser->can('campaign:segments') AND $this->getIsPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
-        if ($user->checkPermission('campaign:sendouts')) {
+        if ($currentUser->can('campaign:sendouts')) {
             $cpNavItem['subnav']['sendouts'] = ['label' => Craft::t('campaign', 'Sendouts'), 'url' => 'campaign/sendouts'];
         }
-        if ($user->checkPermission('campaign:reports')) {
+        if ($currentUser->can('campaign:reports')) {
             $cpNavItem['subnav']['reports'] = ['label' => Craft::t('campaign', 'Reports'), 'url' => 'campaign/reports'];
         }
-        if ($user->checkPermission('campaign:settings')) {
+        if ($allowAdminChanges && $currentUser->can('campaign:settings')) {
             $cpNavItem['subnav']['settings'] = ['label' => Craft::t('campaign', 'Settings'), 'url' => 'campaign/settings'];
         }
 
