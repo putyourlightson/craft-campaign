@@ -120,18 +120,20 @@ class ContactsService extends Component
      * Returns contact by email
      *
      * @param string $email
+     * @param bool|null $trashed
      *
      * @return ContactElement|null
      */
-    public function getContactByEmail(string $email)
+    public function getContactByEmail(string $email, $trashed = false)
     {
         if (!$email) {
             return null;
         }
 
         $contact = ContactElement::find()
-            ->email($email)
+            ->email($email)->trashed()
             ->status(null)
+            ->trashed($trashed)
             ->one();
 
         return $contact;
@@ -224,8 +226,7 @@ class ContactsService extends Component
                     'pendingContact' => $pendingContact,
                 ]);
             }
-            catch (\Twig_Error_Loader $e) {}
-            catch (Exception $e) {}
+            catch (\RuntimeException $e) {}
         }
 
         // Get from name and email
@@ -270,12 +271,16 @@ class ContactsService extends Component
         $contact = $this->getContactByEmail($pendingContact->email);
 
         if ($contact === null) {
-            $contact = new ContactElement();
+            // Get trashed contact
+            $contact = $this->getContactByEmail($pendingContact->email, true);
+
+            // If no contact found or trashed contact could not be restored
+            if ($contact === null || !Craft::$app->getElements()->restoreElement($contact)) {
+                $contact = new ContactElement();
+            }
         }
 
-        if ($contact->verified === null) {
-            $contact->verified = new \DateTime();
-        }
+        $contact->verified = new \DateTime();
 
         $contact->email = $pendingContact->email;
 
@@ -283,7 +288,9 @@ class ContactsService extends Component
         $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
         $contact->setFieldValues(Json::decode($pendingContact->fieldData));
 
-        Craft::$app->getElements()->saveElement($contact);
+        if (!Craft::$app->getElements()->saveElement($contact)) {
+            return null;
+        };
 
         // Delete pending contact
         $pendingContactRecord = PendingContactRecord::find()

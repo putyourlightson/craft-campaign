@@ -424,7 +424,6 @@ class MailingListElement extends Element
      * @inheritdoc
      * @return string
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      * @throws Exception
      */
     public function getEditorHtml(): string

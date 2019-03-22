@@ -523,7 +523,6 @@ class CampaignElement extends Element
      * @return string
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Twig_Error_Loader
      */
     public function getEditorHtml(): string
     {
@@ -628,8 +627,7 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }
-        catch (\Twig_Error_Loader $e) {}
-        catch (Exception $e) {}
+        catch (\RuntimeException $e) {}
 
         // Reset template mode
         $view->setTemplateMode($templateMode);

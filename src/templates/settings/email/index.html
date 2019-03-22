@@ -74,15 +74,17 @@
 
     <hr>
 
-    {% if settings.fromNamesEmails|length %}
-        <div class="btn formsubmit" data-action="campaign/settings/send-test-email">{{ "Send Test Email"|t('campaign') }}</div>
-    {% else %}
-        {% set input %}
-            <div class="btn disabled">{{ "Send Test Email"|t('campaign') }}</div>
-        {% endset %}
-        {{ forms.field({
-            warning: "You must add at least one from name and email before you can send a test email."|t('campaign')
-        }, input) }}
-    {% endif %}
+    <div class="buttons">
+        {% if settings.fromNamesEmails|length %}
+                <div class="btn formsubmit" data-action="campaign/settings/send-test-email">{{ "Send Test Email"|t('campaign') }}</div>
+        {% else %}
+            {% set input %}
+                <div class="btn disabled">{{ "Send Test Email"|t('campaign') }}</div>
+            {% endset %}
+            {{ forms.field({
+                warning: "You must add at least one from name and email before you can send a test email."|t('campaign')
+            }, input) }}
+        {% endif %}
+    </div>
 
 {% endblock %}

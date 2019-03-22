@@ -7,14 +7,12 @@
 namespace putyourlightson\campaign\services;
 
 use Craft;
+use craft\base\Component;
 use craft\helpers\Db;
 use craft\records\Element_SiteSettings;
 use craft\web\View;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
-
-use craft\base\Component;
-use yii\base\Exception;
 
 /**
  * SegmentsService
@@ -154,8 +152,7 @@ class SegmentsService extends Component
                         // Convert rendered template to boolean
                         $evaluatedTemplate = (bool)trim($renderedTemplate);
                     }
-                    catch (\Twig_Error_Loader $e) {}
-                    catch (Exception $e) {}
+                    catch (\RuntimeException $e) {}
 
                     // Remove if evaluated template does not equal operand
                     if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {

@@ -323,11 +323,11 @@ class TrackerController extends Controller
      */
     public function actionVerifyEmail(): Response
     {
-        // Get pending contact
+        // Get pending contact ID
         $pid = Craft::$app->getRequest()->getParam('pid');
 
         if ($pid === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
+            throw new NotFoundHttpException(Craft::t('campaign', 'Invalid verification link.'));
         }
 
         // Verify pending contact

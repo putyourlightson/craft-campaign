@@ -15,7 +15,7 @@ use PurpleBooth\HtmlStripperImplementation;
  * @package   Campaign
  * @since     1.0.0   
  */
-class CampaignTwigExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class CampaignTwigExtension extends \Twig_Extension
 {
     // Public Methods
     // =========================================================================

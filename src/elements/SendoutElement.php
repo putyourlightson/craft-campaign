@@ -926,8 +926,6 @@ class SendoutElement extends Element
      * @param string $attribute
      *
      * @return string
-     * @throws Exception
-     * @throws \Twig_Error_Loader
      */
     protected function tableAttributeHtml(string $attribute): string
     {

@@ -6,6 +6,7 @@
 - Added a phablet icon, since those are a thing.
 
 ### Changed
+- Contacts that were soft deleted are now restored when verified using an email verification link.
 - Number of expected recipients is now calculated in the background on the edit sendout screen to prevent slow page load.
 - Settings item is removed from navigation if `allowAdminChanges` is disabled.
 - Improved how the `@web` alias is determined to be in the site or asset URLs in the preflight check.
@@ -14,6 +15,7 @@
 ### Fixed
 - Fixed error that could occur when returning tracking image ([#57](https://github.com/putyourlightson/craft-campaign/pull/57)).
 - Fixed bug with number of failed recipients not being incremented on failed sendouts.
+- Fixed styling of send test email button on email settings page.
 
 ## 1.7.0 - 2019-03-07
 ### Added
