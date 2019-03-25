@@ -8,7 +8,7 @@
 ### Changed
 - Contacts that were soft deleted are now restored when verified using an email verification link.
 - Number of expected recipients is now calculated in the background on the edit sendout screen to prevent slow page load.
-- Settings item is removed from navigation if `allowAdminChanges` is disabled.
+- Settings navigation link is removed from navigation if `allowAdminChanges` is disabled.
 - Improved how the `@web` alias is determined to be in the site or asset URLs in the preflight check.
 - Changed `Craft::warning` to `Craft::info` when logging user actions.
 
