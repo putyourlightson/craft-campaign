@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.7.1 - Unreleased
+## 1.7.1 - 2019-03-25
 ### Added
 - Added `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
 - Added a phablet icon, since those are a thing.
