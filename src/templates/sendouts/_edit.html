@@ -57,7 +57,7 @@
 
         {% if sendout.recipients %}
             {{ forms.field({
-                warning: 'This sendout has already been sent to {recipients} recipients.'|t('campaign', {recipients: sendout.recipients})
+                warning: 'This sendout has already been sent to {recipients} recipient(s).'|t('campaign', {recipients: sendout.recipients})
             }) }}
         {% endif %}
 

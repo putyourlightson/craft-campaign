@@ -63,12 +63,9 @@
             } only %}
         </div>
 
-        {% if contact.id %}
-            {% set mailingLists = craft.campaign.getAllMailingLists() %}
-            <div id="mailinglists" class="hidden">
-                <div id="nomailinglists"{% if mailingLists|length %}class="hidden"{% endif %}>
-                    <p>{{ "No mailing lists exist."|t('campaign') }}</p>
-                </div>
+        <div id="mailinglists" class="hidden">
+            {% if contact.id %}
+                {% set mailingLists = craft.campaign.getAllMailingLists() %}
 
                 {% if mailingLists|length %}
                     <table id="mailinglists" class="data fullwidth collapsible">
@@ -99,14 +96,18 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                {% else %}
+                    <p>{{ "No mailing lists exist."|t('campaign') }}</p>
                 {% endif %}
-            </div>
-
-            {% if contact.id %}
-                <div id="report" class="hidden">
-                    {% include 'campaign/reports/contacts/_includes/report' %}
-                </div>
+            {% else %}
+                <p>{{ "Contact must be saved before mailing lists can be assigned."|t('campaign') }}</p>
             {% endif %}
+        </div>
+
+        {% if contact.id %}
+            <div id="report" class="hidden">
+                {% include 'campaign/reports/contacts/_includes/report' %}
+            </div>
         {% endif %}
     </div>
 
