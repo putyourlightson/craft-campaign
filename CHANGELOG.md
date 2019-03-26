@@ -3,7 +3,7 @@
 ## 1.7.3 - 2019-03-26
 ### Added
 - Added dropdown, email and URL fieldtypes to segments.
-- Added `extraSegmentFieldOperators` config setting for adding fieldtypes to segments
+- Added `extraSegmentFieldOperators` config setting for adding fieldtypes to segments.
 
 ### Changed
 - Replaced deprecated Twig classes.
