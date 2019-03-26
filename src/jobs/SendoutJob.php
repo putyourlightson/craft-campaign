@@ -122,11 +122,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         // Get memory limit with threshold if unlimited
         $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = $memoryLimit === -1 ? $this->_memoryInBytes($this->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+        $memoryLimit = $memoryLimit == -1 ? $this->_memoryInBytes($this->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
 
         // Get time limit with threshold if unlimited
         $timeLimit = ini_get('max_execution_time');
-        $timeLimit = $timeLimit === 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
+        $timeLimit = $timeLimit == 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
 
         // Set the current site from the sendout's site ID
         Craft::$app->sites->setCurrentSite($sendout->siteId);
@@ -163,7 +163,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             $count++;
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
-            if (memory_get_usage() > $memoryLimit OR time() - $_SERVER['REQUEST_TIME'] > $timeLimit OR $count >= $settings->maxBatchSize) {
+            if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $settings->maxBatchSize) {
                 // Add new job to queue with delay
                 Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,

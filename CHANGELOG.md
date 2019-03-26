@@ -8,6 +8,9 @@
 ### Changed
 - Replaced deprecated Twig classes.
 
+### Fixed
+- Really fixed memory limit and max execution times not being recognised as unlimited in some situations.
+
 ## 1.7.2 - 2019-03-25
 ### Changed
 - Improved mailing lists tab explanation when creating new contacts.
