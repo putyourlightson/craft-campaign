@@ -1,0 +1,168 @@
+<?php
+/**
+ * @link      https://craftcampaign.com
+ * @copyright Copyright (c) PutYourLightsOn
+ */
+
+namespace putyourlightson\campaign\helpers;
+
+use Craft;
+use craft\base\Field;
+use craft\behaviors\FieldLayoutBehavior;
+use craft\fields\Date;
+use craft\fields\Dropdown;
+use craft\fields\Email;
+use craft\fields\Lightswitch;
+use craft\fields\Number;
+use craft\fields\PlainText;
+use craft\fields\Url;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
+use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
+use yii\base\Event;
+use yii\base\InvalidConfigException;
+
+/**
+ * SegmentHelper
+ *
+ * @author    PutYourLightsOn
+ * @package   Campaign
+ * @since     1.7.3
+ */
+class SegmentHelper
+{
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event RegisterSegmentFieldOperatorsEvent
+     */
+    const EVENT_REGISTER_FIELD_OPERATORS = 'registerFieldOperators';
+
+    /**
+     * @event RegisterSegmentAvailableFieldsEvent
+     */
+    const EVENT_REGISTER_AVAILABLE_FIELDS = 'registerAvailableFields';
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * Returns supported fields along with their operators
+     *
+     * @return array
+     */
+    public static function getFieldOperators(): array
+    {
+        $standardOperators = [
+            '=' => Craft::t('campaign', 'is'),
+            '!=' => Craft::t('campaign', 'is not'),
+            'like' => Craft::t('campaign', 'contains'),
+            'not like' => Craft::t('campaign', 'does not contain'),
+            'like v%' => Craft::t('campaign', 'starts with'),
+            'not like v%' => Craft::t('campaign', 'does not start with'),
+            'like %v' => Craft::t('campaign', 'ends with'),
+            'not like %v' => Craft::t('campaign', 'does not end with'),
+        ];
+
+        $fieldOperators = [
+            PlainText::class => $standardOperators,
+            Dropdown::class => $standardOperators,
+            Email::class => $standardOperators,
+            Url::class => $standardOperators,
+            Number::class => [
+                '=' => Craft::t('campaign', 'equals'),
+                '!=' => Craft::t('campaign', 'does not equal'),
+                '<' => Craft::t('campaign', 'is less than'),
+                '>' => Craft::t('campaign', 'is greater than'),
+            ],
+            Date::class => [
+                '=' => Craft::t('campaign', 'is on'),
+                '<' => Craft::t('campaign', 'is before'),
+                '>' => Craft::t('campaign', 'is after'),
+            ],
+            Lightswitch::class => [
+                '=' => Craft::t('campaign', 'is'),
+            ],
+            'template' => [
+                '1' => Craft::t('campaign', 'evaluates to true'),
+                '0' => Craft::t('campaign', 'evaluates to false'),
+            ],
+        ];
+
+        // Add field operators from config settings
+        $settings = Campaign::$plugin->getSettings();
+        foreach ($settings->extraSegmentFieldOperators as $fieldtype => $operators) {
+            $fieldOperators[$fieldtype] = $operators;
+        }
+
+        $event = new RegisterSegmentFieldOperatorsEvent([
+            'fieldOperators' => $fieldOperators
+        ]);
+        Event::trigger(static::class, self::EVENT_REGISTER_FIELD_OPERATORS, $event);
+
+        return $event->fieldOperators;
+    }
+
+    /**
+     * Returns available fields
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public static function getAvailableFields(): array
+    {
+        $settings = Campaign::$plugin->getSettings();
+        $availableFields = [[
+            'type' => Email::class,
+            'handle' => 'email',
+            'name' => $settings->emailFieldLabel,
+        ]];
+
+        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
+        $fieldLayoutBehavior = $settings->getBehavior('contactFieldLayout');
+        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
+
+        if ($fieldLayout !== null) {
+            $supportedFields = SegmentHelper::getFieldOperators();
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                /* @var Field $field */
+                $fieldType = get_class($field);
+                if (!empty($supportedFields[$fieldType])) {
+                    $availableFields[] = [
+                        'type' => $fieldType,
+                        'handle' => 'field_'.$field->handle,
+                        'name' => $field->name,
+                    ];
+                }
+            }
+        }
+
+        // Add date fields
+        $availableFields[] = [
+            'type' => Date::class,
+            'handle' => 'lastActivity',
+            'name' => Craft::t('campaign', 'Last Activity'),
+        ];
+        $availableFields[] = [
+            'type' => Date::class,
+            'handle' => 'elements.dateCreated',
+            'name' => Craft::t('campaign', 'Date Created'),
+        ];
+
+        // Add template code field
+        $availableFields[] = [
+            'type' => 'template',
+            'handle' => 'template',
+            'name' => Craft::t('campaign', 'Template'),
+        ];
+
+        $event = new RegisterSegmentAvailableFieldsEvent([
+            'availableFields' => $availableFields
+        ]);
+        Event::trigger(static::class, self::EVENT_REGISTER_AVAILABLE_FIELDS, $event);
+
+        return $event->availableFields;
+    }
+}

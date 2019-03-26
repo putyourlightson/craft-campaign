@@ -15,7 +15,7 @@ namespace putyourlightson\campaign\helpers;
  */
 class NumberHelper
 {
-    // Public Methods
+    // Static Methods
     // =========================================================================
 
     /**

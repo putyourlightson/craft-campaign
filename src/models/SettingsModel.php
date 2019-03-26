@@ -6,12 +6,11 @@
 
 namespace putyourlightson\campaign\models;
 
-use craft\behaviors\EnvAttributeParserBehavior;
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
 use craft\base\Model;
+use craft\behaviors\EnvAttributeParserBehavior;
 use craft\behaviors\FieldLayoutBehavior;
+use putyourlightson\campaign\elements\ContactElement;
 use yii\validators\EmailValidator;
 
 /**
@@ -163,6 +162,11 @@ class SettingsModel extends Model
      * @var int The amount of time in seconds to delay jobs between sendout batches
      */
     public $batchJobDelay = 10;
+
+    /**
+     * @var array Extra fields and the operators that should be available to segments
+     */
+    public $extraSegmentFieldOperators = [];
 
     // Public Methods
     // =========================================================================

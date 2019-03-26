@@ -15,7 +15,7 @@ namespace putyourlightson\campaign\helpers;
  */
 class StringHelper extends \craft\helpers\StringHelper
 {
-    // Public Methods
+    // Static Methods
     // =========================================================================
 
     /**
@@ -30,17 +30,5 @@ class StringHelper extends \craft\helpers\StringHelper
         $prefix = $prefix ?? '';
 
         return uniqid($prefix, false).self::randomString(3);
-    }
-
-    /**
-     * Returns a class name without the namespace
-     *
-     * @param string $class
-     *
-     * @return string
-     */
-    public static function getClassName(string $class): string
-    {
-        return basename(str_replace('\\', '/', $class));
     }
 }

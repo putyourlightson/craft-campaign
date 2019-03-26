@@ -64,9 +64,6 @@
         <div>
             {% include "campaign/segments/_includes/titlefield" %}
 
-            {% set fieldOperators = segment.getFieldOperators() %}
-            {% set availableFields = segment.getAvailableFields() %}
-
             <div class="field">
                 <div class="heading">
                     <label>{{ "Conditions"|t('campaign') }}</label>

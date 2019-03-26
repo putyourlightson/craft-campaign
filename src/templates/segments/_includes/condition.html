@@ -5,7 +5,7 @@
         <div class="select">
             <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
                 {% for field in availableFields %}
-                    <option data-field="field-{{ field.type }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
+                    <option data-field="field-{{ field.type|replace({'\\': '-'}) }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -13,7 +13,7 @@
     <td>
         <div class="select">
             {% for fieldType, operators in fieldOperators %}
-                <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden field-{{ fieldType }}" disabled>
+                <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden field-{{ fieldType|replace({'\\': '-'}) }}" disabled>
                     {% for value, label in operators %}
                         <option value="{{ value }}" {{ condition is defined and condition[0] == value ? 'selected' }}>{{ label }}</option>
                     {% endfor %}
@@ -24,18 +24,18 @@
     <td>
         {% set fieldName = 'conditions[' ~ (andIndex ?? '') ~ '][' ~ (orIndex ?? '' ) ~ '][2]' %}
         {% set value = condition[2] ?? '' %}
-        <div class="conditionValue field-plaintext field-number field-template hidden">
+        <div class="conditionValue default hidden">
             <input type="text" class="text fullwidth" name="{{ fieldName }}" value="{{ value }}" disabled />
         </div>
-        <div class="conditionValue field-lightswitch hidden">
+        <div class="conditionValue field-craft-fields-Lightswitch hidden">
             <div class="select">
                 <select name="{{ fieldName }}" disabled>
-                    <option value="1" {{ value == 1 ? 'selected' }}>{{ 'switched on'|t('campaign') }}</option>
-                    <option value="0" {{ value == 0 ? 'selected' }}>{{ 'switched off'|t('campaign') }}</option>
+                    <option value="1" {{ value == '1' ? 'selected' }}>{{ 'switched on'|t('campaign') }}</option>
+                    <option value="0" {{ value == '0' ? 'selected' }}>{{ 'switched off'|t('campaign') }}</option>
                 </select>
             </div>
         </div>
-        <div class="conditionValue field-date hidden">
+        <div class="conditionValue field-craft-fields-Date hidden">
             <div class="datewrapper">
                 <input class="text" type="text fullwidth" name="{{ fieldName }}" value="{{ value }}" autocomplete="off" placeholder=" " disabled />
                 <div data-icon="date"></div>

@@ -84,4 +84,18 @@ return [
 
     // The amount of time in seconds to delay jobs between sendout batches
     //'batchJobDelay' => 10,
+
+    // Extra fields and their operators that should be available to segments
+    //'extraSegmentFieldOperators' => [
+    //    'mmikkel\incognitofield\fields\IncognitoFieldType' => [
+    //        '=' => 'is',
+    //        '!=' => 'is not',
+    //        'like' => 'contains',
+    //        'not like' => 'does not contain',
+    //        'like v%' => 'starts with',
+    //        'not like v%' => 'does not start with',
+    //        'like %v' => 'ends with',
+    //        'not like %v' => 'does not end with',
+    //    ]
+    //],
 ];

@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 1.7.3 - 2019-03-26
+### Added
+- Added dropdown, email and URL fieldtypes to segments.
+- Added `extraSegmentFieldOperators` config setting for adding fieldtypes to segments
+
+### Changed
+- Replaced deprecated Twig classes.
+
 ## 1.7.2 - 2019-03-25
 ### Changed
 - Improved mailing lists tab explanation when creating new contacts.

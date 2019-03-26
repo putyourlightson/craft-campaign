@@ -68,12 +68,16 @@ Campaign.SegmentEdit = Garnish.Base.extend(
 
                     var field = $(this).find('.conditionField option:selected').attr('data-field');
                     $(this).closest('.orCondition').find('.conditionOperator:not(.' + field + ')').addClass('hidden').prop('disabled', true);
-                    $(this).closest('.orCondition').find('.conditionValue').removeClass('hidden').find('input').prop('disabled', false);
+                    $(this).closest('.orCondition').find('.conditionValue').removeClass('hidden').find('input, select').prop('disabled', false);
                     $(this).closest('.orCondition').find('.conditionValue:not(.' + field + ')').addClass('hidden').find('input, select').prop('disabled', true);
+
+                    if ($(this).closest('.orCondition').find('.conditionValue:visible').length == 0) {
+                        $(this).closest('.orCondition').find('.conditionValue.default').removeClass('hidden').find('input, select').prop('disabled', false);
+                    }
                 });
             });
 
-            $('.conditions .conditionValue.field-date input:not(.hasDatepicker)').datepicker($.extend({
+            $('.conditions .conditionValue.field-craft-fields-Date input:not(.hasDatepicker)').datepicker($.extend({
                 defaultDate: new Date()
             }, Craft.datepickerOptions));
 

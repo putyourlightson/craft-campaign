@@ -7,6 +7,8 @@
 namespace putyourlightson\campaign\twigextensions;
 
 use PurpleBooth\HtmlStripperImplementation;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
 /**
  * CampaignTwigExtension
@@ -15,7 +17,7 @@ use PurpleBooth\HtmlStripperImplementation;
  * @package   Campaign
  * @since     1.0.0   
  */
-class CampaignTwigExtension extends \Twig_Extension
+class CampaignTwigExtension extends AbstractExtension
 {
     // Public Methods
     // =========================================================================
@@ -26,7 +28,7 @@ class CampaignTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_Filter('html_to_plaintext', [$this, 'htmlToPlaintext']),
+            new TwigFilter('html_to_plaintext', [$this, 'htmlToPlaintext']),
         ];
     }
 

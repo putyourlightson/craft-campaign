@@ -6,24 +6,17 @@
 
 namespace putyourlightson\campaign\elements;
 
-use craft\elements\actions\Restore;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\db\SegmentElementQuery;
-use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
-use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
-use putyourlightson\campaign\helpers\StringHelper;
-use putyourlightson\campaign\records\SegmentRecord;
-
 use Craft;
 use craft\base\Element;
-use craft\base\Field;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Restore;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
-use yii\base\InvalidConfigException;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\db\SegmentElementQuery;
+use putyourlightson\campaign\records\SegmentRecord;
 
 /**
  * SegmentElement
@@ -41,19 +34,6 @@ use yii\base\InvalidConfigException;
  */
 class SegmentElement extends Element
 {
-    // Constants
-    // =========================================================================
-
-    /**
-     * @event RegisterSegmentFieldOperatorsEvent
-     */
-    const EVENT_REGISTER_FIELD_OPERATORS = 'registerFieldOperators';
-
-    /**
-     * @event RegisterSegmentAvailableFieldsEvent
-     */
-    const EVENT_REGISTER_AVAILABLE_FIELDS = 'registerAvailableFields';
-
     // Static Methods
     // =========================================================================
 
@@ -237,114 +217,6 @@ class SegmentElement extends Element
         }
 
         return parent::getSupportedSites();
-    }
-
-    /**
-     * Returns field operators
-     *
-     * @return array
-     */
-    public function getFieldOperators(): array
-    {
-        $fieldOperators = [
-            'plaintext' =>  [
-                '=' => Craft::t('campaign', 'is'),
-                '!=' => Craft::t('campaign', 'is not'),
-                'like' => Craft::t('campaign', 'contains'),
-                'not like' => Craft::t('campaign', 'does not contain'),
-                'like v%' => Craft::t('campaign', 'starts with'),
-                'not like v%' => Craft::t('campaign', 'does not start with'),
-                'like %v' => Craft::t('campaign', 'ends with'),
-                'not like %v' => Craft::t('campaign', 'does not end with'),
-            ],
-            'number' => [
-                '=' => Craft::t('campaign', 'equals'),
-                '!=' => Craft::t('campaign', 'does not equal'),
-                '<' => Craft::t('campaign', 'is less than'),
-                '>' => Craft::t('campaign', 'is greater than'),
-            ],
-            'date' => [
-                '=' => Craft::t('campaign', 'is on'),
-                '<' => Craft::t('campaign', 'is before'),
-                '>' => Craft::t('campaign', 'is after'),
-            ],
-            'lightswitch' => [
-                '=' => Craft::t('campaign', 'is'),
-            ],
-            'template' => [
-                '1' => Craft::t('campaign', 'evaluates to true'),
-                '0' => Craft::t('campaign', 'evaluates to false'),
-            ],
-        ];
-
-        $event = new RegisterSegmentFieldOperatorsEvent([
-            'fieldOperators' => $fieldOperators
-        ]);
-        $this->trigger(self::EVENT_REGISTER_FIELD_OPERATORS, $event);
-
-        return $event->fieldOperators;
-    }
-
-    /**
-     * Returns available fields
-     *
-     * @return array
-     * @throws InvalidConfigException
-     */
-    public function getAvailableFields(): array
-    {
-        $settings = Campaign::$plugin->getSettings();
-        $availableFields = [[
-            'type' => 'plaintext',
-            'handle' => 'email',
-            'name' => $settings->emailFieldLabel,
-        ]];
-
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = $settings->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-
-        if ($fieldLayout !== null) {
-            $fieldOperators = $this->getFieldOperators();
-            $fields = $fieldLayout->getFields();
-            foreach ($fields as $field) {
-                /* @var Field $field */
-                $fieldType = strtolower(StringHelper::getClassName(\get_class($field)));
-                if (!empty($fieldOperators[$fieldType])) {
-                    $availableFields[] = [
-                        'type' => $fieldType,
-                        'handle' => 'field_'.$field->handle,
-                        'name' => $field->name,
-                    ];
-                }
-            }
-        }
-
-        // Add date fields
-        $availableFields[] = [
-            'type' => 'date',
-            'handle' => 'lastActivity',
-            'name' => Craft::t('campaign', 'Last Activity'),
-        ];
-        $availableFields[] = [
-            'type' => 'date',
-            'handle' => 'elements.dateCreated',
-            'name' => Craft::t('campaign', 'Date Created'),
-        ];
-
-        // Add template code field
-        $availableFields[] = [
-            'type' => 'template',
-            'handle' => 'template',
-            'name' => Craft::t('campaign', 'Template'),
-        ];
-
-        $event = new RegisterSegmentAvailableFieldsEvent([
-            'availableFields' => $availableFields
-        ]);
-        $this->trigger(self::EVENT_REGISTER_AVAILABLE_FIELDS, $event);
-
-        return $event->availableFields;
     }
 
     /**

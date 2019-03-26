@@ -14,6 +14,7 @@ use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\web\Controller;
+use putyourlightson\campaign\helpers\SegmentHelper;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -100,6 +101,10 @@ class SegmentsController extends Controller
 
         // Get the settings
         $variables['settings'] = Campaign::$plugin->getSettings();
+
+        // Get available fields and operators
+        $variables['availableFields'] = SegmentHelper::getAvailableFields();
+        $variables['fieldOperators'] = SegmentHelper::getFieldOperators();
 
         // Full page form variables
         $variables['fullPageForm'] = true;
