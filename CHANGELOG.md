@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.7.4 - Unreleased
+### Changed
+- Changed webhook method to work with new Mailgun webhook payloads.
+
 ## 1.7.3 - 2019-03-26
 ### Added
 - Added dropdown, email and URL fieldtypes to segments.

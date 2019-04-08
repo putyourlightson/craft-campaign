@@ -155,8 +155,10 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $eventType = $request->getBodyParam('event');
-        $email = $request->getBodyParam('recipient');
+        $eventData = json_decode($request->getRawBody());
+        $eventType = $eventData['event'] ?? '';
+        $severity = $eventData['severity'] ?? '';
+        $email = $eventData['recipient'] ?? '';
         $headers = Json::decodeIfJson($request->getBodyParam('message-headers'));
 
         // Look for SID in headers
@@ -173,7 +175,7 @@ class WebhookController extends Controller
         if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($eventType == 'bounced') {
+        if ($eventType == 'failed' && $severity == 'permanent') {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 
