@@ -13,6 +13,7 @@ use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -174,7 +175,7 @@ class ContactsController extends Controller
     /**
      * @return Response|null
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws BadRequestHttpException
@@ -256,7 +257,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionMarkContactComplained()
     {
@@ -271,7 +272,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionMarkContactBounced()
     {
@@ -286,7 +287,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionUnmarkContactComplained()
     {
@@ -301,7 +302,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionUnmarkContactBounced()
     {
@@ -314,7 +315,7 @@ class ContactsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteContact()
     {
@@ -351,7 +352,7 @@ class ContactsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionSubscribeMailingList()
     {
@@ -363,7 +364,7 @@ class ContactsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionUnsubscribeMailingList()
     {
@@ -375,7 +376,7 @@ class ContactsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionRemoveMailingList()
     {
@@ -409,33 +410,36 @@ class ContactsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException if the requested contact or mailing list cannot be found
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     private function _updateSubscription(string $subscriptionStatus)
     {
         $this->requirePostRequest();
-        $this->requireAcceptsJson();
 
         $contact = $this->_getPostedContact();
 
         $mailingListId = Craft::$app->getRequest()->getRequiredBodyParam('mailingListId');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
         if ($subscriptionStatus === '') {
             Campaign::$plugin->mailingLists->deleteContactSubscription($contact, $mailingList);
-        }
-        else {
+        } else {
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', Craft::$app->getUser()->getIdentity()->id);
         }
 
-        return $this->asJson([
-            'success' => true,
-            'subscriptionStatus' => $subscriptionStatus,
-            'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
-        ]);
+        if (Craft::$app->getRequest()->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'subscriptionStatus' => $subscriptionStatus,
+                'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
+            ]);
+        }
+
+        return $this->redirectToPostedUrl();
     }
 
     /**
@@ -448,7 +452,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     private function _markContactStatus(string $status)
     {
@@ -492,7 +496,7 @@ class ContactsController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     private function _unmarkContactStatus(string $status)
     {

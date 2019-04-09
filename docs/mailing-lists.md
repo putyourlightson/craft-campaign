@@ -67,7 +67,27 @@ To submit the form using an AJAX request, you'll need to send a POST request con
             }
         });
     </script>
+    
+### Mailing List Unsubscribe Form
 
+Generally, the only way to unsubscribe from a mailing list is by clicking on the unsubscribe URL in a sent campaign.
+
+If you have contacts that are synced to users then you can provide them with a way to unsubscribe provided they are logged in. 
+
+    {% set contact = craft.campaign.contacts.userId(currentUser.id).one() %}
+    {% set mailingLists = contact.getMailingLists() %}
+
+    {% for mailingList in mailingLists %}
+      <form id="unsubscribe-form" method="post" action="">
+        {{ csrfInput() }}
+        <input type="hidden" name="action" value="campaign/contacts/unsubscribeMailingList" />
+        <input type="hidden" name="contactId" value="{{ contact.id }}" />
+        <input type="hidden" name="mailingListId" value="{{ mailingList.id }}" />
+        
+        <input type="submit" value="Unsubscribe" />
+      </form>
+    {% endfor %} 
+    
 ### Getting Mailing Lists
 You can get mailing lists from your templates with `craft.campaign.mailingLists` which returns an [Element Query](https://docs.craftcms.com/v3/element-queries.html).
 

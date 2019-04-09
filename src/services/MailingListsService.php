@@ -78,6 +78,20 @@ class MailingListsService extends Component
     }
 
     /**
+     * Returns mailing list by slug
+     *
+     * @param string $mailingListSlug
+     *
+     * @return MailingListElement|null
+     */
+    public function getMailingListBySlug(string $mailingListSlug)
+    {
+        return MailingListElement::find()
+            ->slug($mailingListSlug)
+            ->one();
+    }
+
+    /**
      * Returns all mailing lists across all sites
      *
      * @return MailingListElement[]

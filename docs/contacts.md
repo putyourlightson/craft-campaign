@@ -29,11 +29,14 @@ You can get contacts from your plugin with `ContactElement::find()` which return
 
 In addition to supporting the parameters that all element types in Craft support (`id`, `title`, etc.), the returned Element Query also supports the following parameters.
 
+**`userId`**  
+Only fetch a contact that is synced to the given user ID.
+
 **`cid`**  
-Only fetch contacts with the given CID (unique contact ID).
+Only fetch a contact with the given CID (unique contact ID).
 
 **`email`**  
-Only fetch contacts with the given email address.
+Only fetch a contact with the given email address.
 
 **`mailingListId`**  
 Only fetch contacts with the given mailing list ID.

@@ -6,12 +6,12 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\helpers\Json;
-use GuzzleHttp\Exception\ConnectException;
+use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\RecaptchaHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\LinkRecord;
@@ -20,10 +20,10 @@ use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\web\Controller;
 use craft\web\View;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -53,7 +53,7 @@ class TrackerController extends Controller
      * @return Response|null
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionOpen()
     {
@@ -79,7 +79,7 @@ class TrackerController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionClick(): Response
     {
@@ -115,7 +115,7 @@ class TrackerController extends Controller
      *
      * @return Response|null
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws BadRequestHttpException
@@ -129,41 +129,13 @@ class TrackerController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Validate reCAPTCHA if enabled
-        if ($settings->reCaptcha)
-        {
-            $result = '';
-
-            $client = Craft::createGuzzleClient([
-                'timeout' => 5,
-                'connect_timeout' => 5,
-            ]);
-
-            try {
-                $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
-                    'form_params' => [
-                        'secret' => Craft::parseEnv($settings->reCaptchaSecretKey),
-                        'response' => $request->getParam('g-recaptcha-response'),
-                        'remoteip' => $request->getUserIP(),
-                    ]
-                ]);
-
-                if ($response->getStatusCode() == 200) {
-                    $result = Json::decodeIfJson($response->getBody());
-                }
-            }
-            catch (ConnectException $e) {}
-
-            if (empty($result['success'])) {
-                throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
-            }
+        if ($settings->reCaptcha) {
+            RecaptchaHelper::validateRecaptcha($request->getParam('g-recaptcha-response'), $request->getUserIP());
         }
 
         // Get mailing list by slug
-        $mailingListSlug = $request->getRequiredBodyParam('mailingList');
-        /** @var MailingListElement $mailingList */
-        $mailingList = MailingListElement::find()
-            ->slug($mailingListSlug)
-            ->one();
+        $mailingListSlug = Craft::$app->getRequest()->getRequiredBodyParam('mailingList');
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
 
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
@@ -275,7 +247,7 @@ class TrackerController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionUnsubscribe()
     {
@@ -319,7 +291,7 @@ class TrackerController extends Controller
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionVerifyEmail(): Response
     {
@@ -377,6 +349,9 @@ class TrackerController extends Controller
      * Updates a contact
      *
      * @return Response|null
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     * @throws MissingComponentException
      */
     public function actionUpdateContact()
     {

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -24,6 +25,7 @@ use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
+use Throwable;
 use yii\base\Exception;
 
 /**
@@ -92,7 +94,7 @@ class TrackerService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function open(ContactElement $contact, SendoutElement $sendout)
     {
@@ -112,7 +114,7 @@ class TrackerService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
     {
@@ -134,7 +136,7 @@ class TrackerService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
@@ -175,7 +177,7 @@ class TrackerService extends Component
      * @param SendoutElement $sendout
      *
      * @return MailingListElement|null
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
@@ -268,11 +270,11 @@ class TrackerService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     private function _updateContactActivity(ContactElement $contact)
     {
-        $contact->lastActivity = new \DateTime();
+        $contact->lastActivity = new DateTime();
 
         // Get GeoIP if enabled
         if (Campaign::$plugin->getSettings()->geoIp) {
