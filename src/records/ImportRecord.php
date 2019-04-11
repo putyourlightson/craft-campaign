@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use DateTime;
 
 
 /**
@@ -22,13 +23,13 @@ use craft\db\ActiveRecord;
  * @property mixed       $fieldIndexes          Field indexes
  * @property int         $added                 Added
  * @property int         $updated               Updated
- * @property int         $failed                Failed
+ * @property int         $fails                 Fails
  * @property mixed       $failures              Failures
- * @property \DateTime   $dateImported          Date imported
+ * @property DateTime    $dateImported          Date imported
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ImportRecord extends ActiveRecord
 {

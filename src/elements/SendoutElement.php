@@ -379,9 +379,9 @@ class SendoutElement extends Element
     public $recipients = 0;
 
     /**
-     * @var int Failed recipients
+     * @var int Fails
      */
-    public $failedRecipients = 0;
+    public $fails = 0;
 
     /**
      * @var ScheduleModel|null Schedule

@@ -84,9 +84,9 @@ class ImportModel extends BaseModel
     public $updated = 0;
 
     /**
-     * @var int Failed
+     * @var int Fails
      */
-    public $failed = 0;
+    public $fails = 0;
 
     /**
      * @var mixed Failures

@@ -26,7 +26,7 @@ use DateTime;
  * @property string      $mailingListIds             Mailing list IDs
  * @property string      $excludedMailingListIds     Excluded mailing list IDs
  * @property int         $recipients                 Recipients
- * @property int         $failedRecipients           Failed recipients
+ * @property int         $fails                      Fails
  * @property mixed       $schedule                   Schedule
  * @property string      $htmlBody                   HTML body
  * @property string      $plaintextBody              Plaintext body

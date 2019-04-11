@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use DateTime;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
 
@@ -18,13 +19,12 @@ use yii\db\ActiveQueryInterface;
  * @property int $campaignId Campaign ID
  * @property int $sendoutId Sendout ID
  * @property int $mailingListId Mailing List ID
- * @property \DateTime|null $sent Sent
- * @property \DateTime|null $failed Failed
- * @property \DateTime|null $opened Opened
- * @property \DateTime|null $clicked Clicked
- * @property \DateTime|null $unsubscribed Unsubscribed
- * @property \DateTime|null $complained Complained
- * @property \DateTime|null $bounced Bounced
+ * @property DateTime|null $sent Sent
+ * @property DateTime|null $opened Opened
+ * @property DateTime|null $clicked Clicked
+ * @property DateTime|null $unsubscribed Unsubscribed
+ * @property DateTime|null $complained Complained
+ * @property DateTime|null $bounced Bounced
  * @property int $opens Opens
  * @property int $clicks Clicks
  * @property string|null $links Links
@@ -33,7 +33,7 @@ use yii\db\ActiveQueryInterface;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactCampaignRecord extends ActiveRecord
 {

@@ -21,7 +21,7 @@ use craft\db\Migration;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class Install extends Migration
 {
@@ -168,7 +168,6 @@ class Install extends Migration
                 'sendoutId' => $this->integer()->notNull(),
                 'mailingListId' => $this->integer()->notNull(),
                 'sent' => $this->dateTime(),
-                'failed' => $this->dateTime(),
                 'opened' => $this->dateTime(),
                 'clicked' => $this->dateTime(),
                 'unsubscribed' => $this->dateTime(),
@@ -260,7 +259,7 @@ class Install extends Migration
                 'excludedMailingListIds' => $this->text(),
                 'segmentIds' => $this->text(),
                 'recipients' => $this->integer()->defaultValue(0)->notNull(),
-                'failedRecipients' => $this->integer()->defaultValue(0)->notNull(),
+                'fails' => $this->integer()->defaultValue(0)->notNull(),
                 'schedule' => $this->text(),
                 'htmlBody' => $this->mediumText(),
                 'plaintextBody' => $this->mediumText(),
@@ -284,7 +283,7 @@ class Install extends Migration
                 'fieldIndexes' => $this->text(),
                 'added' => $this->integer(),
                 'updated' => $this->integer(),
-                'failed' => $this->integer(),
+                'fails' => $this->integer(),
                 'failures' => $this->text(),
                 'dateImported' => $this->dateTime(),
                 'dateCreated' => $this->dateTime()->notNull(),

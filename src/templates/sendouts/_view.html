@@ -140,8 +140,8 @@
                     <div class="value">{{ sendout.recipients }}</div>
                 </div>
                 <div class="data">
-                    <h5 class="heading">{{ "Failed Recipients"|t('campaign') }}</h5>
-                    <div class="value">{{ sendout.failedRecipients }}</div>
+                    <h5 class="heading">{{ "Fails"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.fails }}</div>
                 </div>
             {% endif %}
             {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}

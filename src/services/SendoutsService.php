@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\services;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\records\Element_SiteSettings;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\controllers\WebhookController;
 use putyourlightson\campaign\elements\ContactElement;
@@ -150,7 +151,7 @@ class SendoutsService extends Component
         if ($this->_mailer !== null) {
             return $this->_mailer;
         }
-        
+
         $this->_mailer = Campaign::$plugin->createMailer();
 
         return $this->_mailer;
@@ -239,7 +240,7 @@ class SendoutsService extends Component
     public function queuePendingSendouts(): int
     {
         $count = 0;
-        $now = new \DateTime();
+        $now = new DateTime();
 
         // Get sites to loop through so we can ensure that we get all sendouts
         $sites = Craft::$app->getSites()->getAllSites();
@@ -371,7 +372,7 @@ class SendoutsService extends Component
                 return;
             }
 
-            $now = new \DateTime();
+            $now = new DateTime();
 
             // Ensure not already sent today
             if ($contactCampaignRecord->sent !== null AND $contactCampaignRecord->sent > $now->format('Y-m-d')) {
@@ -435,24 +436,24 @@ class SendoutsService extends Component
 
         if ($success) {
             // Update sent date
-            $contactCampaignRecord->sent = new \DateTime();
+            $contactCampaignRecord->sent = new DateTime();
 
             // Update recipients and last sent
             $sendout->recipients++;
-            $sendout->lastSent = new \DateTime();
+            $sendout->lastSent = new DateTime();
 
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         }
         else {
             // Update failed date
-            $contactCampaignRecord->failed = new \DateTime();
+            $contactCampaignRecord->failed = new DateTime();
 
-            // Update failed recipients and send status
-            $sendout->failedRecipients++;
+            // Update fails and send status
+            $sendout->fails++;
             $sendout->sendStatus = 'failed';
-            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending to {email} failed. Please check your email settings.', ['email' => $contact->email]);
+            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check your email settings and the error in the log.');
 
-            $this->_updateSendoutRecord($sendout, ['failedRecipients', 'sendStatus', 'sendStatusMessage']);
+            $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus', 'sendStatusMessage']);
         }
 
         $contactCampaignRecord->save();
@@ -500,7 +501,7 @@ class SendoutsService extends Component
         else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has failed. Please check that your <a href="{emailSettingsUrl}">Craft Campaign email settings</a> are correctly configured.', $variables);
-            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Craft Campaign email settings [{emailSettingsUrl}] are correctly configured.', $variables);
+            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
         // Get mailer
@@ -680,7 +681,7 @@ class SendoutsService extends Component
             ->andWhere(['not', ['sent' => null]]);
 
         if ($todayOnly) {
-            $now = new \DateTime();
+            $now = new DateTime();
 
             // Add condition that sent is today
             $query->andWhere(Db::parseDateParam('sent', $now->format('Y-m-d'), '>'));
