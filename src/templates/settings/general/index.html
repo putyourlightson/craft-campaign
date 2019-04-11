@@ -82,7 +82,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="thin">Mailgun</th>
+                    <th class="thin">
+                        Mailgun
+                        <span class="info">
+                            Use the "Permanent Failure" event type to catch bounces and the "Spam Complaints" event type to catch complaints.
+                        </span>
+                    </th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: apiKey }) }}</textarea>
                     </td>

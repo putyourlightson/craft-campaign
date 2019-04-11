@@ -80,7 +80,7 @@ If you have contacts that are synced to users then you can provide them with a w
     {% for mailingList in mailingLists %}
       <form id="unsubscribe-form" method="post" action="">
         {{ csrfInput() }}
-        <input type="hidden" name="action" value="campaign/contacts/unsubscribeMailingList" />
+        <input type="hidden" name="action" value="campaign/contacts/unsubscribe-mailing-list" />
         <input type="hidden" name="contactId" value="{{ contact.id }}" />
         <input type="hidden" name="mailingListId" value="{{ mailingList.id }}" />
         

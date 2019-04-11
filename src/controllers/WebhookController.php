@@ -156,7 +156,7 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $eventData = json_decode($request->getRawBody());
+        $eventData = $request->getBodyParam('event-data');
         $eventType = $eventData['event'] ?? '';
         $severity = $eventData['severity'] ?? '';
         $email = $eventData['recipient'] ?? '';
@@ -176,7 +176,7 @@ class WebhookController extends Controller
         if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email, $sid);
         }
-        if ($eventType == 'failed' && $severity == 'permanent') {
+        if ($eventType == 'bounced' || ($eventType == 'failed' && $severity == 'permanent')) {
             return $this->_callWebhook('bounced', $email, $sid);
         }
 

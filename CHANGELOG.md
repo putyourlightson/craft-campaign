@@ -1,10 +1,10 @@
 # Release Notes for Campaign
 
-## 1.7.4 - Unreleased
+## 1.7.4 - 2019-04-11
 ### Changed
 - Improved wording of message when sendout fails.
 - Changed contacts controller actions to work with requests other than JSON requests.
-- Changed webhook method to work with new Mailgun webhook payloads.
+- Changed webhook controller to work with new Mailgun webhook API and added info text in general settings.
 
 ### Fixed
 - Fixed user thumbnail image not appearing correctly in meta sidebar.
