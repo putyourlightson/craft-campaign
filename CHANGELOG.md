@@ -2,6 +2,7 @@
 
 ## 1.7.4 - Unreleased
 ### Changed
+- Improved wording of message when sendout fails.
 - Changed contacts controller actions to work with requests other than JSON requests.
 - Changed webhook method to work with new Mailgun webhook payloads.
 

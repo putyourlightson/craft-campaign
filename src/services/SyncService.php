@@ -12,6 +12,7 @@ use craft\events\UserGroupsAssignEvent;
 use craft\helpers\ArrayHelper;
 use craft\services\Elements;
 use craft\services\Users;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -192,7 +193,7 @@ class SyncService extends Component
             $contactMailingListRecord->mailingListId = $mailingList->id;
 
             $contactMailingListRecord->subscriptionStatus = 'subscribed';
-            $contactMailingListRecord->subscribed = new \DateTime();
+            $contactMailingListRecord->subscribed = new DateTime();
             $contactMailingListRecord->sourceType = 'user';
             $contactMailingListRecord->source = $user->id;
 

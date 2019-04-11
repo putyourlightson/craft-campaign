@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\models;
 
 use craft\helpers\Json;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -94,7 +95,7 @@ class ImportModel extends BaseModel
     public $failures;
 
     /**
-     * @var \DateTime|null Date imported
+     * @var DateTime|null Date imported
      */
     public $dateImported;
 

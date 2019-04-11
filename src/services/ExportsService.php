@@ -14,6 +14,7 @@ use putyourlightson\campaign\models\ExportModel;
 
 use craft\base\Component;
 use putyourlightson\campaign\records\ContactMailingListRecord;
+use Throwable;
 
 /**
  * ExportsService
@@ -46,7 +47,7 @@ class ExportsService extends Component
      * @param ExportModel $export
      *
      * @return bool Whether the export was successful
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function exportFile(ExportModel $export): bool
     {
@@ -84,7 +85,7 @@ class ExportsService extends Component
 
             foreach ($contacts as $contact) {
                 // If not already added
-                if (!\in_array($contact->id, $contactIds, true)) {
+                if (!in_array($contact->id, $contactIds)) {
                     // Populate row with contact fields
                     $row = [];
                     foreach ($export->fields as $field) {

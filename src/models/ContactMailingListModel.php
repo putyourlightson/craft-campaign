@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use DateTime;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -54,27 +55,27 @@ class ContactMailingListModel extends BaseModel
     public $subscriptionStatus;
 
     /**
-     * @var \DateTime|null Subscribed
+     * @var DateTime|null Subscribed
      */
     public $subscribed;
 
     /**
-     * @var \DateTime|null Unsubscribed
+     * @var DateTime|null Unsubscribed
      */
     public $unsubscribed;
 
     /**
-     * @var \DateTime|null Complained
+     * @var DateTime|null Complained
      */
     public $complained;
 
     /**
-     * @var \DateTime|null Bounced
+     * @var DateTime|null Bounced
      */
     public $bounced;
 
     /**
-     * @var \DateTime|null Verified
+     * @var DateTime|null Verified
      */
     public $verified;
 
@@ -89,7 +90,7 @@ class ContactMailingListModel extends BaseModel
     public $source = '';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     public $dateUpdated;
 

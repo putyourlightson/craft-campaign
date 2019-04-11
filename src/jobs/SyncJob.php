@@ -7,12 +7,14 @@
 namespace putyourlightson\campaign\jobs;
 
 use craft\elements\User;
+use Exception;
 use putyourlightson\campaign\Campaign;
 
 use Craft;
 use craft\queue\BaseJob;
 use putyourlightson\campaign\events\SyncEvent;
 use putyourlightson\campaign\services\SyncService;
+use Throwable;
 
 /**
  * SyncJob
@@ -36,8 +38,8 @@ class SyncJob extends BaseJob
 
     /**
      * @inheritdoc
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      */
     public function execute($queue)
     {
@@ -69,7 +71,7 @@ class SyncJob extends BaseJob
             ->groupId($mailingList->syncedUserGroupId)
             ->all();
 
-        $total = \count($users);
+        $total = count($users);
 
         foreach ($users as $i => $user) {
             // Set progress

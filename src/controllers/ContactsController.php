@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 
@@ -26,7 +27,7 @@ use yii\web\NotFoundHttpException;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactsController extends Controller
 {
@@ -460,7 +461,7 @@ class ContactsController extends Controller
 
         $contact = $this->_getPostedContact();
 
-        $contact->{$status} = new \DateTime();
+        $contact->{$status} = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {

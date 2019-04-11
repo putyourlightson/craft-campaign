@@ -13,6 +13,7 @@ use craft\records\Element_SiteSettings;
 use craft\web\View;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
+use RuntimeException;
 
 /**
  * SegmentsService
@@ -152,7 +153,7 @@ class SegmentsService extends Component
                         // Convert rendered template to boolean
                         $evaluatedTemplate = (bool)trim($renderedTemplate);
                     }
-                    catch (\RuntimeException $e) {}
+                    catch (RuntimeException $e) {}
 
                     // Remove if evaluated template does not equal operand
                     if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {

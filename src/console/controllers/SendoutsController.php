@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\console\controllers;
 use Craft;
 use craft\helpers\Console;
 use putyourlightson\campaign\Campaign;
+use Throwable;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -28,7 +29,7 @@ class SendoutsController extends Controller
      * Runs pending sendouts.
      *
      * @return int
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionRunPendingSendouts(): int
     {

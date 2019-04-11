@@ -9,10 +9,13 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\records\Element_SiteSettings;
+use DateTime;
+use Exception;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ContactMailingListModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
+use Throwable;
 
 /**
  * MailingListsService
@@ -127,7 +130,7 @@ class MailingListsService extends Component
         $verify = $verify ?? false;
 
         // Ensure that interaction exists
-        if (!\in_array($interaction, ContactMailingListModel::INTERACTIONS, true)) {
+        if (!in_array($interaction, ContactMailingListModel::INTERACTIONS, true)) {
             return;
         }
 
@@ -146,7 +149,7 @@ class MailingListsService extends Component
 
         // If first time for this interaction
         if ($contactMailingListRecord->{$interaction} === null) {
-            $contactMailingListRecord->{$interaction} = new \DateTime();
+            $contactMailingListRecord->{$interaction} = new DateTime();
         }
 
         // If subscribing
@@ -156,7 +159,7 @@ class MailingListsService extends Component
             $contactMailingListRecord->source = $contactMailingListRecord->source ?? $source;
 
             if ($verify AND $contactMailingListRecord->verified === null) {
-                $contactMailingListRecord->verified = new \DateTime();
+                $contactMailingListRecord->verified = new DateTime();
             }
         }
 
@@ -170,7 +173,7 @@ class MailingListsService extends Component
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
      *
-     * @throws \Exception|\Throwable in case delete failed.
+     * @throws Exception|Throwable in case delete failed.
      */
     public function deleteContactSubscription(ContactElement $contact, MailingListElement $mailingList)
     {

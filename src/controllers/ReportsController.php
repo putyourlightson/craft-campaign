@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\helpers\DateTimeHelper;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 
 use Craft;
@@ -98,9 +99,9 @@ class ReportsController extends Controller
         // Get timestamps
         $timestamps = [];
 
-        /** @var \DateTime $dateTime */
+        /** @var DateTime $dateTime */
         $dateTime = $data['startDateTime'];
-        $now = new \DateTime();
+        $now = new DateTime();
         $maxIntervals = Campaign::$plugin->reports->getMaxIntervals($interval);
 
         for ($i = 0; $i < $maxIntervals; $i++) {

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\jobs;
 
+use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
@@ -14,6 +15,7 @@ use putyourlightson\campaign\services\SendoutsService;
 
 use Craft;
 use craft\queue\BaseJob;
+use Throwable;
 use yii\queue\RetryableJobInterface;
 
 /**
@@ -87,8 +89,8 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
     /**
      * @inheritdoc
      * @return void
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      */
     public function execute($queue)
     {
@@ -138,10 +140,10 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $pendingRecipients = $sendout->getPendingRecipients();
 
         $count = 0;
-        $total = \count($pendingRecipients);
+        $total = count($pendingRecipients);
 
         // Loop as long as the there are pending recipients
-        while (\count($pendingRecipients)) {
+        while (count($pendingRecipients)) {
             // Set progress
             $this->setProgress($queue, $count / $total);
 

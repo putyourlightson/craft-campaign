@@ -18,6 +18,7 @@ use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use craft\web\Controller;
+use Throwable;
 use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -27,7 +28,7 @@ use yii\web\Response;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class WebhookController extends Controller
 {
@@ -81,7 +82,7 @@ class WebhookController extends Controller
     /**
      * Amazon SES
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionAmazonSes(): Response
     {
@@ -148,7 +149,7 @@ class WebhookController extends Controller
     /**
      * Mailgun
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionMailgun(): Response
     {
@@ -185,7 +186,7 @@ class WebhookController extends Controller
     /**
      * Mandrill
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionMandrill(): Response
     {
@@ -215,7 +216,7 @@ class WebhookController extends Controller
     /**
      * Postmark
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionPostmark(): Response
     {
@@ -239,7 +240,7 @@ class WebhookController extends Controller
     /**
      * Sendgrid
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionSendgrid(): Response
     {
@@ -277,7 +278,7 @@ class WebhookController extends Controller
      * @param string|null $sid
      *
      * @return Response
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */

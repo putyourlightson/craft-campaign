@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\records\Element_SiteSettings;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -19,6 +20,7 @@ use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
 use craft\mail\Message;
+use Throwable;
 use yii\base\Exception;
 
 /**
@@ -69,14 +71,14 @@ class CampaignsService extends Component
      * @param string         $interaction
      * @param LinkRecord     $linkRecord
      *
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
     {
         // Ensure that interaction exists
-        if (!\in_array($interaction, ContactCampaignModel::INTERACTIONS, true)) {
+        if (!in_array($interaction, ContactCampaignModel::INTERACTIONS, true)) {
             return;
         }
 
@@ -100,7 +102,7 @@ class CampaignsService extends Component
 
         // If first time for this interaction
         if ($contactCampaignRecord->{$interaction} === null) {
-            $contactCampaignRecord->{$interaction} = new \DateTime();
+            $contactCampaignRecord->{$interaction} = new DateTime();
             $campaign->{$interaction}++;
         }
 
@@ -113,7 +115,7 @@ class CampaignsService extends Component
         else if ($interaction == 'clicked') {
             // If not yet opened
             if ($contactCampaignRecord->opened === null) {
-                $contactCampaignRecord->opened = new \DateTime();
+                $contactCampaignRecord->opened = new DateTime();
                 $contactCampaignRecord->opens = 1;
                 $campaign->opened++;
                 $campaign->opens++;
@@ -129,7 +131,7 @@ class CampaignsService extends Component
                 $linkRecord->clicks = $linkRecord->clicks ? $linkRecord->clicks + 1 : 1;
 
                 // Increment clicked if first link click for this contact
-                if (!\in_array($linkRecord->id, explode(',', $contactCampaignRecord->links), false)) {
+                if (!in_array($linkRecord->id, explode(',', $contactCampaignRecord->links), false)) {
                     $linkRecord->clicked = $linkRecord->clicked ? $linkRecord->clicked + 1 : 1;
                 }
 

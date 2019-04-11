@@ -64,7 +64,7 @@ abstract class BaseModel extends Model
 
         $models = [];
 
-        if (\is_array($data))
+        if (is_array($data))
         {
             foreach ($data as $values)
             {

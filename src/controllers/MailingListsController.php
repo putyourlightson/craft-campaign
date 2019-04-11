@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -123,7 +124,7 @@ class MailingListsController extends Controller
     /**
      * @return Response|null
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws Exception
      * @throws BadRequestHttpException
      */
@@ -152,7 +153,7 @@ class MailingListsController extends Controller
             try {
                 $mailingList = Craft::$app->getElements()->duplicateElement($mailingList);
             }
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the mailing list.'), 0, $e);
             }
         }
@@ -220,7 +221,7 @@ class MailingListsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteMailingList()
     {

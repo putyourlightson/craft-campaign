@@ -12,6 +12,7 @@ use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use craft\web\View;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -20,6 +21,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -53,7 +55,7 @@ class SendoutsController extends Controller
      * @return Response
      * @throws Exception
      * @throws ForbiddenHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionQueuePendingSendouts(): Response
     {
@@ -323,7 +325,7 @@ class SendoutsController extends Controller
      *
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
@@ -360,21 +362,21 @@ class SendoutsController extends Controller
 
         // Get the selected campaign ID
         $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);
-        $sendout->campaignId = (\is_array($sendout->campaignId) AND isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
+        $sendout->campaignId = (is_array($sendout->campaignId) AND isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
         $sendout->mailingListIds = $request->getBodyParam('mailingListIds', $sendout->mailingListIds);
-        $sendout->mailingListIds = \is_array($sendout->mailingListIds) ? implode(',', $sendout->mailingListIds) : '';
+        $sendout->mailingListIds = is_array($sendout->mailingListIds) ? implode(',', $sendout->mailingListIds) : '';
         $sendout->excludedMailingListIds = $request->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
-        $sendout->excludedMailingListIds = \is_array($sendout->excludedMailingListIds) ? implode(',', $sendout->excludedMailingListIds) : '';
+        $sendout->excludedMailingListIds = is_array($sendout->excludedMailingListIds) ? implode(',', $sendout->excludedMailingListIds) : '';
 
         $sendout->segmentIds = $request->getBodyParam('segmentIds', $sendout->segmentIds);
-        $sendout->segmentIds = \is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
+        $sendout->segmentIds = is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
 
         // Convert send date
         $sendout->sendDate = $request->getBodyParam('sendDate', $sendout->sendDate);
         $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
-        $sendout->sendDate = $sendout->sendDate ?: new \DateTime();
+        $sendout->sendDate = $sendout->sendDate ?: new DateTime();
 
         if ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') {
             $schedule = $request->getBodyParam('schedule');
@@ -428,7 +430,7 @@ class SendoutsController extends Controller
      *
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws BadRequestHttpException
@@ -524,7 +526,7 @@ class SendoutsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionPauseSendout()
     {
@@ -553,7 +555,7 @@ class SendoutsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionCancelSendout()
     {
@@ -581,7 +583,7 @@ class SendoutsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteSendout()
     {

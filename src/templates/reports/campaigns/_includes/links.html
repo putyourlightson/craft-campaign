@@ -9,7 +9,7 @@
         <tbody>
             {% for link in links %}
                 <tr>
-                    <td scope="row" data-title="{{ 'URL'|t('campaign') }}"><a href="{{ link.url }}" class="go" target="_blank">{{ link.url }}</a></td>
+                    <td data-title="{{ 'URL'|t('campaign') }}"><a href="{{ link.url }}" class="go" target="_blank">{{ link.url }}</a></td>
                     <td data-title="{{ 'Title'|t('campaign') }}">{{ link.title }}</td>
                     <td data-title="{{ 'Clicked'|t('campaign') }}">{{ link.clicked }}</td>
                     <td data-title="{{ 'Clicks'|t('campaign') }}">{{ link.clicks }}</td>

@@ -3,8 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
 
 class m190411_120000_alter_fail_columns extends Migration
 {

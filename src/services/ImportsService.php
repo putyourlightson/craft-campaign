@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\jobs\ImportJob;
@@ -18,6 +19,7 @@ use craft\base\Field;
 use craft\base\FieldInterface;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
+use Throwable;
 use yii\base\InvalidConfigException;
 
 /**
@@ -259,7 +261,7 @@ class ImportsService extends Component
      * @param int $lineNumber
      *
      * @return ImportModel
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function importRow(ImportModel $import, $row, int $lineNumber): ImportModel
     {
@@ -286,7 +288,7 @@ class ImportsService extends Component
         }
 
         // Map fields to values
-        if (\is_array($import->fieldIndexes)) {
+        if (is_array($import->fieldIndexes)) {
             $values = [];
             foreach ($import->fieldIndexes as $field => $index) {
                 if ($index !== '' AND isset($row[$index])) {
@@ -300,7 +302,7 @@ class ImportsService extends Component
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            $import->failed++;
+            $import->fails++;
             $import->failures[$lineNumber] = implode(' ', $contact->getErrorSummary(true));
 
             return $import;
@@ -328,7 +330,7 @@ class ImportsService extends Component
      * @param int $importId
      *
      * @return bool Whether the action was successful
-     * @throws \Exception|\Throwable in case delete failed.
+     * @throws Exception|Throwable in case delete failed.
      */
     public function deleteImportById(int $importId): bool
     {

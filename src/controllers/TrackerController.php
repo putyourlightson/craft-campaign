@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\controllers;
 use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
 use putyourlightson\campaign\helpers\StringHelper;
@@ -32,7 +31,7 @@ use yii\web\Response;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class TrackerController extends Controller
 {

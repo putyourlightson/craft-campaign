@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
 use craft\web\View;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\helpers\NumberHelper;
@@ -21,6 +22,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
+use RuntimeException;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
@@ -299,7 +301,7 @@ class CampaignElement extends Element
     public $bounced = 0;
 
     /**
-     * @var \DateTime|null Date closed
+     * @var DateTime|null Date closed
      */
     public $dateClosed;
 
@@ -627,7 +629,7 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }
-        catch (\RuntimeException $e) {}
+        catch (RuntimeException $e) {}
 
         // Reset template mode
         $view->setTemplateMode($templateMode);

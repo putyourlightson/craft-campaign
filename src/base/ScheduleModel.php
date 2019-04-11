@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\base;
 
 use craft\helpers\DateTimeHelper;
+use DateTime;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
@@ -29,7 +30,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public $canSendToContactsMultipleTimes = false;
 
     /**
-     * @var \DateTime|null End date
+     * @var DateTime|null End date
      */
     public $endDate;
 
@@ -39,7 +40,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     public $daysOfWeek;
 
     /**
-     * @var \DateTime|null Time of day
+     * @var DateTime|null Time of day
      */
     public $timeOfDay;
 
@@ -95,7 +96,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
 
         // Ensure time of day has past
         if ($this->timeOfDay !== null) {
-            $now = new \DateTime();
+            $now = new DateTime();
             $format = 'H:i';
 
             if ($this->timeOfDay->format($format) > $now->format($format)) {

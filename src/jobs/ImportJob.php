@@ -8,16 +8,19 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
+use DateTime;
+use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ImportEvent;
 use putyourlightson\campaign\services\ImportsService;
+use Throwable;
 
 /**
  * ImportJob
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ImportJob extends BaseJob
 {
@@ -34,8 +37,8 @@ class ImportJob extends BaseJob
 
     /**
      * @inheritdoc
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      */
     public function execute($queue)
     {
@@ -60,7 +63,7 @@ class ImportJob extends BaseJob
 
         // Get rows
         $rows = Campaign::$plugin->imports->getRows($import);
-        $total = \count($rows);
+        $total = count($rows);
 
         // Loop as long as the there are lines
         foreach ($rows as $i => $row) {
@@ -71,7 +74,7 @@ class ImportJob extends BaseJob
             $import = Campaign::$plugin->imports->importRow($import, $row, $i + 1);
         }
 
-        $import->dateImported = new \DateTime();
+        $import->dateImported = new DateTime();
 
         // Save import
         Campaign::$plugin->imports->saveImport($import);

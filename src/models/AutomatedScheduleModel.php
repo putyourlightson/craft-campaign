@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
+use DateTime;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
@@ -74,7 +75,7 @@ class AutomatedScheduleModel extends ScheduleModel
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
 
         // Ensure day of the week is valid
         // N: Numeric representation of the day of the week: 1 to 7

@@ -14,6 +14,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\base\Component;
+use Throwable;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -114,7 +115,7 @@ class MailingListTypesService extends Component
      * @param bool|null $runValidation Whether the mailing list type should be validated
      *
      * @return bool Whether the mailing list type was saved successfully
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function saveMailingListType(MailingListTypeModel $mailingListType, bool $runValidation = null): bool
     {
@@ -178,7 +179,7 @@ class MailingListTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -217,7 +218,7 @@ class MailingListTypesService extends Component
      * @param int $mailingListTypeId
      *
      * @return bool Whether the mailing list type was deleted successfully
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function deleteMailingListTypeById(int $mailingListTypeId): bool
     {
@@ -236,7 +237,7 @@ class MailingListTypesService extends Component
      * @param MailingListTypeModel $mailingListType
      *
      * @return bool Whether the mailing list type was deleted successfully
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function deleteMailingListType(MailingListTypeModel $mailingListType): bool
     {
@@ -271,7 +272,7 @@ class MailingListTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;

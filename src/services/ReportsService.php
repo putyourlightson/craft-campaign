@@ -10,6 +10,7 @@ use craft\base\Model;
 use craft\db\ActiveRecord;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -128,7 +129,7 @@ class ReportsService extends Component
         $data['dateFirstSent'] = $contactCampaignRecord === null ? null : DateTimeHelper::toDateTime($contactCampaignRecord->dateCreated);
 
         // Check if chart exists
-        $data['hasChart'] = \count($this->getCampaignContactActivity($campaignId, 'opened', 1)) > 0;
+        $data['hasChart'] = count($this->getCampaignContactActivity($campaignId, 'opened', 1)) > 0;
 
         return $data;
     }
@@ -607,7 +608,7 @@ class ReportsService extends Component
         // Get activity
         $activity = [];
 
-        /** @var \DateTime|null $lastInteraction */
+        /** @var DateTime|null $lastInteraction */
         $lastInteraction = null;
 
         foreach ($records as $record) {
@@ -661,7 +662,7 @@ class ReportsService extends Component
 
         foreach ($models as $model) {
             /** @var ContactCampaignModel|ContactMailingListModel $model */
-            $interactionTypes = ($interaction !== null AND \in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
+            $interactionTypes = ($interaction !== null AND in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
 
             foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->{$interactionType} !== null) {
@@ -703,7 +704,7 @@ class ReportsService extends Component
         krsort($activity);
 
         // Enforce the limit
-        $activity = \array_slice($activity, 0, $limit);
+        $activity = array_slice($activity, 0, $limit);
 
         return $activity;
     }
@@ -774,7 +775,7 @@ class ReportsService extends Component
         array_multisort($countArray, SORT_DESC, $results);
 
         // Enforce the limit
-        $results = \array_slice($results, 0, $limit);
+        $results = array_slice($results, 0, $limit);
 
         return $results;
     }
@@ -823,7 +824,7 @@ class ReportsService extends Component
         array_multisort($countArray, SORT_DESC, $results);
 
         // Enforce the limit
-        $results = \array_slice($results, 0, $limit);
+        $results = array_slice($results, 0, $limit);
 
         return $results;
     }

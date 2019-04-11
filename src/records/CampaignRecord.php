@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use craft\records\Element;
+use DateTime;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -23,7 +24,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $unsubscribed
  * @property int $complained
  * @property int $bounced
- * @property \DateTime|null $dateClosed
+ * @property DateTime|null $dateClosed
  * @property ActiveQueryInterface $campaignType
  * @property ActiveQueryInterface $element
  *

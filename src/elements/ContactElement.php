@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
@@ -313,28 +314,28 @@ class ContactElement extends Element
     /**
      * Last activity
      *
-     * @var \DateTime
+     * @var DateTime
      */
     public $lastActivity;
 
     /**
      * Verified
      *
-     * @var \DateTime
+     * @var DateTime
      */
     public $verified;
 
     /**
      * Complained
      *
-     * @var \DateTime
+     * @var DateTime
      */
     public $complained;
 
     /**
      * Bounced
      *
-     * @var \DateTime
+     * @var DateTime
      */
     public $bounced;
 

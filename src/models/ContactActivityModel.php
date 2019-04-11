@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use DateTime;
 use putyourlightson\campaign\base\BaseModel;
 
 /**
@@ -13,7 +14,7 @@ use putyourlightson\campaign\base\BaseModel;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactActivityModel extends BaseModel
 {
@@ -46,7 +47,7 @@ class ContactActivityModel extends BaseModel
     public $count;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     public $date;
 

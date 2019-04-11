@@ -14,6 +14,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\base\Component;
+use Throwable;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -122,7 +123,7 @@ class CampaignTypesService extends Component
      *
      * @return bool Whether the campaign type was saved successfully
      * @throws NotFoundHttpException if $campaignType->id is invalid
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = null): bool
     {
@@ -186,7 +187,7 @@ class CampaignTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -225,7 +226,7 @@ class CampaignTypesService extends Component
      * @param int $campaignTypeId
      *
      * @return bool Whether the campaign type was deleted successfully
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function deleteCampaignTypeById(int $campaignTypeId): bool
     {
@@ -244,7 +245,7 @@ class CampaignTypesService extends Component
      * @param CampaignTypeModel $campaignType
      *
      * @return bool Whether the campaign type was deleted successfully
-     * @throws \Throwable if reasons
+     * @throws Throwable if reasons
      */
     public function deleteCampaignType(CampaignTypeModel $campaignType): bool
     {
@@ -281,7 +282,7 @@ class CampaignTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;

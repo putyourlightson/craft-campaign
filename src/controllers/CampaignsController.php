@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -15,6 +16,7 @@ use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use craft\helpers\Json;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -28,7 +30,7 @@ use yii\web\ServerErrorHttpException;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class CampaignsController extends Controller
 {
@@ -242,7 +244,7 @@ class CampaignsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
-     * @throws \Throwable
+     * @throws Throwable
      * @throws Exception
      */
     public function actionSaveCampaign()
@@ -257,7 +259,7 @@ class CampaignsController extends Controller
             try {
                 $campaign = Craft::$app->getElements()->duplicateElement($campaign);
             }
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the campaign.'), 0, $e);
             }
 
@@ -325,7 +327,7 @@ class CampaignsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionCloseCampaign()
     {
@@ -341,7 +343,7 @@ class CampaignsController extends Controller
         }
 
         // Set closed date to now
-        $campaign->dateClosed = new \DateTime();
+        $campaign->dateClosed = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($campaign)) {
             if ($request->getAcceptsJson()) {
@@ -378,7 +380,7 @@ class CampaignsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteCampaign()
     {

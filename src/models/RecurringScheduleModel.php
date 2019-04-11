@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
+use DateTime;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
@@ -77,7 +78,7 @@ class RecurringScheduleModel extends ScheduleModel
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
 
         // Ensure not already sent today
         $format = 'Y-m-d';

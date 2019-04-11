@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\behaviors\FieldLayoutBehavior;
+use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
@@ -15,6 +16,7 @@ use Craft;
 use craft\web\Controller;
 use craft\helpers\FileHelper;
 use craft\web\UploadedFile;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -72,7 +74,7 @@ class ImportsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      */
     public function actionUploadFile(ImportModel $import = null)
     {
@@ -137,7 +139,7 @@ class ImportsController extends Controller
         $import->filePath = $request->getRequiredBodyParam('filePath');
 
         $mailingListId = $request->getBodyParam('mailingListId');
-        $import->mailingListId = (\is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : '';
+        $import->mailingListId = (is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : '';
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
@@ -270,8 +272,7 @@ class ImportsController extends Controller
      *
      * @return Response
      * @throws BadRequestHttpException
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteImport(): Response
     {

@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use DateTime;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
 
@@ -17,11 +18,11 @@ use yii\db\ActiveQueryInterface;
  * @property int $contactId
  * @property int $mailingListId
  * @property string $subscriptionStatus
- * @property \DateTime|null $subscribed
- * @property \DateTime|null $unsubscribed
- * @property \DateTime|null $complained
- * @property \DateTime|null $bounced
- * @property \DateTime|null $verified
+ * @property DateTime|null $subscribed
+ * @property DateTime|null $unsubscribed
+ * @property DateTime|null $complained
+ * @property DateTime|null $bounced
+ * @property DateTime|null $verified
  * @property string $sourceType
  * @property string $source
  * @property ActiveQueryInterface $contact

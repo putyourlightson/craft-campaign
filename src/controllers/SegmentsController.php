@@ -15,6 +15,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\web\Controller;
 use putyourlightson\campaign\helpers\SegmentHelper;
+use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -119,7 +120,7 @@ class SegmentsController extends Controller
      * @return Response|null
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException if reasons
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws BadRequestHttpException
@@ -148,7 +149,7 @@ class SegmentsController extends Controller
             try {
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
             }
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the segment.'), 0, $e);
             }
         }
@@ -162,7 +163,7 @@ class SegmentsController extends Controller
         // Get the conditions
         $segment->conditions = Craft::$app->getRequest()->getBodyParam('conditions', $segment->conditions);
 
-        if (\is_array($segment->conditions)) {
+        if (is_array($segment->conditions)) {
             foreach ($segment->conditions as &$andCondition) {
                 /* @var array $andCondition */
                 foreach ($andCondition as &$orCondition) {
@@ -227,7 +228,7 @@ class SegmentsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteSegment()
     {

@@ -15,6 +15,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 
 use Craft;
 use craft\db\Migration;
+use Throwable;
 
 /**
  * Campaign Install Migration
@@ -54,7 +55,7 @@ class Install extends Migration
 
     /**
      * @return boolean
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function safeDown(): bool
     {
@@ -352,7 +353,7 @@ class Install extends Migration
      * Delete elements
      *
      * @return void
-     * @throws \Throwable
+     * @throws Throwable
      */
     protected function deleteElements()
     {

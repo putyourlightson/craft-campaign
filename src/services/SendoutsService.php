@@ -10,6 +10,8 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\records\Element_SiteSettings;
 use DateTime;
+use DOMDocument;
+use DOMElement;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\controllers\WebhookController;
 use putyourlightson\campaign\elements\ContactElement;
@@ -30,6 +32,8 @@ use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use putyourlightson\campaign\records\SendoutRecord;
+use Swift_Transport;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
@@ -235,7 +239,7 @@ class SendoutsService extends Component
      * Queues pending sendouts
      *
      * @return int
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function queuePendingSendouts(): int
     {
@@ -332,7 +336,7 @@ class SendoutsService extends Component
      * @param ContactElement $contact
      * @param int $mailingListId
      *
-     * @throws \Throwable
+     * @throws Throwable
      * @throws Exception
      */
     public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId)
@@ -445,9 +449,6 @@ class SendoutsService extends Component
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         }
         else {
-            // Update failed date
-            $contactCampaignRecord->failed = new DateTime();
-
             // Update fails and send status
             $sendout->fails++;
             $sendout->sendStatus = 'failed';
@@ -524,7 +525,7 @@ class SendoutsService extends Component
      *
      * @param SendoutElement $sendout
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function prepareSending(SendoutElement $sendout)
     {
@@ -543,7 +544,7 @@ class SendoutsService extends Component
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws MissingComponentException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function finaliseSending(SendoutElement $sendout)
     {
@@ -592,7 +593,7 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @return bool Whether the action was successful
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function pauseSendout(SendoutElement $sendout): bool
     {
@@ -611,7 +612,7 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @return bool Whether the action was successful
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function cancelSendout(SendoutElement $sendout): bool
     {
@@ -630,7 +631,7 @@ class SendoutsService extends Component
      * @param SendoutElement $sendout
      *
      * @return bool Whether the action was successful
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function deleteSendout(SendoutElement $sendout): bool
     {
@@ -731,8 +732,8 @@ class SendoutsService extends Component
         $transport = $mailer->getTransport();
 
         // Add SID for custom transports
-        if ($transport instanceof \Swift_Transport) {
-            $transportClass = \get_class($transport);
+        if ($transport instanceof Swift_Transport) {
+            $transportClass = get_class($transport);
             switch ($transportClass) {
                 case 'MailgunTransport':
                     $message->addHeader('X-Mailgun-Variables', '{"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}');
@@ -766,12 +767,12 @@ class SendoutsService extends Component
         $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid, 'lid' => '']);
 
         // Use DOMDocument to parse links
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
 
         // Suppress markup errors and prepend XML tag to force utf-8 encoding (https://gist.github.com/Xeoncross/9401853)
         @$dom->loadHTML('<?xml encoding="utf-8"?>'.$body);
 
-        /** @var \DOMElement[] $elements*/
+        /** @var DOMElement[] $elements*/
         $elements = $dom->getElementsByTagName('a');
 
         foreach ($elements as $element) {

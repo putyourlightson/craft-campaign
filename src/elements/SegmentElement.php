@@ -30,7 +30,7 @@ use putyourlightson\campaign\records\SegmentRecord;
  * @property int[] $contactIds
  * @property array $fieldOperators
  * @property array $availableFields
- * @property array|\putyourlightson\campaign\elements\ContactElement[] $contacts
+ * @property ContactElement[] $contacts
  */
 class SegmentElement extends Element
 {
@@ -228,12 +228,12 @@ class SegmentElement extends Element
     {
         $count = 0;
 
-        if (!\is_array($this->conditions)) {
+        if (!is_array($this->conditions)) {
             return $count;
         }
 
         foreach ($this->conditions as $conditions) {
-            $count += \count($conditions);
+            $count += count($conditions);
         }
 
         return $count;

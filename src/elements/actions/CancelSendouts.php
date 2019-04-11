@@ -12,6 +12,7 @@ use Craft;
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
+use Throwable;
 
 /**
  * CancelSendouts
@@ -91,7 +92,7 @@ EOD;
      * @param ElementQueryInterface $query The element query defining which elements the action should affect.
      *
      * @return bool Whether the action was performed successfully.
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function performAction(ElementQueryInterface $query): bool
     {

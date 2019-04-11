@@ -25,6 +25,7 @@ use putyourlightson\campaign\services\ReportsService;
 
 use Craft;
 use craft\helpers\Template;
+use Twig\Markup;
 use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
@@ -33,7 +34,7 @@ use yii\web\ForbiddenHttpException;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class CampaignVariable
 {
@@ -280,7 +281,7 @@ class CampaignVariable
     /**
      * Returns reCAPTCHA markup
      *
-     * @return \Twig_Markup|string
+     * @return Markup|string
      */
     public function getRecaptcha()
     {

@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\errors\ElementNotFoundException;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -14,6 +15,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 
 use Craft;
 use craft\base\Component;
+use Throwable;
 use yii\base\Exception;
 
 /**
@@ -21,7 +23,7 @@ use yii\base\Exception;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class WebhookService extends Component
 {
@@ -37,7 +39,7 @@ class WebhookService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function complain(ContactElement $contact, MailingListElement $mailingList = null, SendoutElement $sendout = null)
     {
@@ -53,7 +55,7 @@ class WebhookService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function bounce(ContactElement $contact, MailingListElement $mailingList = null, SendoutElement $sendout = null)
     {
@@ -71,7 +73,7 @@ class WebhookService extends Component
      * @param MailingListElement|null $mailingList
      * @param SendoutElement|null     $sendout
      *
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
@@ -89,7 +91,7 @@ class WebhookService extends Component
 
         // Update contact
         if ($contact->{$interaction} === null) {
-            $contact->{$interaction} = new \DateTime();
+            $contact->{$interaction} = new DateTime();
             Craft::$app->getElements()->saveElement($contact);
         }
     }

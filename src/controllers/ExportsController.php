@@ -14,6 +14,7 @@ use Craft;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -86,7 +87,7 @@ class ExportsController extends Controller
      * @return Response|null
      * @throws Exception
      * @throws BadRequestHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionExportFile()
     {
@@ -101,7 +102,7 @@ class ExportsController extends Controller
         // Get fields to export
         $export->fields = [];
         $fields = $request->getBodyParam('fields');
-        if (\is_array($fields)) {
+        if (is_array($fields)) {
             foreach ($fields as $field => $value) {
                 if ($value) {
                     $export->fields[] = $field;

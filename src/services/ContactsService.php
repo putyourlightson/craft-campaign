@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\services;
 
 use craft\helpers\ConfigHelper;
 use craft\web\View;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -21,6 +22,8 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Message;
+use RuntimeException;
+use Throwable;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\helpers\Json;
@@ -31,7 +34,7 @@ use yii\helpers\Json;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactsService extends Component
 {
@@ -146,7 +149,7 @@ class ContactsService extends Component
      *
      * @return bool
      * @throws StaleObjectException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function savePendingContact(PendingContactModel $pendingContact): bool
     {
@@ -226,7 +229,7 @@ class ContactsService extends Component
                     'pendingContact' => $pendingContact,
                 ]);
             }
-            catch (\RuntimeException $e) {}
+            catch (RuntimeException $e) {}
         }
 
         // Get from name and email
@@ -251,7 +254,7 @@ class ContactsService extends Component
      *
      * @return PendingContactModel|null
      * @throws StaleObjectException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function verifyPendingContact(string $pid)
     {
@@ -280,7 +283,7 @@ class ContactsService extends Component
             }
         }
 
-        $contact->verified = new \DateTime();
+        $contact->verified = new DateTime();
 
         $contact->email = $pendingContact->email;
 
@@ -307,7 +310,7 @@ class ContactsService extends Component
     /**
      * Deletes expired pending contacts
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function purgeExpiredPendingContacts()
     {

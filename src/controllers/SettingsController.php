@@ -18,6 +18,7 @@ use craft\errors\MissingComponentException;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
+use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -28,7 +29,7 @@ use yii\web\Response;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class SettingsController extends Controller
 {
@@ -104,8 +105,8 @@ class SettingsController extends Controller
         $allTransportAdapterTypes = MailerHelper::allMailerTransportTypes();
 
         // Make sure the selected adapter class is in there
-        if (!\in_array(\get_class($adapter), $allTransportAdapterTypes, true)) {
-            $allTransportAdapterTypes[] = \get_class($adapter);
+        if (!in_array(get_class($adapter), $allTransportAdapterTypes, true)) {
+            $allTransportAdapterTypes[] = get_class($adapter);
         }
 
         $allTransportAdapters = [];
@@ -113,7 +114,7 @@ class SettingsController extends Controller
 
         foreach ($allTransportAdapterTypes as $transportAdapterType) {
             /** @var string|TransportAdapterInterface $transportAdapterType */
-            if ($transportAdapterType === \get_class($adapter) || $transportAdapterType::isSelectable()) {
+            if ($transportAdapterType === get_class($adapter) || $transportAdapterType::isSelectable()) {
                 $allTransportAdapters[] = MailerHelper::createTransportAdapter($transportAdapterType);
                 $transportTypeOptions[] = [
                     'value' => $transportAdapterType,
@@ -417,7 +418,7 @@ class SettingsController extends Controller
             try {
                 $response = $message->send();
             }
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
                 Craft::error($e);
                 Craft::$app->getErrorHandler()->logException($e);
                 $response = false;

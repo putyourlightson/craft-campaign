@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\helpers;
 
 use Craft;
 use craft\helpers\Json;
+use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use yii\web\ForbiddenHttpException;
 

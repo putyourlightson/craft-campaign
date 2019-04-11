@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -65,37 +66,37 @@ class ContactCampaignModel extends BaseModel
     public $mailingListId;
 
     /**
-     * @var \DateTime|null Sent
+     * @var DateTime|null Sent
      */
     public $sent;
 
     /**
-     * @var \DateTime|null Failed
+     * @var DateTime|null Failed
      */
     public $failed;
 
     /**
-     * @var \DateTime|null Opened
+     * @var DateTime|null Opened
      */
     public $opened;
 
     /**
-     * @var \DateTime|null Clicked
+     * @var DateTime|null Clicked
      */
     public $clicked;
 
     /**
-     * @var \DateTime|null Unsubscribed
+     * @var DateTime|null Unsubscribed
      */
     public $unsubscribed;
 
     /**
-     * @var \DateTime|null Complained
+     * @var DateTime|null Complained
      */
     public $complained;
 
     /**
-     * @var \DateTime|null Bounced
+     * @var DateTime|null Bounced
      */
     public $bounced;
 
@@ -130,7 +131,7 @@ class ContactCampaignModel extends BaseModel
     public $client;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     public $dateUpdated;
 
@@ -212,7 +213,7 @@ class ContactCampaignModel extends BaseModel
         $links = [];
         $linkIds = $this->links ? explode(',', $this->links) : [];
 
-        if (\count($linkIds)) {
+        if (count($linkIds)) {
             $linkRecords = LinkRecord::find()
                 ->where(['id' => $linkIds])
                 ->all();

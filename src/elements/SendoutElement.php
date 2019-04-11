@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
+use DateTime;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -399,12 +400,12 @@ class SendoutElement extends Element
     public $plaintextBody;
 
     /**
-     * @var \DateTime Send date
+     * @var DateTime Send date
      */
     public $sendDate;
 
     /**
-     * @var \DateTime Last sent
+     * @var DateTime Last sent
      */
     public $lastSent;
 
@@ -549,7 +550,7 @@ class SendoutElement extends Element
         }
 
         // Get expected recipients
-        $expectedRecipients = \count($this->getPendingRecipients());
+        $expectedRecipients = count($this->getPendingRecipients());
 
         $progress = $expectedRecipients == 0 ?: $this->recipients / ($this->recipients + $expectedRecipients);
         $progress = $progress < 1 ? $progress : 1;
@@ -748,7 +749,7 @@ class SendoutElement extends Element
      */
     public function getPendingRecipientCount(): int
     {
-        return \count($this->getPendingRecipients());
+        return count($this->getPendingRecipients());
     }
 
     /**

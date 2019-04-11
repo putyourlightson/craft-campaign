@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\records;
 use craft\db\ActiveRecord;
 use craft\records\Element;
 use craft\records\User;
+use DateTime;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -23,10 +24,10 @@ use yii\db\ActiveQueryInterface;
  * @property string $device Device
  * @property string $os OS
  * @property string $client Client
- * @property \DateTime $lastActivity Last activity
- * @property \DateTime $verified Verified
- * @property \DateTime $complained Complained
- * @property \DateTime $bounced Bounced
+ * @property DateTime $lastActivity Last activity
+ * @property DateTime $verified Verified
+ * @property DateTime $complained Complained
+ * @property DateTime $bounced Bounced
  * @property ActiveQueryInterface $element
  * @property ActiveQueryInterface $user
  *

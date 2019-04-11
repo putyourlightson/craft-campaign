@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\web\Controller;
+use Throwable;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -22,7 +23,7 @@ use yii\web\Response;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class CampaignTypesController extends Controller
 {
@@ -93,7 +94,7 @@ class CampaignTypesController extends Controller
 
     /**
      * @return Response|null
-     * @throws \Throwable
+     * @throws Throwable
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      */
@@ -150,7 +151,7 @@ class CampaignTypesController extends Controller
      *
      * @return Response
      * @throws BadRequestHttpException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionDeleteCampaignType(): Response
     {
