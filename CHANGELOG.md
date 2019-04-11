@@ -6,6 +6,9 @@
 - Changed contacts controller actions to work with requests other than JSON requests.
 - Changed webhook method to work with new Mailgun webhook payloads.
 
+### Fixed
+- Fixed user thumbnail image not appearing correctly in meta sidebar.
+
 ## 1.7.3 - 2019-03-26
 ### Added
 - Added dropdown, email and URL fieldtypes to segments.

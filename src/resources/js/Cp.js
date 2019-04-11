@@ -6,8 +6,17 @@
 Campaign.CP = Garnish.Base.extend(
     {
         init: function() {
+            this.loadElementThumbs();
             this.addListener($.find('.show-more'), 'click', 'showMore');
             this.addListener($.find('.interaction-filter'), 'change', 'filterInteraction');
+        },
+
+        loadElementThumbs: function() {
+            var elements = $('.elementThumb');
+
+            if (elements.length) {
+                (new Craft.ElementThumbLoader()).load(elements);
+            }
         },
 
         showMore: function(event) {

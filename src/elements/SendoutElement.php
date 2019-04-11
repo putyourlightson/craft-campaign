@@ -260,6 +260,7 @@ class SendoutElement extends Element
             'subject' => ['label' => Craft::t('campaign', 'Subject')],
             'campaignId' => ['label' => Craft::t('campaign', 'Campaign')],
             'recipients' => ['label' => Craft::t('campaign', 'Recipients')],
+            'fails' => ['label' => Craft::t('campaign', 'Fails')],
             'progress' => ['label' => Craft::t('campaign', 'Progress')],
             'sender' => ['label' => Craft::t('campaign', 'Sent By')],
             'mailingListIds' => ['label' => Craft::t('campaign', 'Mailing Lists')],
@@ -328,11 +329,6 @@ class SendoutElement extends Element
      * @var string Send status
      */
     public $sendStatus = 'draft';
-
-    /**
-     * @var string Send status message
-     */
-    public $sendStatusMessage;
 
     /**
      * @var string Send from name

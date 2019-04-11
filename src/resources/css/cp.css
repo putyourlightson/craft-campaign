@@ -178,7 +178,7 @@
     cursor: help;
 }
 
-.element.hasthumb .elementthumb img {
+.element.hasthumb .elementthumb {
     background: url('../images/user.svg');
     background-size: cover;
 }

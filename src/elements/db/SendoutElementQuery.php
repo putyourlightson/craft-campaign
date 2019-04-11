@@ -146,7 +146,6 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.senderId',
             'campaign_sendouts.sendoutType',
             'campaign_sendouts.sendStatus',
-            'campaign_sendouts.sendStatusMessage',
             'campaign_sendouts.fromName',
             'campaign_sendouts.fromEmail',
             'campaign_sendouts.subject',

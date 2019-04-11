@@ -250,7 +250,6 @@ class Install extends Migration
                 'senderId' => $this->integer(),
                 'sendoutType' => $this->string()->notNull(),
                 'sendStatus' => $this->string()->notNull(),
-                'sendStatusMessage' => $this->text(),
                 'fromName' => $this->string()->notNull(),
                 'fromEmail' => $this->string()->notNull(),
                 'subject' => $this->string()->notNull(),

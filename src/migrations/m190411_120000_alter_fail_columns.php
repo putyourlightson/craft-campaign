@@ -14,16 +14,20 @@ class m190411_120000_alter_fail_columns extends Migration
      */
     public function safeUp()
     {
-        if ($this->db->columnExists('{{%campaign_contacts_campaigns}}', 'failed')) {
-            $this->dropColumn('{{%campaign_contacts_campaigns}}', 'failed');
-        }
-
+        // Rename columns
         if ($this->db->columnExists('{{%campaign_sendouts}}', 'failedRecipients')) {
             $this->renameColumn('{{%campaign_sendouts}}', 'failedRecipients', 'fails');
         }
-
         if ($this->db->columnExists('{{%campaign_imports}}', 'failed')) {
             $this->renameColumn('{{%campaign_imports}}', 'failed', 'fails');
+        }
+
+        // Drop columns
+        if ($this->db->columnExists('{{%campaign_contacts_campaigns}}', 'failed')) {
+            $this->dropColumn('{{%campaign_contacts_campaigns}}', 'failed');
+        }
+        if ($this->db->columnExists('{{%campaign_sendouts}}', 'sendStatusMessage')) {
+            $this->dropColumn('{{%campaign_sendouts}}', 'sendStatusMessage');
         }
     }
 

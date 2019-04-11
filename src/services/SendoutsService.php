@@ -386,7 +386,6 @@ class SendoutsService extends Component
 
         $contactCampaignRecord->campaignId = $campaign->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
-        $contactCampaignRecord->save();
 
         // Get subject
         $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
@@ -439,8 +438,9 @@ class SendoutsService extends Component
         $success = $message->send();
 
         if ($success) {
-            // Update sent date
+            // Update sent date and save
             $contactCampaignRecord->sent = new DateTime();
+            $contactCampaignRecord->save();
 
             // Update recipients and last sent
             $sendout->recipients++;
@@ -452,12 +452,9 @@ class SendoutsService extends Component
             // Update fails and send status
             $sendout->fails++;
             $sendout->sendStatus = 'failed';
-            $sendout->sendStatusMessage = Craft::t('campaign', 'Sending failed. Please check your email settings and the error in the log.');
 
-            $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus', 'sendStatusMessage']);
+            $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
         }
-
-        $contactCampaignRecord->save();
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {

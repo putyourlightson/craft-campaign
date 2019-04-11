@@ -67,10 +67,10 @@
 {% block details %}
 
     <div class="meta read-only">
-        <div class="data first">
+        <div class="elementThumb data first">
             <h5 class="heading">{{ "Imported By"|t('campaign') }}</h5>
             <div class="value">
-                {% include '_elements/element' with {'element': import.getUser()} %}
+                {% include '_elements/element' with {element: import.getUser()} %}
             </div>
         </div>
         <div class="data">
@@ -82,8 +82,8 @@
             <div class="value">{{ import.updated }}</div>
         </div>
         <div class="data">
-            <h5 class="heading">{{ "Failed"|t('campaign') }}</h5>
-            <div class="value">{{ import.failed }}</div>
+            <h5 class="heading">{{ "Fails"|t('campaign') }}</h5>
+            <div class="value">{{ import.fails }}</div>
         </div>
         <div class="data">
             <h5 class="heading">{{ "Date Imported"|t('campaign') }}</h5>

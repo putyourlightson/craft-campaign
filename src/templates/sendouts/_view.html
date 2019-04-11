@@ -121,16 +121,18 @@
 
             {% if sendout.status == 'failed' %}
                 <div class="data">
-                    <h5 class="heading">{{ "Status Message"|t('campaign') }}</h5>
-                    <div class="value">{{ sendout.sendStatusMessage }}</div>
+                    <h5 class="heading">{{ "Message"|t('campaign') }}</h5>
+                    <div class="value">
+                        {{ "Sending failed. Please check your email settings and the error in the log."|t('campaign') }}
+                    </div>
                 </div>
             {% endif %}
             {% set sender = sendout.sender %}
             {% if sender %}
-                <div class="data">
+                <div class="elementThumb data">
                     <h5 class="heading">{{ "Sent By"|t('campaign') }}</h5>
                     <div class="value">
-                        {% include '_elements/element' with {'element': sender} %}
+                        {% include '_elements/element' with {element: sender} %}
                     </div>
                 </div>
             {% endif %}

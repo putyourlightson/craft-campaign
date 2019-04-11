@@ -18,7 +18,6 @@ use DateTime;
  * @property int         $senderId                   Sender ID
  * @property string      $sendoutType                Sendout type
  * @property string      $sendStatus                 Send status
- * @property string      $sendStatusMessage          Send status message
  * @property string      $sendFrom                   Send from
  * @property string      $subject                    Subject
  * @property string      $notificationEmailAddress   Notification email address
