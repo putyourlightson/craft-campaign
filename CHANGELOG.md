@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.7.5 - Unreleased
+### Fixed
+- Fixed pending sendout count not displaying in pending scheduled sendouts.
+
 ## 1.7.4 - 2019-04-11
 ### Changed
 - Improved wording of message when sendout fails.

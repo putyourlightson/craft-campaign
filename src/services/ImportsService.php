@@ -141,6 +141,7 @@ class ImportsService extends Component
             ];
 
             $fields = Craft::$app->fields->getFieldsByElementType(User::class);
+
             foreach ($fields as $field) {
                 /* @var Field $field */
                 $columns[$field->handle] = $field->name;

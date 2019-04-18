@@ -193,7 +193,7 @@ class SendoutsService extends Component
                 ]);
             }]);
 
-        // Exclude contacts subscribed to sendout's excluded mailing lists and sent recipients
+        // Exclude contacts subscribed to sendout's excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
 
         // Exclude sent recipients

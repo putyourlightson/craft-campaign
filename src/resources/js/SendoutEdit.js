@@ -17,9 +17,11 @@ Campaign.SendoutEdit = Garnish.Base.extend(
 
         getPendingRecipientCount: function() {
             if ($('.pendingRecipientCount').length) {
-                $('.preflight .message').html(
-                    $('.preflight .message').html().replace('{recipients}', '<span class="pendingRecipientCount"></span>')
-                );
+                if ($('.preflight').length) {
+                    $('.preflight .message').html(
+                        $('.preflight .message').html().replace('{recipients}', '<span class="pendingRecipientCount"></span>')
+                    );
+                }
 
                 var url = Craft.getActionUrl('campaign/sendouts/get-pending-recipient-count');
                 var sendoutId = $('input[name=sendoutId]').val();
