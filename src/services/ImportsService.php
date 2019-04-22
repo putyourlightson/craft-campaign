@@ -303,8 +303,8 @@ class ImportsService extends Component
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($contact)) {
+            Campaign::$plugin->log($contact->getErrorSummary(true));
             $import->fails++;
-            $import->failures[$lineNumber] = implode(' ', $contact->getErrorSummary(true));
 
             return $import;
         }

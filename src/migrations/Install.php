@@ -284,7 +284,6 @@ class Install extends Migration
                 'added' => $this->integer(),
                 'updated' => $this->integer(),
                 'fails' => $this->integer(),
-                'failures' => $this->text(),
                 'dateImported' => $this->dateTime(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

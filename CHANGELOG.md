@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
 ## 1.7.5 - Unreleased
+### Changed
+- User actions are now logged in `storage/logs/campaign.log` file.
+- Failures from imports now get logged in `storage/logs/campaign.log` file.
+
 ### Fixed
 - Fixed pending sendout count not displaying in pending scheduled sendouts.
 

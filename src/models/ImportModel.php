@@ -90,11 +90,6 @@ class ImportModel extends BaseModel
     public $fails = 0;
 
     /**
-     * @var mixed Failures
-     */
-    public $failures;
-
-    /**
      * @var DateTime|null Date imported
      */
     public $dateImported;
@@ -111,7 +106,6 @@ class ImportModel extends BaseModel
 
         // Decode JSON properties
         $this->fieldIndexes = empty($this->fieldIndexes) ? [] : Json::decode($this->fieldIndexes);
-        $this->failures = empty($this->failures) ? [] : Json::decode($this->failures);
     }
 
     /**

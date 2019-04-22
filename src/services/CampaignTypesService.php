@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\CampaignTypeModel;
@@ -140,7 +141,7 @@ class CampaignTypesService extends Component
         }
 
         if ($runValidation AND !$campaignType->validate()) {
-            Craft::info('Campaign type not saved due to validation error.', __METHOD__);
+            Campaign::$plugin->log('Campaign type not saved due to validation error.');
 
             return false;
         }

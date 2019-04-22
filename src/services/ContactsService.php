@@ -333,7 +333,7 @@ class ContactsService extends Component
             $pendingContactRecord->delete();
 
             /** @var PendingContactRecord $pendingContactRecord */
-            Craft::info("Deleted pending contact {$pendingContactRecord->email}, because they took too long to verify their email.", __METHOD__);
+            Campaign::$plugin->log('Deleted pending contact "{email}", because they took too long to verify their email.', ['email' => $pendingContactRecord->email]);
         }
     }
 }

@@ -17,6 +17,7 @@ use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
+use craft\log\FileTarget;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
@@ -199,6 +200,13 @@ class Campaign extends Plugin
                 }
             }
         );
+
+        // Add log target
+        Craft::getLogger()->dispatcher->targets[] = new FileTarget([
+            'logFile' => '@storage/logs/campaign.log',
+            'categories' => ['campaign'],
+            'logVars' => [],
+        ]);
     }
 
     /**
@@ -311,19 +319,20 @@ class Campaign extends Plugin
     }
 
     /**
-     * Logs a user action
+     * Logs an action
      *
      * @param string $message
      * @param array $params
-     * @param string|null $category
      */
-    public function logUserAction(string $message, array $params, string $category = null)
+    public function log(string $message, array $params = [])
     {
-        $category = $category ?? 'Campaign';
+        $user = Craft::$app->getUser()->getIdentity();
 
-        $params['username'] = Craft::$app->getUser()->getIdentity()->username;
+        if ($user !== null) {
+            $params['username'] = $user->username;
+        }
 
-        Craft::info(Craft::t('campaign', $message, $params), $category);
+        Craft::info(Craft::t('campaign', $message, $params), 'campaign');
     }
 
     // Protected Methods

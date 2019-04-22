@@ -144,7 +144,7 @@ class ExportsController extends Controller
         }
 
         // Log it
-        Campaign::$plugin->logUserAction('File exported by "{username}".', [], __METHOD__);
+        Campaign::$plugin->log('File exported by "{username}".');
 
         return Craft::$app->getResponse()->sendFile($export->filePath);
     }

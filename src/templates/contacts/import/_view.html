@@ -39,27 +39,15 @@
     {% endset %}
     {{ forms.field({label: "Mailing List"|t('campaign') ~ ':'}, input) }}
 
-    {% if import.failures|length %}
-        {% set input %}
-            <table id="imports" class="data fullwidth collapsible">
-                <thead>
-                    <tr>
-                        <th scope="col" class="thin">{{ "Line"|t('campaign') }}</th>
-                        <th scope="col">{{ "Error"|t('campaign') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for lineNumber, row in import.failures %}
-                        <tr>
-                            <td>{{ lineNumber }}</td>
-                            <td><code>{{ row }}</code></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endset %}
-        {{ forms.field({label: "Failures"|t('campaign') ~ ':'}, input) }}
-    {% endif %}
+    {% set input %}
+        {{ import.fails }}
+        {% if import.fails > 0 %}
+            <span class="info">
+                {{ "View <code>storage/logs/campaign.log</code> file for errors."|t('campaign')|raw }}
+            </span>
+        {% endif %}
+    {% endset %}
+    {{ forms.field({label: "Failed Imports"|t('campaign') ~ ':'}, input) }}
 
 {% endblock %}
 

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\MailingListTypeModel;
@@ -132,7 +133,7 @@ class MailingListTypesService extends Component
         }
 
         if ($runValidation AND !$mailingListType->validate()) {
-            Craft::info('Mailing list type not saved due to validation error.', __METHOD__);
+            Campaign::$plugin->log('Mailing list type not saved due to validation error.');
 
             return false;
         }

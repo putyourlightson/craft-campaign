@@ -103,7 +103,7 @@ EOD;
             Campaign::$plugin->sendouts->deleteSendout($sendout);
 
             // Log it
-            Campaign::$plugin->logUserAction('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title], __METHOD__);
+            Campaign::$plugin->log('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title]);
         }
 
         $this->setMessage(Craft::t('campaign', 'Sendouts deleted.'));
