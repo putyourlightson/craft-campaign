@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use putyourlightson\campaign\records\ImportRecord;
 
 class m190422_120000_remove_failures_column extends Migration
 {

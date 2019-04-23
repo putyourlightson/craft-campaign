@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\elements;
 use craft\elements\actions\Restore;
 use craft\web\View;
 use DateTime;
+use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\helpers\NumberHelper;
@@ -22,8 +23,6 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
-use RuntimeException;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
@@ -379,7 +378,7 @@ class CampaignElement extends Element
      * Returns the campaign's campaign type
      *
      * @return CampaignTypeModel
-     * @throws InvalidConfigException if [[campaignTypeId]] is missing or invalid
+     * @throws InvalidConfigException
      */
     public function getCampaignType(): CampaignTypeModel
     {
@@ -610,8 +609,6 @@ class CampaignElement extends Element
         $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         // Get body from rendered template with variables
-        $body = '';
-
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
 
         // Set the current site from the campaign's site ID
@@ -629,7 +626,10 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }
-        catch (RuntimeException $e) {}
+        catch (Exception $e) {
+            Campaign::$plugin->log($e->getMessage());
+            throw $e;
+        }
 
         // Reset template mode
         $view->setTemplateMode($templateMode);
