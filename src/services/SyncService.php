@@ -171,6 +171,14 @@ class SyncService extends Component
         $contact->userId = $user->id;
         $contact->email = $user->email;
 
+        // Set first and last name from user fields if they exist
+        if (isset($contact->firstName)) {
+            $contact->firstName = $user->firstName;
+        }
+        if (isset($contact->lastName)) {
+            $contact->lastName = $user->lastName;
+        }
+
         // Set contact's field values from user's field values
         $contact->setFieldValues($user->getFieldValues());
 

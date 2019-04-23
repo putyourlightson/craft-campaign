@@ -291,6 +291,7 @@ class ImportsService extends Component
         // Map fields to values
         if (is_array($import->fieldIndexes)) {
             $values = [];
+
             foreach ($import->fieldIndexes as $field => $index) {
                 if ($index !== '' AND isset($row[$index])) {
                     $values[$field] = $row[$index];

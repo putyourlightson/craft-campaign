@@ -2,6 +2,7 @@
 
 ## 1.7.5 - Unreleased
 ### Changed
+- First and last names are now synced along with other custom user fields.
 - User actions, import failures and some exceptions are now logged in the `storage/logs/campaign.log` file.
 
 ### Fixed
