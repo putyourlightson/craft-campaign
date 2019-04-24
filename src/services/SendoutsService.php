@@ -32,6 +32,7 @@ use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use putyourlightson\campaign\records\SendoutRecord;
+use putyourlightson\logtofile\LogToFile;
 use Swift_Transport;
 use Throwable;
 use yii\base\Exception;
@@ -454,6 +455,8 @@ class SendoutsService extends Component
             $sendout->sendStatus = 'failed';
 
             $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
+
+            Campaign::$plugin->log('Sending of the sendout "{title}" failed due to invalid Campaign email settings. Check the full error in the Craft log.', ['title' => $sendout->title]);
         }
 
         // Fire an after event
@@ -498,7 +501,7 @@ class SendoutsService extends Component
 
         else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has failed. Please check that your <a href="{emailSettingsUrl}">Craft Campaign email settings</a> are correctly configured.', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has failed. Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 

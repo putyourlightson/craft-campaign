@@ -1,7 +1,7 @@
 {
     "name": "putyourlightson/craft-campaign",
     "description": "Send and manage email campaigns, contacts and mailing lists.",
-    "version": "1.7.4",
+    "version": "1.7.5",
     "type": "craft-plugin",
     "homepage": "https://craftcampaign.com/",
     "license": "proprietary",
@@ -17,6 +17,7 @@
     ],
     "require": {
         "craftcms/cms": "^3.1.0",
+        "putyourlightson/craft-log-to-file": "^1.0.0",
         "piwik/device-detector": "^3.9.1",
         "purplebooth/htmlstrip": "^1.0.0",
         "aws/aws-php-sns-message-validator": "^1.5.0",
@@ -37,7 +38,7 @@
         "handle": "campaign",
         "developer": "PutYourLightsOn",
         "developerUrl": "https://putyourlightson.com/",
-        "schemaVersion": "1.7.4",
+        "schemaVersion": "1.7.5",
         "hasCpSettings": true,
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",

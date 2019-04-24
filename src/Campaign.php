@@ -14,6 +14,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\App;
+use craft\helpers\FileHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
@@ -45,6 +46,7 @@ use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
+use putyourlightson\logtofile\LogToFile;
 use yii\base\Event;
 use yii\web\ForbiddenHttpException;
 
@@ -200,13 +202,6 @@ class Campaign extends Plugin
                 }
             }
         );
-
-        // Add log target
-        Craft::getLogger()->dispatcher->targets[] = new FileTarget([
-            'logFile' => '@storage/logs/campaign.log',
-            'categories' => ['campaign'],
-            'logVars' => [],
-        ]);
     }
 
     /**
@@ -332,7 +327,9 @@ class Campaign extends Plugin
             $params['username'] = $user->username;
         }
 
-        Craft::info(Craft::t('campaign', $message, $params), 'campaign');
+        $message = Craft::t('campaign', $message, $params);
+
+        LogToFile::info($message, 'campaign');
     }
 
     // Protected Methods

@@ -2,8 +2,8 @@
 
 ## 1.7.5 - Unreleased
 ### Changed
-- First and last names are now synced along with other custom user fields.
-- User actions, import failures and some exceptions are now logged in the `storage/logs/campaign.log` file.
+- First and last names are now synced along with other custom user fields that exist for contacts.
+- User actions, import failures and some exceptions are now logged in `storage/logs/campaign.log`.
 
 ### Fixed
 - Fixed pending sendout count not displaying in pending scheduled sendouts.

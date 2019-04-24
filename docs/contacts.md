@@ -1,6 +1,6 @@
 # Contacts
 
-Contacts, just like users, have their own custom field layout (limited to a single tab). They can be subscribed to multiple mailing lists and can be segmented using conditions. They can be imported from CSV files and user groups, and exported in CSV format.
+Contacts, just like users, have their own custom field layout (limited to a single tab). They can be subscribed to multiple mailing lists and can be segmented using conditions. They can be imported from CSV files and user groups, exported in CSV format and synced to users.
 
 ### Creating Contacts
 To create a new contact manually, go to the Contacts page and click the “New contact” button. Once saved, you can then manually subscribe or unsubscribe the contact from mailing lists in the Mailing Lists tab of the contact edit page. 
@@ -9,7 +9,7 @@ To **import** contacts in bulk, go to Contacts → Import and select a CSV file 
 
 To **export** contacts to a CSV file, go to Contacts → Export and select a mailing list and the fields to export.
 
-To **sync** contacts with users, go to Contacts → Sync and select a mailing list and user group to sync. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. Modifications to contacts will NOT affect users.
+To **sync** contacts with users, go to Contacts → Sync and select a mailing list and user group to sync. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. All custom fields that exist for contacts will be populated from the user fields. If you want users' first and last names to be synced then you should create custom fields with the handles `firstName` and `lastName` respectively and assign them to contacts before performing the sync. Modifications to contacts will NOT affect users.
 
 ### Getting Contacts
 You can get contacts from your templates with `craft.campaign.contacts` which returns an [Element Query](https://docs.craftcms.com/v3/element-queries.html).
