@@ -2,6 +2,7 @@
 
 ## 1.7.5 - Unreleased
 ### Changed
+- Complains and bounces no longer require an `SID` to be sent in webhooks.
 - First and last names are now synced along with other custom user fields that exist for contacts.
 - User actions, import failures and some exceptions are now logged in `storage/logs/campaign.log`.
 

@@ -11,8 +11,6 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\models\ContactCampaignModel;
-use putyourlightson\campaign\records\ContactCampaignRecord;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
@@ -34,8 +32,6 @@ class WebhookController extends Controller
 {
     // Properties
     // =========================================================================
-
-    const HEADER_NAME = 'Craft-Campaign-Sid';
 
     /**
      * @inheritdoc
@@ -115,31 +111,15 @@ class WebhookController extends Controller
         }
 
         if ($message['Type'] === 'Notification') {
-            $headers = $message['mail']['headers'];
+            $eventType = $message['notificationType'];
 
-            if (is_array($headers)) {
-                // Look for SID in headers (requires that "Include Original Headers" is enabled in SES notification settings)
-                $sid = '';
-
-                foreach ($headers as $header) {
-                    if ($header['name'] == self::HEADER_NAME) {
-                        $sid = $header['value'];
-                        break;
-                    }
-                }
-
-                if ($sid != '') {
-                    $eventType = $message['notificationType'];
-
-                    if ($eventType == 'Complaint') {
-                        $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
-                        return $this->_callWebhook('complained', $email, $sid);
-                    }
-                    if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
-                        $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
-                        return $this->_callWebhook('bounced', $email, $sid);
-                    }
-                }
+            if ($eventType == 'Complaint') {
+                $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('complained', $email);
+            }
+            if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
+                $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
+                return $this->_callWebhook('bounced', $email);
             }
         }
 
@@ -155,29 +135,26 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
+        // Get event data from raw body
         $request = Craft::$app->getRequest();
-        $eventData = $request->getBodyParam('event-data');
+        $body = Json::decodeIfJson($request->getRawBody());
+        $eventData = $body['event-data'] ?? null;
+
         $eventType = $eventData['event'] ?? '';
         $severity = $eventData['severity'] ?? '';
         $email = $eventData['recipient'] ?? '';
-        $headers = Json::decodeIfJson($request->getBodyParam('message-headers'));
 
-        // Look for SID in headers
-        $sid = '';
-        if (is_array($headers)) {
-            foreach ($headers as $header) {
-                if ($header[0] == self::HEADER_NAME) {
-                    $sid = $header[1];
-                    break;
-                }
-            }
+        if ($eventData === null) {
+            // Get event data from body params (legacy hooks)
+            $eventType = $request->getBodyParam('event');
+            $email = $request->getBodyParam('recipient');
         }
 
         if ($eventType == 'complained') {
-            return $this->_callWebhook('complained', $email, $sid);
+            return $this->_callWebhook('complained', $email);
         }
         if ($eventType == 'bounced' || ($eventType == 'failed' && $severity == 'permanent')) {
-            return $this->_callWebhook('bounced', $email, $sid);
+            return $this->_callWebhook('bounced', $email);
         }
 
         return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
@@ -199,13 +176,12 @@ class WebhookController extends Controller
             foreach ($events as $event) {
                 $eventType = $event['event'] ?? '';
                 $email = $event['msg']['email'] ?? '';
-                $sid = $event['msg']['metadata'][self::HEADER_NAME] ?? '';
 
                 if ($eventType == 'spam') {
-                    return $this->_callWebhook('complained', $email, $sid);
+                    return $this->_callWebhook('complained', $email);
                 }
                 if ($eventType == 'hard_bounce') {
-                    return $this->_callWebhook('bounced', $email, $sid);
+                    return $this->_callWebhook('bounced', $email);
                 }
             }
         }
@@ -225,13 +201,12 @@ class WebhookController extends Controller
         $request = Craft::$app->getRequest();
         $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
-        $sid = $request->getBodyParam(self::HEADER_NAME);
 
         if ($eventType == 'SpamComplaint') {
-            return $this->_callWebhook('complained', $email, $sid);
+            return $this->_callWebhook('complained', $email);
         }
         if ($eventType == 'HardBounce') {
-            return $this->_callWebhook('bounced', $email, $sid);
+            return $this->_callWebhook('bounced', $email);
         }
 
         return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
@@ -253,13 +228,12 @@ class WebhookController extends Controller
             foreach ($events as $event) {
                 $eventType = $event['event'] ?? '';
                 $email = $event['email'] ?? '';
-                $sid = $event[self::HEADER_NAME] ?? '';
 
                 if ($eventType == 'complained') {
-                    return $this->_callWebhook('complained', $email, $sid);
+                    return $this->_callWebhook('complained', $email);
                 }
                 if ($eventType == 'bounced') {
-                    return $this->_callWebhook('bounced', $email, $sid);
+                    return $this->_callWebhook('bounced', $email);
                 }
             }
         }
@@ -275,14 +249,13 @@ class WebhookController extends Controller
      *
      * @param string $event
      * @param string|null $email
-     * @param string|null $sid
      *
      * @return Response
      * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _callWebhook(string $event, string $email = null, string $sid = null): Response
+    private function _callWebhook(string $event, string $email = null): Response
     {
         // Log request
         Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'Campaign');
@@ -291,43 +264,17 @@ class WebhookController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
         }
 
-        if ($sid === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
-        }
-
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
         }
 
-        $sendout = Campaign::$plugin->sendouts->getSendoutBySid($sid);
-
-        if ($sendout === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Sendout not found.')]);
-        }
-
-        $contactCampaignRecord = ContactCampaignRecord::find()
-        ->where([
-            'contactId' => $contact->id,
-            'sendoutId' => $sendout->id,
-        ])
-        ->one();
-
-        if ($contactCampaignRecord === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
-        }
-
-        /** @var ContactCampaignModel $contactCampaign */
-        $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
-
-        $mailingList = $contactCampaign->getMailingList();
-
         if ($event == 'complained') {
-            Campaign::$plugin->webhook->complain($contact, $mailingList, $sendout);
+            Campaign::$plugin->webhook->complain($contact);
         }
         else if ($event == 'bounced') {
-            Campaign::$plugin->webhook->bounce($contact, $mailingList, $sendout);
+            Campaign::$plugin->webhook->bounce($contact);
         }
 
         return $this->asJson(['success' => true]);

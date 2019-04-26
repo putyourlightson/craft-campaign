@@ -10,11 +10,10 @@ use craft\errors\ElementNotFoundException;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\elements\SendoutElement;
 
 use Craft;
 use craft\base\Component;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use Throwable;
 use yii\base\Exception;
 
@@ -33,33 +32,29 @@ class WebhookService extends Component
     /**
      * Complain
      *
-     * @param ContactElement          $contact
-     * @param MailingListElement|null $mailingList
-     * @param SendoutElement|null     $sendout
+     * @param ContactElement $contact
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws Throwable
      */
-    public function complain(ContactElement $contact, MailingListElement $mailingList = null, SendoutElement $sendout = null)
+    public function complain(ContactElement $contact)
     {
-        $this->_addInteraction('complained', $contact, $mailingList, $sendout);
+        $this->_addInteraction($contact, 'complained');
     }
 
     /**
      * Bounce
      *
      * @param ContactElement          $contact
-     * @param MailingListElement|null $mailingList
-     * @param SendoutElement|null     $sendout
      *
      * @throws ElementNotFoundException
      * @throws Exception
      * @throws Throwable
      */
-    public function bounce(ContactElement $contact, MailingListElement $mailingList = null, SendoutElement $sendout = null)
+    public function bounce(ContactElement $contact)
     {
-        $this->_addInteraction('bounced', $contact, $mailingList, $sendout);
+        $this->_addInteraction($contact, 'bounced');
     }
 
     // Private Methods
@@ -68,21 +63,33 @@ class WebhookService extends Component
     /**
      * Add interaction
      *
-     * @param string                  $interaction
-     * @param ContactElement          $contact
-     * @param MailingListElement|null $mailingList
-     * @param SendoutElement|null     $sendout
+     * @param ContactElement $contact
+     * @param string $interaction
      *
      * @throws Throwable
      * @throws ElementNotFoundException
      * @throws Exception
      */
-    private function _addInteraction(string $interaction, ContactElement $contact, MailingListElement $mailingList = null, SendoutElement $sendout = null)
+    private function _addInteraction(ContactElement $contact, string $interaction)
     {
+        // Get last sendout contact was sent to
+        $contactCampaignRecord = ContactCampaignRecord::find()
+            ->where(['contactId' => $contact->id])
+            ->orderBy('sent DESC')
+            ->one();
+
+        if ($contactCampaignRecord === null) {
+            return;
+        }
+
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
+
         if ($mailingList !== null) {
             // Add contact interaction to mailing list
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction);
         }
+
+        $sendout = Campaign::$plugin->sendouts->getSendoutById($contactCampaignRecord->sendoutId);
 
         if ($sendout !== null) {
             // Add contact interaction to campaign

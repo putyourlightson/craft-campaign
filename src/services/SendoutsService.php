@@ -13,7 +13,6 @@ use DateTime;
 use DOMDocument;
 use DOMElement;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\controllers\WebhookController;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
@@ -32,8 +31,6 @@ use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use putyourlightson\campaign\records\SendoutRecord;
-use putyourlightson\logtofile\LogToFile;
-use Swift_Transport;
 use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -324,9 +321,6 @@ class SendoutsService extends Component
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
-        // Add webhooks to message
-        $this->_addWebhooks($message, $sendout->sid);
-
         return $message->send();
     }
 
@@ -419,9 +413,6 @@ class SendoutsService extends Component
             ->setSubject($subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
-
-        // Add webhooks to message
-        $this->_addWebhooks($message, $sendout->sid);
 
         // Fire a before event
         $event = new SendoutEmailEvent([
@@ -712,42 +703,6 @@ class SendoutsService extends Component
         $sendoutRecord->setAttributes($sendout->toArray($fields), false);
 
         return $sendoutRecord->save();
-    }
-
-    /**
-     * Add webhooks to message
-     *
-     * @param Message $message
-     * @param string $sid
-     *
-     * @throws MissingComponentException
-     */
-    private function _addWebhooks(Message $message, string $sid)
-    {
-        // Add SID to message header for webhooks
-        $message->addHeader(WebhookController::HEADER_NAME, $sid);
-
-        // Get mailer transport
-        $mailer = $this->getMailer();
-        $transport = $mailer->getTransport();
-
-        // Add SID for custom transports
-        if ($transport instanceof Swift_Transport) {
-            $transportClass = get_class($transport);
-            switch ($transportClass) {
-                case 'MailgunTransport':
-                    $message->addHeader('X-Mailgun-Variables', '{"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}');
-                    break;
-
-                case 'MandrillTransport':
-                    $message->addHeader('X-MC-Metadata', '{"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}');
-                    break;
-
-                case 'SendgridTransport':
-                    $message->addHeader('X-SMTPAPI', '{"unique_args": {"'.WebhookController::HEADER_NAME.'": "'.$sid.'"}}');
-                    break;
-            }
-        }
     }
 
     /**
