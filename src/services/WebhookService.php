@@ -72,33 +72,31 @@ class WebhookService extends Component
      */
     private function _addInteraction(ContactElement $contact, string $interaction)
     {
-        // Get last sendout contact was sent to
-        $contactCampaignRecord = ContactCampaignRecord::find()
+        // Get all contact campaigns
+        $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['contactId' => $contact->id])
-            ->orderBy('sent DESC')
-            ->one();
+            ->all();
 
-        if ($contactCampaignRecord === null) {
-            return;
-        }
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
 
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
+            if ($mailingList !== null) {
+                // Add contact interaction to mailing list
+                Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction);
+            }
 
-        if ($mailingList !== null) {
-            // Add contact interaction to mailing list
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction);
-        }
+            $sendout = Campaign::$plugin->sendouts->getSendoutById($contactCampaignRecord->sendoutId);
 
-        $sendout = Campaign::$plugin->sendouts->getSendoutById($contactCampaignRecord->sendoutId);
-
-        if ($sendout !== null) {
-            // Add contact interaction to campaign
-            Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, $interaction);
+            if ($sendout !== null) {
+                // Add contact interaction to campaign
+                Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, $interaction);
+            }
         }
 
         // Update contact
         if ($contact->{$interaction} === null) {
             $contact->{$interaction} = new DateTime();
+
             Craft::$app->getElements()->saveElement($contact);
         }
     }
