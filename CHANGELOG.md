@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.7.5 - Unreleased
+## 1.7.5 - 2019-04-26
 ### Changed
 - First and last names are now synced along with other custom user fields that exist for contacts.
 - User actions, import failures and some exceptions are now logged in `storage/logs/campaign.log`.
