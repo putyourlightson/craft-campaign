@@ -359,6 +359,7 @@ class SendoutsController extends Controller
         $fromNameEmail = explode(':', $request->getBodyParam('fromNameEmail', ''));
         $sendout->fromName = $fromNameEmail[0] ?? '';
         $sendout->fromEmail = $fromNameEmail[1] ?? '';
+        $sendout->replyToEmail = $fromNameEmail[2] ?? '';
 
         // Get the selected campaign ID
         $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);

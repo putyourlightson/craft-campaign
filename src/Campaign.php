@@ -346,6 +346,7 @@ class Campaign extends Plugin
         $settings->fromNamesEmails = [[
             $mailSettings->fromName,
             $mailSettings->fromEmail,
+            '',
             Craft::$app->getSites()->getPrimarySite()->id,
         ]];
         $settings->transportType = Sendmail::class;

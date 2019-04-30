@@ -454,18 +454,22 @@ class SettingsController extends Controller
             // Create mailer with settings
             $mailer = Campaign::$plugin->createMailer($settings);
 
-            // Get first array element
-            $fromNameEmail = reset($settings->fromNamesEmails);
+            // Get from name and email
+            $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail();
 
             $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
             $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
 
             $message = $mailer->compose()
-                ->setFrom([$fromNameEmail[1] => $fromNameEmail[0]])
+                ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
                 ->setTo(Craft::$app->getUser()->getIdentity()->email)
                 ->setSubject($subject)
                 ->setHtmlBody($body)
                 ->setTextBody($body);
+
+            if ($fromNameEmail['replyTo']) {
+                $message->setReplyTo($fromNameEmail['replyTo']);
+            }
 
             // Send message
             try {

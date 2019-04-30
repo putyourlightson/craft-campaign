@@ -2,6 +2,7 @@
 
 ## 1.8.0 - 2019-XX-XX
 ### Added
+- Added ability to specify reply to email addresses.
 - Added sendout settings page with tips and warnings for memory and time limits.
 
 ### Fixed

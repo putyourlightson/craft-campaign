@@ -341,6 +341,11 @@ class SendoutElement extends Element
     public $fromEmail;
 
     /**
+     * @var string Reply to email
+     */
+    public $replyToEmail;
+
+    /**
      * @var string Subject
      */
     public $subject;
@@ -531,7 +536,7 @@ class SendoutElement extends Element
      */
     public function getFromNameEmail(): string
     {
-        return $this->fromName ? $this->fromName.':'.$this->fromEmail : '';
+        return $this->fromName ? $this->fromName.':'.$this->fromEmail.':'.$this->replyToEmail : '';
     }
 
     /**

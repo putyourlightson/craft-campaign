@@ -244,6 +244,10 @@ class ContactsService extends Component
             ->setHtmlBody($body)
             ->setTextBody($body);
 
+        if ($fromNameEmail['replyTo']) {
+            $message->setReplyTo($fromNameEmail['replyTo']);
+        }
+
         return $message->send();
     }
 

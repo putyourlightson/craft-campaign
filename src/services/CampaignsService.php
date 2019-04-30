@@ -177,6 +177,10 @@ class CampaignsService extends Component
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
+        if ($fromNameEmail['replyTo']) {
+            $message->setReplyTo($fromNameEmail['replyTo']);
+        }
+
         return $message->send();
     }
 }

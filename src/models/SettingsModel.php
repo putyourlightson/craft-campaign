@@ -249,6 +249,11 @@ class SettingsModel extends Model
                 $this->addError($attribute, Craft::t('campaign', 'An invalid email was entered.'));
                 return;
             }
+
+            if ($fromNameEmail[2] && !$emailValidator->validate($fromNameEmail[2])) {
+                $this->addError($attribute, Craft::t('campaign', 'An invalid email was entered.'));
+                return;
+            }
         }
     }
 }

@@ -319,6 +319,10 @@ class SendoutsService extends Component
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
+        if ($sendout->replyToEmail) {
+            $message->setReplyTo($sendout->replyToEmail);
+        }
+
         return $message->send();
     }
 
@@ -411,6 +415,10 @@ class SendoutsService extends Component
             ->setSubject($subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
+
+        if ($sendout->replyToEmail) {
+            $message->setReplyTo($sendout->replyToEmail);
+        }
 
         // Fire a before event
         $event = new SendoutEmailEvent([

@@ -57,8 +57,12 @@ class SettingsService extends Component
         $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
-            if ($siteId === null || empty($fromNameEmail[2]) || $fromNameEmail[2] == $siteId) {
-                $firstFromNameEmail = ['name' => $fromNameEmail[0], 'email' => $fromNameEmail[1]];
+            if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
+                $firstFromNameEmail = [
+                    'name' => $fromNameEmail[0],
+                    'email' => $fromNameEmail[1],
+                    'replyTo' => $fromNameEmail[2],
+                ];
 
                 break;
             }
@@ -71,6 +75,7 @@ class SettingsService extends Component
             $firstFromNameEmail = [
                 'name' => $mailSettings->fromName,
                 'email' => $mailSettings->fromEmail,
+                'replyTo' => '',
             ];
         }
 
@@ -90,8 +95,13 @@ class SettingsService extends Component
         $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
-            if ($siteId === null || empty($fromNameEmail[2]) || $fromNameEmail[2] == $siteId) {
-                $fromNameEmailOptions[$fromNameEmail[0].':'.$fromNameEmail[1]] = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
+            if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
+                $key = $fromNameEmail[0].':'.$fromNameEmail[1].':'.$fromNameEmail[2];
+
+                $value = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
+                $value .= $fromNameEmail[2] ? ' (reply to '.$fromNameEmail[2].')' : '';
+
+                $fromNameEmailOptions[$key] = $value;
             }
         }
 

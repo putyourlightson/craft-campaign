@@ -26,7 +26,10 @@ return [
     //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
     // The from names and emails that sendouts can be sent from
-    //'fromNamesEmails' => [['Zorro','legend@zorro.com'], ['Don Diego','dondiego@zorro.com']],
+    //'fromNamesEmails' => [
+    //  ['Zorro','legend@zorro.com','legend@zorro.com',1],
+    //  ['Don Diego','dondiego@zorro.com','',1],
+    //],
 
     // The transport type that should be used
     //'transportType' => 'SendGrid',
