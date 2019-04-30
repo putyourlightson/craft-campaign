@@ -66,10 +66,14 @@ Campaign.SegmentEdit = Garnish.Base.extend(
                         $(this).removeClass('hidden').prop('disabled', false);
                     });
 
-                    var field = $(this).find('.conditionField option:selected').attr('data-field');
-                    $(this).closest('.orCondition').find('.conditionOperator:not(.' + field + ')').addClass('hidden').prop('disabled', true);
-                    $(this).closest('.orCondition').find('.conditionValue').removeClass('hidden').find('input, select').prop('disabled', false);
-                    $(this).closest('.orCondition').find('.conditionValue:not(.' + field + ')').addClass('hidden').find('input, select').prop('disabled', true);
+                    var selectedOption = $(this).find('.conditionField option:selected');
+                    var field = $(selectedOption).attr('data-field');
+                    var handle = $(selectedOption).attr('data-handle');
+                    $(this).closest('.orCondition').find('.conditionOperator').addClass('hidden').prop('disabled', true);
+                    $(this).closest('.orCondition').find('.conditionOperator.' + field).removeClass('hidden').prop('disabled', false);
+                    $(this).closest('.orCondition').find('.conditionValue').addClass('hidden').find('input, select').prop('disabled', true);
+                    $(this).closest('.orCondition').find('.conditionValue.' + field).removeClass('hidden').find('input, select').prop('disabled', false);
+                    $(this).closest('.orCondition').find('.conditionValue.' + field + '-' + handle).removeClass('hidden').find('input, select').prop('disabled', false);
 
                     if ($(this).closest('.orCondition').find('.conditionValue:visible').length === 0) {
                         $(this).closest('.orCondition').find('.conditionValue.default').removeClass('hidden').find('input, select').prop('disabled', false);

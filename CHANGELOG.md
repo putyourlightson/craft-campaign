@@ -2,8 +2,13 @@
 
 ## 1.8.0 - 2019-XX-XX
 ### Added
-- Added ability to specify reply to email addresses.
+- Added ability to add Reply To email addresses.
 - Added sendout settings page with tips and warnings for memory and time limits.
+- Added Dropdown and Radio Buttons field options in segments.
+- Added `is not` option to lightswitch fields in segments.
+
+### Changed
+- Changed sendout job progress indicator from being a percentage of the entire sendout to the current batch size.
 
 ### Fixed
 - Fixed check for whether the `@web` alias is used with sites or volumes.

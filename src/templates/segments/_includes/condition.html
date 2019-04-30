@@ -5,7 +5,12 @@
         <div class="select">
             <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
                 {% for field in availableFields %}
-                    <option data-field="field-{{ field.type|replace({'\\': '-'}) }}" value="{{ field.handle }}" {{ condition is defined and condition[1] == field.handle ? 'selected' }}>{{ field.name }}</option>
+                    {% set value = 'field_' ~ field.handle %}
+                    <option data-field="field-{{ field.type|replace({'\\': '-'}) }}"
+                            data-handle="{{ field.options ? field.handle }}"
+                            value="{{ value }}"
+                            {{ condition is defined and condition[1] == value ? 'selected' }}
+                    >{{ field.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -41,6 +46,19 @@
                 <div data-icon="date"></div>
             </div>
         </div>
+        {% for field in availableFields %}
+            {% if field.options %}
+                <div class="conditionValue field-{{ field.type|replace({'\\': '-'}) }}-{{ field.handle }} hidden">
+                    <div class="select">
+                        <select name="{{ field.name }}" disabled>
+                            {% for option in field.options %}
+                                <option value="{{ option.value }}" {{ value == option.value ? 'selected' }}>{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </td>
     <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">{{ 'OR'|t('campaign') }}</a></td>
     <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>

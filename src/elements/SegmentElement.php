@@ -28,8 +28,6 @@ use putyourlightson\campaign\records\SegmentRecord;
  * @property int $conditionCount
  * @property int $contactCount
  * @property int[] $contactIds
- * @property array $fieldOperators
- * @property array $availableFields
  * @property ContactElement[] $contacts
  */
 class SegmentElement extends Element

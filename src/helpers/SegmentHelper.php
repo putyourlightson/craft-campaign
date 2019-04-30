@@ -9,12 +9,15 @@ namespace putyourlightson\campaign\helpers;
 use Craft;
 use craft\base\Field;
 use craft\behaviors\FieldLayoutBehavior;
+use craft\fields\BaseOptionsField;
+use craft\fields\Checkboxes;
 use craft\fields\Date;
 use craft\fields\Dropdown;
 use craft\fields\Email;
 use craft\fields\Lightswitch;
 use craft\fields\Number;
 use craft\fields\PlainText;
+use craft\fields\RadioButtons;
 use craft\fields\Url;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
@@ -65,9 +68,13 @@ class SegmentHelper
             'not like %v' => Craft::t('campaign', 'does not end with'),
         ];
 
+        $optionOperators = [
+            '=' => Craft::t('campaign', 'is'),
+            '!=' => Craft::t('campaign', 'is not'),
+        ];
+
         $fieldOperators = [
             PlainText::class => $standardOperators,
-            Dropdown::class => $standardOperators,
             Email::class => $standardOperators,
             Url::class => $standardOperators,
             Number::class => [
@@ -81,9 +88,9 @@ class SegmentHelper
                 '<' => Craft::t('campaign', 'is before'),
                 '>' => Craft::t('campaign', 'is after'),
             ],
-            Lightswitch::class => [
-                '=' => Craft::t('campaign', 'is'),
-            ],
+            Lightswitch::class => $optionOperators,
+            Dropdown::class => $optionOperators,
+            RadioButtons::class => $optionOperators,
             'template' => [
                 '1' => Craft::t('campaign', 'evaluates to true'),
                 '0' => Craft::t('campaign', 'evaluates to false'),
@@ -92,6 +99,7 @@ class SegmentHelper
 
         // Add field operators from config settings
         $settings = Campaign::$plugin->getSettings();
+
         foreach ($settings->extraSegmentFieldOperators as $fieldtype => $operators) {
             $fieldOperators[$fieldtype] = $operators;
         }
@@ -117,6 +125,7 @@ class SegmentHelper
             'type' => Email::class,
             'handle' => 'email',
             'name' => $settings->emailFieldLabel,
+            'options' => null,
         ]];
 
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
@@ -129,11 +138,13 @@ class SegmentHelper
             foreach ($fields as $field) {
                 /* @var Field $field */
                 $fieldType = get_class($field);
+
                 if (!empty($supportedFields[$fieldType])) {
                     $availableFields[] = [
                         'type' => $fieldType,
-                        'handle' => 'field_'.$field->handle,
+                        'handle' => $field->handle,
                         'name' => $field->name,
+                        'options' => ($field instanceof BaseOptionsField ? $field->options : null),
                     ];
                 }
             }
@@ -144,11 +155,13 @@ class SegmentHelper
             'type' => Date::class,
             'handle' => 'lastActivity',
             'name' => Craft::t('campaign', 'Last Activity'),
+            'options' => null,
         ];
         $availableFields[] = [
             'type' => Date::class,
             'handle' => 'elements.dateCreated',
             'name' => Craft::t('campaign', 'Date Created'),
+            'options' => null,
         ];
 
         // Add template code field
@@ -156,6 +169,7 @@ class SegmentHelper
             'type' => 'template',
             'handle' => 'template',
             'name' => Craft::t('campaign', 'Template'),
+            'options' => null,
         ];
 
         $event = new RegisterSegmentAvailableFieldsEvent([

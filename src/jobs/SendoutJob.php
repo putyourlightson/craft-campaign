@@ -128,12 +128,12 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         $count = 0;
         $total = count($pendingRecipients);
-        $batchTotal = min($total, $settings->maxBatchSize);
+        $batchSize = min($total, $settings->maxBatchSize);
 
         // Loop as long as the there are pending recipients
         while (count($pendingRecipients)) {
             // Set progress
-            $this->setProgress($queue, $count / $batchTotal);
+            $this->setProgress($queue, $count / $batchSize);
 
             // Get next pending recipient
             $pendingRecipient = array_shift($pendingRecipients);
@@ -153,7 +153,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             $count++;
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
-            if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $settings->maxBatchSize) {
+            if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {
                 // Add new job to queue with delay
                 Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,
