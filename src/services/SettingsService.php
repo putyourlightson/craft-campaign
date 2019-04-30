@@ -120,7 +120,7 @@ class SettingsService extends Component
         }
 
         foreach ($sites as $site) {
-            if (stripos($site->getBaseUrl(), '@web') !== false) {
+            if (stripos($site->baseUrl, '@web') !== false) {
                  return true;
             }
         }

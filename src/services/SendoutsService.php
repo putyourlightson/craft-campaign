@@ -263,8 +263,6 @@ class SendoutsService extends Component
                     Craft::$app->getQueue()->push(new SendoutJob([
                         'sendoutId' => $sendout->id,
                         'title' => $sendout->title,
-                        'unlimitedMemoryLimit' => Campaign::$plugin->getSettings()->unlimitedMemoryLimit,
-                        'unlimitedTimeLimit' => Campaign::$plugin->getSettings()->unlimitedTimeLimit,
                     ]));
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;

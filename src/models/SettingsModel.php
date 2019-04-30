@@ -63,6 +63,51 @@ class SettingsModel extends Model
     public $contactFieldLayoutId;
 
     /**
+     * @var int The maximum size of sendout batches
+     */
+    public $maxBatchSize = 1000;
+
+    /**
+     * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+     */
+    public $memoryLimit = '1024M';
+
+    /**
+     * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+     */
+    public $timeLimit = 3600;
+
+    /**
+     * @var mixed The memory usage limit to use when found to be unlimited
+     */
+    public $unlimitedMemoryLimit = '4G';
+
+    /**
+     * @var int The execution time limit to use when found to be unlimited
+     */
+    public $unlimitedTimeLimit = 3600;
+
+    /**
+     * @var float The threshold for memory usage per sendout batch as a fraction
+     */
+    public $memoryThreshold = 0.8;
+
+    /**
+     * @var float The threshold for execution time per sendout batch as a fraction
+     */
+    public $timeThreshold = 0.8;
+
+    /**
+     * @var int The maximum number of sendout retry attempts
+     */
+    public $maxRetryAttempts = 10;
+
+    /**
+     * @var int The amount of time in seconds to delay jobs between sendout batches
+     */
+    public $batchJobDelay = 10;
+
+    /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
      */
     public $geoIp = false;
@@ -118,52 +163,6 @@ class SettingsModel extends Model
     public $purgePendingContactsDuration = 0;
 
     /**
-     * @var float The threshold for memory usage per sendout batch as a fraction
-     */
-    public $memoryThreshold = 0.8;
-
-    /**
-     * @var float The threshold for execution time per sendout batch as a fraction
-     */
-    public $timeThreshold = 0.8;
-
-    /**
-     * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-     */
-    public $memoryLimit = '1024M';
-
-    /**
-     * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-     */
-    public $timeLimit = 300;
-
-    /**
-     * @var mixed The memory usage limit to use when set to unlimited
-     */
-    public $unlimitedMemoryLimit = '3072M';
-
-    /**
-     * @var int The execution time limit to use when set to unlimited)
-     */
-    public $unlimitedTimeLimit = 3600;
-
-
-    /**
-     * @var int The maximum size of sendout batches
-     */
-    public $maxBatchSize = 1000;
-
-    /**
-     * @var int The maximum number of sendout retry attempts
-     */
-    public $maxRetryAttempts = 10;
-
-    /**
-     * @var int The amount of time in seconds to delay jobs between sendout batches
-     */
-    public $batchJobDelay = 10;
-
-    /**
      * @var array Extra fields and the operators that should be available to segments
      */
     public $extraSegmentFieldOperators = [];
@@ -195,10 +194,10 @@ class SettingsModel extends Model
     public function rules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'emailFieldLabel'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'emailFieldLabel', 'maxBatchSize', 'memoryLimit', 'timeLimit'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
-            [['contactFieldLayoutId'], 'integer'],
+            [['contactFieldLayoutId', 'maxBatchSize', 'timeLimit'], 'integer'],
             [['ipstackApiKey'], 'required', 'when' => function($model) {
                 return $model->geoIp;
             }],

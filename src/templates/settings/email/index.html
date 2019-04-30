@@ -37,7 +37,7 @@
     {{ forms.editableTableField({
         label: "From Names and Emails"|t('campaign'),
         instructions: "The names and email addresses that sendouts can be sent from."|t('campaign'),
-        warning: (config.cachingEnabled is defined ? macros.configWarning('fromNamesEmails')),
+        warning: (config.fromNamesEmails is defined ? macros.configWarning('fromNamesEmails')),
         name: 'fromNamesEmails',
         id: 'fromNamesEmails',
         cols: cols,

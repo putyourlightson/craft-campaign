@@ -30,6 +30,11 @@
                 </a>
             </li>
             <li>
+                <a class="{{ segment3 == 'sendout' ? 'sel' }}" href="{{ url('campaign/settings/sendout') }}">
+                    {{ 'Sendout Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
                 <a class="{{ segment3 == 'geoip' ? 'sel' }}" href="{{ url('campaign/settings/geoip') }}">
                     {{ 'GeoIP Settings'|t('campaign') }}
                 </a>

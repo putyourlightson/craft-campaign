@@ -158,6 +158,27 @@ class SettingsController extends Controller
      *
      * @return Response
      */
+    public function actionEditSendout(SettingsModel $settings = null): Response
+    {
+        if ($settings === null) {
+            $settings = $this->_settings;
+        }
+
+        return $this->renderTemplate('campaign/settings/sendout', [
+            'settings' => $settings,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+            'system' => [
+                'memoryLimit' => ini_get('memory_limit'),
+                'timeLimit' => ini_get('max_execution_time'),
+            ],
+        ]);
+    }
+
+    /**
+     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     *
+     * @return Response
+     */
     public function actionEditGeoip(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
@@ -297,6 +318,38 @@ class SettingsController extends Controller
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact settings saved.'));
+
+        return $this->redirectToPostedUrl();
+    }
+
+    /**
+     * @return Response|null
+     * @throws BadRequestHttpException
+     */
+    public function actionSaveSendout()
+    {
+        $this->requirePostRequest();
+
+        $settings = $this->_settings;
+
+        // Set the simple stuff
+        $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('$this->maxBatchSize', $settings->maxBatchSize);
+        $settings->memoryLimit = Craft::$app->getRequest()->getBodyParam('memoryLimit', $settings->memoryLimit);
+        $settings->timeLimit = Craft::$app->getRequest()->getBodyParam('timeLimit', $settings->timeLimit);
+
+        // Save it
+        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout settings.'));
+
+            // Send the settings back to the template
+            Craft::$app->getUrlManager()->setRouteParams([
+                'settings' => $settings
+            ]);
+
+            return null;
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout settings saved.'));
 
         return $this->redirectToPostedUrl();
     }

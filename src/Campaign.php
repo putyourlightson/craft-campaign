@@ -400,6 +400,7 @@ class Campaign extends Plugin
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit-sendout',
             'campaign/settings/general' => 'campaign/settings/edit-general',
             'campaign/settings/email' => 'campaign/settings/edit-email',
+            'campaign/settings/sendout' => 'campaign/settings/edit-sendout',
             'campaign/settings/contact' => 'campaign/settings/edit-contact',
             'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
             'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',

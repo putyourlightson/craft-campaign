@@ -47,16 +47,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public $batch = 1;
 
-    /**
-     * @var mixed
-     */
-    public $unlimitedMemoryLimit = '1G';
-
-    /**
-     * @var int
-     */
-    public $unlimitedTimeLimit = 3600;
-
     // Public Methods
     // =========================================================================
 
@@ -70,7 +60,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         // Get time limit
         $timeLimit = (int)ini_get('max_execution_time');
-        $timeLimit = $timeLimit == 0 ? $this->unlimitedTimeLimit : $timeLimit;
+        $timeLimit = $timeLimit == 0 ? Campaign::$plugin->getSettings()->unlimitedTimeLimit : $timeLimit;
 
         return $timeLimit;
     }
@@ -80,10 +70,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function canRetry($attempt, $error): bool
     {
-        // Get settings
-        $settings = Campaign::$plugin->getSettings();
-
-        return $attempt < $settings->maxRetryAttempts;
+        return $attempt < Campaign::$plugin->getSettings()->maxRetryAttempts;
     }
 
     /**
@@ -124,11 +111,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         // Get memory limit with threshold if unlimited
         $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = $memoryLimit == -1 ? $this->_memoryInBytes($this->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+        $memoryLimit = $memoryLimit == -1 ? $this->_memoryInBytes($settings->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
 
         // Get time limit with threshold if unlimited
         $timeLimit = ini_get('max_execution_time');
-        $timeLimit = $timeLimit == 0 ? $this->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
+        $timeLimit = $timeLimit == 0 ? $settings->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
 
         // Set the current site from the sendout's site ID
         Craft::$app->sites->setCurrentSite($sendout->siteId);
@@ -141,11 +128,12 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         $count = 0;
         $total = count($pendingRecipients);
+        $batchTotal = min($total, $settings->maxBatchSize);
 
         // Loop as long as the there are pending recipients
         while (count($pendingRecipients)) {
             // Set progress
-            $this->setProgress($queue, $count / $total);
+            $this->setProgress($queue, $count / $batchTotal);
 
             // Get next pending recipient
             $pendingRecipient = array_shift($pendingRecipients);

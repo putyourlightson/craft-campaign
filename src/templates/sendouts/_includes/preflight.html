@@ -45,16 +45,13 @@
                     {{ 'All systems are GO!'|t('campaign') }}
                 {% endif %}
                 <span class="info">
+                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
                     {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
-                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
-                    {{ 'Alias Check'|t('campaign') }}:
                     {% if isWebAliasUsed %}
                         <span class="warning">
-                            {{ 'Failed – one of your site or asset volume URLs is using the @web alias.'|t('campaign') }}
+                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using the <code>@web</code> alias.'|t('campaign')|raw }}
                         </span>
-                    {% else %}
-                        {{ 'Passed'|t('campaign') }}
                     {% endif %}
                 </span>
             </p>

@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.8.0 - 2019-XX-XX
+### Added
+- Added sendout settings page with tips and warnings for memory and time limits.
+
+### Fixed
+- Fixed check for whether the `@web` alias is used with sites or volumes.
+
 ## 1.7.5 - 2019-04-26
 ### Changed
 - First and last names are now synced along with other custom user fields that exist for contacts.

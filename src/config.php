@@ -28,17 +28,56 @@ return [
     // The from names and emails that sendouts can be sent from
     //'fromNamesEmails' => [['Zorro','legend@zorro.com'], ['Don Diego','dondiego@zorro.com']],
 
+    // The transport type that should be used
+    //'transportType' => 'SendGrid',
+
+    // The transport type’s settings
+    //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
+
     // A label to use for the email field
     //'emailFieldLabel' => 'Email',
+
+    // The maximum size of sendout batches
+    //'maxBatchSize' => 1000,
+
+    // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+    //'memoryLimit' => '1024M',
+
+    // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+    //'timeLimit' => 3600,
+
+    // The memory usage limit to use found to be to unlimited
+    //'unlimitedMemoryLimit' => '4G',
+
+    // The execution time limit to use found to be to unlimited
+    //'unlimitedTimeLimit' => 3600,
+
+    // The threshold for memory usage per sendout batch as a fraction
+    //'memoryThreshold' => 0.8,
+
+    // The threshold for execution time per sendout batch as a fraction
+    //'timeThreshold' => 0.8,
+
+    // The maximum number of sendout retry attempts
+    //'maxRetryAttempts' => 10,
+
+    // The amount of time in seconds to delay jobs between sendout batches
+    //'batchJobDelay' => 10,
+
+    // Enable GeoIP to geolocate contacts by their IP addresses
+    //'geoIp' => false,
+
+    // The ipstack.com API key
+    //'ipstackApiKey' => 'aBcDeFgHiJkLmNoP',
 
     // Enable reCAPTCHA to protect mailing list subscription forms from bots
     //'reCaptcha' => false,
 
     // The reCAPTCHA site key
-    //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoPaBcDeFgHiJkLmNoP',
+    //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
 
     // The reCAPTCHA secret key
-    //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoPaBcDeFgHiJkLmNoP',
+    //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoP',
 
     // The reCAPTCHA error message
     //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
@@ -57,33 +96,6 @@ return [
 
     // The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
     //'purgePendingContactsDuration' => 0,
-
-    // The threshold for memory usage per sendout batch as a fraction
-    //'memoryThreshold' => 0.8,
-
-    // The threshold for execution time per sendout batch as a fraction
-    //'timeThreshold' => 0.8,
-
-    // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-    //'memoryLimit' => '1024M',
-
-    // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-    //'timeLimit' => 300,
-
-    // The memory usage limit to use when set to unlimited
-    //'unlimitedMemoryLimit' => '3072M',
-
-    // The execution time limit to use when set to unlimited
-    //'unlimitedTimeLimit' => 3600,
-
-    // The maximum size of sendout batches
-    //'maxBatchSize' => 1000,
-
-    // The maximum number of sendout retry attempts
-    //'maxRetryAttempts' => 10,
-
-    // The amount of time in seconds to delay jobs between sendout batches
-    //'batchJobDelay' => 10,
 
     // Extra fields and their operators that should be available to segments
     //'extraSegmentFieldOperators' => [
