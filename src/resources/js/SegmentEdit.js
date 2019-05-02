@@ -68,12 +68,12 @@ Campaign.SegmentEdit = Garnish.Base.extend(
 
                     var selectedOption = $(this).find('.conditionField option:selected');
                     var field = $(selectedOption).attr('data-field');
-                    var handle = $(selectedOption).attr('data-handle');
+                    var unique = $(selectedOption).attr('data-unique');
                     $(this).closest('.orCondition').find('.conditionOperator').addClass('hidden').prop('disabled', true);
                     $(this).closest('.orCondition').find('.conditionOperator.' + field).removeClass('hidden').prop('disabled', false);
                     $(this).closest('.orCondition').find('.conditionValue').addClass('hidden').find('input, select').prop('disabled', true);
                     $(this).closest('.orCondition').find('.conditionValue.' + field).removeClass('hidden').find('input, select').prop('disabled', false);
-                    $(this).closest('.orCondition').find('.conditionValue.' + field + '-' + handle).removeClass('hidden').find('input, select').prop('disabled', false);
+                    $(this).closest('.orCondition').find('.conditionValue.' + field + '-' + unique).removeClass('hidden').find('input, select').prop('disabled', false);
 
                     if ($(this).closest('.orCondition').find('.conditionValue:visible').length === 0) {
                         $(this).closest('.orCondition').find('.conditionValue.default').removeClass('hidden').find('input, select').prop('disabled', false);

@@ -15,6 +15,7 @@ use craft\fields\Date;
 use craft\fields\Dropdown;
 use craft\fields\Email;
 use craft\fields\Lightswitch;
+use craft\fields\MultiSelect;
 use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\fields\RadioButtons;
@@ -57,21 +58,26 @@ class SegmentHelper
      */
     public static function getFieldOperators(): array
     {
-        $standardOperators = [
+        $isOperators = [
             '=' => Craft::t('campaign', 'is'),
             '!=' => Craft::t('campaign', 'is not'),
-            'like' => Craft::t('campaign', 'contains'),
-            'not like' => Craft::t('campaign', 'does not contain'),
-            'like v%' => Craft::t('campaign', 'starts with'),
-            'not like v%' => Craft::t('campaign', 'does not start with'),
-            'like %v' => Craft::t('campaign', 'ends with'),
-            'not like %v' => Craft::t('campaign', 'does not end with'),
         ];
 
-        $optionOperators = [
-            '=' => Craft::t('campaign', 'is'),
-            '!=' => Craft::t('campaign', 'is not'),
+        $containsOperators = [
+            'like' => Craft::t('campaign', 'contains'),
+            'not like' => Craft::t('campaign', 'does not contain'),
         ];
+
+        $standardOperators = array_merge(
+            $isOperators,
+            $containsOperators,
+            [
+                'like v%' => Craft::t('campaign', 'starts with'),
+                'not like v%' => Craft::t('campaign', 'does not start with'),
+                'like %v' => Craft::t('campaign', 'ends with'),
+                'not like %v' => Craft::t('campaign', 'does not end with'),
+            ]
+        );
 
         $fieldOperators = [
             PlainText::class => $standardOperators,
@@ -88,9 +94,11 @@ class SegmentHelper
                 '<' => Craft::t('campaign', 'is before'),
                 '>' => Craft::t('campaign', 'is after'),
             ],
-            Lightswitch::class => $optionOperators,
-            Dropdown::class => $optionOperators,
-            RadioButtons::class => $optionOperators,
+            Lightswitch::class => $isOperators,
+            Dropdown::class => $isOperators,
+            RadioButtons::class => $isOperators,
+            Checkboxes::class => $containsOperators,
+            MultiSelect::class => $containsOperators,
             'template' => [
                 '1' => Craft::t('campaign', 'evaluates to true'),
                 '0' => Craft::t('campaign', 'evaluates to false'),
@@ -142,7 +150,7 @@ class SegmentHelper
                 if (!empty($supportedFields[$fieldType])) {
                     $availableFields[] = [
                         'type' => $fieldType,
-                        'handle' => $field->handle,
+                        'handle' => 'field_'.$field->handle,
                         'name' => $field->name,
                         'options' => ($field instanceof BaseOptionsField ? $field->options : null),
                     ];

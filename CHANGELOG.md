@@ -4,7 +4,7 @@
 ### Added
 - Added ability to add Reply To email addresses.
 - Added sendout settings page with tips and warnings for memory and time limits.
-- Added Dropdown and Radio Buttons field options in segments.
+- Added Dropdown, Radio Buttons, Checkboxes and Multi-select field options to segments.
 - Added `is not` option to lightswitch fields in segments.
 
 ### Changed

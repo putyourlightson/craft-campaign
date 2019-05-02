@@ -1,13 +1,13 @@
 {% import '_includes/forms' as forms %}
 
 <tr class="orCondition">
-    <td>
+    <td style="width: 25%;">
         <div class="select">
             <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
                 {% for field in availableFields %}
-                    {% set value = 'field_' ~ field.handle %}
+                    {% set value = field.handle %}
                     <option data-field="field-{{ field.type|replace({'\\': '-'}) }}"
-                            data-handle="{{ field.options ? field.handle }}"
+                            data-unique="{{ field.options ? field.handle }}"
                             value="{{ value }}"
                             {{ condition is defined and condition[1] == value ? 'selected' }}
                     >{{ field.name }}</option>
@@ -15,7 +15,7 @@
             </select>
         </div>
     </td>
-    <td>
+    <td style="width: 25%;">
         <div class="select">
             {% for fieldType, operators in fieldOperators %}
                 <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][0]" class="conditionOperator hidden field-{{ fieldType|replace({'\\': '-'}) }}" disabled>
@@ -26,7 +26,7 @@
             {% endfor %}
         </div>
     </td>
-    <td>
+    <td style="width: 25%;">
         {% set fieldName = 'conditions[' ~ (andIndex ?? '') ~ '][' ~ (orIndex ?? '' ) ~ '][2]' %}
         {% set value = condition[2] ?? '' %}
         <div class="conditionValue default hidden">
@@ -50,7 +50,7 @@
             {% if field.options %}
                 <div class="conditionValue field-{{ field.type|replace({'\\': '-'}) }}-{{ field.handle }} hidden">
                     <div class="select">
-                        <select name="{{ field.name }}" disabled>
+                        <select name="{{ fieldName }}" disabled>
                             {% for option in field.options %}
                                 <option value="{{ option.value }}" {{ value == option.value ? 'selected' }}>{{ option.label }}</option>
                             {% endfor %}
