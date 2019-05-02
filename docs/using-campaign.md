@@ -35,7 +35,8 @@ Campaign has its own email settings and can use any email delivery service that 
 1. [Amazon SES](https://github.com/putyourlightson/craft-amazon-ses) by PutYourLightsOn
 2. [Mailgun](https://github.com/craftcms/mailgun) by Pixel & Tonic
 3. [Mandrill](https://github.com/craftcms/mandrill) by Pixel & Tonic
-4. [SendGrid](https://github.com/putyourlightson/craft-sendgrid) by PutYourLightsOn
+4. [Postmark](https://github.com/craftcms/postmark) by Pixel & Tonic
+5. [SendGrid](https://github.com/putyourlightson/craft-sendgrid) by PutYourLightsOn
 
 ### Bounce and Complaint Handling
 
