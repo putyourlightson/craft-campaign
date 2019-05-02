@@ -17,9 +17,11 @@ class m190430_120000_update_fromnamesemails_setting extends Migration
     {
         $settings = Campaign::$plugin->getSettings();
 
-        foreach ($settings->fromNamesEmails as &$row) {
-            $row[3] = $row[2];
-            $row[2] = '';
+        if (is_array($settings->fromNamesEmails)) {
+            foreach ($settings->fromNamesEmails as &$row) {
+                $row[3] = $row[2] ?? '';
+                $row[2] = '';
+            }
         }
 
         Campaign::$plugin->settings->saveSettings($settings);

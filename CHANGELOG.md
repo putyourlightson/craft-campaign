@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.8.1 - 2019-05-02
+### Fixed
+- Fixed migration that could fail in some edge cases. 
+
 ## 1.8.0 - 2019-05-02
 ### Added
 - Added ability to add Reply To email addresses.
