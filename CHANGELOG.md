@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.8.0 - 2019-XX-XX
+## 1.8.0 - 2019-05-02
 ### Added
 - Added ability to add Reply To email addresses.
 - Added sendout settings page with tips and warnings for memory and time limits.
