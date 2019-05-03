@@ -10,6 +10,7 @@ use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
+use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\records\SendoutRecord;
 use putyourlightson\campaign\services\SendoutsService;
 
@@ -111,7 +112,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
         // Get memory limit with threshold if unlimited
         $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = $memoryLimit == -1 ? $this->_memoryInBytes($settings->unlimitedMemoryLimit) : round($this->_memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+        $memoryLimit = $memoryLimit == -1 ? SendoutHelper::memoryInBytes($settings->unlimitedMemoryLimit) : round(SendoutHelper::memoryInBytes($memoryLimit) * $settings->memoryThreshold);
 
         // Get time limit with threshold if unlimited
         $timeLimit = ini_get('max_execution_time');
@@ -182,35 +183,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
                 'sendout' => $sendout,
             ]));
         }
-    }
-
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * Returns the provided memory converted to bytes
-     *
-     * @param string $value
-     *
-     * @return int
-     */
-    private function _memoryInBytes(string $value): int
-    {
-        $unit = strtolower(substr($value, -1, 1));
-        $value = (int)$value;
-        switch($unit) {
-            case 'g':
-                $value *= pow(1024, 3);
-                break;
-            case 'm':
-                $value *= pow(1024, 2);
-                break;
-            case 'k':
-                $value *= 1024;
-                break;
-        }
-
-        return $value;
     }
 
     // Protected Methods

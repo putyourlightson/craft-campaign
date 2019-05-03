@@ -7,6 +7,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\elements\ContactElement;
 
@@ -169,6 +170,7 @@ class SettingsController extends Controller
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'system' => [
                 'memoryLimit' => ini_get('memory_limit'),
+                'memoryLimitExceeded' => (SendoutHelper::memoryInBytes($settings->memoryLimit) > SendoutHelper::memoryInBytes(ini_get('memory_limit'))),
                 'timeLimit' => ini_get('max_execution_time'),
             ],
         ]);
@@ -333,7 +335,7 @@ class SettingsController extends Controller
         $settings = $this->_settings;
 
         // Set the simple stuff
-        $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('$this->maxBatchSize', $settings->maxBatchSize);
+        $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('maxBatchSize', $settings->maxBatchSize);
         $settings->memoryLimit = Craft::$app->getRequest()->getBodyParam('memoryLimit', $settings->memoryLimit);
         $settings->timeLimit = Craft::$app->getRequest()->getBodyParam('timeLimit', $settings->timeLimit);
 

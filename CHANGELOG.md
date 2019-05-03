@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.8.2 - 2019-05-03
+### Fixed
+- Fixed issue that prevented max batch size being saved in sendout settings.
+- Fixed memory limit exceeded warnings in sendout settings.
+
 ## 1.8.1 - 2019-05-02
 ### Fixed
 - Fixed migration that could fail in some edge cases. 
