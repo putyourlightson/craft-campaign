@@ -196,11 +196,11 @@ class SendoutsService extends Component
 
          // Ensure contacts have not complained or bounced (check in contact record)
          $query->innerJoinWith(['contact c' => function (ActiveQuery $query) {
-                $query->andWhere([
-                    'c.complained' => null,
-                    'c.bounced' => null,
-                ]);
-            }]);
+            $query->andWhere([
+                'c.complained' => null,
+                'c.bounced' => null,
+            ]);
+        }]);
 
         // Exclude contacts subscribed to sendout's excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);

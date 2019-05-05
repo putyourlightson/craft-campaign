@@ -229,11 +229,11 @@ class SegmentElement extends Element
      */
     public function getConditionCount(): int
     {
-        $count = 0;
-
         if (!is_array($this->conditions)) {
-            return $count;
+            return 0;
         }
+
+        $count = 0;
 
         foreach ($this->conditions as $conditions) {
             $count += count($conditions);

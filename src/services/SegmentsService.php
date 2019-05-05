@@ -14,6 +14,9 @@ use craft\web\View;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use RuntimeException;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * SegmentsService
@@ -120,6 +123,9 @@ class SegmentsService extends Component
                         $evaluatedTemplate = (bool)trim($renderedTemplate);
                     }
                     catch (RuntimeException $e) {}
+                    catch (LoaderError $e) {}
+                    catch (RuntimeError $e) {}
+                    catch (SyntaxError $e) {}
 
                     // Remove if evaluated template does not equal operand
                     if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {
@@ -158,9 +164,8 @@ class SegmentsService extends Component
         $contactConditions = $this->_getContactConditions($segment);
 
         $contactIds = ContactElement::find()
-            ->select('id')
             ->where($contactConditions)
-            ->column();
+            ->ids();
 
         return $contactIds;
     }
@@ -228,19 +233,15 @@ class SegmentsService extends Component
      */
     private function _getTemplateConditions(SegmentElement $segment): array
     {
-        $conditions = ['and'];
+        $conditions = [];
 
         foreach ($segment->conditions as $andCondition) {
-            $condition = ['or'];
-
             /* @var array $andCondition */
             foreach ($andCondition as $orCondition) {
                 if ($orCondition[1] == 'template') {
-                    $condition[] = $orCondition;
+                    $conditions[] = $orCondition;
                 }
             }
-
-            $conditions[] = $condition;
         }
 
         return $conditions;
