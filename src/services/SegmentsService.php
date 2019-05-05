@@ -23,7 +23,7 @@ use Twig\Error\SyntaxError;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0
+ * @since     1.9.0
  */
 class SegmentsService extends Component
 {
@@ -94,11 +94,11 @@ class SegmentsService extends Component
             ->where($contactConditions)
             ->all();
 
-        // TODO: remove support for template conditions in version 2.0.0
+        // TODO: remove support for template conditions in version 1.9.0
         $templateConditions = $this->_getTemplateConditions($segment);
 
         if (count($templateConditions)) {
-            Craft::$app->getDeprecator()->log('SegmentTemplateConditions', 'Segment template conditions have been deprecated due to inefficiency and will be removed in version 2.0.0.');
+            Craft::$app->getDeprecator()->log('SegmentTemplateConditions', 'Segment template conditions have been deprecated due to inefficiency and will be removed in version 1.9.0.');
 
             $view = Craft::$app->getView();
 
@@ -150,7 +150,7 @@ class SegmentsService extends Component
      */
     public function getContactIds(SegmentElement $segment): array
     {
-        // TODO: remove support for template conditions in 2.0.0
+        // TODO: remove support for template conditions in 1.9.0
         if (count($this->_getTemplateConditions($segment))) {
             $contactIds = [];
 
