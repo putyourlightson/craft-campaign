@@ -168,9 +168,6 @@ class SendoutsService extends Component
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
-        // Check whether we should remove recipients that were sent to today only
-        $todayOnly = $sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes;
-
         // Set columns to select and group by
         $columns = ['contactId', 'mailingListId', 'subscribed'];
 
@@ -194,8 +191,11 @@ class SendoutsService extends Component
         // Exclude contacts subscribed to sendout's excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
 
+        // Check whether we should exclude recipients that were sent to today only
+        $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes;
+
         // Exclude sent recipients
-        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $todayOnly)]]);
+        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
 
         // Check if we should apply segment filters
         $segments = $sendout->getSegments();

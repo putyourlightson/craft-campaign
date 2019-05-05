@@ -59,6 +59,14 @@
                 </div>
             {% endif %}
         {% endfor %}
+        <div class="conditionValue field-template hidden">
+            <input type="text" class="text fullwidth" name="{{ fieldName }}" value="{{ value }}" disabled />
+            <span class="field">
+                <span class="warning">Deprecated
+                    <span class="info">{{ 'Template conditions are deprecated due to inefficiency and will be removed in version 2.0.0.' }}</span>
+                </span>
+            </span>
+        </div>
     </td>
     <td class="thin"><a class="addOrCondition btn add icon" title="{{ 'OR'|t('campaign') }}" role="button">{{ 'OR'|t('campaign') }}</a></td>
     <td class="thin"><a class="deleteOrCondition delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>

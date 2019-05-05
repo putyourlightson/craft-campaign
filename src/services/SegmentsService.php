@@ -85,52 +85,18 @@ class SegmentsService extends Component
      */
     public function getContacts(SegmentElement $segment): array
     {
-        $templateConditions = [];
-        $condition = ['and'];
-
-        foreach ($segment->conditions as $andCondition) {
-            $conditions = ['or'];
-
-            /* @var array $andCondition */
-            foreach ($andCondition as $orCondition) {
-                // Deal with template conditions later
-                if ($orCondition[1] == 'template') {
-                    $templateConditions[] = $orCondition;
-                    continue;
-                }
-
-                $operator = $orCondition[0];
-
-                // If operator contains %v
-                if (strpos($operator, '%v') !== false) {
-                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
-                    $orCondition[2] = '%'.$orCondition[2];
-                    $orCondition[3] = false;
-                }
-
-                // If operator contains v%
-                if (strpos($operator, 'v%') !== false) {
-                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
-                    $orCondition[2] .= '%';
-                    $orCondition[3] = false;
-                }
-
-                // Convert value if is a date
-                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
-                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
-                }
-
-                $conditions[] = $orCondition;
-            }
-
-            $condition[] = $conditions;
-        }
+        $contactConditions = $this->_getContactConditions($segment);
 
         $contacts = ContactElement::find()
-            ->where($condition)
+            ->where($contactConditions)
             ->all();
 
+        // TODO: remove support for template conditions in version 2.0.0
+        $templateConditions = $this->_getTemplateConditions($segment);
+
         if (count($templateConditions)) {
+            Craft::$app->getDeprecator()->log('SegmentTemplateConditions', 'Segment template conditions have been deprecated due to inefficiency and will be removed in version 2.0.0.');
+
             $view = Craft::$app->getView();
 
             // Get template mode so we can reset later
@@ -167,5 +133,116 @@ class SegmentsService extends Component
         }
 
         return $contacts;
+    }
+
+    /**
+     * Returns the segment's contact IDs
+     *
+     * @param SegmentElement $segment
+     *
+     * @return int[]
+     */
+    public function getContactIds(SegmentElement $segment): array
+    {
+        // TODO: remove support for template conditions in 2.0.0
+        if (count($this->_getTemplateConditions($segment))) {
+            $contactIds = [];
+
+            foreach ($this->getContacts($segment) as $contact) {
+                $contactIds[] = $contact->id;
+            }
+
+            return $contactIds;
+        }
+
+        $contactConditions = $this->_getContactConditions($segment);
+
+        $contactIds = ContactElement::find()
+            ->select('id')
+            ->where($contactConditions)
+            ->column();
+
+        return $contactIds;
+    }
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * Returns the contact conditions
+     *
+     * @param SegmentElement $segment
+     *
+     * @return array[]
+     */
+    private function _getContactConditions(SegmentElement $segment): array
+    {
+        $conditions = ['and'];
+
+        foreach ($segment->conditions as $andCondition) {
+            $condition = ['or'];
+
+            /* @var array $andCondition */
+            foreach ($andCondition as $orCondition) {
+                // Exclude template conditions
+                if ($orCondition[1] == 'template') {
+                    continue;
+                }
+
+                $operator = $orCondition[0];
+
+                // If operator contains %v
+                if (strpos($operator, '%v') !== false) {
+                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
+                    $orCondition[2] = '%'.$orCondition[2];
+                    $orCondition[3] = false;
+                }
+
+                // If operator contains v%
+                if (strpos($operator, 'v%') !== false) {
+                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
+                    $orCondition[2] .= '%';
+                    $orCondition[3] = false;
+                }
+
+                // Convert value if is a date
+                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
+                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
+                }
+
+                $condition[] = $orCondition;
+            }
+
+            $conditions[] = $condition;
+        }
+
+        return $conditions;
+    }
+
+    /**
+     * Returns the template conditions
+     *
+     * @param SegmentElement $segment
+     *
+     * @return array[]
+     */
+    private function _getTemplateConditions(SegmentElement $segment): array
+    {
+        $conditions = ['and'];
+
+        foreach ($segment->conditions as $andCondition) {
+            $condition = ['or'];
+
+            /* @var array $andCondition */
+            foreach ($andCondition as $orCondition) {
+                if ($orCondition[1] == 'template') {
+                    $condition[] = $orCondition;
+                }
+            }
+
+            $conditions[] = $condition;
+        }
+
+        return $conditions;
     }
 }

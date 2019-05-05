@@ -187,9 +187,14 @@ class SegmentElement extends Element
     public $conditions;
 
     /**
-     * @var array|null
+     * @var ContactElement[]|null
      */
     private $_contacts;
+
+    /**
+     * @var int[]|null
+     */
+    private $_contactIds;
 
     // Public Methods
     // =========================================================================
@@ -260,13 +265,13 @@ class SegmentElement extends Element
      */
     public function getContactIds(): array
     {
-        $contactIds = [];
-
-        foreach ($this->getContacts() as $contact) {
-            $contactIds[] = $contact->id;
+        if ($this->_contactIds !== null) {
+            return $this->_contactIds;
         }
 
-        return $contactIds;
+        $this->_contactIds = Campaign::$plugin->segments->getContactIds($this);
+
+        return $this->_contactIds;
     }
 
     /**
@@ -276,7 +281,7 @@ class SegmentElement extends Element
      */
     public function getContactCount(): int
     {
-        return count($this->getContacts());
+        return count($this->getContactIds());
     }
 
     /**
