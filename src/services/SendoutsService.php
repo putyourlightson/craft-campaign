@@ -127,19 +127,33 @@ class SendoutsService extends Component
             return null;
         }
 
-        /** @var SendoutRecord|null $sendout */
-        $sendout = SendoutRecord::find()
+        $sendoutId = SendoutRecord::find()
             ->select('id')
             ->where(['sid' => $sid])
-            ->one();
+            ->scalar();
 
-        if ($sendout === null) {
+        if ($sendoutId === null) {
             return null;
         }
 
-        $sendoutId = $this->getSendoutById($sendout->id);
+        return $this->getSendoutById($sendoutId);
+    }
 
-        return $sendoutId;
+    /**
+     * Returns sendout send status by ID
+     *
+     * @param int $sendoutId
+     *
+     * @return string|null
+     */
+    public function getSendoutSendStatusById(int $sendoutId)
+    {
+        $sendStatus = SendoutRecord::find()
+            ->select('sendStatus')
+            ->where(['id' => $sendoutId])
+            ->scalar();
+
+        return $sendStatus;
     }
 
     /**

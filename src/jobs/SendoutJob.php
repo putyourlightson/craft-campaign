@@ -131,13 +131,9 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $total = count($pendingRecipients);
         $batchSize = min($total, $settings->maxBatchSize);
 
-        // Loop as long as the there are pending recipients
-        while (count($pendingRecipients)) {
-            // Set progress
+        foreach ($pendingRecipients as $pendingRecipient) {
+            $count++;
             $this->setProgress($queue, $count / $batchSize);
-
-            // Get next pending recipient
-            $pendingRecipient = array_shift($pendingRecipients);
 
             $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
 
@@ -149,9 +145,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
             // Send email
             Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingListId);
-
-            // Increment count
-            $count++;
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
             if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {
@@ -165,11 +158,10 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
                 return null;
             }
 
-            /** @var SendoutRecord|null $sendoutRecord */
-            $sendoutRecord = SendoutRecord::findOne($sendout->id);
+            // Ensure sendout send status is still sending as it may have had its status changed
+            $sendoutSendStatus = Campaign::$plugin->sendouts->getSendoutSendStatusById($sendout->id);
 
-            // Ensure sendout record still exists and is sendable (it may have been deleted or its send status changed in the meantime)
-            if ($sendoutRecord === null OR $sendoutRecord->sendStatus !== SendoutElement::STATUS_SENDING) {
+            if ($sendoutSendStatus !== SendoutElement::STATUS_SENDING) {
                 return null;
             }
         }
