@@ -128,12 +128,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $pendingRecipients = $sendout->getPendingRecipients();
 
         $count = 0;
-        $total = count($pendingRecipients);
-        $batchSize = min($total, $settings->maxBatchSize);
+        $total = min(count($pendingRecipients), $settings->maxBatchSize);
 
         foreach ($pendingRecipients as $pendingRecipient) {
             $count++;
-            $this->setProgress($queue, $count / $batchSize);
+            $this->setProgress($queue, $count / $total);
 
             $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
 

@@ -12,6 +12,7 @@ use craft\helpers\Db;
 use craft\records\Element_SiteSettings;
 use craft\web\View;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\elements\SegmentElement;
 use RuntimeException;
 use Twig\Error\LoaderError;
@@ -88,57 +89,7 @@ class SegmentsService extends Component
      */
     public function getContacts(SegmentElement $segment): array
     {
-        $contactConditions = $this->_getContactConditions($segment);
-
-        $contacts = ContactElement::find()
-            ->where($contactConditions)
-            ->all();
-
-        // TODO: remove support for template conditions in version 1.9.0
-        $templateConditions = $this->_getTemplateConditions($segment);
-
-        if (count($templateConditions)) {
-            Craft::$app->getDeprecator()->log('SegmentTemplateConditions', 'Segment template conditions have been deprecated due to inefficiency and will be removed in version 1.9.0.');
-
-            $view = Craft::$app->getView();
-
-            // Get template mode so we can reset later
-            $templateMode = $view->getTemplateMode();
-
-            // Set template mode to site
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-            // Evaluate template conditions
-            foreach ($templateConditions as $templateCondition) {
-                foreach ($contacts as $key => $contact) {
-                    $operand = (bool)$templateCondition[0];
-                    $evaluatedTemplate = null;
-
-                    try {
-                        $renderedTemplate = $view->renderTemplate($templateCondition[2], [
-                            'contact' => $contact,
-                        ]);
-
-                        // Convert rendered template to boolean
-                        $evaluatedTemplate = (bool)trim($renderedTemplate);
-                    }
-                    catch (RuntimeException $e) {}
-                    catch (LoaderError $e) {}
-                    catch (RuntimeError $e) {}
-                    catch (SyntaxError $e) {}
-
-                    // Remove if evaluated template does not equal operand
-                    if ($evaluatedTemplate === null OR $evaluatedTemplate !== $operand) {
-                        unset($contacts[$key]);
-                    }
-                }
-            }
-
-            // Reset template mode
-            $view->setTemplateMode($templateMode);
-        }
-
-        return $contacts;
+        return $this->filterContacts($segment, null);
     }
 
     /**
@@ -150,37 +101,93 @@ class SegmentsService extends Component
      */
     public function getContactIds(SegmentElement $segment): array
     {
-        // TODO: remove support for template conditions in 1.9.0
-        if (count($this->_getTemplateConditions($segment))) {
-            $contactIds = [];
-
-            foreach ($this->getContacts($segment) as $contact) {
-                $contactIds[] = $contact->id;
-            }
-
-            return $contactIds;
-        }
-
-        $contactConditions = $this->_getContactConditions($segment);
-
-        $contactIds = ContactElement::find()
-            ->where($contactConditions)
-            ->ids();
-
-        return $contactIds;
+        return $this->filterContactIds($segment, null);
     }
 
-    // Public Methods
+    /**
+     * Filters the segment's contacts by the contact IDs
+     *
+     * @param SegmentElement $segment
+     * @param int[]|null $contactIds
+     *
+     * @return ContactElement[]
+     */
+    public function filterContacts(SegmentElement $segment, array $contactIds = null): array
+    {
+        $filteredContacts = [];
+        $contactQuery = $this->_getContactQuery($contactIds);
+
+        if ($segment->segmentType == 'regular') {
+            $filteredContacts = $contactQuery
+                ->where($this->_getConditions($segment))
+                ->all();
+        }
+
+        else if ($segment->segmentType == 'template') {
+            $contacts = $contactQuery->all();
+
+            foreach ($contacts as $contact) {
+                try {
+                    $rendered = Craft::$app->getView()->renderString($segment->conditions, [
+                        'contact' => $contact,
+                    ]);
+
+                    // Convert rendered value to boolean
+                    $evaluated = (bool)trim($rendered);
+
+                    if ($evaluated) {
+                        $filteredContacts[] = $contact;
+                    }
+                }
+                catch (LoaderError $e) {}
+                catch (SyntaxError $e) {}
+            }
+        }
+
+        return $filteredContacts;
+    }
+
+    /**
+     * Filters the segment's contact IDs by the contact IDs
+     *
+     * @param SegmentElement $segment
+     * @param int[]|null $contactIds
+     *
+     * @return ContactElement[]
+     */
+    public function filterContactIds(SegmentElement $segment, array $contactIds = null): array
+    {
+        $filteredContactIds = [];
+        $contactQuery = $this->_getContactQuery($contactIds);
+
+        if ($segment->segmentType == 'regular') {
+            $filteredContactIds = $contactQuery
+                ->where($this->_getConditions($segment))
+                ->ids();
+        }
+
+        else if ($segment->segmentType == 'template') {
+            $contacts = $this->filterContacts($segment, $contactIds);
+
+            foreach ($contacts as $contact) {
+                $filteredContactIds[] = $contact->id;
+            }
+        }
+
+        return $filteredContactIds;
+    }
+
+    // Private Methods
     // =========================================================================
 
     /**
-     * Returns the contact conditions
+     * Returns the conditions
      *
      * @param SegmentElement $segment
      *
      * @return array[]
      */
-    private function _getContactConditions(SegmentElement $segment): array
+    private function _getConditions(SegmentElement $segment): array
     {
         $conditions = ['and'];
 
@@ -225,25 +232,18 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns the template conditions
+     * @param int[]|null $contactIds
      *
-     * @param SegmentElement $segment
-     *
-     * @return array[]
+     * @return ContactElementQuery
      */
-    private function _getTemplateConditions(SegmentElement $segment): array
+    private function _getContactQuery(array $contactIds = null)
     {
-        $conditions = [];
+        $contactQuery = ContactElement::find();
 
-        foreach ($segment->conditions as $andCondition) {
-            /* @var array $andCondition */
-            foreach ($andCondition as $orCondition) {
-                if ($orCondition[1] == 'template') {
-                    $conditions[] = $orCondition;
-                }
-            }
+        if ($contactIds !== null) {
+            $contactQuery->id($contactIds);
         }
 
-        return $conditions;
+        return $contactQuery;
     }
 }

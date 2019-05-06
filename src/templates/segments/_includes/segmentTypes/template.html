@@ -1,0 +1,18 @@
+{% import '_includes/forms' as forms %}
+
+{% import 'campaign/_macros' as macros %}
+
+{% set info %}
+    {{ macros.info("Template conditions require processing template code for every contact and can therefore slow down the sending process. Use them sparingly and only when a regular segment is insufficient."|t('campaign')) }}
+{% endset %}
+
+{{ forms.textareaField({
+    label: "Template Condition"|t('campaign'),
+    instructions: "Create a template condition to apply to this segment. The `contact` tag is available in this context."|t('campaign') ~ info,
+    name: 'conditions',
+    value: segment.conditions,
+    errors: segment.getErrors('conditions'),
+    rows: 10,
+    class: 'code',
+    required: true,
+}) }}

@@ -235,6 +235,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_segments}}')) {
             $this->createTable('{{%campaign_segments}}', [
                 'id' => $this->primaryKey(),
+                'segmentType' => $this->string()->notNull(),
                 'conditions' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
@@ -311,6 +312,7 @@ class Install extends Migration
         $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
         $this->createIndex(null, '{{%campaign_links}}', 'lid', true);
         $this->createIndex(null, '{{%campaign_mailinglisttypes}}', 'handle', true);
+        $this->createIndex(null, '{{%campaign_segments}}', 'segmentType', false);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sid', true);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sendoutType', false);
         $this->createIndex(null, '{{%campaign_sendouts}}', 'sendStatus', false);

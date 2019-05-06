@@ -49,6 +49,7 @@ class SegmentsController extends Controller
     }
 
     /**
+     * @param string $segmentType The segment type
      * @param int|null $segmentId The segment’s ID, if editing an existing segment.
      * @param string|null $siteHandle
      * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
@@ -56,9 +57,16 @@ class SegmentsController extends Controller
      * @return Response
      * @throws NotFoundHttpException if the requested segment is not found
      */
-    public function actionEditSegment(int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
+    public function actionEditSegment(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
     {
-        $variables = [];
+        // Check that the segment type exists
+        // ---------------------------------------------------------------------
+
+        $segmentTypes = SegmentElement::segmentTypes();
+
+        if (empty($segmentTypes[$segmentType])) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Segment type not found.'));
+        }
 
         // Get the segment
         // ---------------------------------------------------------------------
@@ -73,6 +81,7 @@ class SegmentsController extends Controller
             }
             else {
                 $segment = new SegmentElement();
+                $segment->segmentType = $segmentType;
                 $segment->enabled = true;
             }
         }
@@ -87,8 +96,11 @@ class SegmentsController extends Controller
         // Set the variables
         // ---------------------------------------------------------------------
 
-        $variables['segmentId'] = $segmentId;
-        $variables['segment'] = $segment;
+        $variables = [
+            'segmentType' => $segmentType,
+            'segmentId' => $segmentId,
+            'segment' => $segment,
+        ];
 
         // Set the title and slug
         // ---------------------------------------------------------------------
@@ -109,7 +121,7 @@ class SegmentsController extends Controller
 
         // Full page form variables
         $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/segments/{id}';
+        $variables['continueEditingUrl'] = 'campaign/segments/'.$segmentType.'/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
         // Render the template
@@ -156,6 +168,7 @@ class SegmentsController extends Controller
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
         $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
+        $segment->segmentType = $request->getBodyParam('segmentType', $segment->segmentType);
         $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
         $segment->title = $request->getBodyParam('title', $segment->title);
         $segment->slug = $request->getBodyParam('slug', $segment->slug);
@@ -178,9 +191,6 @@ class SegmentsController extends Controller
             // Unset variable reference to avoid possible side-effects
             unset($andCondition);
         }
-
-        // JSON encode conditions
-        $segment->conditions = Json::encode($segment->conditions);
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($segment)) {

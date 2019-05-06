@@ -1,8 +1,13 @@
 {% do craft.campaign.requirePro() %}
 
-{% extends 'campaign/_layout' %}
+{% extends 'campaign/segments/_layout' %}
 
 {% set elementType = 'putyourlightson\\campaign\\elements\\SegmentElement' %}
 
 {% set title = 'Segments'|t('campaign') %}
-{% set selectedSubnavItem = 'segments' %}
+
+{% js %}
+    {% if segmentType is defined %}
+        window.defaultSegmentTypeHandle = '{{ segmentType }}';
+    {% endif %}
+{% endjs %}

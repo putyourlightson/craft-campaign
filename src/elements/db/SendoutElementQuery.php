@@ -29,9 +29,6 @@ class SendoutElementQuery extends ElementQuery
     // Properties
     // =========================================================================
 
-    // General parameters
-    // -------------------------------------------------------------------------
-
     /**
      * @var string SID
      */

@@ -14,6 +14,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Restore;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\records\SegmentRecord;
@@ -28,12 +29,26 @@ use putyourlightson\campaign\records\SegmentRecord;
  * @property int $conditionCount
  * @property int $contactCount
  * @property int[] $contactIds
+ * @property string $segmentTypeLabel
  * @property ContactElement[] $contacts
  */
 class SegmentElement extends Element
 {
     // Static Methods
     // =========================================================================
+
+    /**
+     * Returns the segment types.
+     *
+     * @return array
+     */
+    public static function segmentTypes(): array
+    {
+        return [
+            'regular' => Craft::t('campaign', 'Regular'),
+            'template' => Craft::t('campaign', 'Template'),
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -98,6 +113,26 @@ class SegmentElement extends Element
             ]
         ];
 
+        $sources[] = ['heading' => Craft::t('campaign', 'Segment Types')];
+
+        $segmentTypes = self::segmentTypes();
+        $index = 1;
+
+        foreach ($segmentTypes as $segmentType => $label) {
+            $sources[] = [
+                'key' => 'segmentTypeId:'.$index,
+                'label' => $label,
+                'data' => [
+                    'handle' => $segmentType
+                ],
+                'criteria' => [
+                    'segmentType' => $segmentType
+                ]
+            ];
+
+            $index++;
+        }
+
         return $sources;
     }
 
@@ -153,6 +188,7 @@ class SegmentElement extends Element
     {
         $attributes = [
             'title' => ['label' => Craft::t('app', 'Title')],
+            'segmentType' => ['label' => Craft::t('campaign', 'Segment Type')],
             'conditions' => ['label' => Craft::t('campaign', 'Conditions')],
             'contacts' => ['label' => Craft::t('campaign', 'Contacts')],
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
@@ -165,9 +201,31 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        if ($source == '*') {
+            $attributes = ['title', 'segmentType', 'conditions', 'contacts'];
+        }
+        else if ($source == 'regular') {
+            $attributes = ['title', 'conditions', 'contacts'];
+        }
+        else {
+            $attributes = ['title', 'contacts'];
+        }
+
+
+        return $attributes;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
+            case 'segmentType':
+                return $this->getSegmentTypeLabel();
+
             case 'conditions':
                 return $this->getConditionCount();
 
@@ -182,7 +240,12 @@ class SegmentElement extends Element
     // =========================================================================
 
     /**
-     * @var mixed Conditions
+     * @var string
+     */
+    public $segmentType;
+
+    /**
+     * @var mixed
      */
     public $conditions;
 
@@ -213,6 +276,49 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
+    public function rules(): array
+    {
+        $rules = parent::rules();
+        $rules[] = [['segmentType'], 'required'];
+        $rules[] = [['conditions'], 'validateConditions'];
+
+        return $rules;
+    }
+
+    /**
+     * Validates conditions
+     */
+    public function validateConditions()
+    {
+        // Validate template condition
+        if ($this->segmentType == 'template') {
+            // Get a random contact
+            $contact = ContactElement::find()->one();
+
+            if ($contact === null) {
+                return true;
+            }
+
+            $error = '';
+
+            try {
+                Craft::$app->getView()->renderString($this->conditions, [
+                    'contact' => $contact,
+                ]);
+            }
+            catch (Exception $e) {
+                $error = $e->getRawMessage();
+            }
+
+            if ($error) {
+                $this->addError('conditions', $error);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSupportedSites(): array
     {
         if ($this->siteId !== null) {
@@ -223,12 +329,28 @@ class SegmentElement extends Element
     }
 
     /**
+     * Returns the segment type label for the given segment type.
+     *
+     * @return string
+     */
+    public function getSegmentTypeLabel(): string
+    {
+        $segmentTypes = self::segmentTypes();
+
+        return $segmentTypes[$this->segmentType];
+    }
+
+    /**
      * Returns the number of conditions
      *
      * @return int
      */
     public function getConditionCount(): int
     {
+        if ($this->segmentType == 'template') {
+            return 1;
+        }
+
         if (!is_array($this->conditions)) {
             return 0;
         }
@@ -297,7 +419,7 @@ class SegmentElement extends Element
      */
     public function getCpEditUrl()
     {
-        return UrlHelper::cpUrl('campaign/segments/'.$this->id);
+        return UrlHelper::cpUrl('campaign/segments/'.$this->segmentType.'/'.$this->id);
     }
 
     // Indexes, etc.
@@ -330,7 +452,8 @@ class SegmentElement extends Element
 
         if ($segmentRecord) {
             // Set attributes
-            $segmentRecord->conditions = $this->conditions;
+            $segmentRecord->segmentType = $this->segmentType;
+            $segmentRecord->conditions = Json::encode($this->conditions);
 
             $segmentRecord->save(false);
         }

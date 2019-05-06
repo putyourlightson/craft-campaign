@@ -23,4 +23,13 @@
             }{% if not loop.last %},{% endif %}
         {% endfor %}
     ];
+    Craft.publishableSegmentTypes = [
+        {% for segmentType, segmentTypeLabel in craft.campaign.getAllSegmentTypes() %}
+            {
+                id: {{ loop.index }},
+                name: "{{ segmentTypeLabel|e('js') }}",
+                handle: "{{ segmentType|e('js') }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
 {% endjs %}

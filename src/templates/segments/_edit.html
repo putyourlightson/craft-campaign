@@ -1,12 +1,9 @@
-{% extends 'campaign/_layout' %}
+{% extends 'campaign/segments/_layout' %}
 
 {% import '_includes/forms' as forms %}
-{% import 'campaign/_macros' as macros %}
-
-{% set selectedSubnavItem = 'segments' %}
 
 {% set crumbs = [
-    { label: 'Segments'|t('campaign'), url: url('campaign/segments') },
+    { label: segment.segmentTypes[segment.segmentType], url: url('campaign/segments/' ~ segment.segmentType) }
 ] %}
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SegmentEditAsset') %}
@@ -17,7 +14,7 @@
     {% if craft.app.getIsMultiSite() and segment.id is null %}
         {% include "_elements/sitemenu" with {
             selectedSiteId: segment.siteId,
-            urlFormat: url('campaign/segments/new/{handle}'),
+            urlFormat: url('campaign/segments/' ~ segment.segmentType ~ '/new/{handle}'),
         } only %}
     {% endif %}
 
@@ -58,6 +55,7 @@
     <input type="hidden" name="action" value="campaign/segments/save-segment">
     <input type="hidden" name="segmentId" value="{{ segment.id }}">
     <input type="hidden" name="siteId" value="{{ segment.siteId }}">
+    <input type="hidden" name="segmentType" value="{{ segmentType }}">
     {{ redirectInput('campaign/segments') }}
 
     <div id="fields">
@@ -65,47 +63,7 @@
             {% include "campaign/segments/_includes/titlefield" %}
 
             <div class="field">
-                <div class="heading">
-                    <label>{{ "Conditions"|t('campaign') }}</label>
-                    <div class="instructions">
-                        <p>{{ "Create one or more conditions to apply to this segment."|t('campaign') }}</p>
-                    </div>
-                </div>
-
-                <div id="newCondition" class="andCondition field hidden">
-                    <table class="heading data fullwidth collapsible">
-                        <tbody>
-                            {% include 'campaign/segments/_includes/condition' %}
-                        </tbody>
-                    </table>
-                    <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
-                </div>
-
-                <div class="conditions">
-                    {% if segment.conditions|length %}
-                        {% for andIndex, conditions in segment.conditions %}
-                            <div class="andCondition field">
-                                <table class="heading data fullwidth collapsible">
-                                    <tbody>
-                                        {% for orIndex, condition in conditions %}
-                                            {% include 'campaign/segments/_includes/condition' %}
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                         <div class="andCondition field">
-                            <table class="heading data fullwidth collapsible">
-                                <tbody>
-                                    {% include 'campaign/segments/_includes/condition' %}
-                                </tbody>
-                            </table>
-                            <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
-                        </div>
-                    {% endif %}
-                </div>
+                {% include "campaign/segments/_includes/segmentTypes/" ~ segmentType %}
             </div>
         </div>
     </div>

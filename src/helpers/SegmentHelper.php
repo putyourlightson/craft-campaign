@@ -99,10 +99,6 @@ class SegmentHelper
             RadioButtons::class => $isOperators,
             Checkboxes::class => $containsOperators,
             MultiSelect::class => $containsOperators,
-            'template' => [
-                '1' => Craft::t('campaign', 'evaluates to true'),
-                '0' => Craft::t('campaign', 'evaluates to false'),
-            ],
         ];
 
         // Add field operators from config settings
@@ -169,14 +165,6 @@ class SegmentHelper
             'type' => Date::class,
             'handle' => 'elements.dateCreated',
             'name' => Craft::t('campaign', 'Date Created'),
-            'options' => null,
-        ];
-
-        // Add template code field
-        $availableFields[] = [
-            'type' => 'template',
-            'handle' => 'template',
-            'name' => Craft::t('campaign', 'Template'),
             'options' => null,
         ];
 

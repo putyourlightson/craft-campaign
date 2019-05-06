@@ -11,8 +11,9 @@ use craft\db\ActiveRecord;
 /**
  * SegmentRecord
  *
- * @property int         $id                 ID
- * @property mixed       $conditions         Conditions
+ * @property int $id
+ * @property string $segmentType
+ * @property mixed $conditions
  *
  * @author    PutYourLightsOn
  * @package   Campaign

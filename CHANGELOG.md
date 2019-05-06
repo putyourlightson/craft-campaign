@@ -1,5 +1,14 @@
 # Release Notes for Campaign
 
+## 1.9.0 - Unreleased
+### Changed
+- Changed segment template conditions to be their own segment type and use inline template code rather than a template file.
+
+### Fixed
+- Fixed issue with sendouts not displaying the correct table attributes based on the selected sendout type.
+
+> {warning} Template conditions in segments have been broken out into their own segment type. You will therefore need to manually recreate any segments that used template conditions as new segments.
+
 ## 1.8.2 - 2019-05-03
 ### Fixed
 - Fixed issue that prevented max batch size being saved in sendout settings.

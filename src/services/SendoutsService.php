@@ -174,21 +174,18 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the sendout's pending recipient contact and mailing list IDs based on its mailing lists, segments and schedule
+     * Returns the sendout's pending contact IDs based on its mailing lists, segments and schedule
      *
      * @param SendoutElement $sendout
      *
-     * @return array
+     * @return int[]
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
-        // Set columns to select and group by
-        $columns = ['contactId', 'mailingListId', 'subscribed'];
-
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
-            ->select($columns)
-            ->groupBy($columns)
+            ->select('contactId')
+            ->groupBy('contactId')
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),
                 'subscriptionStatus' => 'subscribed',
@@ -211,40 +208,30 @@ class SendoutsService extends Component
         // Exclude sent recipients
         $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
 
-        // Check if we should apply segment filters
-        $segments = $sendout->getSegments();
+        $contactIds = $query->column();
 
-        if (!empty($segments)) {
-            $contactIds = [];
-
-            foreach ($segments as $segment) {
-                $contactIds = array_merge($contactIds, $segment->getContactIds());
-            }
-
-            // Add unique contact IDs to condition
-            $query->andWhere(['contactId' => array_unique($contactIds)]);
+        // Filter the contact IDs for each segment
+        foreach ($sendout->getSegments() as $segment) {
+            $contactIds = Campaign::$plugin->segments->filterContactIds($segment, $contactIds);
         }
-
-        // Get recipients as array
-        $recipients = $query->asArray()->all();
 
         if ($sendout->sendoutType == 'automated') {
             /** @var AutomatedScheduleModel $automatedSchedule */
             $automatedSchedule = $sendout->schedule;
 
             // Remove any contacts that do not meet the conditions
-            foreach ($recipients as $key => $recipient) {
+            foreach ($contactIds as $key => $recipient) {
                 $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
                 $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
 
                 // If subscribed date was before sendout was created or time plus delay has not yet passed
                 if ($subscribedDateTime < $sendout->dateCreated OR !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
-                    unset($recipients[$key]);
+                    unset($contactIds[$key]);
                 }
             }
         }
 
-        return $recipients;
+        return $contactIds;
     }
 
     /**

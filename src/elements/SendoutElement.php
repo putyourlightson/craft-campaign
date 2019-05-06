@@ -182,11 +182,10 @@ class SendoutElement extends Element
         $sources[] = ['heading' => Craft::t('campaign', 'Sendout Types')];
 
         $sendoutTypes = self::sendoutTypes();
-        $index = 1;
 
         foreach ($sendoutTypes as $sendoutType => $label) {
             $sources[] = [
-                'key' => 'sendoutTypeId:'.$index,
+                'key' => $sendoutType,
                 'label' => $label,
                 'data' => [
                     'handle' => $sendoutType
@@ -195,8 +194,6 @@ class SendoutElement extends Element
                     'sendoutType' => $sendoutType
                 ]
             ];
-
-            $index++;
         }
 
         return $sources;
@@ -285,7 +282,7 @@ class SendoutElement extends Element
             $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
         }
         else if ($source == 'regular' OR $source == 'scheduled') {
-            $attributes = ['title', 'campaignId', 'recipients', 'progress', 'sendDate', 'lastSent', 'progress'];
+            $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
         }
         else {
             $attributes = ['title', 'campaignId', 'recipients', 'lastSent'];
