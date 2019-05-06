@@ -130,18 +130,25 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $count = 0;
         $batchSize = min(count($pendingRecipients), $settings->maxBatchSize);
 
-        foreach ($pendingRecipients as $contactId) {
-            $count++;
-            $this->setProgress($queue, $count / $batchSize);
+        $progress = 0;
 
-            $contact = Campaign::$plugin->contacts->getContactById($contactId);
+        foreach ($pendingRecipients as $pendingRecipient) {
+            $count++;
+
+            // TODO: remove when this is fixed in core (https://github.com/craftcms/cms/pull/4219)
+            if (round($count / $batchSize) > $progress) {
+                $progress = round($count / $batchSize);
+                $this->setProgress($queue, $count / $batchSize);
+            }
+
+            $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
 
             if ($contact === null) {
                 continue;
             }
 
             // Send email
-            Campaign::$plugin->sendouts->sendEmail($sendout, $contact);
+            Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $pendingRecipient['mailingListId']);
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
             if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {

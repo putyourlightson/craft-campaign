@@ -3,6 +3,7 @@
 ## 1.9.0 - Unreleased
 ### Changed
 - Changed segment template conditions to be their own segment type and use inline template code rather than a template file.
+- Optimised job progress until it is fixed in core ([#4219](https://github.com/craftcms/cms/pull/4219)).
 
 ### Fixed
 - Fixed issue with sendouts not displaying the correct table attributes based on the selected sendout type.
