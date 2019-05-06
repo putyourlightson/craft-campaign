@@ -174,30 +174,35 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the sendout's pending contact IDs based on its mailing lists, segments and schedule
+     * Returns the sendout's pending contact and mailing list IDs based on its mailing lists, segments and schedule
      *
      * @param SendoutElement $sendout
      *
-     * @return int[]
+     * @return array
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
+        // Set columns to select and group by
+        $columns = ['contactId', 'mailingListId', 'subscribed'];
+
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
-            ->select('contactId')
-            ->groupBy('contactId')
+            ->select($columns)
+            ->groupBy($columns)
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),
                 'subscriptionStatus' => 'subscribed',
             ]);
 
-         // Ensure contacts have not complained or bounced (check in contact record)
-         $query->innerJoinWith(['contact c' => function (ActiveQuery $query) {
-            $query->andWhere([
-                'c.complained' => null,
-                'c.bounced' => null,
-            ]);
-        }]);
+        // Ensure contacts have not complained or bounced (check in contact record)
+        $query->innerJoinWith([
+            'contact c' => function(ActiveQuery $query) {
+                $query->andWhere([
+                    'c.complained' => null,
+                    'c.bounced' => null,
+                ]);
+            }
+        ]);
 
         // Exclude contacts subscribed to sendout's excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
@@ -208,11 +213,24 @@ class SendoutsService extends Component
         // Exclude sent recipients
         $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
 
-        $contactIds = $query->column();
+        // Get recipients as array
+        $recipients = $query->asArray()->all();
 
-        // Filter the contact IDs for each segment
-        foreach ($sendout->getSegments() as $segment) {
-            $contactIds = Campaign::$plugin->segments->filterContactIds($segment, $contactIds);
+        // Filter recipients by segments
+        if ($sendout->segmentIds) {
+            // Filter the contact IDs for each segment
+            $contactIds = array_map(function($recipient) {
+                return $recipient['contactId'];
+            }, $recipients);
+
+            foreach ($sendout->getSegments() as $segment) {
+                $contactIds = Campaign::$plugin->segments->filterContactIds($segment, $contactIds);
+            }
+
+            // Filter the recipients by the contact IDs
+            $recipients = array_filter($recipients, function($recipient) use ($contactIds) {
+                return in_array($recipient['contactId'], $contactIds);
+            });
         }
 
         if ($sendout->sendoutType == 'automated') {
@@ -220,18 +238,18 @@ class SendoutsService extends Component
             $automatedSchedule = $sendout->schedule;
 
             // Remove any contacts that do not meet the conditions
-            foreach ($contactIds as $key => $recipient) {
+            foreach ($recipients as $key => $recipient) {
                 $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
                 $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
 
                 // If subscribed date was before sendout was created or time plus delay has not yet passed
                 if ($subscribedDateTime < $sendout->dateCreated OR !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
-                    unset($contactIds[$key]);
+                    unset($recipients[$key]);
                 }
             }
         }
 
-        return $contactIds;
+        return $recipients;
     }
 
     /**

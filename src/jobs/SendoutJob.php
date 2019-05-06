@@ -128,22 +128,20 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $pendingRecipients = $sendout->getPendingRecipients();
 
         $count = 0;
-        $total = min(count($pendingRecipients), $settings->maxBatchSize);
+        $batchSize = min(count($pendingRecipients), $settings->maxBatchSize);
 
-        foreach ($pendingRecipients as $pendingRecipient) {
+        foreach ($pendingRecipients as $contactId) {
             $count++;
-            $this->setProgress($queue, $count / $total);
+            $this->setProgress($queue, $count / $batchSize);
 
-            $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
+            $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
             if ($contact === null) {
                 continue;
             }
 
-            $mailingListId = $pendingRecipient['mailingListId'];
-
             // Send email
-            Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingListId);
+            Campaign::$plugin->sendouts->sendEmail($sendout, $contact);
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
             if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {

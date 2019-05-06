@@ -548,7 +548,7 @@ class SendoutElement extends Element
         }
 
         // Get expected recipients
-        $expectedRecipients = count($this->getPendingRecipients());
+        $expectedRecipients = $this->getPendingRecipientCount();
 
         $progress = $expectedRecipients == 0 ?: $this->recipients / ($this->recipients + $expectedRecipients);
         $progress = $progress < 1 ? $progress : 1;
