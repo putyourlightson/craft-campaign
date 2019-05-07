@@ -6,16 +6,15 @@
 
 namespace putyourlightson\campaign\jobs;
 
+use Craft;
+use craft\queue\BaseJob;
+use craft\queue\QueueInterface;
 use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\helpers\SendoutHelper;
-use putyourlightson\campaign\records\SendoutRecord;
 use putyourlightson\campaign\services\SendoutsService;
-
-use Craft;
-use craft\queue\BaseJob;
 use Throwable;
 use yii\queue\RetryableJobInterface;
 
@@ -47,6 +46,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      * @var int
      */
     public $batch = 1;
+
+    /**
+     * @var int
+     */
+    private $_progress = 0;
 
     // Public Methods
     // =========================================================================
@@ -118,9 +122,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $timeLimit = ini_get('max_execution_time');
         $timeLimit = $timeLimit == 0 ? $settings->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
 
-        // Set the current site from the sendout's site ID
-        Craft::$app->sites->setCurrentSite($sendout->siteId);
-
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
 
@@ -130,16 +131,9 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $count = 0;
         $batchSize = min(count($pendingRecipients), $settings->maxBatchSize);
 
-        $progress = 0;
-
         foreach ($pendingRecipients as $pendingRecipient) {
             $count++;
-
-            // TODO: remove when this is fixed in core (https://github.com/craftcms/cms/pull/4219)
-            if (round($count / $batchSize) > $progress) {
-                $progress = round($count / $batchSize);
-                $this->setProgress($queue, $count / $batchSize);
-            }
+            $this->setProgress($queue, $count / $batchSize);
 
             $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
 
@@ -193,5 +187,21 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             'title' => $this->title,
             'batch' => $this->batch,
         ]);
+    }
+
+    /**
+     * TODO: remove when this is fixed in core (https://github.com/craftcms/cms/pull/4219)
+     *
+     * @param QueueInterface $queue
+     * @param float $progress
+     */
+    protected function setProgress($queue, float $progress)
+    {
+        $progressInt = round($progress * 100);
+
+        if ($progressInt > $this->_progress) {
+            $this->_progress = $progressInt;
+            parent::setProgress($queue, $progress);
+        }
     }
 }

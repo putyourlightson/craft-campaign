@@ -309,6 +309,11 @@ class CampaignElement extends Element
      */
     private $_campaignType;
 
+    /**
+     * @var string
+     */
+    private $_language;
+
     // Public Methods
     // =========================================================================
 
@@ -596,6 +601,7 @@ class CampaignElement extends Element
         if ($contact === null) {
             $contact = new ContactElement();
         }
+
         if ($sendout === null) {
             $sendout = new SendoutElement();
         }
@@ -605,17 +611,19 @@ class CampaignElement extends Element
         // Get template mode so we can reset later
         $templateMode = $view->getTemplateMode();
 
-        // Set template mode to site
-        $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+        // Set template mode to site if different
+        if ($templateMode !== View::TEMPLATE_MODE_SITE) {
+            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+        }
 
         // Get body from rendered template with variables
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
 
         // Set the current site from the campaign's site ID
-        Craft::$app->sites->setCurrentSite($this->siteId);
+        Craft::$app->getSites()->setCurrentSite($this->siteId);
 
-        // Set the language to the site's language as this does not automatically happen for CP requests
-        Craft::$app->language = $this->getSite()->language;
+        // Set the language to the campaigns's language as this does not automatically happen for CP requests
+        Craft::$app->language = $this->_getLanguage();
 
         try {
             $body = $view->renderTemplate($template, [
@@ -631,9 +639,25 @@ class CampaignElement extends Element
             throw $e;
         }
 
-        // Reset template mode
-        $view->setTemplateMode($templateMode);
+        // Reset template mode if different
+        if ($templateMode !== View::TEMPLATE_MODE_SITE) {
+            $view->setTemplateMode($templateMode);
+        }
 
         return $body;
+    }
+
+    /**
+     * Returns the campaign's language
+     *
+     * @return string
+     */
+    private function _getLanguage(): string
+    {
+        if ($this->_language === null) {
+            $this->_language = $this->getSite()->language;
+        }
+
+        return $this->_language;
     }
 }

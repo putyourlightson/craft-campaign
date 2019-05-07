@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\services;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\records\Element_SiteSettings;
+use craft\web\View;
 use DateTime;
 use DOMDocument;
 use DOMElement;
@@ -550,6 +551,12 @@ class SendoutsService extends Component
 
             $this->_updateSendoutRecord($sendout, ['sendStatus']);
         }
+
+        // Set the current site from the sendout's site ID
+        Craft::$app->getSites()->setCurrentSite($sendout->siteId);
+
+        // Set template mode to site
+        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
     }
 
     /**
