@@ -90,6 +90,9 @@ class CampaignsController extends Controller
 
         $campaign->fieldLayoutId = $campaignType->fieldLayoutId;
 
+        // Set the current site
+        Craft::$app->getSites()->setCurrentSite($campaignType->siteId);
+
         // Set the variables
         // ---------------------------------------------------------------------
 

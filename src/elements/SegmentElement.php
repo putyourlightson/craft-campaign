@@ -270,7 +270,7 @@ class SegmentElement extends Element
         parent::init();
 
         // Decode JSON properties
-        $this->conditions = empty($this->conditions) ? [] : Json::decode($this->conditions);
+        $this->conditions = empty($this->conditions) ? '' : Json::decode($this->conditions);
     }
 
     /**

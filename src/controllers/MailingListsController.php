@@ -65,6 +65,9 @@ class MailingListsController extends Controller
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
         }
 
+        // Set the current site
+        Craft::$app->getSites()->setCurrentSite($mailingList->siteId);
+
         // Get the mailing list
         // ---------------------------------------------------------------------
 

@@ -3,9 +3,11 @@
 ## 1.9.0 - Unreleased
 ### Changed
 - Changed segment template conditions to be their own segment type and use inline template code rather than a template file.
+- Optimised sending process.
 - Optimised job progress until it is fixed in core ([#4219](https://github.com/craftcms/cms/pull/4219)).
 
 ### Fixed
+- Fixed elements from incorrect sites appearing in relation fields when creating a new campaign or mailing list.
 - Fixed issue with sendouts not displaying the correct table attributes based on the selected sendout type.
 
 > {warning} Template conditions in segments have been broken out into their own segment type. You will therefore need to manually recreate any segments that used template conditions as new segments.
