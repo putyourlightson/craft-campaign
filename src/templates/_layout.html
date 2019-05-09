@@ -32,4 +32,13 @@
             }{% if not loop.last %},{% endif %}
         {% endfor %}
     ];
+    Craft.publishableSendoutTypes = [
+        {% for sendoutType, sendoutTypeLabel in craft.campaign.getAllSendoutTypes() %}
+            {
+                id: {{ loop.index }},
+                name: "{{ sendoutTypeLabel|e('js') }}",
+                handle: "{{ sendoutType|e('js') }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
 {% endjs %}

@@ -182,10 +182,11 @@ class SendoutElement extends Element
         $sources[] = ['heading' => Craft::t('campaign', 'Sendout Types')];
 
         $sendoutTypes = self::sendoutTypes();
+        $index = 1;
 
         foreach ($sendoutTypes as $sendoutType => $label) {
             $sources[] = [
-                'key' => $sendoutType,
+                'key' => 'sendoutTypeId:'.$index,
                 'label' => $label,
                 'data' => [
                     'handle' => $sendoutType
@@ -194,6 +195,8 @@ class SendoutElement extends Element
                     'sendoutType' => $sendoutType
                 ]
             ];
+
+            $index++;
         }
 
         return $sources;
