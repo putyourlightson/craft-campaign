@@ -4,7 +4,7 @@
 ### Changed
 - Changed segment template conditions to be their own segment type and use inline template code rather than a template file.
 - Optimised sending process.
-- Optimised job progress until it is fixed in core ([#4219](https://github.com/craftcms/cms/pull/4219)).
+- Changed memory check to get the total the amount of memory being used by PHP.
 
 ### Fixed
 - Fixed elements from incorrect sites appearing in relation fields when creating a new campaign or mailing list.

@@ -145,7 +145,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $pendingRecipient['mailingListId']);
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
-            if (memory_get_usage() > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {
+            if (memory_get_usage(true) > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {
                 // Add new job to queue with delay
                 Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,
@@ -187,21 +187,5 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             'title' => $this->title,
             'batch' => $this->batch,
         ]);
-    }
-
-    /**
-     * TODO: remove when this is fixed in core (https://github.com/craftcms/cms/pull/4219)
-     *
-     * @param QueueInterface $queue
-     * @param float $progress
-     */
-    protected function setProgress($queue, float $progress)
-    {
-        $progressInt = round($progress * 100);
-
-        if ($progressInt > $this->_progress) {
-            $this->_progress = $progressInt;
-            parent::setProgress($queue, $progress);
-        }
     }
 }
