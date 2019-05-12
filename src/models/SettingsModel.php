@@ -108,12 +108,17 @@ class SettingsModel extends Model
     public $batchJobDelay = 10;
 
     /**
+     * @var int The amount of time in seconds to reserve a sendout job
+     */
+    public $sendoutJobTtr = 300;
+
+    /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
      */
     public $geoIp = false;
 
     /**
-     * @var string The ipstack.com API key
+     * @var string|null The ipstack.com API key
      */
     public $ipstackApiKey;
 
@@ -123,12 +128,12 @@ class SettingsModel extends Model
     public $reCaptcha = false;
 
     /**
-     * @var string The reCAPTCHA site key
+     * @var string|null The reCAPTCHA site key
      */
     public $reCaptchaSiteKey;
 
     /**
-     * @var string The reCAPTCHA secret key
+     * @var string|null The reCAPTCHA secret key
      */
     public $reCaptchaSecretKey;
 
@@ -138,17 +143,17 @@ class SettingsModel extends Model
     public $reCaptchaErrorMessage = 'Your form submission was blocked. Please go back and verify that you are human.';
 
     /**
-     * @var string The size of the reCAPTCHA widget
+     * @var string|null The size of the reCAPTCHA widget
      */
     public $reCaptchaSize;
 
     /**
-     * @var string The color theme of the reCAPTCHA widget
+     * @var string|null The color theme of the reCAPTCHA widget
      */
     public $reCaptchaTheme;
 
     /**
-     * @var string The position of the reCAPTCHA badge (when invisible)
+     * @var string|null The position of the reCAPTCHA badge (when invisible)
      */
     public $reCaptchaBadge;
 

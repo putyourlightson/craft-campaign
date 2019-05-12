@@ -47,11 +47,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public $batch = 1;
 
-    /**
-     * @var int
-     */
-    private $_progress = 0;
-
     // Public Methods
     // =========================================================================
 
@@ -60,14 +55,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function getTtr()
     {
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
-        // Get time limit
-        $timeLimit = (int)ini_get('max_execution_time');
-        $timeLimit = $timeLimit == 0 ? Campaign::$plugin->getSettings()->unlimitedTimeLimit : $timeLimit;
-
-        return $timeLimit;
+        return Campaign::$plugin->getSettings()->sendoutJobTtr;
     }
 
     /**

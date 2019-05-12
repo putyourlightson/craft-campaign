@@ -67,6 +67,9 @@ return [
     // The amount of time in seconds to delay jobs between sendout batches
     //'batchJobDelay' => 10,
 
+    // The amount of time in seconds to reserve a sendout job
+    //'sendoutJobTtr' => 300,
+
     // Enable GeoIP to geolocate contacts by their IP addresses
     //'geoIp' => false,
 

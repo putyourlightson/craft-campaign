@@ -1,10 +1,14 @@
 # Release Notes for Campaign
 
 ## 1.9.0 - Unreleased
+### Added
+- Added regular and template segment types. 
+
 ### Changed
 - Changed segment template conditions to be their own segment type and use inline template code rather than a template file.
-- Optimised sending process.
+- Optimised the sending process.
 - Changed memory check to get the total the amount of memory being used by PHP.
+- Changed sendout job TTR to be set from a new  `sendoutJobTtr` config setting.
 
 ### Fixed
 - Fixed elements from incorrect sites appearing in relation fields when creating a new campaign or mailing list.
