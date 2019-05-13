@@ -23,6 +23,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
+use Twig\Error\Error;
 use yii\base\InvalidConfigException;
 
 /**
@@ -634,7 +635,7 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }
-        catch (Exception $e) {
+        catch (Error $e) {
             Campaign::$plugin->log($e->getMessage());
             throw $e;
         }
