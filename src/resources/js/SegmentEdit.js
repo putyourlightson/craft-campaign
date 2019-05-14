@@ -1,4 +1,5 @@
 /** global: Campaign */
+/** global: Craft */
 /** global: Garnish */
 /**
  * SegmentEdit class
