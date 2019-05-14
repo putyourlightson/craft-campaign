@@ -12,7 +12,6 @@ use putyourlightson\campaign\elements\SegmentElement;
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
-use craft\helpers\Json;
 use craft\web\Controller;
 use putyourlightson\campaign\helpers\SegmentHelper;
 use Throwable;

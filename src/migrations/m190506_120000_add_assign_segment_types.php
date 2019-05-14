@@ -4,7 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use Craft;
 use craft\db\Migration;
-use craft\helpers\Json;
 use putyourlightson\campaign\records\SegmentRecord;
 
 class m190506_120000_add_assign_segment_types extends Migration

@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
-use craft\queue\QueueInterface;
 use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;

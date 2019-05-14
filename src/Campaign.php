@@ -55,26 +55,26 @@ use yii\web\ForbiddenHttpException;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property  CampaignsService $cxampaigns
- * @property  CampaignTypesService $campaignTypes
- * @property  ContactsService $contacts
- * @property  ExportsService $exports
- * @property  ImportsService $imports
- * @property  MailingListsService $mailingLists
- * @property  MailingListTypesService $mailingListTypes
- * @property  ReportsService $reports
- * @property  SegmentsService $segments
- * @property  SendoutsService $sendouts
- * @property  SettingsService $settings
- * @property  SyncService $sync
- * @property  TrackerService $tracker
- * @property  WebhookService $webhook
+ * @property CampaignsService $campaigns
+ * @property CampaignTypesService $campaignTypes
+ * @property ContactsService $contacts
+ * @property ExportsService $exports
+ * @property ImportsService $imports
+ * @property MailingListsService $mailingLists
+ * @property MailingListTypesService $mailingListTypes
+ * @property ReportsService $reports
+ * @property SegmentsService $segments
+ * @property SendoutsService $sendouts
+ * @property SettingsService $settings
+ * @property SyncService $sync
+ * @property TrackerService $tracker
+ * @property WebhookService $webhook
  *
- * @property  array|null $cpNavItem
- * @property  array $cpRoutes
- * @property  array $cpPermissions
- * @property  bool $isPro
- * @property  mixed $settingsResponse
+ * @property array|null $cpNavItem
+ * @property array $cpRoutes
+ * @property array $cpPermissions
+ * @property bool $isPro
+ * @property mixed $settingsResponse
  *
  * @method SettingsModel getSettings()
  */

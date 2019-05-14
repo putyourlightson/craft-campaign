@@ -14,7 +14,6 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Restore;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\records\SegmentRecord;
@@ -280,40 +279,8 @@ class SegmentElement extends Element
     {
         $rules = parent::rules();
         $rules[] = [['segmentType'], 'required'];
-        $rules[] = [['conditions'], 'validateConditions'];
 
         return $rules;
-    }
-
-    /**
-     * Validates conditions
-     */
-    public function validateConditions()
-    {
-        // Validate template condition
-        if ($this->segmentType == 'template') {
-            // Get a random contact
-            $contact = ContactElement::find()->one();
-
-            if ($contact === null) {
-                return true;
-            }
-
-            $error = '';
-
-            try {
-                Craft::$app->getView()->renderString($this->conditions, [
-                    'contact' => $contact,
-                ]);
-            }
-            catch (Exception $e) {
-                $error = $e->getRawMessage();
-            }
-
-            if ($error) {
-                $this->addError('conditions', $error);
-            }
-        }
     }
 
     /**

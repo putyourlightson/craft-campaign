@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.9.0 - Unreleased
+## 1.9.0 - 2019-05-14
 ### Added
 - Added regular and template segment types. 
 - Added the ability to use emojis in the sendout subject ;)
