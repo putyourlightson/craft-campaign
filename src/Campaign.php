@@ -55,7 +55,7 @@ use yii\web\ForbiddenHttpException;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property  CampaignsService $campaigns
+ * @property  CampaignsService $cxampaigns
  * @property  CampaignTypesService $campaignTypes
  * @property  ContactsService $contacts
  * @property  ExportsService $exports

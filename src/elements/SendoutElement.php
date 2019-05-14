@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
 use DateTime;
+use LitEmoji\LitEmoji;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -449,6 +450,11 @@ class SendoutElement extends Element
     public function init()
     {
         parent::init();
+
+        if (Craft::$app->getDb()->getIsMysql()) {
+            // Decode subject for emojis
+            $this->subject = LitEmoji::shortcodeToUnicode($this->subject);
+        }
 
         // Create schedule
         if ($this->sendoutType == 'automated') {
@@ -961,6 +967,11 @@ class SendoutElement extends Element
         if ($isNew) {
             // Create unique ID
             $this->sid = StringHelper::uniqueId('s');
+        }
+
+        if (Craft::$app->getDb()->getIsMysql()) {
+            // Encode subject for emojis
+            $this->subject = LitEmoji::unicodeToShortcode($this->subject);
         }
 
         return parent::beforeSave($isNew);

@@ -3,6 +3,7 @@
 ## 1.9.0 - Unreleased
 ### Added
 - Added regular and template segment types. 
+- Added the ability to use emojis in the sendout subject ;)
 
 ### Changed
 - Changed segment template conditions to be their own segment type and use inline template code rather than a template file.

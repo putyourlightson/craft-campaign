@@ -38,7 +38,7 @@
 {% endset %}
 {{ forms.field({
     label: "Subject"|t('campaign'),
-    instructions: "The email subject."|t('campaign'),
+    instructions: "The email subject (emojis allowed 😉)."|t('campaign'),
     errors: sendout.getErrors('subject'),
     required: true,
 }, input) }}

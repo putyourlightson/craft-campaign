@@ -38,7 +38,7 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
-     * @var mixed|null The from names and emails that sendouts can be sent from
+     * @var array|null The from names and emails that sendouts can be sent from
      */
     public $fromNamesEmails;
 
