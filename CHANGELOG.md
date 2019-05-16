@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.9.1 - 2019-05-16
+### Fixed
+- Fixed an error that could occur when creating a new mailing list in the control panel.
+
 ## 1.9.0 - 2019-05-14
 ### Added
 - Added regular and template segment types. 

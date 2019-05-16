@@ -66,7 +66,7 @@ class MailingListsController extends Controller
         }
 
         // Set the current site
-        Craft::$app->getSites()->setCurrentSite($mailingList->siteId);
+        Craft::$app->getSites()->setCurrentSite($mailingListType->siteId);
 
         // Get the mailing list
         // ---------------------------------------------------------------------
