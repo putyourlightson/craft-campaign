@@ -156,7 +156,7 @@ class TrackerController extends Controller
             $pendingContact->email = $email;
             $pendingContact->mailingListId = $mailingList->id;
             $pendingContact->source = $referrer;
-            $pendingContact->fieldData = $contact->getFieldValues();
+            $pendingContact->fieldData = $contact->getSerializedFieldValues();
 
             // Validate pending contact
             if (!$pendingContact->validate()) {

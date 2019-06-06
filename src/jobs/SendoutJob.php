@@ -140,14 +140,14 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
                     'batch' => $this->batch + 1,
                 ]));
 
-                return null;
+                return;
             }
 
             // Ensure sendout send status is still sending as it may have had its status changed
             $sendoutSendStatus = Campaign::$plugin->sendouts->getSendoutSendStatusById($sendout->id);
 
             if ($sendoutSendStatus !== SendoutElement::STATUS_SENDING) {
-                return null;
+                return;
             }
         }
 

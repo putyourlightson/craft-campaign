@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.9.2 - 2019-06-06
+### Fixed
+- Fixed an issue in which relation fields were not being saved on a contact for mailing list types with with double opt-in enabled ([#75](https://github.com/putyourlightson/craft-campaign/issues/75)).
+
 ## 1.9.1 - 2019-05-16
 ### Fixed
 - Fixed an error that could occur when creating a new mailing list in the control panel.
