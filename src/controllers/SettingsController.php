@@ -51,8 +51,12 @@ class SettingsController extends Controller
      */
     public function init()
     {
-        // Require permission
+        // Require permission for all actions
         $this->requirePermission('campaign:settings');
+
+        if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            throw new ForbiddenHttpException(Craft::t('campaign', 'Administrative changes are disallowed in this environment.'));
+        }
 
         $this->_settings = Campaign::$plugin->getSettings();
     }

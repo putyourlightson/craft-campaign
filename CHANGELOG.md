@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.9.3 - Unreleased
+### Fixed
+- Fixed an issue where the settings page could be reached even if `allowAdminChanges` was set to `false` ([#77](https://github.com/putyourlightson/craft-campaign/issues/77)).
+
 ## 1.9.2 - 2019-06-06
 ### Fixed
 - Fixed an issue in which relation fields were not being saved on a contact for mailing list types with with double opt-in enabled ([#75](https://github.com/putyourlightson/craft-campaign/issues/75)).
