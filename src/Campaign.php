@@ -141,13 +141,6 @@ class Campaign extends Plugin
             $this->controllerMap = ['t' => TrackerController::class];
         }
 
-        // Register action URL rules event
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules = array_merge($event->rules, [
-                'action'
-            ]);
-        });
-
         // Register Twig extension
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
 
