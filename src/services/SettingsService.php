@@ -98,8 +98,11 @@ class SettingsService extends Component
             if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
                 $key = $fromNameEmail[0].':'.$fromNameEmail[1].':'.$fromNameEmail[2];
 
-                $value = $fromNameEmail[0].' <'.$fromNameEmail[1].'>';
-                $value .= $fromNameEmail[2] ? ' (reply to '.$fromNameEmail[2].')' : '';
+                $value = $fromNameEmail[0].' <'.$fromNameEmail[1].'> ';
+
+                if ($fromNameEmail[2]) {
+                    $value .= Craft::t('campaign', '(reply to {email})', ['email' => $fromNameEmail[2]]);
+                }
 
                 $fromNameEmailOptions[$key] = $value;
             }

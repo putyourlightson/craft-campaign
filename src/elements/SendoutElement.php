@@ -552,10 +552,10 @@ class SendoutElement extends Element
      */
     public function getFromNameEmailLabel(): string
     {
-        $label = $this->fromName ? $this->fromName.' <'.$this->fromEmail.'>' : '';
+        $label = $this->fromName ? $this->fromName.' <'.$this->fromEmail.'> ' : '';
 
         if ($this->replyToEmail) {
-            $label .= ' ('.$this->replyToEmail.')';
+            $label .= Craft::t('campaign', '(reply to {email})', ['email' => $this->replyToEmail]);
         }
 
         return $label;
