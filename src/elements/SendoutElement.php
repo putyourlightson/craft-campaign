@@ -536,13 +536,29 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the from name and email
+     * Returns the from name, email and reply to
      *
      * @return string
      */
     public function getFromNameEmail(): string
     {
         return $this->fromName ? $this->fromName.':'.$this->fromEmail.':'.$this->replyToEmail : '';
+    }
+
+    /**
+     * Returns the from name, email and reply to label
+     *
+     * @return string
+     */
+    public function getFromNameEmailLabel(): string
+    {
+        $label = $this->fromName ? $this->fromName.' <'.$this->fromEmail.'>' : '';
+
+        if ($this->replyToEmail) {
+            $label .= ' ('.$this->replyToEmail.')';
+        }
+
+        return $label;
     }
 
     /**

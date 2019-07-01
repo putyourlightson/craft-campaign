@@ -253,6 +253,7 @@ class Install extends Migration
                 'sendStatus' => $this->string()->notNull(),
                 'fromName' => $this->string()->notNull(),
                 'fromEmail' => $this->string()->notNull(),
+                'replyToEmail' => $this->string(),
                 'subject' => $this->string()->notNull(),
                 'notificationEmailAddress' => $this->string(),
                 'googleAnalyticsLinkTracking' => $this->boolean()->defaultValue(false)->notNull(),

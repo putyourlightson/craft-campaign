@@ -1,7 +1,8 @@
 # Release Notes for Campaign
 
-## 1.9.3 - Unreleased
+## 1.9.3 - 2019-07-01
 ### Fixed
+- Fixed bug in which reply to email address was not being correctly saved for sendouts.
 - Fixed an issue where the settings page could be reached even if `allowAdminChanges` was set to `false` ([#77](https://github.com/putyourlightson/craft-campaign/issues/77)).
 
 ## 1.9.2 - 2019-06-06

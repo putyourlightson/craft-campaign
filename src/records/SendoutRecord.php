@@ -18,7 +18,9 @@ use DateTime;
  * @property int         $senderId                   Sender ID
  * @property string      $sendoutType                Sendout type
  * @property string      $sendStatus                 Send status
- * @property string      $sendFrom                   Send from
+ * @property string      $fromName                   From name
+ * @property string      $fromEmail                  From email
+ * @property string      $replyToEmail               Reply to email
  * @property string      $subject                    Subject
  * @property string      $notificationEmailAddress   Notification email address
  * @property boolean     $googleAnalyticsLinkTracking Google Analytics link tracking

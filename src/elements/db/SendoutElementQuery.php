@@ -145,6 +145,7 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.sendStatus',
             'campaign_sendouts.fromName',
             'campaign_sendouts.fromEmail',
+            'campaign_sendouts.replyToEmail',
             'campaign_sendouts.subject',
             'campaign_sendouts.notificationEmailAddress',
             'campaign_sendouts.googleAnalyticsLinkTracking',
