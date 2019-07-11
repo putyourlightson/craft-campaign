@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 1.9.4 - Unreleased
+## 1.10.0 - Unreleased
 ### Changed
-- Changed positioning of campaign preview and share buttons to work in Craft 3.2.
+- Changed minimum requirement of Craft to version 3.2.0.
+- Adjusted positioning of campaign preview and share buttons.
 
 ## 1.9.3 - 2019-07-01
 ### Fixed
