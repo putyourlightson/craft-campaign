@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.9.4 - Unreleased
+### Changed
+- Changed positioning of campaign preview and share buttons to work in Craft 3.2.
+
 ## 1.9.3 - 2019-07-01
 ### Fixed
 - Fixed bug in which reply to email address was not being correctly saved for sendouts.
