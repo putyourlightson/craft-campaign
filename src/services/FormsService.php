@@ -14,7 +14,6 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
-use putyourlightson\campaign\helpers\ContactHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -30,26 +29,24 @@ use Throwable;
 use yii\base\Exception;
 
 /**
- * TrackerService
+ * FormsService
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0
+ * @since     1.10.0
  */
-class TrackerService extends Component
+class FormsService extends Component
 {
     // Constants
     // =========================================================================
 
     /**
      * @event SubscribeContactEvent
-     * @deprecated in 1.10.0
      */
     const EVENT_BEFORE_SUBSCRIBE_CONTACT = 'beforeSubscribeContact';
 
     /**
      * @event SubscribeContactEvent
-     * @deprecated in 1.10.0
      */
     const EVENT_AFTER_SUBSCRIBE_CONTACT = 'afterSubscribeContact';
 
@@ -65,13 +62,11 @@ class TrackerService extends Component
 
     /**
      * @event UpdateContactEvent
-     * @deprecated in 1.10.0
      */
     const EVENT_BEFORE_UPDATE_CONTACT = 'beforeUpdateContact';
 
     /**
      * @event UpdateContactEvent
-     * @deprecated in 1.10.0
      */
     const EVENT_AFTER_UPDATE_CONTACT = 'afterUpdateContact';
 
@@ -79,46 +74,7 @@ class TrackerService extends Component
     // =========================================================================
 
     /**
-     * Open
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
-     */
-    public function open(ContactElement $contact, SendoutElement $sendout)
-    {
-        // Add contact interaction to campaign
-        Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-    }
-
-    /**
-     * Click
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @param LinkRecord $linkRecord
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
-     */
-    public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
-    {
-        // Add contact interaction to campaign
-        Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-    }
-
-    /**
-     * Subscribe
+     * Subscribe contact
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
@@ -130,7 +86,7 @@ class TrackerService extends Component
      * @throws Exception
      * @throws Throwable
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
+    public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
         $sourceType = $sourceType ?? '';
         $source = $source ?? '';
@@ -160,63 +116,6 @@ class TrackerService extends Component
                 'source' => $source,
             ]));
         }
-    }
-
-    /**
-     * Unsubscribe
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     *
-     * @return MailingListElement|null
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     */
-    public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
-    {
-        $contactCampaignRecord = ContactCampaignRecord::find()
-        ->where([
-            'contactId' => $contact->id,
-            'sendoutId' => $sendout->id,
-        ])
-        ->one();
-
-        if ($contactCampaignRecord === null) {
-            return null;
-        }
-
-        /** @var ContactCampaignModel $contactCampaign */
-        $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
-
-        $mailingList = $contactCampaign->getMailingList();
-
-        if ($mailingList !== null) {
-            // Fire a before event
-            if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
-                $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                    'contact' => $contact,
-                    'mailingList' => $mailingList,
-                ]));
-            }
-
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
-        }
-
-        Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-
-        // Fire an after event
-        if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
-            $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                'contact' => $contact,
-                'mailingList' => $mailingList,
-            ]));
-        }
-
-        return $mailingList;
     }
 
     /**

@@ -6,13 +6,9 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\RecaptchaHelper;
-use putyourlightson\campaign\helpers\StringHelper;
-use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
@@ -22,7 +18,6 @@ use craft\web\View;
 use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -41,7 +36,7 @@ class TrackerController extends Controller
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['open', 'click', 'subscribe', 'unsubscribe', 'verify-email', 'update-contact'];
+    protected $allowAnonymous = true;
 
     // Public Methods
     // =========================================================================
@@ -107,136 +102,6 @@ class TrackerController extends Controller
 
         // Redirect to URL
         return $this->redirect($url);
-    }
-
-    /**
-     * Subscribe
-     *
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
-     */
-    public function actionSubscribe()
-    {
-        $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
-
-        $settings = Campaign::$plugin->getSettings();
-
-        // Validate reCAPTCHA if enabled
-        if ($settings->reCaptcha) {
-            RecaptchaHelper::validateRecaptcha($request->getParam('g-recaptcha-response'), $request->getUserIP());
-        }
-
-        // Get mailing list by slug
-        $mailingListSlug = Craft::$app->getRequest()->getRequiredBodyParam('mailingList');
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
-        $email = $request->getRequiredBodyParam('email');
-        $referrer = $request->getReferrer();
-
-        // If double opt-in
-        if ($mailingList->mailingListType->doubleOptIn) {
-            // Create new contact to get field values
-            $contact = new ContactElement();
-            $contact->fieldLayoutId = $settings->contactFieldLayoutId;
-            $contact->setFieldValuesFromRequest('fields');
-
-            // Create pending contact
-            $pendingContact = new PendingContactModel();
-            $pendingContact->pid = StringHelper::uniqueId('p');
-            $pendingContact->email = $email;
-            $pendingContact->mailingListId = $mailingList->id;
-            $pendingContact->source = $referrer;
-            $pendingContact->fieldData = $contact->getSerializedFieldValues();
-
-            // Validate pending contact
-            if (!$pendingContact->validate()) {
-                if ($request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'errors' => $pendingContact->getErrors(),
-                    ]);
-                }
-
-                // Send the contact back to the template
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'pendingContact' => $pendingContact
-                ]);
-
-                return null;
-            }
-
-            // Save pending contact
-            Campaign::$plugin->contacts->savePendingContact($pendingContact);
-
-            // Send verification email
-            Campaign::$plugin->contacts->sendVerificationEmail($pendingContact, $mailingList);
-        }
-        else {
-            // Get contact if it exists
-            $contact = Campaign::$plugin->contacts->getContactByEmail($email);
-
-            if ($contact === null) {
-                $contact = new ContactElement();
-            }
-
-            // Set field values
-            $contact->email = $email;
-            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
-            $contact->setFieldValuesFromRequest('fields');
-
-            // Save contact
-            if (!Craft::$app->getElements()->saveElement($contact)) {
-                if ($request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'errors' => $contact->getErrors(),
-                    ]);
-                }
-
-                // Send the contact back to the template
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'contact' => $contact
-                ]);
-
-                return null;
-            }
-
-            // Track subscribe
-            Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $referrer);
-        }
-
-        if ($request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        if ($request->getBodyParam('redirect')) {
-            return $this->redirectToPostedUrl();
-        }
-
-        // Get template
-        $template = $mailingList !== null ? $mailingList->getMailingListType()->subscribeSuccessTemplate : '';
-
-        // Use message template if none was defined
-        if ($template == '') {
-            $template = 'campaign/message';
-
-            // Set template mode to CP
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-        }
-
-        return $this->renderTemplate($template, [
-            'title' => 'Subscribed',
-            'message' => $mailingList->mailingListType->doubleOptIn ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a confirmation link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
-            'mailingList' => $mailingList,
-        ]);
     }
 
     /**
@@ -345,60 +210,27 @@ class TrackerController extends Controller
     }
 
     /**
+     * Subscribe
+     *
+     * @deprecated in 1.10.0. Use [[FormsController::actionSubscribeContact()]] instead.
+     */
+    public function actionSubscribe()
+    {
+        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe-contact” instead.');
+
+        return Craft::$app->runAction('campaign/forms/subscribe-contact');
+    }
+
+    /**
      * Updates a contact
      *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws MissingComponentException
+     * @deprecated in 1.10.0. Use [[FormsController::actionUpdateContact()]] instead.
      */
     public function actionUpdateContact()
     {
-        $this->requirePostRequest();
+        Craft::$app->getDeprecator()->log('TrackerController::actionUpdateContact()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
 
-        $request = Craft::$app->getRequest();
-
-        // Get contact
-        $contact = $this->_getContact();
-
-        if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
-        }
-
-        $uid = $request->getBodyParam('uid');
-
-        // Verify UID
-        if ($uid === null || $contact->uid !== $uid) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact could not be verified.'));
-        }
-
-        // Set the field values using the fields location
-        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
-        $contact->setFieldValuesFromRequest($fieldsLocation);
-
-        // Save it
-        if (!Campaign::$plugin->tracker->updateContact($contact)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
-            ]);
-
-            return null;
-        }
-
-        if ($request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        return $this->redirectToPostedUrl($contact);
+        return Craft::$app->runAction('campaign/forms/update-contact');
     }
 
     // Private Methods

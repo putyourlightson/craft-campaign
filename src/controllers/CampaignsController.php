@@ -125,6 +125,7 @@ class CampaignsController extends Controller
                 'previewParams' => [
                     'campaignId' => $campaign->id,
                     'campaignTypeId' => $campaignType->id,
+                    'siteId' => $campaignType->siteId,
                 ]
             ]).');');
 
@@ -199,7 +200,9 @@ class CampaignsController extends Controller
         $this->_populateCampaign($campaign);
 
         // Have this campaign override any freshly queried campaigns with the same ID/site ID
-        Craft::$app->getElements()->setPlaceholderElement($campaign);
+        if ($campaign->id !== null) {
+            Craft::$app->getElements()->setPlaceholderElement($campaign);
+        }
 
         $this->getView()->getTwig()->disableStrictVariables();
 

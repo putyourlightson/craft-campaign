@@ -1,9 +1,20 @@
 # Release Notes for Campaign
 
 ## 1.10.0 - Unreleased
+### Added
+- Added `FormsController` with new `actionUnsubscribeContact` method.
+
 ### Changed
 - Changed minimum requirement of Craft to version 3.2.0.
 - Adjusted positioning of campaign preview and share buttons.
+
+### Deprecated
+- Deprecated `TrackerController::actionSubscribe` and added `FormsController::actionSubscribeContact`.
+- Deprecated `TrackerController::actionUpdateContact` and added `FormsController::actionUpdateContact`.
+- Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_BEFORE_SUBSCRIBE_CONTACT`.
+- Deprecated `TrackerService::EVENT_AFTER_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
+- Deprecated `TrackerService::EVENT_BEFORE_UPDATE_CONTACT` and added `FormsService::EVENT_BEFORE_UPDATE_CONTACT`.
+- Deprecated `TrackerService::EVENT_AFTER_UPDATE_CONTACT` and added `FormsService::EVENT_AFTER_UPDATE_CONTACT`.
 
 ## 1.9.3 - 2019-07-01
 ### Fixed
@@ -15,6 +26,8 @@
 - Fixed an issue in which relation fields were not being saved on a contact for mailing list types with with double opt-in enabled ([#75](https://github.com/putyourlightson/craft-campaign/issues/75)).
 
 ## 1.9.1 - 2019-05-16
+> {warning} Template conditions in segments have been broken out into their own segment type. You will therefore need to manually recreate any segments that used template conditions as new segments.
+
 ### Fixed
 - Fixed an error that could occur when creating a new mailing list in the control panel.
 
@@ -32,8 +45,6 @@
 ### Fixed
 - Fixed elements from incorrect sites appearing in relation fields when creating a new campaign or mailing list.
 - Fixed issue with sendouts not displaying the correct table attributes based on the selected sendout type.
-
-> {warning} Template conditions in segments have been broken out into their own segment type. You will therefore need to manually recreate any segments that used template conditions as new segments.
 
 ## 1.8.2 - 2019-05-03
 ### Fixed
@@ -156,6 +167,8 @@
 - Fixed bug that could prevent sendouts from being marked as complete when the campaign body contained 4 byte Unicode characters ([#50](https://github.com/putyourlightson/craft-campaign/issues/50)).
 
 ## 1.6.0 - 2019-01-23
+> {warning} Due to some significant changes in Craft 3.1, the email settings should be checked after updating.
+
 ### Added
 - Added compatibility with live preview in Craft 3.1.
 - Added restore action to deleted elements.
@@ -167,8 +180,6 @@
 ### Changed
 - Minimum requirement of Craft has been changed to version 3.1.0.
 - Removed deprecated code.
-
-> {warning} Due to some significant changes in Craft 3.1, the email settings should be checked after updating.
 
 ## 1.5.9 - 2019-01-21
 ### Fixed

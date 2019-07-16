@@ -31,6 +31,7 @@ use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
 use putyourlightson\campaign\services\ContactsService;
 use putyourlightson\campaign\services\ExportsService;
+use putyourlightson\campaign\services\FormsService;
 use putyourlightson\campaign\services\ImportsService;
 use putyourlightson\campaign\services\MailingListsService;
 use putyourlightson\campaign\services\MailingListTypesService;
@@ -59,6 +60,7 @@ use yii\web\ForbiddenHttpException;
  * @property CampaignTypesService $campaignTypes
  * @property ContactsService $contacts
  * @property ExportsService $exports
+ * @property FormsService $forms
  * @property ImportsService $imports
  * @property MailingListsService $mailingLists
  * @property MailingListTypesService $mailingListTypes
@@ -124,6 +126,7 @@ class Campaign extends Plugin
             'campaignTypes' => CampaignTypesService::class,
             'contacts' => ContactsService::class,
             'exports' => ExportsService::class,
+            'forms' => FormsService::class,
             'imports' => ImportsService::class,
             'mailingLists' => MailingListsService::class,
             'mailingListTypes' => MailingListTypesService::class,
@@ -161,6 +164,12 @@ class Campaign extends Plugin
         // Register CP URL rules event
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, $this->getCpRoutes());
+        });
+
+        // Register site URL rules event
+        // TODO: remove in 2.0.0
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) {
+            $event->rules = array_merge($event->rules, $this->getSiteRoutes());
         });
 
         // If Craft edition is pro
@@ -403,6 +412,20 @@ class Campaign extends Plugin
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit-campaign-type',
             'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit-mailing-list-type',
             'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit-mailing-list-type',
+        ];
+    }
+
+    /**
+     * Returns the site routes
+     * TODO: remove in 2.0.0
+     *
+     * @return array
+     */
+    protected function getSiteRoutes(): array
+    {
+        return [
+            'campaign/tracker/subscribe' => 'campaign/forms/subscribe-contact',
+            'campaign/tracker/update-contact' => 'campaign/forms/update-contact',
         ];
     }
 
