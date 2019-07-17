@@ -206,6 +206,8 @@ class Install extends Migration
                 'verifyEmailTemplate' => $this->string(500),
                 'verifySuccessTemplate' => $this->string(500),
                 'subscribeSuccessTemplate' => $this->string(500),
+                'unsubscribeEmailSubject' => $this->text(),
+                'unsubscribeEmailTemplate' => $this->string(500),
                 'unsubscribeSuccessTemplate' => $this->string(500),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

@@ -86,6 +86,16 @@ class MailingListTypeModel extends BaseModel
     public $subscribeSuccessTemplate;
 
     /**
+     * @var string|null Unsubscribe email subject
+     */
+    public $unsubscribeEmailSubject;
+
+    /**
+     * @var string|null Unsubscribe email template
+     */
+    public $unsubscribeEmailTemplate;
+
+    /**
      * @var string|null Unsubscribe success template
      */
     public $unsubscribeSuccessTemplate;

@@ -6,6 +6,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -13,8 +14,6 @@ use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
-use craft\web\Controller;
-use craft\web\View;
 use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -28,7 +27,7 @@ use yii\web\Response;
  * @package   Campaign
  * @since     1.0.0
  */
-class TrackerController extends Controller
+class TrackerController extends BaseMessageController
 {
     // Properties
     // =========================================================================
@@ -130,82 +129,11 @@ class TrackerController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        // Get template
-        $template = $mailingList !== null ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : '';
-
-        // Use message template if none was defined
-        if ($template == '') {
-            $template = 'campaign/message';
-
-            // Set template mode to CP
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-        }
-
-        return $this->renderTemplate($template, [
+        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
+        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
-        ]);
-    }
-
-    /**
-     * Verifies a contact's email
-     *
-     * @return Response
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     */
-    public function actionVerifyEmail(): Response
-    {
-        // Get pending contact ID
-        $pid = Craft::$app->getRequest()->getParam('pid');
-
-        if ($pid === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Invalid verification link.'));
-        }
-
-        // Verify pending contact
-        $pendingContact = Campaign::$plugin->contacts->verifyPendingContact($pid);
-
-        if ($pendingContact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
-        }
-
-        // Get contact
-        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
-
-        if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
-        }
-
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
-        // Track subscribe
-        Campaign::$plugin->tracker->subscribe($contact, $mailingList, 'web', $pendingContact->source, true);
-
-        // Get template
-        $template = $mailingList !== null ? $mailingList->getMailingListType()->verifySuccessTemplate : '';
-
-        // Use message template if none was defined
-        if ($template == '') {
-            $template = 'campaign/message';
-
-            // Set template mode to CP
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
-        }
-
-        return $this->renderTemplate($template, [
-            'title' => 'Verified',
-            'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
-            'mailingList' => $mailingList,
-            'contact' => $contact,
         ]);
     }
 
@@ -216,9 +144,9 @@ class TrackerController extends Controller
      */
     public function actionSubscribe()
     {
-        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe-contact” instead.');
+        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe-email” instead.');
 
-        return Craft::$app->runAction('campaign/forms/subscribe-contact');
+        return Craft::$app->runAction('campaign/forms/subscribe-email');
     }
 
     /**
@@ -231,6 +159,18 @@ class TrackerController extends Controller
         Craft::$app->getDeprecator()->log('TrackerController::actionUpdateContact()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
 
         return Craft::$app->runAction('campaign/forms/update-contact');
+    }
+
+    /**
+     * Verifies a contact's email
+     *
+     * @deprecated in 1.10.0. Use [[FormsController::actionVerifyEmail()]] instead.
+     */
+    public function actionVerifyEmail()
+    {
+        Craft::$app->getDeprecator()->log('TrackerController::actionVerifyEmail()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
+
+        return Craft::$app->runAction('campaign/forms/verify-email');
     }
 
     // Private Methods

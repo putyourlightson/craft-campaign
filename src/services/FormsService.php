@@ -6,25 +6,23 @@
 
 namespace putyourlightson\campaign\services;
 
-use DateTime;
+use craft\errors\MissingComponentException;
+use craft\helpers\UrlHelper;
+use craft\mail\Message;
+use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
-use putyourlightson\campaign\models\ContactCampaignModel;
-use putyourlightson\campaign\records\LinkRecord;
-use putyourlightson\campaign\records\ContactCampaignRecord;
-
-use DeviceDetector\DeviceDetector;
-use GuzzleHttp\Exception\ConnectException;
+use putyourlightson\campaign\helpers\ContactActivityHelper;
+use putyourlightson\campaign\models\PendingContactModel;
 
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
-use craft\helpers\Json;
+use RuntimeException;
 use Throwable;
 use yii\base\Exception;
 
@@ -74,6 +72,102 @@ class FormsService extends Component
     // =========================================================================
 
     /**
+     * Sends a verification email
+     *
+     * @param PendingContactModel $pendingContact
+     * @param MailingListElement $mailingList
+     *
+     * @return bool
+     * @throws Exception
+     * @throws MissingComponentException
+     */
+    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
+    {
+        // Set the current site from the mailing list's site ID
+        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-email';
+        $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
+
+        $subject = Craft::t('campaign', 'Verify your email address');
+        $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
+        $body = $bodyText."\n".$url;
+
+        // Get subject from setting if defined
+        $subject = $mailingList->mailingListType->verifyEmailSubject ?: $subject;
+
+        // Get body from template if defined
+        if ($mailingList->mailingListType->verifyEmailTemplate) {
+            $view = Craft::$app->getView();
+
+            // Set template mode to site
+            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+
+            try {
+                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                    'message' => $bodyText,
+                    'url' => $url,
+                    'mailingList' => $mailingList,
+                    'pendingContact' => $pendingContact,
+                ]);
+            }
+            catch (RuntimeException $e) {}
+        }
+
+        return $this->_sendEmail($pendingContact->email, $subject, $body, $mailingList->siteId);
+    }
+
+    /**
+     * Sends an unsubscribe email
+     *
+     * @param ContactElement $contact
+     * @param MailingListElement $mailingList
+     *
+     * @return bool
+     * @throws Exception
+     * @throws MissingComponentException
+     */
+    public function sendUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
+    {
+        // Set the current site from the mailing list's site ID
+        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/unsubscribe-email';
+        $url = UrlHelper::siteUrl($path, [
+            'cid' => $contact->cid,
+            'uid' => $contact->uid,
+            'mlid' => $mailingList,
+        ]);
+
+        $subject = Craft::t('campaign', 'Confirm unsubscribe');
+        $bodyText = Craft::t('campaign', 'Please confirm that you would like to unsubscribe from the mailing list by clicking on the following link:');
+        $body = $bodyText."\n".$url;
+
+        // Get subject from setting if defined
+        $subject = $mailingList->mailingListType->unsubscribeEmailSubject ?: $subject;
+
+        // Get body from template if defined
+        if ($mailingList->mailingListType->unsubscribeEmailTemplate) {
+            $view = Craft::$app->getView();
+
+            // Set template mode to site
+            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+
+            try {
+                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                    'message' => $bodyText,
+                    'url' => $url,
+                    'mailingList' => $mailingList,
+                    'contact' => $contact,
+                ]);
+            }
+            catch (RuntimeException $e) {}
+        }
+
+        return $this->_sendEmail($contact->email, $subject, $body, $mailingList->siteId);
+    }
+
+    /**
      * Subscribe contact
      *
      * @param ContactElement $contact
@@ -105,7 +199,7 @@ class FormsService extends Component
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verify);
 
         // Update contact activity
-        ContactHelper::updateContactActivity($contact);
+        ContactActivityHelper::updateContactActivity($contact);
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SUBSCRIBE_CONTACT)) {
@@ -116,6 +210,40 @@ class FormsService extends Component
                 'source' => $source,
             ]));
         }
+    }
+
+    /**
+     * Unsubscribes a contact
+     *
+     * @param ContactElement $contact
+     * @param MailingListElement $mailingList
+     *
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws Throwable
+     */
+    public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList)
+    {
+        // Fire a before event
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
+            $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
+                'contact' => $contact,
+                'mailingList' => $mailingList,
+            ]));
+        }
+
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
+
+        // Fire an after event
+        if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
+            $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
+                'contact' => $contact,
+                'mailingList' => $mailingList,
+            ]));
+        }
+
+        // Update contact activity
+        ContactActivityHelper::updateContactActivity($contact);
     }
 
     /**
@@ -139,7 +267,7 @@ class FormsService extends Component
         }
 
         // Update contact activity
-        ContactHelper::updateContactActivity($contact);
+        ContactActivityHelper::updateContactActivity($contact);
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_UPDATE_CONTACT)) {
@@ -151,42 +279,40 @@ class FormsService extends Component
         return true;
     }
 
+    // Private Methods
+    // =========================================================================
+
     /**
-     * Unsubscribes a contact
+     * Sends an email to a contact
      *
-     * @param ContactElement $contact
-     * @param MailingListElement[] $mailingLists
+     * @param string $email
+     * @param string $subject
+     * @param string $body
+     * @param int $siteId
      *
      * @return bool
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * @throws MissingComponentException
      */
-    public function unsubscribeContact(ContactElement $contact, array $mailingLists): bool
+    public function _sendEmail(string $email, string $subject, string $body, int $siteId): bool
     {
-        foreach ($mailingLists as $mailingList) {
-            // Fire a before event
-            if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
-                $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                    'contact' => $contact,
-                    'mailingList' => $mailingList,
-                ]));
-            }
+        $mailer = Campaign::$plugin->createMailer();
 
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
+        // Get from name and email
+        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($siteId);
 
-            // Fire an after event
-            if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
-                $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                    'contact' => $contact,
-                    'mailingList' => $mailingList,
-                ]));
-            }
+        // Create message
+        /** @var Message $message */
+        $message = $mailer->compose()
+            ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
+            ->setTo($email)
+            ->setSubject($subject)
+            ->setHtmlBody($body)
+            ->setTextBody($body);
+
+        if ($fromNameEmail['replyTo']) {
+            $message->setReplyTo($fromNameEmail['replyTo']);
         }
 
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-
-        return true;
+        return $message->send();
     }
 }

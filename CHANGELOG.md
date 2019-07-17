@@ -2,15 +2,17 @@
 
 ## 1.10.0 - Unreleased
 ### Added
-- Added `FormsController` with new `actionUnsubscribeContact` method.
+- Added `Unsubscribe Email Subject` and `Unsubscribe Email Template` settings to mailing list types.
+- Added `FormsController` with `actionUnsubscribeEmail()` and `actionUnsubscribeContact()` methods so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
 
 ### Changed
 - Changed minimum requirement of Craft to version 3.2.0.
 - Adjusted positioning of campaign preview and share buttons.
 
 ### Deprecated
-- Deprecated `TrackerController::actionSubscribe` and added `FormsController::actionSubscribeContact`.
-- Deprecated `TrackerController::actionUpdateContact` and added `FormsController::actionUpdateContact`.
+- Deprecated `ContactsService::sendVerificationEmail()` and added `FormsService::sendVerificationEmail()`.
+- Deprecated `TrackerController::actionSubscribe()` and added `FormsController::actionSubscribeEmail()`.
+- Deprecated `TrackerController::actionUpdateContact()` and added `FormsController::actionUpdateContact()`.
 - Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_BEFORE_SUBSCRIBE_CONTACT`.
 - Deprecated `TrackerService::EVENT_AFTER_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
 - Deprecated `TrackerService::EVENT_BEFORE_UPDATE_CONTACT` and added `FormsService::EVENT_BEFORE_UPDATE_CONTACT`.

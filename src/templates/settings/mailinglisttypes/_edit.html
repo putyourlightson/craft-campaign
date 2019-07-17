@@ -74,7 +74,7 @@
 
         {{ forms.textField({
             label: "Verify Email Subject"|t('campaign'),
-            instructions: "The subject to use for the verification email that is sent to users (leave blank for default subject)."|t('campaign'),
+            instructions: "The subject to use for the verification email that is sent to users who submit a subscribe form (leave blank for default subject)."|t('campaign'),
             name: 'verifyEmailSubject',
             value: mailingListType.verifyEmailSubject,
             errors: mailingListType.getErrors('verifyEmailSubject'),
@@ -83,7 +83,7 @@
 
         {{ forms.autosuggestField({
             label: "Verify Email Template"|t('campaign'),
-            instructions: "The template to use for the verification email that is sent to users (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`, `pendingContact`'}),
+            instructions: "The template to use for the verification email that is sent to users who submit a subscribe form (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`, `pendingContact`'}),
             name: 'verifyEmailTemplate',
             class: 'code',
             suggestions: craft.cp.getTemplateSuggestions(),
@@ -114,6 +114,26 @@
         suggestions: craft.cp.getTemplateSuggestions(),
         value: mailingListType.subscribeSuccessTemplate,
         errors: mailingListType.getErrors('subscribeSuccessTemplate'),
+        autocomplete: true
+    }) }}
+
+    {{ forms.textField({
+        label: "Unsubscribe Email Subject"|t('campaign'),
+        instructions: "The subject to use for the unsubscribe email that is sent to users who submit an unsubscribe form (leave blank for default subject)."|t('campaign'),
+        name: 'unsubscribeEmailSubject',
+        value: mailingListType.unsubscribeEmailSubject,
+        errors: mailingListType.getErrors('unsubscribeEmailSubject'),
+        autocomplete: true
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Unsubscribe Email Template"|t('campaign'),
+        instructions: "The template to use for the unsubscribe email that is sent to users who submit an unsubscribe form (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `url`, `mailingList`, `contact`'}),
+        name: 'unsubscribeEmailTemplate',
+        class: 'code',
+        suggestions: craft.cp.getTemplateSuggestions(),
+        value: mailingListType.unsubscribeEmailTemplate,
+        errors: mailingListType.getErrors('unsubscribeEmailTemplate'),
         autocomplete: true
     }) }}
 

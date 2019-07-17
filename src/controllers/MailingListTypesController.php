@@ -41,8 +41,8 @@ class MailingListTypesController extends Controller
     }
 
     /**
-     * @param int|null                  $mailingListTypeId    The mailing list type’s ID, if editing an existing mailing list type.
-     * @param MailingListTypeModel|null $mailingListType      The mailing list type being edited, if there were any validation errors.
+     * @param int|null $mailingListTypeId The mailing list type’s ID, if editing an existing mailing list type.
+     * @param MailingListTypeModel|null $mailingListType The mailing list type being edited, if there were any validation errors.
      *
      * @return Response
      * @throws NotFoundHttpException if the requested mailing list type is not found
@@ -50,8 +50,6 @@ class MailingListTypesController extends Controller
     public function actionEditMailingListType(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
     {
         // Get the mailing list type
-        // ---------------------------------------------------------------------
-
         if ($mailingListType === null) {
             if ($mailingListTypeId !== null) {
                 $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
@@ -71,8 +69,6 @@ class MailingListTypesController extends Controller
         ];
 
         // Set the title
-        // ---------------------------------------------------------------------
-
         if ($mailingListTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
         } else {
@@ -121,6 +117,8 @@ class MailingListTypesController extends Controller
         $mailingListType->verifyEmailTemplate = $request->getBodyParam('verifyEmailTemplate', $mailingListType->verifyEmailTemplate);
         $mailingListType->verifySuccessTemplate = $request->getBodyParam('verifySuccessTemplate', $mailingListType->verifySuccessTemplate);
         $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
+        $mailingListType->unsubscribeEmailSubject = $request->getBodyParam('unsubscribeEmailSubject', $mailingListType->unsubscribeEmailSubject);
+        $mailingListType->unsubscribeEmailTemplate = $request->getBodyParam('unsubscribeEmailTemplate', $mailingListType->unsubscribeEmailTemplate);
         $mailingListType->unsubscribeSuccessTemplate = $request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
 
         // Set the field layout

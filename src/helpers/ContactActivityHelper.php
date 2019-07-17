@@ -18,13 +18,13 @@ use Throwable;
 use yii\base\Exception;
 
 /**
- * ContactHelper
+ * ContactActivityHelper
  *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
-class ContactHelper
+class ContactActivityHelper
 {
     // Properties
     // =========================================================================

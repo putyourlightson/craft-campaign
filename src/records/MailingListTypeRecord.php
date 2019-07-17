@@ -24,6 +24,8 @@ use yii\db\ActiveQueryInterface;
  * @property string $verifyEmailTemplate
  * @property string $verifySuccessTemplate
  * @property string $subscribeSuccessTemplate
+ * @property string $unsubscribeEmailSubject
+ * @property string $unsubscribeEmailTemplate
  * @property string $unsubscribeSuccessTemplate
  * @property ActiveQueryInterface $site
  *

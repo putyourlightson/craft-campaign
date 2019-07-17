@@ -6,26 +6,20 @@
 
 namespace putyourlightson\campaign\services;
 
-use DateTime;
+use craft\errors\DeprecationException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
-use putyourlightson\campaign\events\UpdateContactEvent;
-use putyourlightson\campaign\helpers\ContactHelper;
+use putyourlightson\campaign\helpers\ContactActivityHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
-use DeviceDetector\DeviceDetector;
-use GuzzleHttp\Exception\ConnectException;
-
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
-use craft\helpers\Json;
 use Throwable;
 use yii\base\Exception;
 
@@ -94,7 +88,7 @@ class TrackerService extends Component
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
 
         // Update contact activity
-        ContactHelper::updateContactActivity($contact);
+        ContactActivityHelper::updateContactActivity($contact);
     }
 
     /**
@@ -114,52 +108,7 @@ class TrackerService extends Component
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);
 
         // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-    }
-
-    /**
-     * Subscribe
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param string|null $sourceType
-     * @param string|null $source
-     * @param bool|null $verify
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
-     */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
-    {
-        $sourceType = $sourceType ?? '';
-        $source = $source ?? '';
-        $verify = $verify ?? false;
-
-        // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
-            $this->trigger(self::EVENT_BEFORE_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
-                'contact' => $contact,
-                'mailingList' => $mailingList,
-                'sourceType' => $sourceType,
-                'source' => $source,
-            ]));
-        }
-
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verify);
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-
-        // Fire an after event
-        if ($this->hasEventHandlers(self::EVENT_AFTER_SUBSCRIBE_CONTACT)) {
-            $this->trigger(self::EVENT_AFTER_SUBSCRIBE_CONTACT, new SubscribeContactEvent([
-                'contact' => $contact,
-                'mailingList' => $mailingList,
-                'sourceType' => $sourceType,
-                'source' => $source,
-            ]));
-        }
+        ContactActivityHelper::updateContactActivity($contact);
     }
 
     /**
@@ -206,7 +155,7 @@ class TrackerService extends Component
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
 
         // Update contact activity
-        ContactHelper::updateContactActivity($contact);
+        ContactActivityHelper::updateContactActivity($contact);
 
         // Fire an after event
         if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
@@ -220,6 +169,26 @@ class TrackerService extends Component
     }
 
     /**
+     * Subscribe
+     *
+     * @param ContactElement $contact
+     * @param MailingListElement $mailingList
+     * @param string|null $sourceType
+     * @param string|null $source
+     * @param bool|null $verify
+     *
+     * @return bool
+     * @throws DeprecationException
+     * @deprecated in 1.10.0. Use [[FormsService::subscribeContact()]] instead.
+     */
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null): bool
+    {
+        Craft::$app->getDeprecator()->log('TrackerService::subscribe()', 'The “TrackerService::subscribe()” method has been deprecated. Use “FormsService::subscribeContact()” instead.');
+
+        return Campaign::$plugin->forms->subscribeContact($contact, $mailingList, $sourceType, $source, $verify);
+    }
+
+    /**
      * Updates a contact
      *
      * @param ContactElement $contact
@@ -228,66 +197,8 @@ class TrackerService extends Component
      */
     public function updateContact(ContactElement $contact): bool
     {
-        // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_UPDATE_CONTACT)) {
-            $this->trigger(self::EVENT_BEFORE_UPDATE_CONTACT, new UpdateContactEvent([
-                'contact' => $contact,
-            ]));
-        }
+        Craft::$app->getDeprecator()->log('TrackerService::subscribe()', 'The “TrackerService::subscribe()” method has been deprecated. Use “FormsService::subscribeContact()” instead.');
 
-        if (!Craft::$app->getElements()->saveElement($contact)) {
-            return false;
-        }
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-
-        // Fire an after event
-        if ($this->hasEventHandlers(self::EVENT_AFTER_UPDATE_CONTACT)) {
-            $this->trigger(self::EVENT_AFTER_UPDATE_CONTACT, new UpdateContactEvent([
-                'contact' => $contact,
-            ]));
-        }
-
-        return true;
-    }
-
-    /**
-     * Unsubscribes a contact
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement[] $mailingLists
-     *
-     * @return bool
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
-     */
-    public function unsubscribeContact(ContactElement $contact, array $mailingLists): bool
-    {
-        foreach ($mailingLists as $mailingList) {
-            // Fire a before event
-            if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
-                $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                    'contact' => $contact,
-                    'mailingList' => $mailingList,
-                ]));
-            }
-
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
-
-            // Fire an after event
-            if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
-                $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                    'contact' => $contact,
-                    'mailingList' => $mailingList,
-                ]));
-            }
-        }
-
-        // Update contact activity
-        ContactHelper::updateContactActivity($contact);
-
-        return true;
+        return Campaign::$plugin->forms->updateContact($contact);
     }
 }

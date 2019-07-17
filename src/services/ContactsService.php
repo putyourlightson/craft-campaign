@@ -7,7 +7,6 @@
 namespace putyourlightson\campaign\services;
 
 use craft\helpers\ConfigHelper;
-use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -20,9 +19,6 @@ use craft\base\Component;
 use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
-use craft\helpers\UrlHelper;
-use craft\mail\Message;
-use RuntimeException;
 use Throwable;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
@@ -196,59 +192,13 @@ class ContactsService extends Component
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
+     * @deprecated in 1.10.0. Use [[FormsService::sendVerificationEmail()]] instead.
      */
     public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
-        // Set the current site from the mailing list's site ID
-        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendVerificationEmail()” instead.');
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/verify-email';
-        $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
-
-        $mailer = Campaign::$plugin->createMailer();
-
-        $subject = Craft::t('campaign', 'Verify your email address');
-        $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
-        $body = $bodyText."\n".$url;
-
-        // Get subject from setting if defined
-        $subject = $mailingList->mailingListType->verifyEmailSubject ?: $subject;
-
-        // Get body from template if defined
-        if ($mailingList->mailingListType->verifyEmailTemplate) {
-            $view = Craft::$app->getView();
-
-            // Set template mode to site
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-            try {
-                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
-                    'message' => $bodyText,
-                    'url' => $url,
-                    'mailingList' => $mailingList,
-                    'pendingContact' => $pendingContact,
-                ]);
-            }
-            catch (RuntimeException $e) {}
-        }
-
-        // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($mailingList->siteId);
-
-        // Create message
-        /** @var Message $message */
-        $message = $mailer->compose()
-            ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
-            ->setTo($pendingContact->email)
-            ->setSubject($subject)
-            ->setHtmlBody($body)
-            ->setTextBody($body);
-
-        if ($fromNameEmail['replyTo']) {
-            $message->setReplyTo($fromNameEmail['replyTo']);
-        }
-
-        return $message->send();
+        return Campaign::$plugin->forms->sendVerificationEmail($pendingContact, $mailingList);
     }
 
     /**

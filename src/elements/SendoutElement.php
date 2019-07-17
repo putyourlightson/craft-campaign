@@ -56,6 +56,7 @@ use yii\base\InvalidConfigException;
  * @property bool $isCancellable
  * @property CampaignElement|null $campaign
  * @property string $progress
+ * @property string $fromNameEmailLabel
  * @property MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element

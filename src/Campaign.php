@@ -166,12 +166,6 @@ class Campaign extends Plugin
             $event->rules = array_merge($event->rules, $this->getCpRoutes());
         });
 
-        // Register site URL rules event
-        // TODO: remove in 2.0.0
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_SITE_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules = array_merge($event->rules, $this->getSiteRoutes());
-        });
-
         // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
             // Register user permissions
@@ -412,20 +406,6 @@ class Campaign extends Plugin
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit-campaign-type',
             'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit-mailing-list-type',
             'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit-mailing-list-type',
-        ];
-    }
-
-    /**
-     * Returns the site routes
-     * TODO: remove in 2.0.0
-     *
-     * @return array
-     */
-    protected function getSiteRoutes(): array
-    {
-        return [
-            'campaign/tracker/subscribe' => 'campaign/forms/subscribe-contact',
-            'campaign/tracker/update-contact' => 'campaign/forms/update-contact',
         ];
     }
 

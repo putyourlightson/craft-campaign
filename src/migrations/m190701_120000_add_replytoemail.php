@@ -4,7 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use Craft;
 use craft\db\Migration;
-use putyourlightson\campaign\records\SegmentRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 
 class m190701_120000_add_replytoemail extends Migration
