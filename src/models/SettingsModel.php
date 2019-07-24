@@ -98,7 +98,12 @@ class SettingsModel extends Model
     public $timeThreshold = 0.8;
 
     /**
-     * @var int The maximum number of sendout retry attempts
+     * @var int The maximum number of times to attempt sending a sendout before failing
+     */
+    public $maxSendAttempts = 3;
+
+    /**
+     * @var int The maximum number of times to attempt retrying a failed sendout job
      */
     public $maxRetryAttempts = 10;
 

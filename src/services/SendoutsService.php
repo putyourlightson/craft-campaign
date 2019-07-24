@@ -452,8 +452,16 @@ class SendoutsService extends Component
             return;
         }
 
-        // Send message
-        $success = $message->send();
+        $success = false;
+
+        // Attempt to send message
+        for ($i = 0; $i < Campaign::$plugin->getSettings()->maxSendAttempts; $i++) {
+            $success = $message->send();
+
+            if ($success) {
+                break;
+            }
+        }
 
         if ($success) {
             // Update sent date and save
