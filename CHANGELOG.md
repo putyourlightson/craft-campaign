@@ -4,10 +4,11 @@
 ### Added
 - Added `Unsubscribe Email Subject` and `Unsubscribe Email Template` settings to mailing list types.
 - Added `FormsController` with `actionUnsubscribeEmail()` and `actionUnsubscribeContact()` methods so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
+- Added `resendAttemptsOnSendFailure` config setting ([#82](https://github.com/putyourlightson/craft-campaign/issues/82)).
+- Added `googleAnalyticsParams` config setting ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
 
 ### Changed
-- Changed minimum requirement of Craft to version 3.2.0.
-- Adjusted positioning of campaign preview and share buttons.
+- Adjusted positioning of campaign preview and share buttons for Craft 3.2.
 
 ### Deprecated
 - Deprecated `ContactsService::sendVerificationEmail()` and added `FormsService::sendVerificationEmail()`.

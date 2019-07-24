@@ -58,15 +58,26 @@
     {{ block('pageTitle') }}
     {{ block('contextMenu') }}
     <div class="flex-grow"></div>
-    <div class="btngroup">
+    {# TODO: remove in 2.0.0 #}
+    {% if craft.app.version < '3.2.0' %}
         {% if showPreviewBtn %}
-            <div id="preview-btn" class="btn livepreviewbtn">{{ "Preview"|t('app') }}</div>
+            <div class="btn livepreviewbtn">{{ "Live Preview"|t('app') }}</div>
         {% endif %}
         {% if shareUrl is defined %}
-            <a href="{{ shareUrl }}" id="share-btn" class="btn" target="_blank">{{ 'Share'|t('app') }}</a>
+            <a href="{{ shareUrl }}" class="btn sharebtn" target="_blank">{{ 'Share'|t('app') }}</a>
         {% endif %}
-    </div>
-    <div class="spacer"></div>
+        <div class="flex-grow"></div>
+    {% else %}
+        <div class="btngroup">
+            {% if showPreviewBtn %}
+                <div id="preview-btn" class="btn">{{ "Preview"|t('app') }}</div>
+            {% endif %}
+            {% if shareUrl is defined %}
+                <a href="{{ shareUrl }}" id="share-btn" class="btn" target="_blank">{{ 'Share'|t('app') }}</a>
+            {% endif %}
+        </div>
+        <div class="spacer"></div>
+    {% endif %}
     {{ block('actionButton') }}
 
 {% endblock %}
