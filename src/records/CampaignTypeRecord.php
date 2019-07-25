@@ -22,6 +22,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $uriFormat
  * @property string $htmlTemplate
  * @property string $plaintextTemplate
+ * @property string $queryStringParameters
  * @property Site|null $site
  *
  * @author    PutYourLightsOn

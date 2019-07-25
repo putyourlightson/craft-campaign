@@ -1,11 +1,13 @@
 # Release Notes for Campaign
 
 ## 1.10.0 - Unreleased
+> {note} The Google Analytics lightswitch has been removed from sendouts. Use the new Query String Parameters setting in campaign types instead.
+
 ### Added
 - Added the `Unsubscribe Email Subject` and `Unsubscribe Email Template` settings to mailing list types.
 - Added the `FormsController` with `actionUnsubscribeEmail()` and `actionUnsubscribeContact()` methods so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
 - Added the `maxSendAttempts` config setting ([#82](https://github.com/putyourlightson/craft-campaign/issues/82)).
-- Added the `googleAnalyticsParams` config setting ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
+- Added the `Query String Parameters` setting to campaign types and removed the Google Analytics lightswitch from sendouts ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
 
 ### Changed
 - Adjusted positioning of campaign preview and share buttons for Craft 3.2.

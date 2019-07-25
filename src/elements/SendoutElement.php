@@ -358,11 +358,6 @@ class SendoutElement extends Element
     public $notificationEmailAddress;
 
     /**
-     * @var bool Google Analytics link tracking
-     */
-    public $googleAnalyticsLinkTracking;
-
-    /**
      * @var string Mailing list IDs
      */
     public $mailingListIds;
@@ -506,7 +501,6 @@ class SendoutElement extends Element
         $rules[] = [['sid'], 'string', 'max' => 32];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
         $rules[] = [['notificationEmailAddress'], 'email'];
-        $rules[] = [['googleAnalyticsLinkTracking'], 'boolean'];
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         return $rules;

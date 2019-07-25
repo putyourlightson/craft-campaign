@@ -123,6 +123,7 @@ class CampaignTypesController extends Controller
         $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
         $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
+        $campaignType->queryStringParameters = $request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

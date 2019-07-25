@@ -91,11 +91,19 @@ class TrackerController extends BaseMessageController
             // Track click
             Campaign::$plugin->tracker->click($contact, $sendout, $linkRecord);
 
-            // If Google Analytics link tracking
-            if ($sendout->googleAnalyticsLinkTracking) {
-                $hasQuery = strpos($url, '?');
-                $url .= $hasQuery === false ? '?' : '&';
-                $url .= 'utm_source=campaign-plugin&utm_medium=email&utm_campaign='.$sendout->subject;
+            // Add query string parameters if not empty
+            $queryStringParameters = $sendout->getCampaign()->getCampaignType()->queryStringParameters;
+
+            if (!empty($queryStringParameters)) {
+                $view = Craft::$app->getView();
+                $queryStringParameters = $view->renderString($queryStringParameters, [
+                    'contact' => $contact,
+                    'sendout' => $sendout,
+                    'campaign' => $sendout->getCampaign(),
+                ]);
+
+                $url .= strpos($url, '?') === false ? '?' : '&';
+                $url .= trim($queryStringParameters, '?&');
             }
         }
 

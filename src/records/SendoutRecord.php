@@ -23,7 +23,6 @@ use DateTime;
  * @property string      $replyToEmail               Reply to email
  * @property string      $subject                    Subject
  * @property string      $notificationEmailAddress   Notification email address
- * @property boolean     $googleAnalyticsLinkTracking Google Analytics link tracking
  * @property string      $mailingListIds             Mailing list IDs
  * @property string      $excludedMailingListIds     Excluded mailing list IDs
  * @property int         $recipients                 Recipients

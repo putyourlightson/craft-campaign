@@ -75,6 +75,11 @@ class CampaignTypeModel extends BaseModel
      */
     public $plaintextTemplate;
 
+    /**
+     * @var string|null Query string parameters
+     */
+    public $queryStringParameters;
+
     // Public Methods
     // =========================================================================
 

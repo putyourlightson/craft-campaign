@@ -100,6 +100,23 @@
         required: true
     }) }}
 
+    {% set infoText = 'Available template tags: {tags}.' %}
+    {% set tags = '`campaign`, `sendout`' %}
+    {% set placeholder = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ sendout.subject }}
+' %}
+
+    {{ forms.textField({
+        label: "Query String Parameters"|t('campaign'),
+        instructions: "The query string parameters to append to links that are clicked in the campaign, useful for analytics."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: tags}),
+        id: 'queryStringParameters',
+        name: 'queryStringParameters',
+        class: 'code',
+        placeholder: placeholder,
+        value: campaignType.queryStringParameters,
+        errors: campaignType.getErrors('queryStringParameters'),
+        autocomplete: true
+    }) }}
+
     <hr>
 
     {% include "_includes/fieldlayoutdesigner" with {

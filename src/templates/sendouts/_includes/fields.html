@@ -195,13 +195,3 @@
     errors: sendout.getErrors('notificationEmailAddress'),
     required: true,
 }, input) }}
-
-{{ forms.lightswitchField({
-    label: "Google Analytics Link Tracking"|t('campaign'),
-    instructions: "Whether Google Analytics tracking should be added to links in your campaign."|t('campaign'),
-    id: 'googleAnalyticsLinkTracking',
-    name: 'googleAnalyticsLinkTracking',
-    on: sendout.googleAnalyticsLinkTracking,
-    errors: sendout.getErrors('googleAnalyticsLinkTracking'),
-    disabled: not editable,
-}) }}

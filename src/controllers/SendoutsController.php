@@ -353,7 +353,6 @@ class SendoutsController extends Controller
         $sendout->title = $request->getBodyParam('title', $sendout->title);
         $sendout->subject = $request->getBodyParam('subject', $sendout->subject);
         $sendout->notificationEmailAddress = $request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
-        $sendout->googleAnalyticsLinkTracking = (bool)$request->getBodyParam('googleAnalyticsLinkTracking', $sendout->googleAnalyticsLinkTracking);
 
         // Get from name and email
         $fromNameEmail = explode(':', $request->getBodyParam('fromNameEmail', ''));
