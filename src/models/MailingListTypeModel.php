@@ -61,24 +61,24 @@ class MailingListTypeModel extends BaseModel
     public $handle;
 
     /**
-     * @var bool Double opt-in
+     * @var bool Subscribe double opt-in
      */
-    public $doubleOptIn = true;
+    public $subscribeDoubleOptIn = true;
 
     /**
-     * @var string|null Verify email subject
+     * @var string|null Subscribe verification email subject
      */
-    public $verifyEmailSubject;
+    public $subscribeVerificationEmailSubject;
 
     /**
-     * @var string|null Verify email template
+     * @var string|null Subscribe verification email template
      */
-    public $verifyEmailTemplate;
+    public $subscribeVerificationEmailTemplate;
 
     /**
-     * @var string|null Verify success template
+     * @var string|null Subscribe verification success template
      */
-    public $verifySuccessTemplate;
+    public $subscribeVerificationSuccessTemplate;
 
     /**
      * @var string|null Subscribe success template
@@ -86,14 +86,19 @@ class MailingListTypeModel extends BaseModel
     public $subscribeSuccessTemplate;
 
     /**
-     * @var string|null Unsubscribe email subject
+     * @var bool Unsubscribe form allowed
      */
-    public $unsubscribeEmailSubject;
+    public $unsubscribeFormAllowed = false;
 
     /**
-     * @var string|null Unsubscribe email template
+     * @var string|null Unsubscribe verification email subject
      */
-    public $unsubscribeEmailTemplate;
+    public $unsubscribeVerificationEmailSubject;
+
+    /**
+     * @var string|null Unsubscribe verification email template
+     */
+    public $unsubscribeVerificationEmailTemplate;
 
     /**
      * @var string|null Unsubscribe success template
@@ -138,7 +143,7 @@ class MailingListTypeModel extends BaseModel
             [['name', 'handle'], 'string', 'max' => 255],
             [['name', 'handle'], UniqueValidator::class, 'targetClass' => MailingListTypeRecord::class],
             [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
-            [['doubleOptIn'], 'boolean'],
+            [['subscribeDoubleOptIn', 'unsubscribeFormAllowed'], 'boolean'],
         ];
     }
 

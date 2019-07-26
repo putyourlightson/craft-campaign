@@ -22,8 +22,8 @@ use putyourlightson\campaign\models\PendingContactModel;
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
-use RuntimeException;
 use Throwable;
+use Twig\Error\Error;
 use yii\base\Exception;
 
 /**
@@ -72,7 +72,7 @@ class FormsService extends Component
     // =========================================================================
 
     /**
-     * Sends a verification email
+     * Sends a verify subscribe email
      *
      * @param PendingContactModel $pendingContact
      * @param MailingListElement $mailingList
@@ -81,12 +81,12 @@ class FormsService extends Component
      * @throws Exception
      * @throws MissingComponentException
      */
-    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
+    public function sendVerifySubscribeEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
         // Set the current site from the mailing list's site ID
         Craft::$app->sites->setCurrentSite($mailingList->siteId);
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-email';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-subscribe';
         $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
 
         $subject = Craft::t('campaign', 'Verify your email address');
@@ -94,31 +94,31 @@ class FormsService extends Component
         $body = $bodyText."\n".$url;
 
         // Get subject from setting if defined
-        $subject = $mailingList->mailingListType->verifyEmailSubject ?: $subject;
+        $subject = $mailingList->mailingListType->subscribeVerificationEmailSubject ?: $subject;
 
         // Get body from template if defined
-        if ($mailingList->mailingListType->verifyEmailTemplate) {
+        if ($mailingList->mailingListType->subscribeVerificationEmailTemplate) {
             $view = Craft::$app->getView();
 
             // Set template mode to site
             $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
             try {
-                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                $body = $view->renderTemplate($mailingList->mailingListType->subscribeVerificationEmailTemplate, [
                     'message' => $bodyText,
                     'url' => $url,
                     'mailingList' => $mailingList,
                     'pendingContact' => $pendingContact,
                 ]);
             }
-            catch (RuntimeException $e) {}
+            catch (Error $e) {}
         }
 
         return $this->_sendEmail($pendingContact->email, $subject, $body, $mailingList->siteId);
     }
 
     /**
-     * Sends an unsubscribe email
+     * Sends a verify unsubscribe email
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
@@ -127,41 +127,41 @@ class FormsService extends Component
      * @throws Exception
      * @throws MissingComponentException
      */
-    public function sendUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
+    public function sendVerifyUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
     {
         // Set the current site from the mailing list's site ID
         Craft::$app->sites->setCurrentSite($mailingList->siteId);
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/unsubscribe-email';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-unsubscribe';
         $url = UrlHelper::siteUrl($path, [
             'cid' => $contact->cid,
             'uid' => $contact->uid,
-            'mlid' => $mailingList,
+            'mlid' => $mailingList->id,
         ]);
 
-        $subject = Craft::t('campaign', 'Confirm unsubscribe');
-        $bodyText = Craft::t('campaign', 'Please confirm that you would like to unsubscribe from the mailing list by clicking on the following link:');
+        $subject = Craft::t('campaign', 'Verify unsubscribe');
+        $bodyText = Craft::t('campaign', 'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:');
         $body = $bodyText."\n".$url;
 
         // Get subject from setting if defined
-        $subject = $mailingList->mailingListType->unsubscribeEmailSubject ?: $subject;
+        $subject = $mailingList->mailingListType->unsubscribeVerificationEmailSubject ?: $subject;
 
         // Get body from template if defined
-        if ($mailingList->mailingListType->unsubscribeEmailTemplate) {
+        if ($mailingList->mailingListType->unsubscribeVerificationEmailTemplate) {
             $view = Craft::$app->getView();
 
             // Set template mode to site
             $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
             try {
-                $body = $view->renderTemplate($mailingList->mailingListType->verifyEmailTemplate, [
+                $body = $view->renderTemplate($mailingList->mailingListType->unsubscribeVerificationEmailTemplate, [
                     'message' => $bodyText,
                     'url' => $url,
                     'mailingList' => $mailingList,
                     'contact' => $contact,
                 ]);
             }
-            catch (RuntimeException $e) {}
+            catch (Error $e) {}
         }
 
         return $this->_sendEmail($contact->email, $subject, $body, $mailingList->siteId);

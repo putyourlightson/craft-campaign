@@ -192,13 +192,13 @@ class ContactsService extends Component
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
-     * @deprecated in 1.10.0. Use [[FormsService::sendVerificationEmail()]] instead.
+     * @deprecated in 1.10.0. Use [[FormsService::sendSubscribeEmail()]] instead.
      */
     public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
-        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendVerificationEmail()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendSubscribeEmail()” instead.');
 
-        return Campaign::$plugin->forms->sendVerificationEmail($pendingContact, $mailingList);
+        return Campaign::$plugin->forms->sendSubscribeEmail($pendingContact, $mailingList);
     }
 
     /**

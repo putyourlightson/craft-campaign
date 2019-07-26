@@ -19,6 +19,7 @@ use craft\errors\ElementNotFoundException;
 use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -67,16 +68,14 @@ class FormsController extends BaseMessageController
      * @throws Exception
      * @throws BadRequestHttpException
      */
-    public function actionSubscribeEmail()
+    public function actionSubscribe()
     {
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
 
-        $settings = Campaign::$plugin->getSettings();
-
         // Get mailing list by slug
-        $mailingListSlug = Craft::$app->getRequest()->getRequiredParam('mailingList');
+        $mailingListSlug = $request->getRequiredParam('mailingList');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
 
         if ($mailingList === null) {
@@ -86,11 +85,11 @@ class FormsController extends BaseMessageController
         $email = $request->getRequiredParam('email');
         $referrer = $request->getReferrer();
 
-        // If double opt-in
-        if ($mailingList->mailingListType->doubleOptIn) {
+        // If subscribe double opt-in
+        if ($mailingList->mailingListType->subscribeDoubleOptIn) {
             // Create new contact to get field values
             $contact = new ContactElement();
-            $contact->fieldLayoutId = $settings->contactFieldLayoutId;
+            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
             $contact->setFieldValuesFromRequest('fields');
 
             // Create pending contact
@@ -118,7 +117,7 @@ class FormsController extends BaseMessageController
             }
 
             // Send verification email
-            Campaign::$plugin->forms->sendVerificationEmail($pendingContact, $mailingList);
+            Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
         }
         else {
             // Get contact if it exists
@@ -160,10 +159,11 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl();
         }
 
+        // TODO: remove in 2.0.0
         // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
         return $this->renderTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
-            'title' => 'Subscribed',
-            'message' => $mailingList->mailingListType->doubleOptIn ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a confirmation link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
+            'title' => $mailingList->mailingListType->subscribeDoubleOptIn ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
+            'message' => $mailingList->mailingListType->subscribeDoubleOptIn ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a confirmation link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
             'mailingList' => $mailingList,
         ]);
     }
@@ -175,11 +175,24 @@ class FormsController extends BaseMessageController
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      */
-    public function actionUnsubscribeEmail()
+    public function actionUnsubscribe()
     {
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
+
+        // Get mailing list by slug
+        $mailingListSlug = $request->getRequiredParam('mailingList');
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+        }
+
+        // Ensure unsubscribing through a form is allowed
+        if (!$mailingList->getMailingListType()->unsubscribeFormAllowed) {
+            throw new ForbiddenHttpException('Unsubscribing through a form is not allowed.');
+        }
 
         $email = $request->getRequiredParam('email');
 
@@ -190,142 +203,14 @@ class FormsController extends BaseMessageController
             throw new NotFoundHttpException(Craft::t('campaign', 'A contact with that email address could not be found.'));
         }
 
-        // Get mailing list by slug
-        $mailingListSlug = Craft::$app->getRequest()->getRequiredParam('mailingList');
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
         // Send verification email
-        Campaign::$plugin->forms->sendUnsubscribeEmail($contact, $mailingList);
+        Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($contact, $mailingList);
 
         if ($request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        if ($request->getBodyParam('redirect')) {
-            return $this->redirectToPostedUrl($contact);
-        }
-
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeEmailTemplate, [
-            'title' => 'Subscribed',
-            'message' => $mailingList->mailingListType->doubleOptIn ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a confirmation link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
-            'mailingList' => $mailingList,
-        ]);
-    }
-
-    /**
-     * Verifies a contact's email
-     *
-     * @return Response
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     */
-    public function actionVerifyEmail(): Response
-    {
-        $request = Craft::$app->getRequest();
-
-        // Get pending contact ID
-        $pid = $request->getParam('pid');
-
-        if ($pid === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Invalid verification link.'));
-        }
-
-        // Verify pending contact
-        $pendingContact = Campaign::$plugin->contacts->verifyPendingContact($pid);
-
-        if ($pendingContact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
-        }
-
-        // Get contact
-        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
-
-        if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
-        }
-
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
-        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
-
-        if ($request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        if ($request->getBodyParam('redirect')) {
-            return $this->redirectToPostedUrl($contact);
-        }
-
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->verifySuccessTemplate, [
-            'title' => 'Verified',
-            'message' => Craft::t('campaign', 'You have successfully verified your email address.'),
-            'mailingList' => $mailingList,
-            'contact' => $contact,
-        ]);
-    }
-
-    /**
-     * Unsubscribes the provided contact from a mailing list
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     */
-    public function actionUnsubscribeContact()
-    {
-        $request = Craft::$app->getRequest();
-
-        // Get verified contact
-        $contact = $this->_getVerifiedContact();
-
-        if ($contact === null) {
-            $error = Craft::t('campaign', 'Contact not found.');
-
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => [$error],
-                ]);
-            }
-            throw new NotFoundHttpException($error);
-        }
-
-        // Get mailing list by ID
-        $mailingListId = Craft::$app->getRequest()->getRequiredParam('mlid');
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
-        Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList);
-
-        if ($request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        if ($request->getBodyParam('redirect')) {
-            return $this->redirectToPostedUrl($contact);
-        }
-
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
-            'title' => Craft::t('campaign', 'Unsubscribed'),
-            'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
-            'mailingList' => $mailingList,
-        ]);
+        return $this->redirectToPostedUrl($contact);
     }
 
     /**
@@ -383,6 +268,110 @@ class FormsController extends BaseMessageController
         }
 
         return $this->redirectToPostedUrl($contact);
+    }
+
+    /**
+     * Verifies and subscribes a pending contact to a mailing list
+     *
+     * @return Response
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionVerifySubscribe(): Response
+    {
+        $request = Craft::$app->getRequest();
+
+        // Get pending contact ID
+        $pid = $request->getParam('pid');
+
+        if ($pid === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Invalid verification link.'));
+        }
+
+        // Verify pending contact
+        $pendingContact = Campaign::$plugin->contacts->verifyPendingContact($pid);
+
+        if ($pendingContact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
+        }
+
+        // Get contact
+        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
+
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+        }
+
+        // Get mailing list
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+        }
+
+        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
+
+        if ($request->getBodyParam('redirect')) {
+            return $this->redirectToPostedUrl($contact);
+        }
+
+        // TODO: change template to `subscribeSuccessTemplate` in 2.0.0
+        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
+        return $this->renderTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
+            'title' => Craft::t('campaign', 'Verified'),
+            'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
+            'mailingList' => $mailingList,
+            'contact' => $contact,
+        ]);
+    }
+
+    /**
+     * Verifies and unsubscribes the provided contact from a mailing list
+     *
+     * @return Response|null
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionVerifyUnsubscribe()
+    {
+        $request = Craft::$app->getRequest();
+
+        // Get verified contact
+        $contact = $this->_getVerifiedContact();
+
+        if ($contact === null) {
+            $error = Craft::t('campaign', 'Contact not found.');
+
+            if ($request->getAcceptsJson()) {
+                return $this->asJson([
+                    'errors' => [$error],
+                ]);
+            }
+            throw new NotFoundHttpException($error);
+        }
+
+        // Get mailing list by ID
+        $mailingListId = Craft::$app->getRequest()->getRequiredParam('mlid');
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+        }
+
+        Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList);
+
+        if ($request->getBodyParam('redirect')) {
+            return $this->redirectToPostedUrl($contact);
+        }
+
+        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
+        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
+            'title' => Craft::t('campaign', 'Unsubscribed'),
+            'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
+            'mailingList' => $mailingList,
+        ]);
     }
 
     // Private Methods

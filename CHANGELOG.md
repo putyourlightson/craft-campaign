@@ -1,25 +1,35 @@
 # Release Notes for Campaign
 
 ## 1.10.0 - Unreleased
-> {note} The Google Analytics lightswitch has been removed from sendouts. Use the new Query String Parameters setting in campaign types instead.
+> {note} The Google Analytics lightswitch field has been removed from sendouts. Use the new Query String Parameters field in campaign types instead.
 
 ### Added
-- Added the `Unsubscribe Email Subject` and `Unsubscribe Email Template` settings to mailing list types.
-- Added the `FormsController` with `actionUnsubscribeEmail()` and `actionUnsubscribeContact()` methods so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
-- Added the `maxSendAttempts` config setting ([#82](https://github.com/putyourlightson/craft-campaign/issues/82)).
-- Added the `Query String Parameters` setting to campaign types and removed the Google Analytics lightswitch from sendouts ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
+- Added the `Unsubscribe Verification Email Subject` and `Unsubscribe Verification Email Template` fields to mailing list type settings.
+- Added the `FormsController` with the `actionUnsubscribe()` method so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form and clicking a link in a verification email ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
+- Added the `maxSendAttempts` config setting which defines the maximum number of times to attempt sending a sendout before failing and defaults to 3 ([#82](https://github.com/putyourlightson/craft-campaign/issues/82)).
+- Added the `Query String Parameters` field to campaign types and removed the `Google Analytics` lightswitch field from sendouts ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
+- Added `FormsController::actionSubscribe()`.
+- Added `FormsController::actionUnsubscribe()`.
+- Added `FormsController::actionUpdateContact()`.
+- Added `FormsService::sendVerifySubscribeEmail()`.
+- Added `FormsService::sendVerifyUnsubscribeEmail()`.
+- Added `FormsService::EVENT_BEFORE_SUBSCRIBE_CONTACT`.
+- Added `FormsService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
+- Added `FormsService::EVENT_BEFORE_UPDATE_CONTACT`.
+- Added `FormsService::EVENT_AFTER_UPDATE_CONTACT`.
 
 ### Changed
 - Adjusted positioning of campaign preview and share buttons for Craft 3.2.
 
 ### Deprecated
-- Deprecated `ContactsService::sendVerificationEmail()` and added `FormsService::sendVerificationEmail()`.
-- Deprecated `TrackerController::actionSubscribe()` and added `FormsController::actionSubscribeEmail()`.
-- Deprecated `TrackerController::actionUpdateContact()` and added `FormsController::actionUpdateContact()`.
-- Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_BEFORE_SUBSCRIBE_CONTACT`.
-- Deprecated `TrackerService::EVENT_AFTER_SUBSCRIBE_CONTACT` and added `FormsService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
-- Deprecated `TrackerService::EVENT_BEFORE_UPDATE_CONTACT` and added `FormsService::EVENT_BEFORE_UPDATE_CONTACT`.
-- Deprecated `TrackerService::EVENT_AFTER_UPDATE_CONTACT` and added `FormsService::EVENT_AFTER_UPDATE_CONTACT`.
+- Deprecated the `Subscribe Verification Success Template` field in mailing list type settings.
+- Deprecated `TrackerController::actionSubscribe()`.
+- Deprecated `TrackerController::actionUpdateContact()`.
+- Deprecated `ContactsService::sendVerificationEmail()`.
+- Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT`. 
+- Deprecated `TrackerService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
+- Deprecated `TrackerService::EVENT_BEFORE_UPDATE_CONTACT`.
+- Deprecated `TrackerService::EVENT_AFTER_UPDATE_CONTACT`.
 
 ## 1.9.3 - 2019-07-01
 ### Fixed

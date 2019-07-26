@@ -97,7 +97,6 @@ class TrackerController extends BaseMessageController
             if (!empty($queryStringParameters)) {
                 $view = Craft::$app->getView();
                 $queryStringParameters = $view->renderString($queryStringParameters, [
-                    'contact' => $contact,
                     'sendout' => $sendout,
                     'campaign' => $sendout->getCampaign(),
                 ]);
@@ -148,13 +147,13 @@ class TrackerController extends BaseMessageController
     /**
      * Subscribe
      *
-     * @deprecated in 1.10.0. Use [[FormsController::actionSubscribeContact()]] instead.
+     * @deprecated in 1.10.0. Use [[FormsController::actionSubscribe()]] instead.
      */
     public function actionSubscribe()
     {
-        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe-email” instead.');
+        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe” instead.');
 
-        return Craft::$app->runAction('campaign/forms/subscribe-email');
+        return Craft::$app->runAction('campaign/forms/subscribe');
     }
 
     /**
@@ -172,13 +171,13 @@ class TrackerController extends BaseMessageController
     /**
      * Verifies a contact's email
      *
-     * @deprecated in 1.10.0. Use [[FormsController::actionVerifyEmail()]] instead.
+     * @deprecated in 1.10.0. Use [[FormsController::actionVerifySubscribe()]] instead.
      */
     public function actionVerifyEmail()
     {
-        Craft::$app->getDeprecator()->log('TrackerController::actionVerifyEmail()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
+        Craft::$app->getDeprecator()->log('TrackerController::actionVerifyEmail()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/verify-subscribe” instead.');
 
-        return Craft::$app->runAction('campaign/forms/verify-email');
+        return Craft::$app->runAction('campaign/forms/verify-subscribe');
     }
 
     // Private Methods
