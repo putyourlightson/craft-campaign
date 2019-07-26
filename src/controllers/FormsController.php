@@ -44,21 +44,6 @@ class FormsController extends BaseMessageController
     // =========================================================================
 
     /**
-     * @inheritDoc
-     */
-    public function beforeAction($action)
-    {
-        $request = Craft::$app->getRequest();
-
-        // Validate reCAPTCHA if enabled
-        if (Campaign::$plugin->getSettings()->reCaptcha) {
-            RecaptchaHelper::validateRecaptcha($request->getParam('g-recaptcha-response'), $request->getUserIP());
-        }
-
-        return parent::beforeAction($action);
-    }
-
-    /**
      * Subscribes the provided email to a mailing list
      *
      * @return Response|null
@@ -71,6 +56,7 @@ class FormsController extends BaseMessageController
     public function actionSubscribe()
     {
         $this->requirePostRequest();
+        $this->_validateRecaptcha();
 
         $request = Craft::$app->getRequest();
 
@@ -178,6 +164,7 @@ class FormsController extends BaseMessageController
     public function actionUnsubscribe()
     {
         $this->requirePostRequest();
+        $this->_validateRecaptcha();
 
         $request = Craft::$app->getRequest();
 
@@ -224,6 +211,7 @@ class FormsController extends BaseMessageController
     public function actionUpdateContact()
     {
         $this->requirePostRequest();
+        $this->_validateRecaptcha();
 
         $request = Craft::$app->getRequest();
 
@@ -376,6 +364,21 @@ class FormsController extends BaseMessageController
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Validates reCAPTCHA if enabled
+     *
+     * @return ContactElement|null
+     */
+    private function _validateRecaptcha()
+    {
+        $request = Craft::$app->getRequest();
+
+        // Validate reCAPTCHA if enabled
+        if (Campaign::$plugin->getSettings()->reCaptcha) {
+            RecaptchaHelper::validateRecaptcha($request->getParam('g-recaptcha-response'), $request->getUserIP());
+        }
+    }
 
     /**
      * Gets contact by CID, verified by UID
