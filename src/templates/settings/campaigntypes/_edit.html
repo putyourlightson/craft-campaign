@@ -59,6 +59,8 @@
         <input type="hidden" name="siteId" value="{{ currentSite.id }}" />
     {% endif %}
 
+    <hr>
+
     {{ forms.textField({
         label: "Campaign URI Format"|t('campaign'),
         instructions: "What the campaign URIs should look like. You can include tags that output campaign properties, such as `{slug}`."|t('campaign'),
@@ -100,18 +102,18 @@
         required: true
     }) }}
 
-    {% set infoText = 'Available template tags: {tags}.' %}
+    {% set infoText = 'Available template tags: {tags}.<br><br>Google Analytics example:<br>`{example}`' %}
     {% set tags = '`campaign`, `sendout`' %}
-    {% set placeholder = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ sendout.subject }}
+    {% set example = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ sendout.subject }}
 ' %}
 
     {{ forms.textField({
         label: "Query String Parameters"|t('campaign'),
-        instructions: "The query string parameters to append to links that are clicked in the campaign, useful for analytics."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: tags}),
+        instructions: "The query string parameters to append to links that are clicked in the campaign, useful for analytics."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: tags, example: example}),
         id: 'queryStringParameters',
         name: 'queryStringParameters',
         class: 'code',
-        placeholder: placeholder,
+        placeholder: 'source=campaign-plugin&medium=email&campaign={{ sendout.subject }}',
         value: campaignType.queryStringParameters,
         errors: campaignType.getErrors('queryStringParameters'),
         autocomplete: true
