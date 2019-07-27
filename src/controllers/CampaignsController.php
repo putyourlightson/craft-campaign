@@ -250,7 +250,6 @@ class CampaignsController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
-     * @throws Throwable
      * @throws Exception
      */
     public function actionSaveCampaign()
@@ -333,7 +332,6 @@ class CampaignsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws NotFoundHttpException
-     * @throws Throwable
      */
     public function actionCloseCampaign()
     {
@@ -386,7 +384,6 @@ class CampaignsController extends Controller
      * @return Response|null
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
-     * @throws Throwable
      */
     public function actionDeleteCampaign()
     {

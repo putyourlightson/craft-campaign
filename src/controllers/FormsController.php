@@ -279,7 +279,7 @@ class FormsController extends BaseMessageController
         }
 
         // Verify pending contact
-        $pendingContact = Campaign::$plugin->contacts->verifyPendingContact($pid);
+        $pendingContact = Campaign::$plugin->forms->verifyPendingContact($pid);
 
         if ($pendingContact === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
