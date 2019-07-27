@@ -1,15 +1,25 @@
 <?php
+/**
+ * @link      https://craftcampaign.com
+ * @copyright Copyright (c) PutYourLightsOn
+ */
 
 namespace putyourlightson\campaign\tests\unit;
 
 use Codeception\Test\Unit;
-
 use Craft;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\MailingListTypeRecord;
-use UnitTester;
+
+/**
+ * FormsTest
+ *
+ * @author    PutYourLightsOn
+ * @package   Campaign
+ * @since     2.0.0
+ */
 
 class FormsTest extends Unit
 {
