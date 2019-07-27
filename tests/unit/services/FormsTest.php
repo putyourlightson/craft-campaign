@@ -11,6 +11,7 @@ use Craft;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
 /**
@@ -67,6 +68,15 @@ class FormsTest extends Unit
 
     // Public methods
     // =========================================================================
+
+    public function testSendVerifySubscribeEmail()
+    {
+        $pendingContact = new PendingContactModel([
+            'email' => 'test@test.com',
+        ]);
+
+        Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $this->mailingList);
+    }
 
     public function testSubscribeContact()
     {

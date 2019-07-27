@@ -104,8 +104,9 @@
 
     {% set infoText = 'Available template tags: {tags}.<br><br>Google Analytics example:<br>`{example}`' %}
     {% set tags = '`campaign`, `sendout`' %}
-    {% set example = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ sendout.subject }}
+    {% set example = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ campaign.title }}
 ' %}
+    {% set placeholder = 'source=campaign-plugin&medium=email&campaign={{ campaign.title }}' %}
 
     {{ forms.textField({
         label: "Query String Parameters"|t('campaign'),
@@ -113,7 +114,7 @@
         id: 'queryStringParameters',
         name: 'queryStringParameters',
         class: 'code',
-        placeholder: 'source=campaign-plugin&medium=email&campaign={{ sendout.subject }}',
+        placeholder: placeholder,
         value: campaignType.queryStringParameters,
         errors: campaignType.getErrors('queryStringParameters'),
         autocomplete: true
