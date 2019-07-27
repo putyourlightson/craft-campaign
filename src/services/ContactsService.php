@@ -6,24 +6,15 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\helpers\ConfigHelper;
-use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\PendingContactModel;
-use putyourlightson\campaign\records\PendingContactRecord;
 
 use Craft;
 use craft\base\Component;
 use craft\errors\MissingComponentException;
-use craft\helpers\DateTimeHelper;
-use craft\helpers\Db;
-use Throwable;
 use yii\base\Exception;
-use yii\db\StaleObjectException;
-use yii\helpers\Json;
-
 
 /**
  * ContactsService
@@ -144,43 +135,14 @@ class ContactsService extends Component
      * @param PendingContactModel $pendingContact
      *
      * @return bool
-     * @throws StaleObjectException
-     * @throws Throwable
+     *
+     * @deprecated in 1.10.0. Use [[FormsService::savePendingContact()]] instead.
      */
     public function savePendingContact(PendingContactModel $pendingContact): bool
     {
-        $this->purgeExpiredPendingContacts();
+        Craft::$app->getDeprecator()->log('ContactsService::savePendingContact()', 'The “ContactsService::savePendingContact()” method has been deprecated. Use “FormsService::savePendingContact()” instead.');
 
-        $settings = Campaign::$plugin->getSettings();
-
-        $condition = [
-            'email' => $pendingContact->email,
-            'mailingListId' => $pendingContact->mailingListId,
-        ];
-
-        // Check if max pending contacts reached for this email
-        $numPendingContactRecords = PendingContactRecord::find()
-            ->where($condition)
-            ->count();
-
-        if ($numPendingContactRecords >= $settings->maxPendingContacts) {
-            // Delete oldest pending contacts
-            $pendingContactRecords = PendingContactRecord::find()
-                ->where($condition)
-                ->orderBy(['dateCreated' => SORT_ASC])
-                ->limit($numPendingContactRecords - $settings->maxPendingContacts + 1)
-                ->all();
-
-            foreach ($pendingContactRecords as $pendingContactRecord) {
-                $pendingContactRecord->delete();
-            }
-        }
-
-        $pendingContactRecord = new PendingContactRecord();
-
-        $pendingContactRecord->setAttributes($pendingContact->getAttributes(), false);
-
-        return $pendingContactRecord->save();
+        return Campaign::$plugin->forms->savePendingContact($pendingContact);
     }
 
     /**
@@ -192,13 +154,14 @@ class ContactsService extends Component
      * @return bool
      * @throws Exception
      * @throws MissingComponentException
-     * @deprecated in 1.10.0. Use [[FormsService::sendSubscribeEmail()]] instead.
+     *
+     * @deprecated in 1.10.0. Use [[FormsService::sendVerifySubscribeEmail()]] instead.
      */
     public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
-        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendSubscribeEmail()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendVerifySubscribeEmail()” instead.');
 
-        return Campaign::$plugin->forms->sendSubscribeEmail($pendingContact, $mailingList);
+        return Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
     }
 
     /**
@@ -207,87 +170,25 @@ class ContactsService extends Component
      * @param string $pid
      *
      * @return PendingContactModel|null
-     * @throws StaleObjectException
-     * @throws Throwable
+     *
+     * @deprecated in 1.10.0. Use [[FormsService::verifyPendingContact()]] instead.
      */
     public function verifyPendingContact(string $pid)
     {
-        // Get pending contact
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pid])
-            ->one();
+        Craft::$app->getDeprecator()->log('ContactsService::verifyPendingContact()', 'The “ContactsService::verifyPendingContact()” method has been deprecated. Use “FormsService::verifyPendingContact()” instead.');
 
-        if ($pendingContactRecord === null) {
-            return null;
-        }
-
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
-
-        // Get contact if it exists
-        $contact = $this->getContactByEmail($pendingContact->email);
-
-        if ($contact === null) {
-            // Get trashed contact
-            $contact = $this->getContactByEmail($pendingContact->email, true);
-
-            // If no contact found or trashed contact could not be restored
-            if ($contact === null || !Craft::$app->getElements()->restoreElement($contact)) {
-                $contact = new ContactElement();
-            }
-        }
-
-        $contact->verified = new DateTime();
-
-        $contact->email = $pendingContact->email;
-
-        // Set field values
-        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
-        $contact->setFieldValues(Json::decode($pendingContact->fieldData));
-
-        if (!Craft::$app->getElements()->saveElement($contact)) {
-            return null;
-        };
-
-        // Delete pending contact
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pendingContact->pid])
-            ->one();
-
-        if ($pendingContactRecord !== null) {
-            $pendingContactRecord->delete();
-        }
-
-        return $pendingContact;
+        return Campaign::$plugin->forms->verifyPendingContact($pid);
     }
 
     /**
      * Deletes expired pending contacts
      *
-     * @throws Throwable
+     * @deprecated in 1.10.0. Use [[FormsService::purgeExpiredPendingContacts()]] instead.
      */
     public function purgeExpiredPendingContacts()
     {
-        $settings = Campaign::$plugin->getSettings();
+        Craft::$app->getDeprecator()->log('ContactsService::purgeExpiredPendingContacts()', 'The “ContactsService::purgeExpiredPendingContacts()” method has been deprecated. Use “FormsService::purgeExpiredPendingContacts()” instead.');
 
-        if ($settings->purgePendingContactsDuration === 0) {
-            return;
-        }
-
-        $purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
-        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
-        $expire = DateTimeHelper::currentUTCDateTime();
-        $pastTime = $expire->sub($interval);
-
-        $pendingContactRecords = PendingContactRecord::find()
-            ->where(['<', 'dateUpdated', Db::prepareDateForDb($pastTime)])
-            ->all();
-
-        foreach ($pendingContactRecords as $pendingContactRecord) {
-            $pendingContactRecord->delete();
-
-            /** @var PendingContactRecord $pendingContactRecord */
-            Campaign::$plugin->log('Deleted pending contact "{email}", because they took too long to verify their email.', ['email' => $pendingContactRecord->email]);
-        }
+        return Campaign::$plugin->forms->purgeExpiredPendingContacts();
     }
 }

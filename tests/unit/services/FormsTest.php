@@ -75,7 +75,7 @@ class FormsTest extends Unit
             'email' => 'test@test.com',
         ]);
 
-        Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $this->mailingList);
+        $this->assertTrue(Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $this->mailingList));
     }
 
     public function testSubscribeContact()

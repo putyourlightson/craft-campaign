@@ -87,7 +87,7 @@ class FormsController extends BaseMessageController
             $pendingContact->fieldData = $contact->getSerializedFieldValues();
 
             // Save pending contact
-            if (!Campaign::$plugin->contacts->savePendingContact($pendingContact)) {
+            if (!Campaign::$plugin->forms->savePendingContact($pendingContact)) {
                 if ($request->getAcceptsJson()) {
                     return $this->asJson([
                         'errors' => $pendingContact->getErrors(),
@@ -368,7 +368,7 @@ class FormsController extends BaseMessageController
     /**
      * Validates reCAPTCHA if enabled
      *
-     * @return ContactElement|null
+     * @throws ForbiddenHttpException
      */
     private function _validateRecaptcha()
     {
