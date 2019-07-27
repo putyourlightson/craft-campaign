@@ -28,4 +28,10 @@ To install the plugin, search for "Campaign" in the Craft Plugin Store, or insta
 
         composer require putyourlightson/craft-campaign
 
+## Testing
+
+To test the plugin, install Codeception and run the following command.
+
+    codecept run -c ./vendor/putyourlightson/craft-campaign
+
 <small>Created by [PutYourLightsOn](https://putyourlightson.com/).</small>

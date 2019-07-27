@@ -44,5 +44,9 @@
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
         "class": "putyourlightson\\campaign\\Campaign"
+    },
+    "require-dev": {
+        "codeception/codeception": "^3.0",
+        "vlucas/phpdotenv": "^3.3"
     }
 }
