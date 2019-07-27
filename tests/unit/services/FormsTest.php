@@ -116,6 +116,7 @@ class FormsTest extends Unit
 
     public function testSendVerifySubscribeEmail()
     {
+        // TODO: mock Campaign mailer component and assert email subject and body
         $success = Campaign::$plugin->forms->sendVerifySubscribeEmail($this->pendingContact, $this->mailingList);
 
         // Assert that the verification email was sent
@@ -124,6 +125,7 @@ class FormsTest extends Unit
 
     public function testSendVerifyUnsubscribeEmail()
     {
+        // TODO: mock Campaign mailer component and assert email subject and body
         $success = Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($this->contact, $this->mailingList);
 
         // Assert that the verification email was sent
