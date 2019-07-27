@@ -11,21 +11,29 @@ use Craft;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
+use putyourlightson\campaign\records\PendingContactRecord;
+use UnitTester;
 
 /**
  * FormsTest
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     2.0.0
+ * @since     1.10.0
  */
 
 class FormsTest extends Unit
 {
     // Properties
     // =========================================================================
+
+    /**
+     * @var UnitTester
+     */
+    protected $tester;
 
     /**
      * @var ContactElement
@@ -36,6 +44,11 @@ class FormsTest extends Unit
      * @var MailingListElement
      */
     protected $mailingList;
+
+    /**
+     * @var PendingContactModel
+     */
+    protected $pendingContact;
 
     // Protected methods
     // =========================================================================
@@ -49,33 +62,72 @@ class FormsTest extends Unit
         ]);
         Craft::$app->getElements()->saveElement($this->contact);
 
-        $mailingListType = new MailingListTypeRecord([
+        $mailingListTypeRecord = new MailingListTypeRecord([
             'name' => 'Test',
             'handle' => 'test',
             'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
         ]);
-        $mailingListType->save();
+        $mailingListTypeRecord->save();
 
         $this->mailingList = new MailingListElement([
-            'mailingListTypeId' => $mailingListType->id,
+            'mailingListTypeId' => $mailingListTypeRecord->id,
             'title' => 'Test',
         ]);
         Craft::$app->getElements()->saveElement($this->mailingList);
 
         // Subscribe contact to mailing list
         Campaign::$plugin->forms->subscribeContact($this->contact, $this->mailingList);
+
+        $this->pendingContact = new PendingContactModel([
+            'email' => 'pending@test.com',
+            'mailingListId' => $this->mailingList->id,
+            'pid' => StringHelper::uniqueId('p'),
+            'fieldData' => [],
+        ]);
     }
 
     // Public methods
     // =========================================================================
 
+    public function testSavePendingContact()
+    {
+        $success = Campaign::$plugin->forms->savePendingContact($this->pendingContact, $this->mailingList);
+
+        // Assert that the pending contact was saved
+        $this->assertTrue($success);
+    }
+
+    public function testVerifyPendingContact()
+    {
+        Campaign::$plugin->forms->savePendingContact($this->pendingContact, $this->mailingList);
+
+        Campaign::$plugin->forms->verifyPendingContact($this->pendingContact->pid);
+
+        // Assert that the contact was created
+        $this->assertNotNull(Campaign::$plugin->contacts->getContactByEmail($this->pendingContact->email));
+
+        $pendingContactRecord = PendingContactRecord::find()
+            ->where(['pid' => $this->pendingContact->pid])
+            ->one();
+
+        // Assert that the pending contact was deleted
+        $this->assertNull($pendingContactRecord);
+    }
+
     public function testSendVerifySubscribeEmail()
     {
-        $pendingContact = new PendingContactModel([
-            'email' => 'test@test.com',
-        ]);
+        $success = Campaign::$plugin->forms->sendVerifySubscribeEmail($this->pendingContact, $this->mailingList);
 
-        $this->assertTrue(Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $this->mailingList));
+        // Assert that the verification email was sent
+        $this->assertTrue($success);
+    }
+
+    public function testSendVerifyUnsubscribeEmail()
+    {
+        $success = Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($this->contact, $this->mailingList);
+
+        // Assert that the verification email was sent
+        $this->assertTrue($success);
     }
 
     public function testSubscribeContact()
