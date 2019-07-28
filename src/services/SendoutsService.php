@@ -477,7 +477,9 @@ class SendoutsService extends Component
             return;
         }
 
-        if ($sendout->sendStatus != SendoutElement::STATUS_SENT && $sendout->sendStatus != SendoutElement::STATUS_FAILED) {
+        if ($sendout->sendStatus != SendoutElement::STATUS_SENT &&
+            $sendout->sendStatus != SendoutElement::STATUS_FAILED
+        ) {
             return;
         }
 
