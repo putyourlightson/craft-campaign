@@ -105,21 +105,19 @@ class PendingContactsServiceTest extends Unit
     {
         Campaign::$plugin->pendingContacts->savePendingContact($this->pendingContact);
 
-        // Create a 0.1 second interval
-        $interval = new DateInterval('PT0S');
-        $interval->f = 0.1;
-        Campaign::$plugin->getSettings()->purgePendingContactsDuration = $interval;
+        // Set duration to 1 second
+        Campaign::$plugin->getSettings()->purgePendingContactsDuration = 1;
 
-        // Sleep for 1 second
-        sleep(1);
+        // Sleep for 2 seconds
+        sleep(2);
 
         Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
 
-        $pendingContactRecord = PendingContactRecord::find()
+        $pendingContactCount = PendingContactRecord::find()
             ->where(['pid' => $this->pendingContact->pid])
-            ->one();
+            ->count();
 
         // Assert that the pending contact was deleted
-        $this->assertNull($pendingContactRecord);
+        $this->assertEquals(0, $pendingContactCount);
     }
 }

@@ -12,6 +12,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use UnitTester;
@@ -46,6 +47,11 @@ class FormsServiceTest extends Unit
     protected $mailingList;
 
     /**
+     * @var MailingListTypeModel
+     */
+    protected $mailingListType;
+
+    /**
      * @var PendingContactModel
      */
     protected $pendingContact;
@@ -67,11 +73,15 @@ class FormsServiceTest extends Unit
         ]);
         Craft::$app->getElements()->saveElement($this->contact);
 
-        $mailingListTypeRecord = new MailingListTypeRecord([
+        $this->mailingListType = new MailingListTypeModel([
             'name' => 'Test',
             'handle' => 'test',
             'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
+            'subscribeVerificationEmailSubject' => 'Subscribe Verification Email Subject',
+            'unsubscribeVerificationEmailSubject' => 'Unsubscribe Verification Email Subject',
         ]);
+        $mailingListTypeRecord = new MailingListTypeRecord();
+        $mailingListTypeRecord->setAttributes($this->mailingListType->getAttributes(), false);
         $mailingListTypeRecord->save();
 
         $this->mailingList = new MailingListElement([
@@ -112,8 +122,8 @@ class FormsServiceTest extends Unit
         // Assert that the message recipient is correct
         $this->assertArrayHasKey($this->pendingContact->email, $this->message->getTo());
 
-        // Assert that the message subject is as provided
-        $this->assertEquals('Verify your email address', $this->message->getSubject());
+        // Assert that the message subject is correct
+        $this->assertEquals($this->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
         $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
@@ -126,8 +136,8 @@ class FormsServiceTest extends Unit
         // Assert that the message recipient is correct
         $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
-        // Assert that the message subject is as provided
-        $this->assertEquals('Verify unsubscribe', $this->message->getSubject());
+        // Assert that the message subject is correct
+        $this->assertEquals($this->mailingListType->unsubscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
         $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->getSwiftMessage()->toString());
