@@ -4,21 +4,18 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit;
+namespace putyourlightson\campaign\tests\unit\services;
 
 use Codeception\Test\Unit;
 use Craft;
 use DateInterval;
-use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use putyourlightson\campaign\records\PendingContactRecord;
 use UnitTester;
-use yii\swiftmailer\Message;
 
 /**
  * PendingContactsServiceTest

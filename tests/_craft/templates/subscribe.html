@@ -1,0 +1,30 @@
+<h1>Subscribe to our Mailing List</h1>
+
+{% macro errorList(errors) %}
+    {% if errors %}
+        <ul class="errors">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% from _self import errorList %}
+
+    <form method="post" action="" accept-charset="UTF-8">
+        {{ csrfInput() }}
+        <input type="hidden" name="action" value="campaign/t/subscribe">
+        <input type="hidden" name="mailingList" value="ml1">
+        <input type="hidden" name="redirect" value="{{ 'newsletter/thanks'|hash }}">
+
+        <h3><label for="name">Your Name</label></h3>
+        <input id="firstName" type="text" name="fields[firstName]" value="{{ contact.firstName ?? '' }}">
+        {{ contact is defined and contact ? errorList(contact.getErrors('firstName')) }}
+
+        <h3><label for="email">Your Email</label></h3>
+        <input id="email" type="email" name="email" value="{{ contact.email ?? '' }}">
+        {{ contact is defined and contact ? errorList(contact.getErrors('email')) }}
+
+        <input type="submit" value="Submit">
+    </form>

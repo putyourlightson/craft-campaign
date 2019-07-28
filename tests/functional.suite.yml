@@ -8,7 +8,6 @@
 actor: FunctionalTester
 modules:
     enabled:
-        # add a framework module here
         - \craft\test\Craft
         - \Helper\Functional
     step_decorators: ~
