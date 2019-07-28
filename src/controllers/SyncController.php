@@ -77,7 +77,7 @@ class SyncController extends Controller
         $request = Craft::$app->getRequest();
 
         $mailingListId = $request->getRequiredBodyParam('mailingListId');
-        $mailingListId = (is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : null;
+        $mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : null;
 
         if ($mailingListId === null) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t sync mailing list.'));

@@ -216,7 +216,7 @@ class SegmentsController extends Controller
             $return['id'] = $segment->id;
             $return['title'] = $segment->title;
 
-            if (!$request->getIsConsoleRequest() AND $request->getIsCpRequest()) {
+            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
                 $return['cpEditUrl'] = $segment->getCpEditUrl();
             }
 

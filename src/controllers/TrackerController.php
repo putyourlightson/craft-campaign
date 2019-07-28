@@ -54,7 +54,7 @@ class TrackerController extends BaseMessageController
         $contact = $this->_getContact();
         $sendout = $this->_getSendout();
 
-        if ($contact AND $sendout) {
+        if ($contact && $sendout) {
             // Track open
             Campaign::$plugin->tracker->open($contact, $sendout);
         }
@@ -87,7 +87,7 @@ class TrackerController extends BaseMessageController
 
         $url = $linkRecord->url;
 
-        if ($contact AND $sendout) {
+        if ($contact && $sendout) {
             // Track click
             Campaign::$plugin->tracker->click($contact, $sendout, $linkRecord);
 
@@ -127,7 +127,7 @@ class TrackerController extends BaseMessageController
 
         $mailingList = null;
 
-        if ($contact AND $sendout) {
+        if ($contact && $sendout) {
             // Track unsubscribe
             $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
         }

@@ -235,7 +235,7 @@ class ContactsController extends Controller
             $return['id'] = $contact->id;
             $return['email'] = $contact->email;
 
-            if (!$request->getIsConsoleRequest() AND $request->getIsCpRequest()) {
+            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
                 $return['cpEditUrl'] = $contact->getCpEditUrl();
             }
 

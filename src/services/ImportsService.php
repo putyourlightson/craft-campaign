@@ -181,7 +181,7 @@ class ImportsService extends Component
             $offset++;
 
             while ($row = fgetcsv($handle)) {
-                if ($length !== null AND $count >= $length) {
+                if ($length !== null && $count >= $length) {
                     break;
                 }
 
@@ -293,7 +293,7 @@ class ImportsService extends Component
             $values = [];
 
             foreach ($import->fieldIndexes as $field => $index) {
-                if ($index !== '' AND isset($row[$index])) {
+                if ($index !== '' && isset($row[$index])) {
                     $values[$field] = $row[$index];
                 }
             }

@@ -221,7 +221,7 @@ class SendoutsService extends Component
                 $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
 
                 // If subscribed date was before sendout was created or time plus delay has not yet passed
-                if ($subscribedDateTime < $sendout->dateCreated OR !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
+                if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
                     unset($recipients[$key]);
                 }
             }
@@ -255,7 +255,7 @@ class SendoutsService extends Component
             /** @var SendoutElement[] $sendouts */
             foreach ($sendouts as $sendout) {
                 // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
-                if ($sendout->sendoutType == 'regular' OR $sendout->sendoutType == 'scheduled' OR (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') AND Campaign::$plugin->getIsPro() AND $sendout->getCanSendNow())) {
+                if ($sendout->sendoutType == 'regular' || $sendout->sendoutType == 'scheduled' || (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow())) {
                     // Add sendout job to queue
                     Craft::$app->getQueue()->push(new SendoutJob([
                         'sendoutId' => $sendout->id,
@@ -335,7 +335,7 @@ class SendoutsService extends Component
         }
 
         // Return if contact has complained or bounced
-        if ($contact->complained !== null OR $contact->bounced !== null) {
+        if ($contact->complained !== null || $contact->bounced !== null) {
             return;
         }
 
@@ -361,14 +361,14 @@ class SendoutsService extends Component
         }
         else if ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
-            if (!($sendout->sendoutType == 'recurring' AND $sendout->schedule->canSendToContactsMultipleTimes)) {
+            if (!($sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes)) {
                 return;
             }
 
             $now = new DateTime();
 
             // Ensure not already sent today
-            if ($contactCampaignRecord->sent !== null AND $contactCampaignRecord->sent > $now->format('Y-m-d')) {
+            if ($contactCampaignRecord->sent !== null && $contactCampaignRecord->sent > $now->format('Y-m-d')) {
                 return;
             }
         }
@@ -448,7 +448,7 @@ class SendoutsService extends Component
         else {
             // Update fails and send status
             $sendout->fails++;
-            $sendout->sendStatus = 'failed';
+            $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
             $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
 
@@ -477,7 +477,7 @@ class SendoutsService extends Component
             return;
         }
 
-        if ($sendout->sendStatus != 'sent' AND $sendout->sendStatus != 'failed') {
+        if ($sendout->sendStatus != SendoutElement::STATUS_SENT && $sendout->sendStatus != SendoutElement::STATUS_FAILED) {
             return;
         }
 
@@ -488,7 +488,7 @@ class SendoutsService extends Component
             'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts,
         ];
 
-        if ($sendout->sendStatus == 'sent') {
+        if ($sendout->sendStatus == SendoutElement::STATUS_SENT) {
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
@@ -550,8 +550,9 @@ class SendoutsService extends Component
         }
 
         // Update send status to pending if automated or recurring and not fully complete
-        if (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring')
-            AND count($this->getPendingRecipients($sendout)) > 0) {
+        if (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') &&
+            count($this->getPendingRecipients($sendout)) > 0
+        ) {
             $sendout->sendStatus = SendoutElement::STATUS_PENDING;
         }
 

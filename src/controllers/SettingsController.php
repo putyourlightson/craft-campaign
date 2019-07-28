@@ -272,7 +272,7 @@ class SettingsController extends Controller
         $settings->validate();
         $adapter->validate();
 
-        if ($settings->hasErrors() OR $adapter->hasErrors()) {
+        if ($settings->hasErrors() || $adapter->hasErrors()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save email settings.'));
 
             // Send the settings back to the template
@@ -453,7 +453,7 @@ class SettingsController extends Controller
         $settings->validate();
         $adapter->validate();
 
-        if ($settings->hasErrors() OR $adapter->hasErrors()) {
+        if ($settings->hasErrors() || $adapter->hasErrors()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t send test email.'));
         }
         else {

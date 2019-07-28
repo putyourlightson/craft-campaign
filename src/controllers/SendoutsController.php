@@ -62,7 +62,7 @@ class SendoutsController extends Controller
         $request = Craft::$app->getRequest();
 
         // Require permission if posted from utility
-        if ($request->getIsPost() AND $request->getParam('utility')) {
+        if ($request->getIsPost() && $request->getParam('utility')) {
             $this->requirePermission('campaign:utility');
         }
         else {
@@ -70,7 +70,7 @@ class SendoutsController extends Controller
             $key = $request->getParam('key');
             $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
-            if ($key === null OR empty($apiKey) OR $key != $apiKey) {
+            if ($key === null || empty($apiKey) || $key != $apiKey) {
                 throw new ForbiddenHttpException('Unauthorised access.');
             }
         }
@@ -292,7 +292,7 @@ class SendoutsController extends Controller
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
         ];
 
-        if ($sendoutType == 'automated' OR $sendoutType == 'recurring') {
+        if ($sendoutType == 'automated' || $sendoutType == 'recurring') {
             // Get the interval options
             $variables['intervalOptions'] = $sendout->schedule->getIntervalOptions();
         }
@@ -302,7 +302,7 @@ class SendoutsController extends Controller
         $variables['fullPageForm'] = true;
 
         // Render the template
-        if ($sendout->getIsEditable() AND !$request->getParam('preview')) {
+        if ($sendout->getIsEditable() && !$request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
 
@@ -362,7 +362,7 @@ class SendoutsController extends Controller
 
         // Get the selected campaign ID
         $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);
-        $sendout->campaignId = (is_array($sendout->campaignId) AND isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
+        $sendout->campaignId = (is_array($sendout->campaignId) && isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
         $sendout->mailingListIds = $request->getBodyParam('mailingListIds', $sendout->mailingListIds);
@@ -378,7 +378,7 @@ class SendoutsController extends Controller
         $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
         $sendout->sendDate = $sendout->sendDate ?: new DateTime();
 
-        if ($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring') {
+        if ($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') {
             $schedule = $request->getBodyParam('schedule');
 
             if ($sendout->sendoutType == 'automated') {
@@ -397,7 +397,7 @@ class SendoutsController extends Controller
             $sendout->validate();
 
             // If errors then send the sendout back to the template
-            if ($sendout->schedule->hasErrors() OR $sendout->hasErrors()) {
+            if ($sendout->schedule->hasErrors() || $sendout->hasErrors()) {
                 Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
 
                 Craft::$app->getUrlManager()->setRouteParams([
@@ -450,7 +450,7 @@ class SendoutsController extends Controller
         $sendout->senderId = Craft::$app->getUser()->getId();
 
         // Set status to pending
-        $sendout->sendStatus = 'pending';
+        $sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($sendout)) {

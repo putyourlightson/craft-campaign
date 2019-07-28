@@ -78,7 +78,7 @@ class ContactActivityHelper
         $device = self::$_deviceDetector->getDeviceName();
 
         // If device exists and not a bot
-        if ($device AND !self::$_deviceDetector->isBot()) {
+        if ($device && !self::$_deviceDetector->isBot()) {
             $contact->device = $device;
 
             $os = self::$_deviceDetector->getOs('name');

@@ -62,7 +62,7 @@ class WebhookController extends Controller
         $key = Craft::$app->getRequest()->getParam('key');
         $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
-        if ($key === null OR empty($apiKey) OR $key != $apiKey) {
+        if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
     }
@@ -117,7 +117,7 @@ class WebhookController extends Controller
                 $email = $message['complaint']['complainedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('complained', $email);
             }
-            if ($eventType == 'Bounce' AND $message['bounce']['bounceType'] == 'Permanent') {
+            if ($eventType == 'Bounce' && $message['bounce']['bounceType'] == 'Permanent') {
                 $email = $message['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('bounced', $email);
             }

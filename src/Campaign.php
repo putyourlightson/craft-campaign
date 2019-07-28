@@ -227,7 +227,7 @@ class Campaign extends Plugin
         if ($currentUser->can('campaign:mailingLists')) {
             $cpNavItem['subnav']['mailinglists'] = ['label' => Craft::t('campaign', 'Mailing Lists'), 'url' => 'campaign/mailinglists'];
         }
-        if ($currentUser->can('campaign:segments') AND $this->getIsPro()) {
+        if ($currentUser->can('campaign:segments') && $this->getIsPro()) {
             $cpNavItem['subnav']['segments'] = ['label' => Craft::t('campaign', 'Segments'), 'url' => 'campaign/segments'];
         }
         if ($currentUser->can('campaign:sendouts')) {

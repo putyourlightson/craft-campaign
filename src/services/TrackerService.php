@@ -158,7 +158,7 @@ class TrackerService extends Component
         ContactActivityHelper::updateContactActivity($contact);
 
         // Fire an after event
-        if ($mailingList !== null AND $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
+        if ($mailingList !== null && $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
                 'contact' => $contact,
                 'mailingList' => $mailingList,

@@ -158,7 +158,7 @@ class MailingListsService extends Component
             $contactMailingListRecord->sourceType = $contactMailingListRecord->sourceType ?? $sourceType;
             $contactMailingListRecord->source = $contactMailingListRecord->source ?? $source;
 
-            if ($verify AND $contactMailingListRecord->verified === null) {
+            if ($verify && $contactMailingListRecord->verified === null) {
                 $contactMailingListRecord->verified = new DateTime();
             }
         }

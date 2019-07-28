@@ -140,7 +140,7 @@ class CampaignTypesService extends Component
             ]));
         }
 
-        if ($runValidation AND !$campaignType->validate()) {
+        if ($runValidation && !$campaignType->validate()) {
             Campaign::$plugin->log('Campaign type not saved due to validation error.');
 
             return false;

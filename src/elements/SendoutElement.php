@@ -286,7 +286,7 @@ class SendoutElement extends Element
         if ($source == '*') {
             $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
         }
-        else if ($source == 'regular' OR $source == 'scheduled') {
+        else if ($source == 'regular' || $source == 'scheduled') {
             $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
         }
         else {
@@ -330,7 +330,7 @@ class SendoutElement extends Element
     /**
      * @var string Send status
      */
-    public $sendStatus = 'draft';
+    public $sendStatus = self::STATUS_DRAFT;
 
     /**
      * @var string Send from name
@@ -583,7 +583,7 @@ class SendoutElement extends Element
      */
     public function getProgress(): string
     {
-        if ($this->sendStatus == self::STATUS_DRAFT OR $this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
+        if ($this->sendStatus == self::STATUS_DRAFT || $this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
             return '';
         }
 
@@ -779,7 +779,7 @@ class SendoutElement extends Element
      */
     public function getHtmlBody()
     {
-        if ($this->sendStatus == 'sent') {
+        if ($this->sendStatus == self::STATUS_SENT) {
             return $this->htmlBody;
         }
 
@@ -801,7 +801,7 @@ class SendoutElement extends Element
      */
     public function getPlaintextBody()
     {
-        if ($this->sendStatus == 'sent') {
+        if ($this->sendStatus == self::STATUS_SENT) {
             return $this->plaintextBody;
         }
 
@@ -827,7 +827,7 @@ class SendoutElement extends Element
      */
     public function getIsEditable(): bool
     {
-        return ($this->getStatus() == self::STATUS_DRAFT OR $this->getStatus() == self::STATUS_PAUSED);
+        return ($this->getStatus() == self::STATUS_DRAFT || $this->getStatus() == self::STATUS_PAUSED);
     }
 
     /**
@@ -835,7 +835,7 @@ class SendoutElement extends Element
      */
     public function getCanSendNow(): bool
     {
-        if ($this->sendoutType == 'automated' OR $this->sendoutType == 'recurring') {
+        if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
             return $this->schedule->canSendNow($this);
         }
 
@@ -849,7 +849,7 @@ class SendoutElement extends Element
      */
     public function getIsSendable(): bool
     {
-        return ($this->getStatus() == self::STATUS_SENDING OR $this->getStatus() == self::STATUS_QUEUED);
+        return ($this->getStatus() == self::STATUS_SENDING || $this->getStatus() == self::STATUS_QUEUED);
     }
 
     /**
@@ -859,7 +859,7 @@ class SendoutElement extends Element
      */
     public function getIsPausable(): bool
     {
-        return ($this->getStatus() == self::STATUS_SENDING OR $this->getStatus() == self::STATUS_QUEUED OR $this->getStatus() == self::STATUS_PENDING OR $this->getStatus() == self::STATUS_FAILED);
+        return ($this->getStatus() == self::STATUS_SENDING || $this->getStatus() == self::STATUS_QUEUED || $this->getStatus() == self::STATUS_PENDING || $this->getStatus() == self::STATUS_FAILED);
     }
 
     /**
@@ -869,7 +869,7 @@ class SendoutElement extends Element
      */
     public function getIsResumable(): bool
     {
-        return ($this->getStatus() == self::STATUS_PAUSED OR $this->getStatus() == self::STATUS_FAILED);
+        return ($this->getStatus() == self::STATUS_PAUSED || $this->getStatus() == self::STATUS_FAILED);
     }
 
     /**
@@ -879,7 +879,7 @@ class SendoutElement extends Element
      */
     public function getIsCancellable(): bool
     {
-        return ($this->getStatus() != self::STATUS_DRAFT AND $this->getStatus() != self::STATUS_CANCELLED AND $this->getStatus() != self::STATUS_SENT);
+        return ($this->getStatus() != self::STATUS_DRAFT && $this->getStatus() != self::STATUS_CANCELLED && $this->getStatus() != self::STATUS_SENT);
     }
 
     /**
@@ -889,7 +889,7 @@ class SendoutElement extends Element
      */
     public function getIsDeletable(): bool
     {
-        return (!$this->getIsPausable() OR $this->getStatus() == self::STATUS_FAILED);
+        return (!$this->getIsPausable() || $this->getStatus() == self::STATUS_FAILED);
     }
 
     /**

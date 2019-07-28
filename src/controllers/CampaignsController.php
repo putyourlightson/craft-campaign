@@ -310,7 +310,7 @@ class CampaignsController extends Controller
             $return['id'] = $campaign->id;
             $return['title'] = $campaign->title;
 
-            if (!$request->getIsConsoleRequest() AND $request->getIsCpRequest()) {
+            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
                 $return['cpEditUrl'] = $campaign->getCpEditUrl();
             }
 

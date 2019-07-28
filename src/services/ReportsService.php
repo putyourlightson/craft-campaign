@@ -621,7 +621,7 @@ class ReportsService extends Component
                     // If interaction datetime is before the specified end time
                     if ($interactionDateTime < $endDateTime) {
                         // Update last interaction if null or if interaction dateTime is greater than it
-                        if ($lastInteraction === null OR $interactionDateTime > $lastInteraction) {
+                        if ($lastInteraction === null || $interactionDateTime > $lastInteraction) {
                             $lastInteraction = $interactionDateTime;
                         }
 
@@ -662,7 +662,7 @@ class ReportsService extends Component
 
         foreach ($models as $model) {
             /** @var ContactCampaignModel|ContactMailingListModel $model */
-            $interactionTypes = ($interaction !== null AND in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
+            $interactionTypes = ($interaction !== null && in_array($interaction, $model::INTERACTIONS, true)) ? [$interaction] : $model::INTERACTIONS;
 
             foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->{$interactionType} !== null) {
@@ -687,7 +687,7 @@ class ReportsService extends Component
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/'.$model->source);
                                 break;
                             case 'user':
-                                $path = (Craft::$app->getEdition() === Craft::Pro AND $model->source) ? 'users/'.$model->source : 'myaccount';
+                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/'.$model->source : 'myaccount';
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
                                 break;
                             default:

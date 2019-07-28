@@ -81,7 +81,7 @@ class SyncService extends Component
         if ($event instanceof UserEvent) {
             $this->syncUser($event->user);
         }
-        else if ($event instanceof ElementEvent AND $event->element instanceof User) {
+        else if ($event instanceof ElementEvent && $event->element instanceof User) {
             // If user was deleted
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
                 $this->deleteUser($event->element);
@@ -195,7 +195,7 @@ class SyncService extends Component
             ->one();
 
         // If user is active and contact mailing list record does not exist then create it and subscribe
-        if ($user->status == User::STATUS_ACTIVE AND $contactMailingListRecord === null) {
+        if ($user->status == User::STATUS_ACTIVE && $contactMailingListRecord === null) {
             $contactMailingListRecord = new ContactMailingListRecord();
             $contactMailingListRecord->contactId = $contact->id;
             $contactMailingListRecord->mailingListId = $mailingList->id;
@@ -209,7 +209,7 @@ class SyncService extends Component
         }
 
         // If user is not active and contact mailing list record exists then delete it
-        else if ($user->status != User::STATUS_ACTIVE AND $contactMailingListRecord !== null) {
+        else if ($user->status != User::STATUS_ACTIVE && $contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
     }

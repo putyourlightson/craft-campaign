@@ -106,7 +106,7 @@ class ImportsController extends Controller
 
         // Ensure file is a CSV file
         $mimeType = FileHelper::getMimeType($filePath);
-        if ($mimeType != 'text/plain' AND $mimeType != 'text/csv') {
+        if ($mimeType != 'text/plain' && $mimeType != 'text/csv') {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
 
             return null;
@@ -139,7 +139,7 @@ class ImportsController extends Controller
         $import->filePath = $request->getRequiredBodyParam('filePath');
 
         $mailingListId = $request->getBodyParam('mailingListId');
-        $import->mailingListId = (is_array($mailingListId) AND isset($mailingListId[0])) ? $mailingListId[0] : '';
+        $import->mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : '';
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
@@ -257,7 +257,7 @@ class ImportsController extends Controller
 
         $import = Campaign::$plugin->imports->getImportById($importId);
 
-        if ($import == null OR !file_exists($import->filePath)) {
+        if ($import == null || !file_exists($import->filePath)) {
             throw new BadRequestHttpException('Import not found.');
         }
 

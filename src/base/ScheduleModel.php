@@ -90,7 +90,7 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
         }
 
         // Ensure end date is not in the past
-        if ($this->endDate !== null AND DateTimeHelper::isInThePast($this->endDate)) {
+        if ($this->endDate !== null && DateTimeHelper::isInThePast($this->endDate)) {
             return false;
         }
 

@@ -203,7 +203,7 @@ class MailingListsController extends Controller
             $return['id'] = $mailingList->id;
             $return['title'] = $mailingList->title;
 
-            if (!$request->getIsConsoleRequest() AND $request->getIsCpRequest()) {
+            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
                 $return['cpEditUrl'] = $mailingList->getCpEditUrl();
             }
 

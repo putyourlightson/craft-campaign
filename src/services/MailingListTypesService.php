@@ -132,7 +132,7 @@ class MailingListTypesService extends Component
             ]));
         }
 
-        if ($runValidation AND !$mailingListType->validate()) {
+        if ($runValidation && !$mailingListType->validate()) {
             Campaign::$plugin->log('Mailing list type not saved due to validation error.');
 
             return false;
