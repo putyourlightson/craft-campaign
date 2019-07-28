@@ -13,6 +13,9 @@
 ### Changed
 - Adjusted positioning of campaign preview and share buttons for Craft 3.2.
 
+### Fixed
+- Fixed bug in which email notifications about failed sendouts were not being sent.
+
 ### Deprecated
 - Deprecated the `Subscribe Verification Success Template` field in mailing list type settings.
 - Deprecated `TrackerController::actionSubscribe()`.

@@ -449,7 +449,7 @@ class SendoutsService extends Component
 
             $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
 
-            Campaign::$plugin->log('Sending of the sendout "{title}" failed due to invalid Campaign email settings. Check the full error in the Craft log.', ['title' => $sendout->title]);
+            Campaign::$plugin->log('Sending of the sendout "{title}" failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', ['title' => $sendout->title, 'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts]);
         }
 
         // Fire an after event
@@ -482,6 +482,7 @@ class SendoutsService extends Component
             'title' => $sendout->title,
             'emailSettingsUrl' => UrlHelper::cpUrl('campaign/settings/email'),
             'sendoutUrl' => $sendout->cpEditUrl,
+            'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts,
         ];
 
         if ($sendout->sendStatus == 'sent') {
@@ -489,11 +490,10 @@ class SendoutsService extends Component
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
         }
-
         else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has failed. Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
-            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
+            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
         // Compose message
@@ -541,12 +541,15 @@ class SendoutsService extends Component
      */
     public function finaliseSending(SendoutElement $sendout)
     {
-        // Reset send status
-        $sendout->sendStatus = SendoutElement::STATUS_PENDING;
-
-        // Update send status if not automated or recurring and fully complete
-        if ($sendout->sendoutType != 'automated' AND $sendout->sendoutType != 'recurring' AND count($this->getPendingRecipients($sendout)) == 0) {
+        // Change sending status to sent
+        if ($sendout->sendStatus == SendoutElement::STATUS_SENDING) {
             $sendout->sendStatus = SendoutElement::STATUS_SENT;
+        }
+
+        // Update send status to pending if automated or recurring and not fully complete
+        if (($sendout->sendoutType == 'automated' OR $sendout->sendoutType == 'recurring')
+            AND count($this->getPendingRecipients($sendout)) > 0) {
+            $sendout->sendStatus = SendoutElement::STATUS_PENDING;
         }
 
         // Get campaign

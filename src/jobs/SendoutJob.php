@@ -147,7 +147,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             $sendoutSendStatus = Campaign::$plugin->sendouts->getSendoutSendStatusById($sendout->id);
 
             if ($sendoutSendStatus !== SendoutElement::STATUS_SENDING) {
-                return;
+                break;
             }
         }
 
