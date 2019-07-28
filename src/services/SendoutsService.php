@@ -30,7 +30,6 @@ use craft\errors\MissingComponentException;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
-use craft\mail\Message;
 use putyourlightson\campaign\records\SendoutRecord;
 use Throwable;
 use yii\base\Exception;
@@ -73,11 +72,6 @@ class SendoutsService extends Component
 
     // Properties
     // =========================================================================
-
-    /**
-     * @var Mailer
-     */
-    private $_mailer;
 
     /**
      * @var array
@@ -288,7 +282,6 @@ class SendoutsService extends Component
      *
      * @return bool Whether the test was sent successfully
      * @throws Exception
-     * @throws MissingComponentException
      * @throws InvalidConfigException
      */
     public function sendTest(SendoutElement $sendout, ContactElement $contact): bool
@@ -474,8 +467,6 @@ class SendoutsService extends Component
      * Sends a notification
      *
      * @param SendoutElement $sendout
-     *
-     * @throws MissingComponentException
      */
     public function sendNotification(SendoutElement $sendout)
     {

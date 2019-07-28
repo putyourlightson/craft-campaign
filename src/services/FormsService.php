@@ -287,7 +287,6 @@ class FormsService extends Component
      * @param int $siteId
      *
      * @return bool
-     * @throws MissingComponentException
      */
     public function _sendEmail(string $email, string $subject, string $body, int $siteId): bool
     {
