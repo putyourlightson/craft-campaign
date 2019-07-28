@@ -118,7 +118,7 @@ class FormsServiceTest extends Unit
         // Assert that the message subject is as provided
         $this->assertEquals('Verify your email address', $this->message->getSubject());
 
-        // Assert that the message body contains the correct action URL
+        // Assert that the message body contains the correct controller action ID
         $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
     }
 
@@ -132,7 +132,7 @@ class FormsServiceTest extends Unit
         // Assert that the message subject is as provided
         $this->assertEquals('Verify unsubscribe', $this->message->getSubject());
 
-        // Assert that the message body contains the correct action URL
+        // Assert that the message body contains the correct controller action ID
         $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->getSwiftMessage()->toString());
     }
 
