@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\tests\unit;
 
 use Codeception\Test\Unit;
 use Craft;
+use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -16,6 +17,7 @@ use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use putyourlightson\campaign\records\PendingContactRecord;
 use UnitTester;
+use yii\swiftmailer\Message;
 
 /**
  * FormsTest
@@ -49,6 +51,11 @@ class FormsTest extends Unit
      * @var PendingContactModel
      */
     protected $pendingContact;
+
+    /**
+     * @var Message
+     */
+    protected $message;
 
     // Protected methods
     // =========================================================================
@@ -84,6 +91,17 @@ class FormsTest extends Unit
             'pid' => StringHelper::uniqueId('p'),
             'fieldData' => [],
         ]);
+
+        $this->tester->mockMethods(
+            Campaign::$plugin,
+            'mailer',
+            [
+                'send' => function (Message $message) {
+                    $this->message = $message;
+                    return true;
+                }
+            ]
+        );
     }
 
     // Public methods
@@ -91,7 +109,7 @@ class FormsTest extends Unit
 
     public function testSavePendingContact()
     {
-        $success = Campaign::$plugin->forms->savePendingContact($this->pendingContact, $this->mailingList);
+        $success = Campaign::$plugin->forms->savePendingContact($this->pendingContact);
 
         // Assert that the pending contact was saved
         $this->assertTrue($success);
@@ -99,7 +117,7 @@ class FormsTest extends Unit
 
     public function testVerifyPendingContact()
     {
-        Campaign::$plugin->forms->savePendingContact($this->pendingContact, $this->mailingList);
+        Campaign::$plugin->forms->savePendingContact($this->pendingContact);
 
         Campaign::$plugin->forms->verifyPendingContact($this->pendingContact->pid);
 
@@ -116,20 +134,30 @@ class FormsTest extends Unit
 
     public function testSendVerifySubscribeEmail()
     {
-        // TODO: mock Campaign mailer component and assert email subject and body
-        $success = Campaign::$plugin->forms->sendVerifySubscribeEmail($this->pendingContact, $this->mailingList);
+        Campaign::$plugin->forms->sendVerifySubscribeEmail($this->pendingContact, $this->mailingList);
 
-        // Assert that the verification email was sent
-        $this->assertTrue($success);
+        // Assert that the message recipient is correct
+        $this->assertArrayHasKey($this->pendingContact->email, $this->message->getTo());
+
+        // Assert that the message subject is as provided
+        $this->assertEquals('Verify your email address', $this->message->getSubject());
+
+        // Assert that the message body contains the correct action URL
+        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
     }
 
     public function testSendVerifyUnsubscribeEmail()
     {
-        // TODO: mock Campaign mailer component and assert email subject and body
-        $success = Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($this->contact, $this->mailingList);
+        Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($this->contact, $this->mailingList);
 
-        // Assert that the verification email was sent
-        $this->assertTrue($success);
+        // Assert that the message recipient is correct
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
+
+        // Assert that the message subject is as provided
+        $this->assertEquals('Verify unsubscribe', $this->message->getSubject());
+
+        // Assert that the message body contains the correct action URL
+        $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->getSwiftMessage()->toString());
     }
 
     public function testSubscribeContact()

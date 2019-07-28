@@ -71,7 +71,7 @@ use yii\web\ForbiddenHttpException;
  * @property SyncService $sync
  * @property TrackerService $tracker
  * @property WebhookService $webhook
- *
+ * @property Mailer $mailer
  * @property array|null $cpNavItem
  * @property array $cpRoutes
  * @property array $cpPermissions
@@ -138,6 +138,11 @@ class Campaign extends Plugin
             'tracker' => TrackerService::class,
             'webhook' => WebhookService::class,
         ]);
+
+        // Register mailer component
+        $this->set('mailer', function() {
+            return $this->createMailer();
+        });
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {

@@ -158,23 +158,6 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns mailer or creates one if it does not yet exist
-     *
-     * @return Mailer
-     * @throws MissingComponentException
-     */
-    public function getMailer(): Mailer
-    {
-        if ($this->_mailer !== null) {
-            return $this->_mailer;
-        }
-
-        $this->_mailer = Campaign::$plugin->createMailer();
-
-        return $this->_mailer;
-    }
-
-    /**
      * Returns the sendout's pending contact and mailing list IDs based on its mailing lists, segments and schedule
      *
      * @param SendoutElement $sendout
@@ -327,12 +310,8 @@ class SendoutsService extends Component
         // Convert links in HTML body
         $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
 
-        // Get mailer
-        $mailer = $this->getMailer();
-
         // Compose message
-        /** @var Message $message*/
-        $message = $mailer->compose()
+        $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
             ->setSubject('[Test] '.$sendout->subject)
@@ -419,17 +398,13 @@ class SendoutsService extends Component
         $secretImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
         $htmlBody .= '<img src="'.$secretImageUrl.'" width="1" height="1" />';
 
-        // Get mailer
-        $mailer = $this->getMailer();
-
         // If test mode is enabled then use file transport instead of sending emails
         if (Campaign::$plugin->getSettings()->testMode) {
-            $mailer->useFileTransport = true;
+            Campaign::$plugin->mailer->useFileTransport = true;
         }
 
         // Create message
-        /** @var Message $message */
-        $message = $mailer->compose()
+        $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
             ->setSubject($subject)
@@ -530,12 +505,8 @@ class SendoutsService extends Component
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has failed. Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
-        // Get mailer
-        $mailer = $this->getMailer();
-
         // Compose message
-        /** @var Message $message*/
-        $message = $mailer->compose()
+        $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($sendout->notificationEmailAddress)
             ->setSubject($subject)

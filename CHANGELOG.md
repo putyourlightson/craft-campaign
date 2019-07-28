@@ -8,8 +8,7 @@
 - Added the `FormsController` with the `actionUnsubscribe()` method so that contacts can unsubscribe themselves from a mailing list by submitting their email in a form and clicking a link in a verification email ([#81](https://github.com/putyourlightson/craft-campaign/issues/81)).
 - Added the `maxSendAttempts` config setting which defines the maximum number of times to attempt sending a sendout before failing and defaults to 3 ([#82](https://github.com/putyourlightson/craft-campaign/issues/82)).
 - Added the `Query String Parameters` field to campaign types and removed the `Google Analytics` lightswitch field from sendouts ([#83](https://github.com/putyourlightson/craft-campaign/issues/83)).
-- Added `FormsController::actionSubscribe()`, `FormsController::actionUnsubscribe()` and `FormsController::actionUpdateContact()` for handling form submissions.
-- Added testing framework.
+- Added unit tests to the plugin using Craft’s testing framework.
 
 ### Changed
 - Adjusted positioning of campaign preview and share buttons for Craft 3.2.

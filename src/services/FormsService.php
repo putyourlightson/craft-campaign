@@ -11,7 +11,6 @@ use craft\helpers\ConfigHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
-use craft\mail\Message;
 use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -427,14 +426,11 @@ class FormsService extends Component
      */
     public function _sendEmail(string $email, string $subject, string $body, int $siteId): bool
     {
-        $mailer = Campaign::$plugin->createMailer();
-
         // Get from name and email
         $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($siteId);
 
         // Create message
-        /** @var Message $message */
-        $message = $mailer->compose()
+        $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($email)
             ->setSubject($subject)
