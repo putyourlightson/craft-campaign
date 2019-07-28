@@ -429,6 +429,9 @@ class SendoutsService extends Component
             if ($success) {
                 break;
             }
+
+            // Just wait a second, in case we're being throttled
+            sleep(1);
         }
 
         if ($success) {
