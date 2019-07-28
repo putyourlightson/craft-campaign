@@ -6,16 +6,8 @@
 
 namespace putyourlightson\campaign\tests\unit\services;
 
-use Codeception\Test\Unit;
-use Craft;
-use DateInterval;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\StringHelper;
-use putyourlightson\campaign\models\PendingContactModel;
-use putyourlightson\campaign\records\MailingListTypeRecord;
 use putyourlightson\campaign\records\PendingContactRecord;
-use UnitTester;
 
 /**
  * PendingContactsServiceTest
@@ -25,54 +17,8 @@ use UnitTester;
  * @since     1.10.0
  */
 
-class PendingContactsServiceTest extends Unit
+class PendingContactsServiceTest extends BaseServiceTest
 {
-    // Properties
-    // =========================================================================
-
-    /**
-     * @var UnitTester
-     */
-    protected $tester;
-
-    /**
-     * @var MailingListElement
-     */
-    protected $mailingList;
-
-    /**
-     * @var PendingContactModel
-     */
-    protected $pendingContact;
-
-    // Protected methods
-    // =========================================================================
-
-    protected function _before()
-    {
-        parent::_before();
-
-        $mailingListTypeRecord = new MailingListTypeRecord([
-            'name' => 'Test',
-            'handle' => 'test',
-            'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
-        ]);
-        $mailingListTypeRecord->save();
-
-        $this->mailingList = new MailingListElement([
-            'mailingListTypeId' => $mailingListTypeRecord->id,
-            'title' => 'Test',
-        ]);
-        Craft::$app->getElements()->saveElement($this->mailingList);
-
-        $this->pendingContact = new PendingContactModel([
-            'email' => 'pending@test.com',
-            'mailingListId' => $this->mailingList->id,
-            'pid' => StringHelper::uniqueId('p'),
-            'fieldData' => [],
-        ]);
-    }
-
     // Public methods
     // =========================================================================
 
