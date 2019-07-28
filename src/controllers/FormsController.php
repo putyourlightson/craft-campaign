@@ -87,7 +87,7 @@ class FormsController extends BaseMessageController
             $pendingContact->fieldData = $contact->getSerializedFieldValues();
 
             // Save pending contact
-            if (!Campaign::$plugin->forms->savePendingContact($pendingContact)) {
+            if (!Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
                 if ($request->getAcceptsJson()) {
                     return $this->asJson([
                         'errors' => $pendingContact->getErrors(),
@@ -279,7 +279,7 @@ class FormsController extends BaseMessageController
         }
 
         // Verify pending contact
-        $pendingContact = Campaign::$plugin->forms->verifyPendingContact($pid);
+        $pendingContact = Campaign::$plugin->pendingContacts->verifyPendingContact($pid);
 
         if ($pendingContact === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));

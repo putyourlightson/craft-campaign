@@ -8,7 +8,8 @@ namespace putyourlightson\campaign\tests\unit;
 
 use Codeception\Test\Unit;
 use Craft;
-use craft\helpers\UrlHelper;
+use DateInterval;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -27,7 +28,7 @@ use yii\swiftmailer\Message;
  * @since     1.10.0
  */
 
-class FormsTest extends Unit
+class FormsServiceTest extends Unit
 {
     // Properties
     // =========================================================================
@@ -106,31 +107,6 @@ class FormsTest extends Unit
 
     // Public methods
     // =========================================================================
-
-    public function testSavePendingContact()
-    {
-        $success = Campaign::$plugin->forms->savePendingContact($this->pendingContact);
-
-        // Assert that the pending contact was saved
-        $this->assertTrue($success);
-    }
-
-    public function testVerifyPendingContact()
-    {
-        Campaign::$plugin->forms->savePendingContact($this->pendingContact);
-
-        Campaign::$plugin->forms->verifyPendingContact($this->pendingContact->pid);
-
-        // Assert that the contact was created
-        $this->assertNotNull(Campaign::$plugin->contacts->getContactByEmail($this->pendingContact->email));
-
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $this->pendingContact->pid])
-            ->one();
-
-        // Assert that the pending contact was deleted
-        $this->assertNull($pendingContactRecord);
-    }
 
     public function testSendVerifySubscribeEmail()
     {

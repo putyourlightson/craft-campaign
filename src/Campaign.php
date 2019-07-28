@@ -35,6 +35,7 @@ use putyourlightson\campaign\services\FormsService;
 use putyourlightson\campaign\services\ImportsService;
 use putyourlightson\campaign\services\MailingListsService;
 use putyourlightson\campaign\services\MailingListTypesService;
+use putyourlightson\campaign\services\PendingContactsService;
 use putyourlightson\campaign\services\ReportsService;
 use putyourlightson\campaign\services\SegmentsService;
 use putyourlightson\campaign\services\SendoutsService;
@@ -64,6 +65,7 @@ use yii\web\ForbiddenHttpException;
  * @property ImportsService $imports
  * @property MailingListsService $mailingLists
  * @property MailingListTypesService $mailingListTypes
+ * @property PendingContactsService $pendingContacts
  * @property ReportsService $reports
  * @property SegmentsService $segments
  * @property SendoutsService $sendouts
@@ -130,6 +132,7 @@ class Campaign extends Plugin
             'imports' => ImportsService::class,
             'mailingLists' => MailingListsService::class,
             'mailingListTypes' => MailingListTypesService::class,
+            'pendingContacts' => PendingContactsService::class,
             'reports' => ReportsService::class,
             'segments' => SegmentsService::class,
             'sendouts' => SendoutsService::class,

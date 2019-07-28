@@ -136,13 +136,13 @@ class ContactsService extends Component
      *
      * @return bool
      *
-     * @deprecated in 1.10.0. Use [[FormsService::savePendingContact()]] instead.
+     * @deprecated in 1.10.0. Use [[PendingContactsService::savePendingContact()]] instead.
      */
     public function savePendingContact(PendingContactModel $pendingContact): bool
     {
-        Craft::$app->getDeprecator()->log('ContactsService::savePendingContact()', 'The “ContactsService::savePendingContact()” method has been deprecated. Use “FormsService::savePendingContact()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::savePendingContact()', 'The “ContactsService::savePendingContact()” method has been deprecated. Use “PendingContactsService::savePendingContact()” instead.');
 
-        return Campaign::$plugin->forms->savePendingContact($pendingContact);
+        return Campaign::$plugin->pendingContacts->savePendingContact($pendingContact);
     }
 
     /**
@@ -155,11 +155,11 @@ class ContactsService extends Component
      * @throws Exception
      * @throws MissingComponentException
      *
-     * @deprecated in 1.10.0. Use [[FormsService::sendVerifySubscribeEmail()]] instead.
+     * @deprecated in 1.10.0. Use [[PendingContactsService::sendVerifySubscribeEmail()]] instead.
      */
     public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
-        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “FormsService::sendVerifySubscribeEmail()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “PendingContactsService::sendVerifySubscribeEmail()” instead.');
 
         return Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
     }
@@ -171,24 +171,24 @@ class ContactsService extends Component
      *
      * @return PendingContactModel|null
      *
-     * @deprecated in 1.10.0. Use [[FormsService::verifyPendingContact()]] instead.
+     * @deprecated in 1.10.0. Use [[PendingContactsService::verifyPendingContact()]] instead.
      */
     public function verifyPendingContact(string $pid)
     {
-        Craft::$app->getDeprecator()->log('ContactsService::verifyPendingContact()', 'The “ContactsService::verifyPendingContact()” method has been deprecated. Use “FormsService::verifyPendingContact()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::verifyPendingContact()', 'The “ContactsService::verifyPendingContact()” method has been deprecated. Use “PendingContactsService::verifyPendingContact()” instead.');
 
-        return Campaign::$plugin->forms->verifyPendingContact($pid);
+        return Campaign::$plugin->pendingContacts->verifyPendingContact($pid);
     }
 
     /**
      * Deletes expired pending contacts
      *
-     * @deprecated in 1.10.0. Use [[FormsService::purgeExpiredPendingContacts()]] instead.
+     * @deprecated in 1.10.0. Use [[PendingContactsService::purgeExpiredPendingContacts()]] instead.
      */
     public function purgeExpiredPendingContacts()
     {
-        Craft::$app->getDeprecator()->log('ContactsService::purgeExpiredPendingContacts()', 'The “ContactsService::purgeExpiredPendingContacts()” method has been deprecated. Use “FormsService::purgeExpiredPendingContacts()” instead.');
+        Craft::$app->getDeprecator()->log('ContactsService::purgeExpiredPendingContacts()', 'The “ContactsService::purgeExpiredPendingContacts()” method has been deprecated. Use “PendingContactsService::purgeExpiredPendingContacts()” instead.');
 
-        return Campaign::$plugin->forms->purgeExpiredPendingContacts();
+        return Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
     }
 }
