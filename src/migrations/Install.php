@@ -202,7 +202,7 @@ class Install extends Migration
                 'fieldLayoutId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
-                'subscribeDoubleOptIn' => $this->boolean()->defaultValue(true)->notNull(),
+                'subscribeVerificationRequired' => $this->boolean()->defaultValue(true)->notNull(),
                 'subscribeVerificationEmailSubject' => $this->text(),
                 'subscribeVerificationEmailTemplate' => $this->string(500),
                 'subscribeVerificationSuccessTemplate' => $this->string(500),

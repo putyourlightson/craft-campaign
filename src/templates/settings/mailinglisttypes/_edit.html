@@ -63,16 +63,16 @@
     <hr>
 
     {{ forms.lightswitchField({
-        label: "Subscribe Double Opt-In"|t('campaign'),
+        label: "Subscribe Verification Required"|t('campaign'),
         instructions: "Whether the contact needs to verify their email address by clicking on a link in a verification email that will be sent to them after submitting a subscribe form (highly recommended)."|t('campaign'),
-        id: 'subscribeDoubleOptIn',
-        name: 'subscribeDoubleOptIn',
-        on: mailingListType.subscribeDoubleOptIn,
-        errors: mailingListType.getErrors('subscribeDoubleOptIn'),
+        id: 'subscribeVerificationRequired',
+        name: 'subscribeVerificationRequired',
+        on: mailingListType.subscribeVerificationRequired,
+        errors: mailingListType.getErrors('subscribeVerificationRequired'),
         toggle: 'verifySubscribeEmailFields',
     }) }}
 
-    <div id="verifySubscribeEmailFields" {{ not mailingListType.subscribeDoubleOptIn ? 'class="hidden"' }}>
+    <div id="verifySubscribeEmailFields" {{ not mailingListType.subscribeVerificationRequired ? 'class="hidden"' }}>
 
         {{ forms.textField({
             label: "Subscribe Verification Email Subject"|t('campaign'),

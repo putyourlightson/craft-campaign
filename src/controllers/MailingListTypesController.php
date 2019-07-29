@@ -112,12 +112,12 @@ class MailingListTypesController extends Controller
         $mailingListType->siteId = $request->getBodyParam('siteId', $mailingListType->siteId);
         $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
         $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
-        $mailingListType->subscribeDoubleOptIn = (bool)$request->getBodyParam('subscribeDoubleOptIn', $mailingListType->subscribeDoubleOptIn);
+        $mailingListType->subscribeVerificationRequired = (bool)$request->getBodyParam('subscribeVerificationRequired', $mailingListType->subscribeVerificationRequired);
         $mailingListType->subscribeVerificationEmailSubject = $request->getBodyParam('subscribeVerificationEmailSubject', $mailingListType->subscribeVerificationEmailSubject);
         $mailingListType->subscribeVerificationEmailTemplate = $request->getBodyParam('subscribeVerificationEmailTemplate', $mailingListType->subscribeVerificationEmailTemplate);
         $mailingListType->subscribeVerificationSuccessTemplate = $request->getBodyParam('subscribeVerificationSuccessTemplate', $mailingListType->subscribeVerificationSuccessTemplate);
         $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
-        $mailingListType->unsubscribeFormAllowed = $request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
+        $mailingListType->unsubscribeFormAllowed = (bool)$request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
         $mailingListType->unsubscribeVerificationEmailSubject = $request->getBodyParam('unsubscribeVerificationEmailSubject', $mailingListType->unsubscribeVerificationEmailSubject);
         $mailingListType->unsubscribeVerificationEmailTemplate = $request->getBodyParam('unsubscribeVerificationEmailTemplate', $mailingListType->unsubscribeVerificationEmailTemplate);
         $mailingListType->unsubscribeSuccessTemplate = $request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);

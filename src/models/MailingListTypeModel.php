@@ -61,9 +61,9 @@ class MailingListTypeModel extends BaseModel
     public $handle;
 
     /**
-     * @var bool Subscribe double opt-in
+     * @var bool Subscribe verification required
      */
-    public $subscribeDoubleOptIn = true;
+    public $subscribeVerificationRequired = true;
 
     /**
      * @var string|null Subscribe verification email subject
@@ -143,7 +143,7 @@ class MailingListTypeModel extends BaseModel
             [['name', 'handle'], 'string', 'max' => 255],
             [['name', 'handle'], UniqueValidator::class, 'targetClass' => MailingListTypeRecord::class],
             [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
-            [['subscribeDoubleOptIn', 'unsubscribeFormAllowed'], 'boolean'],
+            [['subscribeVerificationRequired', 'unsubscribeFormAllowed'], 'boolean'],
         ];
     }
 

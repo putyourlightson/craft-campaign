@@ -19,7 +19,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $fieldLayoutId
  * @property string $name
  * @property string $handle
- * @property bool $subscribeDoubleOptIn
+ * @property bool $subscribeVerificationRequired
  * @property string $subscribeVerificationEmailSubject
  * @property string $subscribeVerificationEmailTemplate
  * @property string $subscribeVerificationSuccessTemplate

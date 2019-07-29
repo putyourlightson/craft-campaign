@@ -71,8 +71,8 @@ class FormsController extends BaseMessageController
         $email = $request->getRequiredParam('email');
         $referrer = $request->getReferrer();
 
-        // If subscribe double opt-in
-        if ($mailingList->mailingListType->subscribeDoubleOptIn) {
+        // If subscribe verification required
+        if ($mailingList->mailingListType->subscribeVerificationRequired) {
             // Create new contact to get field values
             $contact = new ContactElement();
             $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
@@ -148,8 +148,8 @@ class FormsController extends BaseMessageController
         // TODO: remove in 2.0.0
         // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
         return $this->renderTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
-            'title' => $mailingList->mailingListType->subscribeDoubleOptIn ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
-            'message' => $mailingList->mailingListType->subscribeDoubleOptIn ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a confirmation link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
+            'title' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
+            'message' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
             'mailingList' => $mailingList,
         ]);
     }

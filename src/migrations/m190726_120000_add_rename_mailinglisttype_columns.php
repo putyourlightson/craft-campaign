@@ -18,7 +18,7 @@ class m190726_120000_add_rename_mailinglisttype_columns extends Migration
         $table = MailingListTypeRecord::tableName();
 
         if ($this->db->columnExists($table, 'doubleOptIn')) {
-            $this->renameColumn($table, 'doubleOptIn', 'subscribeDoubleOptIn');
+            $this->renameColumn($table, 'doubleOptIn', 'subscribeVerificationRequired');
         }
 
         if ($this->db->columnExists($table, 'verifyEmailSubject')) {
