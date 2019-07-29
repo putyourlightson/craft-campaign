@@ -26,7 +26,6 @@ use putyourlightson\campaign\records\LinkRecord;
 use Craft;
 use craft\base\Component;
 use craft\errors\ElementNotFoundException;
-use craft\errors\MissingComponentException;
 use craft\helpers\Db;
 use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
@@ -541,7 +540,6 @@ class SendoutsService extends Component
      *
      * @throws ElementNotFoundException
      * @throws Exception
-     * @throws MissingComponentException
      * @throws Throwable
      */
     public function finaliseSending(SendoutElement $sendout)

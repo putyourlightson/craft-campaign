@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\controllers;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
-use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use craft\web\View;
@@ -490,7 +489,6 @@ class SendoutsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws MissingComponentException
      * @throws NotFoundHttpException
      */
     public function actionSendTest(): Response

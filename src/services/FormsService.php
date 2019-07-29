@@ -6,7 +6,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\errors\MissingComponentException;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
@@ -77,7 +76,6 @@ class FormsService extends Component
      *
      * @return bool
      * @throws Exception
-     * @throws MissingComponentException
      */
     public function sendVerifySubscribeEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
@@ -123,7 +121,6 @@ class FormsService extends Component
      *
      * @return bool
      * @throws Exception
-     * @throws MissingComponentException
      */
     public function sendVerifyUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
     {

@@ -13,14 +13,11 @@ modules:
     config:
         \craft\test\Craft:
             configFile: 'tests/_craft/config/test.php'
-            entryUrl: 'http://craft32/'
+            entryUrl: 'http://craft32/index.php'
             entryScript: 'index.php'
             projectConfig: {}
             migrations: []
-            plugins:
-                campaign:
-                    class: '\putyourlightson\campaign\Campaign'
-                    handle: campaign
+            plugins: []
             cleanup: true
             transaction: true
-            dbSetup: {clean: true, setupCraft: true}
+            dbSetup: {clean: false, setupCraft: false}
