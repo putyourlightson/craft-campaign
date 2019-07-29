@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.10.0 - Unreleased
+## 1.10.0 - 2019-07-29
 > {note} The Google Analytics lightswitch field has been removed from sendouts. Use the new Query String Parameters field in campaign types instead.
 
 ### Added
