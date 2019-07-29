@@ -54,8 +54,8 @@ class PendingContactsServiceTest extends BaseServiceTest
         // Set duration to 1 second
         Campaign::$plugin->getSettings()->purgePendingContactsDuration = 1;
 
-        // Sleep for 1.1 seconds
-        usleep(1100000);
+        // Sleep for 2 seconds, to be sure to be sure (less causes the assertion to fail sometimes)
+        sleep(2);
 
         Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
 

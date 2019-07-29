@@ -386,10 +386,10 @@ class SendoutsService extends Component
         // Convert links in HTML body
         $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
 
-        // Add secret image to HTML body
+        // Add tracking image to HTML body
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/open';
-        $secretImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
-        $htmlBody .= '<img src="'.$secretImageUrl.'" width="1" height="1" />';
+        $trackingImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
+        $htmlBody .= '<img src="'.$trackingImageUrl.'" width="1" height="1" />';
 
         // If test mode is enabled then use file transport instead of sending emails
         if (Campaign::$plugin->getSettings()->testMode) {

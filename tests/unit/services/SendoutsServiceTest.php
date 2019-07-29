@@ -33,6 +33,9 @@ class SendoutsServiceTest extends BaseServiceTest
 
         // Assert that the message subject is correct
         $this->assertEquals($this->sendout->subject, $this->message->getSubject());
+
+        // Assert that the message body contains the tracking image
+        $this->assertStringContainsStringIgnoringCase('campaign/t/open', $this->message->getSwiftMessage()->toString());
     }
 
     public function testSendEmailFailed()
@@ -62,7 +65,7 @@ class SendoutsServiceTest extends BaseServiceTest
         $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
 
         // Assert that the message subject is correct
-        $this->assertStringContainsStringIgnoringCase('completed', $this->message->getSubject());
+        $this->assertStringContainsString('completed', $this->message->getSubject());
     }
 
     public function testSendNotificationFailed()
