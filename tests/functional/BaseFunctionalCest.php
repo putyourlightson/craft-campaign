@@ -4,7 +4,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\functional;
+namespace putyourlightson\campaigntests\functional;
 
 use Craft;
 use FunctionalTester;

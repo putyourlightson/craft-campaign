@@ -4,10 +4,10 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\functional\forms;
+namespace putyourlightson\campaigntests\functional\forms;
 
 use FunctionalTester;
-use putyourlightson\campaign\tests\functional\BaseFunctionalCest;
+use putyourlightson\campaigntests\functional\BaseFunctionalCest;
 
 /**
  * @author    PutYourLightsOn

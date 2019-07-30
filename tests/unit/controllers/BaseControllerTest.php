@@ -4,7 +4,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit;
+namespace putyourlightson\campaigntests\unit;
 
 use Craft;
 use putyourlightson\campaign\Campaign;

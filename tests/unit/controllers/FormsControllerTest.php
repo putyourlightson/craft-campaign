@@ -4,11 +4,11 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit\controllers;
+namespace putyourlightson\campaigntests\unit\controllers;
 
 use Craft;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\tests\unit\BaseControllerTest;
+use putyourlightson\campaigntests\unit\BaseControllerTest;
 use yii\web\NotFoundHttpException;
 
 /**

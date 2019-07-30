@@ -4,11 +4,11 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit\services;
+namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaign\tests\unit\BaseUnitTest;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
