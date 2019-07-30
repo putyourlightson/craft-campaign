@@ -21,18 +21,8 @@ class PendingContactsServiceTest extends BaseUnitTest
     // Public methods
     // =========================================================================
 
-    public function testSavePendingContact()
-    {
-        $success = Campaign::$plugin->pendingContacts->savePendingContact($this->pendingContact);
-
-        // Assert that the pending contact was saved
-        $this->assertTrue($success);
-    }
-
     public function testVerifyPendingContact()
     {
-        Campaign::$plugin->pendingContacts->savePendingContact($this->pendingContact);
-
         Campaign::$plugin->pendingContacts->verifyPendingContact($this->pendingContact->pid);
 
         // Assert that the contact was created
@@ -48,8 +38,6 @@ class PendingContactsServiceTest extends BaseUnitTest
 
     public function testPurgeExpiredPendingContacts()
     {
-        Campaign::$plugin->pendingContacts->savePendingContact($this->pendingContact);
-
         // Set duration to 1 second
         Campaign::$plugin->getSettings()->purgePendingContactsDuration = 1;
 

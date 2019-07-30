@@ -226,6 +226,7 @@ class FormsController extends BaseMessageController
                     'errors' => [$error],
                 ]);
             }
+
             throw new NotFoundHttpException($error);
         }
 

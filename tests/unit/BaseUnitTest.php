@@ -136,6 +136,7 @@ class BaseUnitTest extends Unit
             'pid' => StringHelper::uniqueId('p'),
             'fieldData' => [],
         ]);
+        Campaign::$plugin->pendingContacts->savePendingContact($this->pendingContact);
 
         $this->sendout = new SendoutElement([
             'sendoutType' => 'regular',
