@@ -21,6 +21,9 @@ modules:
                 campaign:
                     class: '\putyourlightson\campaign\Campaign'
                     handle: campaign
+                seomatic:
+                    class: '\putyourlightson\campaign\Campaign'
+                    handle: campaign
             cleanup: true
             transaction: true
             dbSetup: {clean: true, setupCraft: true}

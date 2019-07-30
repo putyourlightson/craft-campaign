@@ -1,6 +1,5 @@
 <?php
 /**
- * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
  */
 
@@ -8,16 +7,15 @@ namespace putyourlightson\campaign\tests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\tests\unit\BaseUnitTest;
 
 /**
- * SendoutsServiceTest
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
 
-class SendoutsServiceTest extends BaseServiceTest
+class SendoutsServiceTest extends BaseUnitTest
 {
     // Public methods
     // =========================================================================

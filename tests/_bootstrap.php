@@ -14,4 +14,6 @@ define('CRAFT_TRANSLATIONS_PATH', __DIR__ . '/_craft/translations');
 // Use absolute path if the plugin directory is a symlink
 define('CRAFT_VENDOR_PATH', '/Users/ben/Sites/craft32/vendor');
 
+$devMode = true;
+
 TestSetup::configureCraft();

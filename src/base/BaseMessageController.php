@@ -26,10 +26,10 @@ abstract class BaseMessageController extends Controller
     /**
      * @inheritDoc
      */
-    public function renderTemplate(string $template, array $variables = []): YiiResponse
+    public function renderTemplate(string $template = null, array $variables = []): YiiResponse
     {
         // If template was not defined or does not exist
-        if ($template == '' || !Craft::$app->getView()->doesTemplateExist($template)) {
+        if (empty($template) || !Craft::$app->getView()->doesTemplateExist($template)) {
             // Use message template
             $template = 'campaign/message';
 

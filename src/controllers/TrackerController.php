@@ -153,7 +153,7 @@ class TrackerController extends BaseMessageController
     {
         Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe” instead.');
 
-        return Craft::$app->runAction('campaign/forms/subscribe');
+        return Campaign::$plugin->runAction('forms/subscribe');
     }
 
     /**
@@ -165,7 +165,7 @@ class TrackerController extends BaseMessageController
     {
         Craft::$app->getDeprecator()->log('TrackerController::actionUpdateContact()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
 
-        return Craft::$app->runAction('campaign/forms/update-contact');
+        return Campaign::$plugin->runAction('forms/update-contact');
     }
 
     /**
@@ -177,7 +177,7 @@ class TrackerController extends BaseMessageController
     {
         Craft::$app->getDeprecator()->log('TrackerController::actionVerifyEmail()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/verify-subscribe” instead.');
 
-        return Craft::$app->runAction('campaign/forms/verify-subscribe');
+        return Campaign::$plugin->runAction('forms/verify-subscribe');
     }
 
     // Private Methods

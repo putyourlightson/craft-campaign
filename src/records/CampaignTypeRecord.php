@@ -18,7 +18,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $siteId
  * @property int $fieldLayoutId
  * @property string $name
- * @property string $handleHandle
+ * @property string $handle
  * @property string $uriFormat
  * @property string $htmlTemplate
  * @property string $plaintextTemplate

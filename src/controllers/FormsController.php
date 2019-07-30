@@ -72,7 +72,7 @@ class FormsController extends BaseMessageController
         $referrer = $request->getReferrer();
 
         // If subscribe verification required
-        if ($mailingList->mailingListType->subscribeVerificationRequired) {
+        if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
             // Create new contact to get field values
             $contact = new ContactElement();
             $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
@@ -94,7 +94,7 @@ class FormsController extends BaseMessageController
                     ]);
                 }
 
-                // Send the contact back to the template
+                // Send the pending contact back to the template
                 Craft::$app->getUrlManager()->setRouteParams([
                     'pendingContact' => $pendingContact
                 ]);

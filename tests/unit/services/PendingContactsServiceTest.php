@@ -8,16 +8,15 @@ namespace putyourlightson\campaign\tests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
+use putyourlightson\campaign\tests\unit\BaseUnitTest;
 
 /**
- * PendingContactsServiceTest
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
 
-class PendingContactsServiceTest extends BaseServiceTest
+class PendingContactsServiceTest extends BaseUnitTest
 {
     // Public methods
     // =========================================================================
