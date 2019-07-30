@@ -39,21 +39,5 @@ class FormsActionCest extends BaseFunctionalCest
         ]);
 
         $I->see('Success');
-//
-//        $I->see('Subscribe to our Mailing List');
-//
-//        Craft::$app->getConfig()->getGeneral()->requireUserAgentAndIpForSession = false;
-//        $I->submitForm('#userform', [
-//            'action' => 'users/impersonate',
-//            'redirect' => Craft::$app->getSecurity()->hashData(UrlHelper::cpUrl('dashboard'))
-//        ]);
-//
-//        $I->see('Dashboard');
-//        $I->see('Logged in');
-//
-//        $I->assertSame(
-//            (string)$this->activeUser->id,
-//            (string)$user = Craft::$app->getUser()->getId()
-//        );
     }
 }

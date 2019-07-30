@@ -53,6 +53,20 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals($this->sendout->sendStatus, SendoutElement::STATUS_FAILED);
     }
 
+    public function testSendEmailDuplicate()
+    {
+        $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
+
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
+
+        // Reset message and resend
+        $this->message = null;
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
+
+        // Assert that the message is null
+        $this->assertNull($this->message);
+    }
+
     public function testSendNotificationSent()
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENT;
