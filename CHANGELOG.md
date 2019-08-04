@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.10.1 - 2019-08-02
+### Fixed
+- Fixed bug in which automated and recurring sendouts could be marked as sent when they are still pending.
+
 ## 1.10.0 - 2019-07-29
 > {note} The Google Analytics lightswitch field has been removed from sendouts. Use the new Query String Parameters field in campaign types instead.
 
