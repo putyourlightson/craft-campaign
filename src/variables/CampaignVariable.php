@@ -17,6 +17,8 @@ use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\RecaptchaHelper;
+use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
@@ -298,11 +300,26 @@ class CampaignVariable
         $settings = Campaign::$plugin->getSettings();
 
         if ($settings->reCaptcha) {
+            if ($settings->reCaptchaVersion == 3) {
+                return Template::raw('
+                    <script src="https://www.google.com/recaptcha/api.js?render='.$settings->reCaptchaSiteKey.'"></script>
+                    <script>
+                        grecaptcha.ready(function() {
+                            grecaptcha.execute("'.$settings->reCaptchaSiteKey.'", {
+                                action: "'.RecaptchaHelper::RECAPTCHA_ACTION.'"
+                            });
+                        });
+                    </script>
+                ');
+            }
+
+            $id = 'campaign-recaptcha-'.StringHelper::randomString(6);
+
             return Template::raw('
-                <div id="campaign-recaptcha"></div>
+                <div id="'.$id.'"></div>
                 <script type="text/javascript">
                     var onloadCampaignRecaptchaCallback = function() {
-                        var widgetId = grecaptcha.render("campaign-recaptcha", {
+                        var widgetId = grecaptcha.render("'.$id.'", {
                             sitekey : "'.Craft::parseEnv($settings->reCaptchaSiteKey).'",
                             size : "'.$settings->reCaptchaSize.'",
                             theme : "'.$settings->reCaptchaTheme.'",

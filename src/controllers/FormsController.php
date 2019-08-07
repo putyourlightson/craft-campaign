@@ -178,7 +178,7 @@ class FormsController extends BaseMessageController
 
         // Ensure unsubscribing through a form is allowed
         if (!$mailingList->getMailingListType()->unsubscribeFormAllowed) {
-            throw new ForbiddenHttpException('Unsubscribing through a form is not allowed.');
+            throw new ForbiddenHttpException('Unsubscribing through a form is not allowed for this mailing list.');
         }
 
         $email = $request->getRequiredParam('email');
@@ -377,7 +377,13 @@ class FormsController extends BaseMessageController
 
         // Validate reCAPTCHA if enabled
         if (Campaign::$plugin->getSettings()->reCaptcha) {
-            RecaptchaHelper::validateRecaptcha($request->getParam('g-recaptcha-response'), $request->getUserIP());
+            $response = $request->getParam('g-recaptcha-response');
+
+            if ($response === null) {
+                throw new ForbiddenHttpException(Craft::parseEnv(Campaign::$plugin->getSettings()->reCaptchaErrorMessage));
+            }
+
+            RecaptchaHelper::validateRecaptcha($response, $request->getUserIP());
         }
     }
 

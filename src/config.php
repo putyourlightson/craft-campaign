@@ -82,6 +82,9 @@ return [
     // Enable reCAPTCHA to protect mailing list subscription forms from bots
     //'reCaptcha' => false,
 
+    // The reCAPTCHA version
+    //'reCaptchaVersion' => 2,
+
     // The reCAPTCHA site key
     //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
 

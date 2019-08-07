@@ -133,6 +133,12 @@ class SettingsModel extends Model
     public $reCaptcha = false;
 
     /**
+     * @var int|null The reCAPTCHA version
+     */
+    // TODO: change to `3` in version 2.0.0
+    public $reCaptchaVersion = 2;
+
+    /**
      * @var string|null The reCAPTCHA site key
      */
     public $reCaptchaSiteKey;

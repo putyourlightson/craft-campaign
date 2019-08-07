@@ -21,6 +21,14 @@ use yii\web\ForbiddenHttpException;
  */
 class RecaptchaHelper
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @const string
+     */
+    const RECAPTCHA_ACTION = 'homepage';
+
     // Static Methods
     // =========================================================================
 
@@ -59,6 +67,10 @@ class RecaptchaHelper
         catch (ConnectException $e) {}
 
         if (empty($result['success'])) {
+            throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
+        }
+
+        if (!empty($result['action']) && $result['action'] != self::RECAPTCHA_ACTION) {
             throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
         }
     }
