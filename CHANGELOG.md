@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.11.1 - Unreleased
+### Changed
+- Changed reCAPTCHA error message to better reflect reCAPTCHA v3.
+ 
 ## 1.11.0 - 2019-08-08
 ### Added
 - Added compatibility with reCAPTCHA version 3.

@@ -151,7 +151,7 @@ class SettingsModel extends Model
     /**
      * @var string The reCAPTCHA error message
      */
-    public $reCaptchaErrorMessage = 'Your form submission was blocked. Please go back and verify that you are human.';
+    public $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
 
     /**
      * @var string|null The size of the reCAPTCHA widget
