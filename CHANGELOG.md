@@ -1,12 +1,15 @@
 # Release Notes for Campaign
 
-## 1.11.0 - 2019-08-XX
+## 1.11.0 - 2019-08-08
 ### Added
 - Added compatibility with reCAPTCHA version 3.
 
 ### Fixed
 - Fixed the reCAPTCHA code that is output when not set to invisible([#85](https://github.com/putyourlightson/craft-campaign/issues/85)).
 - Fixed the reCAPTCHA code that is output when more than one instance of the template tag is used ([#86](https://github.com/putyourlightson/craft-campaign/issues/86)).
+
+### Deprecated
+- Deprecated the use of reCAPTCHA version 2.
 
 ## 1.10.1 - 2019-08-02
 ### Fixed

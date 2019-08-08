@@ -41,8 +41,8 @@
         name: 'reCaptchaVersion',
         value: settings.reCaptchaVersion,
         options: {
-            3: 'v3 (recommended)',
-            2: 'v2',
+            3: 'v3',
+            2: 'v2 (deprecated)',
         },
         errors: settings.getErrors('reCaptchaVersion'),
         toggle: true,
@@ -54,6 +54,7 @@
         warning: (config.reCaptchaSiteKey is defined ? macros.configWarning('reCaptchaSiteKey')),
         id: 'reCaptchaSiteKey',
         name: 'reCaptchaSiteKey',
+        suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaSiteKey,
         errors: settings.getErrors('reCaptchaSiteKey')
@@ -65,6 +66,7 @@
         warning: (config.reCaptchaSecretKey is defined ? macros.configWarning('reCaptchaSecretKey')),
         id: 'reCaptchaSecretKey',
         name: 'reCaptchaSecretKey',
+        suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaSecretKey,
         errors: settings.getErrors('reCaptchaSecretKey')
@@ -76,6 +78,7 @@
         warning: (config.reCaptchaErrorMessage is defined ? macros.configWarning('reCaptchaErrorMessage')),
         id: 'reCaptchaErrorMessage',
         name: 'reCaptchaErrorMessage',
+        suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
         value: settings.reCaptchaErrorMessage,
         errors: settings.getErrors('reCaptchaErrorMessage')
