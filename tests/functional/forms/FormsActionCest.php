@@ -4,61 +4,40 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\functional\forms;
+namespace putyourlightson\campaigntests\functional\forms;
 
-use Codeception\Test\Unit;
-use Craft;
-use DateInterval;
-use DateTime;
 use FunctionalTester;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\StringHelper;
-use putyourlightson\campaign\models\PendingContactModel;
-use putyourlightson\campaign\records\MailingListTypeRecord;
-use putyourlightson\campaign\records\PendingContactRecord;
-use UnitTester;
-use yii\swiftmailer\Message;
+use putyourlightson\campaigntests\functional\BaseFunctionalCest;
 
 /**
- * FormsActionCest
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
 
-class FormsActionCest
+class FormsActionCest extends BaseFunctionalCest
 {
     // Properties
     // =========================================================================
 
+    /**
+     * @var string
+     */
+    public $email = 'email@anonynous.com';
+
     // Public methods
     // =========================================================================
 
-    public function _before(FunctionalTester $I)
-    {
-    }
-
     public function subscribe(FunctionalTester $I)
     {
-        $I->amOnPage('/subscribe');
+        $I->amOnPage('?p=subscribe');
+        $I->see('Subscribe');
 
-        $I->see('Subscribe to our Mailing List');
-//
-//        Craft::$app->getConfig()->getGeneral()->requireUserAgentAndIpForSession = false;
-//        $I->submitForm('#userform', [
-//            'action' => 'users/impersonate',
-//            'redirect' => Craft::$app->getSecurity()->hashData(UrlHelper::cpUrl('dashboard'))
-//        ]);
-//
-//        $I->see('Dashboard');
-//        $I->see('Logged in');
-//
-//        $I->assertSame(
-//            (string)$this->activeUser->id,
-//            (string)$user = Craft::$app->getUser()->getId()
-//        );
+        $I->submitForm('form', [
+            'email' => $this->email,
+            'mailingList' => $this->mailingList->slug,
+        ]);
+
+        $I->see('Success');
     }
 }

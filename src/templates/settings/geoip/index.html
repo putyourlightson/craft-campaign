@@ -32,6 +32,7 @@
         warning: (config.ipstackApiKey is defined ? macros.configWarning('ipstackApiKey')),
         id: 'geoIpA',
         name: 'ipstackApiKey',
+        suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
         value: settings.ipstackApiKey,
         errors: settings.getErrors('ipstackApiKey')

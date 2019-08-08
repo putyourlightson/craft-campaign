@@ -182,7 +182,7 @@ class CampaignTypesService extends Component
                 throw new Exception('Couldn’t save campaign type record.');
             }
 
-            // Now that we have an campaign type ID, save it on the model
+            // Now that we have a campaign type ID, save it on the model
             if (!$campaignType->id) {
                 $campaignType->id = $campaignTypeRecord->id;
             }

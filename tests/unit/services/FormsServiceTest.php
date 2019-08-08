@@ -4,19 +4,18 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit\services;
+namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * FormsServiceTest
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
 
-class FormsServiceTest extends BaseServiceTest
+class FormsServiceTest extends BaseUnitTest
 {
     // Public methods
     // =========================================================================

@@ -45,6 +45,7 @@
         warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
         id: 'apiKey',
         name: 'apiKey',
+        suggestEnvVars: true,
         suggestions: craft.cp.getEnvSuggestions(),
         value: settings.apiKey,
         errors: settings.getErrors('apiKey'),

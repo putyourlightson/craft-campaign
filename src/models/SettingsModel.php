@@ -133,6 +133,12 @@ class SettingsModel extends Model
     public $reCaptcha = false;
 
     /**
+     * @var int|null The reCAPTCHA version
+     */
+    // TODO: change to `3` in version 2.0.0
+    public $reCaptchaVersion = 2;
+
+    /**
      * @var string|null The reCAPTCHA site key
      */
     public $reCaptchaSiteKey;
@@ -150,16 +156,19 @@ class SettingsModel extends Model
     /**
      * @var string|null The size of the reCAPTCHA widget
      */
+    // TODO: remove in version 2.0.0
     public $reCaptchaSize;
 
     /**
      * @var string|null The color theme of the reCAPTCHA widget
      */
+    // TODO: remove in version 2.0.0
     public $reCaptchaTheme;
 
     /**
      * @var string|null The position of the reCAPTCHA badge (when invisible)
      */
+    // TODO: remove in version 2.0.0
     public $reCaptchaBadge;
 
     /**

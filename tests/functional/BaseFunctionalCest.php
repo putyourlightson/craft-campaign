@@ -4,10 +4,10 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\unit\services;
+namespace putyourlightson\campaigntests\functional;
 
-use Codeception\Test\Unit;
 use Craft;
+use FunctionalTester;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -19,24 +19,21 @@ use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
-use UnitTester;
 use yii\swiftmailer\Message;
 
 /**
- * BaseServiceTest
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.10.0
  */
 
-class BaseServiceTest extends Unit
+class BaseFunctionalCest
 {
     // Properties
     // =========================================================================
 
     /**
-     * @var UnitTester
+     * @var FunctionalTester
      */
     protected $tester;
 
@@ -86,10 +83,8 @@ class BaseServiceTest extends Unit
     /**
      * Set up the class properties before running all tests
      */
-    protected function _before()
+    public function _before(FunctionalTester $I)
     {
-        parent::_before();
-
         $this->campaignType = new CampaignTypeModel([
             'name' => 'Campaign Type Title',
             'handle' => 'campaignTypeHandle',
@@ -121,7 +116,8 @@ class BaseServiceTest extends Unit
 
         $this->mailingList = new MailingListElement([
             'mailingListTypeId' => $mailingListTypeRecord->id,
-            'title' => 'Test',
+            'title' => 'Mailing List Title',
+            'slug' => 'mailingListSlug',
         ]);
         Craft::$app->getElements()->saveElement($this->mailingList);
 
@@ -153,7 +149,7 @@ class BaseServiceTest extends Unit
         Craft::$app->getElements()->saveElement($this->sendout);
 
         // Mock the mailer
-        $this->tester->mockMethods(
+        $I->mockMethods(
             Campaign::$plugin,
             'mailer',
             [
