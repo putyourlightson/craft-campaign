@@ -7,7 +7,6 @@
 namespace putyourlightson\campaign\tests\fixtures\elements;
 
 use craft\test\fixtures\elements\ElementFixture;
-use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
