@@ -7,6 +7,8 @@
 namespace putyourlightson\campaigntests\functional\forms;
 
 use FunctionalTester;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\functional\BaseFunctionalCest;
 
 /**
@@ -25,6 +27,21 @@ class FormsActionCest extends BaseFunctionalCest
      */
     public $email = 'email@anonynous.com';
 
+    // Fixtures
+    // =========================================================================
+
+    /**
+     * @return array
+     */
+    public function _fixtures(): array
+    {
+        return [
+            'mailingLists' => [
+                'class' => MailingListsFixture::class
+            ],
+        ];
+    }
+
     // Public methods
     // =========================================================================
 
@@ -35,7 +52,7 @@ class FormsActionCest extends BaseFunctionalCest
 
         $I->submitForm('form', [
             'email' => $this->email,
-            'mailingList' => $this->mailingList->slug,
+            'mailingList' => MailingListElement::find()->mailingListType('mailingListType1')->one()->slug,
         ]);
 
         $I->see('Success');
