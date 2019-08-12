@@ -7,8 +7,7 @@
 namespace putyourlightson\campaigntests\fixtures;
 
 use craft\test\Fixture;
-use putyourlightson\campaign\records\CampaignTypeRecord;
-use putyourlightson\campaign\records\MailingListTypeRecord;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\PendingContactRecord;
 
 /**
@@ -31,4 +30,28 @@ class PendingContactsFixture extends Fixture
      * @inheritdoc
      */
     public $modelClass = PendingContactRecord::class;
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [MailingListsFixture::class];
+
+    /**
+     * @var int|null
+     */
+    public $mailingListId;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function load()
+    {
+        $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
+        $this->mailingListId = $mailingList ? $mailingList->id : null;
+
+        parent::load();
+    }
 }

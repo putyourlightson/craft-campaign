@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
@@ -7,12 +6,7 @@
 
 return [
     [
-        'campaignTypeId' => '1000',
+        'campaignTypeId' => $this->campaignTypeIds['campaignType1'] ?? null,
         'title' => 'Campaign 1',
     ],
-    [
-        'campaignTypeId' => '1001',
-        'title' => 'Campaign 2',
-    ],
-
 ];

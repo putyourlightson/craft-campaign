@@ -6,8 +6,12 @@
 
 namespace putyourlightson\campaigntests\unit\controllers;
 
-use Craft;
-use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\records\PendingContactRecord;
+use putyourlightson\campaigntests\fixtures\ContactsFixture;
+use putyourlightson\campaigntests\fixtures\MailingListsFixture;
+use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 use putyourlightson\campaigntests\unit\BaseControllerTest;
 use yii\web\NotFoundHttpException;
 
@@ -19,16 +23,36 @@ use yii\web\NotFoundHttpException;
 
 class FormsControllerTest extends BaseControllerTest
 {
+    // Fixtures
+    // =========================================================================
+
+    /**
+     * @return array
+     */
+    public function _fixtures(): array
+    {
+        return [
+            'mailingLists' => [
+                'class' => MailingListsFixture::class
+            ],
+            'contacts' => [
+                'class' => ContactsFixture::class
+            ],
+            'pendingContacts' => [
+                'class' => PendingContactsFixture::class
+            ],
+        ];
+    }
+
     // Public methods
     // =========================================================================
 
     public function testSubscribeSuccess()
     {
-        $this->mailingListType->subscribeVerificationRequired = false;
-        Campaign::$plugin->mailingListTypes->saveMailingListType($this->mailingListType, false);
+        $mailingList = MailingListElement::find()->mailingListType('mailingListType1')->one();
 
         $this->runActionWithParams('forms/subscribe', [
-            'mailingList' => $this->mailingList->slug,
+            'mailingList' => $mailingList->slug,
             'email' => $this->email,
         ]);
 
@@ -38,16 +62,15 @@ class FormsControllerTest extends BaseControllerTest
 
     public function testSubscribeVerify()
     {
-        $this->mailingListType->subscribeVerificationRequired = true;
-        Campaign::$plugin->mailingListTypes->saveMailingListType($this->mailingListType);
+        $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
 
         $this->runActionWithParams('forms/subscribe', [
-            'mailingList' => $this->mailingList->slug,
+            'mailingList' => $mailingList->slug,
             'email' => $this->email,
         ]);
 
         // Assert that the message subject is correct
-        $this->assertEquals($this->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
+        $this->assertEquals($mailingList->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
         $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
@@ -55,9 +78,11 @@ class FormsControllerTest extends BaseControllerTest
 
     public function testUpdateContactSuccess()
     {
+        $contact = ContactElement::find()->one();
+
         $response = $this->runActionWithParams('forms/update-contact', [
-            'cid' => $this->contact->cid,
-            'uid' => $this->contact->uid,
+            'cid' => $contact->cid,
+            'uid' => $contact->uid,
         ]);
 
         // Assert that the response is not null
@@ -68,8 +93,10 @@ class FormsControllerTest extends BaseControllerTest
     {
         // Expect an exception
         $this->tester->expectException(NotFoundHttpException::class, function() {
+            $contact = ContactElement::find()->one();
+
             $this->runActionWithParams('forms/update-contact', [
-                'cid' => $this->contact->cid,
+                'cid' => $contact->cid,
                 'uid' => '',
             ]);
         });
@@ -77,8 +104,10 @@ class FormsControllerTest extends BaseControllerTest
 
     public function testVerifySubscribeSuccess()
     {
+        $pendingContact = PendingContactRecord::find()->one();
+
         $response = $this->runActionWithParams('forms/verify-subscribe', [
-            'pid' => $this->pendingContact->pid,
+            'pid' => $pendingContact->pid,
         ]);
 
         // Assert that the response is not null
@@ -89,9 +118,7 @@ class FormsControllerTest extends BaseControllerTest
     {
         // Expect an exception
         $this->tester->expectException(NotFoundHttpException::class, function() {
-            $this->runActionWithParams('forms/verify-subscribe', [
-                'pid' => '',
-            ]);
+            $this->runActionWithParams('forms/verify-subscribe', []);
         });
     }
 }

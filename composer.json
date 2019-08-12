@@ -24,6 +24,10 @@
         "aws/aws-php-sns-message-validator": "^1.5.0",
         "ext-dom": "*"
     },
+    "require-dev": {
+        "codeception/codeception": "^3.0",
+        "vlucas/phpdotenv": "^3.3"
+    },
     "autoload": {
         "psr-4": {
           "putyourlightson\\campaign\\": "src/"
@@ -44,9 +48,5 @@
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
         "class": "putyourlightson\\campaign\\Campaign"
-    },
-    "require-dev": {
-        "codeception/codeception": "^3.0",
-        "vlucas/phpdotenv": "^3.3"
     }
 }

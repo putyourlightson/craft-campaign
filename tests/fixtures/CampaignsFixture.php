@@ -6,7 +6,7 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use putyourlightson\campaign\tests\fixtures\elements\CampaignElementFixture;
+use putyourlightson\campaign\test\fixtures\elements\CampaignElementFixture;
 
 /**
  * @author    PutYourLightsOn

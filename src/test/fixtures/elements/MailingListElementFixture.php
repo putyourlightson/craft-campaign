@@ -4,11 +4,11 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\fixtures\elements;
+namespace putyourlightson\campaign\test\fixtures\elements;
 
 use craft\test\fixtures\elements\ElementFixture;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
  * @author    PutYourLightsOn
@@ -16,7 +16,7 @@ use putyourlightson\campaign\elements\CampaignElement;
  * @since     1.10.0
  */
 
-abstract class CampaignElementFixture extends ElementFixture
+abstract class MailingListElementFixture extends ElementFixture
 {
     // Public Properties
     // =========================================================================
@@ -24,12 +24,12 @@ abstract class CampaignElementFixture extends ElementFixture
     /**
      * @inheritdoc
      */
-    public $modelClass = CampaignElement::class;
+    public $modelClass = MailingListElement::class;
 
     /**
      * @var array
      */
-    public $campaignTypeIds = [];
+    public $mailingListTypeIds = [];
 
     // Public Methods
     // =========================================================================
@@ -37,13 +37,13 @@ abstract class CampaignElementFixture extends ElementFixture
     /**
      * @inheritdoc
      */
-    public function init()
+    public function load()
     {
-        parent::init();
-
-        foreach (Campaign::$plugin->campaignTypes->getAllCampaignTypes() as $campaignType) {
-            $this->campaignTypeIds[$campaignType->handle] = $campaignType->id;
+        foreach (Campaign::$plugin->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
+            $this->mailingListTypeIds[$mailingListType->handle] = $mailingListType->id;
         }
+
+        parent::load();
     }
 
     // Protected Methods
@@ -54,6 +54,6 @@ abstract class CampaignElementFixture extends ElementFixture
      */
     protected function isPrimaryKey(string $key): bool
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['campaignTypeId', 'title']);
+        return parent::isPrimaryKey($key) || in_array($key, ['mailingListTypeId', 'title']);
     }
 }
