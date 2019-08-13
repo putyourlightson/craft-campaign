@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
@@ -7,12 +6,13 @@
 
 return [
     [
-        'mailingListId' => '1000',
+        'mailingListTypeId' => $this->mailingListTypeIds['mailingListType1'] ?? null,
         'title' => 'Mailing List 1',
+        'slug' => 'mailing-list-1',
     ],
     [
-        'mailingListId' => '1001',
+        'mailingListTypeId' => $this->mailingListTypeIds['mailingListType2'] ?? null,
         'title' => 'Mailing List 2',
+        'slug' => 'mailing-list-2',
     ],
-
 ];

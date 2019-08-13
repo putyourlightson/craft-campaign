@@ -32,6 +32,30 @@ class PendingContactsService extends Component
     // =========================================================================
 
     /**
+     * Returns pending contact by PID
+     *
+     * @param string $pid
+     *
+     * @return PendingContactModel|null
+     */
+    public function getPendingContactByPid(string $pid)
+    {
+        // Get pending contact
+        $pendingContactRecord = PendingContactRecord::find()
+            ->where(['pid' => $pid])
+            ->one();
+
+        if ($pendingContactRecord === null) {
+            return null;
+        }
+
+        /** @var PendingContactModel $pendingContact */
+        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
+
+        return $pendingContact;
+    }
+
+    /**
      * Saves a pending contact
      *
      * @param PendingContactModel $pendingContact
@@ -83,17 +107,7 @@ class PendingContactsService extends Component
      */
     public function verifyPendingContact(string $pid)
     {
-        // Get pending contact
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pid])
-            ->one();
-
-        if ($pendingContactRecord === null) {
-            return null;
-        }
-
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
+        $pendingContact = $this->getPendingContactByPid($pid);
 
         // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);

@@ -7,7 +7,6 @@
 namespace putyourlightson\campaigntests\fixtures;
 
 use craft\test\Fixture;
-use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
 /**

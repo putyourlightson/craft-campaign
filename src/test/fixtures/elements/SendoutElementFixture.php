@@ -4,11 +4,13 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\fixtures\elements;
+namespace putyourlightson\campaign\test\fixtures\elements;
 
 use craft\test\fixtures\elements\ElementFixture;
-use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SendoutElement;
+use yii\debug\models\search\Mail;
 
 /**
  * @author    PutYourLightsOn
@@ -16,7 +18,7 @@ use putyourlightson\campaign\elements\MailingListElement;
  * @since     1.10.0
  */
 
-abstract class MailingListElementFixture extends ElementFixture
+abstract class SendoutElementFixture extends ElementFixture
 {
     // Public Properties
     // =========================================================================
@@ -24,12 +26,17 @@ abstract class MailingListElementFixture extends ElementFixture
     /**
      * @inheritdoc
      */
-    public $modelClass = MailingListElement::class;
+    public $modelClass = SendoutElement::class;
+
+    /**
+     * @var int|null
+     */
+    public $campaignId;
 
     /**
      * @var array
      */
-    public $mailingListTypeIds = [];
+    public $mailingListIds = [];
 
     // Public Methods
     // =========================================================================
@@ -37,13 +44,15 @@ abstract class MailingListElementFixture extends ElementFixture
     /**
      * @inheritdoc
      */
-    public function init()
+    public function load()
     {
-        parent::init();
+        $campaign = CampaignElement::find()->one();
+        $this->campaignId = $campaign ? $campaign->id : null;
 
-        foreach (Campaign::$plugin->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
-            $this->mailingListTypeIds[$mailingListType->handle] = $mailingListType->id;
-        }
+        $mailingList = MailingListElement::find()->one();
+        $this->mailingListIds = $mailingList ? [$mailingList->id] : null;
+
+        parent::load();
     }
 
     // Protected Methods
@@ -54,6 +63,6 @@ abstract class MailingListElementFixture extends ElementFixture
      */
     protected function isPrimaryKey(string $key): bool
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['mailingListTypeId', 'title']);
+        return parent::isPrimaryKey($key) || in_array($key, ['title']);
     }
 }

@@ -4,7 +4,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\tests\fixtures\elements;
+namespace putyourlightson\campaign\test\fixtures\elements;
 
 use craft\test\fixtures\elements\ElementFixture;
 use putyourlightson\campaign\elements\ContactElement;

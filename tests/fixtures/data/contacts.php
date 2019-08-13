@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
@@ -7,10 +6,13 @@
 
 return [
     [
-        'email' => 'active1@contact.com',
+        'email' => 'contact1@contacts.com',
+        'cid' => 'cid1',
+        'uid' => 'uid1',
     ],
     [
-        'email' => 'active2@contact.com',
+        'email' => 'contact2@contacts.com',
+        'cid' => 'cid2',
+        'uid' => 'uid2',
     ],
-
 ];

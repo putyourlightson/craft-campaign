@@ -1,20 +1,16 @@
 <?php
-
 /**
  * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
  */
 
+use putyourlightson\campaign\helpers\StringHelper;
+
 return [
     [
-        'pid' => 'p1',
-        'email' => 'pending1@contact.com',
+        'pid' => StringHelper::uniqueId('p'),
+        'mailingListId' => $this->mailingListId ?? null,
+        'email' => 'pending1@contacts.com',
         'fieldData' => [],
     ],
-    [
-        'pid' => 'p2',
-        'email' => 'pending2@contact.com',
-        'fieldData' => [],
-    ],
-
 ];

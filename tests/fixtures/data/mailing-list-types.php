@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link      https://craftcampaign.com
  * @copyright Copyright (c) PutYourLightsOn
@@ -7,21 +6,19 @@
 
 return [
     [
-        'id' => '1000',
-        'name' => 'Test 1',
-        'handle' => 'test1',
-        'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
-        'subscribeVerificationEmailRequired' => true,
+        'name' => 'Mailing List Type 1',
+        'handle' => 'mailingListType1',
+        'siteId' => 1,
+        'subscribeVerificationRequired' => false,
+        'unsubscribeFormAllowed' => false,
+    ],
+    [
+        'name' => 'Mailing List Type 2',
+        'handle' => 'mailingListType2',
+        'siteId' => 1,
+        'subscribeVerificationRequired' => true,
         'subscribeVerificationEmailSubject' => 'Subscribe Verification Email Subject',
         'unsubscribeFormAllowed' => true,
         'unsubscribeVerificationEmailSubject' => 'Unsubscribe Verification Email Subject',
-    ],
-    [
-        'id' => '1001',
-        'name' => 'Test 2',
-        'handle' => 'test2',
-        'siteId' => Craft::$app->getSites()->getPrimarySite()->id,
-        'subscribeVerificationEmailRequired' => false,
-        'unsubscribeFormAllowed' => false,
     ],
 ];

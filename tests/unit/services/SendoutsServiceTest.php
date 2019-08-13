@@ -5,12 +5,16 @@
 
 namespace putyourlightson\campaigntests\unit\services;
 
-use Codeception\Test\Unit;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaigntests\fixtures\CampaignsFixture;
+use putyourlightson\campaigntests\fixtures\CampaignTypesFixture;
+use putyourlightson\campaigntests\fixtures\ContactsFixture;
+use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -18,7 +22,7 @@ use putyourlightson\campaigntests\fixtures\SendoutsFixture;
  * @since     1.10.0
  */
 
-class SendoutsServiceTest extends Unit
+class SendoutsServiceTest extends BaseUnitTest
 {
     // Fixtures
     // =========================================================================
@@ -29,6 +33,18 @@ class SendoutsServiceTest extends Unit
     public function _fixtures(): array
     {
         return [
+            'mailingLists' => [
+                'class' => MailingListsFixture::class
+            ],
+            'contacts' => [
+                'class' => ContactsFixture::class
+            ],
+            'campaignTypes' => [
+                'class' => CampaignTypesFixture::class
+            ],
+            'campaigns' => [
+                'class' => CampaignsFixture::class
+            ],
             'sendouts' => [
                 'class' => SendoutsFixture::class
             ],
@@ -40,11 +56,10 @@ class SendoutsServiceTest extends Unit
 
     public function testSendEmailSent()
     {
-        $sendout = SendoutElement::find()->title('Sendout 1')->one();
-        $contact = ContactElement::find()->title('Contact 1')->one();
-        $mailingList = MailingListElement::find()->title('Mailing List 1')->one();
+        $sendout = SendoutElement::find()->one();
+        $contact = ContactElement::find()->one();
+        $mailingList = MailingListElement::find()->one();
 
-        die();
         Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingList->id);
 
         // Assert that the message recipient is correct

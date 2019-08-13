@@ -8,6 +8,7 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
+use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
@@ -18,22 +19,37 @@ use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 class PendingContactsServiceTest extends BaseUnitTest
 {
+    // Fixtures
+    // =========================================================================
+
+    /**
+     * @return array
+     */
+    public function _fixtures(): array
+    {
+        return [
+            'pendingContacts' => [
+                'class' => PendingContactsFixture::class
+            ],
+        ];
+    }
+
     // Public methods
     // =========================================================================
 
     public function testVerifyPendingContact()
     {
-        Campaign::$plugin->pendingContacts->verifyPendingContact($this->pendingContact->pid);
+        $pendingContact = PendingContactRecord::find()->one();
+
+        Campaign::$plugin->pendingContacts->verifyPendingContact($pendingContact->pid);
 
         // Assert that the contact was created
-        $this->assertNotNull(Campaign::$plugin->contacts->getContactByEmail($this->pendingContact->email));
+        $this->assertNotNull(Campaign::$plugin->contacts->getContactByEmail($pendingContact->email));
 
-        $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $this->pendingContact->pid])
-            ->one();
+        $pendingContact = Campaign::$plugin->pendingContacts->getPendingContactByPid($pendingContact->pid);
 
         // Assert that the pending contact was deleted
-        $this->assertNull($pendingContactRecord);
+        $this->assertNull($pendingContact);
     }
 
     public function testPurgeExpiredPendingContacts()
@@ -46,11 +62,9 @@ class PendingContactsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
 
-        $pendingContactCount = PendingContactRecord::find()
-            ->where(['pid' => $this->pendingContact->pid])
-            ->count();
+        $pendingContact = PendingContactRecord::find()->one();
 
         // Assert that the pending contact was deleted
-        $this->assertEquals(0, $pendingContactCount);
+        $this->assertNull($pendingContact);
     }
 }
