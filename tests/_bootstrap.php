@@ -17,3 +17,6 @@ define('CRAFT_VENDOR_PATH', '/Users/ben/Sites/craft32/vendor');
 $devMode = true;
 
 TestSetup::configureCraft();
+
+// Prevent `headers already sent` error
+ob_start();
