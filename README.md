@@ -26,6 +26,6 @@ Craft CMS 3.1.0 or later.
 
 To install the plugin, search for "Campaign" in the Craft Plugin Store, or install manually using composer.
 
-        composer require putyourlightson/craft-campaign
+    composer require putyourlightson/craft-campaign
 
 <small>Created by [PutYourLightsOn](https://putyourlightson.com/).</small>
