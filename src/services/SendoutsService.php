@@ -159,13 +159,10 @@ class SendoutsService extends Component
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
-        // Set columns to select and group by
-        $columns = ['contactId', 'mailingListId', 'subscribed'];
-
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
-            ->select($columns)
-            ->groupBy($columns)
+            ->select(['contactId', 'min(mailingListId) as mailingListId'])
+            ->groupBy('contactId')
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),
                 'subscriptionStatus' => 'subscribed',
@@ -550,7 +547,7 @@ class SendoutsService extends Component
         }
 
         // Update send status to pending if automated or recurring or not fully complete
-        if ($sendout->sendoutType == 'automated' || 
+        if ($sendout->sendoutType == 'automated' ||
             $sendout->sendoutType == 'recurring' ||
             count($this->getPendingRecipients($sendout)) > 0
         ) {
