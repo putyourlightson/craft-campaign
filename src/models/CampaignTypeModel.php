@@ -80,6 +80,11 @@ class CampaignTypeModel extends BaseModel
      */
     public $queryStringParameters;
 
+    /**
+     * @var string|null UID
+     */
+    public $uid;
+
     // Public Methods
     // =========================================================================
 

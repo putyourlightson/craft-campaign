@@ -6,6 +6,9 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\events\ConfigEvent;
+use craft\helpers\Db;
+use craft\helpers\StringHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
@@ -17,7 +20,6 @@ use Craft;
 use craft\base\Component;
 use Throwable;
 use yii\base\Exception;
-use yii\web\NotFoundHttpException;
 
 /**
  * CampaignTypesService
@@ -52,6 +54,8 @@ class CampaignTypesService extends Component
      * @event CampaignTypeEvent
      */
     const EVENT_AFTER_DELETE_CAMPAIGN_TYPE = 'afterDeleteCampaignType';
+
+    const CONFIG_CAMPAIGNTYPES_KEY = 'campaign.campaignTypes';
 
     // Public Methods
     // =========================================================================
@@ -96,6 +100,27 @@ class CampaignTypesService extends Component
     }
 
     /**
+     * Returns campaign type by UID
+     *
+     * @param string $uid
+     *
+     * @return CampaignTypeModel|null
+     */
+    public function getCampaignTypeByUid(string $uid)
+    {
+        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+
+        if ($campaignTypeRecord === null) {
+            return null;
+        }
+
+        /** @var CampaignTypeModel $campaignType */
+        $campaignType = CampaignTypeModel::populateModel($campaignTypeRecord, false);
+
+        return $campaignType;
+    }
+
+    /**
      * Returns campaign type by handle
      *
      * @param string $campaignTypeHandle
@@ -119,18 +144,23 @@ class CampaignTypesService extends Component
     /**
      * Saves a campaign type.
      *
-     * @param CampaignTypeModel $campaignType  The campaign type to be saved
+     * @param CampaignTypeModel $campaignType The campaign type to be saved
      * @param bool|null $runValidation Whether the campaign type should be validated
      *
      * @return bool Whether the campaign type was saved successfully
-     * @throws NotFoundHttpException if $campaignType->id is invalid
-     * @throws Throwable if reasons
+     * @throws \Exception
      */
-    public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = null): bool
+    public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = true): bool
     {
-        $runValidation = $runValidation ?? true;
-
         $isNew = $campaignType->id === null;
+
+        // Ensure the campaign type has a UID
+        if ($isNew) {
+            $campaignType->uid = StringHelper::UUID();
+        }
+        else if (!$campaignType->uid) {
+            $campaignType->uid = Db::uidById(CampaignTypeRecord::tableName(), $campaignType->id);
+        }
 
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE)) {
@@ -146,45 +176,53 @@ class CampaignTypesService extends Component
             return false;
         }
 
-        if ($campaignType->id) {
-            $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
+        // Save the field layout
+        $fieldLayout = $campaignType->getFieldLayout();
+        Craft::$app->getFields()->saveLayout($fieldLayout);
+        $campaignType->fieldLayoutId = $fieldLayout->id;
 
-            if ($campaignTypeRecord === null) {
-                throw new NotFoundHttpException("No campaign type exists with the ID '{$campaignType->id}'");
-            }
+        // Save it to project config
+        $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
+        Craft::$app->projectConfig->set($path, $campaignType->getAttributes());
+
+        // Set the ID on the campaign type
+        if ($isNew) {
+            $campaignType->id = Db::idByUid(CampaignTypeRecord::tableName(), $campaignType->uid);
         }
-        else {
+
+        return true;
+    }
+
+    public function handleChangedCampaignType(ConfigEvent $event)
+    {
+        // Get the UID that was matched in the config path
+        $uid = $event->tokenMatches[0];
+        $data = $event->newValue;
+
+        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+
+        $isNew = empty($campaignTypeRecord);
+
+        if ($isNew ) {
             $campaignTypeRecord = new CampaignTypeRecord();
         }
 
         // Save old site ID for resaving elements later
         $oldSiteId = $campaignTypeRecord->siteId;
 
-        $campaignTypeRecord->setAttributes($campaignType->getAttributes(), false);
-
-        // Unset ID if null to avoid making postgres mad
-        if ($campaignTypeRecord->id === null) {
-            unset($campaignTypeRecord->id);
-        }
-
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
-            // Save the field layout
-            $fieldLayout = $campaignType->getFieldLayout();
-            Craft::$app->getFields()->saveLayout($fieldLayout);
+            $campaignTypeRecord->setAttributes($data);
 
-            $campaignType->fieldLayoutId = $fieldLayout->id;
-            $campaignTypeRecord->fieldLayoutId = $fieldLayout->id;
+            // Unset ID if null to avoid making postgres mad
+            if ($campaignTypeRecord->id === null) {
+                unset($campaignTypeRecord->id);
+            }
 
             // Save the campaign type
             if (!$campaignTypeRecord->save(false)) {
                 throw new Exception('Couldn’t save campaign type record.');
-            }
-
-            // Now that we have a campaign type ID, save it on the model
-            if (!$campaignType->id) {
-                $campaignType->id = $campaignTypeRecord->id;
             }
 
             $transaction->commit();
@@ -192,6 +230,9 @@ class CampaignTypesService extends Component
             $transaction->rollBack();
             throw $e;
         }
+
+        // Get campaign type model
+        $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
@@ -217,8 +258,6 @@ class CampaignTypesService extends Component
                 'siteId' => $campaignType->siteId,
             ]));
         }
-
-        return true;
     }
 
     /**
@@ -257,16 +296,35 @@ class CampaignTypesService extends Component
             ]));
         }
 
+        // Remove it from project config
+        $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
+        Craft::$app->projectConfig->remove($path);
+
+        return true;
+    }
+
+    public function handleDeletedCampaignType(ConfigEvent $event)
+    {
+        // Get the UID that was matched in the config path
+        $uid = $event->tokenMatches[0];
+
+        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+
+        if ($campaignTypeRecord == null) {
+            return;
+        }
+
         $transaction = Craft::$app->getDb()->beginTransaction();
+
         try {
             // Delete the field layout
-            if ($campaignType->fieldLayoutId) {
-                Craft::$app->getFields()->deleteLayoutById($campaignType->fieldLayoutId);
+            if ($campaignTypeRecord->fieldLayoutId) {
+                Craft::$app->getFields()->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
             }
 
             // Delete the campaigns
             $campaigns = CampaignElement::find()
-                ->campaignTypeId($campaignType->id)
+                ->campaignTypeId($campaignTypeRecord->id)
                 ->all();
 
             $elements = Craft::$app->getElements();
@@ -276,11 +334,7 @@ class CampaignTypesService extends Component
             }
 
             // Delete the campaign type
-            $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
-
-            if ($campaignTypeRecord !== null) {
-                $campaignTypeRecord->delete();
-            }
+            $campaignTypeRecord->delete();
 
             $transaction->commit();
         } catch (Throwable $e) {
@@ -289,13 +343,14 @@ class CampaignTypesService extends Component
             throw $e;
         }
 
+        // Get campaign type model
+        $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
+
         // Fire a 'afterDeleteCampaignType' event
         if ($this->hasEventHandlers(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
             ]));
         }
-
-        return true;
     }
 }

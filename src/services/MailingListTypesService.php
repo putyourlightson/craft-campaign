@@ -50,6 +50,8 @@ class MailingListTypesService extends Component
      */
     const EVENT_AFTER_DELETE_MAILINGLIST_TYPE = 'afterDeleteMailingListType';
 
+    const CONFIG_MAILINGLISTTYPES_KEY = 'campaign.mailingListTypes';
+
     // Public Methods
     // =========================================================================
 

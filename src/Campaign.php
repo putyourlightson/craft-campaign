@@ -189,7 +189,7 @@ class Campaign extends Plugin
 
         // Register after install event
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     // Create and save default settings
                     $settings = $this->createSettingsModel();
@@ -204,6 +204,9 @@ class Campaign extends Plugin
                 }
             }
         );
+
+        // Register project config listeners
+        $this->_registerConfigListeners();
     }
 
     /**
@@ -454,5 +457,26 @@ class Campaign extends Plugin
         $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
 
         return $permissions;
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Register event listeners for config changes.
+     */
+    private function _registerConfigListeners()
+    {
+        // Campaign types
+        Craft::$app->projectConfig
+            ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
+            ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
+            ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
+
+        // Mailing list types types
+        Craft::$app->projectConfig
+            ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
+            ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
+            ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleDeletedMailingListType']);
     }
 }

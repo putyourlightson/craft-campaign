@@ -105,6 +105,11 @@ class MailingListTypeModel extends BaseModel
      */
     public $unsubscribeSuccessTemplate;
 
+    /**
+     * @var string|null UID
+     */
+    public $uid;
+
     // Public Methods
     // =========================================================================
 
