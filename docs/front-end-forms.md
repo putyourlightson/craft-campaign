@@ -95,9 +95,9 @@ You can create a contact update form as follows. Note that the contact’s `cid`
 
     {% set contact = craft.campaign.contacts.userId(currentUser.id).one() %}
     
-    <form id="unsubscribe-form" method="post" action="">
+    <form id="update-form" method="post" action="">
         {{ csrfInput() }}
-        <input type="hidden" name="action" value="campaign/contacts/unsubscribe-mailing-list" />
+        <input type="hidden" name="action" value="campaign/forms/update-contact" />
         <input type="hidden" name="cid" value="{{ contact.cid }}" />
         <input type="hidden" name="uid" value="{{ contact.uid }}" />
         

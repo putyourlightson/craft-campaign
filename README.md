@@ -4,15 +4,15 @@
 
 Campaign is an email marketing plugin built specifically for Craft 3. It aims to bring the distribution of content by email into the CMS, where we believe it should be, along with the same ethos of flexibility and user-friendliness that Craft does. 
  
-Learn more at [craftcampaign.com](https://craftcampaign.com).
+## Documentation
 
-Read the documentation at [craftcampaign.com/docs](https://craftcampaign.com/docs).
+Learn more and read the documentation at [putyourlightson.com/plugins/campaign »](https://putyourlightson.com/plugins/campaign)
   
-Read more about the pro features at [craftcampaign.com/docs/pro-features](https://craftcampaign.com/docs/pro-features).
+Read more about the pro features at [putyourlightson.com/plugins/campaign#pro-features »](https://putyourlightson.com/plugins/campaign#pro-features)
 
 ## License
 
-This plugin requires a commercial license which can be purchased through the Craft Plugin Store. The license fee is $149 plus $49 per subsequent year for updates (optional). The license fee for the pro version is an additional $99 plus $39 per subsequent year for updates (optional).
+This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/campaign). The license fee for the lite version is **$149** plus **$49** per subsequent year for updates (optional). The license fee for the pro version is **$249** plus **$79** per subsequent year for updates (optional).
 
 ## Requirements
 
@@ -22,6 +22,6 @@ Craft CMS 3.1.0 or later.
 
 To install the plugin, search for "Campaign" in the Craft Plugin Store, or install manually using composer.
 
-        composer require putyourlightson/craft-campaign
+    composer require putyourlightson/craft-campaign
 
 <small>Created by [PutYourLightsOn](https://putyourlightson.com/).</small>
