@@ -1,8 +1,4 @@
-<p align="center">
-   <a href="https://craftcampaign.com/" target="_blank">
-     <img width="300" src="https://craftcampaign.com/interface/images/logo.svg?v=201800406" alt="craftcampaign.com">
-   </a>
-</p>
+<p align="center"><img height="150" src="src/icon.svg"></p>
 
 # Campaign Plugin for Craft CMS 3
 
