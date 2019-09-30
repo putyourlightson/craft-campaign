@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 1.11.2 - Unreleased
+## 1.12.0 - Unreleased
+### Added
+- Added campaign and mailing list types to project config.
+
 ### Fixed
 - Fixed the number of expected recipients when there were contacts who were subscribed to multiple mailing lists.
 
@@ -16,7 +19,7 @@
 - Added compatibility with reCAPTCHA version 3.
 
 ### Fixed
-- Fixed the reCAPTCHA code that is output when not set to invisible([#85](https://github.com/putyourlightson/craft-campaign/issues/85)).
+- Fixed the reCAPTCHA code that is output when not set to invisible ([#85](https://github.com/putyourlightson/craft-campaign/issues/85)).
 - Fixed the reCAPTCHA code that is output when more than one instance of the template tag is used ([#86](https://github.com/putyourlightson/craft-campaign/issues/86)).
 
 ### Deprecated

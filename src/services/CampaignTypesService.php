@@ -201,7 +201,7 @@ class CampaignTypesService extends Component
 
         $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
 
-        $isNew = empty($campaignTypeRecord);
+        $isNew = $campaignTypeRecord === null;
 
         if ($isNew ) {
             $campaignTypeRecord = new CampaignTypeRecord();
@@ -213,7 +213,7 @@ class CampaignTypesService extends Component
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
-            $campaignTypeRecord->setAttributes($data);
+            $campaignTypeRecord->setAttributes($data, false);
 
             // Unset ID if null to avoid making postgres mad
             if ($campaignTypeRecord->id === null) {
@@ -222,7 +222,7 @@ class CampaignTypesService extends Component
 
             // Save the campaign type
             if (!$campaignTypeRecord->save(false)) {
-                throw new Exception('Couldn’t save campaign type record.');
+                throw new Exception('Couldn’t save campaign type.');
             }
 
             $transaction->commit();
@@ -346,7 +346,7 @@ class CampaignTypesService extends Component
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
 
-        // Fire a 'afterDeleteCampaignType' event
+        // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,

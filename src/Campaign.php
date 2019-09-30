@@ -10,6 +10,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\errors\MissingComponentException;
 use craft\events\PluginEvent;
+use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -21,11 +22,13 @@ use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
 use craft\services\Plugins;
+use craft\services\ProjectConfig;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\campaign\controllers\TrackerController;
+use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
@@ -478,5 +481,10 @@ class Campaign extends Plugin
             ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
             ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleDeletedMailingListType']);
+
+        // Rebuild project config data
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $e) {
+            $e->config['campaign'] = ProjectConfigDataHelper::rebuildProjectConfig();
+        });
     }
 }
