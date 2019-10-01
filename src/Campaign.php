@@ -469,6 +469,8 @@ class Campaign extends Plugin
 
     /**
      * Register event listeners for config changes.
+     *
+     * @since 1.12.0
      */
     private function _registerConfigListeners()
     {

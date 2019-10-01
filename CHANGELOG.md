@@ -4,6 +4,9 @@
 ### Added
 - Added campaign and mailing list types to project config.
 
+### Changed
+- Changed minimum requirement of Craft to version 3.1.20.
+
 ### Fixed
 - Fixed the number of expected recipients when there were contacts who were subscribed to multiple mailing lists.
 

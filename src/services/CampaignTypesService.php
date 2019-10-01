@@ -63,6 +63,9 @@ class CampaignTypesService extends Component
      */
     const EVENT_AFTER_DELETE_CAMPAIGN_TYPE = 'afterDeleteCampaignType';
 
+    /**
+     * @since 1.12.0
+     */
     const CONFIG_CAMPAIGNTYPES_KEY = 'campaign.campaignTypes';
 
     // Public Methods
