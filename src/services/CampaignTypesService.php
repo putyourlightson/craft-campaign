@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\services;
 use craft\base\Field;
 use craft\db\Table;
 use craft\events\ConfigEvent;
+use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
@@ -204,6 +205,11 @@ class CampaignTypesService extends Component
         return true;
     }
 
+    /**
+     * Handles a changed campaign type.
+     *
+     * @param ConfigEvent $event
+     */
     public function handleChangedCampaignType(ConfigEvent $event)
     {
         // Make sure all sites and fields are processed
@@ -235,7 +241,7 @@ class CampaignTypesService extends Component
             $fieldsService = Craft::$app->getFields();
 
             if (!empty($data['fieldLayouts']) && !empty($config = reset($data['fieldLayouts']))) {
-                // Save the main field layout
+                // Save the field layout
                 $layout = FieldLayout::createFromConfig($config);
                 $layout->id = $campaignTypeRecord->fieldLayoutId;
                 $layout->type = CampaignElement::class;
@@ -244,7 +250,7 @@ class CampaignTypesService extends Component
                 $campaignTypeRecord->fieldLayoutId = $layout->id;
             }
             else if ($campaignTypeRecord->fieldLayoutId) {
-                // Delete the main field layout
+                // Delete the field layout
                 $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
                 $campaignTypeRecord->fieldLayoutId = null;
             }
@@ -337,6 +343,11 @@ class CampaignTypesService extends Component
         return true;
     }
 
+    /**
+     * Handles a deleted campaign type.
+     *
+     * @param ConfigEvent $event
+     */
     public function handleDeletedCampaignType(ConfigEvent $event)
     {
         // Get the UID that was matched in the config path
@@ -384,6 +395,27 @@ class CampaignTypesService extends Component
             $this->trigger(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
             ]));
+        }
+    }
+
+    /**
+     * Handles a deleted site.
+     *
+     * @param DeleteSiteEvent $event
+     */
+    public function handleDeletedSite(DeleteSiteEvent $event)
+    {
+        $siteUid = $event->site->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $campaignTypes = $projectConfig->get(self::CONFIG_CAMPAIGNTYPES_KEY);
+
+        if (is_array($campaignTypes)) {
+            foreach ($campaignTypes as $campaignTypeUid => $campaignType) {
+                if ($campaignTypeUid == $siteUid) {
+                    $this->deleteCampaignType($campaignType);
+                }
+            }
         }
     }
 

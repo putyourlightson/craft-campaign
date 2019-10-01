@@ -153,7 +153,6 @@ class ContactsService extends Component
      *
      * @return bool
      * @throws Exception
-     * @throws MissingComponentException
      *
      * @deprecated in 1.10.0. Use [[PendingContactsService::sendVerifySubscribeEmail()]] instead.
      */

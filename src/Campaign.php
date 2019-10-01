@@ -24,6 +24,7 @@ use craft\mail\transportadapters\Sendmail;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\ProjectConfig;
+use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
 use craft\web\UrlManager;
@@ -476,6 +477,7 @@ class Campaign extends Plugin
             ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
+        Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->campaignTypes, 'handleDeletedSite']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->campaignTypes, 'pruneDeletedField']);
 
         // Mailing list types types
@@ -483,6 +485,7 @@ class Campaign extends Plugin
             ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
+        Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->mailingListTypes, 'handleDeletedSite']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingListTypes, 'pruneDeletedField']);
 
         // Rebuild project config data

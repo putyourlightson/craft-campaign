@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\test\fixtures\elements;
 use craft\test\fixtures\elements\ElementFixture;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaigntests\fixtures\CampaignTypesFixture;
 
 /**
  * @author    PutYourLightsOn

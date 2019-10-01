@@ -9,6 +9,7 @@ namespace putyourlightson\campaign\services;
 use craft\base\Field;
 use craft\db\Table;
 use craft\events\ConfigEvent;
+use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
@@ -176,6 +177,11 @@ class MailingListTypesService extends Component
         return true;
     }
 
+    /**
+     * Handles a changed mailing list type.
+     *
+     * @param ConfigEvent $event
+     */
     public function handleChangedMailingListType(ConfigEvent $event)
     {
         // Make sure all sites and fields are processed
@@ -207,7 +213,7 @@ class MailingListTypesService extends Component
             $fieldsService = Craft::$app->getFields();
 
             if (!empty($data['fieldLayouts']) && !empty($config = reset($data['fieldLayouts']))) {
-                // Save the main field layout
+                // Save the field layout
                 $layout = FieldLayout::createFromConfig($config);
                 $layout->id = $mailingListTypeRecord->fieldLayoutId;
                 $layout->type = MailingListElement::class;
@@ -216,7 +222,7 @@ class MailingListTypesService extends Component
                 $mailingListTypeRecord->fieldLayoutId = $layout->id;
             }
             else if ($mailingListTypeRecord->fieldLayoutId) {
-                // Delete the main field layout
+                // Delete the field layout
                 $fieldsService->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
                 $mailingListTypeRecord->fieldLayoutId = null;
             }
@@ -258,7 +264,7 @@ class MailingListTypesService extends Component
                 'elementType' => MailingListElement::class,
                 'criteria' => [
                     'siteId' => $oldSiteId,
-                    'campaignTypeId' => $mailingListType->id,
+                    'mailingListTypeId' => $mailingListType->id,
                     'status' => null,
                 ],
                 'siteId' => $mailingListType->siteId,
@@ -309,6 +315,11 @@ class MailingListTypesService extends Component
         return true;
     }
 
+    /**
+     * Handles a deleted mailing list type.
+     *
+     * @param ConfigEvent $event
+     */
     public function handleDeletedMailingListType(ConfigEvent $event)
     {
         // Get the UID that was matched in the config path
@@ -355,6 +366,27 @@ class MailingListTypesService extends Component
             $this->trigger(self::EVENT_AFTER_DELETE_MAILINGLIST_TYPE, new MailingListTypeEvent([
                 'mailingListType' => $mailingListType,
             ]));
+        }
+    }
+
+    /**
+     * Handles a deleted site.
+     *
+     * @param DeleteSiteEvent $event
+     */
+    public function handleDeletedSite(DeleteSiteEvent $event)
+    {
+        $siteUid = $event->site->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $mailingListTypes = $projectConfig->get(self::CONFIG_MAILINGLISTTYPES_KEY);
+
+        if (is_array($mailingListTypes)) {
+            foreach ($mailingListTypes as $mailingListTypeUid => $mailingListType) {
+                if ($mailingListTypeUid == $siteUid) {
+                    $this->deleteMailingListType($mailingListType);
+                }
+            }
         }
     }
 
