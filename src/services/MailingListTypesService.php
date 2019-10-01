@@ -12,6 +12,7 @@ use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
 use craft\helpers\Db;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
@@ -160,7 +161,11 @@ class MailingListTypesService extends Component
             $mailingListType->uid = $mailingListTypeRecord->uid;
         }
 
-        $configData = $mailingListType->getAttributes();
+        // Get config data from attributes
+        $configData = $mailingListType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
+
+        // Set the site UID
+        $configData['siteUid'] = Db::uidById(Table::SITES, $mailingListType->siteId);
 
         // Save the field layout
         $fieldLayout = $mailingListType->getFieldLayout();
@@ -178,8 +183,6 @@ class MailingListTypesService extends Component
             $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
         }
 
-        unset($configData['fieldLayoutId']);
-
         // Save it to project config
         $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
         Craft::$app->projectConfig->set($path, $configData);
@@ -194,6 +197,10 @@ class MailingListTypesService extends Component
 
     public function handleChangedMailingListType(ConfigEvent $event)
     {
+        // Make sure all sites and fields are processed
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -202,7 +209,7 @@ class MailingListTypesService extends Component
 
         $isNew = $mailingListTypeRecord === null;
 
-        if ($isNew ) {
+        if ($isNew) {
             $mailingListTypeRecord = new MailingListTypeRecord();
         }
 
@@ -213,6 +220,8 @@ class MailingListTypesService extends Component
 
         try {
             $mailingListTypeRecord->setAttributes($data, false);
+            $mailingListTypeRecord->siteId = Db::idByUid(Table::SITES, $data['siteUid']);
+            $mailingListTypeRecord->uid = $uid;
 
             $fieldsService = Craft::$app->getFields();
 
@@ -333,20 +342,18 @@ class MailingListTypesService extends Component
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
-            // Delete the field layout
-            if ($mailingListTypeRecord->fieldLayoutId) {
-                Craft::$app->getFields()->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
-            }
-
             // Delete the mailing lists
             $mailingLists = MailingListElement::find()
                 ->mailingListTypeId($mailingListTypeRecord->id)
                 ->all();
 
-            $elements = Craft::$app->getElements();
-
             foreach ($mailingLists as $mailingList) {
-                $elements->deleteElement($mailingList);
+                Craft::$app->getElements()->deleteElement($mailingList);
+            }
+
+            // Delete the field layout
+            if ($mailingListTypeRecord->fieldLayoutId) {
+                Craft::$app->getFields()->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
             }
 
             // Delete the mailing list type

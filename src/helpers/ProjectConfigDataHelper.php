@@ -7,6 +7,8 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
+use craft\db\Table;
+use craft\helpers\Db;
 use putyourlightson\campaign\Campaign;
 
 /**
@@ -49,19 +51,21 @@ class ProjectConfigDataHelper
         $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
 
         foreach ($campaignTypes as $campaignType) {
-            $campaignTypeData = $campaignType->getAttributes();
+            // Get config data from attributes
+            $configData = $campaignType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
 
-            if (!empty($campaignTypeData['fieldLayoutId'])) {
-                $layout = Craft::$app->getFields()->getLayoutById($campaignTypeData['fieldLayoutId']);
+            // Set the site UID
+            $configData['siteUid'] = Db::uidById(Table::SITES, $campaignType->siteId);
+
+            if (!empty($campaignType['fieldLayoutId'])) {
+                $layout = Craft::$app->getFields()->getLayoutById($campaignType['fieldLayoutId']);
 
                 if ($layout) {
-                    $campaignTypeData['fieldLayouts'] = [$layout->uid => $layout->getConfig()];
+                    $configData['fieldLayouts'] = [$layout->uid => $layout->getConfig()];
                 }
             }
 
-            unset($campaignTypeData['uid'], $campaignTypeData['fieldLayoutId']);
-
-            $data[$campaignType->uid] = $campaignTypeData;
+            $data[$campaignType->uid] = $configData;
         }
 
         return $data;
@@ -78,19 +82,23 @@ class ProjectConfigDataHelper
         $mailingListTypes = Campaign::$plugin->mailingListTypes->getAllMailingListTypes();
 
         foreach ($mailingListTypes as $mailingListType) {
-            $mailingListTypeData = $mailingListType->getAttributes();
+            // Get config data from attributes
+            $configData = $mailingListType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
 
-            if (!empty($mailingListTypeData['fieldLayoutId'])) {
-                $layout = Craft::$app->getFields()->getLayoutById($mailingListTypeData['fieldLayoutId']);
+            // Set the site UID
+            $configData['siteUid'] = Db::uidById(Table::SITES, $mailingListType->siteId);
+
+            if (!empty($mailingListType['fieldLayoutId'])) {
+                $layout = Craft::$app->getFields()->getLayoutById($mailingListType['fieldLayoutId']);
 
                 if ($layout) {
-                    $mailingListTypeData['fieldLayouts'] = [$layout->uid => $layout->getConfig()];
+                    $configData['fieldLayouts'] = [$layout->uid => $layout->getConfig()];
                 }
             }
 
-            unset($mailingListTypeData['uid'], $mailingListTypeData['fieldLayoutId']);
+            unset($configData['uid'], $configData['fieldLayoutId']);
 
-            $data[$mailingListType->uid] = $mailingListTypeData;
+            $data[$mailingListType->uid] = $configData;
         }
 
         return $data;

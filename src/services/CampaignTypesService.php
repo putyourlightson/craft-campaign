@@ -11,6 +11,7 @@ use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\FieldEvent;
 use craft\helpers\Db;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
@@ -187,7 +188,11 @@ class CampaignTypesService extends Component
             $campaignType->uid = $campaignTypeRecord->uid;
         }
 
-        $configData = $campaignType->getAttributes();
+        // Get config data from attributes
+        $configData = $campaignType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
+
+        // Set the site UID
+        $configData['siteUid'] = Db::uidById(Table::SITES, $campaignType->siteId);
 
         // Save the field layout
         $fieldLayout = $campaignType->getFieldLayout();
@@ -205,8 +210,6 @@ class CampaignTypesService extends Component
             $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
         }
 
-        unset($configData['fieldLayoutId']);
-
         // Save it to project config
         $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
         Craft::$app->projectConfig->set($path, $configData);
@@ -221,6 +224,10 @@ class CampaignTypesService extends Component
 
     public function handleChangedCampaignType(ConfigEvent $event)
     {
+        // Make sure all sites and fields are processed
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -229,7 +236,7 @@ class CampaignTypesService extends Component
 
         $isNew = $campaignTypeRecord === null;
 
-        if ($isNew ) {
+        if ($isNew) {
             $campaignTypeRecord = new CampaignTypeRecord();
         }
 
@@ -240,6 +247,8 @@ class CampaignTypesService extends Component
 
         try {
             $campaignTypeRecord->setAttributes($data, false);
+            $campaignTypeRecord->siteId = Db::idByUid(Table::SITES, $data['siteUid']);
+            $campaignTypeRecord->uid = $uid;
 
             $fieldsService = Craft::$app->getFields();
 
@@ -360,21 +369,20 @@ class CampaignTypesService extends Component
         $transaction = Craft::$app->getDb()->beginTransaction();
 
         try {
-            // Delete the field layout
-            if ($campaignTypeRecord->fieldLayoutId) {
-                Craft::$app->getFields()->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
-            }
-
             // Delete the campaigns
             $campaigns = CampaignElement::find()
                 ->campaignTypeId($campaignTypeRecord->id)
                 ->all();
 
-            $elements = Craft::$app->getElements();
-
             foreach ($campaigns as $campaign) {
-                $elements->deleteElement($campaign);
+                Craft::$app->getElements()->deleteElement($campaign);
             }
+
+            // Delete the field layout
+            if ($campaignTypeRecord->fieldLayoutId) {
+                Craft::$app->getFields()->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
+            }
+
 
             // Delete the campaign type
             $campaignTypeRecord->delete();
