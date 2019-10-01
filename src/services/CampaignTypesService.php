@@ -16,6 +16,7 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\CampaignTypeEvent;
+use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
@@ -188,27 +189,8 @@ class CampaignTypesService extends Component
             $campaignType->uid = $campaignTypeRecord->uid;
         }
 
-        // Get config data from attributes
-        $configData = $campaignType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
-
-        // Set the site UID
-        $configData['siteUid'] = Db::uidById(Table::SITES, $campaignType->siteId);
-
-        // Save the field layout
-        $fieldLayout = $campaignType->getFieldLayout();
-        $fieldLayoutConfig = $fieldLayout->getConfig();
-
-        if ($fieldLayoutConfig) {
-            if (empty($fieldLayout->id)) {
-                $layoutUid = StringHelper::UUID();
-                $fieldLayout->uid = $layoutUid;
-            }
-            else {
-                $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
-            }
-
-            $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
-        }
+        // Get config data
+        $configData = ProjectConfigDataHelper::getCampaignTypeData($campaignType);
 
         // Save it to project config
         $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;

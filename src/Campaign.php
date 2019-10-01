@@ -480,10 +480,10 @@ class Campaign extends Plugin
 
         // Mailing list types types
         Craft::$app->projectConfig
-            ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
-            ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
-            ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleDeletedMailingListType']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingLists, 'pruneDeletedField']);
+            ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
+            ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
+            ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingListTypes, 'pruneDeletedField']);
 
         // Rebuild project config data
         Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $e) {

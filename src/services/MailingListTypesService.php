@@ -9,7 +9,6 @@ namespace putyourlightson\campaign\services;
 use craft\base\Field;
 use craft\db\Table;
 use craft\events\ConfigEvent;
-use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
@@ -17,6 +16,7 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\MailingListTypeEvent;
+use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
@@ -161,27 +161,8 @@ class MailingListTypesService extends Component
             $mailingListType->uid = $mailingListTypeRecord->uid;
         }
 
-        // Get config data from attributes
-        $configData = $mailingListType->getAttributes(null, ['id', 'siteId', 'fieldLayoutId', 'uid']);
-
-        // Set the site UID
-        $configData['siteUid'] = Db::uidById(Table::SITES, $mailingListType->siteId);
-
-        // Save the field layout
-        $fieldLayout = $mailingListType->getFieldLayout();
-        $fieldLayoutConfig = $fieldLayout->getConfig();
-
-        if ($fieldLayoutConfig) {
-            if (empty($fieldLayout->id)) {
-                $layoutUid = StringHelper::UUID();
-                $fieldLayout->uid = $layoutUid;
-            }
-            else {
-                $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
-            }
-
-            $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
-        }
+        // Get config data
+        $configData = ProjectConfigDataHelper::getMailingListTypeData($mailingListType);
 
         // Save it to project config
         $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
