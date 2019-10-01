@@ -6,9 +6,13 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Field;
+use craft\db\Table;
 use craft\events\ConfigEvent;
+use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
@@ -20,6 +24,7 @@ use Craft;
 use craft\base\Component;
 use Throwable;
 use yii\base\Exception;
+use yii\web\NotFoundHttpException;
 
 /**
  * CampaignTypesService
@@ -154,14 +159,6 @@ class CampaignTypesService extends Component
     {
         $isNew = $campaignType->id === null;
 
-        // Ensure the campaign type has a UID
-        if ($isNew) {
-            $campaignType->uid = StringHelper::UUID();
-        }
-        else if (!$campaignType->uid) {
-            $campaignType->uid = Db::uidById(CampaignTypeRecord::tableName(), $campaignType->id);
-        }
-
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE)) {
             $this->trigger(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
@@ -176,14 +173,43 @@ class CampaignTypesService extends Component
             return false;
         }
 
+        // Ensure the campaign type has a UID
+        if ($isNew) {
+            $campaignType->uid = StringHelper::UUID();
+        }
+        else if (!$campaignType->uid) {
+            $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
+
+            if ($campaignTypeRecord === null) {
+                throw new NotFoundHttpException('No campaign type exists with the ID '.$campaignType->id);
+            }
+
+            $campaignType->uid = $campaignTypeRecord->uid;
+        }
+
+        $configData = $campaignType->getAttributes();
+
         // Save the field layout
         $fieldLayout = $campaignType->getFieldLayout();
-        Craft::$app->getFields()->saveLayout($fieldLayout);
-        $campaignType->fieldLayoutId = $fieldLayout->id;
+        $fieldLayoutConfig = $fieldLayout->getConfig();
+
+        if ($fieldLayoutConfig) {
+            if (empty($fieldLayout->id)) {
+                $layoutUid = StringHelper::UUID();
+                $fieldLayout->uid = $layoutUid;
+            }
+            else {
+                $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
+            }
+
+            $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
+        }
+
+        unset($configData['fieldLayoutId']);
 
         // Save it to project config
         $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
-        Craft::$app->projectConfig->set($path, $campaignType->getAttributes());
+        Craft::$app->projectConfig->set($path, $configData);
 
         // Set the ID on the campaign type
         if ($isNew) {
@@ -214,6 +240,23 @@ class CampaignTypesService extends Component
 
         try {
             $campaignTypeRecord->setAttributes($data, false);
+
+            $fieldsService = Craft::$app->getFields();
+
+            if (!empty($data['fieldLayouts']) && !empty($config = reset($data['fieldLayouts']))) {
+                // Save the main field layout
+                $layout = FieldLayout::createFromConfig($config);
+                $layout->id = $campaignTypeRecord->fieldLayoutId;
+                $layout->type = CampaignElement::class;
+                $layout->uid = key($data['fieldLayouts']);
+                $fieldsService->saveLayout($layout);
+                $campaignTypeRecord->fieldLayoutId = $layout->id;
+            }
+            else if ($campaignTypeRecord->fieldLayoutId) {
+                // Delete the main field layout
+                $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
+                $campaignTypeRecord->fieldLayoutId = null;
+            }
 
             // Unset ID if null to avoid making postgres mad
             if ($campaignTypeRecord->id === null) {
@@ -351,6 +394,36 @@ class CampaignTypesService extends Component
             $this->trigger(self::EVENT_AFTER_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
                 'campaignType' => $campaignType,
             ]));
+        }
+    }
+
+    /**
+     * Prunes a deleted field from the field layouts.
+     *
+     * @param FieldEvent $event
+     */
+    public function pruneDeletedField(FieldEvent $event)
+    {
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $campaignTypes = $projectConfig->get(self::CONFIG_CAMPAIGNTYPES_KEY);
+
+        // Loop through the types and prune the UID from field layouts.
+        if (is_array($campaignTypes)) {
+            foreach ($campaignTypes as $campaignTypeUid => $campaignType) {
+                if (!empty($campaignType['fieldLayouts'])) {
+                    foreach ($campaignType['fieldLayouts'] as $layoutUid => $layout) {
+                        if (!empty($layout['tabs'])) {
+                            foreach ($layout['tabs'] as $tabUid => $tab) {
+                                $projectConfig->remove(self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignTypeUid.'.fieldLayouts.'.$layoutUid.'.tabs.'.$tabUid.'.fields.'.$fieldUid);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ use craft\helpers\MailerHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
+use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\ProjectConfig;
 use craft\services\UserPermissions;
@@ -475,12 +476,14 @@ class Campaign extends Plugin
             ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->campaignTypes, 'pruneDeletedField']);
 
         // Mailing list types types
         Craft::$app->projectConfig
             ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleChangedMailingListType'])
             ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingLists, 'handleDeletedMailingListType']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingLists, 'pruneDeletedField']);
 
         // Rebuild project config data
         Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $e) {

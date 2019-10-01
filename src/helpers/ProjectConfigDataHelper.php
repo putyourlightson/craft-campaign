@@ -29,8 +29,23 @@ class ProjectConfigDataHelper
     public static function rebuildProjectConfig(): array
     {
         $data = [];
+        $data['campaignTypes'] = self::_getCampaignTypeData();
+        $data['mailingListTypes'] = self::_getMailingListTypeData();
 
-        // Campaign types
+        return $data;
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Returns campaign type data
+     *
+     * @return array
+     */
+    private static function _getCampaignTypeData(): array
+    {
+        $data = [];
         $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
 
         foreach ($campaignTypes as $campaignType) {
@@ -46,10 +61,20 @@ class ProjectConfigDataHelper
 
             unset($campaignTypeData['uid'], $campaignTypeData['fieldLayoutId']);
 
-            $data['campaignTypes'][$campaignType->uid] = $campaignTypeData;
+            $data[$campaignType->uid] = $campaignTypeData;
         }
 
-        // Mailing list types
+        return $data;
+    }
+
+    /**
+     * Returns mailing list type data
+     *
+     * @return array
+     */
+    private static function _getMailingListTypeData(): array
+    {
+        $data = [];
         $mailingListTypes = Campaign::$plugin->mailingListTypes->getAllMailingListTypes();
 
         foreach ($mailingListTypes as $mailingListType) {
@@ -65,7 +90,7 @@ class ProjectConfigDataHelper
 
             unset($mailingListTypeData['uid'], $mailingListTypeData['fieldLayoutId']);
 
-            $data['mailingListTypes'][$mailingListType->uid] = $mailingListTypeData;
+            $data[$mailingListType->uid] = $mailingListTypeData;
         }
 
         return $data;
