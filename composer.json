@@ -43,6 +43,7 @@
         "handle": "campaign",
         "developer": "PutYourLightsOn",
         "developerUrl": "https://putyourlightson.com/",
+        "documentationUrl": "https://putyourlightson.com/plugins/campaign",
         "schemaVersion": "1.10.0",
         "hasCpSettings": true,
         "hasCpSection": true,
