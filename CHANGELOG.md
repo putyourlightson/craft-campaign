@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.12.0 - Unreleased
+## 1.12.0 - 2019-10-21
 ### Added
 - Added campaign and mailing list types to project config.
 
