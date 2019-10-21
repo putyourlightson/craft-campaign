@@ -13,7 +13,6 @@ use putyourlightson\campaign\models\PendingContactModel;
 
 use Craft;
 use craft\base\Component;
-use craft\errors\MissingComponentException;
 use yii\base\Exception;
 
 /**
