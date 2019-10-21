@@ -92,7 +92,7 @@ class FormsControllerTest extends BaseControllerTest
     public function testUpdateContactFail()
     {
         // Expect an exception
-        $this->tester->expectException(NotFoundHttpException::class, function() {
+        $this->tester->expectThrowable(NotFoundHttpException::class, function() {
             $contact = ContactElement::find()->one();
 
             $this->runActionWithParams('forms/update-contact', [
@@ -117,7 +117,7 @@ class FormsControllerTest extends BaseControllerTest
     public function testVerifySubscribeFail()
     {
         // Expect an exception
-        $this->tester->expectException(NotFoundHttpException::class, function() {
+        $this->tester->expectThrowable(NotFoundHttpException::class, function() {
             $this->runActionWithParams('forms/verify-subscribe', []);
         });
     }
