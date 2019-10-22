@@ -12,7 +12,7 @@ Read more about the pro features at [putyourlightson.com/plugins/campaign#pro-fe
 
 ## License
 
-This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/campaign). The license fee for the lite version is **$149** plus **$49** per subsequent year for updates (optional). The license fee for the pro version is **$249** plus **$79** per subsequent year for updates (optional).
+This plugin requires a commercial license purchasable through the [Craft Plugin Store](https://plugins.craftcms.com/campaign). The license fee for the lite version is **$149** plus **$49** per subsequent year for updates (optional). The license fee for the pro version is **$249** plus **$89** per subsequent year for updates (optional).
 
 ## Requirements
 
