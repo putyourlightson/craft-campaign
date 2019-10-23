@@ -285,6 +285,11 @@ class CampaignsController extends Controller
 
         $this->_populateCampaign($campaign);
 
+        // Set the live scenario if enabled
+        if ($campaign->enabled && $campaign->enabledForSite) {
+            $campaign->setScenario($campaign::SCENARIO_LIVE);
+        }
+
         // Save it
         if (!Craft::$app->getElements()->saveElement($campaign)) {
             if ($request->getAcceptsJson()) {

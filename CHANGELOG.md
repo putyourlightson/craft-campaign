@@ -3,6 +3,7 @@
 ## 1.12.1 - 2019-10-23
 ### Fixed
 - Fixed error that could occur if email settings were not saved since a recent update ([#90](https://github.com/putyourlightson/craft-campaign/issues/90)).
+- Fixed validation of required fields when saving an enabled campaign.
 
 ## 1.12.0 - 2019-10-21
 ### Added
