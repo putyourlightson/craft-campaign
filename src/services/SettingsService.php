@@ -95,13 +95,18 @@ class SettingsService extends Component
         $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
-            if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
-                $key = $fromNameEmail[0].':'.$fromNameEmail[1].':'.$fromNameEmail[2];
+            $fromSiteId = $fromNameEmail[3] ?? null;
 
-                $value = $fromNameEmail[0].' <'.$fromNameEmail[1].'> ';
+            if ($siteId === null || $fromSiteId === null || $fromSiteId == $siteId) {
+                $fromName = $fromNameEmail[0];
+                $fromEmail = $fromNameEmail[1];
+                $replyTo = $fromNameEmail[2] ?? '';
 
-                if ($fromNameEmail[2]) {
-                    $value .= Craft::t('campaign', '(reply to {email})', ['email' => $fromNameEmail[2]]);
+                $key = $fromName.':'.$fromEmail.':'.$replyTo;
+                $value = $fromName.' <'.$fromEmail.'> ';
+
+                if ($replyTo) {
+                    $value .= Craft::t('campaign', '(reply to {email})', ['email' => $replyTo]);
                 }
 
                 $fromNameEmailOptions[$key] = $value;
