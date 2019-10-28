@@ -42,10 +42,8 @@ class SyncController extends Controller
      *
      * @return Response
      */
-    public function actionIndex(string $siteHandle = null): Response
+    public function actionIndex(string $siteHandle = null, array $errors = []): Response
     {
-        $variables = [];
-
         // Set the current site to the site handle if set
         if ($siteHandle !== null) {
             $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
@@ -55,8 +53,10 @@ class SyncController extends Controller
             }
         }
 
-        // Mailing list element selector variables
-        $variables['mailingListElementType'] = MailingListElement::class;
+        $variables = [
+            'mailingListElementType' => MailingListElement::class,
+            'errors' => $errors,
+        ];
 
         // Render the template
         return $this->renderTemplate('campaign/contacts/sync', $variables);
@@ -68,7 +68,7 @@ class SyncController extends Controller
      * @throws ForbiddenHttpException
      * @throws BadRequestHttpException
      */
-    public function actionAddSyncedMailingList(): Response
+    public function actionAddSyncedMailingList()
     {
         $this->requirePermission('campaign:sync');
 

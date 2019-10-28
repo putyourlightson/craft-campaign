@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.12.2 - Unreleased
+### Fixed
+- Fixed an error that could occur if mailing list was not selected when syncing a user group.
+
 ## 1.12.1 - 2019-10-23
 ### Fixed
 - Fixed error that could occur if email settings were not saved since a recent update ([#90](https://github.com/putyourlightson/craft-campaign/issues/90)).
