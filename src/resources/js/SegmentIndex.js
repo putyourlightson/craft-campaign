@@ -160,6 +160,57 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend(
             }
         },
 
+        _openCreateSegmentModal: function(segmentTypeId) {
+            if (this.$newSegmentBtn.hasClass('loading')) {
+                return;
+            }
+
+            // Find the segment type
+            var segmentType;
+
+            for (var i = 0; i < this.publishableSegmentTypes.length; i++) {
+                if (this.publishableSegmentTypes[i].id == segmentTypeId) {
+                    segmentType = this.publishableSegmentTypes[i];
+                    break;
+                }
+            }
+
+            if (!segmentType) {
+                return;
+            }
+
+            this.$newSegmentBtn.addClass('inactive');
+            var newSegmentBtnText = this.$newSegmentBtn.text();
+            this.$newSegmentBtn.text(Craft.t('campaign', 'New {segmentType} segment', {segmentType: segmentType.name}));
+
+            Craft.createElementEditor(this.elementType, {
+                hudTrigger: this.$newSegmentBtnGroup,
+                elementType: 'putyourlightson\\campaign\\elements\\SegmentElement',
+                attributes: {
+                    segmentType: segmentType.handle
+                },
+                onBeginLoading: $.proxy(function() {
+                    this.$newSegmentBtn.addClass('loading');
+                }, this),
+                onEndLoading: $.proxy(function() {
+                    this.$newSegmentBtn.removeClass('loading');
+                }, this),
+                onHideHud: $.proxy(function() {
+                    this.$newSegmentBtn.removeClass('inactive').text(newSegmentBtnText);
+                }, this),
+                onSaveElement: $.proxy(function(response) {
+                    // Make sure the right segment type is selected
+                    var segmentTypeSourceKey = 'segmentType:' + segmentType;
+
+                    if (this.sourceKey != segmentTypeSourceKey) {
+                        this.selectSourceByKey(segmentTypeSourceKey);
+                    }
+
+                    this.selectElementAfterUpdate(response.id);
+                    this.updateElements();
+                }, this)
+            });
+        }
     });
 
 // Register it!

@@ -3,6 +3,7 @@
 ## 1.12.2 - Unreleased
 ### Fixed
 - Fixed an error that could occur if mailing list was not selected when syncing a user group.
+- Fixed new segment button functionality in modal windows.
 
 ## 1.12.1 - 2019-10-23
 ### Fixed
