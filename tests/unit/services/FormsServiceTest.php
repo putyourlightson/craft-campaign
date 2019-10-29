@@ -108,12 +108,12 @@ class FormsServiceTest extends BaseUnitTest
     {
         $contact = ContactElement::find()->one();
 
-        $lastActivity = $contact->lastActivity;
-
         // Update contact
         Campaign::$plugin->forms->updateContact($contact);
 
+        $contact = Campaign::$plugin->contacts->getContactById($contact->id);
+
         // Assert that contact activity has been updated
-        $this->assertGreaterThan($lastActivity, $contact->lastActivity);
+        $this->assertNotNull($contact->lastActivity);
     }
 }

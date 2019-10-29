@@ -14,6 +14,7 @@ use DeviceDetector\DeviceDetector;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\records\ContactRecord;
 use Throwable;
 use yii\base\Exception;
 
@@ -53,7 +54,10 @@ class ContactActivityHelper
      */
     public static function updateContactActivity(ContactElement $contact)
     {
-        $contact->lastActivity = new DateTime();
+        // Get contact record
+        $contactRecord = ContactRecord::findOne(['id' => $contact->id]);
+
+        $contactRecord->lastActivity = new DateTime();
 
         // Get GeoIP if enabled
         if (Campaign::$plugin->getSettings()->geoIp) {
@@ -63,8 +67,8 @@ class ContactActivityHelper
 
             // If country exists
             if (!empty(self::$_geoIp['countryName'])) {
-                $contact->country = self::$_geoIp['countryName'];
-                $contact->geoIp = self::$_geoIp;
+                $contactRecord->country = self::$_geoIp['countryName'];
+                $contactRecord->geoIp = self::$_geoIp;
             }
         }
 
@@ -79,16 +83,16 @@ class ContactActivityHelper
 
         // If device exists and not a bot
         if ($device && !self::$_deviceDetector->isBot()) {
-            $contact->device = $device;
+            $contactRecord->device = $device;
 
             $os = self::$_deviceDetector->getOs('name');
-            $contact->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
+            $contactRecord->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
 
             $client = self::$_deviceDetector->getClient('name');
-            $contact->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
+            $contactRecord->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
         }
 
-        Craft::$app->getElements()->saveElement($contact);
+        $contactRecord->save();
     }
 
     /**

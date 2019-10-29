@@ -39,9 +39,6 @@ class SendoutsServiceTest extends BaseUnitTest
             'contacts' => [
                 'class' => ContactsFixture::class
             ],
-            'campaignTypes' => [
-                'class' => CampaignTypesFixture::class
-            ],
             'campaigns' => [
                 'class' => CampaignsFixture::class
             ],

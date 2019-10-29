@@ -13,12 +13,11 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\models\ContactCampaignModel;
+use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
 
-use Craft;
 use craft\base\Component;
-use craft\errors\ElementNotFoundException;
 use craft\mail\Message;
 use Throwable;
 use yii\base\Exception;
@@ -72,8 +71,6 @@ class CampaignsService extends Component
      * @param LinkRecord     $linkRecord
      *
      * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
     {
@@ -82,10 +79,10 @@ class CampaignsService extends Component
             return;
         }
 
-        // Get campaign
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($sendout->campaignId);
+        // Get campaign record
+        $campaignRecord = CampaignRecord::findOne(['id' => $sendout->campaignId]);
 
-        if ($campaign === null) {
+        if ($campaignRecord === null) {
             return;
         }
 
@@ -103,13 +100,13 @@ class CampaignsService extends Component
         // If first time for this interaction
         if ($contactCampaignRecord->{$interaction} === null) {
             $contactCampaignRecord->{$interaction} = new DateTime();
-            $campaign->{$interaction}++;
+            $campaignRecord->{$interaction}++;
         }
 
         // If opened
         if ($interaction == 'opened') {
             $contactCampaignRecord->opens = $contactCampaignRecord->opens ? $contactCampaignRecord->opens + 1 : 1;
-            $campaign->opens++;
+            $campaignRecord->opens++;
         }
         // If clicked
         else if ($interaction == 'clicked') {
@@ -117,13 +114,13 @@ class CampaignsService extends Component
             if ($contactCampaignRecord->opened === null) {
                 $contactCampaignRecord->opened = new DateTime();
                 $contactCampaignRecord->opens = 1;
-                $campaign->opened++;
-                $campaign->opens++;
+                $campaignRecord->opened++;
+                $campaignRecord->opens++;
             }
 
             // Increment clicks
             $contactCampaignRecord->clicks = $contactCampaignRecord->clicks ? $contactCampaignRecord->clicks + 1 : 1;
-            $campaign->clicks++;
+            $campaignRecord->clicks++;
 
             // If link record exists
             if ($linkRecord !== null) {
@@ -144,7 +141,7 @@ class CampaignsService extends Component
 
         $contactCampaignRecord->save();
 
-        Craft::$app->getElements()->saveElement($campaign);
+        $campaignRecord->save();
     }
 
     /**
