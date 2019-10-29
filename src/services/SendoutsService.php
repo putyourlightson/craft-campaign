@@ -160,7 +160,7 @@ class SendoutsService extends Component
     {
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
-            ->select(['contactId', 'min(mailingListId) as mailingListId'])
+            ->select(['contactId', 'min(mailingListId) as mailingListId', 'min(subscribed) as subscribed'])
             ->groupBy('contactId')
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),

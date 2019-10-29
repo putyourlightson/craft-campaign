@@ -1,12 +1,13 @@
 # Release Notes for Campaign
 
-## 1.12.2 - Unreleased
+## 1.12.2 - 2019-10-29
 ### Changed
 - Improved how contact interactions are tracked to avoid creating unnecessary search index updates. 
 
 ### Fixed
 - Fixed an error that could occur if mailing list was not selected when syncing a user group.
 - Fixed new segment button functionality in modal windows.
+- Fixed a bug that could cause automated sendout jobs to fail.
 
 ## 1.12.1 - 2019-10-23
 ### Fixed
