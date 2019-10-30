@@ -176,15 +176,14 @@ class TrackerService extends Component
      * @param string|null $source
      * @param bool|null $verify
      *
-     * @return bool
      * @throws DeprecationException
      * @deprecated in 1.10.0. Use [[FormsService::subscribeContact()]] instead.
      */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null): bool
+    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
         Craft::$app->getDeprecator()->log('TrackerService::subscribe()', 'The “TrackerService::subscribe()” method has been deprecated. Use “FormsService::subscribeContact()” instead.');
 
-        return Campaign::$plugin->forms->subscribeContact($contact, $mailingList, $sourceType, $source, $verify);
+        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, $sourceType, $source, $verify);
     }
 
     /**
@@ -193,10 +192,12 @@ class TrackerService extends Component
      * @param ContactElement $contact
      *
      * @return bool
+     * @throws DeprecationException
+     * @deprecated in 1.10.0. Use [[FormsService::updateContact()]] instead.
      */
     public function updateContact(ContactElement $contact): bool
     {
-        Craft::$app->getDeprecator()->log('TrackerService::subscribe()', 'The “TrackerService::subscribe()” method has been deprecated. Use “FormsService::subscribeContact()” instead.');
+        Craft::$app->getDeprecator()->log('TrackerService::updateContact()', 'The “TrackerService::updateContact()” method has been deprecated. Use “FormsService::updateContact()” instead.');
 
         return Campaign::$plugin->forms->updateContact($contact);
     }

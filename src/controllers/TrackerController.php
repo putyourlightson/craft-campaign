@@ -146,6 +146,7 @@ class TrackerController extends BaseMessageController
     /**
      * Subscribe
      *
+     * @throws DeprecationException
      * @deprecated in 1.10.0. Use [[FormsController::actionSubscribe()]] instead.
      */
     public function actionSubscribe()

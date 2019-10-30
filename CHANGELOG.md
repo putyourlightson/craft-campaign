@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.12.3 - Unreleased
+### Fixed
+- Fixed an error that could occur if using a deprecated subscribe method.
+
 ## 1.12.2 - 2019-10-29
 ### Changed
 - Improved how contact interactions are tracked to avoid creating unnecessary search index updates. 
