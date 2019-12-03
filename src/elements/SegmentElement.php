@@ -243,7 +243,7 @@ class SegmentElement extends Element
     public $segmentType;
 
     /**
-     * @var mixed
+     * @var array|string|null
      */
     public $conditions;
 
@@ -268,7 +268,7 @@ class SegmentElement extends Element
         parent::init();
 
         // Decode JSON properties
-        $this->conditions = empty($this->conditions) ? [] : Json::decode($this->conditions);
+        $this->conditions = Json::decodeIfJson($this->conditions);
     }
 
     /**

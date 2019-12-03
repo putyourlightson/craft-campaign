@@ -3,6 +3,7 @@
 ## 1.12.3 - Unreleased
 ### Fixed
 - Fixed an error that could occur if using a deprecated subscribe method.
+- Fixed a bug with creating new template segments ([#98](https://github.com/putyourlightson/craft-campaign/issues/98)).
 
 ## 1.12.2 - 2019-10-29
 ### Changed
