@@ -3,6 +3,7 @@
 ## 1.12.3 - Unreleased
 ### Fixed
 - Fixed an error that could occur if using a deprecated subscribe method.
+- Fixed a bug in which the field layout was not being saved for mailing list types ([#97](https://github.com/putyourlightson/craft-campaign/issues/97)).
 - Fixed a bug with creating new template segments ([#98](https://github.com/putyourlightson/craft-campaign/issues/98)).
 
 ## 1.12.2 - 2019-10-29

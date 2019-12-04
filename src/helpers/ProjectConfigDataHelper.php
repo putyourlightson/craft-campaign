@@ -101,15 +101,21 @@ class ProjectConfigDataHelper
         // Set the site UID
         $configData['siteUid'] = Db::uidById(Table::SITES, $mailingListType->siteId);
 
-        if (!empty($mailingListType['fieldLayoutId'])) {
-            $layout = Craft::$app->getFields()->getLayoutById($mailingListType['fieldLayoutId']);
+        // Set the field layout
+        $fieldLayout = $mailingListType->getFieldLayout();
+        $fieldLayoutConfig = $fieldLayout->getConfig();
 
-            if ($layout) {
-                $configData['fieldLayouts'] = [$layout->uid => $layout->getConfig()];
+        if ($fieldLayoutConfig) {
+            if (empty($fieldLayout->id)) {
+                $layoutUid = StringHelper::UUID();
+                $fieldLayout->uid = $layoutUid;
             }
-        }
+            else {
+                $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
+            }
 
-        unset($configData['uid'], $configData['fieldLayoutId']);
+            $configData['fieldLayouts'] = [$layoutUid => $fieldLayoutConfig];
+        }
 
         return $configData;
     }
