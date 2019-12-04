@@ -64,6 +64,8 @@ class WebhookController extends Controller
         if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
+
+        parent::init();
     }
 
     /**
