@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.12.4 - Unreleased
+### Fixed
+- Fixed a bug with anonymous actions in  the `WebhookController` ([#99](https://github.com/putyourlightson/craft-campaign/issues/99)).
+
 ## 1.12.3 - 2019-12-04
 ### Fixed
 - Fixed an error that could occur if using a deprecated subscribe method.
