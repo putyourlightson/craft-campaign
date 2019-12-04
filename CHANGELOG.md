@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.12.3 - Unreleased
+## 1.12.3 - 2019-12-04
 ### Fixed
 - Fixed an error that could occur if using a deprecated subscribe method.
 - Fixed a bug in which the field layout was not being saved for mailing list types ([#97](https://github.com/putyourlightson/craft-campaign/issues/97)).
