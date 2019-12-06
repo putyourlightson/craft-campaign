@@ -347,12 +347,12 @@ class SendoutElement extends Element
     public $replyToEmail;
 
     /**
-     * @var string Subject
+     * @var string Email subject
      */
     public $subject;
 
     /**
-     * @var string Notification email address
+     * @var string|null Notification email address
      */
     public $notificationEmailAddress;
 
@@ -496,7 +496,7 @@ class SendoutElement extends Element
     {
         $rules = parent::rules();
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'integer'];
-        $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds', 'notificationEmailAddress'], 'required'];
+        $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required'];
         $rules[] = [['sid'], 'string', 'max' => 32];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
         $rules[] = [['notificationEmailAddress'], 'email'];

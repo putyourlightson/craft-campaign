@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.12.4 - Unreleased
+### Changed
+- Made sendout `notificationEmailAddress` field not required.
+
 ### Fixed
 - Fixed a bug with anonymous actions in  the `WebhookController` ([#99](https://github.com/putyourlightson/craft-campaign/issues/99)).
 
