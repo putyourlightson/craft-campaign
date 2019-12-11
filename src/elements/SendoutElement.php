@@ -816,6 +816,18 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
+    public function getSearchKeywords(string $attribute): string
+    {
+        if ($attribute == 'subject') {
+            return LitEmoji::unicodeToShortcode($this->$attribute);
+        }
+
+        return parent::getSearchKeywords($attribute);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getStatus()
     {
         return $this->sendStatus;

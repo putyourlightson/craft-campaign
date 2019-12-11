@@ -1,11 +1,12 @@
 # Release Notes for Campaign
 
-## 1.12.4 - Unreleased
+## 1.12.4 - 2019-12-11
 ### Changed
 - Made sendout `notificationEmailAddress` field not required.
 
 ### Fixed
 - Fixed a bug with anonymous actions in  the `WebhookController` ([#99](https://github.com/putyourlightson/craft-campaign/issues/99)).
+- Fixed a bug that was preventing updating search index jobs from completing because of an emoji in the sendout subject. ([#101](https://github.com/putyourlightson/craft-campaign/issues/101)).
 
 ## 1.12.3 - 2019-12-04
 ### Fixed
