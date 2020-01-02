@@ -78,13 +78,14 @@ class CampaignsService extends Component
             return;
         }
 
-        // Get campaign record
+        /** @var CampaignRecord|null $campaignRecord */
         $campaignRecord = CampaignRecord::findOne(['id' => $sendout->campaignId]);
 
         if ($campaignRecord === null) {
             return;
         }
 
+        /** @var ContactCampaignRecord|null $contactCampaignRecord */
         $contactCampaignRecord = ContactCampaignRecord::find()
         ->where([
             'contactId' => $contact->id,

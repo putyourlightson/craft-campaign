@@ -17,9 +17,12 @@ class m180821_120000_add_mailinglisttype_template_columns extends Migration
         if (!$this->db->columnExists('{{%campaign_mailinglisttypes}}', 'verifyEmailTemplate')) {
             $this->addColumn('{{%campaign_mailinglisttypes}}', 'verifyEmailTemplate', $this->string()->after('doubleOptIn'));
         }
+
         if (!$this->db->columnExists('{{%campaign_mailinglisttypes}}', 'verifySuccessTemplate')) {
             $this->addColumn('{{%campaign_mailinglisttypes}}', 'verifySuccessTemplate', $this->string()->after('verifyEmailTemplate'));
         }
+
+        return true;
     }
 
     /**

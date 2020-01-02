@@ -153,8 +153,6 @@ class SendoutElement extends Element
     }
 
     /**
-     * @inheritdoc
-     *
      * @return SendoutElementQuery
      */
     public static function find(): ElementQueryInterface

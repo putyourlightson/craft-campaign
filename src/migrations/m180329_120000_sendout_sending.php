@@ -37,6 +37,8 @@ class m180329_120000_sendout_sending extends Migration
         $this->dropColumn('{{%campaign_sendouts}}', 'pendingRecipientIds');
         $this->dropColumn('{{%campaign_sendouts}}', 'sentRecipientIds');
         $this->dropColumn('{{%campaign_sendouts}}', 'failedRecipientIds');
+
+        return true;
     }
 
     /**

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.13.0 - 2020-01-02
+### Added
+- Added custom relation field types for campaigns, contacts and mailing lists.
+
 ## 1.12.4 - 2019-12-11
 ### Changed
 - Made sendout `notificationEmailAddress` field not required.

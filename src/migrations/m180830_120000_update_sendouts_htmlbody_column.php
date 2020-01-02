@@ -21,6 +21,8 @@ class m180830_120000_update_sendouts_htmlbody_column extends Migration
         if ($this->db->columnExists('{{%campaign_sendouts}}', 'plaintextBody')) {
             $this->alterColumn('{{%campaign_sendouts}}', 'plaintextBody', $this->mediumText());
         }
+
+        return true;
     }
 
     /**

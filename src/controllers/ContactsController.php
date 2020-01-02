@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\elements\User;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -428,7 +429,10 @@ class ContactsController extends Controller
         if ($subscriptionStatus === '') {
             Campaign::$plugin->mailingLists->deleteContactSubscription($contact, $mailingList);
         } else {
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', Craft::$app->getUser()->getIdentity()->id);
+            /** @var User|null $currentUser */
+            $currentUser = Craft::$app->getUser()->getIdentity();
+            $currentUserId = $currentUser ? $currentUser->id : '';
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', $currentUserId);
         }
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {

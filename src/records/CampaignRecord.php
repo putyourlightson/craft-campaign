@@ -8,7 +8,7 @@ namespace putyourlightson\campaign\records;
 use craft\db\ActiveRecord;
 use craft\records\Element;
 use DateTime;
-use yii\db\ActiveQueryInterface;
+use yii\db\ActiveQuery;
 
 /**
  * CampaignRecord
@@ -24,8 +24,10 @@ use yii\db\ActiveQueryInterface;
  * @property int $complained
  * @property int $bounced
  * @property DateTime|null $dateClosed
- * @property ActiveQueryInterface $campaignType
- * @property ActiveQueryInterface $element
+ * @property ActiveQuery $campaignType
+ * @property ActiveQuery $element
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -38,8 +40,6 @@ class CampaignRecord extends ActiveRecord
 
      /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {
@@ -52,9 +52,9 @@ class CampaignRecord extends ActiveRecord
     /**
      * Returns the campaign type.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getCampaignType(): ActiveQueryInterface
+    public function getCampaignType(): ActiveQuery
     {
         return $this->hasOne(CampaignTypeRecord::class, ['id' => 'campaignTypeId']);
     }
@@ -62,9 +62,9 @@ class CampaignRecord extends ActiveRecord
     /**
      * Returns the related element.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getElement(): ActiveQueryInterface
+    public function getElement(): ActiveQuery
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }

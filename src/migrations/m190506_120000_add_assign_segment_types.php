@@ -27,6 +27,7 @@ class m190506_120000_add_assign_segment_types extends Migration
         // Assign segment types to all segments
         $segmentRecords = SegmentRecord::find()->all();
 
+        /** @var SegmentRecord $segmentRecord */
         foreach ($segmentRecords as $segmentRecord) {
             $segmentRecord->segmentType = 'regular';
             $segmentRecord->save();
@@ -34,6 +35,8 @@ class m190506_120000_add_assign_segment_types extends Migration
 
         // Refresh the db schema caches
         Craft::$app->db->schema->refresh();
+
+        return true;
     }
 
     /**

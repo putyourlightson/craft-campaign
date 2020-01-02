@@ -17,6 +17,8 @@ class m181109_120000_add_mailinglisttype_subject_column extends Migration
         if (!$this->db->columnExists('{{%campaign_mailinglisttypes}}', 'verifyEmailSubject')) {
             $this->addColumn('{{%campaign_mailinglisttypes}}', 'verifyEmailSubject', $this->text()->after('doubleOptIn'));
         }
+
+        return true;
     }
 
     /**

@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\errors\DeprecationException;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;

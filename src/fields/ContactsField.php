@@ -15,7 +15,7 @@ use craft\fields\BaseRelationField;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactsField extends BaseRelationField
 {
@@ -27,7 +27,7 @@ class ContactsField extends BaseRelationField
      */
     public static function displayName(): string
     {
-        return Craft::t('campaign', 'Contacts');
+        return Craft::t('campaign', 'Campaign Contacts');
     }
 
     /**

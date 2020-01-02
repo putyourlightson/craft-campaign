@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use putyourlightson\campaign\helpers\StringHelper;
+use yii\db\ActiveQuery;
 
 /**
  * LinkRecord
@@ -19,9 +20,11 @@ use putyourlightson\campaign\helpers\StringHelper;
  * @property int         $clicked                    Clicked
  * @property int         $clicks                     Clicks
  *
+ * @method static ActiveQuery find()
+ *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class LinkRecord extends ActiveRecord
 {

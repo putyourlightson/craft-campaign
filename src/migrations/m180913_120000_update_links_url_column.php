@@ -17,6 +17,8 @@ class m180913_120000_update_links_url_column extends Migration
         if ($this->db->columnExists('{{%campaign_links}}', 'url')) {
             $this->alterColumn('{{%campaign_links}}', 'url', $this->text());
         }
+
+        return true;
     }
 
     /**

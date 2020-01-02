@@ -33,6 +33,8 @@ class m181014_120000_add_fromnamesemails_setting extends Migration
 
             Campaign::$plugin->settings->saveSettings($settings);
         }
+
+        return true;
     }
 
     /**

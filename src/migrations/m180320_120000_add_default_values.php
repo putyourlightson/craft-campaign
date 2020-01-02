@@ -26,6 +26,8 @@ class m180320_120000_add_default_values extends Migration
         $this->alterColumn('{{%campaign_links}}', 'clicks', $this->integer()->defaultValue(0)->notNull());
         $this->alterColumn('{{%campaign_contacts_campaigns}}', 'opens', $this->integer()->defaultValue(0)->notNull());
         $this->alterColumn('{{%campaign_contacts_campaigns}}', 'clicks', $this->integer()->defaultValue(0)->notNull());
+
+        return true;
     }
 
     /**

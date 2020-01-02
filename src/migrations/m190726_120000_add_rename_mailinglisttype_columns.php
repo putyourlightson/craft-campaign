@@ -44,6 +44,8 @@ class m190726_120000_add_rename_mailinglisttype_columns extends Migration
         if (!$this->db->columnExists($table, 'unsubscribeVerificationEmailTemplate')) {
             $this->addColumn($table, 'unsubscribeVerificationEmailTemplate', $this->string(500)->after('unsubscribeVerificationEmailSubject'));
         }
+
+        return true;
     }
 
     /**

@@ -76,6 +76,7 @@ class WebhookService extends Component
             ->where(['contactId' => $contact->id])
             ->all();
 
+        /** @var ContactCampaignRecord $contactCampaignRecord */
         foreach ($contactCampaignRecords as $contactCampaignRecord) {
             $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
 

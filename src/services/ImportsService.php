@@ -139,10 +139,10 @@ class ImportsService extends Component
                 'lastName' => Craft::t('campaign', 'Last Name'),
             ];
 
+            /* @var Field[] $fields */
             $fields = Craft::$app->fields->getFieldsByElementType(User::class);
 
             foreach ($fields as $field) {
-                /* @var Field $field */
                 $columns[$field->handle] = $field->name;
             }
         }
@@ -196,7 +196,10 @@ class ImportsService extends Component
         // If user group
         else {
             // Get rows as arrays
-            $rows = User::find()->groupId($import->userGroupId)->asArray()->all();
+            $rows = User::find()
+                ->groupId($import->userGroupId)
+                ->asArray()
+                ->all();
         }
 
         return $rows;

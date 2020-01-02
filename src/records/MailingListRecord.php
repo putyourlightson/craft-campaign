@@ -7,7 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use craft\records\Element;
-use yii\db\ActiveQueryInterface;
+use yii\db\ActiveQuery;
 
 /**
  * MailingListRecord
@@ -15,8 +15,10 @@ use yii\db\ActiveQueryInterface;
  * @property int $id
  * @property int|null $mailingListTypeId
  * @property int|null $syncedUserGroupId
- * @property ActiveQueryInterface $mailingListType
- * @property ActiveQueryInterface $element
+ * @property ActiveQuery $mailingListType
+ * @property ActiveQuery $element
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -43,9 +45,9 @@ class MailingListRecord extends ActiveRecord
     /**
      * Returns the campaign type.
      *
-     * @return ActiveQueryInterface The relational query object.
+     * @return ActiveQuery
      */
-    public function getMailingListType(): ActiveQueryInterface
+    public function getMailingListType(): ActiveQuery
     {
         return $this->hasOne(MailingListTypeRecord::class, ['id' => 'mailingListTypeId']);
     }
@@ -53,9 +55,9 @@ class MailingListRecord extends ActiveRecord
     /**
      * Returns the related element.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getElement(): ActiveQueryInterface
+    public function getElement(): ActiveQuery
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }

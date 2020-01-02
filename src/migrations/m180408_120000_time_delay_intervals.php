@@ -32,6 +32,8 @@ class m180408_120000_time_delay_intervals extends Migration
 
             Craft::$app->getElements()->saveElement($sendout);
         }
+
+        return true;
     }
 
     /**

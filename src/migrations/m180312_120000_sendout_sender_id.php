@@ -18,6 +18,8 @@ class m180312_120000_sendout_sender_id extends Migration
         if ($this->db->columnExists('{{%campaign_sendouts}}', 'userId')) {
             MigrationHelper::renameColumn('{{%campaign_sendouts}}', 'userId', 'senderId', $this);
         }
+
+        return true;
     }
 
     /**

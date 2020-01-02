@@ -9,6 +9,7 @@ use craft\events\ElementEvent;
 use craft\events\UserEvent;
 use craft\events\UserGroupsAssignEvent;
 use craft\helpers\ArrayHelper;
+use craft\queue\Queue;
 use craft\services\Elements;
 use craft\services\Users;
 use DateTime;
@@ -105,8 +106,11 @@ class SyncService extends Component
      */
     public function queueSync(MailingListElement $mailingList)
     {
+        /** @var Queue $queue */
+        $queue = Craft::$app->getQueue();
+
         // Add sync job to queue
-        Craft::$app->getQueue()->push(new SyncJob(['mailingListId' => $mailingList->id]));
+        $queue->push(new SyncJob(['mailingListId' => $mailingList->id]));
     }
 
     /**

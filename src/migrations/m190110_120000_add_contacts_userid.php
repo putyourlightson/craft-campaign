@@ -30,6 +30,8 @@ class m190110_120000_add_contacts_userid extends Migration
         foreach ($mailingLists as $mailingList) {
             Campaign::$plugin->sync->queueSync($mailingList);
         }
+
+        return true;
     }
 
     /**

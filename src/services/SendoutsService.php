@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
+use craft\queue\Queue;
 use craft\records\Element_SiteSettings;
 use craft\web\View;
 use DateTime;
@@ -247,12 +248,20 @@ class SendoutsService extends Component
                 ->where(Db::parseDateParam('sendDate', $now, '<='))
                 ->all();
 
-            /** @var SendoutElement[] $sendouts */
+            /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
                 // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
-                if ($sendout->sendoutType == 'regular' || $sendout->sendoutType == 'scheduled' || (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow())) {
+                if ($sendout->sendoutType == 'regular'
+                    || $sendout->sendoutType == 'scheduled'
+                    || (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring')
+                        && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow()
+                    )
+                ) {
+                    /** @var Queue $queue */
+                    $queue = Craft::$app->getQueue();
+
                     // Add sendout job to queue
-                    Craft::$app->getQueue()->push(new SendoutJob([
+                    $queue->push(new SendoutJob([
                         'sendoutId' => $sendout->id,
                         'title' => $sendout->title,
                     ]));

@@ -19,6 +19,8 @@ class m180825_120000_add_mailinglist_syncedusergroupid_column extends Migration
 
             $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'syncedUserGroupId', '{{%usergroups}}', 'id', 'SET NULL');
         }
+
+        return true;
     }
 
     /**

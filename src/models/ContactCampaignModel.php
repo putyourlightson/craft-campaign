@@ -217,8 +217,8 @@ class ContactCampaignModel extends BaseModel
                 ->where(['id' => $linkIds])
                 ->all();
 
+            /** @var LinkRecord $linkRecord */
             foreach ($linkRecords as $linkRecord) {
-                /** @var LinkRecord $linkRecord */
                 $links[] = $linkRecord->url;
             }
         }

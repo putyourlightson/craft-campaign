@@ -14,6 +14,7 @@ use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
+use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
@@ -155,10 +156,9 @@ class CampaignTypesService extends Component
      * Saves a campaign type.
      *
      * @param CampaignTypeModel $campaignType The campaign type to be saved
-     * @param bool|null $runValidation Whether the campaign type should be validated
+     * @param bool $runValidation Whether the campaign type should be validated
      *
      * @return bool Whether the campaign type was saved successfully
-     * @throws \Exception
      */
     public function saveCampaignType(CampaignTypeModel $campaignType, bool $runValidation = true): bool
     {
@@ -285,8 +285,11 @@ class CampaignTypesService extends Component
         }
 
         if (!$isNew) {
+            /** @var Queue $queue */
+            $queue = Craft::$app->getQueue();
+
             // Re-save the campaigns in this campaign type
-            Craft::$app->getQueue()->push(new ResaveElementsJob([
+            $queue->push(new ResaveElementsJob([
                 'description' => Craft::t('app', 'Resaving {type} campaigns ({site})', [
                     'type' => $campaignType->name,
                     'site' => $campaignType->getSite()->name,

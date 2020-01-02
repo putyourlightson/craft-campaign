@@ -15,6 +15,8 @@ class m180503_120000_pending_contacts_source_column extends Migration
     public function safeUp()
     {
         $this->renameColumn('{{%campaign_pendingcontacts}}', 'sourceUrl', 'source');
+
+        return true;
     }
 
     /**

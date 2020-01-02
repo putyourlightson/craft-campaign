@@ -89,8 +89,6 @@ class MailingListElement extends Element
     }
 
     /**
-     * @inheritdoc
-     *
      * @return MailingListElementQuery
      */
     public static function find(): ElementQueryInterface
@@ -496,7 +494,7 @@ class MailingListElement extends Element
     /**
      * Returns the contacts in this mailing list by subscription status
      *
-     * @param string
+     * @param string $subscriptionStatus
      *
      * @return ContactElement[]
      */

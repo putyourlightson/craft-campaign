@@ -25,6 +25,8 @@ class m180520_120000_remove_duplicate_columns extends Migration
         $this->dropColumn('{{%campaign_contacts_mailinglists}}', 'device');
         $this->dropColumn('{{%campaign_contacts_mailinglists}}', 'os');
         $this->dropColumn('{{%campaign_contacts_mailinglists}}', 'client');
+
+        return true;
     }
 
     /**

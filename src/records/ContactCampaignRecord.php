@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\records;
 use craft\db\ActiveRecord;
 use DateTime;
 use yii\db\ActiveQuery;
-use yii\db\ActiveQueryInterface;
 
 /**
  * ContactCampaignRecord
@@ -27,8 +26,8 @@ use yii\db\ActiveQueryInterface;
  * @property int $opens Opens
  * @property int $clicks Clicks
  * @property string|null $links Links
- * @property ActiveQueryInterface $contact
- * @property ActiveQueryInterface $campaign
+ * @property ActiveQuery $contact
+ * @property ActiveQuery $campaign
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -41,8 +40,6 @@ class ContactCampaignRecord extends ActiveRecord
 
      /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {
@@ -51,12 +48,13 @@ class ContactCampaignRecord extends ActiveRecord
 
     /**
      * @inheritdoc
-     *
-     * @return ActiveQuery
      */
-    public static function find()
+    public static function find(): ActiveQuery
     {
-        return parent::find()
+        /** @var ActiveQuery $query */
+        $query = parent::find();
+
+        return $query
             ->innerJoinWith(['contact' => function(ActiveQuery $query) {
                 $query->innerJoinWith('element contact_element')
                     ->where(['contact_element.dateDeleted' => null]);
@@ -73,9 +71,9 @@ class ContactCampaignRecord extends ActiveRecord
     /**
      * Returns the related contact record.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getContact(): ActiveQueryInterface
+    public function getContact(): ActiveQuery
     {
         return $this->hasOne(ContactRecord::class, ['id' => 'contactId']);
     }
@@ -83,9 +81,9 @@ class ContactCampaignRecord extends ActiveRecord
     /**
      * Returns the related campaign record.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getCampaign(): ActiveQueryInterface
+    public function getCampaign(): ActiveQuery
     {
         return $this->hasOne(CampaignRecord::class, ['id' => 'campaignId']);
     }

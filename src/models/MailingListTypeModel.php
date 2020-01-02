@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\models\FieldLayout;
 use craft\models\Site;
 use craft\validators\SiteIdValidator;
 use putyourlightson\campaign\base\BaseModel;
@@ -20,14 +21,16 @@ use craft\validators\UniqueValidator;
 /**
  * MailingListTypeModel
  *
- * @mixin FieldLayoutBehavior
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
  *
+ * @mixin FieldLayoutBehavior
+ *
  * @property null|Site $site
  * @property string $cpEditUrl
+ *
+ * @method FieldLayout getFieldLayout()
  */
 class MailingListTypeModel extends BaseModel
 {

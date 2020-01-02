@@ -97,8 +97,6 @@ class ContactElement extends Element
     }
 
     /**
-     * @inheritdoc
-     *
      * @return ContactElementQuery
      */
     public static function find(): ElementQueryInterface
@@ -477,12 +475,13 @@ class ContactElement extends Element
     /**
      * Returns the mailing list subscription status
      *
-     * @param int Mailing list ID
+     * @param int $mailingListId
      *
      * @return string
      */
     public function getMailingListSubscriptionStatus(int $mailingListId): string
     {
+        /** @var ContactMailingListRecord|null $contactMailingList */
         $contactMailingList = ContactMailingListRecord::find()
             ->select('subscriptionStatus')
             ->where([
@@ -785,13 +784,13 @@ class ContactElement extends Element
             $condition['subscriptionStatus'] = $subscriptionStatus;
         }
 
+        /* @var ContactMailingListRecord[] $contactMailingLists */
         $contactMailingLists = ContactMailingListRecord::find()
             ->select('mailingListId')
             ->where($condition)
             ->all();
 
         foreach ($contactMailingLists as $contactMailingList) {
-            /* @var ContactMailingListRecord $contactMailingList */
             $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactMailingList->mailingListId);
 
             if ($mailingList) {

@@ -15,6 +15,8 @@ class m180405_120000_remove_expected_recipients extends Migration
     public function safeUp()
     {
         $this->dropColumn('{{%campaign_sendouts}}', 'expectedRecipients');
+
+        return true;
     }
 
     /**

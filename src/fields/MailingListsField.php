@@ -9,15 +9,16 @@ use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\fields\BaseRelationField;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
- * CampaignsField
+ * MailingListsField
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0
+ * @since     1.13.0
  */
-class CampaignsField extends BaseRelationField
+class MailingListsField extends BaseRelationField
 {
     // Static
     // =========================================================================
@@ -27,7 +28,7 @@ class CampaignsField extends BaseRelationField
      */
     public static function displayName(): string
     {
-        return Craft::t('campaign', 'Campaign Campaigns');
+        return Craft::t('campaign', 'Campaign Mailing Lists');
     }
 
     /**
@@ -35,7 +36,7 @@ class CampaignsField extends BaseRelationField
      */
     protected static function elementType(): string
     {
-        return CampaignElement::class;
+        return MailingListElement::class;
     }
 
     /**
@@ -43,6 +44,6 @@ class CampaignsField extends BaseRelationField
      */
     public static function defaultSelectionLabel(): string
     {
-        return Craft::t('campaign', 'Add a campaign');
+        return Craft::t('campaign', 'Add a mailing list');
     }
 }

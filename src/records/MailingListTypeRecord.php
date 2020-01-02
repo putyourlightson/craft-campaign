@@ -7,8 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use craft\records\Site;
-use yii\db\ActiveQueryInterface;
-
+use yii\db\ActiveQuery;
 
 /**
  * MailingListTypeRecord
@@ -27,7 +26,9 @@ use yii\db\ActiveQueryInterface;
  * @property string $unsubscribeVerificationEmailSubject
  * @property string $unsubscribeVerificationEmailTemplate
  * @property string $unsubscribeSuccessTemplate
- * @property ActiveQueryInterface $site
+ * @property ActiveQuery $site
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -54,9 +55,9 @@ class MailingListTypeRecord extends ActiveRecord
     /**
      * Returns the associated site.
      *
-     * @return ActiveQueryInterface The relational query object.
+     * @return ActiveQuery
      */
-    public function getSite(): ActiveQueryInterface
+    public function getSite(): ActiveQuery
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }

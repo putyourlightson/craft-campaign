@@ -22,6 +22,8 @@ class m180313_120000_add_verified_columns extends Migration
         if ($this->db->columnExists('{{%campaign_contacts_mailinglists}}', 'confirmed')) {
             MigrationHelper::renameColumn('{{%campaign_contacts_mailinglists}}', 'confirmed', 'verified', $this);
         }
+
+        return true;
     }
 
     /**

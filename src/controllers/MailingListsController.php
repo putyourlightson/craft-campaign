@@ -160,7 +160,7 @@ class MailingListsController extends Controller
             }
         }
 
-        // Set the title and slug
+        /** @var MailingListElement $mailingList */
         $mailingList->title = $request->getBodyParam('title', $mailingList->title);
         $mailingList->slug = $request->getBodyParam('slug', $mailingList->slug);
 

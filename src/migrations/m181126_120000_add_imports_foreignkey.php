@@ -15,6 +15,8 @@ class m181126_120000_add_imports_foreignkey extends Migration
     public function safeUp()
     {
         $this->addForeignKey(null, '{{%campaign_imports}}', 'mailingListId', '{{%campaign_mailinglists}}', 'id', 'SET NULL');
+
+        return true;
     }
 
     /**

@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQuery;
 
 /**
  * SegmentRecord
@@ -13,6 +14,8 @@ use craft\db\ActiveRecord;
  * @property int $id
  * @property string $segmentType
  * @property mixed $conditions
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign

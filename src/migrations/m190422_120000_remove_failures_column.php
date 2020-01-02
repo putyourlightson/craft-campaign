@@ -17,6 +17,8 @@ class m190422_120000_remove_failures_column extends Migration
         if ($this->db->columnExists('{{%campaign_imports}}', 'failures')) {
             $this->dropColumn('{{%campaign_imports}}', 'failures');
         }
+
+        return true;
     }
 
     /**

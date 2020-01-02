@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
+use craft\elements\User;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
@@ -249,6 +250,7 @@ class SendoutsController extends Controller
         ];
 
         // Get test contact based on current user's email address
+        /** @var User|null $currentUser */
         $currentUser = Craft::$app->user->getIdentity();
         $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
 

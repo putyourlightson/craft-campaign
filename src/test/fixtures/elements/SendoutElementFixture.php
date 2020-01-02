@@ -45,10 +45,10 @@ abstract class SendoutElementFixture extends ElementFixture
     public function load()
     {
         $campaign = CampaignElement::find()->one();
-        $this->campaignId = $campaign ? $campaign->id : null;
+        $this->campaignId = $campaign ? $campaign->getId() : null;
 
         $mailingList = MailingListElement::find()->one();
-        $this->mailingListIds = $mailingList ? [$mailingList->id] : null;
+        $this->mailingListIds = $mailingList ? [$mailingList->getId()] : null;
 
         parent::load();
     }

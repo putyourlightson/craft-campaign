@@ -46,6 +46,8 @@ class m181011_120000_add_siteid_columns extends Migration
 
             $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
         }
+
+        return true;
     }
 
     /**

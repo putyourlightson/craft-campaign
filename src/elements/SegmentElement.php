@@ -89,8 +89,6 @@ class SegmentElement extends Element
     }
 
     /**
-     * @inheritdoc
-     *
      * @return SegmentElementQuery
      */
     public static function find(): ElementQueryInterface

@@ -43,6 +43,8 @@ class m180410_120000_pending_contacts extends Migration
         }
 
         $this->dropColumn('{{%campaign_contacts}}', 'pending');
+
+        return true;
     }
 
     /**

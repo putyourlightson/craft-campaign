@@ -9,7 +9,7 @@ use craft\db\ActiveRecord;
 use craft\records\Element;
 use craft\records\User;
 use DateTime;
-use yii\db\ActiveQueryInterface;
+use yii\db\ActiveQuery;
 
 /**
  * ContactRecord
@@ -27,8 +27,10 @@ use yii\db\ActiveQueryInterface;
  * @property DateTime $verified Verified
  * @property DateTime $complained Complained
  * @property DateTime $bounced Bounced
- * @property ActiveQueryInterface $element
- * @property ActiveQueryInterface $user
+ * @property ActiveQuery $element
+ * @property ActiveQuery $user
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -55,9 +57,9 @@ class ContactRecord extends ActiveRecord
     /**
      * Returns the related element.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getElement(): ActiveQueryInterface
+    public function getElement(): ActiveQuery
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
@@ -65,9 +67,9 @@ class ContactRecord extends ActiveRecord
     /**
      * Returns the related user record.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getUser(): ActiveQueryInterface
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['userId' => 'id']);
     }

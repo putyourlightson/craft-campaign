@@ -21,6 +21,8 @@ class m180911_120000_add_import_columns extends Migration
         if (!$this->db->columnExists('{{%campaign_imports}}', 'fieldIndexes')) {
             $this->addColumn('{{%campaign_imports}}', 'fieldIndexes', $this->text()->after('emailFieldIndex'));
         }
+
+        return true;
     }
 
     /**

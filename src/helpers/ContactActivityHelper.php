@@ -97,14 +97,12 @@ class ContactActivityHelper
     /**
      * Gets geolocation based on IP address
      *
-     * @param int|null
+     * @param int $timeout
      *
      * @return array|null
      */
-    public static function getGeoIp(int $timeout = null)
+    public static function getGeoIp(int $timeout = 5)
     {
-        $timeout = $timeout ?? 5;
-
         $geoIp = null;
 
         $client = Craft::createGuzzleClient([

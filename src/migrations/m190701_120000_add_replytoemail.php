@@ -24,6 +24,8 @@ class m190701_120000_add_replytoemail extends Migration
 
         // Refresh the db schema caches
         Craft::$app->db->schema->refresh();
+
+        return true;
     }
 
     /**

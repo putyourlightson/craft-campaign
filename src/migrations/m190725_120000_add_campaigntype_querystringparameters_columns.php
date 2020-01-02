@@ -27,6 +27,8 @@ class m190725_120000_add_campaigntype_querystringparameters_columns extends Migr
         if ($this->db->columnExists($table, 'subject')) {
             $this->alterColumn($table, 'subject', $this->text());
         }
+
+        return true;
     }
 
     /**

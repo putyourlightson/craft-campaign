@@ -246,7 +246,7 @@ class SettingsModel extends Model
     /**
      * Validates the from names and emails
      *
-     * @param $attribute
+     * @param mixed $attribute
      */
     public function validateFromNamesEmails($attribute)
     {

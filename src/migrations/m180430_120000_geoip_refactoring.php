@@ -42,6 +42,8 @@ class m180430_120000_geoip_refactoring extends Migration
 
             Craft::$app->getElements()->saveElement($contact);
         }
+
+        return true;
     }
 
     /**

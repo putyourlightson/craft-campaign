@@ -133,6 +133,7 @@ class MailingListsService extends Component
             return;
         }
 
+        /** @var ContactMailingListRecord|null $contactMailingListRecord */
         $contactMailingListRecord = ContactMailingListRecord::find()
             ->where([
                 'contactId' => $contact->id,

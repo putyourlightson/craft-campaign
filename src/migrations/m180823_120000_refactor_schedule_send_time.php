@@ -33,6 +33,8 @@ class m180823_120000_refactor_schedule_send_time extends Migration
                 $sendoutRecord->save();
             }
         }
+
+        return true;
     }
 
     /**

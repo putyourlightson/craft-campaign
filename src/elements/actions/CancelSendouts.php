@@ -83,6 +83,8 @@ class CancelSendouts extends ElementAction
 EOD;
 
         Craft::$app->getView()->registerJs($js);
+
+        return null;
     }
 
     /**

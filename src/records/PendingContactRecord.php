@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQuery;
 
 /**
  * PendingContactRecord
@@ -17,9 +18,11 @@ use craft\db\ActiveRecord;
  * @property string      $source                     Source
  * @property mixed       $fieldData                  Field data
  *
+ * @method static ActiveQuery find()
+ *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class PendingContactRecord extends ActiveRecord
 {

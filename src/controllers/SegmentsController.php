@@ -164,7 +164,7 @@ class SegmentsController extends Controller
             }
         }
 
-        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
+        /** @var SegmentElement $segment */
         $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
         $segment->segmentType = $request->getBodyParam('segmentType', $segment->segmentType);
         $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);

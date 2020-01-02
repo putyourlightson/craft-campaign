@@ -16,6 +16,8 @@ class m180507_120000_mlid extends Migration
     {
         $this->dropColumn('{{%campaign_mailinglists}}', 'mlid');
         $this->dropColumn('{{%campaign_mailinglisttypes}}', 'requireMlid');
+
+        return true;
     }
 
     /**

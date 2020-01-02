@@ -14,6 +14,7 @@ use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
+use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
@@ -127,7 +128,7 @@ class MailingListTypesService extends Component
      * Saves a mailing list type.
      *
      * @param MailingListTypeModel $mailingListType  The mailing list type to be saved
-     * @param bool|null $runValidation Whether the mailing list type should be validated
+     * @param bool $runValidation Whether the mailing list type should be validated
      *
      * @return bool Whether the mailing list type was saved successfully
      * @throws Throwable if reasons
@@ -257,8 +258,11 @@ class MailingListTypesService extends Component
         }
 
         if (!$isNew) {
+            /** @var Queue $queue */
+            $queue = Craft::$app->getQueue();
+
             // Re-save the mailing lists in this mailing list type
-            Craft::$app->getQueue()->push(new ResaveElementsJob([
+            $queue->push(new ResaveElementsJob([
                 'description' => Craft::t('app', 'Resaving {type} mailing lists ({site})', [
                     'type' => $mailingListType->name,
                     'site' => $mailingListType->getSite()->name,

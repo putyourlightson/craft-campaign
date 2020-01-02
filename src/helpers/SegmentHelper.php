@@ -137,9 +137,11 @@ class SegmentHelper
 
         if ($fieldLayout !== null) {
             $supportedFields = SegmentHelper::getFieldOperators();
+
+            /* @var Field[] $fields */
             $fields = $fieldLayout->getFields();
+
             foreach ($fields as $field) {
-                /* @var Field $field */
                 $fieldType = get_class($field);
 
                 if (!empty($supportedFields[$fieldType])) {

@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use DateTime;
+use yii\db\ActiveQuery;
 
 
 /**
@@ -25,6 +26,8 @@ use DateTime;
  * @property int         $fails                 Fails
  * @property mixed       $failures              Failures
  * @property DateTime    $dateImported          Date imported
+ *
+ * @method static ActiveQuery find()
  *
  * @author    PutYourLightsOn
  * @package   Campaign

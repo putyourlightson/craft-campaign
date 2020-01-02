@@ -83,6 +83,8 @@ class DeleteSendouts extends ElementAction
 EOD;
 
         Craft::$app->getView()->registerJs($js);
+
+        return null;
     }
 
     /**

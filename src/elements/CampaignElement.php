@@ -109,8 +109,6 @@ class CampaignElement extends Element
     }
 
     /**
-     * @inheritdoc
-     *
      * @return CampaignElementQuery
      */
     public static function find(): ElementQueryInterface

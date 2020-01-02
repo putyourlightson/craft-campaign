@@ -24,14 +24,16 @@ class m180430_120000_source_columns extends Migration
             ->where(['not', ['sourceType' => 'web']])
             ->all();
 
+        /** @var ContactMailingListRecord $contactMailingList */
         foreach ($contactMailingLists as $contactMailingList) {
-            /** @var ContactMailingListRecord $contactMailingList */
             $start = strrpos($contactMailingList->source, '/') + 1;
             $id = substr($contactMailingList->source, $start);
             $contactMailingList->source = is_numeric($id) ? $id : 1;
 
             $contactMailingList->save();
         }
+
+        return true;
     }
 
     /**

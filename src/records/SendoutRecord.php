@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use DateTime;
+use yii\db\ActiveQuery;
 
 /**
  * SendoutRecord
@@ -32,6 +33,8 @@ use DateTime;
  * @property DateTime    $sendDate                   Send date
  * @property DateTime    $lastSent                   Last sent
  *
+ * @method static ActiveQuery find()
+ *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
@@ -43,8 +46,6 @@ class SendoutRecord extends ActiveRecord
 
      /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {

@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\models;
 use Craft;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\validators\HandleValidator;
 use craft\validators\UniqueValidator;
 use craft\models\Site;
@@ -20,14 +21,16 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
 /**
  * CampaignTypeModel
  *
- * @mixin FieldLayoutBehavior
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
  *
+ * @mixin FieldLayoutBehavior
+ *
  * @property Site|null $site
  * @property string $cpEditUrl
+ *
+ * @method FieldLayout getFieldLayout()
  */
 class CampaignTypeModel extends BaseModel
 {

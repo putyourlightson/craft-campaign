@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\elements\User;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -146,6 +147,7 @@ class CampaignsController extends Controller
         ];
 
         // Get test contact based on current user's email address
+        /** @var User|null $currentUser */
         $currentUser = Craft::$app->user->getIdentity();
         $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
 

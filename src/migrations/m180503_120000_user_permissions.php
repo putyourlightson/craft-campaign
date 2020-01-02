@@ -26,6 +26,8 @@ class m180503_120000_user_permissions extends Migration
 
             $userPermission->save();
         }
+
+        return true;
     }
 
     /**

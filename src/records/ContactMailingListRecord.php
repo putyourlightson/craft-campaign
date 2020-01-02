@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\records;
 use craft\db\ActiveRecord;
 use DateTime;
 use yii\db\ActiveQuery;
-use yii\db\ActiveQueryInterface;
 
 /**
  * ContactMailingListRecord
@@ -24,8 +23,8 @@ use yii\db\ActiveQueryInterface;
  * @property DateTime|null $verified
  * @property string $sourceType
  * @property string $source
- * @property ActiveQueryInterface $contact
- * @property ActiveQueryInterface $mailingList
+ * @property ActiveQuery $contact
+ * @property ActiveQuery $mailingList
  *
  * @author    PutYourLightsOn
  * @package   Campaign
@@ -38,8 +37,6 @@ class ContactMailingListRecord extends ActiveRecord
 
      /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {
@@ -48,12 +45,13 @@ class ContactMailingListRecord extends ActiveRecord
 
     /**
      * @inheritdoc
-     *
-     * @return ActiveQuery
      */
-    public static function find()
+    public static function find(): ActiveQuery
     {
-        return parent::find()
+        /** @var ActiveQuery $query */
+        $query = parent::find();
+
+        return $query
             ->innerJoinWith(['contact' => function(ActiveQuery $query) {
                 $query->innerJoinWith('element contact_element')
                     ->where(['contact_element.dateDeleted' => null]);
@@ -70,9 +68,9 @@ class ContactMailingListRecord extends ActiveRecord
     /**
      * Returns the related contact record.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getContact(): ActiveQueryInterface
+    public function getContact(): ActiveQuery
     {
         return $this->hasOne(ContactRecord::class, ['id' => 'contactId']);
     }
@@ -80,9 +78,9 @@ class ContactMailingListRecord extends ActiveRecord
     /**
      * Returns the related mailing list record.
      *
-     * @return ActiveQueryInterface
+     * @return ActiveQuery
      */
-    public function getMailingList(): ActiveQueryInterface
+    public function getMailingList(): ActiveQuery
     {
         return $this->hasOne(MailingListRecord::class, ['id' => 'mailingListId']);
     }

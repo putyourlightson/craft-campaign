@@ -7,6 +7,7 @@ namespace putyourlightson\campaign;
 
 use Craft;
 use craft\base\Plugin;
+use craft\elements\User;
 use craft\errors\MissingComponentException;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
@@ -29,6 +30,9 @@ use craft\services\Utilities;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\campaign\controllers\TrackerController;
+use putyourlightson\campaign\fields\CampaignsField;
+use putyourlightson\campaign\fields\ContactsField;
+use putyourlightson\campaign\fields\MailingListsField;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
@@ -126,30 +130,10 @@ class Campaign extends Plugin
 
         self::$plugin = $this;
 
-        // Register services as components
-        $this->setComponents([
-            'campaigns' => CampaignsService::class,
-            'campaignTypes' => CampaignTypesService::class,
-            'contacts' => ContactsService::class,
-            'exports' => ExportsService::class,
-            'forms' => FormsService::class,
-            'imports' => ImportsService::class,
-            'mailingLists' => MailingListsService::class,
-            'mailingListTypes' => MailingListTypesService::class,
-            'pendingContacts' => PendingContactsService::class,
-            'reports' => ReportsService::class,
-            'segments' => SegmentsService::class,
-            'sendouts' => SendoutsService::class,
-            'settings' => SettingsService::class,
-            'sync' => SyncService::class,
-            'tracker' => TrackerService::class,
-            'webhook' => WebhookService::class,
-        ]);
-
-        // Register mailer component
-        $this->set('mailer', function() {
-            return $this->createMailer();
-        });
+        $this->_registerComponents();
+        $this->_registerFieldTypes();
+        $this->_registerAfterInstallEvent();
+        $this->_registerProjectConfigListeners();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -160,23 +144,29 @@ class Campaign extends Plugin
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
 
         // Register variable
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-            /** @var CraftVariable $variable */
-            $variable = $event->sender;
-            $variable->set('campaign', CampaignVariable::class);
-        });
-
-        // Register utility
-        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES, function(RegisterComponentTypesEvent $event) {
-            if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
-                $event->types[] = CampaignUtility::class;
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
+            function(Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('campaign', CampaignVariable::class);
             }
-        });
+        );
 
         // Register CP URL rules event
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
-            $event->rules = array_merge($event->rules, $this->getCpRoutes());
-        });
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function(RegisterUrlRulesEvent $event) {
+                $event->rules = array_merge($event->rules, $this->getCpRoutes());
+            }
+        );
+
+        // Register utility
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
+                    $event->types[] = CampaignUtility::class;
+                }
+            }
+        );
 
         // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
@@ -187,30 +177,8 @@ class Campaign extends Plugin
                 }
             );
 
-            // Register user events
             $this->sync->registerUserEvents();
         }
-
-        // Register after install event
-        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function(PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // Create and save default settings
-                    $settings = $this->createSettingsModel();
-                    $this->settings->saveSettings($settings);
-
-                    if (Craft::$app->getRequest()->getIsCpRequest()) {
-                        // Redirect to welcome page
-                        Craft::$app->getResponse()->redirect(
-                            UrlHelper::cpUrl('campaign/welcome')
-                        )->send();
-                    }
-                }
-            }
-        );
-
-        // Register project config listeners
-        $this->_registerConfigListeners();
     }
 
     /**
@@ -218,11 +186,17 @@ class Campaign extends Plugin
      */
     public function getCpNavItem()
     {
-        $currentUser = Craft::$app->getUser()->getIdentity();
-        $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-
         $cpNavItem =  parent::getCpNavItem();
         $cpNavItem['subnav'] = [];
+
+        /** @var User|null $currentUser */
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        if ($currentUser === null) {
+            return $cpNavItem;
+        }
+
+        $allowAdminChanges = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
 
         // Show nav items based on permissions
         if ($currentUser->can('campaign:campaigns')) {
@@ -467,11 +441,75 @@ class Campaign extends Plugin
     // =========================================================================
 
     /**
-     * Register event listeners for config changes.
-     *
-     * @since 1.12.0
+     * Registers components.
      */
-    private function _registerConfigListeners()
+    private function _registerComponents()
+    {
+        // Register services as components
+        $this->setComponents([
+            'campaigns' => CampaignsService::class,
+            'campaignTypes' => CampaignTypesService::class,
+            'contacts' => ContactsService::class,
+            'exports' => ExportsService::class,
+            'forms' => FormsService::class,
+            'imports' => ImportsService::class,
+            'mailingLists' => MailingListsService::class,
+            'mailingListTypes' => MailingListTypesService::class,
+            'pendingContacts' => PendingContactsService::class,
+            'reports' => ReportsService::class,
+            'segments' => SegmentsService::class,
+            'sendouts' => SendoutsService::class,
+            'settings' => SettingsService::class,
+            'sync' => SyncService::class,
+            'tracker' => TrackerService::class,
+            'webhook' => WebhookService::class,
+        ]);
+
+        // Register mailer component
+        $this->set('mailer', function() {
+            return $this->createMailer();
+        });
+    }
+
+    /**
+     * Registers custom field types.
+     */
+    private function _registerFieldTypes()
+    {
+        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = CampaignsField::class;
+            $event->types[] = ContactsField::class;
+            $event->types[] = MailingListsField::class;
+        });
+    }
+
+    /**
+     * Registers after install event.
+     */
+    private function _registerAfterInstallEvent()
+    {
+        Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function(PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    // Create and save default settings
+                    $settings = $this->createSettingsModel();
+                    $this->settings->saveSettings($settings);
+
+                    if (Craft::$app->getRequest()->getIsCpRequest()) {
+                        // Redirect to welcome page
+                        Craft::$app->getResponse()->redirect(
+                            UrlHelper::cpUrl('campaign/welcome')
+                        )->send();
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Registers event listeners for project config changes.
+     */
+    private function _registerProjectConfigListeners()
     {
         // Campaign types
         Craft::$app->projectConfig

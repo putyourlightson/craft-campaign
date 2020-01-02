@@ -15,6 +15,8 @@ class m180817_120000_rename_schedule_column extends Migration
     public function safeUp()
     {
         $this->renameColumn('{{%campaign_sendouts}}', 'automatedSchedule', 'schedule');
+
+        return true;
     }
 
     /**
