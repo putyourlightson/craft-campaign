@@ -38,7 +38,7 @@ class CampaignRecord extends ActiveRecord
     // Public Static Methods
     // =========================================================================
 
-     /**
+    /**
      * @inheritdoc
      */
     public static function tableName(): string

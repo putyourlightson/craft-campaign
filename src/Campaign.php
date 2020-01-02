@@ -186,7 +186,7 @@ class Campaign extends Plugin
      */
     public function getCpNavItem()
     {
-        $cpNavItem =  parent::getCpNavItem();
+        $cpNavItem = parent::getCpNavItem();
         $cpNavItem['subnav'] = [];
 
         /** @var User|null $currentUser */
