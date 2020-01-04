@@ -426,7 +426,7 @@ class SendoutsService extends Component
 
         // Attempt to send message
         for ($i = 0; $i < Campaign::$plugin->getSettings()->maxSendAttempts; $i++) {
-            $success = $message->send();
+            $success = Campaign::$plugin->mailer->send($message);
 
             if ($success) {
                 break;

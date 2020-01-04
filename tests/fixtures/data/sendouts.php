@@ -13,7 +13,7 @@ return [
         'sendStatus' => SendoutElement::STATUS_PENDING,
         'campaignId' => $this->campaignId,
         'mailingListIds' => $this->mailingListIds,
-        //'segmentIds' => $this->segmentIds,
+        'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
         'notificationEmailAddress' => 'notify@email.com',

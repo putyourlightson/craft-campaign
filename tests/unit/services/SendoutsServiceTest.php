@@ -78,7 +78,7 @@ class SendoutsServiceTest extends BaseUnitTest
     // Public methods
     // =========================================================================
 
-    public function xtestGetPendingRecipients()
+    public function testGetPendingRecipients()
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
