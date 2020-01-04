@@ -3,15 +3,40 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-return [
+$contacts = [
     [
-        'email' => 'contact1@contacts.com',
-        'cid' => 'cid1',
-        'uid' => 'uid1',
+        'email' => 'contact@contacts.com',
+        'cid' => 'cid',
+        'uid' => 'uid',
     ],
     [
-        'email' => 'contact2@contacts.com',
-        'cid' => 'cid2',
-        'uid' => 'uid2',
+        'email' => 'contact@contacts-deleted.com',
+        'dateDeleted' => new DateTime(),
+        'cid' => 'cid',
+        'uid' => 'uid',
+    ],
+    [
+        'email' => 'contact@contacts-complained.com',
+        'complained' => new DateTime(),
+        'cid' => 'cid',
+        'uid' => 'uid',
+    ],
+    [
+        'email' => 'contact@contacts-bounced.com',
+        'bounced' => new DateTime(),
+        'cid' => 'cid',
+        'uid' => 'uid',
     ],
 ];
+
+$more = 0;
+
+for ($i = 0; $i < $more; $i++) {
+    $contacts[] = [
+        'email' => 'contact'.$i.'@contacts.com',
+        'cid' => 'cid'.$i,
+        'uid' => 'uid'.$i,
+    ];
+}
+
+return $contacts;

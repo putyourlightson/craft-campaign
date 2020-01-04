@@ -71,6 +71,6 @@ class ContactRecord extends ActiveRecord
      */
     public function getUser(): ActiveQuery
     {
-        return $this->hasOne(User::class, ['userId' => 'id']);
+        return $this->hasOne(User::class, ['id' => 'userId']);
     }
 }

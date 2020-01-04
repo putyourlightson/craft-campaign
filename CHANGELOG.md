@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.13.0 - 2020-01-02
+## 1.13.0 - Unreleased
 ### Added
 - Added custom relation field types for campaigns, contacts and mailing lists.
+
+### Changed
+- Improved performance of pending recipients query.
 
 ## 1.12.4 - 2019-12-11
 ### Changed

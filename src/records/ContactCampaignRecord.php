@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
+use craft\db\Table;
 use DateTime;
 use yii\db\ActiveQuery;
 
@@ -54,15 +55,15 @@ class ContactCampaignRecord extends ActiveRecord
         /** @var ActiveQuery $query */
         $query = parent::find();
 
-        return $query
-            ->innerJoinWith(['contact' => function(ActiveQuery $query) {
-                $query->innerJoinWith('element contact_element')
-                    ->where(['contact_element.dateDeleted' => null]);
-            }])
-            ->innerJoinWith(['campaign' => function(ActiveQuery $query) {
-                $query->innerJoinWith('element campaign_element')
-                    ->where(['campaign_element.dateDeleted' => null]);
-            }]);
+        // Ensure contact is not deleted
+        $query->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->where(['contactElement.dateDeleted' => null]);
+
+        // Ensure campaign is not deleted
+        $query->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
+            ->where(['campaignElement.dateDeleted' => null]);
+
+        return $query;
     }
 
     // Public Methods

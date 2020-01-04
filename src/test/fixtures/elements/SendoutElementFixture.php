@@ -33,14 +33,14 @@ abstract class SendoutElementFixture extends ElementFixture
     public $campaignId;
 
     /**
-     * @var array
+     * @var string|null
      */
-    public $mailingListIds = [];
+    public $mailingListIds;
 
     /**
-     * @var array
+     * @var string|null
      */
-    public $segmentIds = [];
+    public $segmentIds;
 
     // Public Methods
     // =========================================================================
@@ -53,11 +53,11 @@ abstract class SendoutElementFixture extends ElementFixture
         $campaign = CampaignElement::find()->one();
         $this->campaignId = $campaign ? $campaign->id : null;
 
-        $mailingList = MailingListElement::find()->one();
-        $this->mailingListIds = $mailingList ? $mailingList->id : null;
+        $mailingListIds = MailingListElement::find()->ids();
+        $this->mailingListIds = implode(',', $mailingListIds);
 
-        $segment = SegmentElement::find()->one();
-        $this->segmentIds = $segment ? $segment->id : null;
+        $segmentIds = SegmentElement::find()->ids();
+        $this->segmentIds = implode(',', $segmentIds);
 
         parent::load();
     }

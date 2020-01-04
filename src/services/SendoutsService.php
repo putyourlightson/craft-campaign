@@ -21,6 +21,7 @@ use putyourlightson\campaign\jobs\SendoutJob;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
+use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
@@ -168,15 +169,12 @@ class SendoutsService extends Component
                 'subscriptionStatus' => 'subscribed',
             ]);
 
-        // Ensure contacts have not complained or bounced (check in contact record)
-        $query->innerJoinWith([
-            'contact c' => function(ActiveQuery $subquery) {
-                $subquery->andWhere([
-                    'c.complained' => null,
-                    'c.bounced' => null,
-                ]);
-            }
-        ]);
+        // Ensure contacts have not complained or bounced (in contact record)
+        $query->innerJoin(ContactRecord::tableName().' contact', 'contact.id = contactId')
+            ->where([
+                'contact.complained' => null,
+                'contact.bounced' => null,
+            ]);
 
         // Exclude contacts subscribed to sendout's excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);

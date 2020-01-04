@@ -8,7 +8,14 @@ return [
         'title' => 'Segment 1',
         'segmentType' => 'regular',
         'conditions' => [
-            ['=', 'email', 'contact1@contacts.com']
+            [
+                ['like', 'email', 'contact@']
+            ],
         ],
+    ],
+    [
+        'title' => 'Segment 2',
+        'segmentType' => 'template',
+        'conditions' => '{{ "contact@" in contact.email ? 1 : 0 }}',
     ],
 ];

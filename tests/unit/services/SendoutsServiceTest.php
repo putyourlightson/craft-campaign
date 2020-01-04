@@ -9,7 +9,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
@@ -76,6 +75,8 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->sendout = SendoutElement::find()->one();
         $this->contact = ContactElement::find()->one();
         $this->mailingList = MailingListElement::find()->one();
+
+        Campaign::$plugin->edition = Campaign::EDITION_PRO;
     }
 
     // Public methods
@@ -85,8 +86,8 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
-        // Subscribe contacts to mailing list
-        foreach (ContactElement::find()->all() as $contact) {
+        // Subscribe contacts (including trashed) to mailing list
+        foreach (ContactElement::find()->trashed(null)->all() as $contact) {
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $this->mailingList, 'subscribed');
         }
 
