@@ -54,10 +54,10 @@ abstract class SendoutElementFixture extends ElementFixture
         $this->campaignId = $campaign ? $campaign->id : null;
 
         $mailingList = MailingListElement::find()->one();
-        $this->mailingListIds = $mailingList ? [$mailingList->id] : null;
+        $this->mailingListIds = $mailingList ? $mailingList->id : null;
 
         $segment = SegmentElement::find()->one();
-        $this->segmentIds = $segment ? [$segment->id] : null;
+        $this->segmentIds = $segment ? $segment->id : null;
 
         parent::load();
     }

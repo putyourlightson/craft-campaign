@@ -9,6 +9,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
@@ -70,6 +71,8 @@ class SendoutsServiceTest extends BaseUnitTest
 
     protected function _before()
     {
+        parent::_before();
+
         $this->sendout = SendoutElement::find()->one();
         $this->contact = ContactElement::find()->one();
         $this->mailingList = MailingListElement::find()->one();
