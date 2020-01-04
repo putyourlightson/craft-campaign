@@ -210,7 +210,7 @@ class CampaignElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $attributes = [
+        return [
             'title' => ['label' => Craft::t('app', 'Title')],
             'campaignType' => ['label' => Craft::t('campaign', 'Campaign Type')],
             'recipients' => ['label' => Craft::t('campaign', 'Recipients')],
@@ -228,8 +228,6 @@ class CampaignElement extends Element
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
-
-        return $attributes;
     }
 
     /**

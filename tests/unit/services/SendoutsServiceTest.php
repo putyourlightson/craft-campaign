@@ -10,7 +10,6 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
-use putyourlightson\campaigntests\fixtures\CampaignTypesFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
@@ -48,22 +47,63 @@ class SendoutsServiceTest extends BaseUnitTest
         ];
     }
 
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var SendoutElement
+     */
+    protected $sendout;
+
+    /**
+     * @var ContactElement
+     */
+    protected $contact;
+
+    /**
+     * @var MailingListElement
+     */
+    protected $mailingList;
+
+    // Protected methods
+    // =========================================================================
+
+    protected function _before()
+    {
+        $this->sendout = SendoutElement::find()->one();
+        $this->contact = ContactElement::find()->one();
+        $this->mailingList = MailingListElement::find()->one();
+    }
+
     // Public methods
     // =========================================================================
 
+    public function xtestGetPendingRecipients()
+    {
+        $this->sendout->sendStatus = SendoutElement::STATUS_PENDING;
+
+        // Subscribe contacts to mailing list
+        foreach (ContactElement::find()->all() as $contact) {
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $this->mailingList, 'subscribed');
+        }
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+
+        // Assert that the number of pending recipients is correct
+        $this->assertEquals(1, count($pendingRecipients));
+    }
+
     public function testSendEmailSent()
     {
-        $sendout = SendoutElement::find()->one();
-        $contact = ContactElement::find()->one();
-        $mailingList = MailingListElement::find()->one();
+        $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
-        Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingList->id);
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($contact->email, $this->message->getTo());
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
         // Assert that the message subject is correct
-        $this->assertEquals($sendout->subject, $this->message->getSubject());
+        $this->assertEquals($this->sendout->subject, $this->message->getSubject());
 
         // Assert that the message body contains the tracking image
         $this->assertStringContainsStringIgnoringCase('campaign/t/open', $this->message->getSwiftMessage()->toString());
@@ -71,40 +111,32 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testSendEmailFailed()
     {
-        $sendout = SendoutElement::find()->one();
-        $contact = ContactElement::find()->one();
-        $mailingList = MailingListElement::find()->one();
-
-        $sendout->sendStatus = SendoutElement::STATUS_SENDING;
+        $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
         // Mocked mailer in `BaseUnitTest` will fail with this email subject
-        $sendout->subject = 'Fail';
+        $this->sendout->subject = 'Fail';
 
         // Set send attempts to 1
         Campaign::$plugin->getSettings()->maxSendAttempts = 1;
 
-        Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingList->id);
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
         // Assert that the message was not sent
         $this->assertNull($this->message);
 
         // Assert that the send status is failed
-        $this->assertEquals($sendout->sendStatus, SendoutElement::STATUS_FAILED);
+        $this->assertEquals($this->sendout->sendStatus, SendoutElement::STATUS_FAILED);
     }
 
     public function testSendEmailDuplicate()
     {
-        $sendout = SendoutElement::find()->one();
-        $contact = ContactElement::find()->one();
-        $mailingList = MailingListElement::find()->one();
+        $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
-        $sendout->sendStatus = SendoutElement::STATUS_SENDING;
-
-        Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingList->id);
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
         // Reset message and resend
         $this->message = null;
-        Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $mailingList->id);
+        Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
         // Assert that the message is null
         $this->assertNull($this->message);
@@ -112,13 +144,13 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testSendNotificationSent()
     {
-        $sendout = SendoutElement::find()->one();
-        $sendout->sendStatus = SendoutElement::STATUS_SENT;
+        $this->sendout = SendoutElement::find()->one();
+        $this->sendout->sendStatus = SendoutElement::STATUS_SENT;
 
-        Campaign::$plugin->sendouts->sendNotification($sendout);
+        Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsString('completed', $this->message->getSubject());
@@ -126,13 +158,13 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testSendNotificationFailed()
     {
-        $sendout = SendoutElement::find()->one();
-        $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+        $this->sendout = SendoutElement::find()->one();
+        $this->sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
-        Campaign::$plugin->sendouts->sendNotification($sendout);
+        Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsStringIgnoringCase('failed', $this->message->getSubject());

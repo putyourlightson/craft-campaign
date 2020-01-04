@@ -136,8 +136,7 @@ class TrackerController extends BaseMessageController
             return $this->asJson(['success' => true]);
         }
 
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
+        return $this->renderMessageTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,

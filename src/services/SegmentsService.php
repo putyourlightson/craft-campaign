@@ -85,7 +85,7 @@ class SegmentsService extends Component
      */
     public function getContacts(SegmentElement $segment): array
     {
-        return $this->filterContacts($segment, null);
+        return $this->getFilteredContacts($segment, null);
     }
 
     /**
@@ -97,30 +97,30 @@ class SegmentsService extends Component
      */
     public function getContactIds(SegmentElement $segment): array
     {
-        return $this->filterContactIds($segment, null);
+        return $this->getFilteredContactIds($segment, null);
     }
 
     /**
-     * Filters the segment's contacts by the contact IDs
+     * Returns the segment's contacts filtered by the provided contact IDs
      *
      * @param SegmentElement $segment
      * @param int[]|null $contactIds
      *
      * @return ContactElement[]
      */
-    public function filterContacts(SegmentElement $segment, array $contactIds = null): array
+    public function getFilteredContacts(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContacts = [];
-        $contactQuery = $this->_getContactQuery($contactIds);
+        $contactElementQuery = $this->_getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
-            $filteredContacts = $contactQuery
+            $filteredContacts = $contactElementQuery
                 ->where($this->_getConditions($segment))
                 ->all();
         }
 
         else if ($segment->segmentType == 'template') {
-            $contacts = $contactQuery->all();
+            $contacts = $contactElementQuery->all();
 
             foreach ($contacts as $contact) {
                 try {
@@ -144,26 +144,26 @@ class SegmentsService extends Component
     }
 
     /**
-     * Filters the segment's contact IDs by the contact IDs
+     * Returns the segment's contact IDs filtered by the provided contact IDs
      *
      * @param SegmentElement $segment
      * @param int[]|null $contactIds
      *
-     * @return ContactElement[]
+     * @return int[]
      */
-    public function filterContactIds(SegmentElement $segment, array $contactIds = null): array
+    public function getFilteredContactIds(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContactIds = [];
-        $contactQuery = $this->_getContactQuery($contactIds);
+        $contactElementQuery = $this->_getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
-            $filteredContactIds = $contactQuery
+            $filteredContactIds = $contactElementQuery
                 ->where($this->_getConditions($segment))
                 ->ids();
         }
 
         else if ($segment->segmentType == 'template') {
-            $contacts = $this->filterContacts($segment, $contactIds);
+            $contacts = $this->getFilteredContacts($segment, $contactIds);
 
             foreach ($contacts as $contact) {
                 $filteredContactIds[] = $contact->id;
@@ -232,7 +232,7 @@ class SegmentsService extends Component
      *
      * @return ContactElementQuery
      */
-    private function _getContactQuery(array $contactIds = null)
+    private function _getContactElementQuery(array $contactIds = null)
     {
         $contactQuery = ContactElement::find();
 

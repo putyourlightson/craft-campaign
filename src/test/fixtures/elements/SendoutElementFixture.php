@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\test\fixtures\elements;
 use craft\test\fixtures\elements\ElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
@@ -36,6 +37,11 @@ abstract class SendoutElementFixture extends ElementFixture
      */
     public $mailingListIds = [];
 
+    /**
+     * @var array
+     */
+    public $segmentIds = [];
+
     // Public Methods
     // =========================================================================
 
@@ -45,10 +51,13 @@ abstract class SendoutElementFixture extends ElementFixture
     public function load()
     {
         $campaign = CampaignElement::find()->one();
-        $this->campaignId = $campaign ? $campaign->getId() : null;
+        $this->campaignId = $campaign ? $campaign->id : null;
 
         $mailingList = MailingListElement::find()->one();
-        $this->mailingListIds = $mailingList ? [$mailingList->getId()] : null;
+        $this->mailingListIds = $mailingList ? [$mailingList->id] : null;
+
+        $segment = SegmentElement::find()->one();
+        $this->segmentIds = $segment ? [$segment->id] : null;
 
         parent::load();
     }

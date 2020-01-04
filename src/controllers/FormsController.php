@@ -145,8 +145,7 @@ class FormsController extends BaseMessageController
         }
 
         // TODO: remove in 2.0.0
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
+        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
             'title' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
             'message' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
             'mailingList' => $mailingList,
@@ -306,8 +305,7 @@ class FormsController extends BaseMessageController
         }
 
         // TODO: change template to `subscribeSuccessTemplate` in 2.0.0
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
+        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
             'title' => Craft::t('campaign', 'Verified'),
             'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
             'mailingList' => $mailingList,
@@ -354,8 +352,7 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl($contact);
         }
 
-        // Render template defaulting to message (see [[BaseMessageController::renderTemplate()]])
-        return $this->renderTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
+        return $this->renderMessageTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,

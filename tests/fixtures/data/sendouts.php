@@ -10,9 +10,10 @@ return [
         'title' => 'Sendout 1',
         'subject' => 'Subject 1',
         'sendoutType' => 'regular',
-        'sendStatus' => SendoutElement::STATUS_SENDING,
+        'sendStatus' => SendoutElement::STATUS_PENDING,
         'campaignId' => $this->campaignId,
         'mailingListIds' => $this->mailingListIds,
+        //'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
         'notificationEmailAddress' => 'notify@email.com',
@@ -28,5 +29,4 @@ return [
         'fromEmail' => 'from@email.com',
         'notificationEmailAddress' => 'notify@email.com',
     ],
-
 ];

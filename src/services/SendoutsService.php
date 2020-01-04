@@ -170,8 +170,8 @@ class SendoutsService extends Component
 
         // Ensure contacts have not complained or bounced (check in contact record)
         $query->innerJoinWith([
-            'contact c' => function(ActiveQuery $query) {
-                $query->andWhere([
+            'contact c' => function(ActiveQuery $subquery) {
+                $subquery->andWhere([
                     'c.complained' => null,
                     'c.bounced' => null,
                 ]);
@@ -187,25 +187,23 @@ class SendoutsService extends Component
         // Exclude sent recipients
         $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
 
-        // Get recipients as array
-        $recipients = $query->asArray()->all();
+        // Get contact IDs
+        $contactIds = $query->column();
 
         // Filter recipients by segments
         if ($sendout->segmentIds) {
-            // Filter the contact IDs for each segment
-            $contactIds = array_map(function($recipient) {
-                return $recipient['contactId'];
-            }, $recipients);
-
             foreach ($sendout->getSegments() as $segment) {
-                $contactIds = Campaign::$plugin->segments->filterContactIds($segment, $contactIds);
+                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
             }
-
-            // Filter the recipients by the contact IDs
-            $recipients = array_filter($recipients, function($recipient) use ($contactIds) {
-                return in_array($recipient['contactId'], $contactIds);
-            });
         }
+
+        // Get recipients as array
+        $recipients = ContactMailingListRecord::find()
+            ->select(['contactId', 'min(mailingListId) as mailingListId', 'min(subscribed) as subscribed'])
+            ->groupBy('contactId')
+            ->where(['contactId' => $contactIds])
+            ->asArray()
+            ->all();
 
         if ($sendout->sendoutType == 'automated') {
             /** @var AutomatedScheduleModel $automatedSchedule */
