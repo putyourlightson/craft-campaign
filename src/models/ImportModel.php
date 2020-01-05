@@ -178,7 +178,10 @@ class ImportModel extends BaseModel
             return null;
         }
 
-        return User::find()->id($this->userId)->one();
+        /** @var User|null $user */
+        $user = User::find()->id($this->userId)->one();
+
+        return $user;
     }
 
     /**

@@ -34,7 +34,7 @@ class SendoutElementQuery extends ElementQuery
     public $sid;
 
     /**
-     * @var string The sendout type that the resulting sendouts must have.
+     * @var array|string|null The sendout type(s) that the resulting sendouts must have.
      */
     public $sendoutType;
 

@@ -153,6 +153,7 @@ class MailingListsController extends Controller
         // If this mailing list should be duplicated then swap it for a duplicate
         if ((bool)$request->getBodyParam('duplicate')) {
             try {
+                /** @var MailingListElement $mailingList */
                 $mailingList = Craft::$app->getElements()->duplicateElement($mailingList);
             }
             catch (Throwable $e) {
@@ -160,7 +161,6 @@ class MailingListsController extends Controller
             }
         }
 
-        /** @var MailingListElement $mailingList */
         $mailingList->title = $request->getBodyParam('title', $mailingList->title);
         $mailingList->slug = $request->getBodyParam('slug', $mailingList->slug);
 

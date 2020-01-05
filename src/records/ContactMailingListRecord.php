@@ -23,7 +23,7 @@ use yii\db\ActiveQuery;
  * @property DateTime|null $bounced
  * @property DateTime|null $verified
  * @property string $sourceType
- * @property string $source
+ * @property string|int|null $source
  * @property ActiveQuery $contact
  * @property ActiveQuery $mailingList
  *

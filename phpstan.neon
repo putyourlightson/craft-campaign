@@ -6,3 +6,4 @@ parameters:
 		- '#Call to an undefined method yii\\db\\ActiveQueryInterface::(.*)#'
 		- '#Call to an undefined method craft\\queue\\QueueInterface::(.*)#'
 		- '#Call to an undefined method craft\\elements\\db\\ElementQueryInterface::(.*)#'
+		- '#Call to an undefined method yii\\web\\UrlManager::setRouteParams\(\)#'

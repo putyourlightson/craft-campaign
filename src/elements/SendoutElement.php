@@ -632,7 +632,7 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's mailing list IDs
      *
-     * @return int[]
+     * @return array
      */
     public function getMailingListIds(): array
     {
@@ -668,7 +668,7 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's excluded mailing list IDs
      *
-     * @return int[]
+     * @return array
      */
     public function getExcludedMailingListIds(): array
     {
@@ -704,7 +704,7 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's segment IDs
      *
-     * @return int[]
+     * @return array
      */
     public function getSegmentIds(): array
     {
@@ -970,7 +970,7 @@ class SendoutElement extends Element
                 return $sender ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $sender]) : '';
 
             case 'mailingListIds':
-                return $this->getMailingListCount();
+                return (string)$this->getMailingListCount();
         }
 
         return parent::tableAttributeHtml($attribute);

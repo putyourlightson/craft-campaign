@@ -784,7 +784,7 @@ class ContactElement extends Element
             $condition['subscriptionStatus'] = $subscriptionStatus;
         }
 
-        /* @var ContactMailingListRecord[] $contactMailingLists */
+        /** @var ContactMailingListRecord[] $contactMailingLists */
         $contactMailingLists = ContactMailingListRecord::find()
             ->select('mailingListId')
             ->where($condition)

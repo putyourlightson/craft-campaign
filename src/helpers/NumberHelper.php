@@ -30,6 +30,6 @@ class NumberHelper
             return 1;
         }
 
-        return floor($value);
+        return (int)floor($value);
     }
 }

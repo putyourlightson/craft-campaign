@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\elements\User;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\models\SettingsModel;
@@ -261,7 +262,7 @@ class SettingsController extends Controller
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
         // Create the transport adapter so that we can validate it
-        /* @var BaseTransportAdapter $adapter */
+        /** @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Trigger before save event to give transport adapters a chance to encrypt sensitive data
@@ -443,7 +444,7 @@ class SettingsController extends Controller
         $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
 
         // Create the transport adapter so that we can validate it
-        /* @var BaseTransportAdapter $adapter */
+        /** @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Trigger before save event to give transport adapters a chance to encrypt sensitive data
@@ -466,9 +467,12 @@ class SettingsController extends Controller
             $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
             $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
 
+            /** @var User $user */
+            $user = Craft::$app->getUser()->getIdentity();
+
             $message = $mailer->compose()
                 ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
-                ->setTo(Craft::$app->getUser()->getIdentity()->email)
+                ->setTo($user->email)
                 ->setSubject($subject)
                 ->setHtmlBody($body)
                 ->setTextBody($body);

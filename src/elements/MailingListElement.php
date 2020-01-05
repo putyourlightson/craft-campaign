@@ -405,13 +405,13 @@ class MailingListElement extends Element
             case 'mailingListType':
                 return $this->getMailingListType()->name;
             case 'subscribed':
-                return $this->getSubscribedCount();
+                return (string)$this->getSubscribedCount();
             case 'unsubscribed':
-                return $this->getUnsubscribedCount();
+                return (string)$this->getUnsubscribedCount();
             case 'complained':
-                return $this->getComplainedCount();
+                return (string)$this->getComplainedCount();
             case 'bounced':
-                return $this->getBouncedCount();
+                return (string)$this->getBouncedCount();
         }
 
         return parent::tableAttributeHtml($attribute);

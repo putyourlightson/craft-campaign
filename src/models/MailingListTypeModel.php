@@ -31,6 +31,7 @@ use craft\validators\UniqueValidator;
  * @property string $cpEditUrl
  *
  * @method FieldLayout getFieldLayout()
+ * @method setFieldLayout(FieldLayout $fieldLayout)
  */
 class MailingListTypeModel extends BaseModel
 {

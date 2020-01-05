@@ -187,10 +187,10 @@ class SegmentsService extends Component
     {
         $conditions = ['and'];
 
+        /** @var array $andCondition */
         foreach ($segment->conditions as $andCondition) {
             $condition = ['or'];
 
-            /* @var array $andCondition */
             foreach ($andCondition as $orCondition) {
                 // Exclude template conditions
                 if ($orCondition[1] == 'template') {

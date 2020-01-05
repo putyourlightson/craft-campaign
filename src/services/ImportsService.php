@@ -139,7 +139,7 @@ class ImportsService extends Component
                 'lastName' => Craft::t('campaign', 'Last Name'),
             ];
 
-            /* @var Field[] $fields */
+            /** @var Field[] $fields */
             $fields = Craft::$app->fields->getFieldsByElementType(User::class);
 
             foreach ($fields as $field) {

@@ -157,6 +157,7 @@ class SegmentsController extends Controller
         // If this segment should be duplicated then swap it for a duplicate
         if ((bool)$request->getBodyParam('duplicate')) {
             try {
+                /** @var SegmentElement $segment */
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
             }
             catch (Throwable $e) {
@@ -164,7 +165,6 @@ class SegmentsController extends Controller
             }
         }
 
-        /** @var SegmentElement $segment */
         $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
         $segment->segmentType = $request->getBodyParam('segmentType', $segment->segmentType);
         $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
@@ -175,8 +175,8 @@ class SegmentsController extends Controller
         $segment->conditions = Craft::$app->getRequest()->getBodyParam('conditions', $segment->conditions);
 
         if (is_array($segment->conditions)) {
+            /** @var array $andCondition */
             foreach ($segment->conditions as &$andCondition) {
-                /* @var array $andCondition */
                 foreach ($andCondition as &$orCondition) {
                     // Sort or conditions by keys
                     ksort($orCondition);

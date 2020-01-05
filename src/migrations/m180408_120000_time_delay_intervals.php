@@ -7,6 +7,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 use Craft;
 use craft\db\Migration;
 use craft\helpers\DateTimeHelper;
+use putyourlightson\campaign\models\AutomatedScheduleModel;
 
 class m180408_120000_time_delay_intervals extends Migration
 {
@@ -28,7 +29,9 @@ class m180408_120000_time_delay_intervals extends Migration
         $sendouts = SendoutElement::find()->sendoutType('automated')->all();
 
         foreach ($sendouts as $sendout) {
-            $sendout->schedule['timeDelayInterval'] = $intervals[$sendout->schedule['timeDelayInterval']] ?? 'minutes';
+            /** @var AutomatedScheduleModel $schedule */
+            $schedule = $sendout->schedule;
+            $schedule->timeDelayInterval = $intervals[$schedule->timeDelayInterval] ?? 'minutes';
 
             Craft::$app->getElements()->saveElement($sendout);
         }

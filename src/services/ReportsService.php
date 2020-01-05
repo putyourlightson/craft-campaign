@@ -465,7 +465,7 @@ class ReportsService extends Component
      * @param string|null $interaction
      * @param int $limit
      *
-     * @return ContactMailingListModel[]
+     * @return ContactActivityModel[]
      */
     public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
     {
@@ -536,7 +536,7 @@ class ReportsService extends Component
      * @param array $interactions
      * @param string $interval
      *
-     * @return Model[]
+     * @return array
      */
     private function _getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
     {

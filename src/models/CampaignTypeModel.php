@@ -31,6 +31,7 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * @property string $cpEditUrl
  *
  * @method FieldLayout getFieldLayout()
+ * @method setFieldLayout(FieldLayout $fieldLayout)
  */
 class CampaignTypeModel extends BaseModel
 {

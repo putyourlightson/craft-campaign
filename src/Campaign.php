@@ -304,6 +304,7 @@ class Campaign extends Plugin
      */
     public function log(string $message, array $params = [])
     {
+        /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();
 
         if ($user !== null) {

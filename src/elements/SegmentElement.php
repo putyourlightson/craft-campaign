@@ -223,10 +223,10 @@ class SegmentElement extends Element
                 return $this->getSegmentTypeLabel();
 
             case 'conditions':
-                return $this->getConditionCount();
+                return (string)$this->getConditionCount();
 
             case 'contacts':
-                return $this->getContactCount();
+                return (string)$this->getContactCount();
         }
 
         return parent::tableAttributeHtml($attribute);
