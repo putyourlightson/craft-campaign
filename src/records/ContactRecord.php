@@ -41,7 +41,7 @@ class ContactRecord extends ActiveRecord
     // Public Static Methods
     // =========================================================================
 
-     /**
+    /**
      * @inheritdoc
      *
      * @return string the table name

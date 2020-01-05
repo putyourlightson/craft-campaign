@@ -392,10 +392,10 @@ class Install extends Migration
     }
 
     /**
-    * Delete tables
-    *
-    * @return void
-    */
+     * Delete tables
+     *
+     * @return void
+     */
     protected function deleteTables()
     {
         // Drop tables with foreign keys first

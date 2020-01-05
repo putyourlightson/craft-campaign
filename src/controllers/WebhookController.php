@@ -91,10 +91,10 @@ class WebhookController extends Controller
 
         // Validate the message
         try {
-           $validator->validate($message);
+            $validator->validate($message);
         }
         catch (InvalidSnsMessageException $e) {
-           return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
         }
 
         // Check the type of the message and handle the subscription.

@@ -29,7 +29,7 @@ class MailingListRecord extends ActiveRecord
     // Public Static Methods
     // =========================================================================
 
-     /**
+    /**
      * @inheritdoc
      *
      * @return string the table name
