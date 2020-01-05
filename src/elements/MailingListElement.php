@@ -449,7 +449,8 @@ class MailingListElement extends Element
         if ($isNew) {
             $mailingListRecord = new MailingListRecord();
             $mailingListRecord->id = $this->id;
-        } else {
+        }
+        else {
             $mailingListRecord = MailingListRecord::findOne($this->id);
         }
 

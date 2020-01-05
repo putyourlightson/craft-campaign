@@ -428,7 +428,8 @@ class ContactsController extends Controller
 
         if ($subscriptionStatus === '') {
             Campaign::$plugin->mailingLists->deleteContactSubscription($contact, $mailingList);
-        } else {
+        }
+        else {
             /** @var User|null $currentUser */
             $currentUser = Craft::$app->getUser()->getIdentity();
             $currentUserId = $currentUser ? $currentUser->id : '';

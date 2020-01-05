@@ -410,7 +410,8 @@ class SegmentElement extends Element
         if ($isNew) {
             $segmentRecord = new SegmentRecord();
             $segmentRecord->id = $this->id;
-        } else {
+        }
+        else {
             $segmentRecord = SegmentRecord::findOne($this->id);
         }
 

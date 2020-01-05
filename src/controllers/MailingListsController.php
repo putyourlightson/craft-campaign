@@ -101,7 +101,8 @@ class MailingListsController extends Controller
 
         if ($mailingListId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
-        } else {
+        }
+        else {
             $variables['title'] = $mailingList->title;
             $variables['slug'] = $mailingList->slug;
         }

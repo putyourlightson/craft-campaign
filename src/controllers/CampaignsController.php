@@ -106,7 +106,8 @@ class CampaignsController extends Controller
 
         if ($campaignId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        } else {
+        }
+        else {
             $variables['title'] = $campaign->title;
         }
 

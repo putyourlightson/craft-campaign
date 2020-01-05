@@ -105,7 +105,8 @@ class SegmentsController extends Controller
 
         if ($segmentId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new segment');
-        } else {
+        }
+        else {
             $variables['title'] = $segment->title;
             $variables['slug'] = $segment->slug;
         }
