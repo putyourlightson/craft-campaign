@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.13.0 - Unreleased
+## 1.13.0 - 2020-01-07
 ### Added
 - Added custom relation field types for campaigns, contacts and mailing lists.
 

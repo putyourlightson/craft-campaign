@@ -84,8 +84,6 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testGetPendingRecipients()
     {
-        $this->sendout->sendStatus = SendoutElement::STATUS_PENDING;
-
         // Subscribe contacts (including trashed) to mailing list
         foreach (ContactElement::find()->trashed(null)->all() as $contact) {
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $this->mailingList, 'subscribed');
@@ -95,6 +93,15 @@ class SendoutsServiceTest extends BaseUnitTest
 
         // Assert that the number of pending recipients is correct
         $this->assertEquals(1, count($pendingRecipients));
+
+        $this->sendout->sendoutType = 'automated';
+
+        $sendout = SendoutElement::find()->sendoutType('automated')->one();
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
+
+        // Assert that the number of pending recipients is correct
+        $this->assertEquals(0, count($pendingRecipients));
     }
 
     public function testSendEmailSent()

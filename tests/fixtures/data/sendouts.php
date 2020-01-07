@@ -21,10 +21,11 @@ return [
     [
         'title' => 'Sendout 2',
         'subject' => 'Subject 2',
-        'sendoutType' => 'regular',
-        'sendStatus' => SendoutElement::STATUS_FAILED,
+        'sendoutType' => 'automated',
+        'sendStatus' => SendoutElement::STATUS_PENDING,
         'campaignId' => $this->campaignId,
         'mailingListIds' => $this->mailingListIds,
+        'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
         'notificationEmailAddress' => 'notify@email.com',
