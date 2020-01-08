@@ -1,10 +1,10 @@
 # Release Notes for Campaign
 
 ## 1.13.1 - 2020-01-08 [CRITICAL]
-> {warning} This update contains a crucial bug fix and should be applied as soon as possible.
+> {warning} This update contains a critical bug fix and should be applied as soon as possible.
 
 ### Fixed
-- Fixed a bug in which sendouts could be sent to mailing lists that are not selected in a given sendout.
+- Fixed a bug in which emails could be sent to mailing lists not selected in sendouts.
 
 ## 1.13.0 - 2020-01-07
 ### Added
