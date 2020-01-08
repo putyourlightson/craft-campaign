@@ -77,6 +77,17 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->mailingList = MailingListElement::find()->one();
 
         Campaign::$plugin->edition = Campaign::EDITION_PRO;
+
+        $this->sendout->mailingListIds = $this->mailingList->id;
+
+        // Subscribe contacts (including trashed) to all mailing lists
+        $mailingLists = MailingListElement::find()->all();
+
+        foreach (ContactElement::find()->trashed(null)->all() as $contact) {
+            foreach ($mailingLists as $mailingList) {
+                Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed');
+            }
+        }
     }
 
     // Public methods
@@ -84,20 +95,37 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testGetPendingRecipients()
     {
-        // Subscribe contacts (including trashed) to mailing list
-        foreach (ContactElement::find()->trashed(null)->all() as $contact) {
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $this->mailingList, 'subscribed');
-        }
-
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
 
         // Assert that the number of pending recipients is correct
         $this->assertEquals(1, count($pendingRecipients));
+    }
 
+    public function testGetPendingRecipientsRemoved()
+    {
+        Campaign::$plugin->mailingLists->deleteContactSubscription($this->contact, $this->mailingList);
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+
+        $this->assertEquals(0, count($pendingRecipients));
+    }
+
+    public function testGetPendingRecipientsUnsubscribed()
+    {
+        Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'unsubscribed');
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+
+        $this->assertEquals(0, count($pendingRecipients));
+    }
+
+    public function testGetPendingRecipientsAutomated()
+    {
         $this->sendout->sendoutType = 'automated';
 
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
+        // Expect this to return 0 since the contact subscribed less than
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
 
         // Assert that the number of pending recipients is correct

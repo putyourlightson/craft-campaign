@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 1.13.1 - 2020-01-08
+> {warning} This update contains a crucial bug fix and should be applied as soon as possible.
+
+### Fixed
+- Fixed a bug in which sendouts could be sent to mailing lists that are not selected in a given sendout.
+
 ## 1.13.0 - 2020-01-07
 ### Added
 - Added custom relation field types for campaigns, contacts and mailing lists.

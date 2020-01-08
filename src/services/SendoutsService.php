@@ -171,7 +171,7 @@ class SendoutsService extends Component
 
         // Ensure contacts have not complained or bounced (in contact record)
         $query->innerJoin(ContactRecord::tableName().' contact', 'contact.id = contactId')
-            ->where([
+            ->andWhere([
                 'contact.complained' => null,
                 'contact.bounced' => null,
             ]);
