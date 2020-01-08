@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.13.1 - 2020-01-08
+## 1.13.1 - 2020-01-08 [CRITICAL]
 > {warning} This update contains a crucial bug fix and should be applied as soon as possible.
 
 ### Fixed
