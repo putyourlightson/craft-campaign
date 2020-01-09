@@ -4,7 +4,7 @@
 > {warning} This update contains a critical bug fix and should be applied as soon as possible.
 
 ### Fixed
-- Fixed a bug in which emails could be sent to mailing lists not selected in sendouts.
+- Fixed a bug introduced in 1.13.0 in which emails could be sent to mailing lists not selected in sendouts.
 
 ## 1.13.0 - 2020-01-07
 ### Added
