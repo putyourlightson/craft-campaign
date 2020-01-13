@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.13.2 - Unreleased
+### Fixed
+- Made date created and date updated columns sortable in element index pages.
+
 ## 1.13.1 - 2020-01-08 [CRITICAL]
 > {warning} This update contains a critical bug fix and should be applied as soon as possible.
 

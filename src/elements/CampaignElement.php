@@ -200,8 +200,16 @@ class CampaignElement extends Element
             'unsubscribed' => Craft::t('campaign', 'Unsubscribed'),
             'complained' => Craft::t('campaign', 'Complained'),
             'bounced' => Craft::t('campaign', 'Bounced'),
-            'elements.dateCreated' => Craft::t('app', 'Date Created'),
-            'elements.dateUpdated' => Craft::t('app', 'Date Updated'),
+            [
+                'label' => Craft::t('app', 'Date Created'),
+                'orderBy' => 'elements.dateCreated',
+                'attribute' => 'dateCreated'
+            ],
+            [
+                'label' => Craft::t('app', 'Date Updated'),
+                'orderBy' => 'elements.dateUpdated',
+                'attribute' => 'dateUpdated'
+            ],
         ];
     }
 

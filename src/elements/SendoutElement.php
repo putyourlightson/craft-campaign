@@ -245,6 +245,16 @@ class SendoutElement extends Element
             'recipients' => Craft::t('campaign', 'Recipients'),
             'sendDate' => Craft::t('campaign', 'Send Date'),
             'lastSent' => Craft::t('campaign', 'Last Sent'),
+            [
+                'label' => Craft::t('app', 'Date Created'),
+                'orderBy' => 'elements.dateCreated',
+                'attribute' => 'dateCreated'
+            ],
+            [
+                'label' => Craft::t('app', 'Date Updated'),
+                'orderBy' => 'elements.dateUpdated',
+                'attribute' => 'dateUpdated'
+            ],
         ];
     }
 
@@ -265,6 +275,8 @@ class SendoutElement extends Element
             'mailingListIds' => ['label' => Craft::t('campaign', 'Mailing Lists')],
             'sendDate' => ['label' => Craft::t('campaign', 'Send Date')],
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
+            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
 
         // Hide sender from Craft Personal/Client

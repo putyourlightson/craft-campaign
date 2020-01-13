@@ -208,8 +208,16 @@ class ContactElement extends Element
             'country' => Craft::t('campaign', 'Country'),
             'lastActivity' => Craft::t('campaign', 'Last Activity'),
             'verified' => Craft::t('campaign', 'Verified'),
-            'elements.dateCreated' => Craft::t('app', 'Date Created'),
-            'elements.dateUpdated' => Craft::t('app', 'Date Updated'),
+            [
+                'label' => Craft::t('app', 'Date Created'),
+                'orderBy' => 'elements.dateCreated',
+                'attribute' => 'dateCreated'
+            ],
+            [
+                'label' => Craft::t('app', 'Date Updated'),
+                'orderBy' => 'elements.dateUpdated',
+                'attribute' => 'dateUpdated'
+            ],
         ];
     }
 
