@@ -6,7 +6,6 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
-use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
