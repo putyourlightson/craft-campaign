@@ -3,6 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
+use craft\helpers\Db;
 use putyourlightson\campaign\elements\SendoutElement;
 
 return [
@@ -11,6 +12,7 @@ return [
         'subject' => 'Subject 1',
         'sendoutType' => 'regular',
         'sendStatus' => SendoutElement::STATUS_PENDING,
+        'sendDate' => Db::prepareDateForDb(new DateTime()),
         'campaignId' => $this->campaignId,
         'mailingListIds' => $this->mailingListIds,
         'segmentIds' => $this->segmentIds,

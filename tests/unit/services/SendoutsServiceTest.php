@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaigntests\unit\services;
 
+use Craft;
+use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -131,6 +133,22 @@ class SendoutsServiceTest extends BaseUnitTest
 
         // Assert that the number of pending recipients is correct
         $this->assertEquals(0, count($pendingRecipients));
+    }
+
+    public function testQueuePendingSendouts()
+    {
+        $count = Campaign::$plugin->sendouts->queuePendingSendouts();
+
+        // Assert that the number of queued sendouts is correct
+        $this->assertEquals(1, $count);
+
+        $queuedSendouts = SendoutElement::find()->status(SendoutElement::STATUS_QUEUED)->count();
+
+        // Assert that the sendout status is correct
+        $this->assertEquals(1, $queuedSendouts);
+
+        // Assert that the job was pushed onto the queue
+        $this->assertTrue(Craft::$app->getQueue()->getHasWaitingJobs());
     }
 
     public function testSendEmailSent()
