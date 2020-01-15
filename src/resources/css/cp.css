@@ -59,6 +59,7 @@
 
 .send-test {
     margin-top: 10px;
+    margin-bottom: 15px;
 }
 
 .preflight {
@@ -95,6 +96,7 @@
 }
 
 .preflight .info {
+    height: 22px;
     vertical-align: top;
 }
 

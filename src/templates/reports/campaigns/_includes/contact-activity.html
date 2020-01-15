@@ -29,24 +29,26 @@
         <tbody>
             {% for activity in contactActivity %}
                 {% set contact = activity.model.contact %}
-                <tr>
-                    <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
-                    <td data-title="{{ 'Interaction'|t('campaign') }}">
-                        {{ activity.interaction|ucfirst|t('campaign') }}
-                        {% if activity.links|length %}
-                            <span class="info">
-                                <p>
-                                    {% for link in activity.links %}
-                                        <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
-                                        {{ not loop.last ? '</br/>'|raw }}
-                                    {% endfor %}
-                                </p>
-                            </span>
-                        {% endif %}
-                    </td>
-                    <td data-title="{{ 'Count'|t('campaign') }}">{{ activity.count }}</td>
-                    <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
-                </tr>
+                {% if contact %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                        <td data-title="{{ 'Interaction'|t('campaign') }}">
+                            {{ activity.interaction|ucfirst|t('campaign') }}
+                            {% if activity.links|length %}
+                                <span class="info">
+                                    <p>
+                                        {% for link in activity.links %}
+                                            <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
+                                            {{ not loop.last ? '</br/>'|raw }}
+                                        {% endfor %}
+                                    </p>
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td data-title="{{ 'Count'|t('campaign') }}">{{ activity.count }}</td>
+                        <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>

@@ -11,7 +11,7 @@
         <td>
             {% set geoIp = contact.geoIp %}
             {% if geoIp %}
-                <span class="flag-icon flag-icon-{{ geoIp.countryCode|lower }}"></span>
+                <span class="flag-icon flag-icon-{{ geoIp.countryCode ? geoIp.countryCode|lower : 'unknown' }}"></span>
                 {{ geoIp.countryName }}
                 <span class="info">
                     <p>
