@@ -1,12 +1,15 @@
 # Release Notes for Campaign
 
-## 1.13.2 - Unreleased
+## 1.13.2 - 2020-01-20
 ### Added
-- Added an "unknown" flag icon when a contact's country is unknown.
+- Added an `unknown` flag icon when a contact's country is unknown.
 
 ### Changed
 - Improved UI elements for Craft 3.4.
 - Made date created and date updated columns sortable in element index pages.
+
+### Fixed
+- Fixed an error that could occur if contact activity included deleted contacts.
 
 ## 1.13.1 - 2020-01-08 [CRITICAL]
 > {warning} This update contains a critical bug fix and should be applied as soon as possible.

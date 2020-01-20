@@ -9,16 +9,18 @@
         <tbody>
             {% for activity in contactActivity %}
                 {% set contact = activity.model.contact %}
-                <tr>
-                    <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
-                    <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
-                    <td data-title="{{ 'Source'|t('campaign') }}">
-                        {% if activity.model.sourceType %}
-                            <a href="{{ activity.sourceUrl }}" class="go" target="_blank">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
-                        {% endif %}
-                    </td>
-                    <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
-                </tr>
+                {% if contact %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                        <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
+                        <td data-title="{{ 'Source'|t('campaign') }}">
+                            {% if activity.model.sourceType %}
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
+                            {% endif %}
+                        </td>
+                        <td data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
