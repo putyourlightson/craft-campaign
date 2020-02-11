@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.13.3 - Unreleased
+### Changed
+- The `contact` variable is now available in the email subject when sending a sendout test. 
+
 ## 1.13.2 - 2020-01-20
 ### Added
 - Added an `unknown` flag icon when a contact's country is unknown.
