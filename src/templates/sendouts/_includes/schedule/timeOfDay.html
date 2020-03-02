@@ -6,9 +6,9 @@
             name: 'schedule[timeOfDay]',
             value: schedule.timeOfDay ?? '',
         }) }}
-        {{ schedule.timeOfDay.getTimezone() ?? craft.app.getTimezone() }}
+        {{ schedule.timeOfDay.getTimezone().getName() ?? craft.app.timezone }}
     {% else %}
-        <p>{{ schedule.timeOfDay ? schedule.timeOfDay|time ~ ' ' ~ (schedule.timeOfDay.getTimezone() ?? craft.app.getTimezone()) : '-' }}</p>
+        <p>{{ schedule.timeOfDay ? schedule.timeOfDay|time ~ ' ' ~ (schedule.timeOfDay.getTimezone().getName() ?? craft.app.timezone) : '-' }}</p>
     {% endif %}
 {% endset %}
 {{ forms.field({
