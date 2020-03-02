@@ -10,9 +10,9 @@
             name: 'sendDate',
             value: sendout.sendDate ?? now,
         }) }}
-        {{ sendout.sendDate.timezone ?? craft.app.timezone }}
+        {{ sendout.sendDate.getTimezone() ?? craft.app.getTimezone() }}
     {% else %}
-        <p>{{ sendout.sendDate|datetime }} {{ sendout.sendDate.timezone ?? craft.app.timezone }}</p>
+        <p>{{ sendout.sendDate|datetime }} {{ sendout.sendDate.getTimezone() ?? craft.app.getTimezone() }}</p>
     {% endif %}
 {% endset %}
 {{ forms.field({
