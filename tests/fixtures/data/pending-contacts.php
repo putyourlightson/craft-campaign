@@ -8,8 +8,8 @@ use putyourlightson\campaign\helpers\StringHelper;
 return [
     [
         'pid' => StringHelper::uniqueId('p'),
-        'mailingListId' => $this->mailingListId ?? null,
         'email' => 'pending1@contacts.com',
+        'mailingListId' => $this->mailingListId ?? null,
         'fieldData' => [],
     ],
 ];

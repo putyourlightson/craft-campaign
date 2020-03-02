@@ -4,6 +4,9 @@
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test. 
 
+### Fixed
+- Fixed an error that could occur if the timezone was not explicitly set on the server.
+
 ## 1.13.2 - 2020-01-20
 ### Added
 - Added an `unknown` flag icon when a contact's country is unknown.

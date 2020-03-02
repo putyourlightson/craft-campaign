@@ -103,7 +103,9 @@ class FormsControllerTest extends BaseControllerTest
 
     public function testVerifySubscribeSuccess()
     {
-        $pendingContact = PendingContactRecord::find()->one();
+        $pendingContact = PendingContactRecord::find()
+            ->where(['email' => 'pending1@contacts.com'])
+            ->one();
 
         $response = $this->runActionWithParams('forms/verify-subscribe', [
             'pid' => $pendingContact->pid,

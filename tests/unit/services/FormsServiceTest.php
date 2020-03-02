@@ -50,7 +50,11 @@ class FormsServiceTest extends BaseUnitTest
     public function testSendVerifySubscribeEmail()
     {
         /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel(PendingContactRecord::find()->one(), false);
+        $pendingContact = PendingContactRecord::find()
+            ->where(['email' => 'pending1@contacts.com'])
+            ->one();
+
+        $pendingContact = PendingContactModel::populateModel($pendingContact, false);
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
 
         Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
