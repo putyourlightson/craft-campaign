@@ -2,9 +2,11 @@
 
 ## 1.13.3 - Unreleased
 ### Changed
-- The `contact` variable is now available in the email subject when sending a sendout test. 
+- The `contact` variable is now available in the email subject when sending a sendout test.
+- Improved UI of tables in settings. 
 
 ### Fixed
+- Fixed the possibility of the `subscribeSuccessTemplate` mailing list type setting not being saved.
 - Fixed an error that could occur if the timezone was not explicitly set on the server.
 
 ## 1.13.2 - 2020-01-20

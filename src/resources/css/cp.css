@@ -2,6 +2,10 @@
 * Colour Palette: 600 colours from https://material.io/guidelines/style/color.html#color-color-palette
 */
 
+table th.thin, table td.thin {
+    white-space: nowrap;
+}
+
 .info-hud {
     max-width: 600px;
 }

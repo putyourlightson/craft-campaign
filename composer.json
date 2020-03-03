@@ -44,7 +44,7 @@
         "developer": "PutYourLightsOn",
         "developerUrl": "https://putyourlightson.com/",
         "documentationUrl": "https://putyourlightson.com/plugins/campaign",
-        "schemaVersion": "1.10.0",
+        "schemaVersion": "1.13.3",
         "hasCpSettings": true,
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
