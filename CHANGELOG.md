@@ -6,7 +6,7 @@
 - Improved UI of tables in settings. 
 
 ### Fixed
-- Fixed the possibility of the `subscribeSuccessTemplate` mailing list type setting not being saved.
+- Fixed the possibility of the `subscribeSuccessTemplate` mailing list type setting not being saved ([#110](https://github.com/putyourlightson/craft-campaign/issues/110)).
 - Fixed an error that could occur if the timezone was not explicitly set on the server.
 
 ## 1.13.2 - 2020-01-20
