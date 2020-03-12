@@ -121,6 +121,24 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals(0, count($pendingRecipients));
     }
 
+    public function testGetPendingRecipientsSoftDeleted()
+    {
+        Craft::$app->getElements()->deleteElement($this->contact);
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+
+        $this->assertEquals(0, count($pendingRecipients));
+    }
+
+    public function testGetPendingRecipientsHardDeleted()
+    {
+        Craft::$app->getElements()->deleteElement($this->contact, true);
+
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+
+        $this->assertEquals(0, count($pendingRecipients));
+    }
+
     public function testGetPendingRecipientsAutomated()
     {
         $this->sendout->sendoutType = 'automated';

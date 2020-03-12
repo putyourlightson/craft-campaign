@@ -4,6 +4,9 @@
 ### Added
 - Added a hard delete element action for contacts.
 
+### Fixed
+- Fixed an issue where soft deleted contacts were counting towards mailing list subscription and pending contacts count.
+
 ## 1.13.3 - Unreleased
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test.

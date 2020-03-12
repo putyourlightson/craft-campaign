@@ -49,16 +49,16 @@ class ContactMailingListRecord extends ActiveRecord
      */
     public static function find(): ActiveQuery
     {
-        /** @var ActiveQuery $query */
-        $query = parent::find();
+        // Create subquery to ensure only contacts and mailing lists that are not deleted are returned
+        $subquery = parent::find()
+            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS.' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
+            ->where([
+                'contactElement.dateDeleted' => null,
+                'mailingListElement.dateDeleted' => null,
+            ]);
 
-        // Ensure contact is not deleted
-        $query->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->where(['contactElement.dateDeleted' => null]);
-
-        // Ensure mailing list is not deleted
-        $query->innerJoin(Table::ELEMENTS.' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
-            ->where(['mailingListElement.dateDeleted' => null]);
+        $query = parent::find()->from($subquery);
 
         return $query;
     }
