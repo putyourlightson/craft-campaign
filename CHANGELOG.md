@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.13.3 - Unreleased
+## 1.13.3 - 2020-03-03
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test.
 - Improved UI of tables in settings. 
