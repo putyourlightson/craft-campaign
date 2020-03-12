@@ -7,7 +7,7 @@
 ### Fixed
 - Fixed an issue where soft deleted contacts were counting towards mailing list subscription and pending contacts count ([#112](https://github.com/putyourlightson/craft-campaign/issues/112)).
 
-## 1.13.3 - Unreleased
+## 1.13.3 - 2020-03-03
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test.
 - Improved UI of tables in settings. 
