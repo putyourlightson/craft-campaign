@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\elements\actions;
 use Craft;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
-use putyourlightson\campaign\Campaign;
 
 /**
  * DeleteContacts
@@ -20,7 +19,7 @@ use putyourlightson\campaign\Campaign;
  * @property string $triggerLabel
  * @property mixed  $confirmationMessage
  */
-class DeleteContacts extends Delete
+class HardDeleteContacts extends Delete
 {
     // Public Methods
     // =========================================================================
@@ -30,7 +29,7 @@ class DeleteContacts extends Delete
      */
     public function getTriggerLabel(): string
     {
-        return Craft::t('campaign', 'Hard Delete');
+        return Craft::t('campaign', 'Delete permanently');
     }
 
     /**
@@ -38,7 +37,7 @@ class DeleteContacts extends Delete
      */
     public function getConfirmationMessage()
     {
-        return Craft::t('campaign', 'Are you sure you want to hard delete the selected contacts? This action cannot be undone.');
+        return Craft::t('campaign', 'Are you sure you want to permanently delete the selected contacts? This action cannot be undone.');
     }
 
     /**
@@ -52,7 +51,7 @@ class DeleteContacts extends Delete
             $elementsService->deleteElement($contact, true);
         }
 
-        $this->setMessage(Craft::t('campaign', 'Contacts hard deleted.'));
+        $this->setMessage(Craft::t('campaign', 'Contacts permanently deleted.'));
 
         return true;
     }

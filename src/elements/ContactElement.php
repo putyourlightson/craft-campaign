@@ -8,7 +8,7 @@ namespace putyourlightson\campaign\elements;
 use craft\elements\actions\Restore;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\actions\DeleteContacts;
+use putyourlightson\campaign\elements\actions\HardDeleteContacts;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
@@ -185,7 +185,7 @@ class ContactElement extends Element
         ]);
 
         // Hard delete
-        $actions[] = DeleteContacts::class;
+        $actions[] = HardDeleteContacts::class;
 
         // Restore
         $actions[] = $elementsService->createAction([

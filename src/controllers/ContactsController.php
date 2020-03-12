@@ -165,8 +165,8 @@ class ContactsController extends Controller
             'action' => 'campaign/contacts/delete-contact?hard=1',
             'destructive' => 'true',
             'redirect' => 'campaign/contacts',
-            'label' => Craft::t('campaign', 'Hard Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to hard delete this contact? This action cannot be undone.')
+            'label' => Craft::t('campaign', 'Delete permanently'),
+            'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.')
         ];
 
         // Get the settings

@@ -5,7 +5,7 @@
 - Added a hard delete element action for contacts.
 
 ### Fixed
-- Fixed an issue where soft deleted contacts were counting towards mailing list subscription and pending contacts count.
+- Fixed an issue where soft deleted contacts were counting towards mailing list subscription and pending contacts count ([#112](https://github.com/putyourlightson/craft-campaign/issues/112)).
 
 ## 1.13.3 - Unreleased
 ### Changed
