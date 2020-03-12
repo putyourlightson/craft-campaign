@@ -263,13 +263,13 @@ class SendoutsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/sendouts/pause-sendout',
                 'redirect' => $sendout->getCpEditUrl(),
-                'label' => Craft::t('campaign', 'Pause and Edit…'),
+                'label' => Craft::t('campaign', 'Pause and Edit'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
             ];
             $variables['actions'][0][] = [
                 'action' => 'campaign/sendouts/pause-sendout',
                 'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Pause…'),
+                'label' => Craft::t('campaign', 'Pause'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
             ];
         }
@@ -279,7 +279,7 @@ class SendoutsController extends Controller
                 'action' => 'campaign/sendouts/cancel-sendout',
                 'destructive' => 'true',
                 'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Cancel…'),
+                'label' => Craft::t('campaign', 'Cancel'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
             ];
         }
@@ -288,7 +288,7 @@ class SendoutsController extends Controller
             'action' => 'campaign/sendouts/delete-sendout',
             'destructive' => 'true',
             'redirect' => 'campaign/sendouts',
-            'label' => Craft::t('campaign', 'Delete…'),
+            'label' => Craft::t('campaign', 'Delete'),
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
         ];
 

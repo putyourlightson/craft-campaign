@@ -124,7 +124,7 @@ class ContactsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Mark contact as complained…'),
+                'label' => Craft::t('campaign', 'Mark contact as complained'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?')
             ];
         }
@@ -132,7 +132,7 @@ class ContactsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Unmark contact as complained…'),
+                'label' => Craft::t('campaign', 'Unmark contact as complained'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?')
             ];
         }
@@ -140,7 +140,7 @@ class ContactsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Mark contact as bounced…'),
+                'label' => Craft::t('campaign', 'Mark contact as bounced'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?')
             ];
         }
@@ -148,7 +148,7 @@ class ContactsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Unmark contact as bounced…'),
+                'label' => Craft::t('campaign', 'Unmark contact as bounced'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?')
             ];
         }
@@ -157,8 +157,16 @@ class ContactsController extends Controller
             'action' => 'campaign/contacts/delete-contact',
             'destructive' => 'true',
             'redirect' => 'campaign/contacts',
-            'label' => Craft::t('campaign', 'Delete…'),
+            'label' => Craft::t('campaign', 'Delete'),
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact?')
+        ];
+
+        $variables['actions'][1][] = [
+            'action' => 'campaign/contacts/delete-contact?hard=1',
+            'destructive' => 'true',
+            'redirect' => 'campaign/contacts',
+            'label' => Craft::t('campaign', 'Hard Delete'),
+            'confirm' => Craft::t('campaign', 'Are you sure you want to hard delete this contact? This action cannot be undone.')
         ];
 
         // Get the settings
@@ -323,8 +331,9 @@ class ContactsController extends Controller
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
+        $hardDelete = Craft::$app->getRequest()->getParam('hard' ,false);
 
-        if (!Craft::$app->getElements()->deleteElement($contact)) {
+        if (!Craft::$app->getElements()->deleteElement($contact, (bool)$hardDelete)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }

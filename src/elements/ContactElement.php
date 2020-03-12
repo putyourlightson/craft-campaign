@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 use craft\elements\actions\Restore;
 use DateTime;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\actions\DeleteContacts;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
@@ -182,6 +183,9 @@ class ContactElement extends Element
             'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected contacts?'),
             'successMessage' => Craft::t('campaign', 'Contacts deleted.'),
         ]);
+
+        // Hard delete
+        $actions[] = DeleteContacts::class;
 
         // Restore
         $actions[] = $elementsService->createAction([

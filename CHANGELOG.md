@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.14.0 - Unreleased
+### Added
+- Added a hard delete element action for contacts.
+
 ## 1.13.3 - Unreleased
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test.

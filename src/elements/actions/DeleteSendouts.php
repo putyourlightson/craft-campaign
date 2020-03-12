@@ -42,7 +42,7 @@ class DeleteSendouts extends ElementAction
      */
     public function getTriggerLabel(): string
     {
-        return Craft::t('campaign', 'Delete…');
+        return Craft::t('campaign', 'Delete');
     }
 
     /**

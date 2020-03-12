@@ -162,7 +162,7 @@ class CampaignsController extends Controller
                 $variables['actions'][0][] = [
                     'action' => 'campaign/campaigns/close-campaign',
                     'destructive' => 'true',
-                    'label' => Craft::t('campaign', 'Close this campaign…'),
+                    'label' => Craft::t('campaign', 'Close this campaign'),
                     'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
                 ];
                 break;
@@ -172,7 +172,7 @@ class CampaignsController extends Controller
             'action' => 'campaign/campaigns/delete-campaign',
             'destructive' => 'true',
             'redirect' => 'campaign/campaigns',
-            'label' => Craft::t('app', 'Delete…'),
+            'label' => Craft::t('app', 'Delete'),
             'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign.')
         ];
 
