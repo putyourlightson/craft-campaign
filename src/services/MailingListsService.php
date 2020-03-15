@@ -88,8 +88,19 @@ class MailingListsService extends Component
      */
     public function getMailingListBySlug(string $mailingListSlug)
     {
+        // Get site ID from element site settings
+        $siteId = Element_SiteSettings::find()
+            ->select('siteId')
+            ->where(['slug' => $mailingListSlug])
+            ->scalar();
+
+        if ($siteId === null) {
+            return null;
+        }
+
         return MailingListElement::find()
             ->slug($mailingListSlug)
+            ->siteId($siteId)
             ->one();
     }
 

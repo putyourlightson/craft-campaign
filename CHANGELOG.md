@@ -4,8 +4,12 @@
 ### Added
 - Added a hard delete element action for contacts.
 
+### Changed
+- It is now possible to add a new contact with the same email address as a soft-deleted contact.
+
 ### Fixed
 - Fixed an issue where soft deleted contacts were counting towards mailing list subscription and pending contacts count ([#112](https://github.com/putyourlightson/craft-campaign/issues/112)).
+- Fixed subscriptions to mailing lists that exist on a site other than the current site ([#113](https://github.com/putyourlightson/craft-campaign/issues/113)).
 
 ## 1.13.3 - 2020-03-03
 ### Changed
