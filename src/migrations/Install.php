@@ -306,7 +306,7 @@ class Install extends Migration
     protected function createIndexes()
     {
         $this->createIndex(null, '{{%campaign_campaigntypes}}', 'handle', true);
-        $this->createIndex(null, '{{%campaign_contacts}}', 'email', true);
+        $this->createIndex(null, '{{%campaign_contacts}}', 'email', false);
         $this->createIndex(null, '{{%campaign_contacts}}', 'cid', true);
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
         $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', false);

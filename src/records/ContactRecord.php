@@ -30,8 +30,6 @@ use yii\db\ActiveQuery;
  * @property ActiveQuery $element
  * @property ActiveQuery $user
  *
- * @method static ActiveQuery find()
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
@@ -49,6 +47,16 @@ class ContactRecord extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_contacts}}';
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public static function find()
+    {
+        return parent::find()
+            ->innerJoinWith(['element element'])
+            ->where(['element.dateDeleted' => null]);
     }
 
     // Public Methods
