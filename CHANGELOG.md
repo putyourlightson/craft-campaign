@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.14.0 - Unreleased
+## 1.14.0 - 2020-03-16
 ### Added
 - Added a hard delete element action for contacts.
 
