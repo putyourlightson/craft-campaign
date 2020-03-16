@@ -119,7 +119,7 @@ class ContactsService extends Component
         }
 
         $contact = ContactElement::find()
-            ->email($email)->trashed()
+            ->email($email)
             ->status(null)
             ->trashed($trashed)
             ->one();
