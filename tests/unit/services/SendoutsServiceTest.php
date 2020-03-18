@@ -109,7 +109,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
 
-        $this->assertEquals(0, count($pendingRecipients));
+        $this->assertEmpty($pendingRecipients);
     }
 
     public function testGetPendingRecipientsUnsubscribed()
@@ -118,7 +118,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
 
-        $this->assertEquals(0, count($pendingRecipients));
+        $this->assertEmpty($pendingRecipients);
     }
 
     public function testGetPendingRecipientsSoftDeleted()
@@ -127,7 +127,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
 
-        $this->assertEquals(0, count($pendingRecipients));
+        $this->assertEmpty($pendingRecipients);
     }
 
     public function testGetPendingRecipientsHardDeleted()
@@ -136,7 +136,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
 
-        $this->assertEquals(0, count($pendingRecipients));
+        $this->assertEmpty($pendingRecipients);
     }
 
     public function testGetPendingRecipientsAutomated()
@@ -149,7 +149,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
 
         // Assert that the number of pending recipients is correct
-        $this->assertEquals(0, count($pendingRecipients));
+        $this->assertEmpty($pendingRecipients);
     }
 
     public function testQueuePendingSendouts()

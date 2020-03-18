@@ -79,7 +79,7 @@ class CampaignsService extends Component
         }
 
         /** @var CampaignRecord|null $campaignRecord */
-        $campaignRecord = CampaignRecord::findOne(['id' => $sendout->campaignId]);
+        $campaignRecord = CampaignRecord::findOne($sendout->campaignId);
 
         if ($campaignRecord === null) {
             return;

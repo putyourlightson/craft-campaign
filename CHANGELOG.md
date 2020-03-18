@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 1.14.1 - 2020-03-18 [CRITICAL]
+> {warning} This update contains a critical bug fix and should be applied as soon as possible.
+
+### Fixed
+- Fixed a bug introduced in 1.14.0 in which contacts unsubscribing was throwing an error ([#116](https://github.com/putyourlightson/craft-campaign/issues/116)).  
+
 ## 1.14.0 - 2020-03-16
 ### Added
 - Added a hard delete element action for contacts.

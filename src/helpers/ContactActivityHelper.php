@@ -54,7 +54,7 @@ class ContactActivityHelper
     public static function updateContactActivity(ContactElement $contact)
     {
         // Get contact record
-        $contactRecord = ContactRecord::findOne(['id' => $contact->id]);
+        $contactRecord = ContactRecord::findOne($contact->id);
 
         $contactRecord->lastActivity = new DateTime();
 
