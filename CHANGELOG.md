@@ -3,6 +3,7 @@
 ## 1.14.2 - Unreleased
 ### Fixed
 - Fixed bugs that were causing errors when using a Postgres database ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
+- Fixed a bug when importing a user group when no custom fields exist on users.
 - Fixed minimum height of background image on welcome screen.
 
 ## 1.14.1 - 2020-03-18

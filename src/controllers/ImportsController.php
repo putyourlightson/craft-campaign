@@ -219,7 +219,7 @@ class ImportsController extends Controller
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
+        $import->fieldIndexes = $request->getBodyParam('fieldIndexes', []);
 
         // Prepend `field_` to each custom field index
         foreach ($import->fieldIndexes as $key => $fieldIndex) {
