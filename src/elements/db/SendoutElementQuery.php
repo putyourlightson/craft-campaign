@@ -173,7 +173,7 @@ class SendoutElementQuery extends ElementQuery
 
         if ($this->mailingListId) {
             $expression = new Expression(
-                'FIND_IN_SET(:mailingListId, campaign_sendouts.mailingListIds)',
+                'FIND_IN_SET(:mailingListId, {{campaign_sendouts}}.[[mailingListIds]])',
                 [':mailingListId' => $this->mailingListId]
             );
             $this->subQuery->andWhere($expression);
@@ -181,7 +181,7 @@ class SendoutElementQuery extends ElementQuery
 
         if ($this->segmentId) {
             $expression = new Expression(
-                'FIND_IN_SET(:segmentId, campaign_sendouts.segmentIds)',
+                'FIND_IN_SET(:segmentId, {{campaign_sendouts}}.[[segmentIds]])',
                 [':segmentId' => $this->segmentId]
             );
             $this->subQuery->andWhere($expression);

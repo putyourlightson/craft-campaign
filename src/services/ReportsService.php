@@ -692,7 +692,7 @@ class ReportsService extends Component
         $countArray = [];
 
         $query = (new Query())
-            ->select(['country', 'MAX(geoIp) AS geoIp', 'COUNT(*) AS count'])
+            ->select(['country', 'MAX([[geoIp]]) AS geoIp', 'COUNT(*) AS count'])
             ->from($table.' t')
             ->where($conditions)
             ->groupBy('country');
