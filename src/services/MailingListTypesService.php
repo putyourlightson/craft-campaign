@@ -201,6 +201,9 @@ class MailingListTypesService extends Component
 
         if ($isNew) {
             $mailingListTypeRecord = new MailingListTypeRecord();
+
+            // Unset ID if null to avoid making Postgres throw an error
+            unset($mailingListTypeRecord->id);
         }
 
         // Save old site ID for resaving elements later
@@ -228,11 +231,6 @@ class MailingListTypesService extends Component
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
                 $mailingListTypeRecord->fieldLayoutId = null;
-            }
-
-            // Unset ID if null to avoid making postgres mad
-            if ($mailingListTypeRecord->id === null) {
-                unset($mailingListTypeRecord->id);
             }
 
             // Save the mailing list type

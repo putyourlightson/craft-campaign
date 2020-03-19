@@ -228,6 +228,9 @@ class CampaignTypesService extends Component
 
         if ($isNew) {
             $campaignTypeRecord = new CampaignTypeRecord();
+
+            // Unset ID if null to avoid making Postgres throw an error
+            unset($campaignTypeRecord->id);
         }
 
         // Save old site ID for resaving elements later
@@ -255,11 +258,6 @@ class CampaignTypesService extends Component
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
                 $campaignTypeRecord->fieldLayoutId = null;
-            }
-
-            // Unset ID if null to avoid making postgres mad
-            if ($campaignTypeRecord->id === null) {
-                unset($campaignTypeRecord->id);
             }
 
             // Save the campaign type

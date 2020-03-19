@@ -359,6 +359,10 @@ class SendoutsService extends Component
 
         if ($contactCampaignRecord === null) {
             $contactCampaignRecord = new ContactCampaignRecord();
+
+            // Unset ID if null to avoid making Postgres throw an error
+            unset($contactCampaignRecord->id);
+
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
         }
@@ -769,6 +773,10 @@ class SendoutsService extends Component
                     // Create new record if not found
                     if ($linkRecord === null) {
                         $linkRecord = new LinkRecord();
+
+                        // Unset ID if null to avoid making Postgres throw an error
+                        unset($linkRecord->id);
+
                         $linkRecord->campaignId = $sendout->campaignId;
                         $linkRecord->url = $url;
                         $linkRecord->title = $title;
