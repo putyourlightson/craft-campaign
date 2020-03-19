@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\records;
 
-use craft\db\ActiveRecord;
 use craft\records\Element;
 use craft\records\User;
 use DateTime;
+use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
@@ -34,7 +34,7 @@ use yii\db\ActiveQuery;
  * @package   Campaign
  * @since     1.0.0
  */
-class ContactRecord extends ActiveRecord
+class ContactRecord extends BaseActiveRecord
 {
     // Public Static Methods
     // =========================================================================

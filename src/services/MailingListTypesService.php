@@ -201,9 +201,6 @@ class MailingListTypesService extends Component
 
         if ($isNew) {
             $mailingListTypeRecord = new MailingListTypeRecord();
-
-            // Unset ID if null to avoid making Postgres throw an error
-            unset($mailingListTypeRecord->id);
         }
 
         // Save old site ID for resaving elements later

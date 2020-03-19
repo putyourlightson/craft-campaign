@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaign\records;
 
-use craft\db\ActiveRecord;
+use putyourlightson\campaign\base\BaseActiveRecord;
 use putyourlightson\campaign\helpers\StringHelper;
 use yii\db\ActiveQuery;
 
@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
  * @package   Campaign
  * @since     1.0.0
  */
-class LinkRecord extends ActiveRecord
+class LinkRecord extends BaseActiveRecord
 {
     // Public Static Methods
     // =========================================================================

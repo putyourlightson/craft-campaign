@@ -5,8 +5,8 @@
 
 namespace putyourlightson\campaign\records;
 
-use craft\db\ActiveRecord;
 use DateTime;
+use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
@@ -39,7 +39,7 @@ use yii\db\ActiveQuery;
  * @package   Campaign
  * @since     1.0.0
  */
-class SendoutRecord extends ActiveRecord
+class SendoutRecord extends BaseActiveRecord
 {
     // Public Static Methods
     // =========================================================================

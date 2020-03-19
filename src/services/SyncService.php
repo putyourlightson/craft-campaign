@@ -200,10 +200,6 @@ class SyncService extends Component
         // If user is active and contact mailing list record does not exist then create it and subscribe
         if ($user->status == User::STATUS_ACTIVE && $contactMailingListRecord === null) {
             $contactMailingListRecord = new ContactMailingListRecord();
-
-            // Unset ID if null to avoid making Postgres throw an error
-            unset($contactMailingListRecord->id);
-
             $contactMailingListRecord->contactId = $contact->id;
             $contactMailingListRecord->mailingListId = $mailingList->id;
 

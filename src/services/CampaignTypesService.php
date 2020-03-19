@@ -228,9 +228,6 @@ class CampaignTypesService extends Component
 
         if ($isNew) {
             $campaignTypeRecord = new CampaignTypeRecord();
-
-            // Unset ID if null to avoid making Postgres throw an error
-            unset($campaignTypeRecord->id);
         }
 
         // Save old site ID for resaving elements later

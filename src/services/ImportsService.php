@@ -227,9 +227,6 @@ class ImportsService extends Component
         }
         else {
             $importRecord = new ImportRecord();
-
-            // Unset ID if null to avoid making Postgres throw an error
-            unset($importRecord->id);
         }
 
         $importRecord->setAttributes($import->getAttributes(), false);

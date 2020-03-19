@@ -91,10 +91,6 @@ class PendingContactsService extends Component
         }
 
         $pendingContactRecord = new PendingContactRecord();
-
-        // Unset ID if null to avoid making Postgres throw an error
-        unset($pendingContactRecord->id);
-
         $pendingContactRecord->setAttributes($pendingContact->getAttributes(), false);
 
         return $pendingContactRecord->save();

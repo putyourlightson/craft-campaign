@@ -5,8 +5,8 @@
 
 namespace putyourlightson\campaign\records;
 
-use craft\db\ActiveRecord;
 use craft\records\Site;
+use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
 
@@ -30,7 +30,7 @@ use yii\db\ActiveQuery;
  * @package   Campaign
  * @since     1.0.0
  */
-class CampaignTypeRecord extends ActiveRecord
+class CampaignTypeRecord extends BaseActiveRecord
 {
     // Public Methods
     // =========================================================================
