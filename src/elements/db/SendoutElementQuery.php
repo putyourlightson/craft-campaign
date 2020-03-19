@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements\db;
 
+use Craft;
 use putyourlightson\campaign\elements\SendoutElement;
 
 use craft\elements\db\ElementQuery;
@@ -176,6 +177,14 @@ class SendoutElementQuery extends ElementQuery
                 'FIND_IN_SET(:mailingListId, {{campaign_sendouts}}.[[mailingListIds]])',
                 [':mailingListId' => $this->mailingListId]
             );
+
+            if (Craft::$app->getDb()->getIsPgsql()) {
+                $expression = new Expression(
+                    ':mailingListId = ANY(string_to_array({{campaign_sendouts}}.[[mailingListIds]], \',\'))',
+                    [':mailingListId' => $this->mailingListId]
+                );
+            }
+
             $this->subQuery->andWhere($expression);
         }
 
@@ -184,6 +193,14 @@ class SendoutElementQuery extends ElementQuery
                 'FIND_IN_SET(:segmentId, {{campaign_sendouts}}.[[segmentIds]])',
                 [':segmentId' => $this->segmentId]
             );
+
+            if (Craft::$app->getDb()->getIsPgsql()) {
+                $expression = new Expression(
+                    ':segmentId = ANY(string_to_array({{campaign_sendouts}}.[[segmentIds]], \',\'))',
+                    [':segmentId' => $this->segmentId]
+                );
+            }
+
             $this->subQuery->andWhere($expression);
         }
 

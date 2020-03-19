@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.14.2 - Unreleased
+### Fixed
+- Fixed bugs that were causing errors when using a Postgres database ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
+- Fixed minimum height of background image on welcome screen.
+
 ## 1.14.1 - 2020-03-18
 > {warning} This update contains an important bug fix and should be applied as soon as possible.
 
