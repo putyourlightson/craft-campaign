@@ -26,10 +26,8 @@ abstract class BaseActiveRecord extends ActiveRecord
     public function beforeSave($insert): bool
     {
         // Unset ID if null to avoid Postgres throwing an error
-        if ($insert && Craft::$app->getDb()->getIsPgsql()) {
-            if ($this->hasAttribute('id') && $this->id === null) {
-                unset($this->id);
-            }
+        if (Craft::$app->getDb()->getIsPgsql() && $this->hasAttribute('id') && $this->id === null) {
+            unset($this->id);
         }
 
         return parent::beforeSave($insert);
