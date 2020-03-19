@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\base;
 
+use Craft;
 use craft\db\ActiveRecord;
 
 /**
@@ -24,8 +25,8 @@ abstract class BaseActiveRecord extends ActiveRecord
      */
     public function beforeSave($insert): bool
     {
-        if ($insert) {
-            // Unset ID if null to avoid Postgres throwing an error
+        // Unset ID if null to avoid Postgres throwing an error
+        if ($insert && Craft::$app->getDb()->getIsPgsql()) {
             if ($this->hasAttribute('id') && $this->id === null) {
                 unset($this->id);
             }
