@@ -414,7 +414,7 @@ class ContactElement extends Element
         $rules = parent::rules();
 
         $rules[] = [['cid', 'email'], 'required'];
-        $rules[] = [['cid'], 'string', 'max' => 32];
+        $rules[] = [['cid'], 'string', 'max' => 36];
         $rules[] = [['email'], 'email'];
         $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced'], DateTimeValidator::class];
