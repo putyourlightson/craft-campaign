@@ -109,10 +109,8 @@ class ContactsController extends Controller
             $variables['title'] = $contact->email;
         }
 
-        // Add fields from first field layout tab
-        $fieldLayoutTabs = $contact->getFieldLayout()->getTabs();
-        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
-        $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
+        $variables['fields'] = $contact->getFields();
+
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------

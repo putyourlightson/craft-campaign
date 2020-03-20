@@ -201,7 +201,7 @@ class SettingsModel extends Model
             'contactFieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
                 'elementType' => ContactElement::class,
-                'idAttribute' => 'contactFieldLayoutId'
+                'idAttribute' => 'contactFieldLayoutId',
             ],
         ];
     }

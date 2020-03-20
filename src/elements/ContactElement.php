@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\base\FieldInterface;
 use craft\elements\actions\Restore;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -422,15 +423,17 @@ class ContactElement extends Element
     }
 
     /**
+     * @return FieldInterface[]
+     *
      * @inheritdoc
      * @throws InvalidConfigException
      */
-    public function getFieldLayout()
+    public function getFields(): array
     {
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
 
-        return $fieldLayoutBehavior->getFieldLayout();
+        return $fieldLayoutBehavior->getFields();
     }
 
     /**
