@@ -2,8 +2,9 @@
 
 ## 1.14.2 - Unreleased
 ### Fixed
-- Fixed bugs that were causing errors when using a Postgres database ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
-- Fixed a bug when editing or creating a new a contact when the field layout was empty ([#118](https://github.com/putyourlightson/craft-campaign/issues/118)).
+- Fixed bugs that were causing errors when using Postgres ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
+- Fixed a bug when editing a contact when using Postgres ([#118](https://github.com/putyourlightson/craft-campaign/issues/118)).
+- Fixed a bug when editing or creating a new contact when the field layout was empty.
 - Fixed a bug when importing a user group when no custom fields exist on users.
 - Fixed minimum height of background image on welcome screen.
 
