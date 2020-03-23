@@ -1016,6 +1016,7 @@ class SendoutElement extends Element
     {
         if ($isNew) {
             $sendoutRecord = new SendoutRecord();
+            $sendoutRecord->id = $this->id;
         }
         else {
             $sendoutRecord = SendoutRecord::findOne($this->id);

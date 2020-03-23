@@ -230,11 +230,6 @@ class MailingListTypesService extends Component
                 $mailingListTypeRecord->fieldLayoutId = null;
             }
 
-            // Unset ID if null to avoid making postgres mad
-            if ($mailingListTypeRecord->id === null) {
-                unset($mailingListTypeRecord->id);
-            }
-
             // Save the mailing list type
             if (!$mailingListTypeRecord->save(false)) {
                 throw new Exception('Couldn’t save mailing list type.');

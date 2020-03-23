@@ -257,11 +257,6 @@ class CampaignTypesService extends Component
                 $campaignTypeRecord->fieldLayoutId = null;
             }
 
-            // Unset ID if null to avoid making postgres mad
-            if ($campaignTypeRecord->id === null) {
-                unset($campaignTypeRecord->id);
-            }
-
             // Save the campaign type
             if (!$campaignTypeRecord->save(false)) {
                 throw new Exception('Couldn’t save campaign type.');

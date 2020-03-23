@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\base\FieldInterface;
 use craft\elements\actions\Restore;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -413,7 +414,7 @@ class ContactElement extends Element
         $rules = parent::rules();
 
         $rules[] = [['cid', 'email'], 'required'];
-        $rules[] = [['cid'], 'string', 'max' => 32];
+        $rules[] = [['cid'], 'string', 'max' => 36];
         $rules[] = [['email'], 'email'];
         $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced'], DateTimeValidator::class];
@@ -422,15 +423,17 @@ class ContactElement extends Element
     }
 
     /**
+     * @return FieldInterface[]
+     *
      * @inheritdoc
      * @throws InvalidConfigException
      */
-    public function getFieldLayout()
+    public function getFields(): array
     {
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
 
-        return $fieldLayoutBehavior->getFieldLayout();
+        return $fieldLayoutBehavior->getFields();
     }
 
     /**

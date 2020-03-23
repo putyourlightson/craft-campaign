@@ -247,8 +247,7 @@ class SendoutsService extends Component
             /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
                 // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
-                if ($sendout->sendoutType == 'regular'
-                    || $sendout->sendoutType == 'scheduled'
+                if ($sendout->sendoutType == 'regular' || $sendout->sendoutType == 'scheduled'
                     || (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring')
                         && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow()
                     )

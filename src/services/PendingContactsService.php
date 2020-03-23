@@ -91,7 +91,6 @@ class PendingContactsService extends Component
         }
 
         $pendingContactRecord = new PendingContactRecord();
-
         $pendingContactRecord->setAttributes($pendingContact->getAttributes(), false);
 
         return $pendingContactRecord->save();

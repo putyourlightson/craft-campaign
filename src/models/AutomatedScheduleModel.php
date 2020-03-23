@@ -76,8 +76,8 @@ class AutomatedScheduleModel extends ScheduleModel
 
         $now = new DateTime();
 
-        // Ensure day of the week is valid
-        // N: Numeric representation of the day of the week: 1 to 7
+        // Ensure day of the week is valid.
+        // `N` is the numeric representation of the day of the week: 1 to 7
         if (!empty($this->daysOfWeek[$now->format('N')])) {
             return true;
         }

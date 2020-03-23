@@ -24,7 +24,7 @@
     </table>
 
     {% if limit is defined and limit == mailingListActivity|length %}
-        <p><a href="{{ url('campaign/reports/contacts/mailinglist-activity/' ~ contactId) }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+        <p><a href="{{ url('campaign/reports/contacts/' ~ contactId ~ '/mailinglist-activity') }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
     {% endif %}
 
 {% else %}
