@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.14.2 - Unreleased
+## 1.14.2 - 2020-03-23
 ### Fixed
 - Fixed bugs that were causing errors when using Postgres ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
 - Fixed a bug when editing a contact when using Postgres ([#118](https://github.com/putyourlightson/craft-campaign/issues/118)).
