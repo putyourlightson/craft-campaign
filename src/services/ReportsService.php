@@ -167,8 +167,7 @@ class ReportsService extends Component
         // Get contact campaigns
         $query = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit);
+            ->orderBy(['dateUpdated' => SORT_DESC]);
 
         if ($interaction !== null) {
             $query->andWhere(['not', [ContactCampaignRecord::tableName().'.'.$interaction => null]]);
@@ -344,7 +343,6 @@ class ReportsService extends Component
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where($conditions)
             ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
             ->all();
 
         $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
@@ -374,7 +372,6 @@ class ReportsService extends Component
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where($conditions)
             ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
             ->all();
 
         $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
@@ -473,7 +470,6 @@ class ReportsService extends Component
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
             ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
             ->all();
 
         $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);

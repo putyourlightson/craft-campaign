@@ -7,6 +7,8 @@
 - Fixed a bug when editing or creating a new contact when the field layout was empty.
 - Fixed a bug when importing a user group when no custom fields exist on users.
 - Fixed minimum height of background image on welcome screen.
+- Fixed behaviour of contact activity report limits.
+- Fixed broken contact activity report links.
 
 ## 1.14.1 - 2020-03-18
 > {warning} This update contains an important bug fix and should be applied as soon as possible.
