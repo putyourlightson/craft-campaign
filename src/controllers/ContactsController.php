@@ -112,10 +112,14 @@ class ContactsController extends Controller
         // Set the field layout ID
         $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
 
+        $variables['fields'] = [];
+
         // Add fields from first field layout tab
-        $fieldLayoutTabs = $contact->getFieldLayout()->getTabs();
-        $fieldLayoutTab = $fieldLayoutTabs[0] ?? null;
-        $variables['fields'] = $fieldLayoutTab ? $fieldLayoutTab->getFields() : [];
+        if ($fieldLayout = $contact->getFieldLayout()) {
+            $fieldLayoutTabs = $fieldLayout->getTabs();
+            $fieldLayoutTab = $fieldLayoutTabs[0] ?? null;
+            $variables['fields'] = $fieldLayoutTab ? $fieldLayoutTab->getFields() : [];
+        }
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------
