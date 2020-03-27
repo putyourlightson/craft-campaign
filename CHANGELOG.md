@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.14.4 - 2020-03-27
+### Fixed
+- Fixed custom fields not being saved on contact import ([#122](https://github.com/putyourlightson/craft-campaign/issues/122)).
+
 ## 1.14.3 - 2020-03-27
 ### Fixed
 - Fixed an error that could occur when editing a contact that did not have a field layout ID ([#121](https://github.com/putyourlightson/craft-campaign/issues/121)).

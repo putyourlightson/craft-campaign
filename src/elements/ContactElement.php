@@ -423,17 +423,14 @@ class ContactElement extends Element
     }
 
     /**
-     * @return FieldInterface[]
-     *
      * @inheritdoc
-     * @throws InvalidConfigException
      */
-    public function getFields(): array
+    public function getFieldLayout()
     {
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
 
-        return $fieldLayoutBehavior->getFields();
+        return $fieldLayoutBehavior->getFieldLayout();
     }
 
     /**
