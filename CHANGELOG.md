@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.14.3 - 2020-03-27
+### Fixed
+- Fixed error that could occur when editing a contact that did not have a field layout ID ([#121](https://github.com/putyourlightson/craft-campaign/issues/121)).
+
 ## 1.14.2 - 2020-03-23
 ### Fixed
 - Fixed bugs that were causing errors when using Postgres ([#117](https://github.com/putyourlightson/craft-campaign/issues/117)).
