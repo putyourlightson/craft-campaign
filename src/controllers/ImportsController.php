@@ -316,10 +316,8 @@ class ImportsController extends Controller
         $variables['mailingListElementType'] = MailingListElement::class;
 
         // Get contact fields
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-        $variables['fields'] = $fieldLayout->getFields();
+        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+        $variables['fields'] = $fieldLayout ? $fieldLayout->getFields() : [];
 
         // Get columns
         $variables['columns'] = Campaign::$plugin->imports->getColumns($import);

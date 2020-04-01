@@ -58,21 +58,6 @@ class ImportsService extends Component
     // =========================================================================
 
     /**
-     * Returns contact fields
-     *
-     * @return FieldInterface[]
-     * @throws InvalidConfigException
-     */
-    public function getContactFields(): array
-    {
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-
-        return $fieldLayout->getFields();
-    }
-
-    /**
      * Returns all imports
      *
      * @return ImportModel[]

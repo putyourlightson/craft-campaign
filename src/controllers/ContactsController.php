@@ -109,7 +109,7 @@ class ContactsController extends Controller
             $variables['title'] = $contact->email;
         }
 
-        $fieldLayout = $contact->getFieldLayout();
+        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
         $variables['fields'] = $fieldLayout ? $fieldLayout->getFields() : [];
 
         // Determine which actions should be available

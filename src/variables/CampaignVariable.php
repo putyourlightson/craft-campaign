@@ -286,7 +286,9 @@ class CampaignVariable
      */
     public function getContactFields(): array
     {
-        return Campaign::$plugin->imports->getContactFields();
+        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+
+        return $fieldLayout ? $fieldLayout->getFields() : [];
     }
 
     /**

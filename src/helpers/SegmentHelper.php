@@ -131,9 +131,8 @@ class SegmentHelper
             'options' => null,
         ]];
 
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = $settings->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
+        // Get contact field layout
+        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
 
         if ($fieldLayout !== null) {
             $supportedFields = SegmentHelper::getFieldOperators();

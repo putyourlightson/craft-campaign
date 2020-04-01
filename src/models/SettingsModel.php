@@ -8,18 +8,17 @@ namespace putyourlightson\campaign\models;
 use Craft;
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
-use craft\behaviors\FieldLayoutBehavior;
-use putyourlightson\campaign\elements\ContactElement;
+use craft\models\FieldLayout;
 use yii\validators\EmailValidator;
 
 /**
  * SettingsModel
  *
- * @mixin FieldLayoutBehavior
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
+ *
+ * @property FieldLayout|null $contactFieldLayout
  */
 class SettingsModel extends Model
 {
@@ -198,11 +197,6 @@ class SettingsModel extends Model
                 'class' => EnvAttributeParserBehavior::class,
                 'attributes' => ['apiKey'],
             ],
-            'contactFieldLayout' => [
-                'class' => FieldLayoutBehavior::class,
-                'elementType' => ContactElement::class,
-                'idAttribute' => 'contactFieldLayoutId',
-            ],
         ];
     }
 
@@ -241,6 +235,20 @@ class SettingsModel extends Model
         $labels['reCaptchaErrorMessage'] = Craft::t('campaign', 'reCAPTCHA Error Message');
 
         return $labels;
+    }
+
+    /**
+     * Returns the contact field layout.
+     *
+     * @return FieldLayout|null
+     */
+    public function getContactFieldLayout()
+    {
+        if ($this->contactFieldLayoutId === null) {
+            return null;
+        }
+
+        return Craft::$app->getFields()->getLayoutById($this->contactFieldLayoutId);
     }
 
     /**

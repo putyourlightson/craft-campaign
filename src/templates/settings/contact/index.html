@@ -29,7 +29,7 @@
     <hr/>
 
     {% include "_includes/fieldlayoutdesigner" with {
-        fieldLayout: settings.getBehavior('contactFieldLayout').getFieldLayout(),
+        fieldLayout: settings.getContactFieldLayout(),
         customizableTabs: false,
         pretendTabName: "Contact"|t('campaign')
     } only %}

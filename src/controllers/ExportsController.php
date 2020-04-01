@@ -71,10 +71,8 @@ class ExportsController extends Controller
         $variables['mailingListElementType'] = MailingListElement::class;
 
         // Get contact fields
-        /** @var FieldLayoutBehavior $fieldLayoutBehavior */
-        $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
-        $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
-        $variables['fields'] = $fieldLayout->getFields();
+        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+        $variables['fields'] = $fieldLayout ? $fieldLayout->getFields() : [];
 
         // Render the template
         return $this->renderTemplate('campaign/contacts/export', $variables);
