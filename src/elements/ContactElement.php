@@ -427,10 +427,19 @@ class ContactElement extends Element
      */
     public function getFieldLayout()
     {
+        $fieldLayout = null;
+
         /** @var FieldLayoutBehavior $fieldLayoutBehavior */
         $fieldLayoutBehavior = Campaign::$plugin->getSettings()->getBehavior('contactFieldLayout');
 
-        return $fieldLayoutBehavior->getFieldLayout();
+        try {
+            $fieldLayout = $fieldLayoutBehavior->getFieldLayout();
+        }
+        catch (InvalidConfigException $e) {
+            Campaign::$plugin->log('Contact field layout could not be found.');
+        }
+
+        return $fieldLayout;
     }
 
     /**
