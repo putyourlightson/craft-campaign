@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.14.5 - 2020-04-01
+## 1.14.5 - 2020-04-03
 ### Fixed
 - Fixed an invalid field layout error that could occur in an environment where the contact field layout was missing ([#122](https://github.com/putyourlightson/craft-campaign/issues/122)).
 
