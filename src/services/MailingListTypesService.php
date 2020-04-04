@@ -76,6 +76,7 @@ class MailingListTypesService extends Component
     public function getAllMailingListTypes(): array
     {
         $mailingListTypeRecords = MailingListTypeRecord::find()
+            ->innerJoinWith('site')
             ->orderBy(['name' => SORT_ASC])
             ->all();
 
@@ -92,7 +93,8 @@ class MailingListTypesService extends Component
     public function getMailingListTypeById(int $mailingListTypeId)
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListTypeId])
+            ->innerJoinWith('site')
+            ->where([MailingListTypeRecord::tableName().'.id' => $mailingListTypeId])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -115,7 +117,8 @@ class MailingListTypesService extends Component
     public function getMailingListTypeByHandle(string $mailingListTypeHandle)
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName().'.handle' => $mailingListTypeHandle])
+            ->innerJoinWith('site')
+            ->where([MailingListTypeRecord::tableName().'.handle' => $mailingListTypeHandle])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -201,9 +204,7 @@ class MailingListTypesService extends Component
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName().'.uid' => $uid])
-            ->one();
+        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
 
         $isNew = $mailingListTypeRecord === null;
 
@@ -334,9 +335,7 @@ class MailingListTypesService extends Component
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName().'.uid' => $uid])
-            ->one();
+        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
 
         if ($mailingListTypeRecord == null) {
             return;

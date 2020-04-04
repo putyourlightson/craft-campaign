@@ -42,16 +42,6 @@ class CampaignTypeRecord extends BaseActiveRecord
     }
 
     /**
-     * @return ActiveQuery
-     */
-    public static function find()
-    {
-        return parent::find()
-            ->innerJoinWith(['site site'])
-            ->where(['site.dateDeleted' => null]);
-    }
-
-    /**
      * Returns the associated site.
      *
      * @return ActiveQuery

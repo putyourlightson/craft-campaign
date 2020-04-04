@@ -48,19 +48,6 @@ class MailingListTypeRecord extends BaseActiveRecord
     }
 
     /**
-     * @return ActiveQuery
-     */
-    public static function find()
-    {
-        return parent::find()
-            ->innerJoinWith(['site site'])
-            ->where(['site.dateDeleted' => null]);
-    }
-
-    // Public Methods
-    // =========================================================================
-
-    /**
      * Returns the associated site.
      *
      * @return ActiveQuery

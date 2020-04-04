@@ -79,6 +79,7 @@ class CampaignTypesService extends Component
     public function getAllCampaignTypes(): array
     {
         $campaignTypeRecords = CampaignTypeRecord::find()
+            ->innerJoinWith('site')
             ->orderBy(['name' => SORT_ASC])
             ->all();
 
@@ -99,7 +100,8 @@ class CampaignTypesService extends Component
         }
 
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignTypeId])
+            ->innerJoinWith('site')
+            ->where([CampaignTypeRecord::tableName().'.id' => $campaignTypeId])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -122,7 +124,8 @@ class CampaignTypesService extends Component
     public function getCampaignTypeByHandle(string $campaignTypeHandle)
     {
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName().'.handle' => $campaignTypeHandle])
+            ->innerJoinWith('site')
+            ->where([CampaignTypeRecord::tableName().'.handle' => $campaignTypeHandle])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -207,9 +210,7 @@ class CampaignTypesService extends Component
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName().'.uid' => $uid])
-            ->one();
+        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
 
         $isNew = $campaignTypeRecord === null;
 
@@ -340,9 +341,7 @@ class CampaignTypesService extends Component
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName().'.uid' => $uid])
-            ->one();
+        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
 
         if ($campaignTypeRecord == null) {
             return;
