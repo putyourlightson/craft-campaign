@@ -16,10 +16,8 @@ use Craft;
 use craft\base\Component;
 use craft\base\Field;
 use craft\base\FieldInterface;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
 use Throwable;
-use yii\base\InvalidConfigException;
 
 /**
  * ImportsService
@@ -45,14 +43,6 @@ class ImportsService extends Component
      * @event ImportEvent
      */
     const EVENT_AFTER_IMPORT = 'afterImport';
-
-    // Properties
-    // =========================================================================
-
-    /**
-     * @var bool
-     */
-    private $_handle = false;
 
     // Public Methods
     // =========================================================================
@@ -176,6 +166,8 @@ class ImportsService extends Component
 
                 $i++;
             }
+
+            fclose($handle);
         }
 
         // If user group
@@ -343,18 +335,19 @@ class ImportsService extends Component
     // Private Methods
     // =========================================================================
 
+    /**
+     * Returns a file pointer resource handle.
+     *
+     * @param string $filePath
+     *
+     * @return resource|false
+     */
     private function _getHandle(string $filePath)
     {
-        if ($this->_handle !== false) {
-            return $this->_handle;
-        }
-
         // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
         ini_set('auto_detect_line_endings', true);
 
         // Open file for reading
-        $this->_handle = fopen($filePath, 'rb');
-
-        return $this->_handle;
+        return fopen($filePath, 'rb');
     }
 }

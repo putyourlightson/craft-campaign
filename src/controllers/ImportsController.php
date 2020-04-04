@@ -137,22 +137,30 @@ class ImportsController extends Controller
         $import->fileName = $request->getRequiredBodyParam('fileName');
         $import->filePath = $request->getRequiredBodyParam('filePath');
 
-        $mailingListId = $request->getBodyParam('mailingListId');
-        $import->mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : '';
+        $mailingListIds = $request->getBodyParam('mailingListIds');
+        $import->mailingListId = $mailingListIds[0] ?? '';
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
 
-        // Save it
-        if (!Campaign::$plugin->imports->saveImport($import)) {
+        // Validate it
+        if (!$import->validate()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import file.'));
 
             // Send the import back to the fields template
-            return $this->_returnFieldsTemplate($import);
+            return $this->_returnFieldsTemplate($import, $mailingListIds);
         }
 
-        Campaign::$plugin->imports->queueImport($import);
+        // Save and queue an import for each mailing list
+        foreach ($mailingListIds as $mailingListId) {
+            $import->id = null;
+            $import->mailingListId = $mailingListId;
+
+            if (Campaign::$plugin->imports->saveImport($import)){
+                Campaign::$plugin->imports->queueImport($import);
+            }
+        }
 
         // Log it
         Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName]);
@@ -214,8 +222,8 @@ class ImportsController extends Controller
         $import = new ImportModel();
         $import->userGroupId = $request->getRequiredBodyParam('userGroupId');
 
-        $mailingListId = $request->getBodyParam('mailingListId');
-        $import->mailingListId = $mailingListId[0] ?? '';
+        $mailingListIds = $request->getBodyParam('mailingListIds');
+        $import->mailingListId = $mailingListIds[0] ?? '';
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
@@ -226,15 +234,23 @@ class ImportsController extends Controller
             $import->fieldIndexes[$key] = 'field_'.$import->fieldIndexes[$key];
         }
 
-        // Save it
-        if (!Campaign::$plugin->imports->saveImport($import)) {
+        // Validate it
+        if (!$import->validate()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import user group.'));
 
             // Send the import back to the fields template
             return $this->_returnFieldsTemplate($import);
         }
 
-        Campaign::$plugin->imports->queueImport($import);
+        // Save and queue an import for each mailing list
+        foreach ($mailingListIds as $mailingListId) {
+            $import->id = null;
+            $import->mailingListId = $mailingListId;
+
+            if (Campaign::$plugin->imports->saveImport($import)){
+                Campaign::$plugin->imports->queueImport($import);
+            }
+        }
 
         // Log it
         Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name]);
@@ -292,11 +308,12 @@ class ImportsController extends Controller
      * Returns the fields template
      *
      * @param ImportModel $import
+     * @param array|null $mailingListIds
      *
      * @return Response
      * @throws InvalidConfigException
      */
-    private function _returnFieldsTemplate(ImportModel $import): Response
+    private function _returnFieldsTemplate(ImportModel $import, array $mailingListIds = []): Response
     {
         $variables = [];
         $variables['import'] = $import;
@@ -314,6 +331,17 @@ class ImportsController extends Controller
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;
+
+        // Get mailing lists
+        $variables['mailingLists'] = [];
+
+        foreach ($mailingListIds as $mailingListId) {
+            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
+            if ($mailingList !== null) {
+                $variables['mailingLists'][] = $mailingList;
+            }
+        }
 
         // Get contact fields
         $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();

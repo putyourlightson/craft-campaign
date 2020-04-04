@@ -23,14 +23,13 @@
         {% endif %}
 
         {{ forms.elementSelectField({
-            label: "Mailing List"|t('campaign'),
-            instructions: "Select a mailing list in which to import the contacts."|t('campaign'),
-            id: 'mailingListId',
-            name: 'mailingListId',
+            label: "Mailing Lists"|t('campaign'),
+            instructions: "Select one or more mailing lists in which to import the contacts."|t('campaign'),
+            id: 'mailingListIds',
+            name: 'mailingListIds',
             elementType: mailingListElementType,
             selectionLabel: "Add a mailing list"|t('campaign'),
-            limit: 1,
-            elements: import.mailingListId ? [import.mailingList],
+            elements: mailingLists,
             errors: import.getErrors('mailingListId'),
             required: true
         }) }}
