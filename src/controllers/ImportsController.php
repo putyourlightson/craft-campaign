@@ -157,7 +157,7 @@ class ImportsController extends Controller
             $import->id = null;
             $import->mailingListId = $mailingListId;
 
-            if (Campaign::$plugin->imports->saveImport($import)){
+            if (Campaign::$plugin->imports->saveImport($import)) {
                 Campaign::$plugin->imports->queueImport($import);
             }
         }
@@ -247,7 +247,7 @@ class ImportsController extends Controller
             $import->id = null;
             $import->mailingListId = $mailingListId;
 
-            if (Campaign::$plugin->imports->saveImport($import)){
+            if (Campaign::$plugin->imports->saveImport($import)) {
                 Campaign::$plugin->imports->queueImport($import);
             }
         }
