@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\base\Model;
 use craft\db\ActiveRecord;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
@@ -70,13 +69,16 @@ class ReportsService extends Component
     /**
      * Returns campaigns report data
      *
+     * @param int|null $siteId
+     *
      * @return array
      */
-    public function getCampaignsReportData(): array
+    public function getCampaignsReportData(int $siteId = null): array
     {
         // Get all sent campaigns
         $data['campaigns'] = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
+            ->siteId($siteId)
             ->all();
 
         // Get data
@@ -94,7 +96,9 @@ class ReportsService extends Component
         $data['clickThroughRate'] = $data['opened'] ? NumberHelper::floorOrOne($data['clicked'] / $data['opened'] * 100) : 0;
 
         // Get sendouts count
-        $data['sendouts'] = SendoutElement::find()->count();
+        $data['sendouts'] = SendoutElement::find()
+            ->siteId($siteId)
+            ->count();
 
         return $data;
     }
@@ -383,12 +387,16 @@ class ReportsService extends Component
     /**
      * Returns mailing lists report data
      *
+     * @param int|null $siteId
+     *
      * @return array
      */
-    public function getMailingListsReportData(): array
+    public function getMailingListsReportData(int $siteId = null): array
     {
-        // Get all mailing lists
-        $data['mailingLists'] = MailingListElement::findAll();
+        // Get all mailing lists in all sites
+        $data['mailingLists'] = MailingListElement::find()
+            ->siteId($siteId)
+            ->all();
 
         // Get data
         $data['subscribed'] = 0;

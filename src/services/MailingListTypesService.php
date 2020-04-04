@@ -92,7 +92,7 @@ class MailingListTypesService extends Component
     public function getMailingListTypeById(int $mailingListTypeId)
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListTypeId])
+            ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListTypeId])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -115,7 +115,7 @@ class MailingListTypesService extends Component
     public function getMailingListTypeByHandle(string $mailingListTypeHandle)
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName() . '.handle' => $mailingListTypeHandle])
+            ->andWhere([MailingListTypeRecord::tableName().'.handle' => $mailingListTypeHandle])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -161,7 +161,7 @@ class MailingListTypesService extends Component
         }
         else if (!$mailingListType->uid) {
             $mailingListTypeRecord = MailingListTypeRecord::find()
-                ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListType->id])
+                ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListType->id])
                 ->one();
 
             if ($mailingListTypeRecord === null) {
@@ -202,7 +202,7 @@ class MailingListTypesService extends Component
         $data = $event->newValue;
 
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName() . '.uid' => $uid])
+            ->andWhere([MailingListTypeRecord::tableName().'.uid' => $uid])
             ->one();
 
         $isNew = $mailingListTypeRecord === null;
@@ -335,7 +335,7 @@ class MailingListTypesService extends Component
         $uid = $event->tokenMatches[0];
 
         $mailingListTypeRecord = MailingListTypeRecord::find()
-            ->andWhere([MailingListTypeRecord::tableName() . '.uid' => $uid])
+            ->andWhere([MailingListTypeRecord::tableName().'.uid' => $uid])
             ->one();
 
         if ($mailingListTypeRecord == null) {

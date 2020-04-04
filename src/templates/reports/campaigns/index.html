@@ -5,7 +5,9 @@
 
 {% set crumbs = [] %}
 
-{% set data = craft.campaign.reports.getCampaignsReportData() %}
+{% set showSiteMenu = true %}
+{% set siteId = craft.app.request.getParam('siteId') %}
+{% set data = craft.campaign.reports.getCampaignsReportData(siteId) %}
 
 
 {% block content %}

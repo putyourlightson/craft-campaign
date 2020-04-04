@@ -4,7 +4,9 @@
 
 {% set crumbs = [] %}
 
-{% set data = craft.campaign.reports.getMailingListsReportData() %}
+{% set showSiteMenu = true %}
+{% set siteId = craft.app.request.getParam('siteId') %}
+{% set data = craft.campaign.reports.getMailingListsReportData(siteId) %}
 
 
 {% block content %}

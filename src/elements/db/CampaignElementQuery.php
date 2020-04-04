@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements\db;
 
+use craft\db\Table;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
@@ -22,7 +23,7 @@ use yii\db\Connection;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class CampaignElementQuery extends ElementQuery
 {
@@ -119,6 +120,9 @@ class CampaignElementQuery extends ElementQuery
 
         $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
         $this->subQuery->select('campaign_campaigntypes.name AS campaignType');
+
+        $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
+        $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 
         return parent::beforePrepare();
     }

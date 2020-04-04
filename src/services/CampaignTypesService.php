@@ -99,7 +99,7 @@ class CampaignTypesService extends Component
         }
 
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignTypeId])
+            ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignTypeId])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -122,7 +122,7 @@ class CampaignTypesService extends Component
     public function getCampaignTypeByHandle(string $campaignTypeHandle)
     {
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName() . '.handle' => $campaignTypeHandle])
+            ->andWhere([CampaignTypeRecord::tableName().'.handle' => $campaignTypeHandle])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -167,7 +167,7 @@ class CampaignTypesService extends Component
         }
         else if (!$campaignType->uid) {
             $campaignTypeRecord = CampaignTypeRecord::find()
-                ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignType->id])
+                ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignType->id])
                 ->one();
 
             if ($campaignTypeRecord === null) {
@@ -208,7 +208,7 @@ class CampaignTypesService extends Component
         $data = $event->newValue;
 
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName() . '.uid' => $uid])
+            ->andWhere([CampaignTypeRecord::tableName().'.uid' => $uid])
             ->one();
 
         $isNew = $campaignTypeRecord === null;
@@ -341,7 +341,7 @@ class CampaignTypesService extends Component
         $uid = $event->tokenMatches[0];
 
         $campaignTypeRecord = CampaignTypeRecord::find()
-            ->andWhere([CampaignTypeRecord::tableName() . '.uid' => $uid])
+            ->andWhere([CampaignTypeRecord::tableName().'.uid' => $uid])
             ->one();
 
         if ($campaignTypeRecord == null) {

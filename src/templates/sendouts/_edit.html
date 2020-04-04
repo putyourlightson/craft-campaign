@@ -8,7 +8,6 @@
     { label: sendout.sendoutTypes[sendout.sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 
-{% set showSites = craft.app.isMultiSite %}
 {% set schedule = sendout.schedule %}
 {% set editable = true %}
 
@@ -18,7 +17,7 @@
 {% block contextMenu %}
 
     {% if craft.app.getIsMultiSite() and sendout.id is null %}
-        {% include "_elements/sitemenu" with {
+        {% include '_elements/sitemenu' with {
             selectedSiteId: sendout.siteId,
             urlFormat: url('campaign/sendouts/' ~ sendout.sendoutType ~ '/new/{handle}'),
         } only %}

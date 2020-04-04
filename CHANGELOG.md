@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 1.14.6 - Unreleased
+## 1.15.0 - Unreleased
+### Added
+- Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).
+
 ### Fixed
 - Fixed an error that could appear if a campaign type's or mailing list type's site was deleted.
 

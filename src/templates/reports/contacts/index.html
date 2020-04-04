@@ -4,6 +4,8 @@
 
 {% set crumbs = [] %}
 
+{% set showSiteMenu = false %}
+{% set siteId = craft.app.request.getParam('siteId') %}
 {% set data = craft.campaign.reports.getContactsReportData() %}
 
 

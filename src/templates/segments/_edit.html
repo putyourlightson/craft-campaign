@@ -12,7 +12,7 @@
 {% block contextMenu %}
 
     {% if craft.app.getIsMultiSite() and segment.id is null %}
-        {% include "_elements/sitemenu" with {
+        {% include '_elements/sitemenu' with {
             selectedSiteId: segment.siteId,
             urlFormat: url('campaign/segments/' ~ segment.segmentType ~ '/new/{handle}'),
         } only %}

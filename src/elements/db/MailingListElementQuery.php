@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements\db;
 
+use craft\db\Table;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
@@ -149,6 +150,12 @@ class MailingListElementQuery extends ElementQuery
         if ($this->mailingListTypeId) {
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));
         }
+
+        $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
+        $this->subQuery->select('campaign_mailinglisttypes.name AS mailingListType');
+
+        $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_mailinglisttypes.siteId]]');
+        $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 
         if ($this->syncedUserGroupId) {
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.syncedUserGroupId', $this->syncedUserGroupId));
