@@ -35,7 +35,7 @@ use yii\db\ActiveQuery;
  */
 class CampaignRecord extends BaseActiveRecord
 {
-    // Public Static Methods
+    // Public Methods
     // =========================================================================
 
     /**
@@ -45,9 +45,6 @@ class CampaignRecord extends BaseActiveRecord
     {
         return '{{%campaign_campaigns}}';
     }
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns the campaign type.

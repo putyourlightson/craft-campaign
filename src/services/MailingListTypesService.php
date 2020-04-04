@@ -91,7 +91,9 @@ class MailingListTypesService extends Component
      */
     public function getMailingListTypeById(int $mailingListTypeId)
     {
-        $mailingListTypeRecord = MailingListTypeRecord::findOne($mailingListTypeId);
+        $mailingListTypeRecord = MailingListTypeRecord::find()
+            ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListTypeId])
+            ->one();
 
         if ($mailingListTypeRecord === null) {
             return null;
@@ -112,7 +114,9 @@ class MailingListTypesService extends Component
      */
     public function getMailingListTypeByHandle(string $mailingListTypeHandle)
     {
-        $mailingListTypeRecord = MailingListTypeRecord::findOne(['handle' => $mailingListTypeHandle]);
+        $mailingListTypeRecord = MailingListTypeRecord::find()
+            ->andWhere([MailingListTypeRecord::tableName() . '.handle' => $mailingListTypeHandle])
+            ->one();
 
         if ($mailingListTypeRecord === null) {
             return null;
@@ -156,7 +160,9 @@ class MailingListTypesService extends Component
             $mailingListType->uid = StringHelper::UUID();
         }
         else if (!$mailingListType->uid) {
-            $mailingListTypeRecord = MailingListTypeRecord::findOne($mailingListType->id);
+            $mailingListTypeRecord = MailingListTypeRecord::find()
+                ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListType->id])
+                ->one();
 
             if ($mailingListTypeRecord === null) {
                 throw new NotFoundHttpException('No mailing list type exists with the ID '.$mailingListType->id);
@@ -195,7 +201,9 @@ class MailingListTypesService extends Component
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
+        $mailingListTypeRecord = MailingListTypeRecord::find()
+            ->andWhere([MailingListTypeRecord::tableName() . '.uid' => $uid])
+            ->one();
 
         $isNew = $mailingListTypeRecord === null;
 
@@ -326,7 +334,9 @@ class MailingListTypesService extends Component
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
+        $mailingListTypeRecord = MailingListTypeRecord::find()
+            ->andWhere([MailingListTypeRecord::tableName() . '.uid' => $uid])
+            ->one();
 
         if ($mailingListTypeRecord == null) {
             return;

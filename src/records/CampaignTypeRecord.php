@@ -24,8 +24,6 @@ use yii\db\ActiveQuery;
  * @property string $queryStringParameters
  * @property Site|null $site
  *
- * @method static ActiveQuery find()
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
@@ -43,8 +41,15 @@ class CampaignTypeRecord extends BaseActiveRecord
         return '{{%campaign_campaigntypes}}';
     }
 
-    // Public Methods
-    // =========================================================================
+    /**
+     * @return ActiveQuery
+     */
+    public static function find()
+    {
+        return parent::find()
+            ->innerJoinWith(['site site'])
+            ->where(['site.dateDeleted' => null]);
+    }
 
     /**
      * Returns the associated site.

@@ -28,8 +28,6 @@ use yii\db\ActiveQuery;
  * @property string $unsubscribeSuccessTemplate
  * @property ActiveQuery $site
  *
- * @method static ActiveQuery find()
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
@@ -47,6 +45,16 @@ class MailingListTypeRecord extends BaseActiveRecord
     public static function tableName(): string
     {
         return '{{%campaign_mailinglisttypes}}';
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public static function find()
+    {
+        return parent::find()
+            ->innerJoinWith(['site site'])
+            ->where(['site.dateDeleted' => null]);
     }
 
     // Public Methods

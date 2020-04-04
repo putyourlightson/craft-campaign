@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.14.6 - Unreleased
+### Fixed
+- Fixed an error that could appear if a campaign type's or mailing list type's site was deleted.
+
 ## 1.14.5 - 2020-04-03
 ### Fixed
 - Fixed an invalid field layout error that could occur in an environment where the contact field layout was missing ([#124](https://github.com/putyourlightson/craft-campaign/issues/124)).

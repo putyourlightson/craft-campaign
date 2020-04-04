@@ -98,28 +98,9 @@ class CampaignTypesService extends Component
             return null;
         }
 
-        $campaignTypeRecord = CampaignTypeRecord::findOne($campaignTypeId);
-
-        if ($campaignTypeRecord === null) {
-            return null;
-        }
-
-        /** @var CampaignTypeModel $campaignType */
-        $campaignType = CampaignTypeModel::populateModel($campaignTypeRecord, false);
-
-        return $campaignType;
-    }
-
-    /**
-     * Returns campaign type by UID
-     *
-     * @param string $uid
-     *
-     * @return CampaignTypeModel|null
-     */
-    public function getCampaignTypeByUid(string $uid)
-    {
-        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+        $campaignTypeRecord = CampaignTypeRecord::find()
+            ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignTypeId])
+            ->one();
 
         if ($campaignTypeRecord === null) {
             return null;
@@ -140,7 +121,9 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeByHandle(string $campaignTypeHandle)
     {
-        $campaignTypeRecord = CampaignTypeRecord::findOne(['handle' => $campaignTypeHandle]);
+        $campaignTypeRecord = CampaignTypeRecord::find()
+            ->andWhere([CampaignTypeRecord::tableName() . '.handle' => $campaignTypeHandle])
+            ->one();
 
         if ($campaignTypeRecord === null) {
             return null;
@@ -183,7 +166,9 @@ class CampaignTypesService extends Component
             $campaignType->uid = StringHelper::UUID();
         }
         else if (!$campaignType->uid) {
-            $campaignTypeRecord = CampaignTypeRecord::findOne($campaignType->id);
+            $campaignTypeRecord = CampaignTypeRecord::find()
+                ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignType->id])
+                ->one();
 
             if ($campaignTypeRecord === null) {
                 throw new NotFoundHttpException('No campaign type exists with the ID '.$campaignType->id);
@@ -222,7 +207,9 @@ class CampaignTypesService extends Component
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+        $campaignTypeRecord = CampaignTypeRecord::find()
+            ->andWhere([CampaignTypeRecord::tableName() . '.uid' => $uid])
+            ->one();
 
         $isNew = $campaignTypeRecord === null;
 
@@ -353,7 +340,9 @@ class CampaignTypesService extends Component
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        $campaignTypeRecord = CampaignTypeRecord::findOne(['uid' => $uid]);
+        $campaignTypeRecord = CampaignTypeRecord::find()
+            ->andWhere([CampaignTypeRecord::tableName() . '.uid' => $uid])
+            ->one();
 
         if ($campaignTypeRecord == null) {
             return;
@@ -375,7 +364,6 @@ class CampaignTypesService extends Component
             if ($campaignTypeRecord->fieldLayoutId) {
                 Craft::$app->getFields()->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
             }
-
 
             // Delete the campaign type
             $campaignTypeRecord->delete();
