@@ -15,6 +15,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 use Craft;
 use craft\db\Migration;
 use Throwable;
+use yii\db\ColumnSchemaBuilder;
 
 /**
  * Campaign Install Migration
@@ -63,6 +64,16 @@ class Install extends Migration
         $this->deleteTables();
 
         return true;
+    }
+
+    /**
+     * Returns a short UID column.
+     *
+     * @return ColumnSchemaBuilder
+     */
+    public function shortUid()
+    {
+        return $this->char(17)->notNull()->defaultValue('0');
     }
 
     // Protected Methods
@@ -114,7 +125,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_links}}')) {
             $this->createTable('{{%campaign_links}}', [
                 'id' => $this->primaryKey(),
-                'lid' => $this->uid(),
+                'lid' => $this->shortUid(),
                 'campaignId' => $this->integer()->notNull(),
                 'url' => $this->text(),
                 'title' => $this->string()->notNull(),
@@ -130,7 +141,7 @@ class Install extends Migration
             $this->createTable('{{%campaign_contacts}}', [
                 'id' => $this->primaryKey(),
                 'userId' => $this->integer(),
-                'cid' => $this->uid(),
+                'cid' => $this->shortUid(),
                 'email' => $this->string()->notNull(),
                 'country' => $this->string(),
                 'geoIp' => $this->text(),
@@ -150,7 +161,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_pendingcontacts}}')) {
             $this->createTable('{{%campaign_pendingcontacts}}', [
                 'id' => $this->primaryKey(),
-                'pid' => $this->uid(),
+                'pid' => $this->shortUid(),
                 'email' => $this->string()->notNull(),
                 'mailingListId' => $this->integer()->notNull(),
                 'source' => $this->string(),
@@ -249,7 +260,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_sendouts}}')) {
             $this->createTable('{{%campaign_sendouts}}', [
                 'id' => $this->primaryKey(),
-                'sid' => $this->uid(),
+                'sid' => $this->shortUid(),
                 'campaignId' => $this->integer(),
                 'senderId' => $this->integer(),
                 'sendoutType' => $this->string()->notNull(),

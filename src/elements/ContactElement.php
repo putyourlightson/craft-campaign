@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\elements;
 
-use craft\base\FieldInterface;
 use craft\elements\actions\Restore;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -17,7 +16,6 @@ use putyourlightson\campaign\records\ContactRecord;
 
 use Craft;
 use craft\base\Element;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
@@ -414,7 +412,7 @@ class ContactElement extends Element
         $rules = parent::rules();
 
         $rules[] = [['cid', 'email'], 'required'];
-        $rules[] = [['cid'], 'string', 'max' => 36];
+        $rules[] = [['cid'], 'string', 'max' => 17];
         $rules[] = [['email'], 'email'];
         $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced'], DateTimeValidator::class];

@@ -5,6 +5,9 @@
 - Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).
 - Added the ability to import contacts to multiple lists in one go ([#126](https://github.com/putyourlightson/craft-campaign/issues/126)).
 
+### Changed
+- Changed database table column length for short UIDs ([#128](https://github.com/putyourlightson/craft-campaign/issues/128)).
+
 ### Fixed
 - Fixed an error that could appear if a campaign type's or mailing list type's site was deleted.
 - Fixed a bug that was causing errors when using Postgres ([#128](https://github.com/putyourlightson/craft-campaign/issues/128)).

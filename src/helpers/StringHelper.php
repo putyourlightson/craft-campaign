@@ -18,16 +18,16 @@ class StringHelper extends \craft\helpers\StringHelper
     // =========================================================================
 
     /**
-     * Generates a unique ID with an optional prefix
+     * Generates a 17 character unique ID with an optional prefix
      *
      * @param string|null $prefix
      *
      * @return string
      */
-    public static function uniqueId(string $prefix = null): string
+    public static function uniqueId(string $prefix = ''): string
     {
-        $prefix = $prefix ?? '';
+        $uniqueId = uniqid($prefix, false).self::randomString(4);
 
-        return uniqid($prefix, false).self::randomString(3);
+        return substr($uniqueId, 0, 17);
     }
 }
