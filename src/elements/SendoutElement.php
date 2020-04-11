@@ -507,7 +507,7 @@ class SendoutElement extends Element
         $rules = parent::rules();
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'integer'];
         $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required'];
-        $rules[] = [['sid'], 'string', 'max' => 32];
+        $rules[] = [['sid'], 'string', 'max' => 36];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
         $rules[] = [['notificationEmailAddress'], 'email'];
         $rules[] = [['sendDate'], DateTimeValidator::class];

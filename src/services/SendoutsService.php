@@ -162,7 +162,7 @@ class SendoutsService extends Component
     {
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
-            ->select(['contactId', 'min(mailingListId) as mailingListId', 'min(subscribed) as subscribed'])
+            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
             ->where([
                 'mailingListId' => $sendout->getMailingListIds(),
@@ -170,7 +170,7 @@ class SendoutsService extends Component
             ]);
 
         // Ensure contacts have not complained or bounced (in contact record)
-        $query->innerJoin(ContactRecord::tableName().' contact', 'contact.id = contactId')
+        $query->innerJoin(ContactRecord::tableName().' contact', '[[contact.id]] = [[contactId]]')
             ->andWhere([
                 'contact.complained' => null,
                 'contact.bounced' => null,
@@ -197,7 +197,7 @@ class SendoutsService extends Component
 
         // Get recipients as array
         $recipients = ContactMailingListRecord::find()
-            ->select(['contactId', 'min(mailingListId) as mailingListId', 'min(subscribed) as subscribed'])
+            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
             ->where(['contactId' => $contactIds])
             ->asArray()

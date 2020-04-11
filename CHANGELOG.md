@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed an error that could appear if a campaign type's or mailing list type's site was deleted.
+- Fixed a bug that was causing errors when using Postgres ([#128](https://github.com/putyourlightson/craft-campaign/issues/128)).
 
 ## 1.14.5 - 2020-04-03
 ### Fixed
