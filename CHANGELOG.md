@@ -5,6 +5,7 @@
 - Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).
 - Added the ability to import contacts to multiple lists in one go ([#126](https://github.com/putyourlightson/craft-campaign/issues/126)).
 - Added the contact field layout to project config ([#129](https://github.com/putyourlightson/craft-campaign/issues/129)).
+- Added `EVENT_BEFORE_SAVE_SETTINGS` and `EVENT_AFTER_SAVE_SETTINGS` events.
 
 ### Changed
 - Changed database table column length for short UIDs ([#128](https://github.com/putyourlightson/craft-campaign/issues/128)).
