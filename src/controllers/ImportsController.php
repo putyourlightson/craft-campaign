@@ -344,8 +344,7 @@ class ImportsController extends Controller
         }
 
         // Get contact fields
-        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
-        $variables['fields'] = $fieldLayout ? $fieldLayout->getFields() : [];
+        $variables['fields'] = Campaign::$plugin->getSettings()->getContactFields();
 
         // Get columns
         $variables['columns'] = Campaign::$plugin->imports->getColumns($import);

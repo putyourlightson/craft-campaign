@@ -5,9 +5,8 @@
 
 namespace putyourlightson\campaign\events;
 
+use craft\events\CancelableEvent;
 use putyourlightson\campaign\models\CampaignTypeModel;
-
-use yii\base\Event;
 
 /**
  * CampaignTypeEvent
@@ -16,7 +15,7 @@ use yii\base\Event;
  * @package   Campaign
  * @since     1.0.0
  */
-class CampaignTypeEvent extends Event
+class CampaignTypeEvent extends CancelableEvent
 {
     // Properties
     // =========================================================================

@@ -5,13 +5,20 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\base\Volume;
-use craft\helpers\App;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\models\SettingsModel;
-
 use Craft;
-use craft\helpers\Component;
+use craft\base\Component;
+use craft\base\Field;
+use craft\base\Volume;
+use craft\events\CancelableEvent;
+use craft\events\ConfigEvent;
+use craft\events\FieldEvent;
+use craft\helpers\App;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\models\SettingsModel;
 
 /**
  * SettingsService
@@ -22,6 +29,24 @@ use craft\helpers\Component;
  */
 class SettingsService extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @since 1.15.0
+     */
+    const EVENT_BEFORE_SAVE_SETTINGS = 'beforeSaveSettings';
+
+    /**
+     * @since 1.15.0
+     */
+    const EVENT_AFTER_SAVE_SETTINGS = 'afterSaveSettings';
+
+    /**
+     * @since 1.15.0
+     */
+    const CONFIG_CONTACTFIELDLAYOUT_KEY = 'campaign.contactFieldLayout';
+
     // Public Methods
     // =========================================================================
 
@@ -163,14 +188,111 @@ class SettingsService extends Component
      */
     public function saveSettings(SettingsModel $settings): bool
     {
-        if (!$settings->validate()) {
-            return false;
-        }
-
         // Limit decimal places of floats
         $settings->memoryThreshold = round($settings->memoryThreshold, 2);
         $settings->timeThreshold = round($settings->timeThreshold, 2);
 
+        // Fire a before event
+        $event = new CancelableEvent([
+            'data' => $settings,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_SAVE_SETTINGS, $event);
+
+        if (!$event->isValid) {
+            return false;
+        }
+
+        if (!$settings->validate()) {
+            return false;
+        }
+
         return Craft::$app->plugins->savePluginSettings(Campaign::$plugin, $settings->getAttributes());
+    }
+    /**
+     * Saves the contact field layout
+     *
+     * @param FieldLayout $fieldLayout
+     * @return bool
+     * @since 1.15.0
+     */
+    public function saveContactFieldLayout(FieldLayout $fieldLayout)
+    {
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayoutConfig = $fieldLayout->getConfig();
+        $uid = StringHelper::UUID();
+
+        $projectConfig->set(self::CONFIG_CONTACTFIELDLAYOUT_KEY, [$uid => $fieldLayoutConfig], 'Save the contact field layout');
+
+        return true;
+    }
+
+    /**
+     * Handles a changed contact field layout.
+     *
+     * @param ConfigEvent $event
+     * @since 1.15.0
+     */
+    public function handleChangedContactFieldLayout(ConfigEvent $event)
+    {
+        // Use this because we want this to trigger this if anything changes inside but ONLY ONCE
+        static $parsed = false;
+        if ($parsed) {
+            return;
+        }
+
+        $parsed = true;
+        $data = Craft::$app->getProjectConfig()->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY, true);
+
+        $fieldsService = Craft::$app->getFields();
+
+        if (empty($data) || empty($config = reset($data))) {
+            $fieldsService->deleteLayoutsByType(ContactElement::class);
+            return;
+        }
+
+        // Make sure fields are processed
+        ProjectConfigHelper::ensureAllFieldsProcessed();
+
+        // Save the field layout
+        $layout = FieldLayout::createFromConfig($config);
+        $layout->id = $fieldsService->getLayoutByType(ContactElement::class)->id;
+        $layout->type = ContactElement::class;
+        $layout->uid = key($data);
+        $fieldsService->saveLayout($layout);
+    }
+
+    /**
+     * Prunes a deleted field from the contact field layout.
+     *
+     * @param FieldEvent $event
+     */
+    public function pruneDeletedField(FieldEvent $event)
+    {
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayouts = $projectConfig->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY);
+
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
+
+        // Prune the field layout
+        if (is_array($fieldLayouts)) {
+            foreach ($fieldLayouts as $layoutUid => $layout) {
+                if (!empty($layout['tabs'])) {
+                    foreach ($layout['tabs'] as $tabUid => $tab) {
+                        $projectConfig->remove(self::CONFIG_CONTACTFIELDLAYOUT_KEY . '.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
+                    }
+                }
+            }
+        }
+
+        // Nuke all the layout fields from the DB
+        Craft::$app->getDb()->createCommand()->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])->execute();
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 }

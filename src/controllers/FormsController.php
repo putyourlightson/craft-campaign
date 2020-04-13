@@ -74,7 +74,7 @@ class FormsController extends BaseMessageController
         if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
             // Create new contact to get field values
             $contact = new ContactElement();
-            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
+
             $contact->setFieldValuesFromRequest('fields');
 
             // Create pending contact
@@ -114,7 +114,6 @@ class FormsController extends BaseMessageController
 
             // Set field values
             $contact->email = $email;
-            $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
             $contact->setFieldValuesFromRequest('fields');
 
             // Save contact

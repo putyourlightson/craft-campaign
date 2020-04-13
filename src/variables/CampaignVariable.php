@@ -279,19 +279,6 @@ class CampaignVariable
     }
 
     /**
-     * Returns contact fields
-     *
-     * @return array
-     * @throws InvalidConfigException
-     */
-    public function getContactFields(): array
-    {
-        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
-
-        return $fieldLayout ? $fieldLayout->getFields() : [];
-    }
-
-    /**
      * Returns reCAPTCHA markup
      *
      * @return Markup|string

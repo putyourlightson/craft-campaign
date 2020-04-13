@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\helpers;
 
 use Craft;
 use craft\base\Field;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\fields\BaseOptionsField;
 use craft\fields\Checkboxes;
 use craft\fields\Date;
@@ -131,15 +130,13 @@ class SegmentHelper
             'options' => null,
         ]];
 
-        // Get contact field layout
-        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+        // Get contact fields
+        $fields = Campaign::$plugin->getSettings()->getContactFields();
 
-        if ($fieldLayout !== null) {
+        if (!empty($fields)) {
             $supportedFields = SegmentHelper::getFieldOperators();
 
-            /** @var Field[] $fields */
-            $fields = $fieldLayout->getFields();
-
+            /** @var Field $field */
             foreach ($fields as $field) {
                 $fieldType = get_class($field);
 

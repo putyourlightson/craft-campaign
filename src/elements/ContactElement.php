@@ -425,7 +425,7 @@ class ContactElement extends Element
      */
     public function getFieldLayout()
     {
-        return Campaign::$plugin->getSettings()->getContactFieldLayout();
+        return Craft::$app->getFields()->getLayoutByType(self::class);
     }
 
     /**

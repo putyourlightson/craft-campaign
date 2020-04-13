@@ -80,9 +80,7 @@ class ImportJob extends BaseJob
 
         // Fire an after event
         if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
-            Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, new ImportEvent([
-                'import' => $import,
-            ]));
+            Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, $event);
         }
     }
 

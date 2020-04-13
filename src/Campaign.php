@@ -512,6 +512,13 @@ class Campaign extends Plugin
      */
     private function _registerProjectConfigListeners()
     {
+        // Contact field layout
+        Craft::$app->projectConfig
+            ->onAdd(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout'])
+            ->onUpdate(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout'])
+            ->onRemove(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->settings, 'pruneDeletedField']);
+
         // Campaign types
         Craft::$app->projectConfig
             ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])

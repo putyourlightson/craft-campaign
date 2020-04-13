@@ -308,11 +308,11 @@ class SettingsController extends Controller
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = ContactElement::class;
-        Craft::$app->getFields()->saveLayout($fieldLayout);
-        $settings->contactFieldLayoutId = $fieldLayout->id;
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+        if (!Campaign::$plugin->settings->saveSettings($settings)
+            || !Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)
+        ) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact settings.'));
 
             // Send the settings back to the template

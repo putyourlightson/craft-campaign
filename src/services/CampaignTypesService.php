@@ -151,11 +151,14 @@ class CampaignTypesService extends Component
         $isNew = $campaignType->id === null;
 
         // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE)) {
-            $this->trigger(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
-                'campaignType' => $campaignType,
-                'isNew' => $isNew,
-            ]));
+        $event = new CampaignTypeEvent([
+            'campaignType' => $campaignType,
+            'isNew' => $isNew,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_SAVE_CAMPAIGN_TYPE, $event);
+
+        if (!$event->isValid) {
+            return false;
         }
 
         if ($runValidation && !$campaignType->validate()) {
@@ -318,10 +321,13 @@ class CampaignTypesService extends Component
     public function deleteCampaignType(CampaignTypeModel $campaignType): bool
     {
         // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_DELETE_CAMPAIGN_TYPE)) {
-            $this->trigger(self::EVENT_BEFORE_DELETE_CAMPAIGN_TYPE, new CampaignTypeEvent([
-                'campaignType' => $campaignType,
-            ]));
+        $event = new CampaignTypeEvent([
+            'campaignType' => $campaignType,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_DELETE_CAMPAIGN_TYPE, $event);
+
+        if (!$event->isValid) {
+            return false;
         }
 
         // Remove it from project config

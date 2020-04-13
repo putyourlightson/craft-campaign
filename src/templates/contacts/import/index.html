@@ -11,8 +11,7 @@
 {% set crumbs = [] %}
 
 {% set contactFieldNames = [] %}
-{% set contactFields = craft.campaign.getContactFields() %}
-{% for field in contactFields %}
+{% for field in craft.campaign.settings.getContactFields() %}
     {% set contactFieldNames = contactFieldNames|merge([field.name ~ (field.required ? ' [' ~ 'required'|t('campaign') ~ ']')]) %}
 {% endfor %}
 

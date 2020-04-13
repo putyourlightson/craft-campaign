@@ -145,11 +145,14 @@ class MailingListTypesService extends Component
         $isNew = $mailingListType->id === null;
 
         // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_SAVE_MAILINGLIST_TYPE)) {
-            $this->trigger(self::EVENT_BEFORE_SAVE_MAILINGLIST_TYPE, new MailingListTypeEvent([
-                'mailingListType' => $mailingListType,
-                'isNew' => $isNew,
-            ]));
+        $event = new MailingListTypeEvent([
+            'mailingListType' => $mailingListType,
+            'isNew' => $isNew,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_SAVE_MAILINGLIST_TYPE, $event);
+
+        if (!$event->isValid) {
+            return false;
         }
 
         if ($runValidation && !$mailingListType->validate()) {
@@ -312,10 +315,13 @@ class MailingListTypesService extends Component
     public function deleteMailingListType(MailingListTypeModel $mailingListType): bool
     {
         // Fire a before event
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_DELETE_MAILINGLIST_TYPE)) {
-            $this->trigger(self::EVENT_BEFORE_DELETE_MAILINGLIST_TYPE, new MailingListTypeEvent([
-                'mailingListType' => $mailingListType,
-            ]));
+        $event = new MailingListTypeEvent([
+            'mailingListType' => $mailingListType,
+        ]);
+        $this->trigger(self::EVENT_BEFORE_DELETE_MAILINGLIST_TYPE, $event);
+
+        if (!$event->isValid) {
+            return false;
         }
 
         // Remove it from project config

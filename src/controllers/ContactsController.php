@@ -109,8 +109,7 @@ class ContactsController extends Controller
             $variables['title'] = $contact->email;
         }
 
-        $fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
-        $variables['fields'] = $fieldLayout ? $fieldLayout->getFields() : [];
+        $variables['fields'] = $contact->getFieldLayout()->getFields();
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------
@@ -208,9 +207,6 @@ class ContactsController extends Controller
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
         $contact->email = $request->getBodyParam('email', $contact->email);
-
-        // Set the field layout ID
-        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
 
         // Set the field values using the fields location
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');

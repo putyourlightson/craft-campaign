@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\helpers;
 
-use Craft;
 use craft\db\Table;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
@@ -33,9 +33,14 @@ class ProjectConfigDataHelper
     public static function rebuildProjectConfig(): array
     {
         $configData = [
+            'contactFieldLayout' => null,
             'campaignTypes' => [],
             'mailingListTypes' => [],
         ];
+
+        $contactFieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+
+        $configData['contactFieldLayout'][$contactFieldLayout->uid] = $contactFieldLayout->getConfig();
 
         $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
 

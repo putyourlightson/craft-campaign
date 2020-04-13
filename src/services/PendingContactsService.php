@@ -125,7 +125,6 @@ class PendingContactsService extends Component
         $contact->email = $pendingContact->email;
 
         // Set field values
-        $contact->fieldLayoutId = Campaign::$plugin->getSettings()->contactFieldLayoutId;
         $contact->setFieldValues(Json::decode($pendingContact->fieldData));
 
         if (!Craft::$app->getElements()->saveElement($contact)) {

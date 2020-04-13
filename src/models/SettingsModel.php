@@ -6,9 +6,12 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
+use craft\base\FieldInterface;
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
+use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
+use putyourlightson\campaign\elements\ContactElement;
 use yii\validators\EmailValidator;
 
 /**
@@ -18,7 +21,10 @@ use yii\validators\EmailValidator;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property FieldLayout|null $contactFieldLayout
+ * @mixin FieldLayoutBehavior
+ *
+ * @property FieldLayout $contactFieldLayout
+ * @property FieldInterface[] $contactFields
  */
 class SettingsModel extends Model
 {
@@ -56,7 +62,10 @@ class SettingsModel extends Model
     public $emailFieldLabel = 'Email';
 
     /**
+     * TODO: remove in version 2.0.0
+     *
      * @var int|null Contact field layout ID
+     * @deprecated Since 1.15.0
      */
     public $contactFieldLayoutId;
 
@@ -131,9 +140,10 @@ class SettingsModel extends Model
     public $reCaptcha = false;
 
     /**
+     * TODO: change to `3` in version 2.0.0
+     *
      * @var int|null The reCAPTCHA version
      */
-    // TODO: change to `3` in version 2.0.0
     public $reCaptchaVersion = 2;
 
     /**
@@ -152,21 +162,24 @@ class SettingsModel extends Model
     public $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
 
     /**
+     * TODO: remove in version 2.0.0
+     *
      * @var string|null The size of the reCAPTCHA widget
      */
-    // TODO: remove in version 2.0.0
     public $reCaptchaSize;
 
     /**
+     * TODO: remove in version 2.0.0
+     *
      * @var string|null The color theme of the reCAPTCHA widget
      */
-    // TODO: remove in version 2.0.0
     public $reCaptchaTheme;
 
     /**
+     * TODO: remove in version 2.0.0
+     *
      * @var string|null The position of the reCAPTCHA badge (when invisible)
      */
-    // TODO: remove in version 2.0.0
     public $reCaptchaBadge;
 
     /**
@@ -196,6 +209,11 @@ class SettingsModel extends Model
             'parser' => [
                 'class' => EnvAttributeParserBehavior::class,
                 'attributes' => ['apiKey'],
+            ],
+            'contactFieldLayout' => [
+                'class' => FieldLayoutBehavior::class,
+                'elementType' => ContactElement::class,
+                'idAttribute' => 'contactFieldLayoutId',
             ],
         ];
     }
@@ -240,15 +258,21 @@ class SettingsModel extends Model
     /**
      * Returns the contact field layout.
      *
-     * @return FieldLayout|null
+     * @return FieldLayout
      */
-    public function getContactFieldLayout()
+    public function getContactFieldLayout(): FieldLayout
     {
-        if ($this->contactFieldLayoutId === null) {
-            return null;
-        }
+        return Craft::$app->getFields()->getLayoutByType(ContactElement::class);
+    }
 
-        return Craft::$app->getFields()->getLayoutById($this->contactFieldLayoutId);
+    /**
+     * Returns the contact fields.
+     *
+     * @return FieldInterface[]
+     */
+    public function getContactFields(): array
+    {
+        return $this->getContactFieldLayout()->getFields();
     }
 
     /**
