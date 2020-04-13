@@ -7,8 +7,10 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
@@ -61,6 +63,11 @@ class TrackerServiceTest extends BaseUnitTest
      */
     protected $sendout;
 
+    /**
+     * @var MailingListElement
+     */
+    protected $mailingList;
+
     // Protected methods
     // =========================================================================
 
@@ -68,15 +75,18 @@ class TrackerServiceTest extends BaseUnitTest
     {
         $this->contact = ContactElement::find()->one();
         $this->sendout = SendoutElement::find()->one();
+        $this->mailingList = $this->sendout->getMailingLists()[0];
 
         // Create contact campaign record
         $contactCampaignRecord = new ContactCampaignRecord([
             'contactId' => $this->contact->id,
             'campaignId' => $this->sendout->campaignId,
             'sendoutId' => $this->sendout->id,
-            'mailingListId' => $this->sendout->mailingListIds[0],
+            'mailingListId' => $this->mailingList->id,
         ]);
         $contactCampaignRecord->save();
+
+        Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'subscribed');
     }
 
     // Public methods
@@ -106,5 +116,20 @@ class TrackerServiceTest extends BaseUnitTest
 
         // Assert that the link has a click
         $this->assertEquals(1, $link->clicks);
+    }
+
+    public function testUnsubscribe()
+    {
+        $status = $this->contact->getMailingListSubscriptionStatus($this->mailingList->id);
+
+        // Assert that the contact is subscribed
+        $this->assertEquals('subscribed', $status);
+
+        Campaign::$plugin->tracker->unsubscribe($this->contact, $this->sendout);
+
+        $status = $this->contact->getMailingListSubscriptionStatus($this->mailingList->id);
+
+        // Assert that the contact is unsubscribed
+        $this->assertEquals('unsubscribed', $status);
     }
 }
