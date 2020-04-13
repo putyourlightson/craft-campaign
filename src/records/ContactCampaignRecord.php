@@ -52,16 +52,16 @@ class ContactCampaignRecord extends BaseActiveRecord
      */
     public static function find(): ActiveQuery
     {
-        /** @var ActiveQuery $query */
-        $query = parent::find();
+        // Create subquery to ensure only contacts and campaigns that are not deleted are returned
+        $subquery = parent::find()
+            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
+            ->where([
+                'contactElement.dateDeleted' => null,
+                'campaignElement.dateDeleted' => null,
+            ]);
 
-        // Ensure contact is not deleted
-        $query->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->where(['contactElement.dateDeleted' => null]);
-
-        // Ensure campaign is not deleted
-        $query->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
-            ->where(['campaignElement.dateDeleted' => null]);
+        $query = parent::find()->from($subquery);
 
         return $query;
     }

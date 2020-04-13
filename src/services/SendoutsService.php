@@ -160,14 +160,16 @@ class SendoutsService extends Component
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
+        $baseCondition = [
+            'mailingListId' => $sendout->getMailingListIds(),
+            'subscriptionStatus' => 'subscribed',
+        ];
+
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
-            ->where([
-                'mailingListId' => $sendout->getMailingListIds(),
-                'subscriptionStatus' => 'subscribed',
-            ]);
+            ->where($baseCondition);
 
         // Ensure contacts have not complained or bounced (in contact record)
         $query->innerJoin(ContactRecord::tableName().' contact', '[[contact.id]] = [[contactId]]')
@@ -199,7 +201,8 @@ class SendoutsService extends Component
         $recipients = ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
-            ->where(['contactId' => $contactIds])
+            ->where($baseCondition)
+            ->andWhere(['contactId' => $contactIds])
             ->asArray()
             ->all();
 

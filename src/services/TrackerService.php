@@ -124,11 +124,11 @@ class TrackerService extends Component
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
     {
         $contactCampaignRecord = ContactCampaignRecord::find()
-        ->where([
-            'contactId' => $contact->id,
-            'sendoutId' => $sendout->id,
-        ])
-        ->one();
+            ->where([
+                'contactId' => $contact->id,
+                'sendoutId' => $sendout->id,
+            ])
+            ->one();
 
         if ($contactCampaignRecord === null) {
             return null;
