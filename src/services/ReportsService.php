@@ -174,7 +174,7 @@ class ReportsService extends Component
             ->orderBy(['dateUpdated' => SORT_DESC]);
 
         if ($interaction !== null) {
-            $query->andWhere(['not', [ContactCampaignRecord::tableName().'.'.$interaction => null]]);
+            $query->andWhere(['not', [$interaction => null]]);
         }
 
         $contactCampaignRecords = $query->all();
