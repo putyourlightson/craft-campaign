@@ -125,11 +125,15 @@ class TrackerController extends BaseMessageController
         $contact = $this->_getContact();
         $sendout = $this->_getSendout();
 
-        $mailingList = null;
+        if ($contact === null || $sendout === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
+        }
 
-        if ($contact && $sendout) {
-            // Track unsubscribe
-            $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+        // Track unsubscribe
+        $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
         }
 
         if (Craft::$app->getRequest()->getAcceptsJson()) {
