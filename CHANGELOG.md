@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.15.0 - Unreleased
+## 1.15.0 - 2020-04-14
 ### Added
 - Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).
 - Added the ability to import contacts to multiple lists in one go ([#126](https://github.com/putyourlightson/craft-campaign/issues/126)).

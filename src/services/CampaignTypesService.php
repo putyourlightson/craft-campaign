@@ -172,6 +172,7 @@ class CampaignTypesService extends Component
             $campaignType->uid = StringHelper::UUID();
         }
         else if (!$campaignType->uid) {
+            /** @var CampaignTypeRecord $campaignTypeRecord */
             $campaignTypeRecord = CampaignTypeRecord::find()
                 ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignType->id])
                 ->one();

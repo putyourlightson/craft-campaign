@@ -26,6 +26,7 @@ use yii\db\ActiveQuery;
  * @property string $unsubscribeVerificationEmailSubject
  * @property string $unsubscribeVerificationEmailTemplate
  * @property string $unsubscribeSuccessTemplate
+ * @property string $uid
  * @property ActiveQuery $site
  *
  * @author    PutYourLightsOn

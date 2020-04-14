@@ -308,7 +308,7 @@ class ImportsController extends Controller
      * Returns the fields template
      *
      * @param ImportModel $import
-     * @param array|null $mailingListIds
+     * @param array $mailingListIds
      *
      * @return Response
      * @throws InvalidConfigException

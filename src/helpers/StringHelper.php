@@ -20,7 +20,7 @@ class StringHelper extends \craft\helpers\StringHelper
     /**
      * Generates a 17 character unique ID with an optional prefix
      *
-     * @param string|null $prefix
+     * @param string $prefix
      *
      * @return string
      */
