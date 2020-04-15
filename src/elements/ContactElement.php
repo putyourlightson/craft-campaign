@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
+use craft\elements\User;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\HardDeleteContacts;
@@ -434,6 +435,21 @@ class ContactElement extends Element
     public function getSupportedSites(): array
     {
         return Craft::$app->getSites()->getAllSiteIds();
+    }
+
+    /**
+     * Returns the user that this contact is synced with
+     *
+     * @return User|null
+     * @since 1.15.1
+     */
+    public function getUser()
+    {
+        if ($this->userId === null) {
+            return null;
+        }
+
+        return Craft::$app->getUsers()->getUserById($this->userId);
     }
 
     /**

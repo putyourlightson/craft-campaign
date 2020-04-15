@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.1 - Unreleased
+### Added
+- Added synced user to the details area of the contact edit page ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
+
 ## 1.15.0 - 2020-04-14
 ### Added
 - Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).
