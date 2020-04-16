@@ -4,6 +4,9 @@
 ### Added
 - Added synced user to the details area of the contact edit page ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
 
+### Fixed
+- Fixed a bug that prevented the first and last name fields being copied when importing a user group ([#134](https://github.com/putyourlightson/craft-campaign/issues/134)).
+
 ## 1.15.0 - 2020-04-14
 ### Added
 - Added site selector to campaign and mailing list reports ([#125](https://github.com/putyourlightson/craft-campaign/issues/125)).

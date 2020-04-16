@@ -225,13 +225,15 @@ class ImportsController extends Controller
         $mailingListIds = $request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
 
-        // Get email and custom field indexes
+        // Get core fields and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $request->getBodyParam('fieldIndexes', []);
 
         // Prepend `field_` to each custom field index
         foreach ($import->fieldIndexes as $key => $fieldIndex) {
-            $import->fieldIndexes[$key] = 'field_'.$import->fieldIndexes[$key];
+            if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
+                $import->fieldIndexes[$key] = 'field_'.$fieldIndex;
+            }
         }
 
         // Validate it
