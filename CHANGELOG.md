@@ -6,6 +6,7 @@
 
 ### Fixed
 - Fixed a bug that prevented the first and last name fields being copied when importing a user group ([#134](https://github.com/putyourlightson/craft-campaign/issues/134)).
+- Fixed a bug in the campaign and mailing list report charts ([#135](https://github.com/putyourlightson/craft-campaign/issues/135)).
 
 ## 1.15.0 - 2020-04-14
 ### Added

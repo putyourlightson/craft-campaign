@@ -574,7 +574,7 @@ class ReportsService extends Component
         $records = $recordClass::find()
             ->where($condition)
             ->andWhere(Db::parseDateParam(
-            $recordClass::tableName().'.dateCreated', $endDateTime, '<'
+            'dateCreated', $endDateTime, '<'
             ))
             ->orderBy(['dateCreated' => SORT_ASC])
             ->all();
