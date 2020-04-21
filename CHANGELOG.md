@@ -2,7 +2,7 @@
 
 ## 1.15.1 - Unreleased
 ### Added
-- Added user to the contact edit page and contact to the user edit page ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
+- Added user to the contact edit page and contact to the user edit page if one is found ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
 
 ### Fixed
 - Fixed a bug that prevented the first and last name fields being copied when importing a user group ([#134](https://github.com/putyourlightson/craft-campaign/issues/134)).

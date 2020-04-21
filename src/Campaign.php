@@ -544,6 +544,8 @@ class Campaign extends Plugin
 
     /**
      * Registers template hooks.
+     *
+     * @since 1.15.1
      */
     private function _registerTemplateHooks()
     {
