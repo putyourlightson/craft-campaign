@@ -1,0 +1,13 @@
+<div class="meta read-only">
+    <div class="data">
+        <h5 class="heading">
+            {{ "Contact"|t('campaign') }}
+            {% if contact.userId %}
+                <span class="icon" data-icon="refresh" title="{{ "Synced"|t('campaign') }}"></span>
+            {% endif %}
+        </h5>
+        <p class="value">
+            <a href="{{ contact.cpEditUrl }}" class="go">{{ contact.email }}</a>
+        </p>
+    </div>
+</div>

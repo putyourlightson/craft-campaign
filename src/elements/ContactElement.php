@@ -438,18 +438,19 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the user that this contact is synced with
+     * Returns the user that this contact is associated with
      *
      * @return User|null
      * @since 1.15.1
      */
     public function getUser()
     {
-        if ($this->userId === null) {
-            return null;
+        // Try synced user first
+        if ($this->userId !== null) {
+            return Craft::$app->getUsers()->getUserById($this->userId);
         }
 
-        return Craft::$app->getUsers()->getUserById($this->userId);
+        return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->email);
     }
 
     /**

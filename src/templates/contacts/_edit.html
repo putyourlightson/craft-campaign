@@ -130,7 +130,12 @@
             {% set user = contact.getUser() %}
             {% if user %}
                 <div class="data">
-                    <h5 class="heading">{{ "Synced User"|t('campaign') }}</h5>
+                    <h5 class="heading">
+                        {{ "User"|t('campaign') }}
+                        {% if contact.userId %}
+                            <span class="icon" data-icon="refresh" title="{{ "Synced"|t('campaign') }}"></span>
+                        {% endif %}
+                    </h5>
                     <div class="value">
                         {% include '_elements/element' with {element: user} %}
                     </div>

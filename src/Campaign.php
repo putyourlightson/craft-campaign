@@ -134,6 +134,7 @@ class Campaign extends Plugin
         $this->_registerFieldTypes();
         $this->_registerAfterInstallEvent();
         $this->_registerProjectConfigListeners();
+        $this->_registerTemplateHooks();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -538,6 +539,27 @@ class Campaign extends Plugin
         // Rebuild project config data
         Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $e) {
             $e->config['campaign'] = ProjectConfigDataHelper::rebuildProjectConfig();
+        });
+    }
+
+    /**
+     * Registers template hooks.
+     */
+    private function _registerTemplateHooks()
+    {
+        Craft::$app->getView()->hook('cp.users.edit.details', function(&$context) {
+            $user = $context['user'] ?? null;
+
+            if ($user === null) {
+                return;
+            }
+
+            /** @var User $user */
+            if ($contact = $this->contacts->getContactByEmail($user->email)) {
+                return Craft::$app->getView()->renderTemplate('campaign/_includes/user-contact', [
+                    'contact' => $contact
+                ]);
+            }
         });
     }
 }
