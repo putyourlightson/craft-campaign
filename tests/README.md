@@ -14,4 +14,4 @@ Or to run a specific test.
 
      codecept run -c ./vendor/putyourlightson/craft-campaign unit services/TrackerServiceTest:open
 
-> Ensure that the database you specify in `.env` is not one that actually contains any data as it will be cleared when the tests are run. 
+> Ensure that the database you specify in `.env` does not actually contain any data as it will be cleared whenever  tests are run. 
