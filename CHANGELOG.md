@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.15.1 - Unreleased
+## 1.15.1 - 2020-04-27
 ### Added
 - Added user to the contact edit page and contact to the user edit page if one is found ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
 
