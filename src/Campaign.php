@@ -550,13 +550,13 @@ class Campaign extends Plugin
     private function _registerTemplateHooks()
     {
         Craft::$app->getView()->hook('cp.users.edit.details', function(&$context) {
+            /** @var User|null $user */
             $user = $context['user'] ?? null;
 
-            if ($user === null) {
-                return;
+            if ($user === null || $user->email === null) {
+                return null;
             }
 
-            /** @var User $user */
             if ($contact = $this->contacts->getContactByEmail($user->email)) {
                 return Craft::$app->getView()->renderTemplate('campaign/_includes/user-contact', [
                     'contact' => $contact

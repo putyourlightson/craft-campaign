@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.2 - 2020-04-29
+### Fixed
+- Fixed a bug that was causing an error when creating a new user ([#136](https://github.com/putyourlightson/craft-campaign/issues/136)).
+
 ## 1.15.1 - 2020-04-27
 ### Added
 - Added user to the contact edit page and contact to the user edit page if one is found ([#131](https://github.com/putyourlightson/craft-campaign/issues/131)).
@@ -97,7 +101,7 @@
 
 ## 1.12.4 - 2019-12-11
 ### Changed
-- Made sendout `notificationEmailAddress` field not required.
+- Made sendout `notificationEmailAddress` field optional.
 
 ### Fixed
 - Fixed a bug with anonymous actions in  the `WebhookController` ([#99](https://github.com/putyourlightson/craft-campaign/issues/99)).
