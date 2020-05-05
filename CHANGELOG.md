@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.3 - Unreleased
+### Fixed
+- Fixed a bug that was preventing the status from being set to `sent` immediately after sending.
+
 ## 1.15.2 - 2020-04-29
 ### Fixed
 - Fixed a bug that was causing an error when creating a new user ([#136](https://github.com/putyourlightson/craft-campaign/issues/136)).

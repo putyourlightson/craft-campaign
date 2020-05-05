@@ -115,7 +115,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $pendingRecipients = $sendout->getPendingRecipients();
 
         $count = 0;
-        $batchSize = min(count($pendingRecipients), $settings->maxBatchSize);
+        $batchSize = min(count($pendingRecipients) + 1, $settings->maxBatchSize);
 
         foreach ($pendingRecipients as $pendingRecipient) {
             $count++;
