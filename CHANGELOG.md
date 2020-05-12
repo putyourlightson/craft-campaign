@@ -1,7 +1,8 @@
 # Release Notes for Campaign
 
-## 1.15.3 - Unreleased
+## 1.15.3 - 2020-05-12
 ### Fixed
+- Fixed a bug in the Amazon SES webhook for bounce and complaint notifications ([#103](https://github.com/putyourlightson/craft-campaign/issues/103)).
 - Fixed a bug that was preventing the status from being set to `sent` immediately after sending.
 
 ## 1.15.2 - 2020-04-29

@@ -1,9 +1,9 @@
 {
     "name": "putyourlightson/craft-campaign",
     "description": "Send and manage email campaigns, contacts and mailing lists.",
-    "version": "1.15.2",
+    "version": "1.15.3",
     "type": "craft-plugin",
-    "homepage": "https://craftcampaign.com/",
+    "homepage": "https://putyourlightson.com/plugins/campaign",
     "license": "proprietary",
     "keywords": [
         "craft",
