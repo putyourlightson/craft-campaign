@@ -457,7 +457,11 @@ class SendoutsService extends Component
 
             $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
 
-            Campaign::$plugin->log('Sending of the sendout "{title}" failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', ['title' => $sendout->title, 'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts]);
+            Campaign::$plugin->log('Sending of the sendout "{title}" to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
+                'title' => $sendout->title,
+                'email' => $contact->email,
+                'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts,
+            ]);
         }
 
         // Fire an after event

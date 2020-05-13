@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.4 - Unreleased
+### Changed
+- Improved log messages of failed sendouts.
+
 ## 1.15.3 - 2020-05-12
 ### Fixed
 - Fixed a bug in the Amazon SES webhook for bounce and complaint notifications ([#103](https://github.com/putyourlightson/craft-campaign/issues/103)).
