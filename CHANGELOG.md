@@ -2,7 +2,7 @@
 
 ## 1.15.4 - Unreleased
 ### Changed
-- Improved log messages of failed sendouts.
+- Improved log messages of failed sendouts ([#138](https://github.com/putyourlightson/craft-campaign/issues/138)).
 
 ## 1.15.3 - 2020-05-12
 ### Fixed
