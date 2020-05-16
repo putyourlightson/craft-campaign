@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\behaviors\FieldLayoutBehavior;
 use craft\errors\MissingComponentException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -313,9 +312,8 @@ class ImportsController extends Controller
      * @param array|string|null $mailingListIds
      *
      * @return Response
-     * @throws InvalidConfigException
      */
-    private function _returnFieldsTemplate(ImportModel $import, $mailingListIds): Response
+    private function _returnFieldsTemplate(ImportModel $import, $mailingListIds = []): Response
     {
         $variables = [];
         $variables['import'] = $import;
