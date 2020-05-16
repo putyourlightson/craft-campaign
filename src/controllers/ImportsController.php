@@ -310,12 +310,12 @@ class ImportsController extends Controller
      * Returns the fields template
      *
      * @param ImportModel $import
-     * @param array $mailingListIds
+     * @param array|string|null $mailingListIds
      *
      * @return Response
      * @throws InvalidConfigException
      */
-    private function _returnFieldsTemplate(ImportModel $import, array $mailingListIds = []): Response
+    private function _returnFieldsTemplate(ImportModel $import, $mailingListIds): Response
     {
         $variables = [];
         $variables['import'] = $import;
@@ -337,11 +337,13 @@ class ImportsController extends Controller
         // Get mailing lists
         $variables['mailingLists'] = [];
 
-        foreach ($mailingListIds as $mailingListId) {
-            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+        if (is_array($mailingListIds)) {
+            foreach ($mailingListIds as $mailingListId) {
+                $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
-            if ($mailingList !== null) {
-                $variables['mailingLists'][] = $mailingList;
+                if ($mailingList !== null) {
+                    $variables['mailingLists'][] = $mailingList;
+                }
             }
         }
 

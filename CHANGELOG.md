@@ -4,6 +4,9 @@
 ### Changed
 - Improved log messages of failed sendouts ([#138](https://github.com/putyourlightson/craft-campaign/issues/138)).
 
+### Changed
+- Improved the error message when trying to import a CSV file without selecting a mailing list ([#141](https://github.com/putyourlightson/craft-campaign/issues/141)).
+
 ## 1.15.3 - 2020-05-12
 ### Fixed
 - Fixed a bug in the Amazon SES webhook for bounce and complaint notifications ([#103](https://github.com/putyourlightson/craft-campaign/issues/103)).
