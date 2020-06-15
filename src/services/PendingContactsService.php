@@ -116,7 +116,7 @@ class PendingContactsService extends Component
 
             // If no contact found or trashed contact could not be restored
             if ($contact === null || !Craft::$app->getElements()->restoreElement($contact)) {
-                $contact = new ContactElement();
+                return null;
             }
         }
 
