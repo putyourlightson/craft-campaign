@@ -107,6 +107,10 @@ class PendingContactsService extends Component
     {
         $pendingContact = $this->getPendingContactByPid($pid);
 
+        if ($pendingContact === null) {
+            return null;
+        }
+
         // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
 
@@ -116,7 +120,7 @@ class PendingContactsService extends Component
 
             // If no contact found or trashed contact could not be restored
             if ($contact === null || !Craft::$app->getElements()->restoreElement($contact)) {
-                return null;
+                $contact = new ContactElement();
             }
         }
 
