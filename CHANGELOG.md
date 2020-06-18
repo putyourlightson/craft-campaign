@@ -3,6 +3,7 @@
 ## 1.15.4 - 2020-06-18
 ### Added
 - Added the `maxSendFailsAllowed` config setting which defines the failed attempts to send to contacts that are allowed before failing the entire sendout and defaults to 1 ([#138](https://github.com/putyourlightson/craft-campaign/issues/138)).
+- Added the English translation file ([#148](https://github.com/putyourlightson/craft-campaign/issues/148)).
 
 ### Changed
 - Improved log messages of failed sendouts ([#138](https://github.com/putyourlightson/craft-campaign/issues/138)).
