@@ -105,9 +105,14 @@ class SettingsModel extends Model
     public $timeThreshold = 0.8;
 
     /**
-     * @var int The maximum number of times to attempt sending a sendout before failing
+     * @var int The maximum number of times to attempt sending a sendout to a single contact before failing
      */
     public $maxSendAttempts = 3;
+
+    /**
+     * @var int The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
+     */
+    public $maxSendFailsAllowed = 1;
 
     /**
      * @var int The maximum number of times to attempt retrying a failed sendout job

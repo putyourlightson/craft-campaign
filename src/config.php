@@ -60,8 +60,11 @@ return [
     // The threshold for execution time per sendout batch as a fraction
     //'timeThreshold' => 0.8,
 
-    // The maximum number of times to attempt sending a sendout before failing
+    // The maximum number of times to attempt sending a sendout to a single contact before failing
     //'maxSendAttempts' => 3,
+
+    // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
+    //'maxSendFailsAllowed' => 1,
 
     // The maximum number of times to attempt retrying a failed sendout job
     //'maxRetryAttempts' => 10,

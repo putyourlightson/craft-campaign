@@ -453,7 +453,10 @@ class SendoutsService extends Component
         else {
             // Update fails and send status
             $sendout->fails++;
-            $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+
+            if ($sendout->fails >= Campaign::$plugin->getSettings()->maxSendFailsAllowed) {
+                $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+            }
 
             $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
 
