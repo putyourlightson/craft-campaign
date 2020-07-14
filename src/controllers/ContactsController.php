@@ -159,7 +159,7 @@ class ContactsController extends Controller
         ];
 
         $variables['actions'][1][] = [
-            'action' => 'campaign/contacts/delete-contact?hard=1',
+            'action' => 'campaign/contacts/delete-contact-permanently',
             'destructive' => 'true',
             'redirect' => 'campaign/contacts',
             'label' => Craft::t('campaign', 'Delete permanently'),
@@ -315,19 +315,16 @@ class ContactsController extends Controller
     /**
      * Deletes a contact
      *
+     * @param bool $hardDelete
      * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
      */
-    public function actionDeleteContact()
+    public function actionDeleteContact(bool $hardDelete = false)
     {
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
-        $hardDelete = Craft::$app->getRequest()->getParam('hard' ,false);
 
-        if (!Craft::$app->getElements()->deleteElement($contact, (bool)$hardDelete)) {
+        if (!Craft::$app->getElements()->deleteElement($contact, $hardDelete)) {
             if (Craft::$app->getRequest()->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
@@ -349,6 +346,16 @@ class ContactsController extends Controller
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact deleted.'));
 
         return $this->redirectToPostedUrl($contact);
+    }
+
+    /**
+     * Deletes a contact permanently
+     *
+     * @return Response|null
+     */
+    public function actionDeleteContactPermanently()
+    {
+        return $this->actionDeleteContact(true);
     }
 
     /**

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.5 - Unreleased
+### Fixed
+- Fixed the delete contact permanently button in the contact edit page ([#154](https://github.com/putyourlightson/craft-campaign/issues/154)).
+
 ## 1.15.4 - 2020-06-18
 ### Added
 - Added the `maxSendFailsAllowed` config setting which defines the failed attempts to send to contacts that are allowed before failing the entire sendout and defaults to 1 ([#138](https://github.com/putyourlightson/craft-campaign/issues/138)).
