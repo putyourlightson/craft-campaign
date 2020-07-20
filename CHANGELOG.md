@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.15.5 - Unreleased
+### Changed
+- The reCAPTCHA lightswitch settings field is no longer marked as required with an asterisk ([#155](https://github.com/putyourlightson/craft-campaign/issues/155)).
+
 ### Fixed
 - Fixed the delete contact permanently button in the contact edit page ([#154](https://github.com/putyourlightson/craft-campaign/issues/154)).
 
