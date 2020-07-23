@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.15.5 - Unreleased
+## 1.15.5 - 2020-07-23
 ### Changed
 - The reCAPTCHA lightswitch settings field is no longer marked as required with an asterisk ([#155](https://github.com/putyourlightson/craft-campaign/issues/155)).
 
