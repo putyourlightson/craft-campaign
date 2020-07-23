@@ -36,6 +36,8 @@ class ReportsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:reports');
+
+        parent::init();
     }
 
     /**

@@ -42,6 +42,8 @@ class ContactsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:contacts');
+
+        parent::init();
     }
 
     /**

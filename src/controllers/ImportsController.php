@@ -41,6 +41,8 @@ class ImportsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:importContacts');
+
+        parent::init();
     }
 
     /**

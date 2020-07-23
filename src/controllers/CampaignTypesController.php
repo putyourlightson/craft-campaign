@@ -37,6 +37,8 @@ class CampaignTypesController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:settings');
+
+        parent::init();
     }
 
     /**

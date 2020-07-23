@@ -6,6 +6,7 @@
 
 ### Fixed
 - Fixed the delete contact permanently button in the contact edit page ([#154](https://github.com/putyourlightson/craft-campaign/issues/154)).
+- Fixed a bug that could throw errors in the CP in Craft 3.5.0 ([#157](https://github.com/putyourlightson/craft-campaign/issues/157)).
 
 ## 1.15.4 - 2020-06-18
 ### Added

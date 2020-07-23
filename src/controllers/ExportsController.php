@@ -40,6 +40,8 @@ class ExportsController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:exportContacts');
+
+        parent::init();
     }
 
     /**

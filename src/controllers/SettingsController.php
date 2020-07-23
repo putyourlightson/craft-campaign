@@ -59,6 +59,8 @@ class SettingsController extends Controller
         }
 
         $this->_settings = Campaign::$plugin->getSettings();
+
+        parent::init();
     }
 
     /**

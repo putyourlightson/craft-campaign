@@ -34,6 +34,8 @@ class SyncController extends Controller
     {
         // Require permission
         $this->requirePermission('campaign:syncContacts');
+
+        parent::init();
     }
 
     /**

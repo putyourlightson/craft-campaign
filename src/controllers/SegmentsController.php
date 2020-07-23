@@ -44,6 +44,8 @@ class SegmentsController extends Controller
 
         // Require pro
         Campaign::$plugin->requirePro();
+
+        parent::init();
     }
 
     /**
