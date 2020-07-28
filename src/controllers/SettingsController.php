@@ -267,9 +267,6 @@ class SettingsController extends Controller
         /** @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
-        // Trigger before save event to give transport adapters a chance to encrypt sensitive data
-        $adapter->beforeSave(true);
-
         // Validate settings and transport adapter
         $settings->validate();
         $adapter->validate();
