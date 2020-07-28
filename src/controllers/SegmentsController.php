@@ -39,13 +39,13 @@ class SegmentsController extends Controller
      */
     public function init()
     {
-        // Require permission
-        $this->requirePermission('campaign:segments');
+        parent::init();
 
         // Require pro
         Campaign::$plugin->requirePro();
 
-        parent::init();
+        // Require permission
+        $this->requirePermission('campaign:segments');
     }
 
     /**

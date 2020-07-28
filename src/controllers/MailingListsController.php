@@ -38,10 +38,10 @@ class MailingListsController extends Controller
      */
     public function init()
     {
+        parent::init();
+
         // Require permission
         $this->requirePermission('campaign:mailingLists');
-
-        parent::init();
     }
 
     /**

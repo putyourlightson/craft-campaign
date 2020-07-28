@@ -34,10 +34,10 @@ class ReportsController extends Controller
      */
     public function init()
     {
+        parent::init();
+
         // Require permission
         $this->requirePermission('campaign:reports');
-
-        parent::init();
     }
 
     /**

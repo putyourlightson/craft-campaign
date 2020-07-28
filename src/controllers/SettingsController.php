@@ -51,6 +51,8 @@ class SettingsController extends Controller
      */
     public function init()
     {
+        parent::init();
+
         // Require permission for all actions
         $this->requirePermission('campaign:settings');
 
@@ -59,8 +61,6 @@ class SettingsController extends Controller
         }
 
         $this->_settings = Campaign::$plugin->getSettings();
-
-        parent::init();
     }
 
     /**
