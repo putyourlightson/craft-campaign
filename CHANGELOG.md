@@ -5,6 +5,7 @@
 - The reCAPTCHA lightswitch settings field is no longer marked as required with an asterisk ([#155](https://github.com/putyourlightson/craft-campaign/issues/155)).
 
 ### Fixed
+- Fixed the contact element background image in CSS ([#151](https://github.com/putyourlightson/craft-campaign/issues/151)).
 - Fixed the delete contact permanently button in the contact edit page ([#154](https://github.com/putyourlightson/craft-campaign/issues/154)).
 - Fixed a bug that could throw errors in the CP in Craft 3.5.0 ([#157](https://github.com/putyourlightson/craft-campaign/issues/157)).
 - Fixed a bug that could throw an error when saving email settings in Craft 3.5.0 ([#159](https://github.com/putyourlightson/craft-campaign/issues/159)).

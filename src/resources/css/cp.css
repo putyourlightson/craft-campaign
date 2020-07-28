@@ -185,7 +185,7 @@ table th.thin, table td.thin {
     cursor: help;
 }
 
-.element.hasthumb .elementthumb {
+.element.hasthumb[data-type="putyourlightson\\campaign\\elements\\ContactElement"] .elementthumb {
     background: url('../images/user.svg');
     background-size: cover;
 }
