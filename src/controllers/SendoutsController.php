@@ -302,7 +302,7 @@ class SendoutsController extends Controller
         $variables['fullPageForm'] = true;
 
         // Render the template
-        if ($sendout->getIsEditable() && !$request->getParam('preview')) {
+        if ($sendout->getIsModifiable() && !$request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
 

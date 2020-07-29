@@ -28,7 +28,7 @@
 
 {% block contextMenu %}
 
-    {% if sendout.isEditable %}
+    {% if sendout.isModifiable %}
         <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
 
@@ -36,7 +36,7 @@
 
 {% block actionButton %}
 
-    {% if sendout.isEditable or sendout.isResumable %}
+    {% if sendout.isModifiable or sendout.isResumable %}
         {% include 'campaign/sendouts/_includes/preflight' %}
     {% endif %}
 

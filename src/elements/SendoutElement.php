@@ -848,6 +848,16 @@ class SendoutElement extends Element
      */
     public function getIsEditable(): bool
     {
+        return true;
+    }
+
+    /**
+     * Returns whether the sendout can be modified.
+     * This method exists in addition to `getIsEditable` so that sendout titles can always be edited.
+     * https://github.com/putyourlightson/craft-campaign/issues/161
+     */
+    public function getIsModifiable(): bool
+    {
         return ($this->getStatus() == self::STATUS_DRAFT || $this->getStatus() == self::STATUS_PAUSED);
     }
 

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.6 - Unreleased
+### Changed
+- Added the ability to edit sendout titles when a sendout is already sent, in the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
+
 ## 1.15.5 - 2020-07-28
 ### Changed
 - The reCAPTCHA lightswitch settings field is no longer marked as required with an asterisk ([#155](https://github.com/putyourlightson/craft-campaign/issues/155)).
