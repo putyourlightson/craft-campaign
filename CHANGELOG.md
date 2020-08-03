@@ -3,6 +3,7 @@
 ## 1.15.6 - Unreleased
 ### Changed
 - Added the ability to edit sendout titles when a sendout is already sent, in the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
+- Campaign first sent on dates are now output in full date time format.
 
 ## 1.15.5 - 2020-07-28
 ### Changed

@@ -69,8 +69,7 @@ Campaign.Chart = Garnish.Base.extend(
             });
         },
 
-        getChart: function(){
-
+        getChart: function() {
             $('#chart').html('').css('min-height', '');
             $('.report-chart .spinner').show();
 
