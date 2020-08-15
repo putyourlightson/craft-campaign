@@ -5,6 +5,8 @@
 - Added the ability to edit sendout titles when a sendout is already sent, in the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
 - Campaign first sent on dates are now output in full date time format.
 
+- Fixed a bug that could throw an error when sending a test email using Craft 3.5.0 ([#164](https://github.com/putyourlightson/craft-campaign/issues/164)).
+
 ## 1.15.5 - 2020-07-28
 ### Changed
 - The reCAPTCHA lightswitch settings field is no longer marked as required with an asterisk ([#155](https://github.com/putyourlightson/craft-campaign/issues/155)).
@@ -13,7 +15,7 @@
 - Fixed the contact element background image in CSS ([#151](https://github.com/putyourlightson/craft-campaign/issues/151)).
 - Fixed the delete contact permanently button in the contact edit page ([#154](https://github.com/putyourlightson/craft-campaign/issues/154)).
 - Fixed a bug that could throw errors in the CP in Craft 3.5.0 ([#157](https://github.com/putyourlightson/craft-campaign/issues/157)).
-- Fixed a bug that could throw an error when saving email settings in Craft 3.5.0 ([#159](https://github.com/putyourlightson/craft-campaign/issues/159)).
+- Fixed a bug that could throw an error when saving email settings using Craft 3.5.0 ([#159](https://github.com/putyourlightson/craft-campaign/issues/159)).
 
 ## 1.15.4 - 2020-06-18
 ### Added
