@@ -1,10 +1,12 @@
 # Release Notes for Campaign
 
-## 1.15.6 - Unreleased
+## 1.15.6 - 2020-08-25
 ### Changed
+- Pending contacts are now validated before being saved ([#160](https://github.com/putyourlightson/craft-campaign/issues/160)).
 - Added the ability to edit sendout titles when a sendout is already sent, in the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
 - Campaign first sent on dates are now output in full date time format.
 
+### Fixed
 - Fixed a bug that could throw an error when sending a test email using Craft 3.5.0 ([#164](https://github.com/putyourlightson/craft-campaign/issues/164)).
 
 ## 1.15.5 - 2020-07-28

@@ -77,6 +77,22 @@ class FormsController extends BaseMessageController
 
             $contact->setFieldValuesFromRequest('fields');
 
+            // Validate the contact
+            if (!$contact->validate()) {
+                if ($request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'errors' => $contact->getErrors(),
+                    ]);
+                }
+
+                // Send the contact back to the template
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'contact' => $contact
+                ]);
+
+                return null;
+            }
+
             // Create pending contact
             $pendingContact = new PendingContactModel();
             $pendingContact->pid = StringHelper::uniqueId('p');

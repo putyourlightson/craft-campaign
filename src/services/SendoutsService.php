@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\queue\Queue;
@@ -160,6 +161,9 @@ class SendoutsService extends Component
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
         $baseCondition = [
             'mailingListId' => $sendout->getMailingListIds(),
             'subscriptionStatus' => 'subscribed',
