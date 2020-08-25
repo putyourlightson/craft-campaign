@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\base\Element;
 use craft\errors\MissingComponentException;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
@@ -75,7 +76,12 @@ class FormsController extends BaseMessageController
             // Create new contact to get field values
             $contact = new ContactElement();
 
+            // Set field values
+            $contact->email = $email;
             $contact->setFieldValuesFromRequest('fields');
+
+            // Mock before save so we can validate the contact
+            $contact->beforeSave(true);
 
             // Validate the contact
             if (!$contact->validate()) {

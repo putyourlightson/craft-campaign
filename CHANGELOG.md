@@ -2,7 +2,7 @@
 
 ## 1.15.6 - 2020-08-25
 ### Changed
-- Pending contacts are now validated before being saved ([#160](https://github.com/putyourlightson/craft-campaign/issues/160)).
+- Custom fields on contacts are now validated before being saved ([#160](https://github.com/putyourlightson/craft-campaign/issues/160)).
 - Added the ability to edit sendout titles when a sendout is already sent, in the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
 - Campaign first sent on dates are now output in full date time format.
 

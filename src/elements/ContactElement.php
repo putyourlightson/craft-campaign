@@ -724,6 +724,9 @@ class ContactElement extends Element
             $this->cid = StringHelper::uniqueId('c');
         }
 
+        // Set the live scenario
+        $this->setScenario(Element::SCENARIO_LIVE);
+
         return parent::beforeSave($isNew);
     }
 
