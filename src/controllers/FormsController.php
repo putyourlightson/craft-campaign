@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\base\Element;
 use craft\errors\MissingComponentException;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
@@ -71,15 +70,19 @@ class FormsController extends BaseMessageController
         $email = $request->getRequiredParam('email');
         $referrer = $request->getReferrer();
 
+        // Get contact if it exists
+        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+
+        if ($contact === null) {
+            $contact = new ContactElement();
+            $contact->email = $email;
+        }
+
+        // Set field values
+        $contact->setFieldValuesFromRequest('fields');
+
         // If subscribe verification required
         if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
-            // Create new contact to get field values
-            $contact = new ContactElement();
-
-            // Set field values
-            $contact->email = $email;
-            $contact->setFieldValuesFromRequest('fields');
-
             // Mock before save so we can validate the contact
             $contact->beforeSave(true);
 
@@ -127,17 +130,6 @@ class FormsController extends BaseMessageController
             Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
         }
         else {
-            // Get contact if it exists
-            $contact = Campaign::$plugin->contacts->getContactByEmail($email);
-
-            if ($contact === null) {
-                $contact = new ContactElement();
-            }
-
-            // Set field values
-            $contact->email = $email;
-            $contact->setFieldValuesFromRequest('fields');
-
             // Save contact
             if (!Craft::$app->getElements()->saveElement($contact)) {
                 if ($request->getAcceptsJson()) {
