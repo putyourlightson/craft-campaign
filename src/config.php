@@ -18,110 +18,112 @@
  */
 
 return [
-    // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
-    //'testMode' => false,
+    '*' => [
+        // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
+        //'testMode' => false,
 
-    // An API key to use for triggering tasks and notifications (min. 16 characters)
-    //'apiKey' => 'aBcDeFgHiJkLmNoP',
+        // An API key to use for triggering tasks and notifications (min. 16 characters)
+        //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
-    // The from names and emails that sendouts can be sent from
-    //'fromNamesEmails' => [
-    //  ['Zorro','legend@zorro.com','legend@zorro.com',1],
-    //  ['Don Diego','dondiego@zorro.com','',1],
-    //],
+        // The from names and emails that sendouts can be sent from
+        //'fromNamesEmails' => [
+        //  ['Zorro','legend@zorro.com','legend@zorro.com',1],
+        //  ['Don Diego','dondiego@zorro.com','',1],
+        //],
 
-    // The transport type that should be used
-    //'transportType' => 'SendGrid',
+        // The transport type that should be used
+        //'transportType' => 'SendGrid',
 
-    // The transport type’s settings
-    //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
+        // The transport type’s settings
+        //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
-    // A label to use for the email field
-    //'emailFieldLabel' => 'Email',
+        // A label to use for the email field
+        //'emailFieldLabel' => 'Email',
 
-    // The maximum size of sendout batches
-    //'maxBatchSize' => 1000,
+        // The maximum size of sendout batches
+        //'maxBatchSize' => 1000,
 
-    // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-    //'memoryLimit' => '1024M',
+        // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+        //'memoryLimit' => '1024M',
 
-    // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-    //'timeLimit' => 3600,
+        // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+        //'timeLimit' => 3600,
 
-    // The memory usage limit to use found to be to unlimited
-    //'unlimitedMemoryLimit' => '4G',
+        // The memory usage limit to use found to be to unlimited
+        //'unlimitedMemoryLimit' => '4G',
 
-    // The execution time limit to use found to be to unlimited
-    //'unlimitedTimeLimit' => 3600,
+        // The execution time limit to use found to be to unlimited
+        //'unlimitedTimeLimit' => 3600,
 
-    // The threshold for memory usage per sendout batch as a fraction
-    //'memoryThreshold' => 0.8,
+        // The threshold for memory usage per sendout batch as a fraction
+        //'memoryThreshold' => 0.8,
 
-    // The threshold for execution time per sendout batch as a fraction
-    //'timeThreshold' => 0.8,
+        // The threshold for execution time per sendout batch as a fraction
+        //'timeThreshold' => 0.8,
 
-    // The maximum number of times to attempt sending a sendout to a single contact before failing
-    //'maxSendAttempts' => 3,
+        // The maximum number of times to attempt sending a sendout to a single contact before failing
+        //'maxSendAttempts' => 3,
 
-    // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
-    //'maxSendFailsAllowed' => 1,
+        // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
+        //'maxSendFailsAllowed' => 1,
 
-    // The maximum number of times to attempt retrying a failed sendout job
-    //'maxRetryAttempts' => 10,
+        // The maximum number of times to attempt retrying a failed sendout job
+        //'maxRetryAttempts' => 10,
 
-    // The amount of time in seconds to delay jobs between sendout batches
-    //'batchJobDelay' => 10,
+        // The amount of time in seconds to delay jobs between sendout batches
+        //'batchJobDelay' => 10,
 
-    // The amount of time in seconds to reserve a sendout job
-    //'sendoutJobTtr' => 300,
+        // The amount of time in seconds to reserve a sendout job
+        //'sendoutJobTtr' => 300,
 
-    // Enable GeoIP to geolocate contacts by their IP addresses
-    //'geoIp' => false,
+        // Enable GeoIP to geolocate contacts by their IP addresses
+        //'geoIp' => false,
 
-    // The ipstack.com API key
-    //'ipstackApiKey' => 'aBcDeFgHiJkLmNoP',
+        // The ipstack.com API key
+        //'ipstackApiKey' => 'aBcDeFgHiJkLmNoP',
 
-    // Enable reCAPTCHA to protect mailing list subscription forms from bots
-    //'reCaptcha' => false,
+        // Enable reCAPTCHA to protect mailing list subscription forms from bots
+        //'reCaptcha' => false,
 
-    // The reCAPTCHA version
-    //'reCaptchaVersion' => 2,
+        // The reCAPTCHA version
+        //'reCaptchaVersion' => 2,
 
-    // The reCAPTCHA site key
-    //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
+        // The reCAPTCHA site key
+        //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
 
-    // The reCAPTCHA secret key
-    //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoP',
+        // The reCAPTCHA secret key
+        //'reCaptchaSecretKey' => 'aBcDeFgHiJkLmNoP',
 
-    // The reCAPTCHA error message
-    //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
+        // The reCAPTCHA error message
+        //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
 
-    // The size of the reCAPTCHA widget
-    // 'reCaptchaSize' => 'normal',
+        // The size of the reCAPTCHA widget
+        // 'reCaptchaSize' => 'normal',
 
-    // The color theme of the reCAPTCHA widget
-    // 'reCaptchaTheme' => 'light',
+        // The color theme of the reCAPTCHA widget
+        // 'reCaptchaTheme' => 'light',
 
-    // The position of the reCAPTCHA badge (when invisible)
-    // 'reCaptchaBadge' => 'bottomright',
+        // The position of the reCAPTCHA badge (when invisible)
+        // 'reCaptchaBadge' => 'bottomright',
 
-    // The maximum number of pending contacts to store per email address and mailing list
-    //'maxPendingContacts' => 5,
+        // The maximum number of pending contacts to store per email address and mailing list
+        //'maxPendingContacts' => 5,
 
-    // The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
-    //'purgePendingContactsDuration' => 0,
+        // The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
+        //'purgePendingContactsDuration' => 0,
 
-    // Extra fields and their operators that should be available to segments
-    //'extraSegmentFieldOperators' => [
-    //    'mmikkel\incognitofield\fields\IncognitoFieldType' => [
-    //        '=' => 'is',
-    //        '!=' => 'is not',
-    //        'like' => 'contains',
-    //        'not like' => 'does not contain',
-    //        'like v%' => 'starts with',
-    //        'not like v%' => 'does not start with',
-    //        'like %v' => 'ends with',
-    //        'not like %v' => 'does not end with',
-    //    ]
-    //],
+        // Extra fields and their operators that should be available to segments
+        //'extraSegmentFieldOperators' => [
+        //    'mmikkel\incognitofield\fields\IncognitoFieldType' => [
+        //        '=' => 'is',
+        //        '!=' => 'is not',
+        //        'like' => 'contains',
+        //        'not like' => 'does not contain',
+        //        'like v%' => 'starts with',
+        //        'not like v%' => 'does not start with',
+        //        'like %v' => 'ends with',
+        //        'not like %v' => 'does not end with',
+        //    ]
+        //],
+    ]
 ];
