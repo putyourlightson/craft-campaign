@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\elements;
 
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use DateTime;
 use LitEmoji\LitEmoji;
@@ -209,6 +210,12 @@ class SendoutElement extends Element
         $actions = [];
 
         $elementsService = Craft::$app->getElements();
+
+        // Edit
+        $actions[] = $elementsService->createAction([
+            'type' => Edit::class,
+            'label' => Craft::t('campaign', 'Edit sendout'),
+        ]);
 
         // Pause
         $actions[] = PauseSendouts::class;

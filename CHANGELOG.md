@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.7 - Unreleased
+### Changed
+- Made sendout titles editable from the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
+
 ## 1.15.6 - 2020-08-25
 ### Changed
 - Custom fields on contacts are now validated before being saved ([#160](https://github.com/putyourlightson/craft-campaign/issues/160)).
