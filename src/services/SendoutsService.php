@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\queue\Queue;
