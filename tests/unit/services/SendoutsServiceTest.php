@@ -200,7 +200,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNull($this->message);
 
         // Assert that the send status is failed
-        $this->assertEquals($this->sendout->sendStatus, SendoutElement::STATUS_FAILED);
+        $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);
     }
 
     public function testSendEmailDuplicate()

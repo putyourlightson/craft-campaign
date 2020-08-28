@@ -6,13 +6,14 @@
 namespace putyourlightson\campaign\models;
 
 use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\helpers\StringHelper;
 
 /**
  * PendingContactModel
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class PendingContactModel extends BaseModel
 {
@@ -50,6 +51,18 @@ class PendingContactModel extends BaseModel
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        parent::init();
+
+        if ($this->pid === null) {
+            $this->pid = StringHelper::uniqueId('p');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
         return [
@@ -58,5 +71,4 @@ class PendingContactModel extends BaseModel
             [['email'], 'email'],
         ];
     }
-
 }

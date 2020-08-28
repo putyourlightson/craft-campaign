@@ -104,7 +104,6 @@ class FormsController extends BaseMessageController
 
             // Create pending contact
             $pendingContact = new PendingContactModel();
-            $pendingContact->pid = StringHelper::uniqueId('p');
             $pendingContact->email = $email;
             $pendingContact->mailingListId = $mailingList->id;
             $pendingContact->source = $referrer;
@@ -118,9 +117,10 @@ class FormsController extends BaseMessageController
                     ]);
                 }
 
-                // Send the pending contact back to the template
+                // Send the contact and the pending contact errors back to the template
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'pendingContact' => $pendingContact
+                    'contact' => $contact,
+                    'errors' => $pendingContact->getErrors(),
                 ]);
 
                 return null;
