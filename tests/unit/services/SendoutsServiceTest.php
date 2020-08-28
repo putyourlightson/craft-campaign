@@ -199,6 +199,9 @@ class SendoutsServiceTest extends BaseUnitTest
         // Assert that the message was not sent
         $this->assertNull($this->message);
 
+        // Assert that the number of fails is 1
+        $this->assertEquals(1, $this->sendout->fails);
+
         // Assert that the send status is failed
         $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);
     }
