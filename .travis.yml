@@ -16,7 +16,7 @@ matrix:
   include:
   - php: 7.4
     env: DB=mysql
-  - php: 7.3
+  - php: 7.3.20
     env: DB=mysql
 #  - php: 7.3
 #    env: DB=pgsql
