@@ -200,6 +200,7 @@ class CampaignElement extends Element
             'unsubscribed' => Craft::t('campaign', 'Unsubscribed'),
             'complained' => Craft::t('campaign', 'Complained'),
             'bounced' => Craft::t('campaign', 'Bounced'),
+            'lastSent' => Craft::t('campaign', 'Last Sent'),
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
@@ -229,6 +230,7 @@ class CampaignElement extends Element
             'unsubscribed' => ['label' => Craft::t('campaign', 'Unsubscribed')],
             'complained' => ['label' => Craft::t('campaign', 'Complained')],
             'bounced' => ['label' => Craft::t('campaign', 'Bounced')],
+            'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
             'slug' => ['label' => Craft::t('app', 'Slug')],
             'uri' => ['label' => Craft::t('app', 'URI')],
             'link' => ['label' => Craft::t('app', 'Link'), 'icon' => 'world'],
@@ -308,6 +310,11 @@ class CampaignElement extends Element
     public $dateClosed;
 
     /**
+     * @var DateTime|null Last sent
+     */
+    public $lastSent;
+
+    /**
      * @var CampaignTypeModel Campaign type
      */
     private $_campaignType;
@@ -327,6 +334,7 @@ class CampaignElement extends Element
     {
         $names = parent::datetimeAttributes();
         $names[] = 'dateClosed';
+        $names[] = 'lastSent';
 
         return $names;
     }
@@ -340,7 +348,7 @@ class CampaignElement extends Element
         $rules = parent::rules();
 
         $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'];
-        $rules[] = [['dateClosed'], DateTimeValidator::class];
+        $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
 
         return $rules;
     }

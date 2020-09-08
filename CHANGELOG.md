@@ -1,8 +1,12 @@
 # Release Notes for Campaign
 
 ## 1.15.7 - Unreleased
+### Added
+- Added a sortable `lastSent` attribute to campaign elements.
+
 ### Changed
 - Made sendout titles editable from the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
+- The campaign report now lists campaigns ordered by last sent descending ([#168](https://github.com/putyourlightson/craft-campaign/issues/168)).
 
 ## 1.15.6 - 2020-08-25
 ### Changed

@@ -12,6 +12,7 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
 
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use putyourlightson\campaign\records\SendoutRecord;
 use yii\db\Connection;
 
 /**
@@ -118,9 +119,17 @@ class CampaignElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('campaign_campaigns.campaignTypeId', $this->campaignTypeId));
         }
 
-        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
-        $this->subQuery->select('campaign_campaigntypes.name AS campaignType');
+        // Add the last sent date
+        $sendoutQuery = SendoutRecord::find()
+            ->select('campaignId, MAX(lastSent) AS lastSent')
+            ->groupBy('campaignId');
 
+        $this->query->addSelect('lastSent');
+        $this->subQuery->leftJoin(['campaign_sendouts' => $sendoutQuery], '[[campaign_sendouts.campaignId]] = [[campaign_campaigns.id]]');
+        $this->subQuery->select('campaign_sendouts.lastSent AS lastSent');
+
+        // Filter by campaign types in sites that have not been deleted
+        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
         $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
         $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 

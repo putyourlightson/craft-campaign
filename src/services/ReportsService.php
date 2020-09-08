@@ -78,6 +78,7 @@ class ReportsService extends Component
         // Get all sent campaigns
         $data['campaigns'] = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
+            ->orderBy('lastSent DESC')
             ->siteId($siteId)
             ->all();
 
