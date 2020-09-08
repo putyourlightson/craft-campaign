@@ -91,7 +91,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         Campaign::$plugin->sendouts->trigger(SendoutsService::EVENT_BEFORE_SEND, $event);
 
         if (!$event->isValid) {
-            return null;
+            return;
         }
 
         // Call for max power
