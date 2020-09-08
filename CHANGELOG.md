@@ -7,6 +7,7 @@
 ### Changed
 - Made sendout titles editable from the sendout index page ([#161](https://github.com/putyourlightson/craft-campaign/issues/161)).
 - The campaign report now lists campaigns ordered by last sent descending ([#168](https://github.com/putyourlightson/craft-campaign/issues/168)).
+- Campaigns and sendouts are now ordered by last sent descending by default.
 
 ## 1.15.6 - 2020-08-25
 ### Changed

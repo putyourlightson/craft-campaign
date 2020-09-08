@@ -125,7 +125,8 @@ class CampaignElement extends Element
             [
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All campaigns'),
-                'criteria' => []
+                'criteria' => [],
+                'defaultSort' => ['lastSent', 'desc'],
             ]
         ];
 
@@ -144,7 +145,8 @@ class CampaignElement extends Element
                 ],
                 'criteria' => [
                     'campaignTypeId' => $campaignType->id
-                ]
+                ],
+                'defaultSort' => ['lastSent', 'desc'],
             ];
         }
 

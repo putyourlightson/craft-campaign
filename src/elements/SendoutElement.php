@@ -176,6 +176,7 @@ class SendoutElement extends Element
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All sendouts'),
                 'criteria' => [],
+                'defaultSort' => ['lastSent', 'desc'],
             ]
         ];
 
@@ -193,7 +194,8 @@ class SendoutElement extends Element
                 ],
                 'criteria' => [
                     'sendoutType' => $sendoutType
-                ]
+                ],
+                'defaultSort' => ['lastSent', 'desc'],
             ];
 
             $index++;
