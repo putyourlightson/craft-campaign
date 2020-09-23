@@ -51,6 +51,24 @@ class PendingContactsServiceTest extends BaseUnitTest
         $this->assertNull($pendingContact);
     }
 
+    public function testVerifyTrashedPendingContact()
+    {
+        $pendingContact = PendingContactRecord::find()->one();
+        $pendingContact->softDelete();
+
+        $this->assertNull(Campaign::$plugin->pendingContacts->getPendingContactByPid($pendingContact->pid));
+        $this->assertTrue(Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pendingContact->pid));
+    }
+
+    public function testVerifyDeletedPendingContact()
+    {
+        $pendingContact = PendingContactRecord::find()->one();
+        $pendingContact->delete();
+
+        $this->assertNull(Campaign::$plugin->pendingContacts->getPendingContactByPid($pendingContact->pid));
+        $this->assertFalse(Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pendingContact->pid));
+    }
+
     public function testPurgeExpiredPendingContacts()
     {
         // Set duration to 1 second

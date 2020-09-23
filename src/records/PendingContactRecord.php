@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\SoftDeleteTrait;
+use DateTime;
 use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
@@ -18,14 +20,14 @@ use yii\db\ActiveQuery;
  * @property string      $source                     Source
  * @property mixed       $fieldData                  Field data
  *
- * @method static ActiveQuery find()
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
  */
 class PendingContactRecord extends BaseActiveRecord
 {
+    use SoftDeleteTrait;
+
     // Public Static Methods
     // =========================================================================
 

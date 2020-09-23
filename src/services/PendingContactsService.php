@@ -41,7 +41,7 @@ class PendingContactsService extends Component
     {
         // Get pending contact
         $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pid])
+            ->andWhere(['pid' => $pid])
             ->one();
 
         if ($pendingContactRecord === null) {
@@ -52,6 +52,22 @@ class PendingContactsService extends Component
         $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
 
         return $pendingContact;
+    }
+
+    /**
+     * Returns whether a pending contact has been trashed
+     *
+     * @param string $pid
+     *
+     * @return bool
+     */
+    public function getIsPendingContactTrashed(string $pid): bool
+    {
+        $count = PendingContactRecord::findTrashed()
+            ->andWhere(['pid' => $pid])
+            ->count();
+
+        return $count > 0;
     }
 
     /**
@@ -133,15 +149,15 @@ class PendingContactsService extends Component
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             return null;
-        };
+        }
 
-        // Delete pending contact
+        // Soft-delete pending contact
         $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pendingContact->pid])
+            ->andWhere(['pid' => $pendingContact->pid])
             ->one();
 
         if ($pendingContactRecord !== null) {
-            $pendingContactRecord->delete();
+            $pendingContactRecord->softDelete();
         }
 
         return $pendingContact;
@@ -164,14 +180,22 @@ class PendingContactsService extends Component
         $pastTime = $expire->sub($interval);
 
         $pendingContactRecords = PendingContactRecord::find()
-            ->where(['<', 'dateUpdated', Db::prepareDateForDb($pastTime)])
+            ->andWhere(['<', 'dateUpdated', Db::prepareDateForDb($pastTime)])
             ->all();
 
+        /** @var PendingContactRecord $pendingContactRecord */
         foreach ($pendingContactRecords as $pendingContactRecord) {
+            $softDeleted = false;
+
+            if ($pendingContactRecord->dateDeleted !== null) {
+                $softDeleted = true;
+            }
+
             $pendingContactRecord->delete();
 
-            /** @var PendingContactRecord $pendingContactRecord */
-            Campaign::$plugin->log('Deleted pending contact "{email}", because they took too long to verify their email.', ['email' => $pendingContactRecord->email]);
+            if (!$softDeleted) {
+                Campaign::$plugin->log('Deleted pending contact "{email}" because they took too long to verify their email.', ['email' => $pendingContactRecord->email]);
+            }
         }
     }
 }

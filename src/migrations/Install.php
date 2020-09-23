@@ -168,6 +168,7 @@ class Install extends Migration
                 'fieldData' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
+                'dateDeleted' => $this->dateTime()->null(),
                 'uid' => $this->uid(),
             ]);
         }

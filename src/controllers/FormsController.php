@@ -294,24 +294,27 @@ class FormsController extends BaseMessageController
         $pendingContact = Campaign::$plugin->pendingContacts->verifyPendingContact($pid);
 
         if ($pendingContact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
+            if (!Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pid)) {
+                throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
+            }
         }
+        else {
+            // Get contact
+            $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
 
-        // Get contact
-        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
+            if ($contact === null) {
+                throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+            }
 
-        if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+            // Get mailing list
+            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
+
+            if ($mailingList === null) {
+                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+            }
+
+            Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
         }
-
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
-
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-        }
-
-        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
 
         if ($request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl($contact);

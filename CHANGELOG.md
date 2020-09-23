@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.15.8 - Unreleased
+### Changed
+- Pending contacts now persist so that verification links remain valid until they are purged ([#169](https://github.com/putyourlightson/craft-campaign/issues/169)).
+
 ## 1.15.7 - 2020-09-11
 ### Added
 - Added a sortable `lastSent` attribute to campaign elements.
