@@ -14,7 +14,7 @@ use Twig\TwigFilter;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class CampaignTwigExtension extends AbstractExtension
 {
@@ -32,21 +32,13 @@ class CampaignTwigExtension extends AbstractExtension
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getGlobals(): array
-    {
-        return [];
-    }
-
-    /**
      * Converts HTML to plaintext (with line breaks)
      *
      * @param string|null $html
      *
      * @return string
      */
-    public function htmlToPlaintext($html): string
+    public function htmlToPlaintext(string $html = null): string
     {
         if ($html === null) {
             return '';

@@ -8,7 +8,7 @@ namespace putyourlightson\campaign\base;
 use Craft;
 use craft\web\Controller;
 use craft\web\View;
-use yii\web\Response as YiiResponse;
+use yii\web\Response;
 
 /**
  * BaseMessageController
@@ -24,8 +24,12 @@ abstract class BaseMessageController extends Controller
 
     /**
      * Renders a message template.
+     *
+     * @param string|null $template
+     * @param array|null $variables
+     * @return Response
      */
-    public function renderMessageTemplate(string $template = null, array $variables = []): YiiResponse
+    public function renderMessageTemplate(string $template = null, array $variables = []): Response
     {
         // If template was not defined or does not exist
         if (empty($template) || !Craft::$app->getView()->doesTemplateExist($template)) {

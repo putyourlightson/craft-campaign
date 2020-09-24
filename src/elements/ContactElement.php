@@ -26,7 +26,6 @@ use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 
 /**
  * ContactElement
@@ -47,6 +46,7 @@ use yii\base\InvalidConfigException;
  * @property string $countryCode
  * @property MailingListElement[] $mailingLists
  * @property bool $isSubscribed
+ * @property User|null $user
  * @property int $subscribedCount
  */
 class ContactElement extends Element
@@ -123,7 +123,6 @@ class ContactElement extends Element
 
         $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
 
-        /** @var MailingListElement $mailingList */
         foreach ($mailingLists as $mailingList) {
             $sources[] = [
                 'key' => 'mailingList:'.$mailingList->id,
@@ -406,7 +405,6 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function rules(): array
     {

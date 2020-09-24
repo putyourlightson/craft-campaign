@@ -149,10 +149,18 @@ class CampaignsController extends Controller
             'status' => ContactElement::STATUS_ACTIVE,
         ];
 
-        // Get test contact based on current user's email address
-        /** @var User|null $currentUser */
-        $currentUser = Craft::$app->user->getIdentity();
-        $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
+        // Get test contact
+        $variables['testContact'] = null;
+
+        if ($campaignType->testContactId !== null) {
+            $variables['testContact'] = Campaign::$plugin->contacts->getContactById($campaignType->testContactId);
+        }
+
+        if ($variables['testContact'] === null) {
+            /** @var User|null $currentUser */
+            $currentUser = Craft::$app->user->getIdentity();
+            $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
+        }
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------

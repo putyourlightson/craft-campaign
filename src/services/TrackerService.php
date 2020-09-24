@@ -18,9 +18,7 @@ use putyourlightson\campaign\records\ContactCampaignRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\errors\ElementNotFoundException;
 use Throwable;
-use yii\base\Exception;
 
 /**
  * TrackerService
@@ -76,9 +74,6 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws Throwable
      */
     public function open(ContactElement $contact, SendoutElement $sendout)
@@ -96,9 +91,6 @@ class TrackerService extends Component
      * @param ContactElement $contact
      * @param SendoutElement $sendout
      * @param LinkRecord $linkRecord
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws Throwable
      */
     public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
@@ -115,11 +107,8 @@ class TrackerService extends Component
      *
      * @param ContactElement $contact
      * @param SendoutElement $sendout
-     *
      * @return MailingListElement|null
      * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
     {

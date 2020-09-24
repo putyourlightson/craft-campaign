@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\helpers;
 use craft\db\Table;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
-use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\MailingListTypeModel;

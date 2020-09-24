@@ -22,7 +22,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
 use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 
 /**
  * SegmentHelper
@@ -118,7 +117,6 @@ class SegmentHelper
      * Returns available fields
      *
      * @return array
-     * @throws InvalidConfigException
      */
     public static function getAvailableFields(): array
     {

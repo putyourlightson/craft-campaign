@@ -38,7 +38,6 @@ abstract class BaseModel extends Model
 
         $class = static::class;
 
-        /** @var Model $model */
         $model = new $class();
         $model->setAttributes($values, $safeOnly);
 

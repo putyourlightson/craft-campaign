@@ -27,7 +27,6 @@ use putyourlightson\campaign\services\ReportsService;
 use Craft;
 use craft\helpers\Template;
 use Twig\Markup;
-use yii\base\InvalidConfigException;
 use yii\web\ForbiddenHttpException;
 
 /**

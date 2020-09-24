@@ -40,7 +40,7 @@ class SyncController extends Controller
 
     /**
      * @param string|null $siteHandle
-     *
+     * @param array|null $errors
      * @return Response
      */
     public function actionIndex(string $siteHandle = null, array $errors = []): Response

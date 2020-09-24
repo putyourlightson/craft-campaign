@@ -6,9 +6,7 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\SoftDeleteTrait;
-use DateTime;
 use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
  * PendingContactRecord

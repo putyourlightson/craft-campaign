@@ -120,6 +120,18 @@
         autocomplete: true
     }) }}
 
+    {{ forms.elementSelectField({
+        label: "Default Test Contact"|t('campaign'),
+        instructions: "The default contact to use for test emails (leave blank for the currently logged in user)."|t('campaign'),
+        id: 'testContactId',
+        name: 'testContactId',
+        elementType: contactElementType,
+        selectionLabel: "Add a contact"|t('campaign'),
+        limit: 1,
+        elements: campaignType.testContactId ? [campaignType.testContact],
+        errors: campaignType.getErrors('testContactId'),
+    }) }}
+
     <hr>
 
     {% include "_includes/fieldlayoutdesigner" with {

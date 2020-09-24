@@ -57,6 +57,7 @@ use yii\base\InvalidConfigException;
  * @property CampaignElement|null $campaign
  * @property string $progress
  * @property string $fromNameEmailLabel
+ * @property bool $isModifiable
  * @property MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
@@ -509,7 +510,6 @@ class SendoutElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function rules(): array
     {

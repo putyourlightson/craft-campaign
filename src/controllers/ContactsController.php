@@ -16,7 +16,6 @@ use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -72,7 +71,6 @@ class ContactsController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException if the requested contact is not found
-     * @throws InvalidConfigException
      */
     public function actionEditContact(int $contactId = null, ContactElement $contact = null): Response
     {

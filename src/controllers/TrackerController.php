@@ -13,7 +13,6 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
 use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -44,8 +43,6 @@ class TrackerController extends BaseMessageController
      * Open
      *
      * @return Response|null
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws Throwable
      */
     public function actionOpen()
@@ -69,7 +66,6 @@ class TrackerController extends BaseMessageController
      * Click
      *
      * @return Response
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -114,7 +110,6 @@ class TrackerController extends BaseMessageController
      * Unsubscribe
      *
      * @return Response|null
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws InvalidConfigException
      * @throws Throwable

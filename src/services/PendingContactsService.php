@@ -152,6 +152,7 @@ class PendingContactsService extends Component
         }
 
         // Soft-delete pending contact
+        /** @var PendingContactRecord|null $pendingContactRecord */
         $pendingContactRecord = PendingContactRecord::find()
             ->andWhere(['pid' => $pendingContact->pid])
             ->one();

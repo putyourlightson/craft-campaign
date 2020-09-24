@@ -238,7 +238,6 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function rules(): array
     {

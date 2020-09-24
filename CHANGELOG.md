@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 1.15.8 - Unreleased
+## 1.16.0 - Unreleased
+### Added
+- Added a default contact to use for test emails to campaign types ([#166](https://github.com/putyourlightson/craft-campaign/issues/166)).
+
 ### Changed
 - Pending contacts now persist so that verification links remain valid until they are purged ([#169](https://github.com/putyourlightson/craft-campaign/issues/169)).
 

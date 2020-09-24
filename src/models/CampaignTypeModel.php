@@ -15,7 +15,9 @@ use craft\models\Site;
 use craft\validators\SiteIdValidator;
 use craft\validators\UriFormatValidator;
 use putyourlightson\campaign\base\BaseModel;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 
 /**
@@ -28,6 +30,8 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * @mixin FieldLayoutBehavior
  *
  * @property Site|null $site
+ * @property ContactElement|null $testContact
+ * @property FieldLayout $fieldLayout
  * @property string $cpEditUrl
  *
  * @method FieldLayout getFieldLayout()
@@ -84,6 +88,11 @@ class CampaignTypeModel extends BaseModel
     public $queryStringParameters;
 
     /**
+     * @var int|null
+     */
+    public $testContactId;
+
+    /**
      * @var string|null UID
      */
     public $uid;
@@ -120,7 +129,7 @@ class CampaignTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'siteId', 'fieldLayoutId'], 'integer'],
+            [['id', 'siteId', 'fieldLayoutId', 'testContactId'], 'integer'],
             [['siteId'], SiteIdValidator::class],
             [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
@@ -152,6 +161,20 @@ class CampaignTypeModel extends BaseModel
         }
 
         return Craft::$app->getSites()->getSiteById($this->siteId);
+    }
+
+    /**
+     * Returns the test contact.
+     *
+     * @return ContactElement|null
+     */
+    public function getTestContact()
+    {
+        if ($this->testContactId === null) {
+            return null;
+        }
+
+        return Campaign::$plugin->contacts->getContactById($this->testContactId);
     }
 
     /**

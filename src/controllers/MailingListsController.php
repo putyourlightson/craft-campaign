@@ -13,7 +13,6 @@ use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -51,7 +50,6 @@ class MailingListsController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException if the requested mailing list is not found
-     * @throws InvalidConfigException
      */
     public function actionEditMailingList(string $mailingListTypeHandle, int $mailingListId = null, MailingListElement $mailingList = null): Response
     {

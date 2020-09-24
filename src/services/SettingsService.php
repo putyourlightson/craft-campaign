@@ -10,7 +10,6 @@ use craft\base\Component;
 use craft\base\Field;
 use craft\base\Volume;
 use craft\events\CancelableEvent;
-use craft\events\ConfigEvent;
 use craft\events\FieldEvent;
 use craft\helpers\App;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
@@ -26,6 +25,8 @@ use putyourlightson\campaign\models\SettingsModel;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
+ *
+ * @property array $siteOptions
  */
 class SettingsService extends Component
 {
@@ -229,10 +230,9 @@ class SettingsService extends Component
     /**
      * Handles a changed contact field layout.
      *
-     * @param ConfigEvent $event
      * @since 1.15.0
      */
-    public function handleChangedContactFieldLayout(ConfigEvent $event)
+    public function handleChangedContactFieldLayout()
     {
         // Use this because we want this to trigger this if anything changes inside but ONLY ONCE
         static $parsed = false;

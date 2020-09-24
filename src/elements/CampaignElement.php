@@ -343,7 +343,6 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function rules(): array
     {

@@ -237,13 +237,13 @@ class ImportsService extends Component
      * Imports a row into a contact
      *
      * @param ImportModel $import
-     * @param array|null $row
+     * @param array $row
      * @param int $lineNumber
      *
      * @return ImportModel
      * @throws Throwable if reasons
      */
-    public function importRow(ImportModel $import, $row, int $lineNumber): ImportModel
+    public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
     {
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);

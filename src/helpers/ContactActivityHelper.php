@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use DateTime;
 use DeviceDetector\DeviceDetector;
@@ -15,7 +14,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactRecord;
 use Throwable;
-use yii\base\Exception;
 
 /**
  * ContactActivityHelper
@@ -46,9 +44,6 @@ class ContactActivityHelper
      * Update contact activity
      *
      * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
      * @throws Throwable
      */
     public static function updateContactActivity(ContactElement $contact)

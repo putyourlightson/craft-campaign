@@ -28,6 +28,7 @@ use craft\validators\UniqueValidator;
  * @mixin FieldLayoutBehavior
  *
  * @property null|Site $site
+ * @property FieldLayout $fieldLayout
  * @property string $cpEditUrl
  *
  * @method FieldLayout getFieldLayout()

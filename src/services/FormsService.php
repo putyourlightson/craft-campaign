@@ -18,7 +18,6 @@ use putyourlightson\campaign\models\PendingContactModel;
 
 use Craft;
 use craft\base\Component;
-use craft\errors\ElementNotFoundException;
 use Twig\Error\Error;
 use yii\base\Exception;
 
@@ -169,9 +168,6 @@ class FormsService extends Component
      * @param string|null $sourceType
      * @param string|null $source
      * @param bool|null $verify
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
@@ -210,9 +206,6 @@ class FormsService extends Component
      *
      * @param ContactElement $contact
      * @param MailingListElement $mailingList
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
      */
     public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList)
     {

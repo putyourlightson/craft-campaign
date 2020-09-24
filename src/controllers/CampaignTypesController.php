@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\elements\CampaignElement;
 
@@ -50,9 +51,6 @@ class CampaignTypesController extends Controller
      */
     public function actionEditCampaignType(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
     {
-        // Get the campaign type
-        // ---------------------------------------------------------------------
-
         if ($campaignType === null) {
             if ($campaignTypeId !== null) {
                 $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
@@ -66,16 +64,13 @@ class CampaignTypesController extends Controller
             }
         }
 
-        // Set the variables
-        // ---------------------------------------------------------------------
-
         $variables = [
             'campaignTypeId' => $campaignTypeId,
-            'campaignType' => $campaignType
+            'campaignType' => $campaignType,
+            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
+            'contactElementType' => ContactElement::class,
+            'fullPageForm' => true,
         ];
-
-        // Set the title
-        // ---------------------------------------------------------------------
 
         if ($campaignTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
@@ -84,13 +79,6 @@ class CampaignTypesController extends Controller
             $variables['title'] = $campaignType->name;
         }
 
-        // Get the site options
-        $variables['siteOptions'] = Campaign::$plugin->settings->getSiteOptions();
-
-        // Full page form variables
-        $variables['fullPageForm'] = true;
-
-        // Render the template
         return $this->renderTemplate('campaign/settings/campaigntypes/_edit', $variables);
     }
 
@@ -127,6 +115,9 @@ class CampaignTypesController extends Controller
         $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
         $campaignType->queryStringParameters = $request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
+
+        $campaignType->testContactId = $request->getBodyParam('testContactId', $campaignType->testContactId);
+        $campaignType->testContactId = (is_array($campaignType->testContactId) && isset($campaignType->testContactId[0])) ? $campaignType->testContactId[0] : null;
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

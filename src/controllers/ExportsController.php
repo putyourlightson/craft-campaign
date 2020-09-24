@@ -10,12 +10,10 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ExportModel;
 
 use Craft;
-use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -47,18 +45,13 @@ class ExportsController extends Controller
     /**
      * @param string|null $siteHandle
      * @param ExportModel|null $export The export, if there were any validation errors.
-     *
      * @return Response
-     * @throws InvalidConfigException
      */
     public function actionIndex(string $siteHandle = null, ExportModel $export = null): Response
     {
         if ($export === null) {
             $export = new ExportModel();
         }
-
-        $variables = [];
-        $variables['export'] = $export;
 
         // Set the current site to the site handle if set
         if ($siteHandle !== null) {
@@ -69,11 +62,11 @@ class ExportsController extends Controller
             }
         }
 
-        // Mailing list element selector variables
-        $variables['mailingListElementType'] = MailingListElement::class;
-
-        // Get contact fields
-        $variables['fields'] = Campaign::$plugin->getSettings()->getContactFields();
+        $variables = [
+            'export' => $export,
+            'mailingListElementType' => MailingListElement::class,
+            'fields' => Campaign::$plugin->getSettings()->getContactFields(),
+        ];
 
         // Render the template
         return $this->renderTemplate('campaign/contacts/export', $variables);

@@ -10,7 +10,6 @@ use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
-use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 
 use Craft;
@@ -274,7 +273,6 @@ class FormsController extends BaseMessageController
      * Verifies and subscribes a pending contact to a mailing list
      *
      * @return Response
-     * @throws ElementNotFoundException
      * @throws Exception
      * @throws NotFoundHttpException
      * @throws Throwable
@@ -297,24 +295,32 @@ class FormsController extends BaseMessageController
             if (!Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pid)) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
             }
-        }
-        else {
-            // Get contact
-            $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
 
-            if ($contact === null) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+            if ($request->getBodyParam('redirect')) {
+                return $this->redirectToPostedUrl();
             }
 
-            // Get mailing list
-            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
-
-            if ($mailingList === null) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
-            }
-
-            Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
+            return $this->renderMessageTemplate('', [
+                'title' => Craft::t('campaign', 'Verified'),
+                'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
+            ]);
         }
+
+        // Get contact
+        $contact = Campaign::$plugin->contacts->getContactByEmail($pendingContact->email);
+
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+        }
+
+        // Get mailing list
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
+
+        if ($mailingList === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
+        }
+
+        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
 
         if ($request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl($contact);

@@ -5,8 +5,6 @@
 
 namespace putyourlightson\campaign\fields;
 
-use putyourlightson\campaign\elements\CampaignElement;
-
 use Craft;
 use craft\fields\BaseRelationField;
 use putyourlightson\campaign\elements\MailingListElement;
