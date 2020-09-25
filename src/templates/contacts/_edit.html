@@ -77,22 +77,7 @@
                         </thead>
                         <tbody>
                             {% for mailingList in mailingLists %}
-                                {% set subscriptionStatus = contact.getMailingListSubscriptionStatus(mailingList.id) %}
-                                <tr data-id="{{ mailingList.id }}">
-                                    <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ mailingList.cpEditUrl }}">{{ mailingList.title }}</a></th>
-                                    <td data-title="{{ 'Subscription Status'|t('campaign') }}">
-                                        <label class="subscriptionStatus {{ subscriptionStatus }}">
-                                            {{ subscriptionStatus ? subscriptionStatus : 'none'|t('campaign') }}
-                                        </label>
-                                    </td>
-                                    <td class="thin">
-                                        <input type="button" class="btn small update-subscription subscribe {{ subscriptionStatus == 'subscribed' or subscriptionStatus == 'bounced' ? 'hidden' }}" value="{{ 'Subscribe'|t('campaign') }}" data-action="campaign/contacts/subscribe-mailing-list" data-confirm="{{ 'Are you sure you want to subscribe this contact to this mailing list?'|t('campaign') }}">
-                                        <input type="button" class="btn small update-subscription unsubscribe {{ subscriptionStatus != 'subscribed' or subscriptionStatus == 'bounced' ? 'hidden' }}" value="{{ 'Unsubscribe'|t('campaign') }}" data-action="campaign/contacts/unsubscribe-mailing-list" data-confirm="{{ 'Are you sure you want to unsubscribe this contact from this mailing list?'|t('campaign') }}">
-                                    </td>
-                                    <td class="thin">
-                                        <a class="delete icon update-subscription remove {{ subscriptionStatus == '' ? 'hidden' }}" title="{{ 'Remove from mailing list'|t('campaign') }}" role="button" data-action="campaign/contacts/remove-mailing-list" data-confirm="{{ 'Are you sure you want to remove this contact from this mailing list?'|t('campaign') }}"></a>
-                                    </td>
-                                </tr>
+                                {% include 'campaign/_includes/contact-mailing-list-subscribe-row' %}
                             {% endfor %}
                         </tbody>
                     </table>

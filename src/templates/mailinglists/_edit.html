@@ -9,11 +9,17 @@
     { label: mailingListType.name, url: url('campaign/mailinglists/' ~ mailingListType.handle) }
 ] %}
 
-{% set tabs = {'mailinglist': {'label': 'Mailing List'|t('campaign'), 'url': '#mailinglist'}} %}
+{% set tabs = {
+    'mailinglist': {'label': 'Mailing List'|t('campaign'), 'url': '#mailinglist'},
+} %}
 {% if mailingList.id %}
-    {% set tabs = tabs|merge({'report': {'label': 'Report', 'url': '#report'}}) %}
+    {% set tabs = tabs|merge({
+        'contacts': {'label': 'Contacts'|t('campaign'), 'url': '#contacts'},
+        'report': {'label': 'Report', 'url': '#report'}
+    }) %}
 {% endif %}
 
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ContactEditAsset') %}
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
 
 
@@ -67,6 +73,28 @@
         </div>
 
         {% if mailingList.id %}
+            <div id="contacts" class="hidden">
+                {% set contacts = craft.campaign.contacts.mailingListId(mailingList.id).all() %}
+
+                {% if contacts|length %}
+                    <table id="contacts" class="data fullwidth collapsible">
+                        <thead>
+                            <th scope="col">{{ "Email"|t('campaign') }}</th>
+                            <th scope="col">{{ "Subscription Status"|t('campaign') }}</th>
+                            <td class="thin"></td>
+                            <td class="thin"></td>
+                        </thead>
+                        <tbody>
+                            {% for contact in contacts %}
+                                {% include 'campaign/_includes/contact-mailing-list-subscribe-row' %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>{{ "No contacts have been assigned to this mailing list."|t('campaign') }}</p>
+                {% endif %}
+            </div>
+
             <div id="report" class="hidden">
                 {% include 'campaign/reports/mailinglists/_includes/report' %}
             </div>

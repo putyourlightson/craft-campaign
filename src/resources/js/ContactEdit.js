@@ -16,8 +16,8 @@ Campaign.ContactEdit = Garnish.Base.extend(
 
             if (confirm($this.attr('data-confirm'))) {
                 var data = {
-                    contactId: $this.closest('form').find('input[name=contactId]').val(),
-                    mailingListId: $row.attr('data-id'),
+                    contactId: $row.attr('data-contact-id'),
+                    mailingListId: $row.attr('data-mailing-list-id'),
                 };
 
                 Craft.postActionRequest($this.attr('data-action'), data, $.proxy(function(response, textStatus) {
