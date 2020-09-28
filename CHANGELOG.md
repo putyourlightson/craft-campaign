@@ -5,6 +5,9 @@
 - Added a default contact to use for test emails to campaign types ([#166](https://github.com/putyourlightson/craft-campaign/issues/166)).
 - Added a contacts tab to the mailing list edit page ([#174](https://github.com/putyourlightson/craft-campaign/issues/174)).
 
+### Fixed
+- Fixed a bug in which the default system from name and email were not parsed when loaded from environment settings ([#176](https://github.com/putyourlightson/craft-campaign/issues/176)).
+
 ### Changed
 - Pending contacts now persist so that verification links remain valid until they are purged ([#169](https://github.com/putyourlightson/craft-campaign/issues/169)).
 
