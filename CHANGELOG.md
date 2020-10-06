@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.16.0 - Unreleased
+## 1.16.0 - 2020-10-06
 ### Added
 - Added a default contact to use for test emails to campaign types ([#166](https://github.com/putyourlightson/craft-campaign/issues/166)).
 - Added a contacts tab to the mailing list edit page ([#174](https://github.com/putyourlightson/craft-campaign/issues/174)).

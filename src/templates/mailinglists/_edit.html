@@ -74,7 +74,10 @@
 
         {% if mailingList.id %}
             <div id="contacts" class="hidden">
-                {% set contacts = craft.campaign.contacts.mailingListId(mailingList.id).all() %}
+                {% set contactsQuery = craft.campaign.contacts.mailingListId(mailingList.id) %}
+                {% set total = contactsQuery.count() %}
+                {% set limit = 100 %}
+                {% set contacts = contactsQuery.limit(limit).all() %}
 
                 {% if contacts|length %}
                     <table id="contacts" class="data fullwidth collapsible">
@@ -92,6 +95,9 @@
                     </table>
                 {% else %}
                     <p>{{ "No contacts have been assigned to this mailing list."|t('campaign') }}</p>
+                {% endif %}
+                {% if total > contacts|length %}
+                    <p>{{ "Showing the first {limit} of {total} contacts."|t('campaign', {limit: limit, total: total}) }}</p>
                 {% endif %}
             </div>
 
