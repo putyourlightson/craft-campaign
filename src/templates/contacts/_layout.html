@@ -39,7 +39,7 @@
         {% set segment3 = craft.app.request.getSegment(3) ? craft.app.request.getSegment(3) ~ '/' : '' %}
         {% include '_elements/sitemenu' with {
             selectedSiteId: currentSite.id,
-
+            urlFormat: url('campaign/contacts/' ~ segment3 ~ '{handle}'),
         } only %}
     {% endif %}
 

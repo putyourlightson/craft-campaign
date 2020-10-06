@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed a bug in which the default system from name and email were not parsed when loaded from environment settings ([#176](https://github.com/putyourlightson/craft-campaign/issues/176)).
+- Fixed site selector for contacts ([#177](https://github.com/putyourlightson/craft-campaign/issues/177)).
 
 ### Changed
 - Pending contacts now persist so that verification links remain valid until they are purged ([#169](https://github.com/putyourlightson/craft-campaign/issues/169)).
