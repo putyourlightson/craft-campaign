@@ -180,8 +180,17 @@ class SendoutsServiceTest extends BaseUnitTest
         // Assert that the message subject is correct
         $this->assertEquals($this->sendout->subject, $this->message->getSubject());
 
+        // Get the message body, removing email body nastiness
+        $body = $this->message->getSwiftMessage()->toString();
+        $body = str_replace(['3D', "=\r\n"], '', $body);
+
+        // Assert that the message body contains a link with the correct IDs
+        $this->assertStringContainsStringIgnoringCase('&amp;cid='.$this->contact->cid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;sid='.$this->sendout->sid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;lid=', $body);
+
         // Assert that the message body contains the tracking image
-        $this->assertStringContainsStringIgnoringCase('campaign/t/open', $this->message->getSwiftMessage()->toString());
+        $this->assertStringContainsStringIgnoringCase('campaign/t/open', $body);
     }
 
     public function testSendEmailFailed()

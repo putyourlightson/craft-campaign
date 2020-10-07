@@ -745,7 +745,7 @@ class SendoutsService extends Component
     {
         // Get base URL
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/click';
-        $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid, 'lid' => '']);
+        $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
 
         // Use DOMDocument to parse links
         $dom = new DOMDocument();
@@ -795,7 +795,7 @@ class SendoutsService extends Component
                 $lid = $this->_links[$key];
 
                 // Replace href attribute
-                $element->setAttribute('href', $baseUrl.$lid);
+                $element->setAttribute('href', $baseUrl.'&lid='.$lid);
             }
         }
 

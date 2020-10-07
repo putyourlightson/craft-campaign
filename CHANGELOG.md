@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.2 - 2020-10-07
+### Fixed
+- Fixed a bug in which links could be invalidly created if using Craft CMS 3.5.12 or above ([#180](https://github.com/putyourlightson/craft-campaign/issues/180)).
+
 ## 1.16.1 - 2020-10-07
 ### Fixed
 - Fixed a bug in which campaign and mailing list reports were throwing errors ([#179](https://github.com/putyourlightson/craft-campaign/issues/179)).
