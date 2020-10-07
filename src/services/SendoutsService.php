@@ -792,7 +792,7 @@ class SendoutsService extends Component
                     $this->_links[$key] = $linkRecord->lid;
                 }
 
-                $lid = $this->_links[$key];
+                $lid = '=' . $this->_links[$key];
 
                 // Replace href attribute
                 $element->setAttribute('href', $baseUrl.$lid);
