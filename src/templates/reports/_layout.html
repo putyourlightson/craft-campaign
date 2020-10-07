@@ -10,7 +10,7 @@
 {% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
 
 {% set showSiteMenu = showSiteMenu ?? false %}
-{% set siteId = craft.app.request.getParam('siteId') %}
+{% set siteId = siteId ?? null %}
 
 
 {% block contextMenu %}

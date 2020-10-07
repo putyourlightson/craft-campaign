@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.1 - 2020-10-07
+### Fixed
+- Fixed a bug in which campaign and mailing list reports were throwing errors ([#179](https://github.com/putyourlightson/craft-campaign/issues/179)).
+
 ## 1.16.0 - 2020-10-06
 ### Added
 - Added a default contact to use for test emails to campaign types ([#166](https://github.com/putyourlightson/craft-campaign/issues/166)).
