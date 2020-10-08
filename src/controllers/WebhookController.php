@@ -259,7 +259,7 @@ class WebhookController extends Controller
     private function _callWebhook(string $event, string $email = null): Response
     {
         // Log request
-        Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'Campaign');
+        Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'campaign');
 
         if ($email === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);

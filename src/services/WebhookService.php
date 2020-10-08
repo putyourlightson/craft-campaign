@@ -39,6 +39,8 @@ class WebhookService extends Component
      */
     public function complain(ContactElement $contact)
     {
+        Campaign::$plugin->log('Contact {email} marked as "complained".', ['email' => $contact->email]);
+
         $this->_addInteraction($contact, 'complained');
     }
 
@@ -53,6 +55,8 @@ class WebhookService extends Component
      */
     public function bounce(ContactElement $contact)
     {
+        Campaign::$plugin->log('Contact {email} marked as "bounced".', ['email' => $contact->email]);
+
         $this->_addInteraction($contact, 'bounced');
     }
 

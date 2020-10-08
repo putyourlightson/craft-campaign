@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.16.3 - 2020-10-08
+### Added
+- Added logging of bounce and complain events.
+
 ### Fixed
 - Fixed a bug in which the mailing lists tab was incorrectly listing contacts on the contact edit page ([#182](https://github.com/putyourlightson/craft-campaign/issues/182)).
 
