@@ -77,7 +77,8 @@
                         </thead>
                         <tbody>
                             {% for mailingList in mailingLists %}
-                              {% include 'campaign/_includes/mailing-list-contact-subscribe-row' %}
+                                {% set primaryElementType = 'mailingList' %}
+                                {% include 'campaign/_includes/contact-mailing-list-subscribe-row' %}
                             {% endfor %}
                         </tbody>
                     </table>

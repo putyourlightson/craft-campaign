@@ -89,6 +89,7 @@
                         </thead>
                         <tbody>
                             {% for contact in contacts %}
+                                {% set primaryElementType = 'contact' %}
                                 {% include 'campaign/_includes/contact-mailing-list-subscribe-row' %}
                             {% endfor %}
                         </tbody>

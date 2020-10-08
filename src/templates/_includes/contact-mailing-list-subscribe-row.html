@@ -1,7 +1,14 @@
+{% set primaryElementType = primaryElementType ?? '' %}
 {% set subscriptionStatus = contact.getMailingListSubscriptionStatus(mailingList.id) %}
 
 <tr data-contact-id="{{ contact.id }}" data-mailing-list-id="{{ mailingList.id }}">
-    <th><a href="{{ contact.cpEditUrl }}">{{ contact.email }}</a></th>
+    <th>
+        {% if primaryElementType == 'contact' %}
+            <a href="{{ contact.cpEditUrl }}">{{ contact.email }}</a>
+        {% else %}
+            <a href="{{ mailingList.cpEditUrl }}">{{ mailingList.title }}</a>
+        {% endif %}
+    </th>
     <td>
         <label class="subscriptionStatus {{ subscriptionStatus }}">
             {{ subscriptionStatus ? subscriptionStatus : 'none'|t('campaign') }}

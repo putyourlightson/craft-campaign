@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.3 - 2020-10-08
+### Fixed
+- Fixed a bug in which the mailing lists tab was incorrectly listing contacts on the contact edit page ([#182](https://github.com/putyourlightson/craft-campaign/issues/182)).
+
 ## 1.16.2 - 2020-10-07
 ### Fixed
 - Fixed a bug in which links could be invalidly created if using Craft CMS 3.5.12 or above ([#180](https://github.com/putyourlightson/craft-campaign/issues/180)).
