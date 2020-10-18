@@ -121,7 +121,7 @@ class CampaignElementQuery extends ElementQuery
 
         // Add the last sent date
         $sendoutQuery = SendoutRecord::find()
-            ->select('campaignId, MAX(lastSent) AS lastSent')
+            ->select('campaignId, MAX([[lastSent]]) AS lastSent')
             ->groupBy('campaignId');
 
         $this->query->addSelect('lastSent');

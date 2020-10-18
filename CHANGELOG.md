@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.4 - 2020-10-18
+### Fixed
+- Fixed error that could be thrown when using Postgres ([#186](https://github.com/putyourlightson/craft-campaign/issues/186)).
+
 ## 1.16.3 - 2020-10-08
 ### Added
 - Added logging of bounce and complain events.
