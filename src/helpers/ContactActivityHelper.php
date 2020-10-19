@@ -68,7 +68,12 @@ class ContactActivityHelper
 
         // Get device detector
         if (self::$_deviceDetector === null) {
-            $userAgent = Craft::$app->getRequest()->getUserAgent();
+            if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+                $userAgent = '';
+            } else {
+                $userAgent = Craft::$app->getRequest()->getUserAgent();
+            }
+            
             self::$_deviceDetector = new DeviceDetector($userAgent);
         }
 
