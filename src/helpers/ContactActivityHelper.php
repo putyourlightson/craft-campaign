@@ -13,7 +13,6 @@ use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactRecord;
-use Throwable;
 
 /**
  * ContactActivityHelper
@@ -28,14 +27,14 @@ class ContactActivityHelper
     // =========================================================================
 
     /**
-     * @var mixed
+     * @var array|null
      */
     private static $_geoIp;
 
     /**
-     * @var DeviceDetector|null
+     * @var array|null
      */
-    private static $_deviceDetector;
+    private static $_device;
 
     // Static Methods
     // =========================================================================
@@ -44,7 +43,6 @@ class ContactActivityHelper
      * Update contact activity
      *
      * @param ContactElement $contact
-     * @throws Throwable
      */
     public static function updateContactActivity(ContactElement $contact)
     {
@@ -54,36 +52,23 @@ class ContactActivityHelper
         $contactRecord->lastActivity = new DateTime();
 
         // Get GeoIP if enabled
-        if (Campaign::$plugin->getSettings()->geoIp) {
-            if (self::$_geoIp === null) {
-                self::$_geoIp = self::getGeoIp();
-            }
+        if (1 || Campaign::$plugin->getSettings()->geoIp) {
+            $geoIp = self::getGeoIp();
 
-            // If country exists
-            if (!empty(self::$_geoIp['countryName'])) {
-                $contactRecord->country = self::$_geoIp['countryName'];
-                $contactRecord->geoIp = self::$_geoIp;
+            // If GeoIP and country exist
+            if ($geoIp && !empty($geoIp['countryName'])) {
+                $contactRecord->country = $geoIp['countryName'];
+                $contactRecord->geoIp = $geoIp;
             }
         }
 
-        // Get device detector
-        if (self::$_deviceDetector === null) {
-            $userAgent = Craft::$app->getRequest()->getUserAgent();
-            self::$_deviceDetector = new DeviceDetector($userAgent);
-        }
+        // Get device
+        $device = self::getDevice();
 
-        self::$_deviceDetector->parse();
-        $device = self::$_deviceDetector->getDeviceName();
-
-        // If device exists and not a bot
-        if ($device && !self::$_deviceDetector->isBot()) {
-            $contactRecord->device = $device;
-
-            $os = self::$_deviceDetector->getOs('name');
-            $contactRecord->os = $os == DeviceDetector::UNKNOWN ? '' : $os;
-
-            $client = self::$_deviceDetector->getClient('name');
-            $contactRecord->client = $client == DeviceDetector::UNKNOWN ? '' : $client;
+        if ($device !== null) {
+            $contactRecord->device = $device['device'];
+            $contactRecord->os = $device['os'];
+            $contactRecord->client = $device['client'];
         }
 
         $contactRecord->save();
@@ -98,7 +83,13 @@ class ContactActivityHelper
      */
     public static function getGeoIp(int $timeout = 5)
     {
-        $geoIp = null;
+        if (self::$_geoIp !== null) {
+            return self::$_geoIp;
+        }
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return null;
+        }
 
         $client = Craft::createGuzzleClient([
             'timeout' => $timeout,
@@ -122,7 +113,7 @@ class ContactActivityHelper
             return null;
         }
 
-        return [
+        self::$_geoIp = [
             'continentCode' => $geoIp['continent_code'] ?? '',
             'continentName' => $geoIp['continent_name'] ?? '',
             'countryCode' => $geoIp['country_code'] ?? '',
@@ -133,5 +124,44 @@ class ContactActivityHelper
             'postCode' => $geoIp['zip_code'] ?? '',
             'timeZone' => $geoIp['time_zone']['id'] ?? '',
         ];
+
+        return self::$_geoIp;
+    }
+
+    /**
+     * Gets device based on user agent provided it is not a bot
+     *
+     * @return array|null
+     */
+    public static function getDevice()
+    {
+        if (self::$_device !== null) {
+            return self::$_device;
+        }
+
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return null;
+        }
+
+        $deviceDetector = new DeviceDetector(Craft::$app->getRequest()->getUserAgent());
+
+        $deviceDetector->parse();
+
+        if ($deviceDetector->isBot()) {
+            return null;
+        }
+
+        self::$_device = [
+            'device' => $deviceDetector->getDeviceName(),
+            'os' => $deviceDetector->getOs('name'),
+            'client' => $deviceDetector->getClient('name'),
+        ];
+
+        // Replace unknown values with blank string
+        foreach (self::$_device as &$value) {
+            $value = ($value == DeviceDetector::UNKNOWN) ? '' : $value;
+        }
+
+        return self::$_device;
     }
 }

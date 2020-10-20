@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.5 - 2020-10-20
+### Fixed
+- Fixed an error that could be thrown when updating a contact from a queue job ([#187](https://github.com/putyourlightson/craft-campaign/issues/187)).
+
 ## 1.16.4 - 2020-10-18
 ### Fixed
 - Fixed error that could be thrown when using Postgres ([#186](https://github.com/putyourlightson/craft-campaign/issues/186)).
