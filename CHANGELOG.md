@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.16.6 - Unreleased
+### Changed
+- The “Share” button on the Edit Campaign page has been renamed to “View” ([#188](https://github.com/putyourlightson/craft-campaign/issues/188)).
+
 ## 1.16.5 - 2020-10-20
 ### Fixed
 - Fixed an error that could be thrown when updating a contact from a queue job ([#187](https://github.com/putyourlightson/craft-campaign/issues/187)).
