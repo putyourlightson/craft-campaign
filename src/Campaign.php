@@ -275,12 +275,10 @@ class Campaign extends Plugin
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Create the mailer
-        $mailer = new Mailer([
+        return new Mailer([
             'messageClass' => Message::class,
             'transport' => $adapter->defineTransport(),
         ]);
-
-        return $mailer;
     }
 
     /**
@@ -537,8 +535,8 @@ class Campaign extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingListTypes, 'pruneDeletedField']);
 
         // Rebuild project config data
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $e) {
-            $e->config['campaign'] = ProjectConfigDataHelper::rebuildProjectConfig();
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
+            $event->config['campaign'] = ProjectConfigDataHelper::rebuildProjectConfig();
         });
     }
 

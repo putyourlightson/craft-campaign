@@ -3,6 +3,7 @@
 ## 1.16.6 - Unreleased
 ### Changed
 - The “Share” button on the Edit Campaign page has been renamed to “View” ([#188](https://github.com/putyourlightson/craft-campaign/issues/188)).
+- Plugin settings are deleted from project config on uninstall.
 
 ## 1.16.5 - 2020-10-20
 ### Fixed

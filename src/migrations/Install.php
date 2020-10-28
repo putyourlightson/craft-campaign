@@ -62,6 +62,7 @@ class Install extends Migration
         $this->deleteElements();
         $this->deleteFieldLayouts();
         $this->deleteTables();
+        $this->deleteProjectConfig();
 
         return true;
     }
@@ -426,5 +427,15 @@ class Install extends Migration
         $this->dropTableIfExists('{{%campaign_segments}}');
         $this->dropTableIfExists('{{%campaign_contacts}}');
         $this->dropTableIfExists('{{%campaign_pendingcontacts}}');
+    }
+
+    /**
+     * Delete project config
+     *
+     * @return void
+     */
+    protected function deleteProjectConfig()
+    {
+        Craft::$app->getProjectConfig()->remove('campaign');
     }
 }
