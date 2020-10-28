@@ -1,12 +1,11 @@
 # Release Notes for Campaign
 
-## 1.16.6 - 2020-10-28
+## 1.16.5 - 2020-10-28
 ### Changed
 - The “Share” button on the Edit Campaign page has been renamed to “View” ([#188](https://github.com/putyourlightson/craft-campaign/issues/188)).
 - Optimised queries that display contact activity on reports pages to better respect result limits ([#193](https://github.com/putyourlightson/craft-campaign/issues/193)).
 - Plugin settings are deleted from project config on uninstall.
 
-## 1.16.5 - 2020-10-20
 ### Fixed
 - Fixed an error that could be thrown when updating a contact from a queue job ([#187](https://github.com/putyourlightson/craft-campaign/issues/187)).
 
