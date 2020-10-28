@@ -169,16 +169,24 @@ class ReportsService extends Component
      */
     public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = 100): array
     {
-        // Get contact campaigns
-        $query = ContactCampaignRecord::find()
+        // If no interaction was specified then set check for any interaction that is not null
+        $interactionCondition = $interaction ? [$interaction => null] : [
+            'or',
+            [
+                'opened' => null,
+                'clicked' => null,
+                'unsubscribed' => null,
+                'complained' => null,
+                'bounced' => null,
+            ]
+        ];
+
+        $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->orderBy(['dateUpdated' => SORT_DESC]);
-
-        if ($interaction !== null) {
-            $query->andWhere(['not', [$interaction => null]]);
-        }
-
-        $contactCampaignRecords = $query->all();
+            ->andWhere(['not', $interactionCondition])
+            ->orderBy(['dateUpdated' => SORT_DESC])
+            ->limit($limit)
+            ->all();
 
         $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
 
@@ -475,10 +483,22 @@ class ReportsService extends Component
      */
     public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
     {
-        // Get contact mailing lists
+        // If no interaction was specified then set check for any interaction that is not null
+        $interactionCondition = $interaction ? [$interaction => null] : [
+            'or',
+            [
+                'subscribed' => null,
+                'unsubscribed' => null,
+                'complained' => null,
+                'bounced' => null,
+            ]
+        ];
+
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
+            ->andWhere(['not', $interactionCondition])
             ->orderBy(['dateUpdated' => SORT_DESC])
+            ->limit($limit)
             ->all();
 
         $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
