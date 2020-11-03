@@ -10,7 +10,6 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;

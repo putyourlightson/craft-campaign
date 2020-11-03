@@ -11,7 +11,7 @@ use putyourlightson\campaign\records\PendingContactRecord;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
-use putyourlightson\campaigntests\unit\BaseControllerTest;
+use putyourlightson\campaigntests\unit\controllers\BaseControllerTest;
 use yii\web\NotFoundHttpException;
 
 /**

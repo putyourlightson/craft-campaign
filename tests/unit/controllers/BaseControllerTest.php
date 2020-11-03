@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaigntests\unit;
+namespace putyourlightson\campaigntests\unit\controllers;
 
 use Craft;
 use putyourlightson\campaign\Campaign;
