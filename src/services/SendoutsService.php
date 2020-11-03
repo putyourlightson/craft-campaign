@@ -143,12 +143,10 @@ class SendoutsService extends Component
      */
     public function getSendoutSendStatusById(int $sendoutId)
     {
-        $sendStatus = SendoutRecord::find()
+        return SendoutRecord::find()
             ->select('sendStatus')
             ->where(['id' => $sendoutId])
             ->scalar();
-
-        return $sendStatus;
     }
 
     /**
@@ -226,6 +224,19 @@ class SendoutsService extends Component
         }
 
         return $recipients;
+    }
+
+
+    /**
+     * Returns the number of pending recipients, not including failed attempts
+     *
+     * @param SendoutElement $sendout
+     *
+     * @return int
+     */
+    public function getPendingRecipientCount(SendoutElement $sendout): int
+    {
+        return count($this->getPendingRecipients($sendout)) - $sendout->fails;
     }
 
     /**
@@ -568,7 +579,7 @@ class SendoutsService extends Component
         // Update send status to pending if automated or recurring or not fully complete
         if ($sendout->sendoutType == 'automated' ||
             $sendout->sendoutType == 'recurring' ||
-            count($this->getPendingRecipients($sendout)) > 0
+            $this->getPendingRecipientCount($sendout) > 0
         ) {
             $sendout->sendStatus = SendoutElement::STATUS_PENDING;
         }
@@ -671,14 +682,12 @@ class SendoutsService extends Component
      */
     private function _getExcludedMailingListRecipientsQuery(SendoutElement $sendout): ActiveQuery
     {
-        $query =  ContactMailingListRecord::find()
+        return ContactMailingListRecord::find()
             ->select('contactId')
             ->where([
                 'mailingListId' => $sendout->getExcludedMailingListIds(),
                 'subscriptionStatus' => 'subscribed',
             ]);
-
-        return $query;
     }
 
     /**

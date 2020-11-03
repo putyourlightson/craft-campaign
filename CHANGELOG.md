@@ -5,6 +5,9 @@
 - Replaced abandoned package htmlstrip with active package Html2Text.
 - Changed test class namespaces to be PSR-4 compliant.
 
+### Fixed
+- Fixed a bug in which a sendout could get stuck at 100% if there were failed send attempts ([#170](https://github.com/putyourlightson/craft-campaign/issues/170)).
+
 ## 1.16.5 - 2020-10-28
 ### Changed
 - The “Share” button on the Edit Campaign page has been renamed to “View” ([#188](https://github.com/putyourlightson/craft-campaign/issues/188)).
