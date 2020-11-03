@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaign\twigextensions;
 
-use PurpleBooth\HtmlStripperImplementation;
+use Html2Text\Html2Text;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -48,8 +48,8 @@ class CampaignTwigExtension extends AbstractExtension
         $html = preg_replace('/<br\s?\/?>/i', '[[br]]', $html);
 
         // Convert to text
-        $htmlStripper = new HtmlStripperImplementation();
-        $text = $htmlStripper->toText($html);
+        $html2Text = new Html2Text($html);
+        $text = $html2Text->getText();
 
         // Convert [[br]] tags to new lines
         $text = str_replace('[[br]]', "\r\n", $text);

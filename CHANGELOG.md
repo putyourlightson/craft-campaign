@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 1.16.6 - Unreleased
+### Changed
+- Replaced abandoned package htmlstrip with active package Html2Text.
+- Changed test class namespaces to be PSR-4 compliant.
+
 ## 1.16.5 - 2020-10-28
 ### Changed
 - The “Share” button on the Edit Campaign page has been renamed to “View” ([#188](https://github.com/putyourlightson/craft-campaign/issues/188)).
