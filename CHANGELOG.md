@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.17.0 - Unreleased
+## 1.17.0 - 2020-11-05
 ### Added 
 - Added the ability to subscribe contacts to a mailing list when imported, even if previously unsubscribed (disabled by default).
 
