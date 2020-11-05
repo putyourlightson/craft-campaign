@@ -300,8 +300,10 @@ class ImportsService extends Component
         // Save import
         Campaign::$plugin->imports->saveImport($import);
 
-        // Add contact interaction
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
+        // Subscribe contact only if mailing list subscription status is empty or forcing is enabled
+        if ($contact->getMailingListSubscriptionStatus($import->mailingListId) == '' || $import->forceSubscribe) {
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
+        }
 
         return $import;
     }

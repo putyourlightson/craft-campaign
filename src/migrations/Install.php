@@ -297,6 +297,7 @@ class Install extends Migration
                 'userGroupId' => $this->integer(),
                 'userId' => $this->integer(),
                 'mailingListId' => $this->integer(),
+                'forceSubscribe' => $this->boolean()->defaultValue(false)->notNull(),
                 'emailFieldIndex' => $this->string(),
                 'fieldIndexes' => $this->text(),
                 'added' => $this->integer(),

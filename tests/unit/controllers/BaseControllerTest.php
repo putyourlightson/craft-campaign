@@ -7,6 +7,7 @@ namespace putyourlightson\campaigntests\unit\controllers;
 
 use Craft;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 use yii\base\InvalidRouteException;
 
 /**

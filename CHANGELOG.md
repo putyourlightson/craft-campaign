@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 1.16.6 - Unreleased
+## 1.17.0 - Unreleased
+### Added 
+- Added the ability to subscribe contacts to a mailing list when imported, even if previously unsubscribed (disabled by default).
+
 ### Changed
 - Replaced abandoned package htmlstrip with active package Html2Text.
 - Changed test class namespaces to be PSR-4 compliant.

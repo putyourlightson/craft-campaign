@@ -19,6 +19,7 @@ use yii\db\ActiveQuery;
  * @property int         $userGroupId           User group ID
  * @property int         $userId                User ID
  * @property int         $mailingListId         Mailing list ID
+ * @property bool        $forceSubscribe        Force subscribe
  * @property string      $emailFieldIndex       Email field index
  * @property mixed       $fieldIndexes          Field indexes
  * @property int         $added                 Added

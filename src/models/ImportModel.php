@@ -74,6 +74,11 @@ class ImportModel extends BaseModel
     public $mailingListId;
 
     /**
+     * @var bool Force subscribe
+     */
+    public $forceSubscribe = false;
+
+    /**
      * @var int Added
      */
     public $added = 0;

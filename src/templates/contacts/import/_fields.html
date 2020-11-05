@@ -34,6 +34,15 @@
             required: true
         }) }}
 
+        {{ forms.lightswitchField({
+            label: "Force Subscribe"|t('campaign'),
+            instructions: "Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed."|t('campaign'),
+            name: 'forceSubscribe',
+            on: import.forceSubscribe,
+            errors: import.getErrors('forceSubscribe'),
+            required: true
+        }) }}
+
         {% set input %}
             <div class="select">
                 <select name="emailFieldIndex">
@@ -55,8 +64,7 @@
         {{ forms.field({
             label: "Email"|t('campaign'),
             required: true,
-            errors: import.getErrors('emailFieldIndex'),
-            first: true
+            errors: import.getErrors('emailFieldIndex')
         }, input) }}
 
         {% for field in fields %}

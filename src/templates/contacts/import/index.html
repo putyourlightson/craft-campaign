@@ -10,7 +10,7 @@
 
 {% set crumbs = [] %}
 
-{% set contactFieldNames = [] %}
+{% set contactFieldNames = ['Email [' ~ 'required'|t('campaign') ~ ']'] %}
 {% for field in craft.campaign.settings.getContactFields() %}
     {% set contactFieldNames = contactFieldNames|merge([field.name ~ (field.required ? ' [' ~ 'required'|t('campaign') ~ ']')]) %}
 {% endfor %}
@@ -20,7 +20,7 @@
 
 {% block content %}
 
-    <p>{{ "Import emails addresses and contact data from a CSV file. The first line of the file should contain the column headers."|t('campaign') }}</p>
+    <p>{{ "Import emails addresses and contact data from a CSV file."|t('campaign') }}</p>
 
     <form action="" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
         {{ csrfInput() }}
@@ -28,7 +28,7 @@
 
         {{ forms.fileField({
             label: "CSV File"|t('campaign'),
-            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The following contact fields are available (email is required):"|t('campaign') ~ '<br><code>' ~ ['Email']|merge(contactFieldNames)|join(', ') ~ '</code><br>')|raw,
+            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:"|t('campaign') ~ '<br><code>' ~ contactFieldNames|join(', ') ~ '</code><br>')|raw,
             name: 'file',
             required: true
         }) }}
@@ -72,6 +72,7 @@
                 <th scope="col">{{ "Import"|t('campaign') }}</th>
                 <th scope="col">{{ "Source"|t('campaign') }}</th>
                 <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
+                <th scope="col">{{ "Force Subscribe"|t('campaign') }}</th>
                 <th scope="col">{{ "Added"|t('campaign') }}</th>
                 <th scope="col">{{ "Updated"|t('campaign') }}</th>
                 <th scope="col">{{ "Fails"|t('campaign') }}</th>
@@ -99,6 +100,13 @@
                         {% else %}
                             -
                         {% endif %}
+                    <td>
+                        {{ forms.lightswitch({
+                            name: 'forceSubscribe',
+                            on: import.forceSubscribe,
+                            disabled: true
+                        }) }}
+                    </td>
                     <td>{{ import.added }}</td>
                     <td>{{ import.updated }}</td>
                     <td>{{ import.fails }}</td>

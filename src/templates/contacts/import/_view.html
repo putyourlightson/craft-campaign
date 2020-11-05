@@ -19,13 +19,13 @@
         {% set input %}
             <p><a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}">{{ import.fileName }}</a></p>
         {% endset %}
-        {{ forms.field({label: "CSV File"|t('campaign') ~ ':'}, input) }}
+        {{ forms.field({label: "CSV File"|t('campaign')}, input) }}
     {% else %}
         {% set userGroup = import.getUserGroup() %}
         {% set input %}
             <p><a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup is not null ? userGroup.name }}</a></p>
         {% endset %}
-        {{ forms.field({label: "User Group"|t('campaign') ~ ':'}, input) }}
+        {{ forms.field({label: "User Group"|t('campaign')}, input) }}
     {% endif %}
 
     {% set mailingList = import.getMailingList() %}
@@ -37,7 +37,16 @@
         {% endif %}
         <br/>
     {% endset %}
-    {{ forms.field({label: "Mailing List"|t('campaign') ~ ':'}, input) }}
+    {{ forms.field({label: "Mailing List"|t('campaign')}, input) }}
+
+    {% set input %}
+        {{ forms.lightswitch({
+            name: 'forceSubscribe',
+            on: import.forceSubscribe,
+            disabled: true
+        }) }}
+    {% endset %}
+    {{ forms.field({label: "Force Subscribe"|t('campaign')}, input) }}
 
     {% set input %}
         {{ import.fails }}
@@ -47,7 +56,7 @@
             </span>
         {% endif %}
     {% endset %}
-    {{ forms.field({label: "Failed Imports"|t('campaign') ~ ':'}, input) }}
+    {{ forms.field({label: "Failed Imports"|t('campaign')}, input) }}
 
 {% endblock %}
 

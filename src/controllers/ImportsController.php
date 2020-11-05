@@ -140,6 +140,8 @@ class ImportsController extends Controller
         $mailingListIds = $request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
 
+        $import->forceSubscribe = $request->getBodyParam('forceSubscribe');
+
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
@@ -223,6 +225,8 @@ class ImportsController extends Controller
 
         $mailingListIds = $request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
+
+        $import->forceSubscribe = $request->getBodyParam('forceSubscribe');
 
         // Get core fields and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
