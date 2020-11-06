@@ -139,7 +139,7 @@ class SendoutsService extends Component
      *
      * @param int $sendoutId
      *
-     * @return string|null
+     * @return string|null|false
      */
     public function getSendoutSendStatusById(int $sendoutId)
     {
