@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.1 - 2020-11-24
+### Fixed
+- Fixed a bug that prevented the site ID of contacts being updated when the primary site was changed.
+
 ## 1.17.0 - 2020-11-05
 ### Added 
 - Added the ability to subscribe contacts to a mailing list when imported, even if previously unsubscribed (disabled by default).

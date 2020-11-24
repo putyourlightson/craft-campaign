@@ -21,6 +21,7 @@ use craft\helpers\MailerHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
+use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\ProjectConfig;
@@ -30,6 +31,11 @@ use craft\services\Utilities;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\campaign\controllers\TrackerController;
+use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SegmentElement;
+use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
@@ -131,6 +137,7 @@ class Campaign extends Plugin
         self::$plugin = $this;
 
         $this->_registerComponents();
+        $this->_registerElementTypes();
         $this->_registerFieldTypes();
         $this->_registerAfterInstallEvent();
         $this->_registerProjectConfigListeners();
@@ -469,6 +476,22 @@ class Campaign extends Plugin
         $this->set('mailer', function() {
             return $this->createMailer();
         });
+    }
+
+    /**
+     * Registers element types.
+     */
+    private function _registerElementTypes()
+    {
+        Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = CampaignElement::class;
+                $event->types[] = ContactElement::class;
+                $event->types[] = MailingListElement::class;
+                $event->types[] = SegmentElement::class;
+                $event->types[] = SendoutElement::class;
+            }
+        );
     }
 
     /**
