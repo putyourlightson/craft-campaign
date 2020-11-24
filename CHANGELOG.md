@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.2 - Unreleased
+### Changed
+- Made compatible with Craft 3.6.0 RC1.
+
 ## 1.17.1 - 2020-11-24
 ### Fixed
 - Fixed a bug that prevented the site ID of contacts being updated when the primary site was changed.
