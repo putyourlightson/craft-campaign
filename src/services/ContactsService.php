@@ -186,6 +186,6 @@ class ContactsService extends Component
     {
         Craft::$app->getDeprecator()->log('ContactsService::purgeExpiredPendingContacts()', 'The “ContactsService::purgeExpiredPendingContacts()” method has been deprecated. Use “PendingContactsService::purgeExpiredPendingContacts()” instead.');
 
-        return Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
+        Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
     }
 }
