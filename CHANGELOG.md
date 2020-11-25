@@ -1,8 +1,8 @@
 # Release Notes for Campaign
 
-## 1.17.2 - Unreleased
+## 1.17.2 - 2020-11-24
 ### Changed
-- Made compatible with Craft 3.6.0 RC1.
+- Added compatibility with Craft 3.6.0.
 
 ## 1.17.1 - 2020-11-24
 ### Fixed
