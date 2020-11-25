@@ -5,7 +5,9 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use craft\elements\Asset;
 use craft\errors\MissingComponentException;
+use craft\helpers\Assets;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
@@ -89,35 +91,39 @@ class ImportsController extends Controller
             return null;
         }
 
-        // Get storage directory path
-        $path = Craft::$app->path->getStoragePath().'/campaign/imports/'.gmdate('YmdHis').'/';
-
-        // Create directory
-        FileHelper::createDirectory($path);
-
-        // Sanitize file name
-        $fileName = FileHelper::sanitizeFilename($file->name);
-
-        // Get file path
-        $filePath = $path.$fileName;
-
-        // Save file
-        $file->saveAs($filePath);
+        $tempFilePath = $file->saveAsTempFile();
 
         // Ensure file is a CSV file
-        $mimeType = FileHelper::getMimeType($filePath);
+        $mimeType = FileHelper::getMimeType($tempFilePath);
         if ($mimeType != 'text/plain' && $mimeType != 'text/csv') {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
 
             return null;
         }
 
+        // Copy to user temporary folder
+        $userTemporaryFolder = Craft::$app->getAssets()->getUserTemporaryUploadFolder();
+
+        $fileName = Assets::prepareAssetName($file->name);
+
+        $asset = new Asset();
+        $asset->tempFilePath = $tempFilePath;
+        $asset->filename = $fileName;
+        $asset->newFolderId = $userTemporaryFolder->id;
+        $asset->setVolumeId($userTemporaryFolder->volumeId);
+        $asset->uploaderId = Craft::$app->getUser()->getId();
+        $asset->avoidFilenameConflicts = true;
+        $asset->setScenario(Asset::SCENARIO_CREATE);
+
+        Craft::$app->getElements()->saveElement($asset);
+
         if ($import === null) {
             $import = new ImportModel();
         }
 
-        $import->fileName = $fileName;
-        $import->filePath = $filePath;
+        $import->assetId = $asset->id;
+//        $import->filePath = $fileName;
+//        $import->filePath = $filePath;
 
         return $this->_returnFieldsTemplate($import);
     }
@@ -134,8 +140,7 @@ class ImportsController extends Controller
         $request = Craft::$app->getRequest();
 
         $import = new ImportModel();
-        $import->fileName = $request->getRequiredBodyParam('fileName');
-        $import->filePath = $request->getRequiredBodyParam('filePath');
+        $import->assetId = $request->getRequiredBodyParam('assetId');
 
         $mailingListIds = $request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';

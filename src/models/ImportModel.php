@@ -39,6 +39,11 @@ class ImportModel extends BaseModel
     public $id;
 
     /**
+     * @var int|null Asset ID
+     */
+    public $assetId;
+
+    /**
      * @var string|null File name
      */
     public $fileName;
@@ -142,8 +147,8 @@ class ImportModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'userId', 'mailingListId'], 'integer'],
-            [['mailingListId', 'emailFieldIndex'], 'required'],
+            [['id', 'assetId', 'userId', 'mailingListId'], 'integer'],
+            [['assetId', 'mailingListId', 'emailFieldIndex'], 'required'],
             [['fileName', 'filePath'], 'string', 'max' => 255],
         ];
     }
