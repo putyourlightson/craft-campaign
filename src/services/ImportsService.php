@@ -85,6 +85,42 @@ class ImportsService extends Component
     }
 
     /**
+     * Returns an import's resource handle.
+     *
+     * @param ImportModel $import
+     *
+     * @return resource|null
+     */
+    public function getHandle(ImportModel $import)
+    {
+        $handle = null;
+
+        // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
+        ini_set('auto_detect_line_endings', true);
+
+        if ($import->filePath) {
+            // Open file for reading
+            $handle = @fopen($import->filePath, 'rb');
+
+            // Convert handle from false boolean to null
+            if ($handle === false) {
+                $handle = null;
+            }
+        }
+        elseif ($import->assetId) {
+            $asset = Craft::$app->getAssets()->getAssetById($import->assetId);
+
+            if ($asset === null) {
+                return null;
+            }
+
+            $handle = $asset->getStream();
+        }
+
+        return $handle;
+    }
+
+    /**
      * Returns columns
      *
      * @param ImportModel $import
@@ -96,17 +132,16 @@ class ImportsService extends Component
         $columns = [];
 
         // If CSV file
-        if ($import->filePath) {
-            $handle = $this->_getHandle($import->filePath);
+        if ($import->fileName) {
+            $handle = $this->getHandle($import);
 
-            if ($handle === false) {
+            if ($handle === null) {
                 return $columns;
             }
 
             $columns = fgetcsv($handle);
         }
-
-        // If user group
+        // Else user group
         else {
             $columns = [
                 'email' => Craft::t('campaign', 'Email'),
@@ -141,11 +176,11 @@ class ImportsService extends Component
         $rows = [];
 
         // If CSV file
-        if ($import->filePath) {
-            $handle = $this->_getHandle($import->filePath);
+        if ($import->fileName) {
+            $handle = $this->getHandle($import);
 
-            if ($handle === false) {
-                return $rows;
+            if ($handle === null) {
+                return [];
             }
 
             $i = 0;
@@ -169,8 +204,7 @@ class ImportsService extends Component
 
             fclose($handle);
         }
-
-        // If user group
+        // Else user group
         else {
             // Get rows as arrays
             $rows = User::find()
@@ -332,24 +366,5 @@ class ImportsService extends Component
         }
 
         return true;
-    }
-
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * Returns a file pointer resource handle.
-     *
-     * @param string $filePath
-     *
-     * @return resource|false
-     */
-    private function _getHandle(string $filePath)
-    {
-        // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
-        ini_set('auto_detect_line_endings', true);
-
-        // Open file for reading
-        return fopen($filePath, 'rb');
     }
 }

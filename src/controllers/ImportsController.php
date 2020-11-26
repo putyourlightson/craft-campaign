@@ -122,8 +122,7 @@ class ImportsController extends Controller
         }
 
         $import->assetId = $asset->id;
-//        $import->filePath = $fileName;
-//        $import->filePath = $filePath;
+        $import->fileName = $fileName;
 
         return $this->_returnFieldsTemplate($import);
     }
@@ -141,11 +140,12 @@ class ImportsController extends Controller
 
         $import = new ImportModel();
         $import->assetId = $request->getRequiredBodyParam('assetId');
+        $import->fileName = $request->getRequiredBodyParam('fileName');
 
         $mailingListIds = $request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
 
-        $import->forceSubscribe = $request->getBodyParam('forceSubscribe');
+        $import->forceSubscribe = (bool)$request->getBodyParam('forceSubscribe');
 
         // Get email and custom field indexes
         $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
@@ -153,6 +153,9 @@ class ImportsController extends Controller
 
         // Validate it
         if (!$import->validate()) {
+            $errors = implode('. ', $import->getErrorSummary(true));
+            Campaign::$plugin->log('Couldn’t import file. {errors}', ['errors' => $errors]);
+
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import file.'));
 
             // Send the import back to the fields template
@@ -169,7 +172,6 @@ class ImportsController extends Controller
             }
         }
 
-        // Log it
         Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName]);
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'CSV file successfully queued for importing.'));
@@ -246,6 +248,9 @@ class ImportsController extends Controller
 
         // Validate it
         if (!$import->validate()) {
+            $errors = implode('. ', $import->getErrorSummary(true));
+            Campaign::$plugin->log('Couldn’t import user group. {errors}', ['errors' => $errors]);
+
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import user group.'));
 
             // Send the import back to the fields template
@@ -273,23 +278,29 @@ class ImportsController extends Controller
     /**
      * Downloads a file
      *
-     * @return Response|null
+     * @return Response
      * @throws BadRequestHttpException
      */
-    public function actionDownloadFile()
+    public function actionDownloadFile(): Response
     {
         $importId = Craft::$app->getRequest()->getRequiredParam('importId');
 
         $import = Campaign::$plugin->imports->getImportById($importId);
 
-        if ($import == null || !file_exists($import->filePath)) {
+        if ($import == null) {
             throw new BadRequestHttpException('Import not found.');
         }
 
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
-        return Craft::$app->getResponse()->sendFile($import->filePath, $import->fileName);
+        $handle = Campaign::$plugin->imports->getHandle($import);
+
+        if ($handle == null) {
+            throw new BadRequestHttpException('Imported file not found.');
+        }
+
+        return Craft::$app->getResponse()->sendStreamAsFile($handle, $import->fileName);
     }
 
     /**
