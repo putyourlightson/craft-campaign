@@ -14,6 +14,8 @@ use craft\db\ActiveRecord;
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.14.2
+ *
+ * @property int|null $id
 */
 abstract class BaseActiveRecord extends ActiveRecord
 {

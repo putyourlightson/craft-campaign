@@ -107,7 +107,7 @@ class ImportsService extends Component
                 $handle = null;
             }
         }
-        elseif ($import->assetId) {
+        elseif ($import->assetId !== null) {
             $asset = Craft::$app->getAssets()->getAssetById($import->assetId);
 
             if ($asset === null) {
