@@ -25,7 +25,6 @@ use yii\db\ActiveQuery;
  * @property int         $added                 Added
  * @property int         $updated               Updated
  * @property int         $fails                 Fails
- * @property mixed       $failures              Failures
  * @property DateTime    $dateImported          Date imported
  *
  * @method static ActiveQuery find()

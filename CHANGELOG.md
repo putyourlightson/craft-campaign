@@ -3,6 +3,7 @@
 ## 1.17.3 - 2020-12-09
 ### Changed
 - Improved the reliability of marking contacts as bounced when using the Mailgun webhook ([#178](https://github.com/putyourlightson/craft-campaign/issues/178)).
+- Importing contact data now stores CSV files in the temporary asset upload location as defined in _Settings → Assets → Settings_ ([#197](https://github.com/putyourlightson/craft-campaign/issues/197)).
 
 ## 1.17.2 - 2020-11-24
 ### Changed

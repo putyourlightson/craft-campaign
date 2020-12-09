@@ -85,7 +85,7 @@ class SegmentsService extends Component
      */
     public function getContacts(SegmentElement $segment): array
     {
-        return $this->getFilteredContacts($segment, null);
+        return $this->getFilteredContacts($segment);
     }
 
     /**
@@ -97,7 +97,7 @@ class SegmentsService extends Component
      */
     public function getContactIds(SegmentElement $segment): array
     {
-        return $this->getFilteredContactIds($segment, null);
+        return $this->getFilteredContactIds($segment);
     }
 
     /**
@@ -157,9 +157,7 @@ class SegmentsService extends Component
         $contactElementQuery = $this->_getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
-            $filteredContactIds = $contactElementQuery
-                ->where($this->_getConditions($segment))
-                ->ids();
+            $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
         }
 
         else if ($segment->segmentType == 'template') {
