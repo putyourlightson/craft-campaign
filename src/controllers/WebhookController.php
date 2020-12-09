@@ -143,10 +143,11 @@ class WebhookController extends Controller
 
         $eventType = $eventData['event'] ?? '';
         $severity = $eventData['severity'] ?? '';
+        $reason = $eventData['reason'] ?? '';
         $email = $eventData['recipient'] ?? '';
 
         if ($eventData === null) {
-            // Get event data from body params (legacy hooks)
+            // Get event data from body params (legacy webhooks)
             $eventType = $request->getBodyParam('event');
             $email = $request->getBodyParam('recipient');
         }
@@ -154,7 +155,16 @@ class WebhookController extends Controller
         if ($eventType == 'complained') {
             return $this->_callWebhook('complained', $email);
         }
-        if ($eventType == 'bounced' || ($eventType == 'failed' && $severity == 'permanent')) {
+
+        // Only mark as bounced if the reason indicates that it is a hard bounce.
+        // https://github.com/putyourlightson/craft-campaign/issues/178
+        if ($eventType == 'failed' && $severity == 'permanent'
+            && ($reason == 'bounce' || $reason == 'suppress-bounce')) {
+            return $this->_callWebhook('bounced', $email);
+        }
+
+        // Legacy webhook
+        if ($eventType == 'bounced') {
             return $this->_callWebhook('bounced', $email);
         }
 

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.3 - 2020-12-09
+### Changed
+- Improved the reliability of marking contacts as bounced when using the Mailgun webhook ([#178](https://github.com/putyourlightson/craft-campaign/issues/178)).
+
 ## 1.17.2 - 2020-11-24
 ### Changed
 - Added compatibility with Craft 3.6.0.
