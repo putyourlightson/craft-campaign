@@ -78,6 +78,7 @@ class WebhookController extends Controller
 
     /**
      * Amazon SES
+     * https://docs.aws.amazon.com/ses/latest/DeveloperGuide/notification-examples.html
      *
      * @throws Throwable
      */
@@ -87,6 +88,7 @@ class WebhookController extends Controller
 
         // Instantiate the Message and Validator
         $message = Message::fromRawPostData();
+
         $validator = new MessageValidator();
 
         // Validate the message

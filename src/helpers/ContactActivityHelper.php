@@ -52,7 +52,7 @@ class ContactActivityHelper
         $contactRecord->lastActivity = new DateTime();
 
         // Get GeoIP if enabled
-        if (1 || Campaign::$plugin->getSettings()->geoIp) {
+        if (Campaign::$plugin->getSettings()->geoIp) {
             $geoIp = self::getGeoIp();
 
             // If GeoIP and country exist

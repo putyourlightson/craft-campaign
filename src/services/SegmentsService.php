@@ -119,7 +119,7 @@ class SegmentsService extends Component
                 ->all();
         }
 
-        else if ($segment->segmentType == 'template') {
+        elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
 
             foreach ($contacts as $contact) {
