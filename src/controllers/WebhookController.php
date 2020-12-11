@@ -114,14 +114,15 @@ class WebhookController extends Controller
         }
 
         if ($message['Type'] === 'Notification') {
-            $eventType = $message['Message']['notificationType'];
+            $body = Json::decodeIfJson($message['Message']);
+            $eventType = $body['notificationType'] ?? null;
 
             if ($eventType == 'Complaint') {
-                $email = $message['Message']['complaint']['complainedRecipients'][0]['emailAddress'];
+                $email = $body['complaint']['complainedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('complained', $email);
             }
-            if ($eventType == 'Bounce' && $message['Message']['bounce']['bounceType'] == 'Permanent') {
-                $email = $message['Message']['bounce']['bouncedRecipients'][0]['emailAddress'];
+            if ($eventType == 'Bounce' && $body['bounce']['bounceType'] == 'Permanent') {
+                $email = $body['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('bounced', $email);
             }
         }

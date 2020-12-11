@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.4 - 2020-12-11
+### Fixed 
+- Fixed a bug in the Amazon SES webhook that was preventing bounce and complain notifications from being received through SNS ([#202](https://github.com/putyourlightson/craft-campaign/issues/202)).
+
 ## 1.17.3 - 2020-12-09
 ### Changed
 - Improved the reliability of marking contacts as bounced when using the Mailgun webhook ([#178](https://github.com/putyourlightson/craft-campaign/issues/178)).
