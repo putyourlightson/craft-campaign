@@ -99,6 +99,8 @@ class WebhookController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
         }
 
+        $body = Json::decodeIfJson($message['Message']);
+
         // Check the type of the message and handle the subscription.
         if ($message['Type'] === 'SubscriptionConfirmation') {
             // Confirm the subscription by sending a GET request to the SubscribeURL
@@ -114,14 +116,14 @@ class WebhookController extends Controller
         }
 
         if ($message['Type'] === 'Notification') {
-            $eventType = $message['Message']['notificationType'];
+            $eventType = $body['notificationType'];
 
             if ($eventType == 'Complaint') {
-                $email = $message['Message']['complaint']['complainedRecipients'][0]['emailAddress'];
+                $email = $body['complaint']['complainedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('complained', $email);
             }
-            if ($eventType == 'Bounce' && $message['Message']['bounce']['bounceType'] == 'Permanent') {
-                $email = $message['Message']['bounce']['bouncedRecipients'][0]['emailAddress'];
+            if ($eventType == 'Bounce' && $body['bounce']['bounceType'] == 'Permanent') {
+                $email = $body['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('bounced', $email);
             }
         }
