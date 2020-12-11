@@ -514,6 +514,12 @@ class Campaign extends Plugin
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function(PluginEvent $event) {
                 if ($event->plugin === $this) {
+                    // Don't proceed if plugin exists in incoming project config, otherwise updates won't be applied
+                    // https://github.com/putyourlightson/craft-campaign/issues/191
+                    if (Craft::$app->projectConfig->get('plugins.campaign', true) !== null) {
+                        return;
+                    }
+
                     // Create and save default settings
                     $settings = $this->createSettingsModel();
                     $this->settings->saveSettings($settings);

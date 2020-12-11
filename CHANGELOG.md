@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.5 - 2020-12-11
+### Fixed 
+- Fixed a bug that was preventing campaign types and mailing list types from being created when installing the plugin via project config ([#191](https://github.com/putyourlightson/craft-campaign/issues/191)).
+
 ## 1.17.4 - 2020-12-11
 ### Fixed 
 - Fixed a bug in the Amazon SES webhook that was preventing bounce and complain notifications from being received through SNS ([#202](https://github.com/putyourlightson/craft-campaign/issues/202)).
