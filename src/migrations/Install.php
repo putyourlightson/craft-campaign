@@ -292,6 +292,7 @@ class Install extends Migration
         if (!$this->db->tableExists('{{%campaign_imports}}')) {
             $this->createTable('{{%campaign_imports}}', [
                 'id' => $this->primaryKey(),
+                'assetId' => $this->integer(),
                 'fileName' => $this->string(),
                 'filePath' => $this->string(),
                 'userGroupId' => $this->integer(),

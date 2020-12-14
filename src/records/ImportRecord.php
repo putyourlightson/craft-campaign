@@ -14,6 +14,7 @@ use yii\db\ActiveQuery;
  * ImportRecord
  *
  * @property int         $id                    ID
+ * @property int         $assetId               Asset ID
  * @property string      $fileName              File name
  * @property string      $filePath              File path
  * @property int         $userGroupId           User group ID

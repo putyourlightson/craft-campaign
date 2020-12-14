@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.6 - 2020-12-14
+### Fixed 
+- Fixed the contact import functionality added in 1.17.3.
+
 ## 1.17.5 - 2020-12-11
 ### Fixed 
 - Fixed a bug that was preventing campaign types and mailing list types from being created when installing the plugin via project config ([#191](https://github.com/putyourlightson/craft-campaign/issues/191)).
