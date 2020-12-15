@@ -9,7 +9,7 @@ return [
     [
         'pid' => StringHelper::uniqueId('p'),
         'email' => 'pending1@contacts.com',
-        'mailingListId' => $this->mailingListId ?? null,
+        'mailingListId' => $this->mailingListId,
         'fieldData' => [],
     ],
 ];

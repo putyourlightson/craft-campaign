@@ -68,7 +68,8 @@ class ContactsServiceTest extends BaseUnitTest
         // Assert that a contact with the same email can be saved if the other contact was soft-deleted
         $this->assertTrue($elementsService->saveElement($newContact));
 
-        // Now delete the contact so future tests won't fail
+        // Now delete the contacts so future fixtures won't fail
         $elementsService->deleteElement($this->contact, true);
+        $elementsService->deleteElement($newContact, true);
     }
 }

@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\test\fixtures\elements\MailingListElementFixture;
 
 /**
@@ -33,19 +32,4 @@ class MailingListsFixture extends MailingListElementFixture
      * @var int[]
      */
     public $mailingListTypeIds = [];
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function load()
-    {
-        foreach (Campaign::$plugin->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
-            $this->mailingListTypeIds[$mailingListType->handle] = $mailingListType->id;
-        }
-
-        parent::load();
-    }
 }

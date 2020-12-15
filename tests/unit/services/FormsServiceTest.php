@@ -49,12 +49,12 @@ class FormsServiceTest extends BaseUnitTest
 
     public function testSendVerifySubscribeEmail()
     {
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactRecord::find()
+        $pendingContactRecord = PendingContactRecord::find()
             ->where(['email' => 'pending1@contacts.com'])
             ->one();
 
-        $pendingContact = PendingContactModel::populateModel($pendingContact, false);
+        /** @var PendingContactModel $pendingContact */
+        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
 
         Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
@@ -95,16 +95,16 @@ class FormsServiceTest extends BaseUnitTest
         Campaign::$plugin->forms->subscribeContact($contact, $mailingList);
 
         // Assert that contact is subscribed to 1 mailing list
-        $this->assertEquals($contact->getSubscribedCount(), 1);
+        $this->assertEquals(1, $contact->getSubscribedCount());
 
         // Assert that contact is subscribed to the correct mailing list
-        $this->assertEquals($contact->getSubscribedMailingLists()[0]->id, $mailingList->id);
+        $this->assertEquals($mailingList->id, $contact->getSubscribedMailingLists()[0]->id);
 
         // Unsubscribe contact from mailing list
         Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList);
 
         // Assert that contact is subscribed to 0 mailing lists
-        $this->assertEquals($contact->getSubscribedCount(), 0);
+        $this->assertEquals(0, $contact->getSubscribedCount());
     }
 
     public function testUpdateContact()
