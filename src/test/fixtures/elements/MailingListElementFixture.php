@@ -5,7 +5,8 @@
 
 namespace putyourlightson\campaign\test\fixtures\elements;
 
-use craft\test\fixtures\elements\ElementFixture;
+use craft\base\ElementInterface;
+use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
@@ -15,23 +16,12 @@ use putyourlightson\campaign\elements\MailingListElement;
  * @since     1.10.0
  */
 
-abstract class MailingListElementFixture extends ElementFixture
+abstract class MailingListElementFixture extends BaseElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = MailingListElement::class;
-
     /**
      * @var array
      */
     public $mailingListTypeIds = [];
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -45,14 +35,11 @@ abstract class MailingListElementFixture extends ElementFixture
         parent::load();
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected function isPrimaryKey(string $key): bool
+    protected function createElement(): ElementInterface
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['mailingListTypeId', 'title']);
+        return new MailingListElement();
     }
 }

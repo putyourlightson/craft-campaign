@@ -5,7 +5,8 @@
 
 namespace putyourlightson\campaign\test\fixtures\elements;
 
-use craft\test\fixtures\elements\ElementFixture;
+use craft\base\ElementInterface;
+use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -17,16 +18,8 @@ use putyourlightson\campaign\elements\SendoutElement;
  * @since     1.10.0
  */
 
-abstract class SendoutElementFixture extends ElementFixture
+abstract class SendoutElementFixture extends BaseElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = SendoutElement::class;
-
     /**
      * @var int|null
      */
@@ -41,9 +34,6 @@ abstract class SendoutElementFixture extends ElementFixture
      * @var string|null
      */
     public $segmentIds;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -62,14 +52,11 @@ abstract class SendoutElementFixture extends ElementFixture
         parent::load();
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected function isPrimaryKey(string $key): bool
+    protected function createElement(): ElementInterface
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['title']);
+        return new SendoutElement();
     }
 }

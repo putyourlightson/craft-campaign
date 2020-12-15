@@ -5,7 +5,8 @@
 
 namespace putyourlightson\campaign\test\fixtures\elements;
 
-use craft\test\fixtures\elements\ElementFixture;
+use craft\base\ElementInterface;
+use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\SegmentElement;
 
 /**
@@ -14,24 +15,13 @@ use putyourlightson\campaign\elements\SegmentElement;
  * @since     1.13.0
  */
 
-abstract class SegmentElementFixture extends ElementFixture
+abstract class SegmentElementFixture extends BaseElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    public $modelClass = SegmentElement::class;
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function isPrimaryKey(string $key): bool
+    protected function createElement(): ElementInterface
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['title']);
+        return new SegmentElement();
     }
 }

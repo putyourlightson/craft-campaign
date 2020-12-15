@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use craft\test\Fixture;
+use craft\test\ActiveFixture;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\LinkRecord;
 
@@ -15,7 +15,7 @@ use putyourlightson\campaign\records\LinkRecord;
  * @since     1.12.2
  */
 
-class LinksFixture extends Fixture
+class LinksFixture extends ActiveFixture
 {
     // Public Properties
     // =========================================================================

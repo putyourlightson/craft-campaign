@@ -5,7 +5,8 @@
 
 namespace putyourlightson\campaign\test\fixtures\elements;
 
-use craft\test\fixtures\elements\ElementFixture;
+use craft\base\ElementInterface;
+use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 
@@ -15,23 +16,12 @@ use putyourlightson\campaign\elements\CampaignElement;
  * @since     1.10.0
  */
 
-abstract class CampaignElementFixture extends ElementFixture
+abstract class CampaignElementFixture extends BaseElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = CampaignElement::class;
-
     /**
      * @var array
      */
     public $campaignTypeIds = [];
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -45,14 +35,11 @@ abstract class CampaignElementFixture extends ElementFixture
         parent::load();
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected function isPrimaryKey(string $key): bool
+    protected function createElement(): ElementInterface
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['campaignTypeId', 'title']);
+        return new CampaignElement();
     }
 }

@@ -5,7 +5,8 @@
 
 namespace putyourlightson\campaign\test\fixtures\elements;
 
-use craft\test\fixtures\elements\ElementFixture;
+use craft\base\ElementInterface;
+use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\ContactElement;
 
 /**
@@ -14,24 +15,13 @@ use putyourlightson\campaign\elements\ContactElement;
  * @since     1.10.0
  */
 
-abstract class ContactElementFixture extends ElementFixture
+abstract class ContactElementFixture extends BaseElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    public $modelClass = ContactElement::class;
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function isPrimaryKey(string $key): bool
+    protected function createElement(): ElementInterface
     {
-        return parent::isPrimaryKey($key) || in_array($key, ['email']);
+        return new ContactElement();
     }
 }

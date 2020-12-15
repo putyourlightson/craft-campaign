@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use craft\test\Fixture;
+use craft\test\ActiveFixture;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
 /**
@@ -14,7 +14,7 @@ use putyourlightson\campaign\records\MailingListTypeRecord;
  * @since     1.10.0
  */
 
-class MailingListTypesFixture extends Fixture
+class MailingListTypesFixture extends ActiveFixture
 {
     // Public Properties
     // =========================================================================

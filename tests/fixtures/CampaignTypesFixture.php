@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use craft\test\Fixture;
+use craft\test\ActiveFixture;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 
 /**
@@ -14,7 +14,7 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * @since     1.10.0
  */
 
-class CampaignTypesFixture extends Fixture
+class CampaignTypesFixture extends ActiveFixture
 {
     // Public Properties
     // =========================================================================

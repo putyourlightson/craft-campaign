@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaigntests\fixtures;
 
-use craft\test\Fixture;
+use craft\test\ActiveFixture;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\PendingContactRecord;
 
@@ -15,7 +15,7 @@ use putyourlightson\campaign\records\PendingContactRecord;
  * @since     1.10.0
  */
 
-class PendingContactsFixture extends Fixture
+class PendingContactsFixture extends ActiveFixture
 {
     // Public Properties
     // =========================================================================
