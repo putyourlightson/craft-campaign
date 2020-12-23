@@ -329,9 +329,10 @@ class ImportsService extends Component
 
         // Save contact
         if (!Craft::$app->getElements()->saveElement($contact)) {
+            $import->fails++;
+
             Campaign::$plugin->log('Line '.$lineNumber.': '.implode('. ', $contact->getErrorSummary(true)));
 
-            $import->fails++;
             Campaign::$plugin->imports->saveImport($import);
 
             return $import;
@@ -346,7 +347,7 @@ class ImportsService extends Component
 
         Campaign::$plugin->imports->saveImport($import);
 
-        // Subscribe contact only if mailing list subscription status is empty or forcing is enabled
+        // Subscribe contact only if contact's mailing list subscription status is empty or forcing is enabled
         if ($contact->getMailingListSubscriptionStatus($import->mailingListId) == '' || $import->forceSubscribe) {
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
         }
