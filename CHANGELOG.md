@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.7 - Unreleased
+### Changed 
+- Optimised the contact importing process.
+
 ## 1.17.6 - 2020-12-14
 ### Fixed 
 - Fixed the contact import functionality added in 1.17.3.

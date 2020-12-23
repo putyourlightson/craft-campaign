@@ -44,6 +44,14 @@ class ImportsService extends Component
      */
     const EVENT_AFTER_IMPORT = 'afterImport';
 
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var array
+     */
+    private $_mailingLists = [];
+
     // Public Methods
     // =========================================================================
 
@@ -279,8 +287,12 @@ class ImportsService extends Component
      */
     public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
     {
-        // Get mailing list
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
+        // Get mailing list or memoize it
+        if (empty($this->_mailingLists[$import->mailingListId])) {
+            $this->_mailingLists[$import->mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
+        }
+
+        $mailingList = $this->_mailingLists[$import->mailingListId];
 
         if ($mailingList === null) {
             return $import;
@@ -315,11 +327,12 @@ class ImportsService extends Component
             $contact->setFieldValues($values);
         }
 
-        // Save it
+        // Save contact
         if (!Craft::$app->getElements()->saveElement($contact)) {
             Campaign::$plugin->log('Line '.$lineNumber.': '.implode('. ', $contact->getErrorSummary(true)));
 
             $import->fails++;
+            Campaign::$plugin->imports->saveImport($import);
 
             return $import;
         }
@@ -331,7 +344,6 @@ class ImportsService extends Component
             $import->updated++;
         }
 
-        // Save import
         Campaign::$plugin->imports->saveImport($import);
 
         // Subscribe contact only if mailing list subscription status is empty or forcing is enabled
