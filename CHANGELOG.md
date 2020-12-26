@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.17.8 - Unreleased
+### Changed
+- Improved compatibility with Craft 3.6.0.
+
 ## 1.17.7 - 2020-12-23
 ### Changed 
 - Improved the contact importing process.
