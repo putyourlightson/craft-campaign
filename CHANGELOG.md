@@ -1,6 +1,8 @@
 # Release Notes for Campaign
 
 ## 1.18.0 - Unreleased
+> {tip} Read the updated docs on [Sending to Large Lists](https://putyourlightson.com/plugins/campaign#sending-to-large-lists).
+
 ### Added
 - Added compatibility with Craft 3.6.0.
 
