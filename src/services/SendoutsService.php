@@ -571,17 +571,20 @@ class SendoutsService extends Component
      */
     public function finaliseSending(SendoutElement $sendout)
     {
-        // Change sending status to sent
-        if ($sendout->sendStatus == SendoutElement::STATUS_SENDING) {
-            $sendout->sendStatus = SendoutElement::STATUS_SENT;
-        }
+        // If not failed
+        if ($sendout->sendStatus != SendoutElement::STATUS_FAILED) {
+            // Change sending status to sent
+            if ($sendout->sendStatus == SendoutElement::STATUS_SENDING) {
+                $sendout->sendStatus = SendoutElement::STATUS_SENT;
+            }
 
-        // Update send status to pending if automated or recurring or not fully complete
-        if ($sendout->sendoutType == 'automated' ||
-            $sendout->sendoutType == 'recurring' ||
-            $this->getPendingRecipientCount($sendout) > 0
-        ) {
-            $sendout->sendStatus = SendoutElement::STATUS_PENDING;
+            // Update send status to pending if automated or recurring or not fully complete
+            if ($sendout->sendoutType == 'automated' ||
+                $sendout->sendoutType == 'recurring' ||
+                $this->getPendingRecipientCount($sendout) > 0
+            ) {
+                $sendout->sendStatus = SendoutElement::STATUS_PENDING;
+            }
         }
 
         // Get campaign
