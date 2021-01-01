@@ -41,7 +41,7 @@ return [
         //'emailFieldLabel' => 'Email',
 
         // The maximum size of sendout batches
-        //'maxBatchSize' => 1000,
+        //'maxBatchSize' => 10000,
 
         // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
         //'memoryLimit' => '1024M',
@@ -55,6 +55,9 @@ return [
         // The threshold for execution time per sendout batch as a fraction
         //'timeThreshold' => 0.8,
 
+        // The amount of time in seconds to delay jobs between sendout batches
+        //'batchJobDelay' => 10,
+
         // The maximum number of times to attempt sending a sendout to a single contact before failing
         //'maxSendAttempts' => 3,
 
@@ -63,9 +66,6 @@ return [
 
         // The maximum number of times to attempt retrying a failed sendout job
         //'maxRetryAttempts' => 10,
-
-        // The amount of time in seconds to delay jobs between sendout batches
-        //'batchJobDelay' => 10,
 
         // The amount of time in seconds to reserve a sendout job
         //'sendoutJobTtr' => 300,

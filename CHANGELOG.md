@@ -1,8 +1,16 @@
 # Release Notes for Campaign
 
-## 1.17.8 - Unreleased
+## 1.18.0 - Unreleased
+### Added
+- Added compatibility with Craft 3.6.0.
+
 ### Changed
-- Improved compatibility with Craft 3.6.0.
+- Optimised the sending process of large sendouts.
+- Changed max batch size to 10,000 for new installs.
+- Removed `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
+
+### Fixed
+- Fixed failed sendout statuses that were being set to pending.
 
 ## 1.17.7 - 2020-12-23
 ### Changed 

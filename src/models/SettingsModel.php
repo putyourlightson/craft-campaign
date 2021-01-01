@@ -72,7 +72,7 @@ class SettingsModel extends Model
     /**
      * @var int The maximum size of sendout batches
      */
-    public $maxBatchSize = 1000;
+    public $maxBatchSize = 10000;
 
     /**
      * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
