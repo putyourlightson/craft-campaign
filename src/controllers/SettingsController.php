@@ -34,14 +34,6 @@ use yii\web\Response;
  */
 class SettingsController extends Controller
 {
-    // Properties
-    // =========================================================================
-
-    /**
-     * @var SettingsModel $_settings
-     */
-    private $_settings;
-
     // Public Methods
     // =========================================================================
 
@@ -59,8 +51,6 @@ class SettingsController extends Controller
         if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Administrative changes are disallowed in this environment.'));
         }
-
-        $this->_settings = Campaign::$plugin->getSettings();
     }
 
     /**
@@ -71,7 +61,7 @@ class SettingsController extends Controller
     public function actionEditGeneral(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         return $this->renderTemplate('campaign/settings/general', [
@@ -92,7 +82,7 @@ class SettingsController extends Controller
     public function actionEditEmail(SettingsModel $settings = null, TransportAdapterInterface $adapter = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         if ($adapter === null) {
@@ -151,7 +141,7 @@ class SettingsController extends Controller
     public function actionEditContact(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         return $this->renderTemplate('campaign/settings/contact', [
@@ -168,7 +158,7 @@ class SettingsController extends Controller
     public function actionEditSendout(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         return $this->renderTemplate('campaign/settings/sendout', [
@@ -190,7 +180,7 @@ class SettingsController extends Controller
     public function actionEditGeoip(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         return $this->renderTemplate('campaign/settings/geoip', [
@@ -207,7 +197,7 @@ class SettingsController extends Controller
     public function actionEditRecaptcha(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = $this->_settings;
+            $settings = Campaign::$plugin->getSettings();
         }
 
         return $this->renderTemplate('campaign/settings/recaptcha', [
@@ -224,7 +214,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->testMode = Craft::$app->getRequest()->getBodyParam('testMode', $settings->testMode);
@@ -256,7 +246,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
@@ -299,7 +289,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->emailFieldLabel = Craft::$app->getRequest()->getBodyParam('emailFieldLabel', $settings->emailFieldLabel);
@@ -335,7 +325,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('maxBatchSize', $settings->maxBatchSize);
@@ -367,7 +357,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->geoIp = Craft::$app->getRequest()->getBodyParam('geoIp', $settings->geoIp);
@@ -398,7 +388,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->reCaptcha = Craft::$app->getRequest()->getBodyParam('reCaptcha', $settings->reCaptcha);
@@ -435,7 +425,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = $this->_settings;
+        $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
         $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);

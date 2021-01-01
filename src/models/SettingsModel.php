@@ -85,16 +85,6 @@ class SettingsModel extends Model
     public $timeLimit = 3600;
 
     /**
-     * @var mixed The memory usage limit to use when found to be unlimited
-     */
-    public $unlimitedMemoryLimit = '4G';
-
-    /**
-     * @var int The execution time limit to use when found to be unlimited
-     */
-    public $unlimitedTimeLimit = 3600;
-
-    /**
      * @var float The threshold for memory usage per sendout batch as a fraction
      */
     public $memoryThreshold = 0.8;

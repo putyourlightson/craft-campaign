@@ -100,13 +100,13 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Get settings
         $settings = Campaign::$plugin->getSettings();
 
-        // Get memory limit with threshold if unlimited
+        // Get memory limit or set to null if unlimited
         $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = $memoryLimit == -1 ? SendoutHelper::memoryInBytes($settings->unlimitedMemoryLimit) : round(SendoutHelper::memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+        $memoryLimit = ($memoryLimit == -1) ? null : round(SendoutHelper::memoryInBytes($memoryLimit) * $settings->memoryThreshold);
 
-        // Get time limit with threshold if unlimited
+        // Get time limit or set to null if unlimited
         $timeLimit = ini_get('max_execution_time');
-        $timeLimit = $timeLimit == 0 ? $settings->unlimitedTimeLimit : round($timeLimit * $settings->timeThreshold);
+        $timeLimit = ($timeLimit == 0) ? null : round($timeLimit * $settings->timeThreshold);
 
         // Prepare sending
         Campaign::$plugin->sendouts->prepareSending($sendout);
@@ -131,7 +131,10 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $pendingRecipient['mailingListId']);
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
-            if (memory_get_usage(true) > $memoryLimit || time() - $_SERVER['REQUEST_TIME'] > $timeLimit || $count >= $batchSize) {
+            if (($memoryLimit && memory_get_usage(true) > $memoryLimit)
+                || ($timeLimit && time() - $_SERVER['REQUEST_TIME'] > $timeLimit)
+                || $count >= $batchSize
+            ) {
                 // Add new job to queue with delay
                 Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
                     'sendoutId' => $this->sendoutId,

@@ -49,12 +49,6 @@ return [
         // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
         //'timeLimit' => 3600,
 
-        // The memory usage limit to use found to be to unlimited
-        //'unlimitedMemoryLimit' => '4G',
-
-        // The execution time limit to use found to be to unlimited
-        //'unlimitedTimeLimit' => 3600,
-
         // The threshold for memory usage per sendout batch as a fraction
         //'memoryThreshold' => 0.8,
 
