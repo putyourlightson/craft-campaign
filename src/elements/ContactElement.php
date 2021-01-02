@@ -685,9 +685,9 @@ class ContactElement extends Element
     /**
      * Returns whether the contact can receive email
      *
-     * @return string
+     * @return bool
      */
-    public function canReceiveEmail()
+    public function canReceiveEmail(): bool
     {
         return $this->complained !== null || $this->bounced !== null || $this->blocked !== null;
     }

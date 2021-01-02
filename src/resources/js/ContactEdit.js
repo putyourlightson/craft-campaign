@@ -7,7 +7,17 @@
 Campaign.ContactEdit = Garnish.Base.extend(
     {
         init: function() {
+            this.initElementThumbs();
             this.addListener($.find('.update-subscription'), 'click', 'updateSubscription');
+        },
+
+        initElementThumbs: function() {
+            var elements = $('.meta .element');
+
+            if (elements.length) {
+                var thumbLoader = new Craft.ElementThumbLoader();
+                thumbLoader.load(elements);
+            }
         },
 
         updateSubscription: function(event) {

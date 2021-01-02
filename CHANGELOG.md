@@ -14,6 +14,7 @@
 
 ### Fixed
 - Fixed failed sendout statuses that were being set to pending.
+- Fixed element thumbnails not appearing in contact edit page.
 
 ## 1.17.7 - 2020-12-23
 ### Changed 
