@@ -353,8 +353,7 @@ class SendoutsService extends Component
             return;
         }
 
-        // Return if contact has complained or bounced
-        if ($contact->complained !== null || $contact->bounced !== null) {
+        if ($contact->canReceiveEmail() === false) {
             return;
         }
 

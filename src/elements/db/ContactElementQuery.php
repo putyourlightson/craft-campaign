@@ -22,7 +22,7 @@ use yii\db\Connection;
  *
  * @author    PutYourLightsOn
  * @package   Campaign
- * @since     1.0.0   
+ * @since     1.0.0
  */
 class ContactElementQuery extends ElementQuery
 {
@@ -153,6 +153,7 @@ class ContactElementQuery extends ElementQuery
             'campaign_contacts.verified',
             'campaign_contacts.complained',
             'campaign_contacts.bounced',
+            'campaign_contacts.blocked',
         ]);
 
         if ($this->userId) {
@@ -195,6 +196,7 @@ class ContactElementQuery extends ElementQuery
                 return [
                     'campaign_contacts.complained' => null,
                     'campaign_contacts.bounced' => null,
+                    'campaign_contacts.blocked' => null,
                 ];
             case ContactElement::STATUS_COMPLAINED:
                 return [
@@ -203,6 +205,10 @@ class ContactElementQuery extends ElementQuery
             case ContactElement::STATUS_BOUNCED:
                 return [
                     'not', ['campaign_contacts.bounced' => null],
+                ];
+            case ContactElement::STATUS_BLOCKED:
+                return [
+                    'not', ['campaign_contacts.blocked' => null],
                 ];
             default:
                 return parent::statusCondition($status);

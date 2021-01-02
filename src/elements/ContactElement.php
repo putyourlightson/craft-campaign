@@ -57,6 +57,7 @@ class ContactElement extends Element
     const STATUS_ACTIVE = 'active';
     const STATUS_COMPLAINED = 'complained';
     const STATUS_BOUNCED = 'bounced';
+    const STATUS_BLOCKED = 'blocked';
 
     // Static Methods
     // =========================================================================
@@ -93,7 +94,8 @@ class ContactElement extends Element
         return [
             self::STATUS_ACTIVE => Craft::t('campaign', 'Active'),
             self::STATUS_COMPLAINED => Craft::t('campaign', 'Complained'),
-            self::STATUS_BOUNCED => Craft::t('campaign', 'Bounced')
+            self::STATUS_BOUNCED => Craft::t('campaign', 'Bounced'),
+            self::STATUS_BLOCKED => Craft::t('campaign', 'Blocked'),
         ];
     }
 
@@ -322,30 +324,37 @@ class ContactElement extends Element
     /**
      * Last activity
      *
-     * @var DateTime
+     * @var DateTime|null
      */
     public $lastActivity;
 
     /**
      * Verified
      *
-     * @var DateTime
+     * @var DateTime|null
      */
     public $verified;
 
     /**
      * Complained
      *
-     * @var DateTime
+     * @var DateTime|null
      */
     public $complained;
 
     /**
      * Bounced
      *
-     * @var DateTime
+     * @var DateTime|null
      */
     public $bounced;
+
+    /**
+     * Blocked
+     *
+     * @var DateTime|null
+     */
+    public $blocked;
 
     /**
      * Subscription status, only used when a mailing list is selected in element index
@@ -386,6 +395,7 @@ class ContactElement extends Element
         $names[] = 'verified';
         $names[] = 'complained';
         $names[] = 'bounced';
+        $names[] = 'blocked';
 
         return $names;
     }
@@ -414,7 +424,7 @@ class ContactElement extends Element
         $rules[] = [['cid'], 'string', 'max' => 17];
         $rules[] = [['email'], 'email'];
         $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
-        $rules[] = [['lastActivity', 'verified', 'complained', 'bounced'], DateTimeValidator::class];
+        $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
 
         return $rules;
     }
@@ -620,12 +630,16 @@ class ContactElement extends Element
      */
     public function getStatus()
     {
+        if ($this->complained) {
+            return self::STATUS_COMPLAINED;
+        }
+
         if ($this->bounced) {
             return self::STATUS_BOUNCED;
         }
 
-        if ($this->complained) {
-            return self::STATUS_COMPLAINED;
+        if ($this->blocked) {
+            return self::STATUS_BLOCKED;
         }
 
         return self::STATUS_ACTIVE;
@@ -666,6 +680,16 @@ class ContactElement extends Element
     public function getReportUrl(): string
     {
         return UrlHelper::cpUrl('campaign/reports/contacts/'.$this->id);
+    }
+
+    /**
+     * Returns whether the contact can receive email
+     *
+     * @return string
+     */
+    public function canReceiveEmail()
+    {
+        return $this->complained !== null || $this->bounced !== null || $this->blocked !== null;
     }
 
     /**
@@ -756,6 +780,7 @@ class ContactElement extends Element
             $contactRecord->verified = $this->verified;
             $contactRecord->complained = $this->complained;
             $contactRecord->bounced = $this->bounced;
+            $contactRecord->blocked = $this->blocked;
 
             $contactRecord->save(false);
         }

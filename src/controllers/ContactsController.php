@@ -116,13 +116,13 @@ class ContactsController extends Controller
 
         $variables['actions'] = [];
 
-        // Add complain and bounce actions
+        // Add complain, bounce and blocked actions
         if ($contact->complained === null) {
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Mark contact as complained'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
             ];
         }
         else {
@@ -130,15 +130,16 @@ class ContactsController extends Controller
                 'action' => 'campaign/contacts/unmark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Unmark contact as complained'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
             ];
         }
+
         if ($contact->bounced === null) {
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/mark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Mark contact as bounced'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
             ];
         }
         else {
@@ -146,7 +147,24 @@ class ContactsController extends Controller
                 'action' => 'campaign/contacts/unmark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
                 'label' => Craft::t('campaign', 'Unmark contact as bounced'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
+            ];
+        }
+
+        if ($contact->blocked === null) {
+            $variables['actions'][0][] = [
+                'action' => 'campaign/contacts/mark-contact-blocked',
+                'redirect' => 'campaign/contacts/{id}',
+                'label' => Craft::t('campaign', 'Mark contact as blocked'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
+            ];
+        }
+        else {
+            $variables['actions'][0][] = [
+                'action' => 'campaign/contacts/unmark-contact-blocked',
+                'redirect' => 'campaign/contacts/{id}',
+                'label' => Craft::t('campaign', 'Unmark contact as blocked'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
             ];
         }
 
@@ -283,6 +301,21 @@ class ContactsController extends Controller
     }
 
     /**
+     * Marks a contact as blocked
+     *
+     * @return Response|null
+     * @throws BadRequestHttpException
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionMarkContactBlocked()
+    {
+        return $this->_markContactStatus('blocked');
+    }
+
+    /**
      * Unmarks a contact as complained
      *
      * @return Response|null
@@ -310,6 +343,21 @@ class ContactsController extends Controller
     public function actionUnmarkContactBounced()
     {
         return $this->_unmarkContactStatus('bounced');
+    }
+
+    /**
+     * Unmarks a contact as blocked
+     *
+     * @return Response|null
+     * @throws BadRequestHttpException
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUnmarkContactBlocked()
+    {
+        return $this->_unmarkContactStatus('blocked');
     }
 
     /**
@@ -482,7 +530,7 @@ class ContactsController extends Controller
                 return $this->asJson(['success' => false]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t mark contact as {status}.', ['status' => $status]));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t mark contact as '.$status.'.'));
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
@@ -496,7 +544,7 @@ class ContactsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact marked as {status}.', ['status' => $status]));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact marked as '.$status.'.'));
 
         return $this->redirectToPostedUrl($contact);
     }
@@ -526,7 +574,7 @@ class ContactsController extends Controller
                 return $this->asJson(['success' => false]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t unmark contact as {status}.', ['status' => $status]));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t unmark contact as '.$status.'.'));
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
@@ -540,7 +588,7 @@ class ContactsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact unmarked as {status}.', ['status' => $status]));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact unmarked as '.$status.'.'));
 
         return $this->redirectToPostedUrl($contact);
     }

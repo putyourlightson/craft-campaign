@@ -23,10 +23,11 @@ use yii\db\ActiveQuery;
  * @property string $device Device
  * @property string $os OS
  * @property string $client Client
- * @property DateTime $lastActivity Last activity
- * @property DateTime $verified Verified
- * @property DateTime $complained Complained
- * @property DateTime $bounced Bounced
+ * @property DateTime|null $lastActivity Last activity
+ * @property DateTime|null $verified Verified
+ * @property DateTime|null $complained Complained
+ * @property DateTime|null $bounced Bounced
+ * @property DateTime|null $blocked Blocked
  * @property ActiveQuery $element
  * @property ActiveQuery $user
  *

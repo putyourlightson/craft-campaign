@@ -225,6 +225,11 @@ table th.thin, table td.thin {
     border-color: rgba(0, 0, 0, 0) !important;
 }
 
+.status.blocked {
+    background: #CF1124;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
 label.subscriptionStatus {
     display: inline-block;
     border-radius: 3px;

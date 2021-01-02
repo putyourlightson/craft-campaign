@@ -18,6 +18,7 @@ use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -75,6 +76,11 @@ class FormsController extends BaseMessageController
         if ($contact === null) {
             $contact = new ContactElement();
             $contact->email = $email;
+        }
+
+        // Disallow if blocked
+        if ($contact->blocked !== null) {
+            throw new MethodNotAllowedHttpException(Craft::t('campaign', 'This email address is blocked from subscribing.'));
         }
 
         // Set field values

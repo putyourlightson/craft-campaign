@@ -313,6 +313,11 @@ class ImportsService extends Component
             $newContact = true;
         }
 
+        // Skip if blocked
+        if ($contact->blocked !== null) {
+            return $import;
+        }
+
         // Map fields to values
         if (is_array($import->fieldIndexes)) {
             $values = [];

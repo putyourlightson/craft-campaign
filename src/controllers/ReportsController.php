@@ -165,6 +165,7 @@ class ReportsController extends Controller
             'unsubscribed' => '#D0021B',
             'complained' => '#503112',
             'bounced' => '#000000',
+            'blocked' => '#000000',
         ];
 
         $colors = [];

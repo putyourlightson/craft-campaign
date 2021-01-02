@@ -5,6 +5,7 @@
 
 ### Added
 - Added compatibility with Craft 3.6.0.
+- Added the ability to mark a contact as blocked, preventing them from being subscribed to mailing lists.
 
 ### Changed
 - Optimised the sending process of large sendouts.

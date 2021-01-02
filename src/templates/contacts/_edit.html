@@ -163,6 +163,12 @@
                     <div class="value">{{ contact.bounced|datetime }}</div>
                 </div>
             {% endif %}
+            {% if contact.blocked %}
+                <div class="data">
+                    <h5 class="heading">{{ "Blocked"|t('campaign') }}</h5>
+                    <div class="value">{{ contact.blocked|datetime }}</div>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 
