@@ -287,7 +287,7 @@ class WebhookController extends Controller
         if ($event == 'complained') {
             Campaign::$plugin->webhook->complain($contact);
         }
-        else if ($event == 'bounced') {
+        elseif ($event == 'bounced') {
             Campaign::$plugin->webhook->bounce($contact);
         }
 

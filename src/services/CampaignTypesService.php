@@ -171,7 +171,7 @@ class CampaignTypesService extends Component
         if ($isNew) {
             $campaignType->uid = StringHelper::UUID();
         }
-        else if (!$campaignType->uid) {
+        elseif (!$campaignType->uid) {
             /** @var CampaignTypeRecord $campaignTypeRecord */
             $campaignTypeRecord = CampaignTypeRecord::find()
                 ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignType->id])
@@ -243,7 +243,7 @@ class CampaignTypesService extends Component
                 $fieldsService->saveLayout($layout);
                 $campaignTypeRecord->fieldLayoutId = $layout->id;
             }
-            else if ($campaignTypeRecord->fieldLayoutId) {
+            elseif ($campaignTypeRecord->fieldLayoutId) {
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
                 $campaignTypeRecord->fieldLayoutId = null;

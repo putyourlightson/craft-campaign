@@ -165,7 +165,7 @@ class MailingListTypesService extends Component
         if ($isNew) {
             $mailingListType->uid = StringHelper::UUID();
         }
-        else if (!$mailingListType->uid) {
+        elseif (!$mailingListType->uid) {
             /** @var MailingListTypeRecord $mailingListTypeRecord */
             $mailingListTypeRecord = MailingListTypeRecord::find()
                 ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListType->id])
@@ -237,7 +237,7 @@ class MailingListTypesService extends Component
                 $fieldsService->saveLayout($layout);
                 $mailingListTypeRecord->fieldLayoutId = $layout->id;
             }
-            else if ($mailingListTypeRecord->fieldLayoutId) {
+            elseif ($mailingListTypeRecord->fieldLayoutId) {
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
                 $mailingListTypeRecord->fieldLayoutId = null;

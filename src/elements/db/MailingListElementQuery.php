@@ -75,7 +75,7 @@ class MailingListElementQuery extends ElementQuery
         if ($value instanceof MailingListTypeModel) {
             $this->mailingListTypeId = $value->id;
         }
-        else if ($value !== null) {
+        elseif ($value !== null) {
             $this->mailingListTypeId = MailingListTypeRecord::find()
                 ->select(['id'])
                 ->where(Db::parseParam('handle', $value))

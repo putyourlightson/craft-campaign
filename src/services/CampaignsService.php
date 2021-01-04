@@ -109,7 +109,7 @@ class CampaignsService extends Component
             $campaignRecord->opens++;
         }
         // If clicked
-        else if ($interaction == 'clicked') {
+        elseif ($interaction == 'clicked') {
             // If not yet opened
             if ($contactCampaignRecord->opened === null) {
                 $contactCampaignRecord->opened = new DateTime();

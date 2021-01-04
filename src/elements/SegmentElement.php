@@ -210,7 +210,7 @@ class SegmentElement extends Element
         if ($source == '*') {
             $attributes = ['title', 'segmentType', 'conditions', 'contacts'];
         }
-        else if ($source == 'regular') {
+        elseif ($source == 'regular') {
             $attributes = ['title', 'conditions', 'contacts'];
         }
         else {

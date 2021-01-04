@@ -206,7 +206,7 @@ class SendoutsController extends Controller
         if ($sendoutType == 'automated') {
             $sendout->schedule = new AutomatedScheduleModel($sendout->schedule);
         }
-        else if ($sendoutType == 'recurring') {
+        elseif ($sendoutType == 'recurring') {
             $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
         }
 

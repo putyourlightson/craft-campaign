@@ -305,7 +305,7 @@ class SendoutElement extends Element
         if ($source == '*') {
             $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
         }
-        else if ($source == 'regular' || $source == 'scheduled') {
+        elseif ($source == 'regular' || $source == 'scheduled') {
             $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
         }
         else {
@@ -475,7 +475,7 @@ class SendoutElement extends Element
         if ($this->sendoutType == 'automated') {
             $this->schedule = new AutomatedScheduleModel(Json::decode($this->schedule));
         }
-        else if ($this->sendoutType == 'recurring') {
+        elseif ($this->sendoutType == 'recurring') {
             $this->schedule = new RecurringScheduleModel(Json::decode($this->schedule));
         }
     }

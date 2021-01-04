@@ -65,7 +65,7 @@ class CampaignElementQuery extends ElementQuery
         if ($value instanceof CampaignTypeModel) {
             $this->campaignTypeId = $value->id;
         }
-        else if ($value !== null) {
+        elseif ($value !== null) {
             $this->campaignTypeId = CampaignTypeRecord::find()
                 ->select(['id'])
                 ->where(Db::parseParam('handle', $value))

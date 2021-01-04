@@ -81,7 +81,7 @@ class SyncService extends Component
         if ($event instanceof UserEvent) {
             $this->syncUser($event->user);
         }
-        else if ($event instanceof ElementEvent && $event->element instanceof User) {
+        elseif ($event instanceof ElementEvent && $event->element instanceof User) {
             // If user was deleted
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
                 $this->deleteUser($event->element);
@@ -90,7 +90,7 @@ class SyncService extends Component
                 $this->syncUser($event->element);
             }
         }
-        else if ($event instanceof UserGroupsAssignEvent) {
+        elseif ($event instanceof UserGroupsAssignEvent) {
             $user = Craft::$app->getUsers()->getUserById($event->userId);
 
             if ($user !== null) {
@@ -212,7 +212,7 @@ class SyncService extends Component
         }
 
         // If user is not active and contact mailing list record exists then delete it
-        else if ($user->status != User::STATUS_ACTIVE && $contactMailingListRecord !== null) {
+        elseif ($user->status != User::STATUS_ACTIVE && $contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
     }

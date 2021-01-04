@@ -160,7 +160,7 @@ class SegmentsService extends Component
             $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
         }
 
-        else if ($segment->segmentType == 'template') {
+        elseif ($segment->segmentType == 'template') {
             $contacts = $this->getFilteredContacts($segment, $contactIds);
 
             foreach ($contacts as $contact) {
