@@ -439,7 +439,7 @@ return [
     'Sending “{title}” sendout [batch {batch}]' => '',
     'Sending completed: {title}' => '',
     'Sending failed: {title}' => '',
-    'Sending failed. Please check your email settings and the error in the log.' => '',
+    'Sending failed. Please check your email settings and the error in the logs.' => '',
     'Sending' => '',
     'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.' => '',
     'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!' => '',

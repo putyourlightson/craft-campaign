@@ -1,16 +1,16 @@
 # Release Notes for Campaign
 
-## 1.18.0 - Unreleased
+## 1.18.0 - 2021-01-04
 > {tip} Read the updated docs on [Sending to Large Lists](https://putyourlightson.com/plugins/campaign#sending-to-large-lists).
 
 ### Added
 - Added compatibility with Craft 3.6.0.
-- Added the ability to mark a contact as blocked, preventing them from being subscribed to mailing lists.
+- Added the ability to mark a contact as blocked, preventing them from being subscribed to mailing lists ([#140](https://github.com/putyourlightson/craft-campaign/issues/140)).
 
 ### Changed
 - Optimised the sending process of large sendouts.
-- Changed max batch size to 10,000 for new installs.
-- Removed `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
+- Changed the default max batch size to 10,000 for new installs.
+- Removed the `unlimitedMemoryLimit` and `unlimitedTimeLimit` config settings.
 
 ### Fixed
 - Fixed failed sendout statuses that were being set to pending.
