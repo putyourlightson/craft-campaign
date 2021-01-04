@@ -377,7 +377,7 @@ class SendoutsService extends Component
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
         }
-        else if ($contactCampaignRecord->sent !== null) {
+        elseif ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
             if (!($sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes)) {
                 return;
@@ -442,13 +442,13 @@ class SendoutsService extends Component
 
         // Attempt to send message
         for ($i = 0; $i < Campaign::$plugin->getSettings()->maxSendAttempts; $i++) {
-            $success = Campaign::$plugin->mailer->send($message);
+            $success = $message->send();
 
             if ($success) {
                 break;
             }
 
-            // Just wait a second, in case we're being throttled
+            // Wait a second, in case we're being throttled
             sleep(1);
         }
 

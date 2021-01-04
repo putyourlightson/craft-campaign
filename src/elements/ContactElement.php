@@ -689,7 +689,7 @@ class ContactElement extends Element
      */
     public function canReceiveEmail(): bool
     {
-        return $this->complained !== null || $this->bounced !== null || $this->blocked !== null;
+        return $this->complained === null && $this->bounced === null && $this->blocked === null;
     }
 
     /**

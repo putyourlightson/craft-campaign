@@ -97,10 +97,10 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testGetPendingRecipients()
     {
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
+        $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
 
         // Assert that the number of pending recipients is correct
-        $this->assertEquals(1, count($pendingRecipients));
+        $this->assertEquals(1, $count);
     }
 
     public function testGetPendingRecipientsRemoved()
@@ -174,6 +174,9 @@ class SendoutsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
+        // Assert that the message was sent
+        $this->assertNotNull($this->message);
+
         // Assert that the message recipient is correct
         $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
@@ -200,8 +203,9 @@ class SendoutsServiceTest extends BaseUnitTest
         // Mocked mailer in `BaseUnitTest` will fail with this email subject
         $this->sendout->subject = 'Fail';
 
-        // Set send attempts to 1
+        // Set send attempts and fails to 1
         Campaign::$plugin->getSettings()->maxSendAttempts = 1;
+        Campaign::$plugin->getSettings()->maxSendFailsAllowed = 1;
 
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
@@ -221,6 +225,9 @@ class SendoutsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
+        // Assert that the message is not null
+        $this->assertNotNull($this->message);
+
         // Reset message and resend
         $this->message = null;
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
@@ -236,6 +243,9 @@ class SendoutsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
+        // Assert that the message is not null
+        $this->assertNotNull($this->message);
+
         // Assert that the message recipient is correct
         $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
 
@@ -249,6 +259,9 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
+
+        // Assert that the message is not null
+        $this->assertNotNull($this->message);
 
         // Assert that the message recipient is correct
         $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
