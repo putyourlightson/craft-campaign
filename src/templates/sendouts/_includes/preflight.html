@@ -37,7 +37,7 @@
             <h1>{{ saveLabel }}</h1>
             <p class="message">{{ confirmMessage }}</p>
             <p>
-                {% if isWebAliasUsed %}
+                {% if isDynamicWebAliasUsed %}
                     <span class="warning">
                         {{ 'System issues found!'|t('campaign') }}
                     </span>
@@ -48,9 +48,9 @@
                     {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
                     {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
-                    {% if isWebAliasUsed %}
+                    {% if isDynamicWebAliasUsed %}
                         <span class="warning">
-                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using the <code>@web</code> alias.'|t('campaign')|raw }}
+                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown }}
                         </span>
                     {% endif %}
                 </span>

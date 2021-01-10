@@ -142,13 +142,17 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns whether the `@web` alias is used in the URL of the site provided, or all sites, or asset volume
+     * Returns whether a dynamic `@web` alias is used in the URL of the site provided, or all sites, or asset volume
      *
      * @param int|null $siteId
      * @return bool
      */
-    public function isWebAliasUsed(int $siteId = null): bool
+    public function isDynamicWebAliasUsed(int $siteId = null): bool
     {
+        if (!Craft::$app->getRequest()->isWebAliasSetDynamically) {
+            return false;
+        }
+
         $sites = [];
 
         if ($siteId !== null) {
@@ -163,7 +167,16 @@ class SettingsService extends Component
         }
 
         foreach ($sites as $site) {
-            if (stripos($site->baseUrl, '@web') !== false) {
+            // How this works was changed in 3.6.0
+            // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
+            if (version_compare(Craft::$app->getVersion(), '3.6.0', '>=')) {
+                $unparsedBaseUrl = $site->getBaseUrl(false);
+            }
+            else {
+                $unparsedBaseUrl = $site->baseUrl;
+            }
+
+            if (stripos($unparsedBaseUrl, '@web') !== false) {
                 return true;
             }
         }

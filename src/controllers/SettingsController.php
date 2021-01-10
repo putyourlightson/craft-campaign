@@ -68,7 +68,7 @@ class SettingsController extends Controller
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'phpBinPath' => PHP_BINARY ?: '/usr/bin/php',
-            'isWebAliasUsed' => Campaign::$plugin->settings->isWebAliasUsed(),
+            'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed(),
         ]);
     }
 

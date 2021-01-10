@@ -249,7 +249,7 @@ class Campaign extends Plugin
      */
     public function getIsPro(): bool
     {
-        return $this->is(Campaign::EDITION_PRO);
+        return $this->is(self::EDITION_PRO);
     }
 
     /**
@@ -260,7 +260,7 @@ class Campaign extends Plugin
     public function requirePro()
     {
         if (!$this->getIsPro()) {
-            throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action'));
+            throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action.'));
         }
     }
 

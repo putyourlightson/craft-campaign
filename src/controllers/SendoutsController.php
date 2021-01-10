@@ -331,7 +331,7 @@ class SendoutsController extends Controller
             'timeLimit' => ini_get('max_execution_time'),
         ];
 
-        $variables['isWebAliasUsed'] = Campaign::$plugin->settings->isWebAliasUsed($sendout->siteId);
+        $variables['isDynamicWebAliasUsed'] = Campaign::$plugin->settings->isDynamicWebAliasUsed($sendout->siteId);
 
         return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }

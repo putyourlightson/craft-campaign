@@ -52,7 +52,7 @@
         {{ import.fails }}
         {% if import.fails > 0 %}
             <span class="info">
-                {{ "View <code>storage/logs/campaign.log</code> file for errors."|t('campaign')|raw }}
+                {{ "View `storage/logs/campaign.log` file for errors."|t('campaign')|markdown }}
             </span>
         {% endif %}
     {% endset %}

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.18.1 - Unreleased
+### Changed
+- The `@web` alias warning is now only displayed when it is not explicitly defined ([#208](https://github.com/putyourlightson/craft-campaign/issues/208)).
+
 ## 1.18.0 - 2021-01-04
 > {tip} Read the updated docs on [Sending to Large Lists](https://putyourlightson.com/plugins/campaign#sending-to-large-lists).
 
