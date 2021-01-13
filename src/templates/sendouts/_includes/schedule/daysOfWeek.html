@@ -14,7 +14,7 @@
             {% set days = days|merge([day]) %}
         {% endif %}
     {% endfor %}
-    {{ (editable ? days|join('<br/>') : days|join(', '))|raw }}
+    {{ editable ? days|join('<br>')|raw : days|join(', ') }}
 {% endset %}
 {{ forms.field({
     label: "Days of Week"|t('campaign'),

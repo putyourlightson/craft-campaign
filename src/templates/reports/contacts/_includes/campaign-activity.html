@@ -18,7 +18,7 @@
                                 <p>
                                     {% for link in activity.links %}
                                         <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
-                                        {{ not loop.last ? '</br/>'|raw }}
+                                        {{ not loop.last ? '<br>'|raw }}
                                     {% endfor %}
                                 </p>
                             </span>

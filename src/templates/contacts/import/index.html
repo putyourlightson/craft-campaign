@@ -28,7 +28,7 @@
 
         {{ forms.fileField({
             label: "CSV File"|t('campaign'),
-            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:"|t('campaign') ~ '<br><code>' ~ contactFieldNames|join(', ') ~ '</code><br>')|raw,
+            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:"|t('campaign') ~ "\n" ~ '`' ~ contactFieldNames|join(', ') ~ '`'),
             name: 'file',
             required: true
         }) }}

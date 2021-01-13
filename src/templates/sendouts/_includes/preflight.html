@@ -50,7 +50,7 @@
                     {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
                     {% if isDynamicWebAliasUsed %}
                         <span class="warning">
-                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown }}
+                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown(inlineOnly=true) }}
                         </span>
                     {% endif %}
                 </span>

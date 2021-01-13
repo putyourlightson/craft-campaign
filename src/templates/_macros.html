@@ -1,10 +1,10 @@
 {% macro configWarning(setting) -%}
-    {{ "This is being overridden by the `{setting}` config setting."|t('campaign', {setting: setting })|markdown }}
+    {{ "This is being overridden by the `{setting}` config setting."|t('campaign', {setting: setting })|markdown(inlineOnly=true) }}
 {%- endmacro %}
 
 
 {% macro info(text, params) -%}
     <span class="info">
-        {{- text|t('campaign', params)|raw -}}
+        {{- text|t('campaign', params)|markdown -}}
     </span>
 {%- endmacro %}
