@@ -35,14 +35,13 @@ class ContactsController extends Controller
 
     /**
      * @inheritdoc
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
         // Require permission
         $this->requirePermission('campaign:contacts');
 
-        parent::init();
+        return parent::beforeAction($action);
     }
 
     /**

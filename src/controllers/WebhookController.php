@@ -52,13 +52,9 @@ class WebhookController extends Controller
 
     /**
      * @inheritdoc
-     *
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
-
         // Verify API key
         $key = Craft::$app->getRequest()->getParam('key');
         $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
@@ -66,6 +62,8 @@ class WebhookController extends Controller
         if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
         }
+
+        return parent::beforeAction($action);
     }
 
     /**

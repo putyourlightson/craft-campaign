@@ -39,18 +39,17 @@ class SettingsController extends Controller
 
     /**
      * @inheritdoc
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
-
-        // Require permission for all actions
-        $this->requirePermission('campaign:settings');
-
         if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Administrative changes are disallowed in this environment.'));
         }
+
+        // Require permission
+        $this->requirePermission('campaign:settings');
+
+        return parent::beforeAction($action);
     }
 
     /**

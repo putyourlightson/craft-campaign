@@ -32,14 +32,13 @@ class ExportsController extends Controller
 
     /**
      * @inheritdoc
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
-
         // Require permission
         $this->requirePermission('campaign:exportContacts');
+
+        return parent::beforeAction($action);
     }
 
     /**

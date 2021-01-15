@@ -28,14 +28,16 @@ class SyncController extends Controller
 
     /**
      * @inheritdoc
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
+        // Require pro
+        Campaign::$plugin->requirePro();
 
         // Require permission
         $this->requirePermission('campaign:syncContacts');
+
+        return parent::beforeAction($action);
     }
 
     /**

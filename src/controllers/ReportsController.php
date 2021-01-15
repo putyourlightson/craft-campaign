@@ -30,14 +30,13 @@ class ReportsController extends Controller
 
     /**
      * @inheritdoc
-     * @throws ForbiddenHttpException
      */
-    public function init()
+    public function beforeAction($action): bool
     {
-        parent::init();
-
         // Require permission
         $this->requirePermission('campaign:reports');
+
+        return parent::beforeAction($action);
     }
 
     /**

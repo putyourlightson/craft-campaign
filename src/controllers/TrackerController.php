@@ -45,7 +45,7 @@ class TrackerController extends BaseMessageController
      * @return Response|null
      * @throws Throwable
      */
-    public function actionOpen()
+    public function actionOpen(): Response
     {
         // Get contact and sendout
         $contact = $this->_getContact();
@@ -114,7 +114,7 @@ class TrackerController extends BaseMessageController
      * @throws InvalidConfigException
      * @throws Throwable
      */
-    public function actionUnsubscribe()
+    public function actionUnsubscribe(): Response
     {
         // Get contact and sendout
         $contact = $this->_getContact();
