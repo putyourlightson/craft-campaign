@@ -5,6 +5,6 @@
 
 {% macro info(text, params) -%}
     <span class="info">
-        {{- text|t('campaign', params)|markdown -}}
+        {{- text|t('campaign', params)|markdown(inlineOnly=true) -}}
     </span>
 {%- endmacro %}
