@@ -1,10 +1,17 @@
 # Release Notes for Campaign
 
 ## 1.18.1 - Unreleased
+### Added
+- Added the `campaign/sendouts/queue` console command to queue pending sendouts without actually running them ([#209](https://github.com/putyourlightson/craft-campaign/issues/209)).
+- Added the `campaign/sendouts/run` console command to queue and run pending sendouts.
+
 ### Changed
 - The `@web` alias warning is now only displayed when not explicitly defined ([#208](https://github.com/putyourlightson/craft-campaign/issues/208)).
 - Improved formatting of UI elements.
 - Improved enforcing of permissions in controllers.
+
+### Deprecated
+- Deprecated the `campaign/sendouts/run-pending-sendouts` console command. Use `campaign/sendouts/run` instead.
 
 ## 1.18.0 - 2021-01-04
 > {tip} Read the updated docs on [Sending to Large Lists](https://putyourlightson.com/plugins/campaign#sending-to-large-lists).

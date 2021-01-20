@@ -25,18 +25,44 @@ class SendoutsController extends Controller
     // =========================================================================
 
     /**
-     * Runs pending sendouts.
+     * Queues pending sendouts.
      *
      * @return int
-     * @throws Throwable
      */
-    public function actionRunPendingSendouts(): int
+    public function actionQueue(): int
     {
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
+        $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]).PHP_EOL, Console::FG_GREEN);
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Runs pending sendouts.
+     *
+     * @return int
+     */
+    public function actionRun(): int
+    {
+        $this->actionQueue();
+
         Craft::$app->getQueue()->run();
 
-        $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]).PHP_EOL, Console::FG_GREEN);
+        return ExitCode::OK;
+    }
+
+    /**
+     * Runs pending sendouts (deprecated).
+     *
+     * @return int
+     * @deprecated in 1.18.1. Use [[campaign/sendouts/run]] instead.
+     */
+    public function actionRunPendingSendouts(): int
+    {
+        Craft::$app->getDeprecator()->log('campaign/sendouts/run-pending-sendouts', 'The “campaign/sendouts/run-pending-sendouts” console command has been deprecated. Use “campaign/sendouts/run” instead.');
+
+        $this->actionRun();
 
         return ExitCode::OK;
     }
