@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.18.1 - Unreleased
+## 1.18.1 - 2021-01-21
 ### Added
 - Added the `campaign/sendouts/queue` console command to queue pending sendouts without actually running them ([#209](https://github.com/putyourlightson/craft-campaign/issues/209)).
 - Added the `campaign/sendouts/run` console command to queue and run pending sendouts.

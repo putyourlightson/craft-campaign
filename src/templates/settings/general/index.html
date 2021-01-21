@@ -31,11 +31,11 @@
     <hr/>
 
     {% set code %}
-        <code>*/10 * * * * {{ phpBinPath }} {{ alias('@root/craft') }} campaign/sendouts/run-pending-sendouts</code>
+        <code>*/10 * * * * {{ phpBinPath }} {{ alias('@root/craft') }} campaign/sendouts/run</code>
     {% endset %}
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
-        instructions: "Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to the PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
+        instructions: "Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
         warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('campaign', {url: 'https://craftcampaign.com/docs/sendouts#how-sendouts-are-sent'}),
     }, code) }}
 
