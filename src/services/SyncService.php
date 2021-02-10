@@ -130,7 +130,7 @@ class SyncService extends Component
 
         foreach ($mailingLists as $mailingList) {
             // If the mailing list is synced with user's user group ID
-            if (in_array($mailingList->syncedUserGroupId, $userGroupIds, true)) {
+            if (in_array($mailingList->syncedUserGroupId, $userGroupIds)) {
                 $this->syncUserMailingList($user, $mailingList);
             }
             else {
@@ -182,8 +182,12 @@ class SyncService extends Component
             $contact->lastName = $user->lastName;
         }
 
-        // Set contact's field values from user's field values
-        $contact->setFieldValues($user->getFieldValues());
+        $fieldValues = array_merge($user->getFieldValues(), [
+            'firstName' => $user->firstName,
+            'lastName' => $user->lastName,
+        ]);
+
+        $contact->setFieldValues($fieldValues);
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             return;

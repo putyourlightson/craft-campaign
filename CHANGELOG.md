@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.18.2 - 2021-02-10
+### Fixed
+- Fixed bug in which some contact fields were not being synced with Craft 3.6.
+
 ## 1.18.1 - 2021-01-21
 ### Added
 - Added the `campaign/sendouts/queue` console command to queue pending sendouts without actually running them ([#209](https://github.com/putyourlightson/craft-campaign/issues/209)).

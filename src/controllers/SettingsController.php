@@ -101,7 +101,7 @@ class SettingsController extends Controller
         $allTransportAdapterTypes = MailerHelper::allMailerTransportTypes();
 
         // Make sure the selected adapter class is in there
-        if (!in_array(get_class($adapter), $allTransportAdapterTypes, true)) {
+        if (!in_array(get_class($adapter), $allTransportAdapterTypes)) {
             $allTransportAdapterTypes[] = get_class($adapter);
         }
 

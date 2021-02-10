@@ -35,12 +35,10 @@ class ContactsService extends Component
      */
     public function getContactById(int $contactId)
     {
-        $contact = ContactElement::find()
+        return ContactElement::find()
             ->id($contactId)
             ->status(null)
             ->one();
-
-        return $contact;
     }
 
     /**
@@ -75,12 +73,10 @@ class ContactsService extends Component
             return null;
         }
 
-        $contact = ContactElement::find()
+        return ContactElement::find()
             ->userId($userId)
             ->status(null)
             ->one();
-
-        return $contact;
     }
 
     /**
@@ -96,12 +92,10 @@ class ContactsService extends Component
             return null;
         }
 
-        $contact = ContactElement::find()
+        return ContactElement::find()
             ->cid($cid)
             ->status(null)
             ->one();
-
-        return $contact;
     }
 
     /**
@@ -118,13 +112,11 @@ class ContactsService extends Component
             return null;
         }
 
-        $contact = ContactElement::find()
+        return ContactElement::find()
             ->email($email)
             ->status(null)
             ->trashed($trashed)
             ->one();
-
-        return $contact;
     }
 
     /**

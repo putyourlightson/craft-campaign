@@ -74,7 +74,7 @@ class CampaignsService extends Component
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
     {
         // Ensure that interaction exists
-        if (!in_array($interaction, ContactCampaignModel::INTERACTIONS, true)) {
+        if (!in_array($interaction, ContactCampaignModel::INTERACTIONS)) {
             return;
         }
 
@@ -128,7 +128,7 @@ class CampaignsService extends Component
                 $linkRecord->clicks = $linkRecord->clicks ? $linkRecord->clicks + 1 : 1;
 
                 // Increment clicked if first link click for this contact
-                if (!in_array($linkRecord->id, explode(',', $contactCampaignRecord->links), false)) {
+                if (!in_array($linkRecord->id, explode(',', $contactCampaignRecord->links))) {
                     $linkRecord->clicked = $linkRecord->clicked ? $linkRecord->clicked + 1 : 1;
                 }
 
