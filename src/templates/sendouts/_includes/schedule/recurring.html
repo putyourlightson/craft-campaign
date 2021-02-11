@@ -41,7 +41,7 @@
         {% set days = [] %}
         {% for day in 1..31 %}
             {% set day = (day == 29 ? day ~ ' (may not exist in all months)' : day) %}
-            {% set day = (day == 29 ? day ~ ' (does not exist in all months)' : day) %}
+            {% set day = (day > 29 ? day ~ ' (does not exist in all months)' : day) %}
             {% if editable %}
                 {% set days = days|merge([forms.checkbox({
                     label: day|t('campaign'),
