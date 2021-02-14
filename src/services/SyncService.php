@@ -174,20 +174,15 @@ class SyncService extends Component
         $contact->userId = $user->id;
         $contact->email = $user->email;
 
-        // Set first and last name from user fields if they exist
+        // Set first and last name from user fields only if they exist
         if (isset($contact->firstName)) {
-            $contact->firstName = $user->firstName;
+            $contact->setFieldValue('firstName', $user->firstName);
         }
         if (isset($contact->lastName)) {
-            $contact->lastName = $user->lastName;
+            $contact->setFieldValue('lastName', $user->lastName);
         }
 
-        $fieldValues = array_merge($user->getFieldValues(), [
-            'firstName' => $user->firstName,
-            'lastName' => $user->lastName,
-        ]);
-
-        $contact->setFieldValues($fieldValues);
+        $contact->setFieldValues($user->getFieldValues());
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
             return;

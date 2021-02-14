@@ -2,6 +2,7 @@
 
 ## 1.18.3 - Unreleased
 ### Fixed
+- Fixed a bug in which an error was thrown when saving a user and contact first/last name fields did not exist ([#214](https://github.com/putyourlightson/craft-campaign/issues/214)).
 - Fixed the day of the month checkbox labels for values over 29.
 
 ## 1.18.2 - 2021-02-10
