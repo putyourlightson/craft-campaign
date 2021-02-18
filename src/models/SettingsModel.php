@@ -42,7 +42,7 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
-     * @var string|null The webhook signing key provided by Mailgun to validate incoming webhook requests
+     * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      */
     public $mailgunWebhookSigningKey;
 
