@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.18.3 - Unreleased
+### Changed
+- The Postmark webhook only accepts incoming requests from allowed IP adresses.
+
 ### Fixed
 - Fixed a bug in which an error was thrown when saving a user and contact first/last name fields did not exist ([#214](https://github.com/putyourlightson/craft-campaign/issues/214)).
 - Fixed the day of the month checkbox labels for values over 29.

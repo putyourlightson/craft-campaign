@@ -211,6 +211,22 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
+
+        // Ensure IP address is coming from Postmark if `devMode` is disabled
+        // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
+        if (Craft::$app->config->general->devMode === false) {
+            $allowedIpAddresses = [
+                '3.134.147.250',
+                '50.31.156.6',
+                '50.31.156.77',
+                '18.217.206.57',
+            ];
+
+            if (!in_array($request->getUserIP(), $allowedIpAddresses)) {
+                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'IP address not allowed.')]);
+            }
+        }
+
         $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
 
