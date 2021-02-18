@@ -2,7 +2,7 @@
 
 ## 1.19.0 - Unreleased
 ### Added
-- Added the `mailgunWebhookSigningKey` config setting that validates incoming webhook requests from Mailgun.
+- Added the `mailgunWebhookSigningKey` config setting that validates incoming webhook requests using Mailgun’s signing key.
 - Added the `postmarkAllowedIpAddresses` config setting that only accepts incoming webhook requests from Postmark’s IP addresses.
 
 ### Fixed
