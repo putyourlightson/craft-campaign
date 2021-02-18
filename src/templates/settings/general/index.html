@@ -119,4 +119,16 @@
         instructions: "Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only)."|t('campaign'),
     }, table) }}
 
+    {{ forms.autosuggestField({
+        label: "Mailgun Webhook Signing Key"|t('campaign'),
+        instructions: "A webhook signing key provided by Mailgun to validate incoming webhook requests."|t('campaign'),
+        warning: (config.mailgunWebhookSigningKey is defined ? macros.configWarning('mailgunWebhookSigningKey')),
+        id: 'mailgunWebhookSigningKey',
+        name: 'mailgunWebhookSigningKey',
+        suggestEnvVars: true,
+        suggestions: craft.cp.getEnvSuggestions(),
+        value: settings.mailgunWebhookSigningKey,
+        errors: settings.getErrors('mailgunWebhookSigningKey'),
+    }) }}
+
 {% endblock %}
