@@ -256,8 +256,11 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $events = Craft::$app->getRequest()->getRawBody();
-        $events = Json::decodeIfJson($events);
+        // TODO: Validate the signature if a verification key is set
+        // https://sendgrid.com/docs/for-developers/tracking-events/getting-started-event-webhook-security-features
+
+        $body = Craft::$app->getRequest()->getRawBody();
+        $events = Json::decodeIfJson($body);
 
         if (is_array($events)) {
             foreach ($events as $event) {

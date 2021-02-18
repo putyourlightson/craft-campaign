@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaigntests\unit\controllers;
 
+use Aws\Sns\Message;
 use Craft;
 use craft\web\Response;
 use putyourlightson\campaign\Campaign;
@@ -143,6 +144,30 @@ class WebhookControllerTest extends BaseControllerTest
         Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses = [Craft::$app->getRequest()->getUserIP()];
 
         $response = $this->runActionWithParams('webhook/postmark', $params);
+
+        $this->assertEquals(['success' => true], $response->data);
+
+        $this->_refreshContact();
+        $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
+    }
+
+    public function testSendgrid()
+    {
+        $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
+
+        $events = [
+            [
+                'event' => 'bounced',
+                'email' => $this->contact->email,
+            ],
+        ];
+
+        Craft::$app->getRequest()->setRawBody(json_encode($events));
+
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/sendgrid', [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+        ]);
 
         $this->assertEquals(['success' => true], $response->data);
 
