@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
-## 1.18.3 - Unreleased
+## 1.19.0 - Unreleased
+### Added
+- Added the `mailgunWebhookSigningKey` config setting that validates incoming webhook requests from Mailgun.
+- Added the `postmarkAllowedIpAddresses` config setting that only accepts incoming webhook requests from Postmark’s IP addresses.
+
 ### Fixed
 - Fixed a bug in which an error was thrown when saving a user and contact first/last name fields did not exist ([#214](https://github.com/putyourlightson/craft-campaign/issues/214)).
 - Fixed the day of the month checkbox labels for values over 29.

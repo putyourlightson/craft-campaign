@@ -25,6 +25,17 @@ return [
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
+        // The webhook signing key provided by Mailgun to validate incoming webhook requests
+        //mailgunWebhookSigningKey => 'key-aBcDeFgHiJkLmNoP',
+
+        // The allowed IP addresses for incoming webhook requests from Postmark
+        //postmarkAllowedIpAddresses => [
+        //    '3.134.147.250',
+        //    '50.31.156.6',
+        //    '50.31.156.77',
+        //    '18.217.206.57',
+        //],
+
         // The from names and emails that sendouts can be sent from
         //'fromNamesEmails' => [
         //  ['Zorro','legend@zorro.com','legend@zorro.com',1],

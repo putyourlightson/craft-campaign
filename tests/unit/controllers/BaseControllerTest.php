@@ -48,12 +48,12 @@ class BaseControllerTest extends BaseUnitTest
 
     /**
      * @param string $action
-     * @param array $params
+     * @param array|null $params
      *
      * @return mixed
      * @throws InvalidRouteException
      */
-    protected function runActionWithParams(string $action, array $params)
+    protected function runActionWithParams(string $action, array $params = [])
     {
         Craft::$app->request->setBodyParams($params);
 

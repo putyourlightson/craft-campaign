@@ -142,30 +142,44 @@ class WebhookController extends Controller
         $body = Json::decodeIfJson($request->getRawBody());
         $eventData = $body['event-data'] ?? null;
 
-        $eventType = $eventData['event'] ?? '';
+        // Validate the event signature if a signing key is set
+        // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+        $signingKey = Craft::parseEnv(Campaign::$plugin->getSettings()->mailgunWebhookSigningKey);
+
+        if ($signingKey) {
+            $eventSignature = $eventData['signature'] ?? '';
+            $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'].$eventSignature['token'], $signingKey);
+
+            if (!$eventSignature || $eventSignature['signature'] != $hashedValue) {
+                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Signature could not be authenticated.')]);
+            }
+        }
+
+        $event = $eventData['event'] ?? '';
         $severity = $eventData['severity'] ?? '';
         $reason = $eventData['reason'] ?? '';
         $email = $eventData['recipient'] ?? '';
 
         if ($eventData === null) {
             // Get event data from body params (legacy webhooks)
-            $eventType = $request->getBodyParam('event');
+            $event = $request->getBodyParam('event');
             $email = $request->getBodyParam('recipient');
         }
 
-        if ($eventType == 'complained') {
+        if ($event == 'complained') {
             return $this->_callWebhook('complained', $email);
         }
 
         // Only mark as bounced if the reason indicates that it is a hard bounce.
         // https://github.com/putyourlightson/craft-campaign/issues/178
-        if ($eventType == 'failed' && $severity == 'permanent'
-            && ($reason == 'bounce' || $reason == 'suppress-bounce')) {
+        if ($event == 'failed' && $severity == 'permanent'
+            && ($reason == 'bounce' || $reason == 'suppress-bounce')
+        ) {
             return $this->_callWebhook('bounced', $email);
         }
 
         // Legacy webhook
-        if ($eventType == 'bounced') {
+        if ($event == 'bounced') {
             return $this->_callWebhook('bounced', $email);
         }
 
@@ -211,6 +225,15 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
+
+        // Ensure IP address is coming from Postmark if allowed IP addresses are set
+        // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
+        $allowedIpAddresses = Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses;
+
+        if ($allowedIpAddresses && !in_array($request->getUserIP(), $allowedIpAddresses)) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'IP address not allowed.')]);
+        }
+
         $eventType = $request->getBodyParam('Type');
         $email = $request->getBodyParam('Email');
 

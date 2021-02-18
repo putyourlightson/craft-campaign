@@ -42,6 +42,21 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
+     * @var string|null The webhook signing key provided by Mailgun to validate incoming webhook requests
+     */
+    public $mailgunWebhookSigningKey;
+
+    /**
+     * @var array The allowed IP addresses for incoming webhook requests from Postmark
+     */
+    public $postmarkAllowedIpAddresses = [
+        '3.134.147.250',
+        '50.31.156.6',
+        '50.31.156.77',
+        '18.217.206.57',
+    ];
+
+    /**
      * @var array|null The from names and emails that sendouts can be sent from
      */
     public $fromNamesEmails;
