@@ -46,7 +46,6 @@
         id: 'apiKey',
         name: 'apiKey',
         suggestEnvVars: true,
-        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.apiKey,
         errors: settings.getErrors('apiKey'),
         required: true,
@@ -126,7 +125,6 @@
         id: 'mailgunWebhookSigningKey',
         name: 'mailgunWebhookSigningKey',
         suggestEnvVars: true,
-        suggestions: craft.cp.getEnvSuggestions(),
         value: settings.mailgunWebhookSigningKey,
         errors: settings.getErrors('mailgunWebhookSigningKey'),
     }) }}
