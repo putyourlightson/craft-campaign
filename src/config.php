@@ -43,7 +43,7 @@ return [
         //],
 
         // The transport type that should be used
-        //'transportType' => 'SendGrid',
+        //'transportType' => 'putyourlightson\sendgrid\mail\SendgridAdapter',
 
         // The transport type’s settings
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
