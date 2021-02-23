@@ -714,8 +714,6 @@ class ReportsService extends Component
      */
     private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
     {
-        $countArray = [];
-
         $query = (new Query())
             ->select(['country', 'MAX([[geoIp]]) AS geoIp', 'COUNT(*) AS count'])
             ->from($table.' t')
@@ -744,12 +742,7 @@ class ReportsService extends Component
 
             $result['countryCode'] = strtolower($geoIp['countryCode'] ?? '');
             $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
-
-            $countArray[] = $result['count'];
         }
-
-        // Unset variable reference to avoid possible side-effects
-        unset($result);
 
         // If there is an unknown count then add it to results
         if ($unknownCount > 0) {
@@ -759,11 +752,10 @@ class ReportsService extends Component
                 'count' => $unknownCount,
                 'countRate' => $total ? NumberHelper::floorOrOne($unknownCount / $total * 100) : 0,
             ];
-            $countArray[] = $unknownCount;
         }
 
-        // Sort results by count array descending
-        array_multisort($countArray, SORT_DESC, $results);
+        // Sort results
+        usort($results, [$this, '_compareCount']);
 
         // Enforce the limit
         $results = array_slice($results, 0, $limit);
@@ -784,8 +776,6 @@ class ReportsService extends Component
      */
     private function _getDevices(string $table, array $conditions, bool $detailed, int $total, int $limit = 100): array
     {
-        $countArray = [];
-
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
         $query = (new Query())
@@ -803,14 +793,10 @@ class ReportsService extends Component
 
         foreach ($results as &$result) {
             $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
-            $countArray[] = $result['count'];
         }
 
-        // Unset variable reference to avoid possible side-effects
-        unset($result);
-
-        // Sort results by count array descending
-        array_multisort($countArray, SORT_DESC, $results);
+        // Sort results
+        usort($results, [$this, '_compareCount']);
 
         // Enforce the limit
         $results = array_slice($results, 0, $limit);
@@ -836,5 +822,17 @@ class ReportsService extends Component
         ];
 
         return $formats[$interval] ?? null;
+    }
+
+    /**
+     * Compares two count values by count descending
+     *
+     * @param array $a
+     * @param array $b
+     * @return bool
+     */
+    private function _compareCount(array $a, array $b)
+    {
+        return (int)$a['count'] < (int)$b['count'] ? 1 : -1;
     }
 }
