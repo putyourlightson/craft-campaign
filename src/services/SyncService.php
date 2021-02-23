@@ -126,6 +126,7 @@ class SyncService extends Component
 
         $mailingLists = MailingListElement::find()
             ->synced(true)
+            ->site('*')
             ->all();
 
         foreach ($mailingLists as $mailingList) {
