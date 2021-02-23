@@ -50,10 +50,12 @@ class WebhookControllerTest extends BaseControllerTest
     {
         parent::_before();
 
-        $this->_refreshContact();
+        $this->_getContact();
+        $this->contact->bounced = null;
+        Craft::$app->elements->saveElement($this->contact);
     }
 
-    protected function _refreshContact()
+    protected function _getContact()
     {
         $this->contact = ContactElement::find()->status(null)->one();
     }
@@ -105,7 +107,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->assertEquals(['success' => true], $response->data);
 
-        $this->_refreshContact();
+        $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
@@ -122,7 +124,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->assertEquals(['success' => true], $response->data);
 
-        $this->_refreshContact();
+        $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
@@ -147,7 +149,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->assertEquals(['success' => true], $response->data);
 
-        $this->_refreshContact();
+        $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
@@ -171,7 +173,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->assertEquals(['success' => true], $response->data);
 
-        $this->_refreshContact();
+        $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 }
