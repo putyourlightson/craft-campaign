@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\console\controllers;
 use Craft;
 use craft\helpers\Console;
 use putyourlightson\campaign\Campaign;
-use Throwable;
 use yii\console\Controller;
 use yii\console\ExitCode;
 

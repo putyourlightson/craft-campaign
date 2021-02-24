@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.19.0 - 2021-02-23
+## 1.19.0 - 2021-02-24
 ### Added
 - Added a `mailgunWebhookSigningKey` control panel setting that validates incoming webhook requests using Mailgun’s signing key.
 - Added a `postmarkAllowedIpAddresses` config setting that only accepts incoming webhook requests from Postmark’s IP addresses.
