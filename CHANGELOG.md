@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.20.0 - Unreleased
+## 1.19.1 - Unreleased
 ### Added
 - Added reference tags for campaigns, contacts, mailing lists, segments and sendouts ([#218](https://github.com/putyourlightson/craft-campaign/issues/218)).
 
