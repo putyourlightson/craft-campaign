@@ -108,6 +108,14 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
+    public static function refHandle()
+    {
+        return 'sendout';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasContent(): bool
     {
         return true;

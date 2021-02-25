@@ -59,6 +59,14 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
+    public static function refHandle()
+    {
+        return 'mailinglist';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasContent(): bool
     {
         return true;

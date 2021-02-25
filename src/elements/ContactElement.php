@@ -73,6 +73,14 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
+    public static function refHandle()
+    {
+        return 'contact';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasContent(): bool
     {
         return true;

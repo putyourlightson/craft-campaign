@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.20.0 - Unreleased
+### Added
+- Added reference tags for campaigns, contacts, mailing lists, segments and sendouts ([#218](https://github.com/putyourlightson/craft-campaign/issues/218)).
+
 ## 1.19.0 - 2021-02-24
 ### Added
 - Added a `mailgunWebhookSigningKey` control panel setting that validates incoming webhook requests using Mailgun’s signing key.

@@ -58,6 +58,14 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public static function refHandle()
+    {
+        return 'campaign';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasContent(): bool
     {
         return true;
