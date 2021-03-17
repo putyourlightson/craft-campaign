@@ -30,6 +30,7 @@ use craft\services\UserPermissions;
 use craft\services\Utilities;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use putyourlightson\campaign\assets\UniversalAsset;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -160,21 +161,26 @@ class Campaign extends Plugin
             }
         );
 
-        // Register CP URL rules event
-        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function(RegisterUrlRulesEvent $event) {
-                $event->rules = array_merge($event->rules, $this->getCpRoutes());
-            }
-        );
+        if (Craft::$app->getRequest()->getIsCpRequest()) {
+            // Register universal CSS
+            Craft::$app->view->registerAssetBundle(UniversalAsset::class);
 
-        // Register utility
-        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function(RegisterComponentTypesEvent $event) {
-                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
-                    $event->types[] = CampaignUtility::class;
+            // Register CP URL rules event
+            Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
+                function(RegisterUrlRulesEvent $event) {
+                    $event->rules = array_merge($event->rules, $this->getCpRoutes());
                 }
-            }
-        );
+            );
+
+            // Register utility
+            Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
+                function(RegisterComponentTypesEvent $event) {
+                    if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
+                        $event->types[] = CampaignUtility::class;
+                    }
+                }
+            );
+        }
 
         // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {

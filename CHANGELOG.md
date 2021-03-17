@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.19.2 - Unreleased
+### Fixed
+- Fixed the empty space that appeared next to a contact in a contact field when no avatar was available ([#221](https://github.com/putyourlightson/craft-campaign/issues/221)).
+
 ## 1.19.1 - 2021-02-25
 ### Added
 - Added reference tags for campaigns, contacts, mailing lists, segments and sendouts ([#218](https://github.com/putyourlightson/craft-campaign/issues/218)).

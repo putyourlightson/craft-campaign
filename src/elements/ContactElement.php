@@ -658,10 +658,18 @@ class ContactElement extends Element
      */
     public function getThumbUrl(int $size)
     {
-        // Get image from Gravatar, default to blank
+        // Get image from Gravatar, defaulting to a blank image
         $photo = 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=blank&s='.$size;
 
         return $photo;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getHasRoundedThumb(): bool
+    {
+        return true;
     }
 
     /**
