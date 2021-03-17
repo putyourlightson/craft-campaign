@@ -175,10 +175,13 @@ table th.thin, table td.thin {
     }
 }
 
+.relative {
+    position: relative;
+}
+
 .testmode {
     position: absolute;
-    margin-top: -4px;
-    height: 4px;
+    height: 5px;
     width: 100%;
     z-index: 10;
     background: #000 url('../images/dev-mode.svg');

@@ -36,7 +36,9 @@
 {% block main %}
 
     {% if settings.testMode %}
-        <div class="testmode" title="Campaign is running in Test Mode."></div>
+        <div class="relative">
+            <div class="testmode" title="Campaign is running in Test Mode."></div>
+        </div>
     {% endif %}
 
     {{ parent() }}
