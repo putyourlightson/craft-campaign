@@ -182,6 +182,7 @@ table th.thin, table td.thin {
 .testmode {
     position: absolute;
     height: 5px;
+    margin-top: -5px;
     width: 100%;
     z-index: 10;
     background: #000 url('../images/dev-mode.svg');
