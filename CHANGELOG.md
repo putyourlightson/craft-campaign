@@ -2,7 +2,7 @@
 
 ## 1.19.2 - 2021-04-26
 ### Changed
-- Sendouts are now marked as failed if template rendering errors are encountered.
+- Sendouts are now marked as failed if template rendering errors are encountered ([#225](https://github.com/putyourlightson/craft-campaign/issues/225)).
 - Improved positioning of test mode banner.
 
 ### Fixed
