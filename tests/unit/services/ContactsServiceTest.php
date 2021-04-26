@@ -7,8 +7,8 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaigntests\base\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn

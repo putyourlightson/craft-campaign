@@ -10,11 +10,11 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaigntests\base\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -57,6 +57,11 @@ class SendoutsServiceTest extends BaseUnitTest
     protected $sendout;
 
     /**
+     * @var SendoutElement
+     */
+    protected $sendout2;
+
+    /**
      * @var ContactElement
      */
     protected $contact;
@@ -74,6 +79,7 @@ class SendoutsServiceTest extends BaseUnitTest
         parent::_before();
 
         $this->sendout = SendoutElement::find()->one();
+        $this->sendout2 = SendoutElement::find()->one();
         $this->contact = ContactElement::find()->one();
         $this->mailingList = MailingListElement::find()->one();
 
@@ -141,11 +147,9 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testGetPendingRecipientsAutomated()
     {
-        $this->sendout->sendoutType = 'automated';
-
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
-        // Expect this to return 0 since the contact subscribed less than
+        // Expect this to return 0 since the contact subscribed less than the delay
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
 
         // Assert that the number of pending recipients is correct
@@ -154,15 +158,16 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testQueuePendingSendouts()
     {
+        $sendoutCount = SendoutElement::find()->sendoutType('regular')->count();
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
         // Assert that the number of queued sendouts is correct
-        $this->assertEquals(1, $count);
+        $this->assertEquals($sendoutCount, $count);
 
         $queuedSendouts = SendoutElement::find()->status(SendoutElement::STATUS_QUEUED)->count();
 
         // Assert that the sendout status is correct
-        $this->assertEquals(1, $queuedSendouts);
+        $this->assertEquals($sendoutCount, $queuedSendouts);
 
         // Assert that the job was pushed onto the queue
         $this->assertTrue(Craft::$app->getQueue()->getHasWaitingJobs());
@@ -217,6 +222,17 @@ class SendoutsServiceTest extends BaseUnitTest
 
         // Assert that the send status is failed
         $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);
+    }
+
+    public function testSendEmailTemplateError()
+    {
+        $sendout2 = SendoutElement::find()->title('Sendout 2')->one();
+        $sendout2->sendStatus = SendoutElement::STATUS_SENDING;
+
+        Campaign::$plugin->sendouts->sendEmail($sendout2, $this->contact, $this->mailingList->id);
+
+        // Assert that the send status is failed
+        $this->assertEquals(SendoutElement::STATUS_FAILED, $sendout2->sendStatus);
     }
 
     public function testSendEmailDuplicate()

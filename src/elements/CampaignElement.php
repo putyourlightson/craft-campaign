@@ -22,6 +22,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
+use Twig\Error\Error;
 use yii\base\InvalidConfigException;
 
 /**
@@ -433,7 +434,7 @@ class CampaignElement extends Element
      * @param SendoutElement|null $sendout
      *
      * @return string
-     * @throws Exception
+     * @throws Error
      * @throws InvalidConfigException
      */
     public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null): string
@@ -448,7 +449,7 @@ class CampaignElement extends Element
      * @param SendoutElement|null $sendout
      *
      * @return string
-     * @throws Exception
+     * @throws Error
      * @throws InvalidConfigException
      */
     public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null): string
@@ -547,7 +548,7 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      * @return string
-     * @throws Exception
+     * @throws Error
      * @throws InvalidConfigException
      */
     public function getEditorHtml(): string
@@ -612,7 +613,7 @@ class CampaignElement extends Element
      *
      * @return string
      * @throws InvalidConfigException
-     * @throws Exception
+     * @throws Error
      */
     private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null): string
     {
@@ -654,9 +655,10 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             ]);
         }
-        catch (Exception $e) {
-            Campaign::$plugin->log($e->getMessage());
-            throw $e;
+        catch (Error $exception) {
+            Campaign::$plugin->log($exception->getMessage());
+
+            throw $exception;
         }
 
         // Reset template mode if different

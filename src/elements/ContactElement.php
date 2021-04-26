@@ -47,6 +47,7 @@ use yii\base\Exception;
  * @property MailingListElement[] $mailingLists
  * @property bool $isSubscribed
  * @property User|null $user
+ * @property bool $hasRoundedThumb
  * @property int $subscribedCount
  */
 class ContactElement extends Element

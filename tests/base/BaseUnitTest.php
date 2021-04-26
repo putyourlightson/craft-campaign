@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaigntests\unit;
+namespace putyourlightson\campaigntests\base;
 
 use Codeception\Test\Unit;
 use putyourlightson\campaign\Campaign;

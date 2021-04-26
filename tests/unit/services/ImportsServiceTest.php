@@ -9,12 +9,9 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
-use putyourlightson\campaign\models\PendingContactModel;
-use putyourlightson\campaign\records\PendingContactRecord;
+use putyourlightson\campaigntests\base\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
-use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn

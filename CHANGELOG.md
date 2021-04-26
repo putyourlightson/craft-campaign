@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.19.2 - Unreleased
+### Changed
+- Sendouts are now marked as failed if template rendering errors are encountered.
+
 ### Fixed
 - Fixed the empty space that appeared next to a contact in a contact field when no avatar was available ([#221](https://github.com/putyourlightson/craft-campaign/issues/221)).
 

@@ -13,4 +13,13 @@ return [
         'plaintextTemplate' => 'plaintext',
         'queryStringParameters' => 'source=campaign-plugin&medium=email&campaign={{ campaign.title }}',
     ],
+    [
+        'name' => 'Campaign Type 2',
+        'handle' => 'campaignType2',
+        'siteId' => 1,
+        'uriFormat' => '',
+        'htmlTemplate' => 'html-error',
+        'plaintextTemplate' => 'plaintext',
+        'queryStringParameters' => '',
+    ],
 ];

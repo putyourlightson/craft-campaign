@@ -32,6 +32,7 @@ use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use putyourlightson\campaign\records\SendoutRecord;
 use Throwable;
+use Twig\Error\Error;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
@@ -315,9 +316,18 @@ class SendoutsService extends Component
         // Get subject
         $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
 
-        // Get body
-        $htmlBody = $campaign->getHtmlBody($contact, $sendout);
-        $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+        // Get body, catching template rendering errors
+        try {
+            $htmlBody = $campaign->getHtmlBody($contact, $sendout);
+            $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+        }
+        catch (Error $exception) {
+            Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
+                'title' => $sendout->title,
+            ]);
+
+            return false;
+        }
 
         // Convert links in HTML body
         $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
@@ -397,9 +407,22 @@ class SendoutsService extends Component
         // Get subject
         $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
 
-        // Get body
-        $htmlBody = $campaign->getHtmlBody($contact, $sendout);
-        $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+        // Get body, catching template rendering errors
+        try {
+            $htmlBody = $campaign->getHtmlBody($contact, $sendout);
+            $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+        }
+        catch (Error $exception) {
+            $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+
+            $this->_updateSendoutRecord($sendout, ['sendStatus']);
+
+            Campaign::$plugin->log('Sending of the sendout "{title}" failed due to a Twig error when rendering the template.', [
+                'title' => $sendout->title,
+            ]);
+
+            return;
+        }
 
         // Convert links in HTML body
         $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);

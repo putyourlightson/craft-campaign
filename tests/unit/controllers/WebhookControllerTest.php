@@ -3,9 +3,8 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaigntests\unit\controllers;
+namespace putyourlightson\campaigntests\unit\base;
 
-use Aws\Sns\Message;
 use Craft;
 use craft\web\Response;
 use putyourlightson\campaign\Campaign;

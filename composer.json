@@ -33,6 +33,7 @@
     "autoload": {
         "psr-4": {
           "putyourlightson\\campaign\\": "src/",
+          "putyourlightson\\campaigntests\\base\\": "tests/base/",
           "putyourlightson\\campaigntests\\fixtures\\": "tests/fixtures/"
         }
     },

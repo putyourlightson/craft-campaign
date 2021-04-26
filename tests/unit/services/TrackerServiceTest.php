@@ -11,11 +11,11 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
+use putyourlightson\campaigntests\base\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\LinksFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
