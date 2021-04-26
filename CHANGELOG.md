@@ -3,6 +3,7 @@
 ## 1.19.2 - 2021-04-26
 ### Changed
 - Sendouts are now marked as failed if template rendering errors are encountered.
+- Improved positioning of test mode banner.
 
 ### Fixed
 - Fixed the empty space that appeared next to a contact in a contact field when no avatar was available ([#221](https://github.com/putyourlightson/craft-campaign/issues/221)).
