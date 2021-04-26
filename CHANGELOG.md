@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.19.2 - Unreleased
+## 1.19.2 - 2021-04-26
 ### Changed
 - Sendouts are now marked as failed if template rendering errors are encountered.
 
