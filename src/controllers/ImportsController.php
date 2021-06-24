@@ -105,6 +105,10 @@ class ImportsController extends Controller
 
         $fileName = Assets::prepareAssetName($file->name);
 
+        // Force allow CSV file extension
+        // https://github.com/putyourlightson/craft-campaign/issues/234
+        Craft::$app->getConfig()->getGeneral()->allowedFileExtensions[] = 'csv';
+
         $asset = new Asset();
         $asset->tempFilePath = $tempFilePath;
         $asset->filename = $fileName;
@@ -114,7 +118,11 @@ class ImportsController extends Controller
         $asset->avoidFilenameConflicts = true;
         $asset->setScenario(Asset::SCENARIO_CREATE);
 
-        Craft::$app->getElements()->saveElement($asset);
+        if (!Craft::$app->getElements()->saveElement($asset)) {
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Unable to upload CSV file.'));
+
+            return null;
+        }
 
         if ($import === null) {
             $import = new ImportModel();

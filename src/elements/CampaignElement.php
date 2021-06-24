@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\elements;
 use craft\elements\actions\Restore;
 use craft\web\View;
 use DateTime;
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\helpers\NumberHelper;

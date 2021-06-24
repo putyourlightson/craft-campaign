@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.19.3 - Unreleased
+### Changed
+- Imports now force allow CSV file uploads even if they are excluded from the `allowedFileExtensions` general config setting ([#234](https://github.com/putyourlightson/craft-campaign/issues/234)).
+
 ## 1.19.2 - 2021-04-26
 ### Changed
 - Sendouts are now marked as failed if template rendering errors are encountered ([#225](https://github.com/putyourlightson/craft-campaign/issues/225)).
