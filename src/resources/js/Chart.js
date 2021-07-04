@@ -134,8 +134,7 @@ Campaign.Chart = Garnish.Base.extend(
                     },
                 },
                 yaxis: {
-                    tickAmount: data.maxValue < 5 ? data.maxValue + 1 : 5,
-                    max: data.maxValue * 1.2,
+                    tickAmount: data.maxValue < 5 ? data.maxValue : 5,
                     forceNiceScale: true,
                     labels: {
                         formatter: function(val) {
