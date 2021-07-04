@@ -163,11 +163,11 @@ class ReportsService extends Component
      *
      * @param int $campaignId
      * @param string|null $interaction
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return ContactActivityModel[]
      */
-    public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = 100): array
+    public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = $interaction ? [$interaction => null] : [
@@ -198,11 +198,11 @@ class ReportsService extends Component
      * Returns campaign links
      *
      * @param int $campaignId
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return LinkModel[]
      */
-    public function getCampaignLinks(int $campaignId, int $limit = 100): array
+    public function getCampaignLinks(int $campaignId, int $limit = null): array
     {
         // Get campaign links
         $linkRecords = LinkRecord::find()
@@ -218,11 +218,11 @@ class ReportsService extends Component
      * Returns campaign locations
      *
      * @param int $campaignId
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getCampaignLocations(int $campaignId, int $limit = 100): array
+    public function getCampaignLocations(int $campaignId, int $limit = null): array
     {
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
@@ -240,11 +240,11 @@ class ReportsService extends Component
      *
      * @param int $campaignId
      * @param bool $detailed
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = 100): array
+    public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = null): array
     {
         // Get campaign
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
@@ -285,11 +285,11 @@ class ReportsService extends Component
     /**
      * Returns contacts activity
      *
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getContactsActivity(int $limit = 100): array
+    public function getContactsActivity(int $limit = null): array
     {
         // Get recently active contacts
         return ContactElement::find()
@@ -301,11 +301,11 @@ class ReportsService extends Component
     /**
      * Returns contacts locations
      *
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getContactsLocations(int $limit = 100): array
+    public function getContactsLocations(int $limit = null): array
     {
         // Get total active contacts
         $total = ContactElement::find()
@@ -320,11 +320,11 @@ class ReportsService extends Component
      * Returns contacts devices
      *
      * @param bool $detailed
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getContactsDevices(bool $detailed = false, int $limit = 100): array
+    public function getContactsDevices(bool $detailed = false, int $limit = null): array
     {
         // Get total active contacts
         $total = ContactElement::find()
@@ -339,12 +339,12 @@ class ReportsService extends Component
      * Returns contact campaigns
      *
      * @param int $contactId
-     * @param int $limit
+     * @param int|null $limit
      * @param int|int[]|null $campaignId
      *
      * @return ContactActivityModel[]
      */
-    public function getContactCampaignActivity(int $contactId, int $limit = 100, $campaignId = null): array
+    public function getContactCampaignActivity(int $contactId, int $limit = null, $campaignId = null): array
     {
         $conditions = ['contactId' => $contactId];
 
@@ -368,12 +368,12 @@ class ReportsService extends Component
      * Returns contact mailing list activity
      *
      * @param int $contactId
-     * @param int $limit
+     * @param int|null $limit
      * @param int|int[]|null $mailingListId
      *
      * @return ContactActivityModel[]
      */
-    public function getContactMailingListActivity(int $contactId, int $limit = 100, $mailingListId = null): array
+    public function getContactMailingListActivity(int $contactId, int $limit = null, $mailingListId = null): array
     {
         $conditions = ['contactId' => $contactId];
 
@@ -477,11 +477,11 @@ class ReportsService extends Component
      *
      * @param int $mailingListId
      * @param string|null $interaction
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return ContactActivityModel[]
      */
-    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = 100): array
+    public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = $interaction ? [$interaction => null] : [
@@ -511,11 +511,11 @@ class ReportsService extends Component
      * Returns mailing list locations
      *
      * @param int $mailingListId
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getMailingListLocations(int $mailingListId, int $limit = 100): array
+    public function getMailingListLocations(int $mailingListId, int $limit = null): array
     {
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
@@ -533,11 +533,11 @@ class ReportsService extends Component
      *
      * @param int $mailingListId
      * @param bool $detailed
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = 100): array
+    public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = null): array
     {
         // Get mailing list
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
@@ -645,11 +645,11 @@ class ReportsService extends Component
      *
      * @param ContactCampaignModel[]|ContactMailingListModel[] $models
      * @param string|null $interaction
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return ContactActivityModel[]
      */
-    private function _getActivity(array $models, string $interaction = null, int $limit = 100): array
+    private function _getActivity(array $models, string $interaction = null, int $limit = null): array
     {
         $activity = [];
 
@@ -697,7 +697,9 @@ class ReportsService extends Component
         krsort($activity);
 
         // Enforce the limit
-        $activity = array_slice($activity, 0, $limit);
+        if ($limit !== null) {
+            $activity = array_slice($activity, 0, $limit);
+        }
 
         return $activity;
     }
@@ -708,11 +710,11 @@ class ReportsService extends Component
      * @param string $table
      * @param array $conditions
      * @param int $total
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
+    private function _getLocations(string $table, array $conditions, int $total, int $limit = null): array
     {
         if ($table != ContactRecord::tableName()) {
             $table = (new Query())
@@ -765,7 +767,9 @@ class ReportsService extends Component
         usort($results, [$this, '_compareCount']);
 
         // Enforce the limit
-        $results = array_slice($results, 0, $limit);
+        if ($limit !== null) {
+            $results = array_slice($results, 0, $limit);
+        }
 
         return $results;
     }
@@ -777,11 +781,11 @@ class ReportsService extends Component
      * @param array $conditions
      * @param bool $detailed
      * @param int $total
-     * @param int $limit
+     * @param int|null $limit
      *
      * @return array
      */
-    private function _getDevices(string $table, array $conditions, bool $detailed, int $total, int $limit = 100): array
+    private function _getDevices(string $table, array $conditions, bool $detailed, int $total, int $limit = null): array
     {
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
@@ -813,7 +817,9 @@ class ReportsService extends Component
         usort($results, [$this, '_compareCount']);
 
         // Enforce the limit
-        $results = array_slice($results, 0, $limit);
+        if ($limit !== null) {
+            $results = array_slice($results, 0, $limit);
+        }
 
         return $results;
     }
