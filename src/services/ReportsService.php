@@ -714,14 +714,21 @@ class ReportsService extends Component
      */
     private function _getLocations(string $table, array $conditions, int $total, int $limit = 100): array
     {
+        if ($table != ContactRecord::tableName()) {
+            $table = (new Query())
+                ->select('contactId')
+                ->from($table)
+                ->where($conditions)
+                ->groupBy('contactId');
+        }
+
         $query = (new Query())
             ->select(['country', 'MAX([[geoIp]]) AS geoIp', 'COUNT(*) AS count'])
-            ->from($table.' t')
-            ->where($conditions)
+            ->from($table)
             ->groupBy('country');
 
-        if ($table !== ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[t.contactId]]');
+        if ($table != ContactRecord::tableName()) {
+            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[contactId]]');
         }
 
         $results = $query->all();
@@ -732,7 +739,7 @@ class ReportsService extends Component
         foreach ($results as $key => &$result) {
             // Increment and unset unknown results
             if (empty($result['country'])) {
-                $unknownCount += $result['count'];
+                $unknownCount++;
                 unset($results[$key]);
                 continue;
             }
@@ -778,15 +785,22 @@ class ReportsService extends Component
     {
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
+        if ($table != ContactRecord::tableName()) {
+            $table = (new Query())
+                ->select('contactId')
+                ->from($table)
+                ->where($conditions)
+                ->groupBy('contactId');
+        }
+
         $query = (new Query())
             ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from($table.' t')
-            ->where($conditions)
-            ->andWhere(['not', ['device' => null]])
+            ->from($table)
+            ->where(['not', ['device' => null]])
             ->groupBy($fields);
 
-        if ($table !== ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[t.contactId]]');
+        if ($table != ContactRecord::tableName()) {
+            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[contactId]]');
         }
 
         $results = $query->all();
