@@ -6,6 +6,8 @@
  */
 Campaign.Chart = Garnish.Base.extend(
     {
+        chart: null,
+
         init: function(settings) {
             this.setSettings(settings);
 
@@ -70,7 +72,10 @@ Campaign.Chart = Garnish.Base.extend(
         },
 
         getChart: function() {
-            $('#chart').html('').css('min-height', '');
+            if (this.chart) {
+                this.chart.destroy();
+            }
+
             $('.report-chart .spinner').show();
 
             $.get({
@@ -82,8 +87,8 @@ Campaign.Chart = Garnish.Base.extend(
                     interval: $('#interval').val(),
                 },
                 success: $.proxy(function(data) {
-                    this.drawChart(data);
                     $('.report-chart .spinner').hide();
+                    this.drawChart(data);
                 }, this)
             });
         },
@@ -99,7 +104,7 @@ Campaign.Chart = Garnish.Base.extend(
 
             var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
 
-            var chart = new ApexCharts(document.querySelector("#chart"), {
+            this.chart = new ApexCharts(document.querySelector("#chart"), {
                 chart: {
                     type: 'line',
                     height: 300,
@@ -131,6 +136,12 @@ Campaign.Chart = Garnish.Base.extend(
                 yaxis: {
                     tickAmount: data.maxValue < 5 ? data.maxValue + 1 : 5,
                     max: data.maxValue * 1.2,
+                    forceNiceScale: true,
+                    labels: {
+                        formatter: function(val) {
+                            return val.toFixed(0)
+                        }
+                    },
                 },
                 grid: {
                     show: true,
@@ -153,7 +164,7 @@ Campaign.Chart = Garnish.Base.extend(
                 }
             });
 
-            chart.render();
+            this.chart.render();
         },
     }
 );
