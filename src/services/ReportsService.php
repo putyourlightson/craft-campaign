@@ -231,7 +231,7 @@ class ReportsService extends Component
         }
 
         // Return locations of contact campaigns
-        return $this->_getLocations(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
+        return $this->_getLocations(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
     /**
@@ -253,7 +253,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact campaigns
-        return $this->_getDevices(ContactCampaignRecord::tableName(), ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $detailed, $campaign->opened, $limit);
+        return $this->_getDevices(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $detailed, $campaign->opened, $limit);
     }
 
     /**
@@ -312,7 +312,7 @@ class ReportsService extends Component
             ->count();
 
         // Return locations of contacts
-        return $this->_getLocations(ContactRecord::tableName(), [], $total, $limit);
+        return $this->_getLocations(ContactRecord::class, [], $total, $limit);
     }
 
     /**
@@ -331,7 +331,7 @@ class ReportsService extends Component
             ->count();
 
         // Return device, os and client of contacts
-        return $this->_getDevices(ContactRecord::tableName(), [], $detailed, $total, $limit);
+        return $this->_getDevices(ContactRecord::class, [], $detailed, $total, $limit);
     }
 
     /**
@@ -523,7 +523,7 @@ class ReportsService extends Component
         }
 
         // Return locations of contact mailing lists
-        return $this->_getLocations(ContactMailingListRecord::tableName(), ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $mailingList->getSubscribedCount(), $limit);
+        return $this->_getLocations(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $mailingList->getSubscribedCount(), $limit);
     }
 
     /**
@@ -545,7 +545,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact mailing lists
-        return $this->_getDevices(ContactMailingListRecord::tableName(), ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
+        return $this->_getDevices(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
 
     // Private Methods
@@ -711,50 +711,54 @@ class ReportsService extends Component
     /**
      * Returns locations
      *
-     * @param string $table
+     * @param string $recordClass
      * @param array $conditions
      * @param int $total
      * @param int|null $limit
      *
      * @return array
      */
-    private function _getLocations(string $table, array $conditions, int $total, int $limit = null): array
+    private function _getLocations(string $recordClass, array $conditions, int $total, int $limit = null): array
     {
-        if ($table != ContactRecord::tableName()) {
-            $table = (new Query())
-                ->select('contactId')
-                ->from($table)
-                ->where($conditions)
-                ->groupBy('contactId');
-        }
+        $results = [];
+        $fields = ['country', 'MAX([[geoIp]]) AS geoIp'];
 
-        $query = (new Query())
-            ->select(['country', 'MAX([[geoIp]]) AS geoIp', 'COUNT(*) AS count'])
-            ->from($table)
+        /** @var ActiveRecord $recordClass */
+        $query = ContactRecord::find()
+            ->select(array_merge($fields, ['COUNT(*) AS count']))
             ->groupBy('country');
 
-        if ($table != ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[contactId]]');
+        if ($recordClass != ContactRecord::class) {
+            $contactIds = $recordClass::find()
+                ->select('contactId')
+                ->where($conditions)
+                ->groupBy('contactId')
+                ->column();
+
+            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
         }
 
-        $results = $query->all();
+        $records = $query->all();
 
         // Set default unknown count
         $unknownCount = 0;
 
-        foreach ($results as $key => &$result) {
-            // Increment and unset unknown results
-            if (empty($result['country'])) {
+        foreach ($records as $record) {
+            // Increment unknown results
+            if (empty($record->country)) {
                 $unknownCount++;
-                unset($results[$key]);
                 continue;
             }
 
+            $result = $record->toArray();
+            $result['count'] = $record->count;
+
             // Decode GeoIp
-            $geoIp = $result['geoIp'] ? Json::decodeIfJson($result['geoIp']) : [];
+            $geoIp = $record->geoIp ? Json::decodeIfJson($record->geoIp) : [];
 
             $result['countryCode'] = strtolower($geoIp['countryCode'] ?? '');
-            $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
+            $result['countRate'] = $total ? NumberHelper::floorOrOne($record->count / $total * 100) : 0;
+            $results[] = $result;
         }
 
         // If there is an unknown count then add it to results
@@ -781,7 +785,7 @@ class ReportsService extends Component
     /**
      * Returns devices
      *
-     * @param string $table
+     * @param string $recordClass
      * @param array $conditions
      * @param bool $detailed
      * @param int $total
@@ -789,32 +793,34 @@ class ReportsService extends Component
      *
      * @return array
      */
-    private function _getDevices(string $table, array $conditions, bool $detailed, int $total, int $limit = null): array
+    private function _getDevices(string $recordClass, array $conditions, bool $detailed, int $total, int $limit = null): array
     {
+        $results = [];
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
-        if ($table != ContactRecord::tableName()) {
-            $table = (new Query())
-                ->select('contactId')
-                ->from($table)
-                ->where($conditions)
-                ->groupBy('contactId');
-        }
-
-        $query = (new Query())
+        /** @var ActiveRecord $recordClass */
+        $query = ContactRecord::find()
             ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->from($table)
             ->where(['not', ['device' => null]])
             ->groupBy($fields);
 
-        if ($table != ContactRecord::tableName()) {
-            $query->innerJoin(ContactRecord::tableName().' contacts', '[[contacts.id]] = [[contactId]]');
+        if ($recordClass != ContactRecord::class) {
+            $contactIds = $recordClass::find()
+                ->select('contactId')
+                ->where($conditions)
+                ->groupBy('contactId')
+                ->column();
+
+            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
         }
 
-        $results = $query->all();
+        $records = $query->all();
 
-        foreach ($results as &$result) {
-            $result['countRate'] = $total ? NumberHelper::floorOrOne($result['count'] / $total * 100) : 0;
+        foreach ($records as $record) {
+            $result = $record->toArray();
+            $result['count'] = $record->count;
+            $result['countRate'] = $total ? NumberHelper::floorOrOne($record->count / $total * 100) : 0;
+            $results[] = $result;
         }
 
         // Sort results
@@ -853,9 +859,9 @@ class ReportsService extends Component
      *
      * @param array $a
      * @param array $b
-     * @return bool
+     * @return int
      */
-    private function _compareCount(array $a, array $b)
+    private function _compareCount(array $a, array $b): int
     {
         return (int)$a['count'] < (int)$b['count'] ? 1 : -1;
     }

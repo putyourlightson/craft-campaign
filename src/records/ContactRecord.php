@@ -37,6 +37,8 @@ use yii\db\ActiveQuery;
  */
 class ContactRecord extends BaseActiveRecord
 {
+    public $count = null;
+
     // Public Static Methods
     // =========================================================================
 
