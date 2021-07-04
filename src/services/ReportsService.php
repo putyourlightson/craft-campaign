@@ -185,7 +185,6 @@ class ReportsService extends Component
             ->where(['campaignId' => $campaignId])
             ->andWhere(['not', $interactionCondition])
             ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
             ->all();
 
         $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
@@ -498,7 +497,6 @@ class ReportsService extends Component
             ->where(['mailingListId' => $mailingListId])
             ->andWhere(['not', $interactionCondition])
             ->orderBy(['dateUpdated' => SORT_DESC])
-            ->limit($limit)
             ->all();
 
         $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
@@ -601,9 +599,7 @@ class ReportsService extends Component
         $records = $recordClass::find()
             ->select(array_merge(['contactId'], $minFields))
             ->where($condition)
-            ->andWhere(Db::parseDateParam(
-            'dateCreated', $endDateTime, '<'
-            ))
+            ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
             ->orderBy(['dateCreated' => SORT_ASC])
             ->groupBy('contactId')
             ->all();
@@ -696,7 +692,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$contactActivityModel->date->getTimestamp().'-'.$key.'-'.$interactionType] = $contactActivityModel;
+                    $activity[$contactActivityModel->date->getTimestamp().'-'.$key.'-'.$interactionType.'-'.$model->contactId] = $contactActivityModel;
                 }
             }
         }
