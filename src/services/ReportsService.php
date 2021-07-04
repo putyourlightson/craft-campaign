@@ -571,7 +571,7 @@ class ReportsService extends Component
         $format = $this->_getDateTimeFormat($interval);
 
         if ($format === null) {
-            return $data;
+            return [];
         }
 
         // Get first record
@@ -582,7 +582,7 @@ class ReportsService extends Component
             ->one();
 
         if ($record === null) {
-            return $data;
+            return [];
         }
 
         /** @var ActiveRecord $record */
@@ -591,13 +591,21 @@ class ReportsService extends Component
         $endDateTime = clone $startDateTime;
         $endDateTime->modify('+'.$this->getMaxIntervals($interval).' '.$interval);
 
+        $minFields = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced', 'dateCreated'];
+
+        foreach ($minFields as &$field) {
+            $field = 'MIN([['.$field.']]) AS '.$field;
+        }
+
         // Get records within date range
         $records = $recordClass::find()
+            ->select(array_merge(['contactId'], $minFields))
             ->where($condition)
             ->andWhere(Db::parseDateParam(
             'dateCreated', $endDateTime, '<'
             ))
             ->orderBy(['dateCreated' => SORT_ASC])
+            ->groupBy('contactId')
             ->all();
 
         // Get activity
