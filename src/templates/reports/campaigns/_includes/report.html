@@ -16,7 +16,7 @@
 {% endif %}
 
 {% if data.hasChart|length %}
-    {% js 'https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js' %}
+    {% do view.registerJsFile('https://cdn.jsdelivr.net/npm/apexcharts@3') %}
 
     <div class="report-chart">
         <div class="select">
