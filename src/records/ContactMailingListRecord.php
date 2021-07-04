@@ -58,9 +58,7 @@ class ContactMailingListRecord extends BaseActiveRecord
                 'mailingListElement.dateDeleted' => null,
             ]);
 
-        $query = parent::find()->from($subquery);
-
-        return $query;
+        return parent::find()->from(['subquery' => $subquery]);
     }
 
     // Public Methods

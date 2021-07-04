@@ -61,9 +61,7 @@ class ContactCampaignRecord extends BaseActiveRecord
                 'campaignElement.dateDeleted' => null,
             ]);
 
-        $query = parent::find()->from($subquery);
-
-        return $query;
+        return parent::find()->from(['subquery' => $subquery]);
     }
 
     // Public Methods
