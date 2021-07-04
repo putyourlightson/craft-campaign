@@ -16,6 +16,8 @@
 {% endif %}
 
 {% if data.hasChart|length %}
+    {% js 'https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js' %}
+
     <div class="report-chart">
         <div class="select">
             <select id="interval">

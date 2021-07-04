@@ -30,7 +30,6 @@ class ReportsAsset extends AssetBundle
             'css/chart.css',
         ];
         $this->js = [
-            'js/lib/apexcharts.js',
             'js/Chart.js',
         ];
 
