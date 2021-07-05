@@ -41,7 +41,7 @@
 
     {{ forms.autosuggestField({
         label: "API Key"|t('campaign'),
-        instructions: "An API key to use for triggerring tasks and notifications through a URL (min. 16 characters)."|t('campaign'),
+        instructions: "An API key to use for triggering tasks and notifications through a URL (min. 16 characters)."|t('campaign'),
         warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
         id: 'apiKey',
         name: 'apiKey',
