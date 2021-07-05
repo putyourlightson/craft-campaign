@@ -34,7 +34,8 @@ class ContactCampaignModel extends BaseModel
     // Constants
     // =========================================================================
 
-    const INTERACTIONS = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced'];
+    const INTERACTIONS = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced', 'sent'];
+    const DEFAULT_INTERACTIONS = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced'];
 
     // Properties
     // =========================================================================
