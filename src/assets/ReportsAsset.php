@@ -27,10 +27,15 @@ class ReportsAsset extends AssetBundle
 
         // define the relative path to CSS/JS files that should be registered with the page when this asset bundle is registered
         $this->css = [
+            'https://cdn.datatables.net/v/dt/dt-1.10.25/r-2.2.9/datatables.min.css',
             'css/chart.css',
+            'css/datatables.css',
         ];
         $this->js = [
+            'https://cdn.jsdelivr.net/npm/apexcharts@3',
+            'https://cdn.datatables.net/v/dt/dt-1.10.25/r-2.2.9/datatables.min.js',
             'js/Chart.js',
+            'js/DataTable.js',
         ];
 
         parent::init();

@@ -1,5 +1,5 @@
 {% if locations|length %}
-    <table id="locations" class="data fullwidth collapsible">
+    <table id="locations" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
         <thead>
             <th scope="col">{{ "Country"|t('campaign') }}</th>
             <th scope="col">{{ (countLabel ?? 'Count')|t('campaign') }}</th>
@@ -11,14 +11,26 @@
                         <span class="flag-icon flag-icon-{{ location.countryCode }}"></span>
                         {{ location.country ? location.country : 'Unknown'|t('campaign') }}
                     </td>
-                    <td data-title="{{ (countLabel ?? 'Count')|t('campaign') }}">{{ location.count }} <code>[{{ location.countRate }}%]</code></td>
+                    <td data-order="{{ location.count }}" data-title="{{ (countLabel ?? 'Count')|t('campaign') }}">{{ location.count }} <code>[{{ location.countRate }}%]</code></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    {% if limit is defined and limit == locations|length and reportUrl is defined %}
-        <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+    {% if limit is defined %}
+        {% if limit == locations|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+        {% endif %}
+    {% else %}
+        {% js %}
+            new Campaign.DataTable({
+                id: 'locations',
+                itemName: 'locations',
+                options: {
+                    order: [[ 1, 'desc' ]],
+                },
+            });
+        {% endjs %}
     {% endif %}
 
 {% else %}

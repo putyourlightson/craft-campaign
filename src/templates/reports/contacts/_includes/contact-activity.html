@@ -1,5 +1,5 @@
 {% if contactActivity|length %}
-    <table id="contacts" class="data fullwidth collapsible">
+    <table id="contacts" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
         <thead>
             <th scope="col">{{ "Email"|t('campaign') }}</th>
             <th scope="col">{{ "Subscribed"|t('campaign') }}</th>
@@ -16,14 +16,26 @@
                 <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ contact.unsubscribedCount }}</td>
                 <td data-title="{{ 'Complained'|t('campaign') }}">{{ contact.complainedCount }}</td>
                 <td data-title="{{ 'Bounced'|t('campaign') }}">{{ contact.bouncedCount }}</td>
-                <td data-title="{{ 'Last Activity'|t('campaign') }}">{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
+                <td data-order="{{ contact.lastActivity|datetime('U') }}" data-title="{{ 'Last Activity'|t('campaign') }}">{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    {% if limit is defined and limit == contactActivity|length %}
-        <p><a href="{{ url('campaign/reports/contacts/contact-activity') }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+    {% if limit is defined %}
+        {% if limit == contactActivity|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+        {% endif %}
+    {% else %}
+        {% js %}
+            new Campaign.DataTable({
+                id: 'contacts',
+                itemName: 'contacts',
+                options: {
+                    order: [[ 5, 'desc' ]],
+                },
+            });
+        {% endjs %}
     {% endif %}
 
 {% else %}

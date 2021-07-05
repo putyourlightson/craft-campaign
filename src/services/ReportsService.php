@@ -26,7 +26,6 @@ use putyourlightson\campaign\records\ContactMailingListRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\db\Query;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 
@@ -276,7 +275,7 @@ class ReportsService extends Component
             $data[$interaction] = $count;
         }
 
-        $data['total'] = $count = ContactMailingListRecord::find()->count();
+        $data['total'] = ContactMailingListRecord::find()->count();
 
         return $data;
     }
@@ -589,15 +588,16 @@ class ReportsService extends Component
         $endDateTime = clone $startDateTime;
         $endDateTime->modify('+'.$this->getMaxIntervals($interval).' '.$interval);
 
-        $minFields = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced', 'dateCreated'];
+        $fields = [];
 
-        foreach ($minFields as &$field) {
-            $field = 'MIN([['.$field.']]) AS '.$field;
+        /** @var ActiveRecord $recordClass */
+        foreach ($record->fields() as $field) {
+            $fields[] = 'MIN([['.$field.']]) AS '.$field;
         }
 
         // Get records within date range
         $records = $recordClass::find()
-            ->select(array_merge(['contactId'], $minFields))
+            ->select(array_merge(['contactId'], $fields))
             ->where($condition)
             ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
             ->orderBy(['dateCreated' => SORT_ASC])
