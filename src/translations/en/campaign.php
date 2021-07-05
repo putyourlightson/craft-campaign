@@ -22,6 +22,7 @@ return [
     'Access utility' => '',
     'Activate Sending' => '',
     'Active' => '',
+    'Activity' => '',
     'Add a campaign' => '',
     'Add a contact' => '',
     'Add a mailing list' => '',
