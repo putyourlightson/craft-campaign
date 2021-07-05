@@ -1,5 +1,5 @@
 {% if links|length %}
-    <table id="links" class="data fullwidth collapsible">
+    <table id="links" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
         <thead>
             <th scope="col">{{ "URL"|t('campaign') }}</th>
             <th scope="col">{{ "Title"|t('campaign') }}</th>
@@ -18,8 +18,20 @@
         </tbody>
     </table>
 
-    {% if limit is defined and limit == links|length and reportUrl is defined %}
-        <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+    {% if limit is defined %}
+        {% if limit == links|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+        {% endif %}
+    {% else %}
+        {% js %}
+            new Campaign.DataTable({
+                id: 'links',
+                itemName: 'links',
+                options: {
+                    order: [[ 2, 'desc' ]],
+                },
+            });
+        {% endjs %}
     {% endif %}
 
 {% else %}
