@@ -683,7 +683,7 @@ class ReportsService extends Component
 
         foreach ($models as $model) {
             /** @var ContactCampaignModel|ContactMailingListModel $model */
-            $interactionTypes = ($interaction !== null && in_array($interaction, $model::INTERACTIONS)) ? [$interaction] : $model::DEFAULT_INTERACTIONS;
+            $interactionTypes = ($interaction !== null && in_array($interaction, $model::INTERACTIONS)) ? [$interaction] : $model::INTERACTIONS;
 
             foreach ($interactionTypes as $key => $interactionType) {
                 if ($model->{$interactionType} !== null) {

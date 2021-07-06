@@ -29,7 +29,6 @@ class ContactMailingListModel extends BaseModel
     // =========================================================================
 
     const INTERACTIONS = ['subscribed', 'unsubscribed', 'complained', 'bounced'];
-    const DEFAULT_INTERACTIONS = ['subscribed', 'unsubscribed', 'complained', 'bounced'];
 
     // Properties
     // =========================================================================
@@ -100,7 +99,7 @@ class ContactMailingListModel extends BaseModel
     /**
      * Returns the contact
      *
-     * @return ContactElement"null
+     * @return ContactElement|null
      */
     public function getContact()
     {
