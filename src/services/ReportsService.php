@@ -158,6 +158,30 @@ class ReportsService extends Component
     }
 
     /**
+     * Returns campaign recipients
+     *
+     * @param int $campaignId
+     * @param int|null $sendoutId
+     * @param int|null $limit
+     *
+     * @return ContactCampaignModel[]
+     */
+    public function getCampaignRecipients(int $campaignId, int $sendoutId = null, int $limit = null): array
+    {
+        $contactCampaignQuery = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaignId])
+            ->orderBy(['sent' => SORT_DESC]);
+
+        if ($sendoutId !== null) {
+            $contactCampaignQuery->andWhere(['sendoutId' => $sendoutId]);
+        }
+
+        $contactCampaignRecords = $contactCampaignQuery->all();
+
+        return ContactCampaignModel::populateModels($contactCampaignRecords, false);
+    }
+
+    /**
      * Returns campaign contact activity
      *
      * @param int $campaignId

@@ -1,0 +1,63 @@
+{% import 'campaign/_macros' as macros %}
+
+{{ "Filter by sendout"|t('campaign') }}:
+<div class="select">
+    <select class="filter" data-type="sendout">
+        <option value="">{{ "All"|t('campaign') }}</option>
+        {% for sendout in data.sendouts %}
+            <option value="{{ sendout.id }}" {{ sendoutId == sendout.id ? 'selected' }}>
+                {{ sendout.title }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+<br/><br/>
+
+{% if recipients|length %}
+
+    <table id="recipients" class="display responsive nowrap">
+        <thead>
+            <th scope="col">{{ "Email"|t('campaign') }}</th>
+            <th scope="col">{{ "Sendout"|t('campaign') }}</th>
+            <th scope="col">{{ "Sent"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+            {% for recipient in recipients %}
+                {% set contact = recipient.contact %}
+                {% if contact %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}">
+                            <a href="{{ contact.reportUrl }}">{{ contact.email }}</a>
+                        </th>
+                        <td data-title="{{ 'Sendout'|t('campaign') }}">
+                            {% set sendout = recipient.sendout %}
+                            {% if sendout %}
+                                <a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a>
+                            {% endif %}
+                        </td>
+                        <td data-order="{{ recipient.sent|datetime('U') }}" data-title="{{ 'Sent'|t('campaign') }}">
+                            {{ recipient.sent|datetime }}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% js %}
+        new Campaign.DataTable({
+            id: 'recipients',
+            itemName: 'recipients',
+            options: {
+                order: [[ 2, 'desc' ]],
+            },
+        });
+    {% endjs %}
+
+{% else %}
+
+    <p>{{ "No recipients for this campaign."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

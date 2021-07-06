@@ -2,8 +2,8 @@
 
 ## 1.20.0 - Unreleased
 ### Added
+- Added the ability to view, filter and sort all campaign recipients in reports ([#228](https://github.com/putyourlightson/craft-campaign/issues/228)).
 - Added the ability to filter and sort all activity, locations and devices in reports ([#231](https://github.com/putyourlightson/craft-campaign/issues/231)).
-- Added the ability to see which contacts a campaign was sent to in reports ([#228](https://github.com/putyourlightson/craft-campaign/issues/228)).
 
 ### Changed
 - Imports now force allow CSV file uploads even if they are excluded from the `allowedFileExtensions` general config setting ([#234](https://github.com/putyourlightson/craft-campaign/issues/234)).

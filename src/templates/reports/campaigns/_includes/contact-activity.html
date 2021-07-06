@@ -5,18 +5,13 @@
     {% set interaction = craft.app.request.param('interaction') %}
     {{ "Filter by interaction"|t('campaign') }}:
     <div class="select">
-        <select class="interaction-filter">
-            <optgroup label="{{ "Interactions"|t('campaign') }}">
-                <option value="">{{ "All"|t('campaign') }}</option>
-                <option value="opened" {{ interaction == 'opened' ? 'selected' }}>{{ "Opened"|t('campaign') }}</option>
-                <option value="clicked" {{ interaction == 'clicked' ? 'selected' }}>{{ "Clicked"|t('campaign') }}</option>
-                <option value="unsubscribed" {{ interaction == 'unsubscribed' ? 'selected' }}>{{ "Unsubscribed"|t('campaign') }}</option>
-                <option value="complained" {{ interaction == 'complained' ? 'selected' }}>{{ "Complained"|t('campaign') }}</option>
-                <option value="bounced" {{ interaction == 'bounced' ? 'selected' }}>{{ "Bounced"|t('campaign') }}</option>
-            </optgroup>
-            <optgroup label="{{ "Activity"|t('campaign') }}">
-                <option value="sent" {{ interaction == 'sent' ? 'selected' }}>{{ "Sent"|t('campaign') }}</option>
-            </optgroup>
+        <select class="filter" data-type="interaction">
+            <option value="">{{ "All"|t('campaign') }}</option>
+            <option value="opened" {{ interaction == 'opened' ? 'selected' }}>{{ "Opened"|t('campaign') }}</option>
+            <option value="clicked" {{ interaction == 'clicked' ? 'selected' }}>{{ "Clicked"|t('campaign') }}</option>
+            <option value="unsubscribed" {{ interaction == 'unsubscribed' ? 'selected' }}>{{ "Unsubscribed"|t('campaign') }}</option>
+            <option value="complained" {{ interaction == 'complained' ? 'selected' }}>{{ "Complained"|t('campaign') }}</option>
+            <option value="bounced" {{ interaction == 'bounced' ? 'selected' }}>{{ "Bounced"|t('campaign') }}</option>
         </select>
     </div>
     <br/><br/>

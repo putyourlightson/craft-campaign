@@ -9,7 +9,7 @@ Campaign.CP = Garnish.Base.extend(
         init: function() {
             this.loadElementThumbs();
             this.addListener($.find('.show-more'), 'click', 'showMore');
-            this.addListener($.find('.interaction-filter'), 'change', 'filterInteraction');
+            this.addListener($.find('.filter'), 'change', 'applyFilter');
         },
 
         loadElementThumbs: function() {
@@ -28,12 +28,13 @@ Campaign.CP = Garnish.Base.extend(
             $this.remove();
         },
 
-        filterInteraction: function(event) {
+        applyFilter: function(event) {
             event.preventDefault();
 
             var $this = $(event.target);
             var baseUrl = window.location.href.split('?')[0];
-            window.location.href = $this.val() ? baseUrl + '?interaction=' + $this.val() : baseUrl;
+            var filterType = $this.attr('data-type');
+            window.location.href = $this.val() ? baseUrl + '?' + filterType + '=' + $this.val() : baseUrl;
         },
     }
 );

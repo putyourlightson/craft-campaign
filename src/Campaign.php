@@ -361,6 +361,7 @@ class Campaign extends Plugin
     {
         return [
             'campaign/reports/campaigns/<campaignId:\d+>' => ['template' => 'campaign/reports/campaigns/_view'],
+            'campaign/reports/campaigns/<campaignId:\d+>/recipients' => ['template' => 'campaign/reports/campaigns/_recipients'],
             'campaign/reports/campaigns/<campaignId:\d+>/contact-activity' => ['template' => 'campaign/reports/campaigns/_contact-activity'],
             'campaign/reports/campaigns/<campaignId:\d+>/links' => ['template' => 'campaign/reports/campaigns/_links'],
             'campaign/reports/campaigns/<campaignId:\d+>/locations' => ['template' => 'campaign/reports/campaigns/_locations'],

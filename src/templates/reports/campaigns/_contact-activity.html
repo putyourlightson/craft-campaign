@@ -12,6 +12,8 @@
 {% block content %}
 
     {% set interaction = craft.app.request.param('interaction') %}
-    {% include 'campaign/reports/campaigns/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getCampaignContactActivity(campaignId, interaction) } %}
+    {% include 'campaign/reports/campaigns/_includes/contact-activity' with {
+        contactActivity: craft.campaign.reports.getCampaignContactActivity(campaignId, interaction)
+    } %}
 
 {% endblock %}
