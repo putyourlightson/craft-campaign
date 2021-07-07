@@ -10,7 +10,7 @@
 - The latest version of ApexCharts is now loaded from a CDN.
 
 ### Fixed
-- Fixed inconsistent report data for campaigns that were sent in multiple sendouts ([#232](https://github.com/putyourlightson/craft-campaign/issues/232)).
+- Fixed inconsistent report data for campaigns that were sent from multiple sendouts ([#232](https://github.com/putyourlightson/craft-campaign/issues/232)).
 
 ## 1.19.2 - 2021-04-26
 ### Changed
