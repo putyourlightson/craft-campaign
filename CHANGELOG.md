@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.20.0 - Unreleased
+## 1.20.0 - 2021-07-07
 ### Added
 - Added the ability to view, filter and sort all campaign recipients in reports ([#228](https://github.com/putyourlightson/craft-campaign/issues/228)).
 - Added the ability to filter and sort all activity, locations and devices in reports ([#231](https://github.com/putyourlightson/craft-campaign/issues/231)).
