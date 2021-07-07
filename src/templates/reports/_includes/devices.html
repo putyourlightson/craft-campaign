@@ -1,5 +1,5 @@
 {% if devices|length %}
-    <table id="devices" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
+    <table id="devices" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
         <thead>
             <th scope="col">{{ "Device"|t('campaign') }}</th>
             {% if reportUrl is not defined %}

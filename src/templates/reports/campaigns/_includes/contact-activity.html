@@ -21,7 +21,7 @@
 
 {% if contactActivity|length %}
 
-    <table id="contact-activity" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
+    <table id="contact-activity" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
         <thead>
             <th scope="col">{{ "Contact"|t('campaign') }}</th>
             <th scope="col">{{ "Interaction"|t('campaign') }}</th>

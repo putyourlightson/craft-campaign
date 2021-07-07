@@ -1,5 +1,5 @@
 {% if locations|length %}
-    <table id="locations" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
+    <table id="locations" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
         <thead>
             <th scope="col">{{ "Country"|t('campaign') }}</th>
             <th scope="col">{{ (countLabel ?? 'Count')|t('campaign') }}</th>

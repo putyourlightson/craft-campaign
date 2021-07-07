@@ -39,6 +39,8 @@ Campaign.DataTable = Garnish.Base.extend(
 
             $('#' + id + '_length').appendTo('#' + id + '_wrapper .toolbar');
             $('#' + id + '_filter').appendTo('#' + id + '_wrapper .toolbar');
+
+            $('#' + id).removeClass('hidden');
         },
     }
 );

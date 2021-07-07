@@ -1,5 +1,5 @@
 {% if links|length %}
-    <table id="links" class="display responsive nowrap {{ limit is defined ? 'data fullwidth collapsible' }}">
+    <table id="links" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
         <thead>
             <th scope="col">{{ "URL"|t('campaign') }}</th>
             <th scope="col">{{ "Title"|t('campaign') }}</th>
