@@ -7,7 +7,7 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaigntests\base\BaseUnitTest;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 
 /**
