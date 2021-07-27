@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.20.1 - 2021-07-27
+### Fixed
+- Fixed a bug in which the mime type of a CSV file was not recognised in PHP 8.0 when importing ([#240](https://github.com/putyourlightson/craft-campaign/issues/240)).
+
 ## 1.20.0 - 2021-07-07
 ### Added
 - Added the ability to view, filter and sort all campaign recipients in reports ([#228](https://github.com/putyourlightson/craft-campaign/issues/228)).

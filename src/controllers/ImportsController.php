@@ -94,7 +94,8 @@ class ImportsController extends Controller
 
         // Ensure file is a CSV file
         $mimeType = FileHelper::getMimeType($tempFilePath);
-        if ($mimeType != 'text/plain' && $mimeType != 'text/csv') {
+
+        if ($mimeType != 'text/plain' && $mimeType != 'text/csv' && $mimeType != 'application/csv') {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
 
             return null;
