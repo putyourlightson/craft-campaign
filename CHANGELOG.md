@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.20.2 - 2021-08-05
+### Fixed
+- Fixed a bug in which segments were not working with fields created in Craft 3.7.0 and above ([#241](https://github.com/putyourlightson/craft-campaign/issues/241)).
+
 ## 1.20.1 - 2021-07-27
 ### Fixed
 - Fixed a bug in which the mime type of a CSV file was not recognised in PHP 8.0 when importing ([#240](https://github.com/putyourlightson/craft-campaign/issues/240)).

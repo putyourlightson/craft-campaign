@@ -18,6 +18,7 @@ use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\fields\RadioButtons;
 use craft\fields\Url;
+use craft\helpers\ElementHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
 use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
@@ -139,9 +140,16 @@ class SegmentHelper
                 $fieldType = get_class($field);
 
                 if (!empty($supportedFields[$fieldType])) {
+                    $fieldColumnPrefix = $field->columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix;
+                    $fieldColumn = $fieldColumnPrefix.$field->handle;
+
+                    if (version_compare(Craft::$app->version, '3.7.0', '>=')) {
+                        $fieldColumn = ElementHelper::fieldColumnFromField($field);
+                    }
+
                     $availableFields[] = [
                         'type' => $fieldType,
-                        'handle' => 'field_'.$field->handle,
+                        'handle' => $fieldColumn,
                         'name' => $field->name,
                         'options' => ($field instanceof BaseOptionsField ? $field->options : null),
                     ];
