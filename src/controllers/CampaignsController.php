@@ -215,11 +215,9 @@ class CampaignsController extends Controller
             Craft::$app->getElements()->setPlaceholderElement($campaign);
         }
 
-        $this->getView()->getTwig()->disableStrictVariables();
+        $this->response->data = $campaign->getHtmlBody();
 
-        return $this->renderTemplate($campaign->getCampaignType()->htmlTemplate, [
-            'campaign' => $campaign
-        ]);
+        return $this->response;
     }
 
     /**
