@@ -7,11 +7,13 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\FieldInterface;
 use craft\helpers\Db;
 use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\elements\SegmentElement;
+use putyourlightson\campaign\helpers\SegmentHelper;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 
@@ -168,6 +170,60 @@ class SegmentsService extends Component
         }
 
         return $filteredContactIds;
+    }
+
+    public function updateField(FieldInterface $field)
+    {
+        $newFieldColumn = SegmentHelper::fieldColumnFromField($field);
+        $oldFieldColumn = SegmentHelper::oldFieldColumnFromField($field);
+
+        if ($newFieldColumn == $oldFieldColumn) {
+            return;
+        }
+
+        $updated = false;
+
+        $segments = SegmentElement::find()
+            ->status(null)
+            ->all();
+
+        foreach ($segments as $segment) {
+            foreach ($segment->conditions as &$andCondition) {
+                foreach ($andCondition as &$orCondition) {
+                    if ($orCondition[1] == $oldFieldColumn) {
+                        $orCondition[1] = $newFieldColumn;
+                        $updated = true;
+                    }
+                }
+            }
+
+            if ($updated) {
+                Craft::$app->elements->saveElement($segment);
+            }
+        }
+    }
+
+    public function deleteField(FieldInterface $field)
+    {
+        $segments = SegmentElement::find()
+            ->status(null)
+            ->all();
+
+        foreach ($segments as $segment) {
+            $fieldColumn = SegmentHelper::fieldColumnFromField($field);
+
+            foreach ($segment->conditions as &$andCondition) {
+                foreach ($andCondition as $key => $orCondition) {
+                    if ($orCondition[1] == $fieldColumn) {
+                        unset($andCondition[$key]);
+                    }
+                }
+            }
+
+            if ($segment->isAttributeDirty('conditions')) {
+                Craft::$app->elements->saveElement($segment);
+            }
+        }
     }
 
     // Private Methods

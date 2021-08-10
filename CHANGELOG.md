@@ -4,6 +4,9 @@
 ### Added
 - Added the `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
 
+### Fixed
+- Fixed a bug in which field handle updates could cause an error on the segments index page ([#242](https://github.com/putyourlightson/craft-campaign/issues/242)).
+
 ## 1.20.2 - 2021-08-05
 ### Fixed
 - Fixed a bug in which segments were not working with fields created in Craft 3.7.0 and above ([#241](https://github.com/putyourlightson/craft-campaign/issues/241)).

@@ -6,7 +6,7 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
-use craft\base\Field;
+use craft\base\FieldInterface;
 use craft\fields\BaseOptionsField;
 use craft\fields\Checkboxes;
 use craft\fields\Date;
@@ -18,7 +18,6 @@ use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\fields\RadioButtons;
 use craft\fields\Url;
-use craft\helpers\ElementHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
 use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
@@ -124,7 +123,7 @@ class SegmentHelper
         $settings = Campaign::$plugin->getSettings();
         $availableFields = [[
             'type' => Email::class,
-            'handle' => 'email',
+            'column' => 'email',
             'name' => $settings->emailFieldLabel,
             'options' => null,
         ]];
@@ -135,21 +134,13 @@ class SegmentHelper
         if (!empty($fields)) {
             $supportedFields = SegmentHelper::getFieldOperators();
 
-            /** @var Field $field */
             foreach ($fields as $field) {
                 $fieldType = get_class($field);
 
                 if (!empty($supportedFields[$fieldType])) {
-                    $fieldColumnPrefix = $field->columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix;
-                    $fieldColumn = $fieldColumnPrefix.$field->handle;
-
-                    if (version_compare(Craft::$app->version, '3.7.0', '>=')) {
-                        $fieldColumn = ElementHelper::fieldColumnFromField($field);
-                    }
-
                     $availableFields[] = [
                         'type' => $fieldType,
-                        'handle' => $fieldColumn,
+                        'column' => static::fieldColumnFromField($field),
                         'name' => $field->name,
                         'options' => ($field instanceof BaseOptionsField ? $field->options : null),
                     ];
@@ -160,13 +151,13 @@ class SegmentHelper
         // Add date fields
         $availableFields[] = [
             'type' => Date::class,
-            'handle' => 'lastActivity',
+            'column' => 'lastActivity',
             'name' => Craft::t('campaign', 'Last Activity'),
             'options' => null,
         ];
         $availableFields[] = [
             'type' => Date::class,
-            'handle' => 'elements.dateCreated',
+            'column' => 'elements.dateCreated',
             'name' => Craft::t('campaign', 'Date Created'),
             'options' => null,
         ];
@@ -177,5 +168,47 @@ class SegmentHelper
         Event::trigger(static::class, self::EVENT_REGISTER_AVAILABLE_FIELDS, $event);
 
         return $event->availableFields;
+    }
+
+    /**
+     * Returns the content column name for a given field.
+     * Replaces ElementHelper::fieldColumnFromField, added in Craft 3.7.0.
+     *
+     * @since 1.20.3
+     */
+    public static function fieldColumnFromField(FieldInterface $field)
+    {
+        if ($field::hasContentColumn()) {
+            return static::fieldColumn($field->columnPrefix, $field->handle, $field->columnSuffix);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the old content column name for a given field.
+     *
+     * @since 1.20.3
+     */
+    public static function oldFieldColumnFromField(FieldInterface $field)
+    {
+        if ($field::hasContentColumn()) {
+            return static::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the content column name based on the given field attributes.
+     * Replaces ElementHelper::fieldColumn, added in Craft 3.7.0.
+     *
+     * @since 1.20.3
+     */
+    public static function fieldColumn($columnPrefix, string $handle, string $columnSuffix = null): string
+    {
+        return ($columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix) .
+            $handle .
+            ($columnSuffix ? "_$columnSuffix" : '');
     }
 }

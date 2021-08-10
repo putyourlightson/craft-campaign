@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
+use craft\events\FieldEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -141,6 +142,7 @@ class Campaign extends Plugin
         $this->_registerElementTypes();
         $this->_registerFieldTypes();
         $this->_registerAfterInstallEvent();
+        $this->_registerFieldEvents();
         $this->_registerProjectConfigListeners();
         $this->_registerTemplateHooks();
 
@@ -341,12 +343,14 @@ class Campaign extends Plugin
 
         // Set defaults
         $settings->apiKey = StringHelper::randomString(16);
-        $settings->fromNamesEmails = [[
-            Craft::parseEnv($mailSettings->fromName),
-            Craft::parseEnv($mailSettings->fromEmail),
-            '',
-            Craft::$app->getSites()->getPrimarySite()->id,
-        ]];
+        $settings->fromNamesEmails = [
+            [
+                Craft::parseEnv($mailSettings->fromName),
+                Craft::parseEnv($mailSettings->fromEmail),
+                '',
+                Craft::$app->getSites()->getPrimarySite()->id,
+            ]
+        ];
         $settings->transportType = Sendmail::class;
 
         return $settings;
@@ -538,6 +542,24 @@ class Campaign extends Plugin
                         )->send();
                     }
                 }
+            }
+        );
+    }
+
+    /**
+     * Registers field events.
+     */
+    private function _registerFieldEvents()
+    {
+        Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
+            function(FieldEvent $event) {
+                $this->segments->updateField($event->field);
+            }
+        );
+
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD,
+            function(FieldEvent $event) {
+                $this->segments->deleteField($event->field);
             }
         );
     }

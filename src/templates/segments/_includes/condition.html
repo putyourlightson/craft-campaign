@@ -3,9 +3,9 @@
         <div class="select">
             <select name="conditions[{{ andIndex ?? '' }}][{{ orIndex ?? '' }}][1]" class="conditionField" {{ condition is not defined ? 'disabled' }}>
                 {% for field in availableFields %}
-                    {% set value = field.handle %}
+                    {% set value = field.column %}
                     <option data-field="field-{{ field.type|replace({'\\': '-'}) }}"
-                            data-unique="{{ field.options ? field.handle }}"
+                            data-unique="{{ field.options ? field.column }}"
                             value="{{ value }}"
                             {{ condition is defined and condition[1] == value ? 'selected' }}
                     >{{ field.name }}</option>
