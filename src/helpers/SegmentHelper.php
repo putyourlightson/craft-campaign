@@ -197,7 +197,10 @@ class SegmentHelper
     public static function fieldColumnFromField(FieldInterface $field)
     {
         if ($field::hasContentColumn()) {
-            return static::fieldColumn($field->columnPrefix, $field->handle, $field->columnSuffix);
+            // Introduced in Craft 3.7.0 only
+            $columnSuffix = $field->columnSuffix ?? '';
+
+            return static::fieldColumn($field->columnPrefix, $field->handle, $columnSuffix);
         }
 
         return null;
@@ -211,7 +214,10 @@ class SegmentHelper
     public static function oldFieldColumnFromField(FieldInterface $field)
     {
         if ($field::hasContentColumn()) {
-            return static::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
+            // Introduced in Craft 3.7.0 only
+            $columnSuffix = $field->columnSuffix ?? '';
+
+            return static::fieldColumn($field->columnPrefix, $field->oldHandle, $columnSuffix);
         }
 
         return null;
@@ -223,7 +229,7 @@ class SegmentHelper
      *
      * @since 1.20.3
      */
-    public static function fieldColumn($columnPrefix, string $handle, string $columnSuffix = null): string
+    public static function fieldColumn($columnPrefix, string $handle, string $columnSuffix): string
     {
         return ($columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix) .
             $handle .
