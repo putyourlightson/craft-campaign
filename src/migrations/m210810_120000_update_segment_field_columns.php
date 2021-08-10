@@ -5,6 +5,7 @@ namespace putyourlightson\campaign\migrations;
 use Craft;
 use craft\base\FieldInterface;
 use craft\db\Migration;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\helpers\SegmentHelper;
 
@@ -18,7 +19,8 @@ class m210810_120000_update_segment_field_columns extends Migration
      */
     public function safeUp()
     {
-        $fields = Craft::$app->fields->getAllFields();
+        // Get contact fields
+        $fields = Campaign::$plugin->getSettings()->getContactFields();
 
         foreach ($fields as $field) {
             $this->_updateFieldColumn($field);
@@ -46,7 +48,7 @@ class m210810_120000_update_segment_field_columns extends Migration
             return;
         }
 
-        $updated = false;
+        $modified = false;
 
         $segments = SegmentElement::find()
             ->status(null)
@@ -57,12 +59,12 @@ class m210810_120000_update_segment_field_columns extends Migration
                 foreach ($andCondition as &$orCondition) {
                     if ($orCondition[1] == $oldFieldColumn) {
                         $orCondition[1] = $newFieldColumn;
-                        $updated = true;
+                        $modified = true;
                     }
                 }
             }
 
-            if ($updated) {
+            if ($modified) {
                 Craft::$app->elements->saveElement($segment);
             }
         }

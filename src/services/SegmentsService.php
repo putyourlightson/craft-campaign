@@ -174,6 +174,10 @@ class SegmentsService extends Component
 
     public function updateField(FieldInterface $field)
     {
+        if (!SegmentHelper::isContactField($field)) {
+            return;
+        }
+
         $newFieldColumn = SegmentHelper::fieldColumnFromField($field);
         $oldFieldColumn = SegmentHelper::oldFieldColumnFromField($field);
 
@@ -181,7 +185,7 @@ class SegmentsService extends Component
             return;
         }
 
-        $updated = false;
+        $modified = false;
 
         $segments = SegmentElement::find()
             ->status(null)
@@ -192,12 +196,12 @@ class SegmentsService extends Component
                 foreach ($andCondition as &$orCondition) {
                     if ($orCondition[1] == $oldFieldColumn) {
                         $orCondition[1] = $newFieldColumn;
-                        $updated = true;
+                        $modified = true;
                     }
                 }
             }
 
-            if ($updated) {
+            if ($modified) {
                 Craft::$app->elements->saveElement($segment);
             }
         }
@@ -205,6 +209,12 @@ class SegmentsService extends Component
 
     public function deleteField(FieldInterface $field)
     {
+        if (!SegmentHelper::isContactField($field)) {
+            return;
+        }
+
+        $modified = false;
+
         $segments = SegmentElement::find()
             ->status(null)
             ->all();
@@ -216,11 +226,12 @@ class SegmentsService extends Component
                 foreach ($andCondition as $key => $orCondition) {
                     if ($orCondition[1] == $fieldColumn) {
                         unset($andCondition[$key]);
+                        $modified = true;
                     }
                 }
             }
 
-            if ($segment->isAttributeDirty('conditions')) {
+            if ($modified) {
                 Craft::$app->elements->saveElement($segment);
             }
         }

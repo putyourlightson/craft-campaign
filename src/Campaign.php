@@ -553,7 +553,9 @@ class Campaign extends Plugin
     {
         Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
             function(FieldEvent $event) {
-                $this->segments->updateField($event->field);
+                if ($event->isNew === false) {
+                    $this->segments->updateField($event->field);
+                }
             }
         );
 

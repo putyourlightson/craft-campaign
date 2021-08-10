@@ -171,6 +171,24 @@ class SegmentHelper
     }
 
     /**
+     * Returns whether the provided field is a contact field.
+     *
+     * @since 1.20.3
+     */
+    public static function isContactField(FieldInterface $field): bool
+    {
+        $contactFields = Campaign::$plugin->getSettings()->getContactFields();
+
+        foreach ($contactFields as $contactField) {
+            if ($contactField->id == $field->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the content column name for a given field.
      * Replaces ElementHelper::fieldColumnFromField, added in Craft 3.7.0.
      *
