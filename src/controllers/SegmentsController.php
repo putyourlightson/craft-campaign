@@ -183,13 +183,7 @@ class SegmentsController extends Controller
                     // Sort or conditions by keys
                     ksort($orCondition);
                 }
-
-                // Unset variable reference to avoid possible side-effects
-                unset($orCondition);
             }
-
-            // Unset variable reference to avoid possible side-effects
-            unset($andCondition);
         }
 
         // Save it

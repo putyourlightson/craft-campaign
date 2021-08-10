@@ -118,7 +118,6 @@ class SegmentsService extends Component
                 ->where($this->_getConditions($segment))
                 ->all();
         }
-
         elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
 

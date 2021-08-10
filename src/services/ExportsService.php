@@ -99,9 +99,6 @@ class ExportsService extends Component
                                 $element = $element->__toString();
                             }
 
-                            // Unset variable reference to avoid possible side-effects
-                            unset($element);
-
                             $value = implode(',', $elements);
                         }
 
