@@ -5,8 +5,13 @@
 {% set title = 'Campaigns'|t('campaign') %}
 {% set selectedSubnavItem = 'campaigns' %}
 
-{% js %}
-    {% if campaignTypeHandle is defined %}
-        window.defaultCampaignTypeHandle = '{{ campaignTypeHandle }}';
-    {% endif %}
-{% endjs %}
+{% do view.registerTranslations('campaign', [
+    'New campaign',
+]) %}
+
+
+{% if campaignTypeHandle is defined %}
+    {% js %}
+        window.defaultCampaignTypeHandle = '{{ campaignTypeHandle|e('js') }}';
+    {% endjs %}
+{% endif %}

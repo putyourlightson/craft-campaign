@@ -1,11 +1,12 @@
 # Release Notes for Campaign
 
-## 1.20.3 - Unreleased
+## 1.21.0 - Unreleased
 ### Added
 - Added the `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
 
 ### Fixed
 - Fixed a bug in which field handle updates could cause an error on the segments index page ([#242](https://github.com/putyourlightson/craft-campaign/issues/242)).
+- Fixed button text that was not being translated on element index pages ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
 
 ## 1.20.2 - 2021-08-05
 ### Fixed

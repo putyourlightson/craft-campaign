@@ -5,8 +5,13 @@
 {% set title = 'Mailing Lists'|t('campaign') %}
 {% set selectedSubnavItem = 'mailinglists' %}
 
-{% js %}
-    {% if mailingListTypeHandle is defined %}
-        window.defaultMailingListTypeHandle = '{{ mailingListTypeHandle }}';
-    {% endif %}
-{% endjs %}
+{% do view.registerTranslations('campaign', [
+    'New mailing list',
+]) %}
+
+
+{% if mailingListTypeHandle is defined %}
+    {% js %}
+        window.defaultMailingListTypeHandle = '{{ mailingListTypeHandle|e('js') }}';
+    {% endjs %}
+{% endif %}

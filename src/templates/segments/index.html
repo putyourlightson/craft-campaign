@@ -6,8 +6,13 @@
 
 {% set title = 'Segments'|t('campaign') %}
 
-{% js %}
-    {% if segmentType is defined %}
-        window.defaultSegmentTypeHandle = '{{ segmentType }}';
-    {% endif %}
-{% endjs %}
+{% do view.registerTranslations('campaign', [
+    'New segment',
+]) %}
+
+
+{% if segmentType is defined %}
+    {% js %}
+        window.defaultSegmentTypeHandle = '{{ segmentType|e('js') }}';
+    {% endjs %}
+{% endif %}

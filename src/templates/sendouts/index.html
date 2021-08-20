@@ -4,8 +4,13 @@
 
 {% set title = 'Sendouts'|t('campaign') %}
 
-{% js %}
-    {% if sendoutType is defined %}
-        window.defaultSendoutTypeHandle = '{{ sendoutType }}';
-    {% endif %}
-{% endjs %}
+{% do view.registerTranslations('campaign', [
+    'New sendout',
+]) %}
+
+
+{% if sendoutType is defined %}
+    {% js %}
+        window.defaultSendoutTypeHandle = '{{ sendoutType|e('js') }}';
+    {% endjs %}
+{% endif %}
