@@ -135,8 +135,8 @@ class Campaign extends Plugin
     public function init()
     {
         parent::init();
-
         self::$plugin = $this;
+        $this->name = Craft::t('campaign', 'Campaign');
 
         $this->_registerComponents();
         $this->_registerElementTypes();
