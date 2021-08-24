@@ -581,6 +581,7 @@ return [
     'Unmark contact as bounced.' => '',
     'Unmark contact as complained.' => '',
     'Unsubscribe Form Allowed' => '',
+    'Unsubscribe link clicked in a test email without a sendout.' => '',
     'Unsubscribe link is invalid.' => '',
     'Unsubscribe Success Template' => '',
     'Unsubscribe Verification Email Subject' => '',

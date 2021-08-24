@@ -6,6 +6,7 @@
 - Added a `mailingList` variable that is available in the sendout email subject and campaign template ([#250](https://github.com/putyourlightson/craft-campaign/issues/250)).
 
 ### Changed
+- Unsubscribe links clicked in test emails without a sendout now display an appropriate message ([#212](https://github.com/putyourlightson/craft-campaign/issues/212)).
 - The plugin display name is now translatable ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
 
 ### Fixed

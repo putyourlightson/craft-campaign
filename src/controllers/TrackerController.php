@@ -116,6 +116,10 @@ class TrackerController extends BaseMessageController
      */
     public function actionUnsubscribe(): Response
     {
+        if (Craft::$app->getRequest()->getParam('sid') === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
+        }
+
         // Get contact and sendout
         $contact = $this->_getContact();
         $sendout = $this->_getSendout();
