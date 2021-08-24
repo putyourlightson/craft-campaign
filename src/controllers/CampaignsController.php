@@ -220,7 +220,7 @@ class CampaignsController extends Controller
         // Set the allowed origin to make live preview work across multiple subdomains
         // https://craftcms.com/knowledge-base/using-live-preview-across-multiple-subdomains
         // https://github.com/craftcms/cms/issues/7851
-        $this->response->getHeaders()->set('Access-Control-Allow-Origin', Craft::$app->request->baseUrl);
+        $this->response->getHeaders()->set('Access-Control-Allow-Origin', Craft::$app->request->getOrigin());
 
         return $this->response;
     }
