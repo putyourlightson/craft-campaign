@@ -432,14 +432,15 @@ class CampaignElement extends Element
      *
      * @param ContactElement|null $contact
      * @param SendoutElement|null $sendout
+     * @param MailingListElement|null $mailingList
      *
      * @return string
      * @throws Error
      * @throws InvalidConfigException
      */
-    public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null): string
+    public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
-        return $this->_getBody('html', $contact, $sendout);
+        return $this->_getBody('html', $contact, $sendout, $mailingList);
     }
 
     /**
@@ -447,14 +448,15 @@ class CampaignElement extends Element
      *
      * @param ContactElement|null $contact
      * @param SendoutElement|null $sendout
+     * @param MailingListElement|null $mailingList
      *
      * @return string
      * @throws Error
      * @throws InvalidConfigException
      */
-    public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null): string
+    public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
-        return html_entity_decode($this->_getBody('plaintext', $contact, $sendout), ENT_QUOTES);
+        return html_entity_decode($this->_getBody('plaintext', $contact, $sendout, $mailingList), ENT_QUOTES);
     }
 
     /**
@@ -610,12 +612,13 @@ class CampaignElement extends Element
      * @param string|null $templateType
      * @param ContactElement|null $contact
      * @param SendoutElement|null $sendout
+     * @param MailingListElement|null $mailingList
      *
      * @return string
      * @throws InvalidConfigException
      * @throws Error
      */
-    private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null): string
+    private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
         $templateType = $templateType ?? 'html';
 
@@ -625,6 +628,10 @@ class CampaignElement extends Element
 
         if ($sendout === null) {
             $sendout = new SendoutElement();
+        }
+
+        if ($mailingList === null) {
+            $mailingList = new MailingListElement();
         }
 
         $view = Craft::$app->getView();
@@ -652,6 +659,7 @@ class CampaignElement extends Element
                 'browserVersionUrl' => $this->url,
                 'contact' => $contact,
                 'sendout' => $sendout,
+                'mailingList' => $mailingList,
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
                 'isWebRequest' => false,
             ]);

@@ -57,11 +57,6 @@ class SendoutsServiceTest extends BaseUnitTest
     protected $sendout;
 
     /**
-     * @var SendoutElement
-     */
-    protected $sendout2;
-
-    /**
      * @var ContactElement
      */
     protected $contact;
@@ -78,9 +73,8 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         parent::_before();
 
-        $this->sendout = SendoutElement::find()->one();
-        $this->sendout2 = SendoutElement::find()->one();
-        $this->contact = ContactElement::find()->one();
+        $this->sendout = SendoutElement::find()->title('Sendout 1')->one();
+        $this->contact = ContactElement::find()->email('contact@contacts.com')->one();
         $this->mailingList = MailingListElement::find()->one();
 
         Campaign::$plugin->edition = Campaign::EDITION_PRO;

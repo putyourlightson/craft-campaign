@@ -15,6 +15,7 @@ use DOMDocument;
 use DOMElement;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
@@ -73,6 +74,11 @@ class SendoutsService extends Component
 
     // Properties
     // =========================================================================
+
+    /**
+     * @var array
+     */
+    private $_mailingLists = [];
 
     /**
      * @var array
@@ -404,13 +410,18 @@ class SendoutsService extends Component
         $contactCampaignRecord->campaignId = $campaign->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
 
+        $mailingList = $this->_getMailingList($mailingListId);
+
         // Get subject
-        $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
+        $subject = Craft::$app->getView()->renderString($sendout->subject, [
+            'contact' => $contact,
+            'mailingList' => $mailingList,
+        ]);
 
         // Get body, catching template rendering errors
         try {
-            $htmlBody = $campaign->getHtmlBody($contact, $sendout);
-            $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
+            $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
+            $plaintextBody = $campaign->getPlaintextBody($contact, $sendout, $mailingList);
         }
         catch (Error $exception) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
@@ -697,6 +708,24 @@ class SendoutsService extends Component
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns a mailing list by ID
+     *
+     * @param int $mailingListId
+     *
+     * @return MailingListElement
+     */
+    private function _getMailingList(int $mailingListId): MailingListElement
+    {
+        if (!empty($this->_mailingLists[$mailingListId])) {
+            return $this->_mailingLists[$mailingListId];
+        }
+
+        $this->_mailingLists[$mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+
+        return $this->_mailingLists[$mailingListId];
+    }
 
     /**
      * Returns excluded mailing list recipients query

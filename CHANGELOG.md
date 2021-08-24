@@ -2,7 +2,8 @@
 
 ## 1.21.0 - Unreleased
 ### Added
-- Added the `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
+- Added an `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
+- Added a `mailingList` variable that is available in the sendout email subject and campaign template ([#250](https://github.com/putyourlightson/craft-campaign/issues/250)).
 
 ### Changed
 - The plugin display name is now translatable ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
