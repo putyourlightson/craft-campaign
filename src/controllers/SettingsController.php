@@ -218,6 +218,7 @@ class SettingsController extends Controller
         // Set the simple stuff
         $settings->testMode = Craft::$app->getRequest()->getBodyParam('testMode', $settings->testMode);
         $settings->apiKey = Craft::$app->getRequest()->getBodyParam('apiKey', $settings->apiKey);
+        $settings->mailgunWebhookSigningKey = Craft::$app->getRequest()->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {

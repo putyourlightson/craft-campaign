@@ -13,6 +13,7 @@
 ### Fixed
 - Fixed a bug in which field handle updates could cause an error on the segments index page ([#242](https://github.com/putyourlightson/craft-campaign/issues/242)).
 - Fixed button text that was not being translated on element index pages ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
+- Fixed a bug in which the Mailgun Webhook Signing Key was not being saved via the plugin settings in the control panel ([#253](https://github.com/putyourlightson/craft-campaign/issues/253)).
 
 ## 1.20.2 - 2021-08-05
 ### Fixed
