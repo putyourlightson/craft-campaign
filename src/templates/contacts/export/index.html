@@ -13,7 +13,7 @@
 
 {% block content %}
 
-    <p>Select one or more mailing lists and the fields that should be exported to a CSV file.</p>
+    <p>{{ 'Select one or more mailing lists and the fields that should be exported to a CSV file.'|t('campaign') }}</p>
 
     <form action="" method="post" accept-charset="UTF-8" data-confirm-unload>
         {{ csrfInput() }}
