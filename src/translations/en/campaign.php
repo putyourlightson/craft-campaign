@@ -506,6 +506,7 @@ return [
     'Sync mailing lists to user groups in order to keep contacts in sync with users. Every time a user in the selected user group is created, updated or deleted, the contact in the synced mailing list will also be created, updated or removed accordingly. Modifications to contacts will NOT affect users.' => '',
     'Sync' => '',
     'Synced' => '',
+    'Synced Mailing Lists' => '',
     'Syncing mailing list.' => '',
     'Syncing successfully removed.' => '',
     'System issues found!' => '',
