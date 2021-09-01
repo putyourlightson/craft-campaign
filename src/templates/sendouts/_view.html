@@ -9,8 +9,8 @@
 ] %}
 
 {% set tabs = {
-    'sendout': {'label': 'Sendout', 'url': '#sendout'},
-    'preview': {'label': 'Preview', 'url': '#preview'},
+    'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
+    'preview': {'label': 'Preview'|t('campaign'), 'url': '#preview'},
 } %}
 
 {% set mailingLists = sendout.mailingLists %}
