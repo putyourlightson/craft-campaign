@@ -9,6 +9,7 @@
 - Live previewing campaigns now works across multiple subdomains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).
 - Unsubscribe links clicked in test emails without a sendout now display an appropriate message ([#212](https://github.com/putyourlightson/craft-campaign/issues/212)).
 - The plugin display name is now translatable ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
+- Spaces are now trimmed from email addresses when importing contacts from a CSV file ([#268](https://github.com/putyourlightson/craft-campaign/issues/268)).
 
 ### Fixed
 - Fixed a bug in which field handle updates could cause an error on the segments index page ([#242](https://github.com/putyourlightson/craft-campaign/issues/242)).

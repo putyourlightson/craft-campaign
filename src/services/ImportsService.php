@@ -299,7 +299,7 @@ class ImportsService extends Component
         }
 
         // Get email
-        $email = $row[$import->emailFieldIndex];
+        $email = trim($row[$import->emailFieldIndex]);
 
         // Check if contact exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
