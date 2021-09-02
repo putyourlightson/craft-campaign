@@ -227,6 +227,7 @@ return [
     'Edit mailing list' => '',
     'Edit segment' => '',
     'Edit' => '',
+    'Edit sendout' => '',
     'Email Field Label' => '',
     'Email not found.' => '',
     'Email settings saved.' => '',
