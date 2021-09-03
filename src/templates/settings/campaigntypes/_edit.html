@@ -121,15 +121,14 @@
     }) }}
 
     {{ forms.elementSelectField({
-        label: "Default Test Contact"|t('campaign'),
-        instructions: "The default contact to use for test emails (leave blank for the currently logged in user)."|t('campaign'),
-        id: 'testContactId',
-        name: 'testContactId',
+        label: "Default Test Contacts"|t('campaign'),
+        instructions: "The default contacts to use for test emails (leave blank to use the currently logged in user)."|t('campaign'),
+        id: 'testContactIds',
+        name: 'testContactIds',
         elementType: contactElementType,
         selectionLabel: "Add a contact"|t('campaign'),
-        limit: 1,
-        elements: campaignType.testContactId ? [campaignType.testContact],
-        errors: campaignType.getErrors('testContactId'),
+        elements: campaignType.testContacts,
+        errors: campaignType.getErrors('testContactIds'),
     }) }}
 
     <hr>

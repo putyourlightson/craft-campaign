@@ -4,6 +4,7 @@
 ### Added
 - Added an `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
 - Added a `mailingList` variable that is available in the sendout email subject and campaign template ([#250](https://github.com/putyourlightson/craft-campaign/issues/250)).
+- Added the ability to send test emails to multiple contacts at once and to set multiple default test contacts in the campaign type settings ([#256](https://github.com/putyourlightson/craft-campaign/issues/256)).
 
 ### Changed
 - Live previewing campaigns now works across multiple subdomains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).

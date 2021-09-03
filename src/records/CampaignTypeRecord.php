@@ -22,7 +22,7 @@ use yii\db\ActiveQuery;
  * @property string $htmlTemplate
  * @property string $plaintextTemplate
  * @property string $queryStringParameters
- * @property int|null $testContactId
+ * @property string|null $testContactIds
  * @property string $uid
  * @property Site|null $site
  *

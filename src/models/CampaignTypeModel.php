@@ -7,6 +7,8 @@ namespace putyourlightson\campaign\models;
 
 use Craft;
 use craft\behaviors\FieldLayoutBehavior;
+use craft\elements\User;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\HandleValidator;
@@ -30,7 +32,7 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * @mixin FieldLayoutBehavior
  *
  * @property Site|null $site
- * @property ContactElement|null $testContact
+ * @property ContactElement[] $testContacts
  * @property FieldLayout $fieldLayout
  * @property string $cpEditUrl
  *
@@ -88,9 +90,9 @@ class CampaignTypeModel extends BaseModel
     public $queryStringParameters;
 
     /**
-     * @var int|null
+     * @var int[]|string|null
      */
-    public $testContactId;
+    public $testContactIds;
 
     /**
      * @var string|null UID
@@ -129,7 +131,7 @@ class CampaignTypeModel extends BaseModel
     public function rules(): array
     {
         return [
-            [['id', 'siteId', 'fieldLayoutId', 'testContactId'], 'integer'],
+            [['id', 'siteId', 'fieldLayoutId'], 'integer'],
             [['siteId'], SiteIdValidator::class],
             [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
@@ -164,17 +166,56 @@ class CampaignTypeModel extends BaseModel
     }
 
     /**
-     * Returns the test contact.
+     * Returns the test contacts.
      *
-     * @return ContactElement|null
+     * @return ContactElement[]
      */
-    public function getTestContact()
+    public function getTestContacts(): array
     {
-        if ($this->testContactId === null) {
-            return null;
+        if (empty($this->testContactIds)) {
+            return [];
         }
 
-        return Campaign::$plugin->contacts->getContactById($this->testContactId);
+        $testContactIds = json_decode($this->testContactIds);
+        $testContacts = [];
+
+        // Loop over test contact IDs to ensure their order is maintained
+        foreach ($testContactIds as $testContactId) {
+            $testContact = Campaign::$plugin->contacts->getContactById($testContactId);
+
+            if ($testContact !== null) {
+                $testContacts[] = $testContact;
+            }
+        }
+
+        return $testContacts;
+    }
+
+    /**
+     * Returns the test contacts with the default if empty.
+     *
+     * @return ContactElement[]
+     */
+    public function getTestContactsWithDefault(): array
+    {
+        $testContacts = $this->getTestContacts();
+
+        if (empty($testContacts)) {
+            /** @var User|null $currentUser */
+            $currentUser = Craft::$app->user->getIdentity();
+
+            if ($currentUser !== null) {
+                $contact = Campaign::$plugin->contacts->getContactByEmail(
+                    $currentUser->email
+                );
+
+                if ($contact !== null) {
+                    $testContacts = [$contact];
+                }
+            }
+        }
+
+        return $testContacts;
     }
 
     /**

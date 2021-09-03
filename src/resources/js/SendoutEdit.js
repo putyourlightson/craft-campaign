@@ -96,8 +96,13 @@ Campaign.SendoutEdit = Garnish.Base.extend(
 
             $('.send-test').addClass('disabled');
 
+            var contactIds = [];
+            $('#testContacts input').each(function() {
+                contactIds.push($(this).val());
+            });
+
             var data = {
-                contactId: $('#testContact input').val(),
+                contactIds: contactIds,
                 sendoutId: $('input[name=sendoutId]').val()
             };
 

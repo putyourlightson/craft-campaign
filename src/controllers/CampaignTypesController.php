@@ -114,9 +114,7 @@ class CampaignTypesController extends Controller
         $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
         $campaignType->queryStringParameters = $request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
-
-        $campaignType->testContactId = $request->getBodyParam('testContactId', $campaignType->testContactId);
-        $campaignType->testContactId = (is_array($campaignType->testContactId) && isset($campaignType->testContactId[0])) ? $campaignType->testContactId[0] : null;
+        $campaignType->testContactIds = $request->getBodyParam('testContactIds', $campaignType->testContactIds);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

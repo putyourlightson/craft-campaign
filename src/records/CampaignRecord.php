@@ -27,8 +27,6 @@ use yii\db\ActiveQuery;
  * @property ActiveQuery $campaignType
  * @property ActiveQuery $element
  *
- * @method static ActiveQuery find()
- *
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0

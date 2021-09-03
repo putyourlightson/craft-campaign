@@ -117,7 +117,7 @@ class Install extends Migration
                 'htmlTemplate' => $this->string(500),
                 'plaintextTemplate' => $this->string(500),
                 'queryStringParameters' => $this->text(),
-                'testContactId' => $this->integer(),
+                'testContactIds' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -349,7 +349,6 @@ class Install extends Migration
         $this->addForeignKey(null, '{{%campaign_campaigns}}', 'campaignTypeId', '{{%campaign_campaigntypes}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'testContactId', '{{%campaign_contacts}}', 'id', 'SET NULL');
         $this->addForeignKey(null, '{{%campaign_contacts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts}}', 'userId', '{{%users}}', 'id', 'CASCADE');
         $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');

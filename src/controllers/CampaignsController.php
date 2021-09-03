@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -21,7 +20,6 @@ use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -149,18 +147,8 @@ class CampaignsController extends Controller
             'status' => ContactElement::STATUS_ACTIVE,
         ];
 
-        // Get test contact
-        $variables['testContact'] = null;
-
-        if ($campaignType->testContactId !== null) {
-            $variables['testContact'] = Campaign::$plugin->contacts->getContactById($campaignType->testContactId);
-        }
-
-        if ($variables['testContact'] === null) {
-            /** @var User|null $currentUser */
-            $currentUser = Craft::$app->user->getIdentity();
-            $variables['testContact'] = $currentUser ? Campaign::$plugin->contacts->getContactByEmail($currentUser->email) : null;
-        }
+        // Get test contacts
+        $variables['testContacts'] = $campaignType->getTestContactsWithDefault();
 
         // Determine which actions should be available
         // ---------------------------------------------------------------------
@@ -237,22 +225,20 @@ class CampaignsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $contactId = Craft::$app->getRequest()->getBodyParam('contactId');
+        $contactIds = Craft::$app->getRequest()->getBodyParam('contactIds');
         $campaign = $this->_getCampaign();
 
-        // Validate test contact
-        if (empty($contactId)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'A contact must be submitted.')]);
+        // Validate test contacts
+        if (empty($contactIds)) {
+            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'At least one contact must be submitted.')]);
         }
 
-        $contact = Campaign::$plugin->contacts->getContactById($contactId);
+        $contacts = Campaign::$plugin->contacts->getContactsByIds($contactIds);
 
-        if ($contact === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
-        }
-
-        if (!Campaign::$plugin->campaigns->sendTest($campaign, $contact)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
+        foreach ($contacts as $contact) {
+            if (!Campaign::$plugin->campaigns->sendTest($campaign, $contact)) {
+                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
+            }
         }
 
         return $this->asJson(['success' => true]);

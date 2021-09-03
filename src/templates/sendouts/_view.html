@@ -190,13 +190,12 @@
                 label: "Test Email"|t('campaign'),
             }) }}
             {{ forms.elementSelect({
-                id: 'testContact',
-                name: 'testContact',
+                id: 'testContacts',
+                name: 'testContacts',
                 elementType: contactElementType,
-                selectionLabel: "Choose a contact"|t('campaign'),
+                selectionLabel: "Add a contact"|t('campaign'),
                 criteria: contactElementCriteria,
-                elements: [testContact],
-                limit: 1
+                elements: testContacts
             }) }}
             <a class="send-test btn">{{ 'Send Test'|t('campaign') }}</a>
         </div>
