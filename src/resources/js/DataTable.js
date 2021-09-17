@@ -26,7 +26,8 @@ Campaign.DataTable = Garnish.Base.extend(
                 zeroRecords: 'No matching ' + itemName + ' found',
             };
 
-            $('#' + id).DataTable(options);
+            const dataTable = $('#' + id).DataTable(options);
+            dataTable.on('draw', () => Craft.initUiElements());
 
             $('#' + id + '_wrapper select').wrap('<div class="select"></div>');
 

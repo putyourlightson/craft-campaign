@@ -2,7 +2,7 @@
 
 ## 1.21.0 - Unreleased
 ### Added
-- Added an `isWebRequest` variable to campaign templates that evaluates to `true` if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
+- Added an `isWebRequest` variable to campaign templates that evaluates to `true` only if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
 - Added a `mailingList` variable that is available in the sendout email subject and campaign template ([#250](https://github.com/putyourlightson/craft-campaign/issues/250)).
 - Added the ability to send test emails to multiple contacts at once and to set multiple default test contacts in the campaign type settings ([#256](https://github.com/putyourlightson/craft-campaign/issues/256)).
 
@@ -16,6 +16,7 @@
 - Fixed a bug in which field handle updates could cause an error on the segments index page ([#242](https://github.com/putyourlightson/craft-campaign/issues/242)).
 - Fixed button text that was not being translated on element index pages ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
 - Fixed a bug in which the Mailgun Webhook Signing Key was not being saved via the plugin settings in the control panel ([#253](https://github.com/putyourlightson/craft-campaign/issues/253)).
+- Fixed info dialogs not opening in the contact activity reports after filtering ([#271](https://github.com/putyourlightson/craft-campaign/issues/271)).
 
 ## 1.20.2 - 2021-08-05
 ### Fixed
