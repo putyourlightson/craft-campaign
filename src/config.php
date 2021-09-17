@@ -36,10 +36,15 @@ return [
         //    '18.217.206.57',
         //],
 
+        // The AJAX origins that should be allowed to access live preview
+        //'allowedOrigins' => [
+        //    'https://primary-domain.com',
+        //],
+
         // The from names and emails that sendouts can be sent from
         //'fromNamesEmails' => [
-        //  ['Zorro','legend@zorro.com','legend@zorro.com',1],
-        //  ['Don Diego','dondiego@zorro.com','',1],
+        //    ['Zorro','legend@zorro.com','legend@zorro.com',1],
+        //    ['Don Diego','dondiego@zorro.com','',1],
         //],
 
         // The transport type that should be used

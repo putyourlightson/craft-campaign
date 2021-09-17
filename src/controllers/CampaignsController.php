@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\helpers\ArrayHelper;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -205,9 +204,6 @@ class CampaignsController extends Controller
         }
 
         $this->response->data = $campaign->getHtmlBody();
-
-        // Set the allowed origin to make live preview work across multiple subdomains
-        $this->_setAccessControlAllowOrigin();
 
         return $this->response;
     }
@@ -483,27 +479,5 @@ class CampaignsController extends Controller
         // Set the field locations
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $campaign->setFieldValuesFromRequest($fieldsLocation);
-    }
-
-    /**
-     * Sets the allowed origin to make live preview work across multiple subdomains.
-     * https://craftcms.com/knowledge-base/using-live-preview-across-multiple-subdomains
-     * https://github.com/craftcms/cms/issues/7851
-     *
-     * @return void
-     */
-    private function _setAccessControlAllowOrigin()
-    {
-        $origin = Craft::$app->request->getOrigin();
-
-        if (empty($origin)) {
-            return;
-        }
-
-        // The origin can potentially return multiple comma-delimited values.
-        // https://github.com/craftcms/cms/issues/7851#issuecomment-904831170
-        $origins = ArrayHelper::filterEmptyStringsFromArray(array_map('trim', explode(',', $origin, 1)));
-
-        $this->response->getHeaders()->set('Access-Control-Allow-Origin', $origins[0]);
     }
 }

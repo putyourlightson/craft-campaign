@@ -57,7 +57,12 @@ class SettingsModel extends Model
     ];
 
     /**
-     * @var array|null The from names and emails that sendouts can be sent from
+     * @var array|null The AJAX origins that should be allowed to access live preview.
+     */
+    public $allowedOrigins;
+
+    /**
+     * @var array|null The names and emails that sendouts can be sent from
      */
     public $fromNamesEmails;
 

@@ -7,6 +7,7 @@ namespace putyourlightson\campaign;
 
 use Craft;
 use craft\base\Plugin;
+use craft\controllers\LivePreviewController;
 use craft\elements\User;
 use craft\errors\MissingComponentException;
 use craft\events\FieldEvent;
@@ -16,6 +17,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\App;
+use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
@@ -63,6 +65,8 @@ use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
 use putyourlightson\logtofile\LogToFile;
+use yii\base\ActionEvent;
+use yii\base\Controller;
 use yii\base\Event;
 use yii\web\ForbiddenHttpException;
 
@@ -145,6 +149,7 @@ class Campaign extends Plugin
         $this->_registerFieldEvents();
         $this->_registerProjectConfigListeners();
         $this->_registerTemplateHooks();
+        $this->_registerAllowedOrigins();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -625,5 +630,46 @@ class Campaign extends Plugin
                 'contact' => $contact
             ]);
         });
+    }
+
+    /**
+     * Registers allowed origins to make live preview work across multiple domains.
+     * https://craftcms.com/knowledge-base/using-live-preview-across-multiple-subdomains
+     * https://github.com/craftcms/cms/issues/7851
+     *
+     * @since 1.21.0
+     */
+    private function _registerAllowedOrigins()
+    {
+        Event::on(LivePreviewController::class, Controller::EVENT_BEFORE_ACTION,
+            function(ActionEvent $event) {
+                if ($event->action->id === 'preview') {
+                    $origins = Craft::$app->request->getOrigin();
+
+                    if (empty($origins)) {
+                        return;
+                    }
+
+                    $allowedOrigins = Campaign::$plugin->getSettings()->allowedOrigins;
+
+                    if (empty($allowedOrigins) || !is_array($allowedOrigins)) {
+                        return;
+                    }
+
+                    // The origin can potentially return multiple comma-delimited values.
+                    // https://github.com/craftcms/cms/issues/7851#issuecomment-904831170
+                    /** @see GraphqlController::actionApi() */
+                    $origins = ArrayHelper::filterEmptyStringsFromArray(array_map('trim', explode(',', $origins)));
+
+                    foreach ($origins as $origin) {
+                        if (in_array($origin, $allowedOrigins)) {
+                            Craft::$app->getResponse()->getHeaders()->setDefault('Access-Control-Allow-Origin', $origin);
+
+                            return;
+                        }
+                    }
+                }
+            }
+        );
     }
 }
