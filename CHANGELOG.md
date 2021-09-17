@@ -2,12 +2,12 @@
 
 ## 1.21.0 - Unreleased
 ### Added
+- Added an `allowedOrigins` config setting that enables live previewing campaigns across multiple domains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).
 - Added an `isWebRequest` variable to campaign templates that evaluates to `true` only if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
 - Added a `mailingList` variable that is available in the sendout email subject and campaign template ([#250](https://github.com/putyourlightson/craft-campaign/issues/250)).
 - Added the ability to send test emails to multiple contacts at once and to set multiple default test contacts in the campaign type settings ([#256](https://github.com/putyourlightson/craft-campaign/issues/256)).
 
 ### Changed
-- Live previewing campaigns now works across multiple subdomains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).
 - Unsubscribe links clicked in test emails without a sendout now display an appropriate message ([#212](https://github.com/putyourlightson/craft-campaign/issues/212)).
 - The plugin display name is now translatable ([#249](https://github.com/putyourlightson/craft-campaign/issues/249)).
 - Spaces are now trimmed from email addresses when importing contacts from a CSV file ([#268](https://github.com/putyourlightson/craft-campaign/issues/268)).
