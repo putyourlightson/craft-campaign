@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.21.0 - Unreleased
+## 1.21.0 - 2021-09-21
 ### Added
 - Added an `allowedOrigins` config setting that enables live previewing campaigns across multiple domains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).
 - Added an `isWebRequest` variable to campaign templates that evaluates to `true` only if the campaign is being viewed via a web request using the browser URL ([#246](https://github.com/putyourlightson/craft-campaign/issues/246)).
