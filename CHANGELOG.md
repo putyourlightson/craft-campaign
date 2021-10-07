@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.21.1 - Unreleased
+### Fixed
+- Fixed an error that could occur when updating to version 1.21.0 using a Postgres database ([#272](https://github.com/putyourlightson/craft-campaign/issues/272)).
+
 ## 1.21.0 - 2021-09-21
 ### Added
 - Added an `allowedOrigins` config setting that enables live previewing campaigns across multiple domains ([#194](https://github.com/putyourlightson/craft-campaign/issues/194), [#251](https://github.com/putyourlightson/craft-campaign/issues/251)).

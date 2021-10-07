@@ -24,7 +24,7 @@ class m210903_120000_add_test_contact_ids_column extends Migration
                 $this->addColumn($table, 'testContactIds', $this->text()->after('testContactId'));
             }
 
-            $this->update($table, ['testContactIds' => new Expression('testContactId')]);
+            $this->update($table, ['testContactIds' => new Expression($table.'.testContactId')]);
 
             /** @var CampaignTypeRecord[] $campaignTypeRecords */
             $campaignTypeRecords = CampaignTypeRecord::find()->all();
