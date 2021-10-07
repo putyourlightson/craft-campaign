@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.21.1 - Unreleased
+## 1.21.1 - 2021-10-07
 ### Changed
 - Improved handling of live previewing campaigns across multiple domains.
 
