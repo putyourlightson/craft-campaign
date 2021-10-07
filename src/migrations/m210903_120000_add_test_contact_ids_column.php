@@ -24,7 +24,14 @@ class m210903_120000_add_test_contact_ids_column extends Migration
                 $this->addColumn($table, 'testContactIds', $this->text()->after('testContactId'));
             }
 
-            $this->update($table, ['testContactIds' => new Expression($table.'.testContactId')]);
+            $expression = new Expression('testContactId');
+
+            // Postgres needs double quotes to maintain case.
+            if ($this->db->getIsPgsql()) {
+                $expression = new Expression('"testContactId"');
+            }
+
+            $this->update($table, ['testContactIds' => $expression]);
 
             /** @var CampaignTypeRecord[] $campaignTypeRecords */
             $campaignTypeRecords = CampaignTypeRecord::find()->all();
