@@ -663,7 +663,7 @@ class Campaign extends Plugin
 
                     foreach ($origins as $origin) {
                         if (in_array($origin, $allowedOrigins)) {
-                            Craft::$app->getResponse()->getHeaders()->setDefault('Access-Control-Allow-Origin', $origin);
+                            Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Origin', $origin);
 
                             return;
                         }

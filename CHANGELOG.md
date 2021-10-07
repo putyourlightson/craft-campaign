@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.21.1 - Unreleased
+### Changed
+- Improved handling of live previewing campaigns across multiple domains.
+
 ### Fixed
 - Fixed an error that could occur when updating to version 1.21.0 using a Postgres database ([#272](https://github.com/putyourlightson/craft-campaign/issues/272)).
 
