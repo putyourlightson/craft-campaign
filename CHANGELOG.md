@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.21.2 - Unreleased
+### Fixed
+- Fixed a bug in which the times in the x-axis of the reports chart was not being converted to the local timezone ([#274](https://github.com/putyourlightson/craft-campaign/issues/274)).
+
 ## 1.21.1 - 2021-10-07
 ### Changed
 - Improved handling of live previewing campaigns across multiple domains.

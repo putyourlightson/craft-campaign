@@ -129,6 +129,9 @@ Campaign.Chart = Garnish.Base.extend(
                 },
                 xaxis: {
                     type: 'datetime',
+                    labels: {
+                        datetimeUTC: false,
+                    },
                     tooltip: {
                         enabled: false,
                     },

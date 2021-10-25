@@ -13,7 +13,6 @@ use Craft;
 use craft\web\Controller;
 use putyourlightson\campaign\services\ReportsService;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**

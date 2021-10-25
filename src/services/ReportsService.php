@@ -867,9 +867,12 @@ class ReportsService extends Component
      */
     private function _getDateTimeFormat(string $interval)
     {
+        /**
+         * @see DATE_ATOM
+         */
         $formats = [
-            'minutes' => str_replace(':s', '', DATE_ATOM),
-            'hours' => str_replace(['i', ':s'], ['00', ''], DATE_ATOM),
+            'minutes' => 'Y-m-d\TH:iP',
+            'hours' => 'Y-m-d\TH:00P',
             'days' => 'Y-m-d',
             'months' => 'Y-m',
             'years' => 'Y',
