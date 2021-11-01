@@ -33,7 +33,6 @@ return [
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => '',
     'All campaigns' => '',
     'All contacts' => '',
-    'All interactions' => '',
     'All mailing lists' => '',
     'All segments' => '',
     'All sendouts' => '',
@@ -63,9 +62,9 @@ return [
     'Are you sure you want to delete this mailing list?' => '',
     'Are you sure you want to delete this segment?' => '',
     'Are you sure you want to delete this sendout?' => '',
-    'Are you sure you want to mark this contact as blocked.' => '',
-    'Are you sure you want to mark this contact as bounced.' => '',
-    'Are you sure you want to mark this contact as complained.' => '',
+    'Are you sure you want to mark this contact as blocked?' => '',
+    'Are you sure you want to mark this contact as bounced?' => '',
+    'Are you sure you want to mark this contact as complained?' => '',
     'Are you sure you want to pause and edit this sendout?' => '',
     'Are you sure you want to pause the selected sendouts?' => '',
     'Are you sure you want to pause this sendout?' => '',
@@ -74,9 +73,9 @@ return [
     'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.' => '',
     'Are you sure you want to remove this contact from this mailing list?' => '',
     'Are you sure you want to subscribe this contact to this mailing list?' => '',
-    'Are you sure you want to unmark this contact as blocked.' => '',
-    'Are you sure you want to unmark this contact as bounced.' => '',
-    'Are you sure you want to unmark this contact as complained.' => '',
+    'Are you sure you want to unmark this contact as blocked?' => '',
+    'Are you sure you want to unmark this contact as bounced?' => '',
+    'Are you sure you want to unmark this contact as complained?' => '',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => '',
     'At least one contact must be submitted.' => '',
     'Automated' => '',
@@ -113,7 +112,6 @@ return [
     'Cancelled' => '',
     'Changing this can lead to sent campaigns not being reachable and other undesirable results.' => '',
     'Choose a campaign' => '',
-    'Choose a contact' => '',
     'Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:' => '',
     'Choose a mailing list to sync. ' => '',
     'Choose a user group to import.' => '',
@@ -136,6 +134,9 @@ return [
     'Contact deleted.' => '',
     'Contact Details' => '',
     'Contact ID' => '',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Contact marked as blocked.' => '',
     'Contact marked as bounced.' => '',
     'Contact marked as complained.' => '',
@@ -144,6 +145,9 @@ return [
     'Contact saved.' => '',
     'Contact settings saved.' => '',
     'Contact Settings' => '',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Contact unmarked as blocked.' => '',
     'Contact unmarked as bounced.' => '',
     'Contact unmarked as complained.' => '',
@@ -164,6 +168,9 @@ return [
     'Couldn’t export file.' => '',
     'Couldn’t import file.' => '',
     'Couldn’t import user group.' => '',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Couldn’t mark contact as blocked.' => '',
     'Couldn’t mark contact as bounced.' => '',
     'Couldn’t mark contact as complained.' => '',
@@ -182,6 +189,9 @@ return [
     'Couldn’t save sendout.' => '',
     'Couldn’t send test email.' => '',
     'Couldn’t sync mailing list.' => '',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Couldn’t unmark contact as blocked.' => '',
     'Couldn’t unmark contact as bounced.' => '',
     'Couldn’t unmark contact as complained.' => '',
@@ -189,7 +199,7 @@ return [
     'Count' => '',
     'Country' => '',
     'Craft Campaign' => '',
-    'Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to the PHP path (if different).' => '',
+    'Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different).' => '',
     'Create a new campaign type' => '',
     'Create a new campaign' => '',
     'Create a new contact' => '',
@@ -326,9 +336,9 @@ return [
     'Manage reports' => '',
     'Manage segments' => '',
     'Manage sendouts' => '',
-    'Mark contact as blocked.' => '',
-    'Mark contact as bounced.' => '',
-    'Mark contact as complained.' => '',
+    'Mark contact as blocked' => '',
+    'Mark contact as bounced' => '',
+    'Mark contact as complained' => '',
     'Max Batch Size' => '',
     'Max Execution Time' => '',
     'Memory Limit' => '',
@@ -517,7 +527,6 @@ return [
     'Template Condition' => '',
     'Template conditions require processing template code for every contact and can therefore slow down the sending process. Use them sparingly and only when a regular segment is insufficient.' => '',
     'Template' => '',
-    'Test Contacts' => '',
     'Test email sent.' => '',
     'Test Email' => '',
     'Test Mode' => '',

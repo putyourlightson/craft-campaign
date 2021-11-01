@@ -8,12 +8,11 @@
  *
  * @author    Scandella
  * @package   Campaign
- * @since     1.0.0
+ * @since     1.21.2
 */
 return [
     '(reply to {email})' => '(répondre à {email})',
     '{count} pending sendout(s) queued.' => '{count} envoi(s) en attente.',
-    'A contact must be submitted.' => 'Contact requis.',
     'A contact with that email address could not be found.' => 'Le contact avec cette adresse email n’a pas été trouvé.',
     'A CSV file must be selected to upload.' => 'Un fichier CSV est requis.',
     'A label to use for the email field.' => 'Étiquette à utiliser pour le champ de l’email.',
@@ -34,7 +33,6 @@ return [
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => '',
     'All campaigns' => 'Toutes les newsletter',
     'All contacts' => 'Tous les contacts',
-    'All interactions' => 'Toutes les interactions',
     'All mailing lists' => 'Toutes les listes d’envois',
     'All segments' => 'Tous les segments',
     'All sendouts' => 'Toutes les campagnes',
@@ -64,9 +62,9 @@ return [
     'Are you sure you want to delete this mailing list?' => 'Êtes-vous sûr de vouloir supprimer cette liste de diffusion ?',
     'Are you sure you want to delete this segment?' => 'Êtes-vous sûr de vouloir supprimer ce segment ?',
     'Are you sure you want to delete this sendout?' => 'Êtes-vous sûr de vouloir supprimer cette campagne ?',
-    'Are you sure you want to mark this contact as blocked.' => 'Êtes-vous sûr de vouloir bloquer ce contact ?',
-    'Are you sure you want to mark this contact as bounced.' => 'Êtes-vous sûr de vouloir marqué ce contact comme rejetté ?',
-    'Are you sure you want to mark this contact as complained.' => 'Êtes-vous sûr de vouloir marquer ce contact comme plaignant ?',
+    'Are you sure you want to mark this contact as blocked?' => 'Êtes-vous sûr de vouloir bloquer ce contact ?',
+    'Are you sure you want to mark this contact as bounced?' => 'Êtes-vous sûr de vouloir marqué ce contact comme rejetté ?',
+    'Are you sure you want to mark this contact as complained?' => 'Êtes-vous sûr de vouloir marquer ce contact comme plaignant ?',
     'Are you sure you want to pause and edit this sendout?' => 'Êtes-vous sûr de vouloir interrompre et éditer cette campagne ?',
     'Are you sure you want to pause the selected sendouts?' => 'Êtes-vous sûr de vouloir interrompre les campagnes sélectionnées ?',
     'Are you sure you want to pause this sendout?' => 'Êtes-vous sûr de vouloir interrompre cet envoi ?',
@@ -75,9 +73,9 @@ return [
     'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.' => 'Êtes-vous sûr de vouloir supprimer la synchronisation de cette liste de diffusion et ce groupe d’utilisateur ? Cela ne supprimera PAS les contacts existants.',
     'Are you sure you want to remove this contact from this mailing list?' => 'Êtes-vous sûr de vouloir supprimer ce contact de la liste de diffusion ?',
     'Are you sure you want to subscribe this contact to this mailing list?' => 'Êtes-vous sûr de vouloir ajouter ce contact à la liste de diffusion ?',
-    'Are you sure you want to unmark this contact as blocked.' => 'Êtes-vous sûr de vouloir envler la mention bloqué ce contact ?',
-    'Are you sure you want to unmark this contact as bounced.' => 'Êtes-vous sûr de vouloir enlever la mention rejet de ce contact ?',
-    'Are you sure you want to unmark this contact as complained.' => 'Êtes-vous sûr de vouloir enlever la mention plaignant de ce contact ?',
+    'Are you sure you want to unmark this contact as blocked?' => 'Êtes-vous sûr de vouloir envler la mention bloqué ce contact ?',
+    'Are you sure you want to unmark this contact as bounced?' => 'Êtes-vous sûr de vouloir enlever la mention rejet de ce contact ?',
+    'Are you sure you want to unmark this contact as complained?' => 'Êtes-vous sûr de vouloir enlever la mention plaignant de ce contact ?',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => 'Êtes-vous sûr de vouloir désabonner ce contact de cette liste de diffusion ?',
     'Automated' => 'Automatique',
     'Blocked' => 'Bloqué',
@@ -113,7 +111,6 @@ return [
     'Cancelled' => 'Annulé',
     'Changing this can lead to sent campaigns not being reachable and other undesirable results.' => 'Changer ce paramètre aura pour conséquence des newsletters introuvables et d’autres résultats indésirables.',
     'Choose a campaign' => 'Choisissez une newsletter',
-    'Choose a contact' => 'Choisissez un contact',
     'Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:' => 'Choisissez un fichier CSV (valeurs séparées par des virgules) pour importer les données de contact. La première ligne du fichier doit contenir les en-têtes de colonne. Les champs de contact suivants sont disponibles :',
     'Choose a mailing list to sync. ' => 'Choisissez une liste de diffusion à synchroniser.',
     'Choose a user group to import.' => 'Choisissez un groupe d’utilisateur à importer.',
@@ -136,6 +133,9 @@ return [
     'Contact deleted.' => 'Contact supprimé',
     'Contact Details' => 'Détail du contact',
     'Contact ID' => 'ID du contact',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Contact marked as blocked.' => 'Contact marqué comme bloqué.',
     'Contact marked as bounced.' => 'Contact marqué comme rejeté.',
     'Contact marked as complained.' => 'Contact marqué comme plaignant.',
@@ -144,6 +144,9 @@ return [
     'Contact saved.' => 'Contact sauvegardé.',
     'Contact settings saved.' => 'Réglages du contact sauvegardés.',
     'Contact Settings' => 'Paramètres du contact',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Contact unmarked as blocked.' => 'Le contact n’est plus marqué comme bloqué.',
     'Contact unmarked as bounced.' => 'Le contact n’est plus marqué comme rejeté.',
     'Contact unmarked as complained.' => 'Le contact n’est plus marqué comme un plaignant.',
@@ -164,6 +167,9 @@ return [
     'Couldn’t export file.' => 'Impossible d’exporter le fichier.',
     'Couldn’t import file.' => 'Impossible d’importer le fichier.',
     'Couldn’t import user group.' => 'Impossible d‘importer le groupe d’utilisateur.',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Couldn’t mark contact as blocked.' => 'Impossible de marquer le contact comme bloqué.',
     'Couldn’t mark contact as bounced.' => 'Impossible de marquer le contact comme rejeté.',
     'Couldn’t mark contact as complained.' => 'Impossible de marquer le contact comme plaignant.',
@@ -182,6 +188,9 @@ return [
     'Couldn’t save sendout.' => 'Impossible de sauvegarder la campagne.',
     'Couldn’t send test email.' => 'Impossible d’envoyer l’email test.',
     'Couldn’t sync mailing list.' => 'Impossible de synchroniser la liste de diffusion',
+    /**
+     * Dynamically set in `ContactsController`.
+     */
     'Couldn’t unmark contact as blocked.' => 'Impossible de marquer le contact comme débloqué. ',
     'Couldn’t unmark contact as bounced.' => 'Impossible de marquer le contact comme non-rejeté.',
     'Couldn’t unmark contact as complained.' => 'Impossible de marqué le contact comme non-plaignant.',
@@ -189,7 +198,7 @@ return [
     'Count' => 'Compte',
     'Country' => 'Pays',
     'Craft Campaign' => '',
-    'Create a cron job with the following command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to the PHP path (if different).' => '',
+    'Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different).' => '',
     'Create a new campaign type' => 'Créer un nouveau type de newsletter',
     'Create a new campaign' => 'Créer une nouvelle newsletter',
     'Create a new contact' => 'Créer un nouveau contact',
@@ -324,9 +333,9 @@ return [
     'Manage reports' => 'Gérer les rapports',
     'Manage segments' => 'Gérer les segments',
     'Manage sendouts' => 'Gérer les campagnes',
-    'Mark contact as blocked.' => 'Marquer le contact comme bloqué.',
-    'Mark contact as bounced.' => 'Marquer le contact comme rejeté.',
-    'Mark contact as complained.' => 'Marquer le contact comme plaignant.',
+    'Mark contact as blocked' => 'Marquer le contact comme bloqué',
+    'Mark contact as bounced' => 'Marquer le contact comme rejeté',
+    'Mark contact as complained' => 'Marquer le contact comme plaignant',
     'Max Batch Size' => 'Taille maximale de la tâche',
     'Max Execution Time' => 'Temps d’excécution maximale',
     'Memory Limit' => 'Mémpoire maximale',
@@ -577,9 +586,9 @@ return [
     'Transport Type' => 'Type de transport',
     'Unknown' => 'Inconnu',
     'Unlimited' => 'Illimité',
-    'Unmark contact as blocked.' => 'Ne plus marquer le contact comme bloqué.',
-    'Unmark contact as bounced.' => 'Ne plus marquer le contact comme rejeté.',
-    'Unmark contact as complained.' => 'Ne plus marquer le contact comme plaignant.',
+    'Unmark contact as blocked' => 'Ne plus marquer le contact comme bloqué',
+    'Unmark contact as bounced' => 'Ne plus marquer le contact comme rejeté',
+    'Unmark contact as complained' => 'Ne plus marquer le contact comme plaignant',
     'Unsubscribe Form Allowed' => 'Formulaire de désabonnement autorisé',
     'Unsubscribe link is invalid.' => 'Le lien de désabonnement est invalide.',
     'Unsubscribe Success Template' => 'Maquette de désabonnement réussi',

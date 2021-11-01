@@ -16,7 +16,9 @@
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\CampaignEditAsset') %}
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
-
+{% do view.registerTranslations('campaign', [
+    'Test email sent.',
+]) %}
 
 {% block actionButton %}
 

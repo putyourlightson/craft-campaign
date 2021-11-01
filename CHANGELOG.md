@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 1.21.2 - Unreleased
+### Added
+- Added a French translation ([#273](https://github.com/putyourlightson/craft-campaign/issues/273) ❤️@scandella).
+
 ### Fixed
 - Fixed a bug in which the times in the x-axis of the reports chart was not being converted to the local timezone ([#274](https://github.com/putyourlightson/craft-campaign/issues/274)).
 - Fixed a bug in which the `getMailingListBySlug` method did not specify the current site ([#278](https://github.com/putyourlightson/craft-campaign/issues/278)).
