@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\queue\Queue;
-use craft\records\Element_SiteSettings;
 use craft\web\View;
 use DateTime;
 use DOMDocument;
@@ -89,7 +88,7 @@ class SendoutsService extends Component
     // =========================================================================
 
     /**
-     * Returns sendout by ID
+     * Returns a sendout by ID
      *
      * @param int $sendoutId
      *
@@ -97,27 +96,15 @@ class SendoutsService extends Component
      */
     public function getSendoutById(int $sendoutId)
     {
-        // Get site ID from element site settings
-        $siteId = Element_SiteSettings::find()
-            ->select('siteId')
-            ->where(['elementId' => $sendoutId])
-            ->scalar();
-
-        if ($siteId === null) {
-            return null;
-        }
-
-        $sendout = SendoutElement::find()
+        return SendoutElement::find()
             ->id($sendoutId)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->one();
-
-        return $sendout;
     }
 
     /**
-     * Returns sendout by SID
+     * Returns a sendout by SID
      *
      * @param string $sid
      *
@@ -402,7 +389,7 @@ class SendoutsService extends Component
             $now = new DateTime();
 
             // Ensure not already sent today
-            if ($contactCampaignRecord->sent !== null && $contactCampaignRecord->sent > $now->format('Y-m-d')) {
+            if ($contactCampaignRecord->sent > $now->format('Y-m-d')) {
                 return;
             }
         }

@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Component;
 use craft\base\FieldInterface;
 use craft\helpers\Db;
-use craft\records\Element_SiteSettings;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -30,7 +29,7 @@ class SegmentsService extends Component
     // =========================================================================
 
     /**
-     * Returns segment by ID
+     * Returns a segment by ID
      *
      * @param int $segmentId
      *
@@ -38,34 +37,21 @@ class SegmentsService extends Component
      */
     public function getSegmentById(int $segmentId)
     {
-        // Get site ID from element site settings
-        $siteId = Element_SiteSettings::find()
-            ->select('siteId')
-            ->where(['elementId' => $segmentId])
-            ->scalar();
-
-        if ($siteId === null) {
-            return null;
-        }
-
-        $segment = SegmentElement::find()
+        return SegmentElement::find()
             ->id($segmentId)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->one();
-
-        return $segment;
     }
 
     /**
      * Returns segments by IDs
      *
-     * @param int $siteId
      * @param int[] $segmentIds
      *
      * @return SegmentElement[]
      */
-    public function getSegmentsByIds(int $siteId, array $segmentIds): array
+    public function getSegmentsByIds(array $segmentIds): array
     {
         if (empty($segmentIds)) {
             return [];
@@ -73,7 +59,7 @@ class SegmentsService extends Component
 
         return SegmentElement::find()
             ->id($segmentIds)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->all();
     }
@@ -296,7 +282,7 @@ class SegmentsService extends Component
      *
      * @return ContactElementQuery
      */
-    private function _getContactElementQuery(array $contactIds = null)
+    private function _getContactElementQuery(array $contactIds = null): ContactElementQuery
     {
         $contactQuery = ContactElement::find();
 

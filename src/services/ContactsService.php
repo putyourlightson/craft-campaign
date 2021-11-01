@@ -27,7 +27,7 @@ class ContactsService extends Component
     // =========================================================================
 
     /**
-     * Returns contact by ID
+     * Returns a contact by ID
      *
      * @param int $contactId
      *
@@ -42,7 +42,7 @@ class ContactsService extends Component
     }
 
     /**
-     * Returns contacts by IDs
+     * Returns an array of contacts by IDs
      *
      * @param int[] $contactIds
      *
@@ -106,7 +106,7 @@ class ContactsService extends Component
      *
      * @return ContactElement|null
      */
-    public function getContactByEmail(string $email, $trashed = false)
+    public function getContactByEmail(string $email, bool $trashed = false)
     {
         if (!$email) {
             return null;

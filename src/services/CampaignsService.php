@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\records\Element_SiteSettings;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -34,7 +33,7 @@ class CampaignsService extends Component
     // =========================================================================
 
     /**
-     * Returns campaign by ID
+     * Returns a campaign by ID
      *
      * @param int $campaignId
      *
@@ -42,23 +41,11 @@ class CampaignsService extends Component
      */
     public function getCampaignById(int $campaignId)
     {
-        // Get site ID from element site settings
-        $siteId = Element_SiteSettings::find()
-            ->select('siteId')
-            ->where(['elementId' => $campaignId])
-            ->scalar();
-
-        if ($siteId === null) {
-            return null;
-        }
-
-        $campaign = CampaignElement::find()
+        return CampaignElement::find()
             ->id($campaignId)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->one();
-
-        return $campaign;
     }
 
     /**

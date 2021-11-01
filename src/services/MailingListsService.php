@@ -5,9 +5,7 @@
 
 namespace putyourlightson\campaign\services;
 
-use Craft;
 use craft\base\Component;
-use craft\records\Element_SiteSettings;
 use DateTime;
 use Exception;
 use putyourlightson\campaign\elements\ContactElement;
@@ -31,7 +29,7 @@ class MailingListsService extends Component
     // =========================================================================
 
     /**
-     * Returns mailing list by ID
+     * Returns a mailing list by ID
      *
      * @param int $mailingListId
      *
@@ -39,34 +37,21 @@ class MailingListsService extends Component
      */
     public function getMailingListById(int $mailingListId)
     {
-        // Get site ID from element site settings
-        $siteId = Element_SiteSettings::find()
-            ->select('siteId')
-            ->where(['elementId' => $mailingListId])
-            ->scalar();
-
-        if ($siteId === null) {
-            return null;
-        }
-
-        $mailingList = MailingListElement::find()
+        return MailingListElement::find()
             ->id($mailingListId)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->one();
-
-        return $mailingList;
     }
 
     /**
-     * Returns mailing lists by IDs
+     * Returns an array of mailing lists by IDs
      *
-     * @param int $siteId
      * @param int[] $mailingListIds
      *
      * @return MailingListElement[]
      */
-    public function getMailingListsByIds(int $siteId, array $mailingListIds): array
+    public function getMailingListsByIds(array $mailingListIds): array
     {
         if (empty($mailingListIds)) {
             return [];
@@ -74,13 +59,13 @@ class MailingListsService extends Component
 
         return MailingListElement::find()
             ->id($mailingListIds)
-            ->siteId($siteId)
+            ->site('*')
             ->status(null)
             ->all();
     }
 
     /**
-     * Returns mailing list by slug
+     * Returns a mailing list by its slug, in the current site
      *
      * @param string $mailingListSlug
      *
@@ -88,39 +73,21 @@ class MailingListsService extends Component
      */
     public function getMailingListBySlug(string $mailingListSlug)
     {
-        // Get site ID from element site settings
-        $siteId = Element_SiteSettings::find()
-            ->select('siteId')
-            ->where(['slug' => $mailingListSlug])
-            ->scalar();
-
-        if ($siteId === null) {
-            return null;
-        }
-
         return MailingListElement::find()
             ->slug($mailingListSlug)
-            ->siteId($siteId)
             ->one();
     }
 
     /**
-     * Returns all mailing lists across all sites
+     * Returns all mailing lists
      *
      * @return MailingListElement[]
      */
     public function getAllMailingLists(): array
     {
-        $mailingLists = [];
-
-        // Get sites to loop through so we can ensure that we get all sendouts
-        $sites = Craft::$app->getSites()->getAllSites();
-
-        foreach ($sites as $site) {
-            $mailingLists = array_merge($mailingLists, MailingListElement::find()->site($site)->all());
-        }
-
-        return $mailingLists;
+        return MailingListElement::find()
+            ->site('*')
+            ->all();
     }
 
     /**
@@ -194,19 +161,5 @@ class MailingListsService extends Component
         if ($contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
-    }
-
-    /**
-     * Syncs a mailing list to a user group
-     *
-     * @param MailingListElement $mailingList
-     */
-    public function syncMailingList(MailingListElement $mailingList)
-    {
-        if ($mailingList->syncedUserGroupId === null) {
-            return;
-        }
-
-
     }
 }

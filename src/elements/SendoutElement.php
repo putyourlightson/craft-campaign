@@ -725,7 +725,7 @@ class SendoutElement extends Element
             return $this->_excludedMailingLists;
         }
 
-        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->siteId, $this->getExcludedMailingListIds());
+        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->getExcludedMailingListIds());
 
         return $this->_excludedMailingLists;
     }
@@ -765,7 +765,7 @@ class SendoutElement extends Element
             return $this->_segments;
         }
 
-        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->siteId, $this->getSegmentIds());
+        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->getSegmentIds());
 
         return $this->_segments;
     }
