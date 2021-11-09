@@ -37,6 +37,11 @@ class SettingsModel extends Model
     public $testMode = false;
 
     /**
+     * @var bool Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
+     */
+    public $sendVerificationEmailsViaCraft = false;
+
+    /**
      * @var string An API key to use for triggering tasks and notifications (min. 16 characters)
      */
     public $apiKey;

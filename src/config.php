@@ -22,6 +22,9 @@ return [
         // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
         //'testMode' => false,
 
+        // Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
+        //'sendVerificationEmailsViaCraft' => false,
+
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 

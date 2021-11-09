@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 1.21.2 - Unreleased
+## 1.22.0 - Unreleased
 ### Added
-- Added a French translation ([#273](https://github.com/putyourlightson/craft-campaign/issues/273) ❤️@scandella).
+- Added a French translation of the plugin ([#273](https://github.com/putyourlightson/craft-campaign/issues/273) ❤️@scandella).
+- Added a `sendVerificationEmailsViaCraft` config setting that sends verification emails via the Craft mailer, instead of the Campaign mailer.
 
 ### Fixed
 - Fixed a bug in which the times in the x-axis of the reports chart was not being converted to the local timezone ([#274](https://github.com/putyourlightson/craft-campaign/issues/274)).

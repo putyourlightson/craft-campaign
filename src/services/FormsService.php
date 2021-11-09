@@ -220,7 +220,7 @@ class FormsService extends Component
         Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
 
         // Fire an after event
-        if ($mailingList !== null && $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
+        if ($this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
                 'contact' => $contact,
                 'mailingList' => $mailingList,
@@ -282,8 +282,9 @@ class FormsService extends Component
         // Get from name and email
         $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($siteId);
 
-        // Create message
-        $message = Campaign::$plugin->mailer->compose()
+        // Create message using the mailer for verification emails
+        $mailer = Campaign::$plugin->settings->getMailerForVerificationEmails();
+        $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($email)
             ->setSubject($subject)

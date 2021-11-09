@@ -12,8 +12,9 @@ use craft\base\Volume;
 use craft\events\CancelableEvent;
 use craft\events\FieldEvent;
 use craft\helpers\App;
-use craft\helpers\ProjectConfig as ProjectConfigHelper;
+use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;
+use craft\mail\Mailer;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -26,7 +27,8 @@ use putyourlightson\campaign\models\SettingsModel;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property array $siteOptions
+ * @property-read Mailer $mailerForVerificationEmails
+ * @property-read array $siteOptions
  */
 class SettingsService extends Component
 {
@@ -52,7 +54,22 @@ class SettingsService extends Component
     // =========================================================================
 
     /**
-     * Returns all of the sites as an array that can be used for options
+     * Returns a mailer for sending verification emails
+     *
+     * @return Mailer
+     * @since 1.22.0
+     */
+    public function getMailerForVerificationEmails(): Mailer
+    {
+        if (Campaign::$plugin->getSettings()->sendVerificationEmailsViaCraft) {
+            return Craft::$app->mailer;
+        }
+
+        return Campaign::$plugin->mailer;
+    }
+
+    /**
+     * Returns all the sites as an array that can be used for options
      *
      * @return array
      */
@@ -229,7 +246,7 @@ class SettingsService extends Component
      * @return bool
      * @since 1.15.0
      */
-    public function saveContactFieldLayout(FieldLayout $fieldLayout)
+    public function saveContactFieldLayout(FieldLayout $fieldLayout): bool
     {
         $projectConfig = Craft::$app->getProjectConfig();
         $fieldLayoutConfig = $fieldLayout->getConfig();
@@ -264,7 +281,7 @@ class SettingsService extends Component
         }
 
         // Make sure fields are processed
-        ProjectConfigHelper::ensureAllFieldsProcessed();
+        ProjectConfig::ensureAllFieldsProcessed();
 
         // Save the field layout
         $layout = FieldLayout::createFromConfig($config);
@@ -303,7 +320,9 @@ class SettingsService extends Component
         }
 
         // Nuke all the layout fields from the DB
-        Craft::$app->getDb()->createCommand()->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])->execute();
+        Craft::$app->getDb()->createCommand()
+            ->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])
+            ->execute();
 
         // Allow events again
         $projectConfig->muteEvents = false;
