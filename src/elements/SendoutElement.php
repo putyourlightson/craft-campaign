@@ -689,7 +689,7 @@ class SendoutElement extends Element
             return $this->_mailingLists;
         }
 
-        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->siteId, $this->getMailingListIds());
+        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->getMailingListIds());
 
         return $this->_mailingLists;
     }

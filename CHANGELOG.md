@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.22.1 - 2021-11-10
+### Fixed
+- Fixed a bug that was throwing an error when viewing a sendout ([#281](https://github.com/putyourlightson/craft-campaign/issues/281)).
+
 ## 1.22.0 - 2021-11-10
 ### Added
 - Added a French translation of the plugin ([#273](https://github.com/putyourlightson/craft-campaign/issues/273) ❤️@scandella).
