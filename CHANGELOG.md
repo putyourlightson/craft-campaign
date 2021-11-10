@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.22.0 - Unreleased
+## 1.22.0 - 2021-11-10
 ### Added
 - Added a French translation of the plugin ([#273](https://github.com/putyourlightson/craft-campaign/issues/273) ❤️@scandella).
 - Added a `sendVerificationEmailsViaCraft` config setting that sends verification emails via the Craft mailer, instead of the Campaign mailer.
@@ -899,7 +899,7 @@ _Thank you to [Story Group](https://story.com.au/) for partly funding the featur
 > {warning} This update will delete any currently pending contacts.
 
 ### Added
-- Added maxPendingContacts config setting.
+- Added the `maxPendingContacts` config setting.
 
 ### Changed
 - Changed how pending contacts are stored to be non-destructive.

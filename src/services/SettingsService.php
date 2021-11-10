@@ -27,8 +27,8 @@ use putyourlightson\campaign\models\SettingsModel;
  * @package   Campaign
  * @since     1.0.0
  *
- * @property-read Mailer $mailerForVerificationEmails
  * @property-read array $siteOptions
+ * @property-read Mailer $mailerForVerificationEmails
  */
 class SettingsService extends Component
 {
@@ -52,21 +52,6 @@ class SettingsService extends Component
 
     // Public Methods
     // =========================================================================
-
-    /**
-     * Returns a mailer for sending verification emails
-     *
-     * @return Mailer
-     * @since 1.22.0
-     */
-    public function getMailerForVerificationEmails(): Mailer
-    {
-        if (Campaign::$plugin->getSettings()->sendVerificationEmailsViaCraft) {
-            return Craft::$app->mailer;
-        }
-
-        return Campaign::$plugin->mailer;
-    }
 
     /**
      * Returns all the sites as an array that can be used for options
@@ -156,6 +141,21 @@ class SettingsService extends Component
         }
 
         return $fromNameEmailOptions;
+    }
+
+    /**
+     * Returns a mailer for sending verification emails
+     *
+     * @return Mailer
+     * @since 1.22.0
+     */
+    public function getMailerForVerificationEmails(): Mailer
+    {
+        if (Campaign::$plugin->getSettings()->sendVerificationEmailsViaCraft) {
+            return Craft::$app->mailer;
+        }
+
+        return Campaign::$plugin->mailer;
     }
 
     /**

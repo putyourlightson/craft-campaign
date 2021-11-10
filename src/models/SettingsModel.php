@@ -37,22 +37,19 @@ class SettingsModel extends Model
     public $testMode = false;
 
     /**
-     * @var bool Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
-     */
-    public $sendVerificationEmailsViaCraft = false;
-
-    /**
      * @var string An API key to use for triggering tasks and notifications (min. 16 characters)
      */
     public $apiKey;
 
     /**
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
+     * @since 1.19.0
      */
     public $mailgunWebhookSigningKey;
 
     /**
      * @var array The allowed IP addresses for incoming webhook requests from Postmark
+     * @since 1.19.0
      */
     public $postmarkAllowedIpAddresses = [
         '3.134.147.250',
@@ -63,8 +60,15 @@ class SettingsModel extends Model
 
     /**
      * @var array|null The AJAX origins that should be allowed to access live preview.
+     * @since 1.21.0
      */
     public $allowedOrigins;
+
+    /**
+     * @var bool Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
+     * @since 1.22.0
+     */
+    public $sendVerificationEmailsViaCraft = false;
 
     /**
      * @var array|null The names and emails that sendouts can be sent from
@@ -121,11 +125,13 @@ class SettingsModel extends Model
 
     /**
      * @var int The maximum number of times to attempt sending a sendout to a single contact before failing
+     * @since 1.10.0
      */
     public $maxSendAttempts = 3;
 
     /**
      * @var int The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
+     * @since 1.15.4
      */
     public $maxSendFailsAllowed = 1;
 
@@ -141,6 +147,7 @@ class SettingsModel extends Model
 
     /**
      * @var int The amount of time in seconds to reserve a sendout job
+     * @since 1.9.0
      */
     public $sendoutJobTtr = 300;
 
@@ -214,6 +221,7 @@ class SettingsModel extends Model
 
     /**
      * @var array Extra fields and the operators that should be available to segments
+     * @since 1.7.3
      */
     public $extraSegmentFieldOperators = [];
 
