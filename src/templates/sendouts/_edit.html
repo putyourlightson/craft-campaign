@@ -59,7 +59,7 @@
         {% if sendout.recipients %}
             {{ forms.field({
                 warning: 'This sendout has already been sent to {recipients} recipient(s).'|t('campaign', {recipients: sendout.recipients})
-            }) }}
+            }, '') }}
         {% endif %}
 
         {% include 'campaign/sendouts/_includes/titlefield' %}

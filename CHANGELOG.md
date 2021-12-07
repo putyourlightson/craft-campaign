@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.22.2 - 2021-12-07
+### Fixed
+- Fixed a bug that was throwing an error when viewing a campaign or editing a sendout in Craft 3.7.24 ([#284](https://github.com/putyourlightson/craft-campaign/issues/284)).
+
 ## 1.22.1 - 2021-11-10
 ### Fixed
 - Fixed a bug that was throwing an error when viewing a sendout ([#281](https://github.com/putyourlightson/craft-campaign/issues/281)).

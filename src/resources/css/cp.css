@@ -277,6 +277,14 @@ label.subscriptionStatus.bounced {
     margin-left: -7px;
 }
 
+.meta .field.test-email {
+    display: block;
+}
+
+.meta .field.test-email .heading label {
+    font-weight: bold;
+}
+
 .device {
     background: no-repeat 50%;
     background-size: contain;

@@ -168,10 +168,9 @@
 
         <hr/>
         <div class="meta">
-            {{ forms.field({
+            {{ forms.elementSelectField({
                 label: "Test Email"|t('campaign'),
-            }) }}
-            {{ forms.elementSelect({
+                fieldClass: 'test-email',
                 id: 'testContacts',
                 name: 'testContacts',
                 elementType: contactElementType,
