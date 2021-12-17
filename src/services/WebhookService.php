@@ -47,7 +47,7 @@ class WebhookService extends Component
     /**
      * Bounce
      *
-     * @param ContactElement          $contact
+     * @param ContactElement $contact
      *
      * @throws ElementNotFoundException
      * @throws Exception
@@ -58,6 +58,22 @@ class WebhookService extends Component
         Campaign::$plugin->log('Contact {email} marked as "bounced".', ['email' => $contact->email]);
 
         $this->_addInteraction($contact, 'bounced');
+    }
+
+    /**
+     * Unsubscribe
+     *
+     * @param ContactElement $contact
+     *
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws Throwable
+     */
+    public function unsubscribe(ContactElement $contact)
+    {
+        Campaign::$plugin->log('Contact {email} marked as "unsubscribed".', ['email' => $contact->email]);
+
+        $this->_addInteraction($contact, 'unsubscribed');
     }
 
     // Private Methods
@@ -98,7 +114,7 @@ class WebhookService extends Component
         }
 
         // Update contact
-        if ($contact->{$interaction} === null) {
+        if (isset($contact->{$interaction}) && $contact->{$interaction} === null) {
             $contact->{$interaction} = new DateTime();
 
             Craft::$app->getElements()->saveElement($contact);

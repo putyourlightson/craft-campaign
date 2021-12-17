@@ -234,14 +234,38 @@ class WebhookController extends Controller
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'IP address not allowed.')]);
         }
 
-        $eventType = $request->getBodyParam('Type');
-        $email = $request->getBodyParam('Email');
+        $eventType = $request->getBodyParam('RecordType');
+        $email = $request->getBodyParam('Email') ?: $request->getBodyParam('Recipient');
 
+        // https://postmarkapp.com/developer/webhooks/spam-complaint-webhook
         if ($eventType == 'SpamComplaint') {
             return $this->_callWebhook('complained', $email);
         }
-        if ($eventType == 'HardBounce') {
-            return $this->_callWebhook('bounced', $email);
+        // https://postmarkapp.com/developer/webhooks/bounce-webhook
+        elseif ($eventType == 'Bounce') {
+            $bounceType = $request->getBodyParam('Type');
+
+            if ($bounceType == 'HardBounce') {
+                return $this->_callWebhook('bounced', $email);
+            }
+        }
+        // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
+        elseif ($eventType == 'SubscriptionChange') {
+            $suppress = $request->getBodyParam('SuppressSending');
+
+            if ($suppress) {
+                $reason = $request->getBodyParam('SuppressionReason');
+
+                if ($reason == 'SpamComplaint') {
+                    return $this->_callWebhook('complained', $email);
+                }
+                elseif ($reason == 'HardBounce') {
+                    return $this->_callWebhook('bounced', $email);
+                }
+                else {
+                    return $this->_callWebhook('unsubscribed', $email);
+                }
+            }
         }
 
         return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
@@ -313,6 +337,9 @@ class WebhookController extends Controller
         }
         elseif ($event == 'bounced') {
             Campaign::$plugin->webhook->bounce($contact);
+        }
+        elseif ($event == 'unsubscribed') {
+            Campaign::$plugin->webhook->unsubscribe($contact);
         }
 
         return $this->asJson(['success' => true]);

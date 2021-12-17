@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.22.3 - Unreleased
+### Added
+- Added a "Subscription Change" event to the Postmark webhook that listens for unsubscribe events ([#286](https://github.com/putyourlightson/craft-campaign/issues/286)).
+
 ## 1.22.2 - 2021-12-07
 ### Fixed
 - Fixed a bug that was throwing an error when viewing a campaign or editing a sendout in Craft 3.7.24 ([#284](https://github.com/putyourlightson/craft-campaign/issues/284)).
