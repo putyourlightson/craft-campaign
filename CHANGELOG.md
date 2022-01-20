@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.22.3 - Unreleased
+## 1.22.3 - 2022-01-20
 ### Added
 - Added a "Subscription Change" event to the Postmark webhook that listens for unsubscribe events ([#286](https://github.com/putyourlightson/craft-campaign/issues/286)).
+
+### Fixed
+- Fixed a bug that was preventing the importing of user groups from succeeding ([#289](https://github.com/putyourlightson/craft-campaign/issues/289)).
 
 ## 1.22.2 - 2021-12-07
 ### Fixed

@@ -112,6 +112,7 @@ class WebhookControllerTest extends BaseControllerTest
 
     public function testMailgunLegacy()
     {
+        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = null;
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
         /** @var Response $response */
@@ -133,6 +134,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $params = [
             'key' => Campaign::$plugin->getSettings()->apiKey,
+            'RecordType' => 'Bounce',
             'Type' => 'HardBounce',
             'Email' => $this->contact->email,
         ];

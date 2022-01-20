@@ -148,7 +148,7 @@ class ImportModel extends BaseModel
     {
         return [
             [['id', 'assetId', 'userId', 'mailingListId'], 'integer'],
-            [['assetId', 'mailingListId', 'emailFieldIndex'], 'required'],
+            [['mailingListId', 'emailFieldIndex'], 'required'],
             [['fileName', 'filePath'], 'string', 'max' => 255],
         ];
     }
