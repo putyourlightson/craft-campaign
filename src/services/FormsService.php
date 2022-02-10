@@ -81,7 +81,10 @@ class FormsService extends Component
         Craft::$app->sites->setCurrentSite($mailingList->siteId);
 
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-subscribe';
-        $url = UrlHelper::siteUrl($path, ['pid' => $pendingContact->pid]);
+        $url = UrlHelper::siteUrl($path, [
+            'pid' => $pendingContact->pid,
+            'mlid' => $mailingList->id,
+        ]);
 
         $subject = Craft::t('campaign', 'Verify your email address');
         $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');

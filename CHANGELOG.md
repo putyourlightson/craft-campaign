@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.22.4 - Unreleased
+### Changed
+- The `subscribeVerificationSuccessTemplate` is now used even in cases where the subscription verification email link has already been clicked ([#290](https://github.com/putyourlightson/craft-campaign/issues/290)).
+
 ## 1.22.3 - 2022-01-20
 ### Added
 - Added a "Subscription Change" event to the Postmark webhook that listens for unsubscribe events ([#286](https://github.com/putyourlightson/craft-campaign/issues/286)).

@@ -306,10 +306,28 @@ class FormsController extends BaseMessageController
                 return $this->redirectToPostedUrl();
             }
 
-            return $this->renderMessageTemplate('', [
-                'title' => Craft::t('campaign', 'Verified'),
-                'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
-            ]);
+            $mlid = $request->getParam('mlid');
+            $mailingList = null;
+
+            if ($mlid) {
+                $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mlid);
+            }
+
+            if ($mailingList) {
+                // TODO: change template to `subscribeSuccessTemplate` in 2.0.0
+                return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
+                    'title' => Craft::t('campaign', 'Verified'),
+                    'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
+                    'mailingList' => $mailingList,
+                    'contact' => null,
+                ]);
+            }
+            else {
+                return $this->renderMessageTemplate('', [
+                    'title' => Craft::t('campaign', 'Verified'),
+                    'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
+                ]);
+            }
         }
 
         // Get contact
