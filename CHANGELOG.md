@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.22.4 - Unreleased
+## 1.22.4 - 2022-02-23
 ### Changed
 - The `subscribeVerificationSuccessTemplate` is now used even in cases where the subscription verification email link has already been clicked ([#290](https://github.com/putyourlightson/craft-campaign/issues/290)).
+
+### Fixed
+- Fixed a bug that was throwing an exception on the segment edit page when contacts had an option field ([#294](https://github.com/putyourlightson/craft-campaign/issues/294)).
 
 ## 1.22.3 - 2022-01-20
 ### Added

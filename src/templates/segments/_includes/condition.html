@@ -46,7 +46,7 @@
         </div>
         {% for field in availableFields %}
             {% if field.options %}
-                <div class="conditionValue field-{{ field.type|replace({'\\': '-'}) }}-{{ field.handle }} hidden">
+                <div class="conditionValue field-{{ field.type|replace({'\\': '-'}) }}-{{ field.column }} hidden">
                     <div class="select">
                         <select name="{{ fieldName }}" disabled>
                             {% for option in field.options %}

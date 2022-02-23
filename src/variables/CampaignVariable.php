@@ -280,9 +280,9 @@ class CampaignVariable
     /**
      * Returns reCAPTCHA markup
      *
-     * @return Markup|string
+     * @return Markup
      */
-    public function getRecaptcha()
+    public function getRecaptcha(): Markup
     {
         $output = '';
         $settings = Campaign::$plugin->getSettings();
