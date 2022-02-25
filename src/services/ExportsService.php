@@ -7,13 +7,13 @@ namespace putyourlightson\campaign\services;
 
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
+use craft\fields\data\MultiOptionsFieldData;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
 
 use craft\base\Component;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-use Throwable;
 
 /**
  * ExportsService
@@ -46,7 +46,6 @@ class ExportsService extends Component
      * @param ExportModel $export
      *
      * @return bool Whether the export was successful
-     * @throws Throwable if reasons
      */
     public function exportFile(ExportModel $export): bool
     {
@@ -100,6 +99,10 @@ class ExportsService extends Component
                             }
 
                             $value = implode(',', $elements);
+                        }
+                        // https://github.com/putyourlightson/craft-campaign/issues/297
+                        elseif ($value instanceof MultiOptionsFieldData) {
+                            $value = implode(',', iterator_to_array($value));
                         }
 
                         $row[] = $value;

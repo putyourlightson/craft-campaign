@@ -4,6 +4,9 @@
 ### Changed
 - The tracking image now has an empty `alt`  attribute for accessibility ([#298](https://github.com/putyourlightson/craft-campaign/issues/298)).
 
+### Fixed
+- Fixed a bug that was throwing an exception on the contact export page when contacts had a multi option field ([#297](https://github.com/putyourlightson/craft-campaign/issues/297)).
+- 
 ## 1.22.4 - 2022-02-23
 ### Changed
 - The `subscribeVerificationSuccessTemplate` is now used even in cases where the subscription verification email link has already been clicked ([#290](https://github.com/putyourlightson/craft-campaign/issues/290)).
