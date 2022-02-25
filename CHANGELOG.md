@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.22.5 - Unreleased
+### Changed
+- The tracking image now has an empty `alt`  attribute for accessibility ([#298](https://github.com/putyourlightson/craft-campaign/issues/298)).
+
 ## 1.22.4 - 2022-02-23
 ### Changed
 - The `subscribeVerificationSuccessTemplate` is now used even in cases where the subscription verification email link has already been clicked ([#290](https://github.com/putyourlightson/craft-campaign/issues/290)).
@@ -132,19 +136,19 @@
 - Fixed element thumbnails not appearing in contact edit page.
 
 ## 1.17.7 - 2020-12-23
-### Changed 
+### Changed
 - Improved the contact importing process.
 
 ## 1.17.6 - 2020-12-14
-### Fixed 
+### Fixed
 - Fixed the contact import functionality added in 1.17.3.
 
 ## 1.17.5 - 2020-12-11
-### Fixed 
+### Fixed
 - Fixed a bug that was preventing campaign types and mailing list types from being created when installing the plugin via project config ([#191](https://github.com/putyourlightson/craft-campaign/issues/191)).
 
 ## 1.17.4 - 2020-12-11
-### Fixed 
+### Fixed
 - Fixed a bug in the Amazon SES webhook that was preventing bounce and complain notifications from being received through SNS ([#202](https://github.com/putyourlightson/craft-campaign/issues/202)).
 
 ## 1.17.3 - 2020-12-09
@@ -161,7 +165,7 @@
 - Fixed a bug that prevented the site ID of contacts being updated when the primary site was changed.
 
 ## 1.17.0 - 2020-11-05
-### Added 
+### Added
 - Added the ability to subscribe contacts to a mailing list when imported, even if previously unsubscribed (disabled by default).
 
 ### Changed
@@ -328,7 +332,7 @@
 ## 1.13.3 - 2020-03-03
 ### Changed
 - The `contact` variable is now available in the email subject when sending a sendout test.
-- Improved UI of tables in settings. 
+- Improved UI of tables in settings.
 
 ### Fixed
 - Fixed the possibility of the `subscribeSuccessTemplate` mailing list type setting not being saved ([#110](https://github.com/putyourlightson/craft-campaign/issues/110)).
@@ -374,7 +378,7 @@
 
 ## 1.12.2 - 2019-10-29
 ### Changed
-- Improved how contact interactions are tracked to avoid creating unnecessary search index updates. 
+- Improved how contact interactions are tracked to avoid creating unnecessary search index updates.
 
 ### Fixed
 - Fixed an error that could occur if mailing list was not selected when syncing a user group.
@@ -399,7 +403,7 @@
 ## 1.11.1 - 2019-08-13
 ### Changed
 - Changed reCAPTCHA error message to better reflect reCAPTCHA v3.
- 
+
 ### Fixed
 - Fixed the campaign live preview button.
 
@@ -442,7 +446,7 @@
 - Deprecated `ContactsService::sendVerificationEmail()`.
 - Deprecated `ContactsService::verifyPendingContact()`.
 - Deprecated `ContactsService::purgeExpiredPendingContacts()`.
-- Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT`. 
+- Deprecated `TrackerService::EVENT_BEFORE_SUBSCRIBE_CONTACT`.
 - Deprecated `TrackerService::EVENT_AFTER_SUBSCRIBE_CONTACT`.
 - Deprecated `TrackerService::EVENT_BEFORE_UPDATE_CONTACT`.
 - Deprecated `TrackerService::EVENT_AFTER_UPDATE_CONTACT`.
@@ -464,7 +468,7 @@
 
 ## 1.9.0 - 2019-05-14
 ### Added
-- Added regular and template segment types. 
+- Added regular and template segment types.
 - Added the ability to use emojis in the sendout subject ;)
 
 ### Changed
@@ -484,7 +488,7 @@
 
 ## 1.8.1 - 2019-05-02
 ### Fixed
-- Fixed migration that could fail in some edge cases. 
+- Fixed migration that could fail in some edge cases.
 
 ## 1.8.0 - 2019-05-02
 ### Added
@@ -582,7 +586,7 @@
 
 ## 1.6.4 - 2019-02-01
 ### Fixed
-- Fixed bug in which trashed campaigns, contacts and mailing lists were not being filtered out of report results. 
+- Fixed bug in which trashed campaigns, contacts and mailing lists were not being filtered out of report results.
 
 ## 1.6.3 - 2019-01-30
 ### Fixed
@@ -614,7 +618,7 @@
 
 ## 1.5.9 - 2019-01-21
 ### Fixed
-- Fixed error that could occur during updating the plugin when using Craft 3.1. 
+- Fixed error that could occur during updating the plugin when using Craft 3.1.
 
 ## 1.5.8 - 2019-01-17
 ### Added
@@ -640,7 +644,7 @@
 - Added subscribed date to exportable fields.
 
 ### Changed
-- Changed some text fields to code fields within the plugin settings. 
+- Changed some text fields to code fields within the plugin settings.
 - Improved console command instructions.
 - Improved cron job instructions.
 - The "Send Test" button is disabled when clicked and re-enabled on completion.
@@ -654,7 +658,7 @@
 
 ### Fixed
 - Fixed error that could be thrown when editing automated sendouts ([#41](https://github.com/putyourlightson/craft-campaign/issues/41)).
- 
+
 ## 1.5.2 - 2018-12-05
 ### Changed
 - Optimised sendout methods for improved performance in the control panel and sending ([#39](https://github.com/putyourlightson/craft-campaign/issues/39)).

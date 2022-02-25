@@ -428,7 +428,7 @@ class SendoutsService extends Component
         // Add tracking image to HTML body
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/open';
         $trackingImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
-        $htmlBody .= '<img src="'.$trackingImageUrl.'" width="1" height="1" />';
+        $htmlBody .= '<img src="'.$trackingImageUrl.'" width="1" height="1" alt="" />';
 
         // If test mode is enabled then use file transport instead of sending emails
         if (Campaign::$plugin->getSettings()->testMode) {
