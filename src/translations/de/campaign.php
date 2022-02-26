@@ -65,7 +65,7 @@ return [
     'Are you sure you want to delete this mailing list?' => 'Sind Sie sicher, dass Sie diese Mailing-Liste löschen möchten?',
     'Are you sure you want to delete this segment?' => 'Sind Sie sicher, dass Sie dieses Segment löschen möchten?',
     'Are you sure you want to delete this sendout?' => 'Sind Sie sicher, dass Sie diese Sendung löschen möchten?',
-    'Are you sure you want to mark this contact as blocked?' => 'Sind Sie sicher, dass Sie diesen Kontakt als `blocked` markieren möchten?',
+    'Are you sure you want to mark this contact as blocked?' => 'Sind Sie sicher, dass Sie diesen Kontakt als `blockiert` markieren möchten?',
     'Are you sure you want to mark this contact as bounced?' => 'Sind Sie sicher, dass Sie diesen Kontakt als `bounced` markieren möchten?',
     'Are you sure you want to mark this contact as complained?' => 'Sind Sie sicher, dass Sie diesen Kontakt als `complained` markieren möchten?',
     'Are you sure you want to pause and edit this sendout?' => 'Sind Sie sicher, dass Sie diese Sendung pausieren und bearbeiten möchten?',
@@ -76,13 +76,13 @@ return [
     'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.' => 'Sind Sie sicher, dass Sie die Synchronisierung zwischen dieser Mailing-Liste und der Benutzergruppe entfernen möchten? Dadurch werden KEINE bereits existierenden Kontakte gelöscht.',
     'Are you sure you want to remove this contact from this mailing list?' => 'Sind Sie sicher, dass Sie diesen Kontakt aus dieser Mailing-Liste entfernen möchten?',
     'Are you sure you want to subscribe this contact to this mailing list?' => 'Sind Sie sicher, dass Sie diesen Kontakt zu dieser Mailing-Liste hinzufügen möchten?',
-    'Are you sure you want to unmark this contact as blocked?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `blocked` markieren möchten?',
+    'Are you sure you want to unmark this contact as blocked?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `blockiert` markieren möchten?',
     'Are you sure you want to unmark this contact as bounced?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `bounced` markieren möchten?',
     'Are you sure you want to unmark this contact as complained?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `complained` markieren möchten?',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => 'Sind Sie sicher, dass Sie diesen Kontakt aus dieser Mailing-Liste entfernen möchten?',
     'At least one contact must be submitted.' => 'Es muss mindestes ein Kontakt gesendet werden.',
     'Automated' => 'Automatisiert',
-    'Blocked' => 'Blocked',
+    'Blocked' => 'Blockiert',
     'Bottom left ' => 'Unten links',
     'Bottom right ' => 'Unten rechts',
     'Bounced' => 'Bounced',
@@ -143,7 +143,7 @@ return [
     /**
      * Dynamically set in `ContactsController`.
      */
-    'Contact marked as blocked.' => 'Kontakt als `blocked` markiert.',
+    'Contact marked as blocked.' => 'Kontakt als `blockiert` markiert.',
     'Contact marked as bounced.' => 'Kontakt als `bounced` markiert.',
     'Contact marked as complained.' => 'Kontakt als `complained` markiert.',
     'Contact must be saved before mailing lists can be assigned.' => 'Der Kontakt muss erst gespeichert werden bevor Mailing-Listen zugewiesen werden können.',
@@ -154,7 +154,7 @@ return [
     /**
      * Dynamically set in `ContactsController`.
      */
-    'Contact unmarked as blocked.' => 'Kontakt nicht mehr als `blocked` markiert.',
+    'Contact unmarked as blocked.' => 'Kontakt nicht mehr als `blockiert` markiert.',
     'Contact unmarked as bounced.' => 'Kontakt nicht mehr als `bounced` markiert.',
     'Contact unmarked as complained.' => 'Kontakt nicht mehr als `complained` markiert',
     'Contacts' => 'Kontakte',
@@ -179,7 +179,7 @@ return [
     /**
      * Dynamically set in `ContactsController`.
      */
-    'Couldn’t mark contact as blocked.' => 'Kontakt konnte nicht als `blocked` markiert werden.',
+    'Couldn’t mark contact as blocked.' => 'Kontakt konnte nicht als `blockiert` markiert werden.',
     'Couldn’t mark contact as bounced.' => 'Kontakt konnte nicht als `bounced` markiert werden.',
     'Couldn’t mark contact as complained.' => 'Kontakt konnte nicht als `complained` markiert werden.',
     'Couldn’t save campaign type.' => 'Kampagnen-Typ konnte nicht gespeichert werden.',
@@ -200,7 +200,7 @@ return [
     /**
      * Dynamically set in `ContactsController`.
      */
-    'Couldn’t unmark contact as blocked.' => 'Kontakt konnte nicht als `blocked` demarkiert werden.',
+    'Couldn’t unmark contact as blocked.' => 'Kontakt konnte nicht als `blockiert` demarkiert werden.',
     'Couldn’t unmark contact as bounced.' => 'Kontakt konnte nicht als `bounced` demarkiert werden.',
     'Couldn’t unmark contact as complained.' => 'Kontakt konnte nicht als `complained` demarkiert werden.',
     'Couldn’t update subscription.' => 'Abonnement konnte nicht aktualisiert werden',
@@ -352,7 +352,7 @@ return [
     'Manage reports' => 'Verwalte Reporte',
     'Manage segments' => 'Verwalte Segmente',
     'Manage sendouts' => 'Verwalte Sendungen',
-    'Mark contact as blocked' => 'Markiere Kontakt als `blocked`',
+    'Mark contact as blocked' => 'Markiere Kontakt als `blockiert`',
     'Mark contact as bounced' => 'Markiere Kontakt als `bounced`',
     'Mark contact as complained' => 'Markiere Kontakt als `complained`',
     'Max Batch Size' => 'Maximale Chargengröße',
@@ -616,7 +616,7 @@ return [
     'Unable to upload CSV file.' => 'Hochladen der CSV-Datei nicht möglich.',
     'Unknown' => 'Unbekannt',
     'Unlimited' => 'Unbegrenzt',
-    'Unmark contact as blocked' => 'Kontakt nicht mehr als `blocked` markieren',
+    'Unmark contact as blocked' => 'Kontakt nicht mehr als `blockiert` markieren',
     'Unmark contact as bounced' => 'Kontakt nicht mehr als `bounced` markieren',
     'Unmark contact as complained' => 'Kontakt nicht mehr als `complained` markieren',
     'Unsubscribe Form Allowed' => 'Abmeldeformular erlauben',
