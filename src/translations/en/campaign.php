@@ -498,7 +498,6 @@ return [
     'Showing the first {limit} of {total} contacts.' => '',
     'SID' => '',
     'Signature could not be authenticated.' => '',
-    'Site' => '',
     'SNS message validation error.' => '',
     'Some campaigns restored.' => '',
     'Some contacts restored.' => '',

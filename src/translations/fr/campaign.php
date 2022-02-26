@@ -498,7 +498,6 @@ return [
     'Showing the first {limit} of {total} contacts.' => 'Afficher la première {limit} de {total} contacts.',
     'SID' => 'SID',
     'Signature could not be authenticated.' => '',
-    'Site' => 'Site',
     'SNS message validation error.' => 'Erreur de validation du message SNS.',
     'Some campaigns restored.' => 'Certaines newsletters ont été restaurées.',
     'Some contacts restored.' => 'Certains contacts ont été restaurés.',
