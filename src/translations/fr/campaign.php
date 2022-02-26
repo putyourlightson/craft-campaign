@@ -11,6 +11,8 @@
  * @since     1.22.0
 */
 return [
+    'Plugin Name' => 'Newsletters',
+
     '(reply to {email})' => '(répondre à {email})',
     '{count} pending sendout(s) queued.' => '{count} envoi(s) en attente.',
     'A contact with that email address could not be found.' => 'Le contact avec cette adresse email n’a pas été trouvé.',
@@ -102,7 +104,7 @@ return [
     'Campaign Type' => 'Type de newslettter',
     'Campaign Types' => 'Types de newsletter',
     'Campaign URI Format' => 'Format URI de newsletter',
-    'Campaign' => 'Newsletters',
+    'Campaign' => 'Newsletter',
     'Campaigns deleted.' => 'Newsletter supprimée',
     'Campaigns not restored.' => 'Newsletter non restaurée.',
     'Campaigns Overview' => 'Aperçu des newsletters',

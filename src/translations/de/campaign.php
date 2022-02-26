@@ -11,6 +11,8 @@
  * @since     1.23.0
 */
 return [
+    'Plugin Name' => 'Campaign',
+
     '(reply to {email})' => '(an {email} antworten)',
     '{count} pending sendout(s) queued.' => '{count} Sendung(en) in Warteschlange',
     'A contact with that email address could not be found.' => 'Es wurde kein Kontakt mit dieser E-Mail-Adresse gefunden.',
@@ -102,7 +104,7 @@ return [
     'Campaign Type' => 'Kampagnen-Typ',
     'Campaign Types' => 'Kampagnen-Typen',
     'Campaign URI Format' => 'URI-Format der Kampagne',
-    'Campaign' => 'Campaign',
+    'Campaign' => 'Kampagne',
     'Campaigns deleted.' => 'Kampagnen gelöscht.',
     'Campaigns not restored.' => 'Kampagnen nicht wiederhergestellt.',
     'Campaigns Overview' => 'Kampagnen-Übersicht',

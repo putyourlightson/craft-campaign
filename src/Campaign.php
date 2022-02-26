@@ -140,7 +140,7 @@ class Campaign extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-        $this->name = Craft::t('campaign', 'Campaign');
+        $this->name = Craft::t('campaign', 'Plugin Name');
 
         $this->_registerComponents();
         $this->_registerElementTypes();
