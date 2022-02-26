@@ -1,6 +1,6 @@
 # Roadmap for Campaign
 
-## 2.0.0
+## v2
 - Add campaign type and mailing list type specific user group permissions.
 - Add campaign versions.
 - Add campaign share link with token for disabled campaigns.

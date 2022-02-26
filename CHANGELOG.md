@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.22.5 - Unreleased
+## 1.22.5 - 2022-02-26
 ### Changed
 - The tracking image now has an empty `alt`  attribute for accessibility ([#298](https://github.com/putyourlightson/craft-campaign/issues/298)).
 
