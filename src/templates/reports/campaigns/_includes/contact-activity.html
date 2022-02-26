@@ -1,5 +1,6 @@
 {% import 'campaign/_macros' as macros %}
 
+
 {% if reportUrl is not defined %}
 
     {% set interaction = craft.app.request.param('interaction') %}
@@ -61,15 +62,10 @@
             <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
         {% endif %}
     {% else %}
-        {% js %}
-            new Campaign.DataTable({
-                id: 'contact-activity',
-                itemName: 'interactions',
-                options: {
-                    order: [[ 3, 'desc' ]],
-                },
-            });
-        {% endjs %}
+        {{ include('campaign/reports/_includes/data-table', {
+            id: 'contact-activity',
+            itemName: 'interactions'|t('campaign'),
+        }) }}
     {% endif %}
 
 {% else %}

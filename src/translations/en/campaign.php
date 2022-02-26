@@ -294,6 +294,7 @@ return [
     'Initialising plugin' => '',
     'Inline' => '',
     'Interaction' => '',
+    'interactions' => '',
     'Invalid verification link.' => '',
     'Invisible' => '',
     'IP address not allowed.' => '',

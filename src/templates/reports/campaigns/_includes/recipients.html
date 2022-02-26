@@ -44,15 +44,11 @@
         </tbody>
     </table>
 
-    {% js %}
-        new Campaign.DataTable({
-            id: 'recipients',
-            itemName: 'recipients',
-            options: {
-                order: [[ 2, 'desc' ]],
-            },
-        });
-    {% endjs %}
+    {{ include('campaign/reports/_includes/data-table', {
+        id: 'recipients',
+        itemName: 'recipients'|t('campaign'),
+        order: 2,
+    }) }}
 
 {% else %}
 

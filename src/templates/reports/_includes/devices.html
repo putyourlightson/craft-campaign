@@ -25,15 +25,10 @@
     {% if reportUrl is defined %}
         <p><a href="{{ reportUrl }}">{{ "View details"|t('campaign') }} &raquo;</a></p>
     {% else %}
-        {% js %}
-            new Campaign.DataTable({
-                id: 'devices',
-                itemName: 'devices',
-                options: {
-                    order: [[ 3, 'desc' ]],
-                },
-            });
-        {% endjs %}
+        {{ include('campaign/reports/_includes/data-table', {
+            id: 'devices',
+            itemName: 'devices'|t('campaign'),
+        }) }}
     {% endif %}
 
 {% else %}

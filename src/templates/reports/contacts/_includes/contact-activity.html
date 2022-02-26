@@ -27,15 +27,11 @@
             <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
         {% endif %}
     {% else %}
-        {% js %}
-            new Campaign.DataTable({
-                id: 'contacts',
-                itemName: 'contacts',
-                options: {
-                    order: [[ 5, 'desc' ]],
-                },
-            });
-        {% endjs %}
+        {{ include('campaign/reports/_includes/data-table', {
+            id: 'contacts',
+            itemName: 'contacts'|t('campaign'),
+            order: 5,
+        }) }}
     {% endif %}
 
 {% else %}

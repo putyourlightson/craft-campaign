@@ -14,17 +14,8 @@ Campaign.DataTable = Garnish.Base.extend(
 
         createDataTable: function() {
             const id = this.settings.id;
-            const itemName = this.settings.itemName ?? 'items';
+            const placeholder = this.settings.placeholder ?? '';
             const options = this.settings.options ?? {};
-
-            options.language = {
-                lengthMenu: '_MENU_ ' + itemName + ' displayed',
-                search: '',
-                info: '_START_-_END_ of _TOTAL_ ' + itemName,
-                infoEmpty: 'Showing 0 to 0 of 0 ' + itemName,
-                infoFiltered: '(filtered from _MAX_ total ' + itemName + ')',
-                zeroRecords: 'No matching ' + itemName + ' found',
-            };
 
             const dataTable = $('#' + id).DataTable(options);
             dataTable.on('draw', () => Craft.initUiElements());
@@ -33,7 +24,7 @@ Campaign.DataTable = Garnish.Base.extend(
 
             $('#' + id + '_filter input').addClass('text fullwidth')
                 .attr('autocomplete', 'off')
-                .attr('placeholder', 'Search')
+                .attr('placeholder', placeholder)
                 .wrap('<div class="flex-grow texticon search icon clearable"></div>');
 
             $('#' + id + '_wrapper').prepend('<div class="toolbar"></div>');
