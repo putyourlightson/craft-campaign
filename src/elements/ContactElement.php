@@ -74,6 +74,29 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'contact');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('campaign', 'Contacts');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'contacts');
+    }
+    /**
+     * @inheritdoc
+     */
     public static function refHandle()
     {
         return 'contact';

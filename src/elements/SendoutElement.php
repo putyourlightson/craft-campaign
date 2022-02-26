@@ -108,6 +108,30 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'sendout');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('campaign', 'Sendouts');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'sendouts');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function refHandle()
     {
         return 'sendout';

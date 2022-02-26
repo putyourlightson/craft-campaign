@@ -59,6 +59,30 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'segment');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('campaign', 'Segments');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'segments');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function refHandle()
     {
         return 'segment';

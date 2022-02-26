@@ -58,6 +58,30 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'campaign');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('campaign', 'Campaigns');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'campaigns');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function refHandle()
     {
         return 'campaign';

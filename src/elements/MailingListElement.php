@@ -59,6 +59,30 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
+    public static function lowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'mailing list');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('campaign', 'Mailing Lists');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function pluralLowerDisplayName(): string
+    {
+        return Craft::t('campaign', 'mailing lists');
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function refHandle()
     {
         return 'mailinglist';
