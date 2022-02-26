@@ -8,7 +8,7 @@
  *
  * @author    Scandella
  * @package   Campaign
- * @since     1.21.2
+ * @since     1.22.0
 */
 return [
     '(reply to {email})' => '(répondre à {email})',

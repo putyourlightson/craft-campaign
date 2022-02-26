@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.23.0 - Unreleased
+### Added
+- Added a German translation of the plugin ([#296](https://github.com/putyourlightson/craft-campaign/issues/296) ❤️@andreasbecker).
+
 ## 1.22.5 - 2022-02-26
 ### Changed
 - The tracking image now has an empty `alt`  attribute for accessibility ([#298](https://github.com/putyourlightson/craft-campaign/issues/298)).

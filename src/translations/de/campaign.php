@@ -8,7 +8,7 @@
  *
  * @author    Andreas Becker
  * @package   Campaign
- * @since     1.21.2
+ * @since     1.23.0
 */
 return [
     '(reply to {email})' => '(an {email} antworten)',
@@ -609,9 +609,9 @@ return [
     'Unsubscribe Success Template' => 'Template für erfolgreiches Abmelden',
     'Unsubscribe Verification Email Subject' => 'Betreff der Abmelde-Verifizierungs-E-Mail',
     'Unsubscribe Verification Email Template' => 'Template der Abmelde-Verifizierungs-E-Mail',
-    'Unsubscribe' => 'Abbestellen',
+    'Unsubscribe' => 'Abmelden',
     'Unsubscribe link clicked in a test email without a sendout.' => 'Abmelde-Link in einer Test-Mail ohne Sendung geklickt.',
-    'Unsubscribed' => 'Abbestellt',
+    'Unsubscribed' => 'Abgemeldet',
     'Updated' => 'Aktualisiert',
     'URL' => 'URL',
     'User group not found.' => 'Benutzergruppe nicht gefunden.',
