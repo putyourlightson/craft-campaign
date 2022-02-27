@@ -73,8 +73,8 @@
                 {% if mailingLists|length %}
                     <table id="mailinglists" class="data fullwidth collapsible">
                         <thead>
-                            <th scope="col">{{ "Title"|t('app') }}</th>
-                            <th scope="col">{{ "Subscription Status"|t('campaign') }}</th>
+                            <th scope="col">{{ 'Title'|t('app') }}</th>
+                            <th scope="col">{{ 'Subscription Status'|t('campaign') }}</th>
                             <td class="thin"></td>
                             <td class="thin"></td>
                         </thead>
@@ -108,7 +108,7 @@
     {% if contact.id %}
         <div class="meta read-only">
             <div class="data first">
-                <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+                <h5 class="heading">{{ 'Status'|t('app') }}</h5>
                 <div class="value flex">
                     <div class="flex-grow">
                         <span class="status {{ contact.status }}"></span> {{ contact.statuses[contact.status] }}

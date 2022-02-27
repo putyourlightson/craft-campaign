@@ -10,7 +10,7 @@
 
 {% set tabs = {
     'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
-    'preview': {'label': 'Preview'|t('campaign'), 'url': '#preview'},
+    'preview': {'label': 'Preview'|t('app'), 'url': '#preview'},
 } %}
 
 {% set mailingLists = sendout.mailingLists %}
@@ -103,7 +103,7 @@
 
     <div class="meta read-only">
         <div class="data first">
-            <h5 class="heading">{{ "Status"|t('campaign') }}</h5>
+            <h5 class="heading">{{ 'Status'|t('app') }}</h5>
             <div class="value flex">
                 <div class="flex-grow">
                     <span class="status {{ sendout.status }}"></span> {{ sendout.statuses[sendout.status] }}
