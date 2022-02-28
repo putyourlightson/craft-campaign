@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.23.0 - Unreleased
+## 1.23.0 - 2022-02-28
 ### Added
 - Added a German translation of the plugin ([#296](https://github.com/putyourlightson/craft-campaign/issues/296) ❤️@andreasbecker).
+
+### Changed
+- Fixed untranslated text around the plugin.
 
 ## 1.22.5 - 2022-02-26
 ### Changed
