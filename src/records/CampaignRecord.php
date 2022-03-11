@@ -5,14 +5,12 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveRecord;
 use craft\records\Element;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
- * CampaignRecord
- *
  * @property int $id
  * @property int $campaignTypeId
  * @property int $recipients
@@ -24,18 +22,12 @@ use yii\db\ActiveQuery;
  * @property int $complained
  * @property int $bounced
  * @property DateTime|null $dateClosed
- * @property ActiveQuery $campaignType
- * @property ActiveQuery $element
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read CampaignTypeRecord $campaignType
+ * @property-read Element $element
  */
-class CampaignRecord extends BaseActiveRecord
+class CampaignRecord extends ActiveRecord
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -46,8 +38,6 @@ class CampaignRecord extends BaseActiveRecord
 
     /**
      * Returns the campaign type.
-     *
-     * @return ActiveQuery
      */
     public function getCampaignType(): ActiveQuery
     {
@@ -56,8 +46,6 @@ class CampaignRecord extends BaseActiveRecord
 
     /**
      * Returns the related element.
-     *
-     * @return ActiveQuery
      */
     public function getElement(): ActiveQuery
     {

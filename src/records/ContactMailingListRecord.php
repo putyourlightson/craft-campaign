@@ -6,9 +6,9 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\db\Table;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
 
 /**
  * @property int $id
@@ -22,10 +22,11 @@ use putyourlightson\campaign\base\BaseActiveRecord;
  * @property DateTime|null $verified
  * @property string $sourceType
  * @property string|int|null $source
- * @property-read ActiveQuery $contact
- * @property-read ActiveQuery $mailingList
+ *
+ * @property-read ContactRecord|null $contact
+ * @property-read MailingListRecord|null $mailingList
  */
-class ContactMailingListRecord extends BaseActiveRecord
+class ContactMailingListRecord extends ActiveRecord
 {
     /**
      * @inheritdoc

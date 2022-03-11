@@ -5,43 +5,29 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveRecord;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
- * ImportRecord
- *
- * @property int         $id                    ID
- * @property int         $assetId               Asset ID
- * @property string      $fileName              File name
- * @property string      $filePath              File path
- * @property int         $userGroupId           User group ID
- * @property int         $userId                User ID
- * @property int         $mailingListId         Mailing list ID
- * @property bool        $forceSubscribe        Force subscribe
- * @property string      $emailFieldIndex       Email field index
- * @property mixed       $fieldIndexes          Field indexes
- * @property int         $added                 Added
- * @property int         $updated               Updated
- * @property int         $fails                 Fails
- * @property DateTime    $dateImported          Date imported
- *
- * @method static ActiveQuery find()
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property int $idID
+ * @property int $assetId Asset ID
+ * @property string $fileNameFile name
+ * @property string $filePathFile path
+ * @property int $userGroupId User group ID
+ * @property int $userIdUser ID
+ * @property int $mailingListId Mailing list ID
+ * @property bool $forceSubscribeForce
+ * @property string $emailFieldIndex Email field index
+ * @property mixed $fieldIndexesField
+ * @property int $added Added
+ * @property int $updated Updated
+ * @property int $fails Fails
+ * @property DateTime $dateImportedDate imported
  */
-class ImportRecord extends BaseActiveRecord
+class ImportRecord extends ActiveRecord
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
-     *
-     * @return string
      */
     public static function tableName(): string
     {

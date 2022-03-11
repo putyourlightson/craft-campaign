@@ -6,22 +6,11 @@
 namespace putyourlightson\campaign\fields;
 
 use Craft;
-
 use craft\fields\BaseRelationField;
 use putyourlightson\campaign\elements\CampaignElement;
 
-/**
- * CampaignsField
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignsField extends BaseRelationField
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

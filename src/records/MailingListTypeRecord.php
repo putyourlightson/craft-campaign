@@ -5,13 +5,11 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveRecord;
 use craft\records\Site;
-use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
- * MailingListTypeRecord
- *
  * @property int $id
  * @property int $siteId
  * @property int $fieldLayoutId
@@ -27,21 +25,13 @@ use yii\db\ActiveQuery;
  * @property string $unsubscribeVerificationEmailTemplate
  * @property string $unsubscribeSuccessTemplate
  * @property string $uid
- * @property ActiveQuery $site
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read Site|null $site
  */
-class MailingListTypeRecord extends BaseActiveRecord
+class MailingListTypeRecord extends ActiveRecord
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
-     *
-     * @return string
      */
     public static function tableName(): string
     {
@@ -50,8 +40,6 @@ class MailingListTypeRecord extends BaseActiveRecord
 
     /**
      * Returns the associated site.
-     *
-     * @return ActiveQuery
      */
     public function getSite(): ActiveQuery
     {

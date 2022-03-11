@@ -5,31 +5,17 @@
 
 namespace putyourlightson\campaign\records;
 
-use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
+use craft\db\ActiveRecord;
 
 /**
- * SegmentRecord
- *
  * @property int $id
  * @property string $segmentType
  * @property mixed $conditions
- *
- * @method static ActiveQuery find()
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
-class SegmentRecord extends BaseActiveRecord
+class SegmentRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {

@@ -6,13 +6,11 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\db\Table;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
 
 /**
- * ContactCampaignRecord
- *
  * @property int $id ID
  * @property int $contactId Contact ID
  * @property int $campaignId Campaign ID
@@ -27,18 +25,12 @@ use putyourlightson\campaign\base\BaseActiveRecord;
  * @property int $opens Opens
  * @property int $clicks Clicks
  * @property string|null $links Links
- * @property ActiveQuery $contact
- * @property ActiveQuery $campaign
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read ContactRecord $contact
+ * @property-read CampaignRecord $campaign
  */
-class ContactCampaignRecord extends BaseActiveRecord
+class ContactCampaignRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -64,13 +56,8 @@ class ContactCampaignRecord extends BaseActiveRecord
         return parent::find()->from(['subquery' => $subquery]);
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the related contact record.
-     *
-     * @return ActiveQuery
      */
     public function getContact(): ActiveQuery
     {
@@ -79,8 +66,6 @@ class ContactCampaignRecord extends BaseActiveRecord
 
     /**
      * Returns the related campaign record.
-     *
-     * @return ActiveQuery
      */
     public function getCampaign(): ActiveQuery
     {

@@ -26,8 +26,9 @@ use putyourlightson\campaign\base\BaseActiveRecord;
  * @property DateTime|null $complained Complained
  * @property DateTime|null $bounced Bounced
  * @property DateTime|null $blocked Blocked
- * @property-read ActiveQuery $element
- * @property-read ActiveQuery $user
+ *
+ * @property-read Element $element
+ * @property-read User $user
  */
 class ContactRecord extends BaseActiveRecord
 {
