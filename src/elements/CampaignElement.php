@@ -354,12 +354,12 @@ class CampaignElement extends Element
     /**
      * @var DateTime|null Date closed
      */
-    public ?DateTime $dateClosed;
+    public ?DateTime $dateClosed = null;
 
     /**
      * @var DateTime|null Last sent
      */
-    public ?DateTime $lastSent;
+    public ?DateTime $lastSent = null;
 
     /**
      * @var null|CampaignTypeModel Campaign type

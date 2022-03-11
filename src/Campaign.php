@@ -43,7 +43,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\fieldlayoutelements\contacts\EmailField;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailField;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
@@ -646,7 +646,7 @@ class Campaign extends Plugin
                 }
 
                 if ($layout->type === ContactElement::class) {
-                    $event->fields[] = EmailField::class;
+                    $event->fields[] = ContactEmailField::class;
                 }
             }
         );
