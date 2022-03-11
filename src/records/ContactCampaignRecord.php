@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveQuery;
 use craft\db\Table;
 use DateTime;
 use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
  * ContactCampaignRecord
@@ -52,7 +52,7 @@ class ContactCampaignRecord extends BaseActiveRecord
      */
     public static function find(): ActiveQuery
     {
-        // Create subquery to ensure only contacts and campaigns that are not deleted are returned
+        // Create a subquery to ensure only contacts and campaigns that are not deleted are returned
         $subquery = parent::find()
             ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
             ->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')

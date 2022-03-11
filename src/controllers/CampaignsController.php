@@ -32,9 +32,6 @@ use yii\web\ServerErrorHttpException;
  */
 class CampaignsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -112,7 +109,7 @@ class CampaignsController extends Controller
 
         // Get fields from first field layout tab
         $fieldLayoutTabs = $campaignType->getFieldLayout()->getTabs();
-        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
+        $fieldLayoutTab = $fieldLayoutTabs[0] ?? null;
         $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
 
         // Enable live preview?
@@ -154,15 +151,13 @@ class CampaignsController extends Controller
 
         $variables['actions'] = [];
 
-        switch ($campaign->getStatus()) {
-            case CampaignElement::STATUS_SENT:
-                $variables['actions'][0][] = [
-                    'action' => 'campaign/campaigns/close-campaign',
-                    'destructive' => 'true',
-                    'label' => Craft::t('campaign', 'Close this campaign'),
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
-                ];
-                break;
+        if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
+            $variables['actions'][0][] = [
+                'action' => 'campaign/campaigns/close-campaign',
+                'destructive' => 'true',
+                'label' => Craft::t('campaign', 'Close this campaign'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
+            ];
         }
 
         $variables['actions'][0][] = [
@@ -241,13 +236,9 @@ class CampaignsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
-     * @throws Exception
+     * Saves a campaign.
      */
-    public function actionSaveCampaign()
+    public function actionSaveCampaign(): ?Response
     {
         $this->requirePostRequest();
 
@@ -255,7 +246,7 @@ class CampaignsController extends Controller
         $request = Craft::$app->getRequest();
 
         // If this campaign should be duplicated then swap it for a duplicate
-        if ((bool)$request->getBodyParam('duplicate')) {
+        if ($request->getBodyParam('duplicate')) {
             try {
                 $campaign = Craft::$app->getElements()->duplicateElement($campaign);
             }
@@ -326,14 +317,9 @@ class CampaignsController extends Controller
     }
 
     /**
-     * Closes a campaign
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws NotFoundHttpException
+     * Closes a campaign.
      */
-    public function actionCloseCampaign()
+    public function actionCloseCampaign(): ?Response
     {
         $this->requirePostRequest();
 
@@ -379,13 +365,9 @@ class CampaignsController extends Controller
     }
 
     /**
-     * Deletes a campaign
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Deletes a campaign.
      */
-    public function actionDeleteCampaign()
+    public function actionDeleteCampaign(): ?Response
     {
         $this->requirePostRequest();
 
@@ -422,15 +404,8 @@ class CampaignsController extends Controller
         return $this->redirectToPostedUrl($campaign);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Gets a campaign or creates one if none supplied.
-     *
-     * @return CampaignElement
-     * @throws NotFoundHttpException
-     * @throws BadRequestHttpException
+     * Gets a campaign or creates one if none was supplied.
      */
     private function _getCampaign(): CampaignElement
     {
@@ -455,11 +430,6 @@ class CampaignsController extends Controller
 
     /**
      * Populates a campaign with post data.
-     *
-     * @param CampaignElement $campaign
-     *
-     * @return void
-     * @throws InvalidConfigException
      */
     private function _populateCampaign(CampaignElement $campaign)
     {

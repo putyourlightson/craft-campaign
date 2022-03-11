@@ -5,47 +5,45 @@
 
 namespace putyourlightson\campaign\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\actions\Delete;
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\helpers\UrlHelper;
+use craft\validators\DateTimeValidator;
 use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\helpers\NumberHelper;
-use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\models\CampaignTypeModel;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
-use craft\elements\actions\Delete;
-use craft\helpers\UrlHelper;
-use craft\validators\DateTimeValidator;
+use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
 use yii\base\InvalidConfigException;
 
 /**
- * CampaignElement
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property CampaignTypeModel $campaignType
- * @property float $clickThroughRate
- * @property string $reportUrl
+ * @property-read CampaignTypeModel $campaignType
+ * @property-read bool $isEditable
+ * @property-read int $clickThroughRate
+ * @property-read string $reportUrl
  */
 class CampaignElement extends Element
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_SENT = 'sent';
 
-    const STATUS_SENT = 'sent';
-    const STATUS_PENDING = 'pending';
-    const STATUS_CLOSED = 'closed';
+    /**
+     * @const string
+     */
+    public const STATUS_PENDING = 'pending';
 
-    // Static Methods
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_CLOSED = 'closed';
 
     /**
      * @inheritdoc
@@ -82,7 +80,7 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'campaign';
     }
@@ -141,9 +139,9 @@ class CampaignElement extends Element
     }
 
     /**
-     * @return CampaignElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): CampaignElementQuery
     {
         return new CampaignElementQuery(static::class);
     }
@@ -290,105 +288,73 @@ class CampaignElement extends Element
         return $attributes;
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null Campaign type ID
      */
-    public $campaignTypeId;
+    public ?int $campaignTypeId = null;
 
     /**
      * @var int Recipients
      */
-    public $recipients = 0;
+    public int $recipients = 0;
 
     /**
      * @var int Opened
      */
-    public $opened = 0;
+    public int $opened = 0;
 
     /**
      * @var int Clicked
      */
-    public $clicked = 0;
+    public int $clicked = 0;
 
     /**
      * @var int Opens
      */
-    public $opens = 0;
+    public int $opens = 0;
 
     /**
      * @var int Clicks
      */
-    public $clicks = 0;
+    public int $clicks = 0;
 
     /**
      * @var int Unsubscribed
      */
-    public $unsubscribed = 0;
+    public int $unsubscribed = 0;
 
     /**
      * @var int Complained
      */
-    public $complained = 0;
+    public int $complained = 0;
 
     /**
      * @var int Bounced
      */
-    public $bounced = 0;
+    public int $bounced = 0;
 
     /**
      * @var DateTime|null Date closed
      */
-    public $dateClosed;
+    public ?DateTime $dateClosed;
 
     /**
      * @var DateTime|null Last sent
      */
-    public $lastSent;
+    public ?DateTime $lastSent;
 
     /**
-     * @var CampaignTypeModel Campaign type
+     * @var null|CampaignTypeModel Campaign type
      */
-    private $_campaignType;
+    private ?CampaignTypeModel $_campaignType = null;
 
     /**
-     * @var string
+     * @var null|string
      */
-    private $_language;
-
-    // Public Methods
-    // =========================================================================
+    private ?string $_language = null;
 
     /**
      * @inheritdoc
-     */
-    public function datetimeAttributes(): array
-    {
-        $names = parent::datetimeAttributes();
-        $names[] = 'dateClosed';
-        $names[] = 'lastSent';
-
-        return $names;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'];
-        $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
-
-        return $rules;
-    }
-
-    /**
-     * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function getSupportedSites(): array
     {
@@ -397,18 +363,16 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
-    public function getUriFormat()
+    public function getUriFormat(): ?string
     {
         return $this->getCampaignType()->uriFormat;
     }
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
-    protected function route()
+    protected function route(): array|string|null
     {
         return [
             'templates/render', [
@@ -428,7 +392,6 @@ class CampaignElement extends Element
      * Returns the campaign's campaign type
      *
      * @return CampaignTypeModel
-     * @throws InvalidConfigException
      */
     public function getCampaignType(): CampaignTypeModel
     {
@@ -453,14 +416,6 @@ class CampaignElement extends Element
 
     /**
      * Returns the campaign's HTML body
-     *
-     * @param ContactElement|null $contact
-     * @param SendoutElement|null $sendout
-     * @param MailingListElement|null $mailingList
-     *
-     * @return string
-     * @throws Error
-     * @throws InvalidConfigException
      */
     public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
@@ -469,14 +424,6 @@ class CampaignElement extends Element
 
     /**
      * Returns the campaign's plaintext body
-     *
-     * @param ContactElement|null $contact
-     * @param SendoutElement|null $sendout
-     * @param MailingListElement|null $mailingList
-     *
-     * @return string
-     * @throws Error
-     * @throws InvalidConfigException
      */
     public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
@@ -485,10 +432,6 @@ class CampaignElement extends Element
 
     /**
      * Returns the campaign's rate
-     *
-     * @param string $field
-     *
-     * @return int
      */
     public function getRate(string $field): int
     {
@@ -497,8 +440,6 @@ class CampaignElement extends Element
 
     /**
      * Returns the campaign's click-through rate
-     *
-     * @return int
      */
     public function getClickThroughRate(): int
     {
@@ -508,7 +449,7 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         if (!$this->enabled || !$this->enabledForSite) {
             return self::STATUS_DISABLED;
@@ -535,47 +476,22 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/campaigns/'.$this->getCampaignType()->handle.'/'.$this->id);
     }
 
     /**
      * Returns the campaign's report URL
-     *
-     * @return string
      */
     public function getReportUrl(): string
     {
         return UrlHelper::cpUrl('campaign/reports/campaigns/'.$this->id);
     }
 
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
-     */
-    protected function tableAttributeHtml(string $attribute): string
-    {
-        switch ($attribute) {
-            case 'campaignType':
-                return $this->getCampaignType()->name;
-            case 'clickThroughRate':
-                return $this->getClickThroughRate().'%';
-        }
-
-        return parent::tableAttributeHtml($attribute);
-    }
-
-    /**
-     * @inheritdoc
-     * @return string
-     * @throws Error
-     * @throws InvalidConfigException
      */
     public function getEditorHtml(): string
     {
@@ -592,13 +508,10 @@ class CampaignElement extends Element
         return $html;
     }
 
-    // Events
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             $campaignRecord = new CampaignRecord();
@@ -627,20 +540,31 @@ class CampaignElement extends Element
         parent::afterSave($isNew);
     }
 
-    // Private Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'],
+            [['dateClosed', 'lastSent'], DateTimeValidator::class],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tableAttributeHtml(string $attribute): string
+    {
+        return match ($attribute) {
+            'campaignType' => $this->getCampaignType()->name,
+            'clickThroughRate' => $this->getClickThroughRate() . '%',
+            default => parent::tableAttributeHtml($attribute),
+        };
+    }
 
     /**
      * Returns the campaign's body
-     *
-     * @param string|null $templateType
-     * @param ContactElement|null $contact
-     * @param SendoutElement|null $sendout
-     * @param MailingListElement|null $mailingList
-     *
-     * @return string
-     * @throws InvalidConfigException
-     * @throws Error
      */
     private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
@@ -704,8 +628,6 @@ class CampaignElement extends Element
 
     /**
      * Returns the campaign's language
-     *
-     * @return string
      */
     private function _getLanguage(): string
     {

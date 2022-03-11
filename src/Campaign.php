@@ -31,6 +31,7 @@ use craft\services\ProjectConfig;
 use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
+use craft\web\Response;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use putyourlightson\campaign\assets\UniversalAsset;
@@ -71,12 +72,6 @@ use yii\base\Event;
 use yii\web\ForbiddenHttpException;
 
 /**
- * Campaign plugin
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
  * @property CampaignsService $campaigns
  * @property CampaignTypesService $campaignTypes
  * @property ContactsService $contacts
@@ -104,20 +99,20 @@ use yii\web\ForbiddenHttpException;
  */
 class Campaign extends Plugin
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const EDITION_LITE = 'lite';
 
-    // Edition constants
-    const EDITION_LITE = 'lite';
-    const EDITION_PRO = 'pro';
-
-    // Static
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const EDITION_PRO = 'pro';
 
     /**
      * @var Campaign
      */
-    public static $plugin;
+    public static Campaign $plugin;
 
     /**
      * @inheritdoc
@@ -130,8 +125,25 @@ class Campaign extends Plugin
         ];
     }
 
-    // Public Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     */
+    public bool $hasCpSettings = true;
+
+    /**
+     * @inheritdoc
+     */
+    public bool $hasCpSection = true;
+
+    /**
+     * @inheritdoc
+     */
+    public string $schemaVersion = '1.21.0';
+
+    /**
+     * @inheritdoc
+     */
+    public string $minVersionRequired = '1.21.0';
 
     /**
      * @inheritdoc
@@ -205,7 +217,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $cpNavItem = parent::getCpNavItem();
         $cpNavItem['subnav'] = [];
@@ -248,7 +260,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettingsResponse()
+    public function getSettingsResponse(): Response
     {
         $url = UrlHelper::cpUrl('campaign/settings');
 
@@ -335,9 +347,6 @@ class Campaign extends Plugin
         LogToFile::info($message, 'campaign');
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -350,8 +359,8 @@ class Campaign extends Plugin
         $settings->apiKey = StringHelper::randomString(16);
         $settings->fromNamesEmails = [
             [
-                Craft::parseEnv($mailSettings->fromName),
-                Craft::parseEnv($mailSettings->fromEmail),
+                App::parseEnv($mailSettings->fromName),
+                App::parseEnv($mailSettings->fromEmail),
                 '',
                 Craft::$app->getSites()->getPrimarySite()->id,
             ]
@@ -459,9 +468,6 @@ class Campaign extends Plugin
 
         return $permissions;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Registers components.

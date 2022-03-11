@@ -12,41 +12,30 @@ use Craft;
 use craft\base\Model;
 
 /**
- * ExportModel
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property MailingListElement[] $mailingLists
+ * @property-read MailingListElement[] $mailingLists
  */
 class ExportModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string File path
      */
-    public $filePath;
+    public string $filePath;
 
     /**
      * @var array|null Mailing list IDs
      */
-    public $mailingListIds;
+    public ?array $mailingListIds;
 
     /**
      * @var array|null Fields
      */
-    public $fields;
+    public ?array $fields;
 
     /**
      * @var bool|null
      */
-    public $subscribedDate;
-
-    // Public Methods
-    // =========================================================================
+    public ?bool $subscribedDate;
 
     /**
      * @inheritdoc
@@ -64,7 +53,7 @@ class ExportModel extends Model
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['filePath', 'mailingListIds'], 'required'],
@@ -73,7 +62,7 @@ class ExportModel extends Model
     }
 
     /**
-     * Returns the mailing lists
+     * Returns the mailing lists.
      *
      * @return MailingListElement[]
      */

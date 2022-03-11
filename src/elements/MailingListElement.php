@@ -19,35 +19,25 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
 use craft\helpers\UrlHelper;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 /**
- * MailingListElement
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $unsubscribedCount
- * @property int $complainedCount
- * @property ContactElement[] $bouncedContacts
- * @property ContactElement[] $unsubscribedContacts
- * @property int $bouncedCount
- * @property string $reportUrl
- * @property int $pendingCount
- * @property ContactElement[] $pendingContacts
- * @property int $subscribedCount
- * @property MailingListTypeModel $mailingListType
- * @property ContactElement[] $complainedContacts
- * @property UserGroup|null $syncedUserGroup
- * @property ContactElement[] $subscribedContacts
+ * @property-read int $unsubscribedCount
+ * @property-read int $complainedCount
+ * @property-read ContactElement[] $bouncedContacts
+ * @property-read ContactElement[] $unsubscribedContacts
+ * @property-read int $bouncedCount
+ * @property-read string $reportUrl
+ * @property-read null|UserGroup $syncedUserGroup
+ * @property-read bool $isEditable
+ * @property-read int $subscribedCount
+ * @property-read MailingListTypeModel $mailingListType
+ * @property-read ContactElement[] $complainedContacts
+ * @property-read ContactElement[] $subscribedContacts
  */
 class MailingListElement extends Element
 {
-    // Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -83,7 +73,7 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'mailinglist';
     }
@@ -220,7 +210,7 @@ class MailingListElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $attributes = [
+        return [
             'title' => ['label' => Craft::t('app', 'Title')],
             'mailingListType' => ['label' => Craft::t('campaign', 'Mailing List Type')],
             'subscribed' => ['label' => Craft::t('campaign', 'Subscribed')],
@@ -232,8 +222,6 @@ class MailingListElement extends Element
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
-
-        return $attributes;
     }
 
     /**
@@ -252,37 +240,26 @@ class MailingListElement extends Element
         return $attributes;
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null Mailing list type ID
      */
-    public $mailingListTypeId;
+    public ?int $mailingListTypeId;
 
     /**
      * @var int|null Synced user group ID
      */
-    public $syncedUserGroupId;
-
-    // Public Methods
-    // =========================================================================
+    public ?int $syncedUserGroupId;
 
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-
-        $rules[] = [['mailingListTypeId'], 'integer'];
-
-        return $rules;
+        return [['mailingListTypeId'], 'integer'];
     }
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     public function getSupportedSites(): array
     {
@@ -290,9 +267,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the number of subscribed contacts
-     *
-     * @return int
+     * Returns the number of subscribed contacts.
      */
     public function getSubscribedCount(): int
     {
@@ -300,9 +275,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the number of unsubscribed contacts
-     *
-     * @return int
+     * Returns the number of unsubscribed contacts.
      */
     public function getUnsubscribedCount(): int
     {
@@ -310,9 +283,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the number of complained contacts
-     *
-     * @return int
+     * Returns the number of complained contacts.
      */
     public function getComplainedCount(): int
     {
@@ -320,9 +291,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the number of bounced contacts
-     *
-     * @return int
+     * Returns the number of bounced contacts.
      */
     public function getBouncedCount(): int
     {
@@ -330,7 +299,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the subscribed contacts
+     * Returns the subscribed contacts.
      *
      * @return ContactElement[]
      */
@@ -340,7 +309,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the subscribed contacts
+     * Returns the subscribed contacts.
      *
      * @return ContactElement[]
      */
@@ -350,7 +319,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the complained contacts
+     * Returns the complained contacts.
      *
      * @return ContactElement[]
      */
@@ -360,7 +329,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the bounced contacts
+     * Returns the bounced contacts.
      *
      * @return ContactElement[]
      */
@@ -370,10 +339,7 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the mailing list's mailing list type
-     *
-     * @return MailingListTypeModel
-     * @throws InvalidConfigException if [[mailingListTypeId]] is missing or invalid
+     * Returns the mailing list's mailing list type.
      */
     public function getMailingListType(): MailingListTypeModel
     {
@@ -391,11 +357,9 @@ class MailingListElement extends Element
     }
 
     /**
-     * Returns the mailing list's synced user group
-     *
-     * @return UserGroup|null
+     * Returns the mailing list's synced user group.
      */
-    public function getSyncedUserGroup()
+    public function getSyncedUserGroup(): ?UserGroup
     {
         if ($this->syncedUserGroupId === null) {
             return null;
@@ -414,53 +378,37 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/mailinglists/'.$this->getMailingListType()->handle.'/'.$this->id);
     }
 
     /**
-     * Returns the mailing list's report URL
-     *
-     * @return string
+     * Returns the mailing list's report URL.
      */
     public function getReportUrl(): string
     {
         return UrlHelper::cpUrl('campaign/reports/mailinglists/'.$this->id);
     }
 
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
      */
     protected function tableAttributeHtml(string $attribute): string
     {
-        switch ($attribute) {
-            case 'mailingListType':
-                return $this->getMailingListType()->name;
-            case 'subscribed':
-                return (string)$this->getSubscribedCount();
-            case 'unsubscribed':
-                return (string)$this->getUnsubscribedCount();
-            case 'complained':
-                return (string)$this->getComplainedCount();
-            case 'bounced':
-                return (string)$this->getBouncedCount();
-        }
-
-        return parent::tableAttributeHtml($attribute);
+        return match ($attribute) {
+            'mailingListType' => $this->getMailingListType()->name,
+            'subscribed' => (string)$this->getSubscribedCount(),
+            'unsubscribed' => (string)$this->getUnsubscribedCount(),
+            'complained' => (string)$this->getComplainedCount(),
+            'bounced' => (string)$this->getBouncedCount(),
+            default => parent::tableAttributeHtml($attribute),
+        };
     }
 
     /**
      * @inheritdoc
-     * @return string
-     * @throws InvalidConfigException
-     * @throws Exception
      */
     public function getEditorHtml(): string
     {
@@ -477,13 +425,10 @@ class MailingListElement extends Element
         return $html;
     }
 
-    // Events
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             $mailingListRecord = new MailingListRecord();
@@ -504,15 +449,8 @@ class MailingListElement extends Element
         parent::afterSave($isNew);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the number of contacts in this mailing list
-     *
-     * @param string|null $subscriptionStatus
-     *
-     * @return int
+     * Returns the number of contacts in this mailing list.
      */
     private function _getContactCount(string $subscriptionStatus = null): int
     {
@@ -524,17 +462,13 @@ class MailingListElement extends Element
             $condition['subscriptionStatus'] = $subscriptionStatus;
         }
 
-        $count = ContactMailingListRecord::find()
+        return ContactMailingListRecord::find()
             ->where($condition)
             ->count();
-
-        return $count;
     }
 
     /**
-     * Returns the contacts in this mailing list by subscription status
-     *
-     * @param string $subscriptionStatus
+     * Returns the contacts in this mailing list by subscription status.
      *
      * @return ContactElement[]
      */
@@ -548,8 +482,6 @@ class MailingListElement extends Element
             ])
             ->column();
 
-        $contacts = Campaign::$plugin->contacts->getContactsByIds($contactIds);
-
-        return $contacts;
+        return Campaign::$plugin->contacts->getContactsByIds($contactIds);
     }
 }

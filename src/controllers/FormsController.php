@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\errors\MissingComponentException;
+use craft\helpers\App;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -13,46 +13,22 @@ use putyourlightson\campaign\helpers\RecaptchaHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
-use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * FormController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
- */
 class FormsController extends BaseMessageController
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = true;
-
-    // Public Methods
-    // =========================================================================
+    protected int|bool|array $allowAnonymous = true;
 
     /**
-     * Subscribes the provided email to a mailing list
-     *
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
+     * Subscribes the provided email to a mailing list.
      */
-    public function actionSubscribe()
+    public function actionSubscribe(): ?Response
     {
         $this->requirePostRequest();
         $this->_validateRecaptcha();
@@ -171,13 +147,9 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Unsubscribes the provided email from a mailing list
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Unsubscribes the provided email from a mailing list.
      */
-    public function actionUnsubscribe()
+    public function actionUnsubscribe(): ?Response
     {
         $this->requirePostRequest();
         $this->_validateRecaptcha();
@@ -217,14 +189,9 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Updates a contact
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws MissingComponentException
+     * Updates a contact.
      */
-    public function actionUpdateContact()
+    public function actionUpdateContact(): ?Response
     {
         $this->requirePostRequest();
         $this->_validateRecaptcha();
@@ -276,12 +243,7 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Verifies and subscribes a pending contact to a mailing list
-     *
-     * @return Response
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Verifies and subscribes a pending contact to a mailing list.
      */
     public function actionVerifySubscribe(): Response
     {
@@ -360,13 +322,9 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Verifies and unsubscribes the provided contact from a mailing list
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Verifies and unsubscribes the provided contact from a mailing list.
      */
-    public function actionVerifyUnsubscribe()
+    public function actionVerifyUnsubscribe(): ?Response
     {
         $request = Craft::$app->getRequest();
 
@@ -405,13 +363,8 @@ class FormsController extends BaseMessageController
         ]);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Validates reCAPTCHA if enabled
-     *
-     * @throws ForbiddenHttpException
+     * Validates reCAPTCHA if enabled.
      */
     private function _validateRecaptcha()
     {
@@ -422,7 +375,7 @@ class FormsController extends BaseMessageController
             $response = $request->getParam('g-recaptcha-response');
 
             if ($response === null) {
-                throw new ForbiddenHttpException(Craft::parseEnv(Campaign::$plugin->getSettings()->reCaptchaErrorMessage));
+                throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->getSettings()->reCaptchaErrorMessage));
             }
 
             RecaptchaHelper::validateRecaptcha($response, $request->getUserIP());
@@ -430,11 +383,9 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Gets contact by CID, verified by UID
-     *
-     * @return ContactElement|null
+     * Gets contact by CID, verified by UID.
      */
-    private function _getVerifiedContact()
+    private function _getVerifiedContact(): ?ContactElement
     {
         $request = Craft::$app->getRequest();
 

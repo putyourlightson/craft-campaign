@@ -17,29 +17,13 @@ use putyourlightson\campaign\records\LinkRecord;
 
 use craft\base\Component;
 use craft\mail\Message;
-use Throwable;
-use yii\base\Exception;
 
-/**
- * CampaignsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignsService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns a campaign by ID
-     *
-     * @param int $campaignId
-     *
-     * @return CampaignElement|null
+     * Returns a campaign by ID.
      */
-    public function getCampaignById(int $campaignId)
+    public function getCampaignById(int $campaignId): ?CampaignElement
     {
         return CampaignElement::find()
             ->id($campaignId)
@@ -49,14 +33,7 @@ class CampaignsService extends Component
     }
 
     /**
-     * Adds a contact interaction
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @param string         $interaction
-     * @param LinkRecord     $linkRecord
-     *
-     * @throws Throwable
+     * Adds a contact interaction.
      */
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
     {
@@ -132,13 +109,7 @@ class CampaignsService extends Component
     }
 
     /**
-     * Sends a test
-     *
-     * @param CampaignElement $campaign
-     * @param ContactElement $contact
-     *
-     * @return bool Whether the test was sent successfully
-     * @throws Exception
+     * Sends a test.
      */
     public function sendTest(CampaignElement $campaign, ContactElement $contact): bool
     {

@@ -11,21 +11,13 @@ use Craft;
 use craft\web\Controller;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
- * SyncController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class SyncController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,9 +33,7 @@ class SyncController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     * @param array|null $errors
-     * @return Response
+     * Main sync page.
      */
     public function actionIndex(string $siteHandle = null, array $errors = []): Response
     {
@@ -66,12 +56,9 @@ class SyncController extends Controller
     }
 
     /**
-     * Adds a synced user group
-     *
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
+     * Adds a synced user group.
      */
-    public function actionAddSyncedMailingList()
+    public function actionAddSyncedMailingList(): ?Response
     {
         $this->requirePermission('campaign:sync');
 
@@ -127,10 +114,7 @@ class SyncController extends Controller
     }
 
     /**
-     * Removes a synced user group
-     *
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
+     * Removes a synced user group.
      */
     public function actionRemoveSyncedMailingList(): Response
     {

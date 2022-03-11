@@ -11,24 +11,14 @@ use Craft;
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
-use Throwable;
 
 /**
- * DeleteSendouts
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property void   $triggerHtml
- * @property string $triggerLabel
- * @property mixed  $confirmationMessage
+ * @property-read null|string $triggerHtml
+ * @property-read string $triggerLabel
+ * @property-read null|string $confirmationMessage
  */
 class DeleteSendouts extends ElementAction
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -48,7 +38,7 @@ class DeleteSendouts extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getConfirmationMessage()
+    public function getConfirmationMessage(): ?string
     {
         return Craft::t('campaign', 'Are you sure you want to delete the selected sendouts?');
     }
@@ -56,7 +46,7 @@ class DeleteSendouts extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getTriggerHtml()
+    public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
 
@@ -64,7 +54,7 @@ class DeleteSendouts extends ElementAction
 (function()
 {
     var trigger = new Craft.ElementActionTrigger({
-        type: {$type},
+        type: $type,
         batch: true,
         validateSelection: function(\$selectedItems)
         {
@@ -89,11 +79,6 @@ EOD;
 
     /**
      * Performs the action on any elements that match the given criteria.
-     *
-     * @param ElementQueryInterface $query The element query defining which elements the action should affect.
-     *
-     * @return bool Whether the action was performed successfully.
-     * @throws Throwable
      */
     public function performAction(ElementQueryInterface $query): bool
     {

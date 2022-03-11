@@ -9,35 +9,25 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\base\Event;
 
-/**
- * SubscribeContactEvent
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SubscribeContactEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
-    public $contact;
+    public ContactElement $contact;
 
     /**
      * @var MailingListElement
      */
-    public $mailingList;
+    public MailingListElement $mailingList;
 
     /**
      * @var string
      */
-    public $sourceType;
+    public string $sourceType;
 
     /**
      * @var string
      */
-    public $source;
+    public string $source;
 }

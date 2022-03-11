@@ -6,38 +6,24 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
+use craft\helpers\App;
 use craft\helpers\Json;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use yii\web\ForbiddenHttpException;
 
 /**
- * RecaptchaHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.8.0
+ * @since 1.8.0
  */
 class RecaptchaHelper
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @const string
      */
-    const RECAPTCHA_ACTION = 'homepage';
-
-    // Static Methods
-    // =========================================================================
+    public const RECAPTCHA_ACTION = 'homepage';
 
     /**
-     * Validate reCAPTCHA
-     *
-     * @param string $recaptchaResponse
-     * @param string $ip
-     *
-     * @throws ForbiddenHttpException
+     * Validates reCAPTCHA.
      */
     public static function validateRecaptcha(string $recaptchaResponse, string $ip)
     {
@@ -53,7 +39,7 @@ class RecaptchaHelper
         try {
             $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
                 'form_params' => [
-                    'secret' => Craft::parseEnv($settings->reCaptchaSecretKey),
+                    'secret' => App::parseEnv($settings->reCaptchaSecretKey),
                     'response' => $recaptchaResponse,
                     'remoteip' => $ip,
                 ]
@@ -63,14 +49,15 @@ class RecaptchaHelper
                 $result = Json::decodeIfJson($response->getBody());
             }
         }
-        catch (ConnectException $e) {}
+        catch (ConnectException) {
+        }
 
         if (empty($result['success'])) {
-            throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
+            throw new ForbiddenHttpException(App::parseEnv($settings->reCaptchaErrorMessage));
         }
 
         if (!empty($result['action']) && $result['action'] != self::RECAPTCHA_ACTION) {
-            throw new ForbiddenHttpException(Craft::parseEnv($settings->reCaptchaErrorMessage));
+            throw new ForbiddenHttpException(App::parseEnv($settings->reCaptchaErrorMessage));
         }
     }
 }

@@ -9,30 +9,16 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\helpers\SegmentHelper;
 use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
-/**
- * SegmentsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SegmentsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -48,13 +34,9 @@ class SegmentsController extends Controller
     }
 
     /**
-     * @param string $segmentType The segment type
-     * @param int|null $segmentId The segment’s ID, if editing an existing segment.
-     * @param string|null $siteHandle
-     * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
+     * Main edit page.
      *
-     * @return Response
-     * @throws NotFoundHttpException if the requested segment is not found
+     * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
      */
     public function actionEditSegment(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
     {
@@ -129,15 +111,9 @@ class SegmentsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException if reasons
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
+     * Saves a segment.
      */
-    public function actionSaveSegment()
+    public function actionSaveSegment(): ?Response
     {
         $this->requirePostRequest();
 
@@ -157,7 +133,7 @@ class SegmentsController extends Controller
         }
 
         // If this segment should be duplicated then swap it for a duplicate
-        if ((bool)$request->getBodyParam('duplicate')) {
+        if ($request->getBodyParam('duplicate')) {
             try {
                 /** @var SegmentElement $segment */
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
@@ -227,14 +203,9 @@ class SegmentsController extends Controller
     }
 
     /**
-     * Deletes a segment
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Deletes a segment.
      */
-    public function actionDeleteSegment()
+    public function actionDeleteSegment(): ?Response
     {
         $this->requirePostRequest();
 

@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
+use craft\helpers\App;
 use craft\helpers\Json;
 use DateTime;
 use DeviceDetector\DeviceDetector;
@@ -15,34 +16,22 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactRecord;
 
 /**
- * ContactActivityHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
 class ContactActivityHelper
 {
-    // Properties
-    // =========================================================================
+    /**
+     * @var array|null
+     */
+    private static ?array $_geoIp;
 
     /**
      * @var array|null
      */
-    private static $_geoIp;
+    private static ?array $_device;
 
     /**
-     * @var array|null
-     */
-    private static $_device;
-
-    // Static Methods
-    // =========================================================================
-
-    /**
-     * Update contact activity
-     *
-     * @param ContactElement $contact
+     * Updates contact activity.
      */
     public static function updateContactActivity(ContactElement $contact)
     {
@@ -75,13 +64,9 @@ class ContactActivityHelper
     }
 
     /**
-     * Gets geolocation based on IP address
-     *
-     * @param int $timeout
-     *
-     * @return array|null
+     * Gets geolocation based on IP address.
      */
-    public static function getGeoIp(int $timeout = 5)
+    public static function getGeoIp(int $timeout = 5): ?array
     {
         if (self::$_geoIp !== null) {
             return self::$_geoIp;
@@ -98,15 +83,17 @@ class ContactActivityHelper
 
         try {
             $ip = Craft::$app->getRequest()->getUserIP();
-            $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->ipstackApiKey);
+            $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->ipstackApiKey);
 
+            /** @noinspection HttpUrlsUsage */
             $response = $client->get('http://api.ipstack.com/'.$ip.'?access_key='.$apiKey);
 
             if ($response->getStatusCode() == 200) {
                 $geoIp = Json::decodeIfJson($response->getBody());
             }
         }
-        catch (ConnectException $e) {}
+        catch (ConnectException) {
+        }
 
         // If country is empty then return null
         if (empty($geoIp['country_code'])) {
@@ -116,7 +103,7 @@ class ContactActivityHelper
         self::$_geoIp = [
             'continentCode' => $geoIp['continent_code'] ?? '',
             'continentName' => $geoIp['continent_name'] ?? '',
-            'countryCode' => $geoIp['country_code'] ?? '',
+            'countryCode' => $geoIp['country_code'],
             'countryName' => $geoIp['country_name'] ?? '',
             'regionCode' => $geoIp['region_code'] ?? '',
             'regionName' => $geoIp['region_name'] ?? '',
@@ -129,11 +116,9 @@ class ContactActivityHelper
     }
 
     /**
-     * Gets device based on user agent provided it is not a bot
-     *
-     * @return array|null
+     * Gets device based on user agent provided it is not a bot.
      */
-    public static function getDevice()
+    public static function getDevice(): ?array
     {
         if (self::$_device !== null) {
             return self::$_device;

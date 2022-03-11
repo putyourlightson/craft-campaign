@@ -15,21 +15,10 @@ use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * ExportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ExportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,9 +31,7 @@ class ExportsController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     * @param ExportModel|null $export The export, if there were any validation errors.
-     * @return Response
+     * Main export page.
      */
     public function actionIndex(string $siteHandle = null, ExportModel $export = null): Response
     {
@@ -72,14 +59,9 @@ class ExportsController extends Controller
     }
 
     /**
-     * Exports a file
-     *
-     * @return Response|null
-     * @throws Exception
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Exports a file.
      */
-    public function actionExportFile()
+    public function actionExportFile(): ?Response
     {
         $this->requirePostRequest();
 

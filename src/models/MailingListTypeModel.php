@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\base\Model;
 use craft\models\FieldLayout;
 use craft\models\Site;
 use craft\validators\SiteIdValidator;
-use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
@@ -19,108 +19,93 @@ use craft\validators\HandleValidator;
 use craft\validators\UniqueValidator;
 
 /**
- * MailingListTypeModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
  * @mixin FieldLayoutBehavior
  *
- * @property null|Site $site
- * @property FieldLayout $fieldLayout
- * @property string $cpEditUrl
+ * @property-read null|Site $site
+ * @property-read string $cpEditUrl
  *
  * @method FieldLayout getFieldLayout()
  * @method setFieldLayout(FieldLayout $fieldLayout)
  */
-class MailingListTypeModel extends BaseModel
+class MailingListTypeModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id;
 
     /**
      * @var int|null Site ID
      */
-    public $siteId;
+    public ?int $siteId;
 
     /**
      * @var int|null Field layout ID
      */
-    public $fieldLayoutId;
+    public ?int $fieldLayoutId;
 
     /**
      * @var string|null Name
      */
-    public $name;
+    public ?string $name;
 
     /**
      * @var string|null Handle
      */
-    public $handle;
+    public ?string $handle;
 
     /**
      * @var bool Subscribe verification required
      */
-    public $subscribeVerificationRequired = true;
+    public bool $subscribeVerificationRequired = true;
 
     /**
      * @var string|null Subscribe verification email subject
      */
-    public $subscribeVerificationEmailSubject;
+    public ?string $subscribeVerificationEmailSubject;
 
     /**
      * @var string|null Subscribe verification email template
      */
-    public $subscribeVerificationEmailTemplate;
+    public ?string $subscribeVerificationEmailTemplate;
 
     /**
      * @var string|null Subscribe verification success template
      */
-    public $subscribeVerificationSuccessTemplate;
+    public ?string $subscribeVerificationSuccessTemplate;
 
     /**
      * @var string|null Subscribe success template
      */
-    public $subscribeSuccessTemplate;
+    public ?string $subscribeSuccessTemplate;
 
     /**
      * @var bool Unsubscribe form allowed
      */
-    public $unsubscribeFormAllowed = false;
+    public bool $unsubscribeFormAllowed = false;
 
     /**
      * @var string|null Unsubscribe verification email subject
      */
-    public $unsubscribeVerificationEmailSubject;
+    public ?string $unsubscribeVerificationEmailSubject;
 
     /**
      * @var string|null Unsubscribe verification email template
      */
-    public $unsubscribeVerificationEmailTemplate;
+    public ?string $unsubscribeVerificationEmailTemplate;
 
     /**
      * @var string|null Unsubscribe success template
      */
-    public $unsubscribeSuccessTemplate;
+    public ?string $unsubscribeSuccessTemplate;
 
     /**
      * @var string|null UID
      */
-    public $uid;
-
-    // Public Methods
-    // =========================================================================
+    public ?string $uid;
 
     /**
-     * Use the handle as the string representation.
-     *
-     * @return string
+     * Returns the handle as the string representation.
      */
     public function __toString(): string
     {
@@ -130,7 +115,7 @@ class MailingListTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
+    protected function defineBehaviors(): array
     {
         return [
             'fieldLayout' => [
@@ -143,7 +128,7 @@ class MailingListTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['id', 'siteId', 'fieldLayoutId'], 'integer'],
@@ -158,8 +143,6 @@ class MailingListTypeModel extends BaseModel
 
     /**
      * Returns the CP edit URL.
-     *
-     * @return string
      */
     public function getCpEditUrl(): string
     {
@@ -168,10 +151,8 @@ class MailingListTypeModel extends BaseModel
 
     /**
      * Returns the site.
-     *
-     * @return Site|null
      */
-    public function getSite()
+    public function getSite(): ?Site
     {
         if ($this->siteId === null) {
             return Craft::$app->getSites()->getPrimarySite();

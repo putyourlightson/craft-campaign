@@ -6,7 +6,8 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
+use craft\base\Element;
+use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use craft\web\View;
@@ -19,41 +20,19 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
-use Throwable;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * SendoutsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SendoutsController extends Controller
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['queue-pending-sendouts'];
-
-    // Public Methods
-    // =========================================================================
+    protected int|bool|array $allowAnonymous = ['queue-pending-sendouts'];
 
     /**
-     * Queues pending sendouts
-     *
-     * @return Response
-     * @throws Exception
-     * @throws ForbiddenHttpException
-     * @throws Throwable
+     * Queues pending sendouts.
      */
     public function actionQueuePendingSendouts(): Response
     {
@@ -66,7 +45,7 @@ class SendoutsController extends Controller
         else {
             // Verify API key
             $key = $request->getParam('key');
-            $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
+            $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
             if ($key === null || empty($apiKey) || $key != $apiKey) {
                 throw new ForbiddenHttpException('Unauthorised access.');
@@ -98,9 +77,7 @@ class SendoutsController extends Controller
     }
 
     /**
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Returns the pending recipient count.
      */
     public function actionGetPendingRecipientCount(): Response
     {
@@ -114,11 +91,7 @@ class SendoutsController extends Controller
     }
 
     /**
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws InvalidConfigException
+     * Returns the HTML body.
      */
     public function actionGetHtmlBody(): Response
     {
@@ -137,14 +110,7 @@ class SendoutsController extends Controller
     }
 
     /**
-     * @param string $sendoutType The sendout type
-     * @param int|null $sendoutId The sendout’s ID, if editing an existing sendout.
-     * @param string|null $siteHandle The site handle, if specified.
-     * @param SendoutElement|null $sendout The sendout being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException
-     * @throws ForbiddenHttpException
+     * Edit the sendout.
      */
     public function actionEditSendout(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
     {
@@ -230,7 +196,7 @@ class SendoutsController extends Controller
         $variables['mailingListElementType'] = MailingListElement::class;
         $variables['mailingListElementCriteria'] = [
             'siteId' => $sendout->site->id,
-            'status' => MailingListElement::STATUS_ENABLED,
+            'status' => Element::STATUS_ENABLED,
         ];
 
         if (Campaign::$plugin->getIsPro()) {
@@ -238,7 +204,7 @@ class SendoutsController extends Controller
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
                 'siteId' => $sendout->site->id,
-                'status' => SegmentElement::STATUS_ENABLED,
+                'status' => Element::STATUS_ENABLED,
             ];
         }
 
@@ -325,15 +291,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * @return Response|null
-     *
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
+     * Saves the sendout.
      */
-    public function actionSaveSendout()
+    public function actionSaveSendout(): ?Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');
@@ -430,16 +390,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * @return Response|null
-     *
-     * @throws ForbiddenHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
+     * Sends the sendout.
      */
-    public function actionSendSendout()
+    public function actionSendSendout(): ?Response
     {
         // Require permission to send
         $this->requirePermission('campaign:sendSendouts');
@@ -488,15 +441,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * Sends a test
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws NotFoundHttpException
+     * Sends a test.
      */
-    public function actionSendTest(): Response
+    public function actionSendTest(): ?Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -521,15 +468,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * Pauses a sendout
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Pauses a sendout.
      */
-    public function actionPauseSendout()
+    public function actionPauseSendout(): ?Response
     {
         $this->requirePostRequest();
 
@@ -550,15 +491,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * Cancels a sendout
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Cancels a sendout.
      */
-    public function actionCancelSendout()
+    public function actionCancelSendout(): ?Response
     {
         $this->requirePostRequest();
 
@@ -579,14 +514,9 @@ class SendoutsController extends Controller
     }
 
     /**
-     * Deletes a sendout
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Deletes a sendout.
      */
-    public function actionDeleteSendout()
+    public function actionDeleteSendout(): ?Response
     {
         $this->requirePostRequest();
 
@@ -606,16 +536,8 @@ class SendoutsController extends Controller
         return $this->redirectToPostedUrl();
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Gets a sendout from a param ID
-     *
-     * @return SendoutElement
-     *
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Gets a sendout from a param ID.
      */
     private function _getSendoutFromParamId(): SendoutElement
     {

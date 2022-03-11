@@ -12,24 +12,12 @@ use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
-/**
- * MailingListsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class MailingListsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,12 +30,11 @@ class MailingListsController extends Controller
     }
 
     /**
+     * Main edit page.
+     *
      * @param string                  $mailingListTypeHandle The mailing list type’s handle
      * @param int|null                $mailingListId         The mailing list’s ID, if editing an existing mailingList.
      * @param MailingListElement|null $mailingList           The mailing list being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException if the requested mailing list is not found
      */
     public function actionEditMailingList(string $mailingListTypeHandle, int $mailingListId = null, MailingListElement $mailingList = null): Response
     {
@@ -107,7 +94,7 @@ class MailingListsController extends Controller
 
         // Add fields from first field layout tab
         $fieldLayoutTabs = $mailingListType->getFieldLayout()->getTabs();
-        $fieldLayoutTab = isset($fieldLayoutTabs[0]) ? $fieldLayoutTabs[0] : null;
+        $fieldLayoutTab = $fieldLayoutTabs[0] ?? null;
         $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
 
         // Get the settings
@@ -123,13 +110,9 @@ class MailingListsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws Exception
-     * @throws BadRequestHttpException
+     * Saves a mailing list.
      */
-    public function actionSaveMailingList()
+    public function actionSaveMailingList(): ?Response
     {
         $this->requirePostRequest();
 
@@ -150,7 +133,7 @@ class MailingListsController extends Controller
         }
 
         // If this mailing list should be duplicated then swap it for a duplicate
-        if ((bool)$request->getBodyParam('duplicate')) {
+        if ($request->getBodyParam('duplicate')) {
             try {
                 /** @var MailingListElement $mailingList */
                 $mailingList = Craft::$app->getElements()->duplicateElement($mailingList);
@@ -217,14 +200,9 @@ class MailingListsController extends Controller
     }
 
     /**
-     * Deletes a mailing list
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Deletes a mailing list.
      */
-    public function actionDeleteMailingList()
+    public function actionDeleteMailingList(): ?Response
     {
         $this->requirePostRequest();
 

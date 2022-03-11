@@ -9,20 +9,10 @@ use putyourlightson\campaign\elements\SendoutElement;
 
 use craft\events\CancelableEvent;
 
-/**
- * SendoutEvent
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SendoutEvent extends CancelableEvent
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var SendoutElement|null
      */
-    public $sendout;
+    public ?SendoutElement $sendout;
 }

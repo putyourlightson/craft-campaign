@@ -9,21 +9,12 @@ use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
 
 /**
- * DeleteContacts
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.14.0
  *
- * @property void   $triggerHtml
- * @property string $triggerLabel
- * @property mixed  $confirmationMessage
+ * @property-read string $triggerLabel
  */
 class HardDeleteContacts extends Delete
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -35,7 +26,7 @@ class HardDeleteContacts extends Delete
     /**
      * @inheritdoc
      */
-    public function getConfirmationMessage()
+    public function getConfirmationMessage(): ?string
     {
         return Craft::t('campaign', 'Are you sure you want to permanently delete the selected contacts? This action cannot be undone.');
     }

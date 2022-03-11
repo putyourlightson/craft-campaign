@@ -11,23 +11,12 @@ use craft\web\View;
 use yii\web\Response;
 
 /**
- * BaseMessageController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
 */
 abstract class BaseMessageController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Renders a message template.
-     *
-     * @param string|null $template
-     * @param array|null $variables
-     * @return Response
      */
     public function renderMessageTemplate(string $template = null, array $variables = []): Response
     {

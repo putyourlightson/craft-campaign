@@ -20,23 +20,11 @@ use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
 use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * SettingsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SettingsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -53,9 +41,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit general settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditGeneral(SettingsModel $settings = null): Response
     {
@@ -72,11 +60,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel|null             $settings The settings being edited, if there were any validation errors.
-     * @param TransportAdapterInterface|null $adapter  The transport adapter, if there were any validation errors.
+     * Edit email settings.
      *
-     * @return Response
-     * @throws MissingComponentException
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
+     * @param TransportAdapterInterface|null $adapter  The transport adapter, if there were any validation errors.
      */
     public function actionEditEmail(SettingsModel $settings = null, TransportAdapterInterface $adapter = null): Response
     {
@@ -89,7 +76,7 @@ class SettingsController extends Controller
             try {
                 $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
             }
-            catch (MissingComponentException $e) {
+            catch (MissingComponentException) {
                 $adapter = new Sendmail();
                 $adapter->addError('type', Craft::t('app', 'The transport type “{type}” could not be found.', [
                     'type' => $settings->transportType
@@ -133,9 +120,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit contact settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditContact(SettingsModel $settings = null): Response
     {
@@ -150,9 +137,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit sendout settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditSendout(SettingsModel $settings = null): Response
     {
@@ -172,9 +159,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit GeoIP settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditGeoip(SettingsModel $settings = null): Response
     {
@@ -189,9 +176,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit Recaptcha settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditRecaptcha(SettingsModel $settings = null): Response
     {
@@ -206,10 +193,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves general settings.
      */
-    public function actionSaveGeneral()
+    public function actionSaveGeneral(): ?Response
     {
         $this->requirePostRequest();
 
@@ -238,11 +224,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws MissingComponentException
-     * @throws BadRequestHttpException
+     * Saves email settings.
      */
-    public function actionSaveEmail()
+    public function actionSaveEmail(): ?Response
     {
         $this->requirePostRequest();
 
@@ -281,11 +265,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
+     * Saves contact settings.
      */
-    public function actionSaveContact()
+    public function actionSaveContact(): ?Response
     {
         $this->requirePostRequest();
 
@@ -318,10 +300,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves sendout settings.
      */
-    public function actionSaveSendout()
+    public function actionSaveSendout(): ?Response
     {
         $this->requirePostRequest();
 
@@ -350,10 +331,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves GeoIP settings.
      */
-    public function actionSaveGeoip()
+    public function actionSaveGeoip(): ?Response
     {
         $this->requirePostRequest();
 
@@ -381,10 +361,9 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves Recaptcha settings.
      */
-    public function actionSaveRecaptcha()
+    public function actionSaveRecaptcha(): ?Response
     {
         $this->requirePostRequest();
 
@@ -418,8 +397,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @throws MissingComponentException
-     * @throws BadRequestHttpException
+     * Sends a test email.
      */
     public function actionSendTestEmail()
     {

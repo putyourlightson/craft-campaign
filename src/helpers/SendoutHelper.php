@@ -28,17 +28,11 @@ class SendoutHelper
     {
         $unit = strtolower(substr($value, -1, 1));
         $value = (int)$value;
-        switch($unit) {
-            case 'g':
-                $value *= pow(1024, 3);
-                break;
-            case 'm':
-                $value *= pow(1024, 2);
-                break;
-            case 'k':
-                $value *= 1024;
-                break;
-        }
+        $value *= match ($unit) {
+            'g' => pow(1024, 3),
+            'm' => pow(1024, 2),
+            'k' => 1024,
+        };
 
         return $value;
     }

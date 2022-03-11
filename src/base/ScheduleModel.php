@@ -5,77 +5,42 @@
 
 namespace putyourlightson\campaign\base;
 
+use craft\base\Model;
 use craft\helpers\DateTimeHelper;
 use DateTime;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * ScheduleModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
- *
- * @property array $intervalOptions
+ * @property-read array $intervalOptions
  */
-abstract class ScheduleModel extends BaseModel implements ScheduleInterface
+abstract class ScheduleModel extends Model implements ScheduleInterface
 {
-    // Properties
-    // =========================================================================
-
     /**
-     * @var bool Can send to contacts multiple times
+     * @var bool Whether contacts can be sent to multiple times
      */
-    public $canSendToContactsMultipleTimes = false;
+    public bool $canSendToContactsMultipleTimes = false;
 
     /**
      * @var DateTime|null End date
      */
-    public $endDate;
+    public ?DateTime $endDate;
 
     /**
      * @var array|null Days of the week
      */
-    public $daysOfWeek;
+    public ?array $daysOfWeek;
 
     /**
      * @var DateTime|null Time of day
      */
-    public $timeOfDay;
-
-    // Public Methods
-    // =========================================================================
+    public ?DateTime $timeOfDay;
 
     /**
-     * @inheritdoc
-     */
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'endDate';
-        $attributes[] = 'timeOfDay';
-
-        return $attributes;
-    }
-
-    /**
-     * Returns the schedule's interval options
-     *
-     * @return array
+     * Returns the schedule's interval options.
      */
     public function getIntervalOptions(): array
     {
         return [];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules(): array
-    {
-        return [
-            [['canSendToContactsMultipleTimes'], 'boolean'],
-        ];
     }
 
     /**
@@ -104,5 +69,15 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
         }
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['canSendToContactsMultipleTimes'], 'boolean'],
+        ];
     }
 }

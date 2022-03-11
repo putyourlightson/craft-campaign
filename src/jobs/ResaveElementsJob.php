@@ -12,31 +12,21 @@ use craft\services\Elements;
 use yii\base\Event;
 
 /**
- * ResaveElementsJob
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.4.0
+ * @since 1.4.0
  */
 class ResaveElementsJob extends ResaveElements
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null
      */
-    public $siteId;
-
-    // Public Methods
-    // =========================================================================
+    public ?int $siteId;
 
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
-        // Register beforeSaveElement event so we can update the element's site ID
+        // Register beforeSaveElement event, so we can update the element's site ID
         Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, function(ElementEvent $event) {
             /** @var Element $element */
             $element = $event->element;

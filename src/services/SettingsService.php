@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\base\Field;
-use craft\base\Volume;
 use craft\events\CancelableEvent;
 use craft\events\FieldEvent;
 use craft\helpers\App;
@@ -21,42 +20,28 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\models\SettingsModel;
 
 /**
- * SettingsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property-read array $siteOptions
  * @property-read Mailer $mailerForVerificationEmails
+ * @property-read array $siteOptions
  */
 class SettingsService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @since 1.15.0
+     */
+    public const EVENT_BEFORE_SAVE_SETTINGS = 'beforeSaveSettings';
 
     /**
      * @since 1.15.0
      */
-    const EVENT_BEFORE_SAVE_SETTINGS = 'beforeSaveSettings';
+    public const EVENT_AFTER_SAVE_SETTINGS = 'afterSaveSettings';
 
     /**
      * @since 1.15.0
      */
-    const EVENT_AFTER_SAVE_SETTINGS = 'afterSaveSettings';
+    public const CONFIG_CONTACTFIELDLAYOUT_KEY = 'campaign.contactFieldLayout';
 
     /**
-     * @since 1.15.0
-     */
-    const CONFIG_CONTACTFIELDLAYOUT_KEY = 'campaign.contactFieldLayout';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Returns all the sites as an array that can be used for options
-     *
-     * @return array
+     * Returns all the sites as an array that can be used for options.
      */
     public function getSiteOptions(): array
     {
@@ -71,11 +56,7 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns from name and email for the given site if provided
-     *
-     * @param int|null $siteId
-     *
-     * @return array
+     * Returns from name and email for the given site if provided.
      */
     public function getFromNameEmail(int $siteId = null): array
     {
@@ -110,11 +91,7 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns from names and emails that can be used for options for the given site if provided
-     *
-     * @param int|null $siteId
-     *
-     * @return array
+     * Returns from names and emails that can be used for options for the given site if provided.
      */
     public function getFromNameEmailOptions(int $siteId = null): array
     {
@@ -144,9 +121,8 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns a mailer for sending verification emails
+     * Returns a mailer for sending verification emails.
      *
-     * @return Mailer
      * @since 1.22.0
      */
     public function getMailerForVerificationEmails(): Mailer
@@ -159,10 +135,8 @@ class SettingsService extends Component
     }
 
     /**
-     * Returns whether a dynamic `@web` alias is used in the URL of the site provided, or all sites, or asset volume
-     *
-     * @param int|null $siteId
-     * @return bool
+     * Returns whether a dynamic `@web` alias is used in the URL of the site provided
+     * or all sites or a file system.
      */
     public function isDynamicWebAliasUsed(int $siteId = null): bool
     {
@@ -198,11 +172,10 @@ class SettingsService extends Component
             }
         }
 
-        $volumes = Craft::$app->getVolumes()->getAllVolumes();
+        $filesystems = Craft::$app->getFs()->getAllFilesystems();
 
-        /** @var Volume $volume */
-        foreach ($volumes as $volume) {
-            if (stripos($volume->getRootUrl(), '@web') !== false) {
+        foreach ($filesystems as $filesystem) {
+            if (stripos($filesystem->getRootUrl(), '@web') !== false) {
                 return true;
             }
         }
@@ -211,11 +184,7 @@ class SettingsService extends Component
     }
 
     /**
-     * Saves plugin settings
-     *
-     * @param SettingsModel $settings The plugin settings
-     *
-     * @return bool Whether the settings were saved successfully
+     * Saves plugin settings.
      */
     public function saveSettings(SettingsModel $settings): bool
     {
@@ -239,11 +208,10 @@ class SettingsService extends Component
 
         return Craft::$app->plugins->savePluginSettings(Campaign::$plugin, $settings->getAttributes());
     }
+
     /**
-     * Saves the contact field layout
+     * Saves the contact field layout.
      *
-     * @param FieldLayout $fieldLayout
-     * @return bool
      * @since 1.15.0
      */
     public function saveContactFieldLayout(FieldLayout $fieldLayout): bool
@@ -293,8 +261,6 @@ class SettingsService extends Component
 
     /**
      * Prunes a deleted field from the contact field layout.
-     *
-     * @param FieldEvent $event
      */
     public function pruneDeletedField(FieldEvent $event)
     {

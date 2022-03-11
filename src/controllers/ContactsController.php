@@ -17,22 +17,11 @@ use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 
-/**
- * ContactsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ContactsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -45,9 +34,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     *
-     * @return Response
+     * Main contacts page.
      */
     public function actionIndex(string $siteHandle = null): Response
     {
@@ -65,11 +52,10 @@ class ContactsController extends Controller
     }
 
     /**
+     * Edit contact page.
+     *
      * @param int|null $contactId The contact’s ID, if editing an existing contact.
      * @param ContactElement|null $contact The contact being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException if the requested contact is not found
      */
     public function actionEditContact(int $contactId = null, ContactElement $contact = null): Response
     {
@@ -196,14 +182,9 @@ class ContactsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
+     * Saves a contact.
      */
-    public function actionSaveContact()
+    public function actionSaveContact(): ?Response
     {
         $this->requirePostRequest();
 
@@ -270,102 +251,57 @@ class ContactsController extends Controller
     }
 
     /**
-     * Marks a contact as complained
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Marks a contact as complained.
      */
-    public function actionMarkContactComplained()
+    public function actionMarkContactComplained(): ?Response
     {
         return $this->_markContactStatus('complained');
     }
 
     /**
-     * Marks a contact as bounced
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Marks a contact as bounced.
      */
-    public function actionMarkContactBounced()
+    public function actionMarkContactBounced(): ?Response
     {
         return $this->_markContactStatus('bounced');
     }
 
     /**
-     * Marks a contact as blocked
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Marks a contact as blocked.
      */
-    public function actionMarkContactBlocked()
+    public function actionMarkContactBlocked(): ?Response
     {
         return $this->_markContactStatus('blocked');
     }
 
     /**
-     * Unmarks a contact as complained
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Unmarks a contact as complained.
      */
-    public function actionUnmarkContactComplained()
+    public function actionUnmarkContactComplained(): ?Response
     {
         return $this->_unmarkContactStatus('complained');
     }
 
     /**
-     * Unmarks a contact as bounced
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Unmarks a contact as bounced.
      */
-    public function actionUnmarkContactBounced()
+    public function actionUnmarkContactBounced(): ?Response
     {
         return $this->_unmarkContactStatus('bounced');
     }
 
     /**
-     * Unmarks a contact as blocked
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Unmarks a contact as blocked.
      */
-    public function actionUnmarkContactBlocked()
+    public function actionUnmarkContactBlocked(): ?Response
     {
         return $this->_unmarkContactStatus('blocked');
     }
 
     /**
-     * Deletes a contact
-     *
-     * @param bool $hardDelete
-     * @return Response|null
+     * Deletes a contact.
      */
-    public function actionDeleteContact(bool $hardDelete = false)
+    public function actionDeleteContact(bool $hardDelete = false): ?Response
     {
         $this->requirePostRequest();
 
@@ -396,59 +332,37 @@ class ContactsController extends Controller
     }
 
     /**
-     * Deletes a contact permanently
-     *
-     * @return Response|null
+     * Deletes a contact permanently.
      */
-    public function actionDeleteContactPermanently()
+    public function actionDeleteContactPermanently(): ?Response
     {
         return $this->actionDeleteContact(true);
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Exception
-     * @throws Throwable
+     * Subscribes a contact to a mailing list.
      */
-    public function actionSubscribeMailingList()
+    public function actionSubscribeMailingList(): ?Response
     {
         return $this->_updateSubscription('subscribed');
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Exception
-     * @throws Throwable
+     * Unsubscribes a contact from a mailing list.
      */
-    public function actionUnsubscribeMailingList()
+    public function actionUnsubscribeMailingList(): ?Response
     {
         return $this->_updateSubscription('unsubscribed');
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Exception
-     * @throws Throwable
+     * Removes a contact from a mailing list.
      */
-    public function actionRemoveMailingList()
+    public function actionRemoveMailingList(): ?Response
     {
         return $this->_updateSubscription('');
     }
 
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * @return ContactElement
-     * @throws NotFoundHttpException
-     * @throws BadRequestHttpException
-     */
     private function _getPostedContact(): ContactElement
     {
         $contactId = Craft::$app->getRequest()->getRequiredBodyParam('contactId');
@@ -470,7 +384,7 @@ class ContactsController extends Controller
      * @throws Exception
      * @throws Throwable
      */
-    private function _updateSubscription(string $subscriptionStatus)
+    private function _updateSubscription(string $subscriptionStatus): ?Response
     {
         $this->requirePostRequest();
 
@@ -516,7 +430,7 @@ class ContactsController extends Controller
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    private function _markContactStatus(string $status)
+    private function _markContactStatus(string $status): ?Response
     {
         $this->requirePostRequest();
 
@@ -560,7 +474,7 @@ class ContactsController extends Controller
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    private function _unmarkContactStatus(string $status)
+    private function _unmarkContactStatus(string $status): ?Response
     {
         $this->requirePostRequest();
 

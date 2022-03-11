@@ -18,17 +18,12 @@ use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\records\SegmentRecord;
 
 /**
- * SegmentElement
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $conditionCount
- * @property int $contactCount
- * @property int[] $contactIds
- * @property string $segmentTypeLabel
- * @property ContactElement[] $contacts
+ * @property-read int $contactCount
+ * @property-read bool $isEditable
+ * @property-read string $segmentTypeLabel
+ * @property-read int $conditionCount
+ * @property-read ContactElement[] $contacts
+ * @property-read int[] $contactIds
  */
 class SegmentElement extends Element
 {
@@ -83,7 +78,7 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'segment';
     }
@@ -222,7 +217,7 @@ class SegmentElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $attributes = [
+        return [
             'title' => ['label' => Craft::t('app', 'Title')],
             'segmentType' => ['label' => Craft::t('campaign', 'Segment Type')],
             'conditions' => ['label' => Craft::t('campaign', 'Conditions')],
@@ -230,8 +225,6 @@ class SegmentElement extends Element
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
-
-        return $attributes;
     }
 
     /**
@@ -258,50 +251,38 @@ class SegmentElement extends Element
      */
     protected function tableAttributeHtml(string $attribute): string
     {
-        switch ($attribute) {
-            case 'segmentType':
-                return $this->getSegmentTypeLabel();
-
-            case 'conditions':
-                return (string)$this->getConditionCount();
-
-            case 'contacts':
-                return (string)$this->getContactCount();
-        }
-
-        return parent::tableAttributeHtml($attribute);
+        return match ($attribute) {
+            'segmentType' => $this->getSegmentTypeLabel(),
+            'conditions' => (string)$this->getConditionCount(),
+            'contacts' => (string)$this->getContactCount(),
+            default => parent::tableAttributeHtml($attribute),
+        };
     }
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string
      */
-    public $segmentType;
+    public string $segmentType;
 
     /**
      * @var array|string|null
      */
-    public $conditions;
+    public string|array|null $conditions;
 
     /**
      * @var ContactElement[]|null
      */
-    private $_contacts;
+    private ?array $_contacts;
 
     /**
      * @var int[]|null
      */
-    private $_contactIds;
-
-    // Public Methods
-    // =========================================================================
+    private ?array $_contactIds;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -312,12 +293,11 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-        $rules[] = [['segmentType'], 'required'];
-
-        return $rules;
+        return [
+            [['segmentType'], 'required'],
+        ];
     }
 
     /**
@@ -334,8 +314,6 @@ class SegmentElement extends Element
 
     /**
      * Returns the segment type label for the given segment type.
-     *
-     * @return string
      */
     public function getSegmentTypeLabel(): string
     {
@@ -345,9 +323,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the number of conditions
-     *
-     * @return int
+     * Returns the number of conditions.
      */
     public function getConditionCount(): int
     {
@@ -369,7 +345,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the contacts
+     * Returns the contacts.
      *
      * @return ContactElement[]
      */
@@ -385,7 +361,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the contact IDs
+     * Returns the contact IDs.
      *
      * @return int[]
      */
@@ -401,9 +377,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the number of contacts
-     *
-     * @return int
+     * Returns the number of contacts.
      */
     public function getContactCount(): int
     {
@@ -421,13 +395,10 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/segments/'.$this->segmentType.'/'.$this->id);
     }
-
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
 
     /**
      * @inheritdoc
@@ -439,13 +410,10 @@ class SegmentElement extends Element
         ]);
     }
 
-    // Events
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             $segmentRecord = new SegmentRecord();

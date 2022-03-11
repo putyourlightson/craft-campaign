@@ -15,37 +15,20 @@ use putyourlightson\campaign\models\ExportModel;
 use craft\base\Component;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 
-/**
- * ExportsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ExportsService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event ExportEvent
+     */
+    public const EVENT_BEFORE_EXPORT = 'beforeExport';
 
     /**
      * @event ExportEvent
      */
-    const EVENT_BEFORE_EXPORT = 'beforeExport';
+    public const EVENT_AFTER_EXPORT = 'afterExport';
 
     /**
-     * @event ExportEvent
-     */
-    const EVENT_AFTER_EXPORT = 'afterExport';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Exports to a CSV file
-     *
-     * @param ExportModel $export
-     *
-     * @return bool Whether the export was successful
+     * Exports to a CSV file.
      */
     public function exportFile(ExportModel $export): bool
     {

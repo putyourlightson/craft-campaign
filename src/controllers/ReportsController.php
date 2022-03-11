@@ -15,18 +15,8 @@ use putyourlightson\campaign\services\ReportsService;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
-/**
- * ReportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ReportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -39,12 +29,9 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns campaign chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Returns campaign chart data.
      */
-    public function actionGetCampaignChartData()
+    public function actionGetCampaignChartData(): ?Response
     {
         $this->requireAcceptsJson();
 
@@ -60,12 +47,9 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns mailing list chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Returns mailing list chart data.
      */
-    public function actionGetMailingListChartData()
+    public function actionGetMailingListChartData(): ?Response
     {
         $this->requireAcceptsJson();
 
@@ -80,16 +64,8 @@ class ReportsController extends Controller
         return $this->asJson($chart);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns chart data
-     *
-     * @param array $data
-     * @param string $interval
-     *
-     * @return array
+     * Returns chart data.
      */
     private function _getChartData(array $data, string $interval): array
     {
@@ -127,7 +103,7 @@ class ReportsController extends Controller
                 // Convert timestamp to milliseconds
                 $values[] = [$timestamp * 1000, $value];
 
-                $chart['maxValue'] = $value > $chart['maxValue'] ? $value : $chart['maxValue'];
+                $chart['maxValue'] = max($value, $chart['maxValue']);
             }
 
             $chart['series'][] = [
@@ -147,11 +123,7 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns colors
-     *
-     * @param array $interactions
-     *
-     * @return array
+     * Returns colors.
      */
     private function _getColors(array $interactions): array
     {

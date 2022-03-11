@@ -18,40 +18,29 @@ use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\fields\RadioButtons;
 use craft\fields\Url;
+use craft\helpers\ElementHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\RegisterSegmentAvailableFieldsEvent;
 use putyourlightson\campaign\events\RegisterSegmentFieldOperatorsEvent;
 use yii\base\Event;
 
 /**
- * SegmentHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.7.3
+ * @since 1.7.3
  */
 class SegmentHelper
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event RegisterSegmentFieldOperatorsEvent
      */
-    const EVENT_REGISTER_FIELD_OPERATORS = 'registerFieldOperators';
+    public const EVENT_REGISTER_FIELD_OPERATORS = 'registerFieldOperators';
 
     /**
      * @event RegisterSegmentAvailableFieldsEvent
      */
-    const EVENT_REGISTER_AVAILABLE_FIELDS = 'registerAvailableFields';
-
-    // Static Methods
-    // =========================================================================
+    public const EVENT_REGISTER_AVAILABLE_FIELDS = 'registerAvailableFields';
 
     /**
-     * Returns supported fields along with their operators
-     *
-     * @return array
+     * Returns supported fields along with their operators.
      */
     public static function getFieldOperators(): array
     {
@@ -114,9 +103,7 @@ class SegmentHelper
     }
 
     /**
-     * Returns available fields
-     *
-     * @return array
+     * Returns available fields.
      */
     public static function getAvailableFields(): array
     {
@@ -140,7 +127,7 @@ class SegmentHelper
                 if (!empty($supportedFields[$fieldType])) {
                     $availableFields[] = [
                         'type' => $fieldType,
-                        'column' => static::fieldColumnFromField($field),
+                        'column' => ElementHelper::fieldColumnFromField($field),
                         'name' => $field->name,
                         'options' => ($field instanceof BaseOptionsField ? $field->options : null),
                     ];
@@ -186,53 +173,5 @@ class SegmentHelper
         }
 
         return false;
-    }
-
-    /**
-     * Returns the content column name for a given field.
-     * Replaces ElementHelper::fieldColumnFromField, added in Craft 3.7.0.
-     *
-     * @since 1.20.3
-     */
-    public static function fieldColumnFromField(FieldInterface $field)
-    {
-        if ($field::hasContentColumn()) {
-            // Introduced in Craft 3.7.0 only
-            $columnSuffix = $field->columnSuffix ?? '';
-
-            return static::fieldColumn($field->columnPrefix, $field->handle, $columnSuffix);
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the old content column name for a given field.
-     *
-     * @since 1.20.3
-     */
-    public static function oldFieldColumnFromField(FieldInterface $field)
-    {
-        if ($field::hasContentColumn()) {
-            // Introduced in Craft 3.7.0 only
-            $columnSuffix = $field->columnSuffix ?? '';
-
-            return static::fieldColumn($field->columnPrefix, $field->oldHandle, $columnSuffix);
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the content column name based on the given field attributes.
-     * Replaces ElementHelper::fieldColumn, added in Craft 3.7.0.
-     *
-     * @since 1.20.3
-     */
-    public static function fieldColumn($columnPrefix, string $handle, string $columnSuffix): string
-    {
-        return ($columnPrefix ?? Craft::$app->getContent()->fieldColumnPrefix) .
-            $handle .
-            ($columnSuffix ? "_$columnSuffix" : '');
     }
 }

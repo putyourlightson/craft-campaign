@@ -13,32 +13,29 @@ use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 abstract class SendoutElementFixture extends BaseElementFixture
 {
     /**
      * @var int|null
      */
-    public $campaignId;
+    public ?int $campaignId;
 
     /**
      * @var string|null
      */
-    public $mailingListIds;
+    public ?string $mailingListIds;
 
     /**
      * @var string|null
      */
-    public $segmentIds;
+    public ?string $segmentIds;
 
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         $campaign = CampaignElement::find()->one();
         $this->campaignId = $campaign ? $campaign->id : null;

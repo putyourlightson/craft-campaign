@@ -14,31 +14,17 @@ use putyourlightson\campaign\elements\SendoutElement;
 
 use Craft;
 use craft\db\Migration;
-use Throwable;
 use yii\db\ColumnSchemaBuilder;
 
-/**
- * Campaign Install Migration
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var string The database driver to use
      */
-    public $driver;
-
-    // Public Methods
-    // =========================================================================
+    public string $driver;
 
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function safeUp(): bool
     {
@@ -54,8 +40,7 @@ class Install extends Migration
     }
 
     /**
-     * @return boolean
-     * @throws Throwable
+     * @inheritdoc
      */
     public function safeDown(): bool
     {
@@ -69,21 +54,14 @@ class Install extends Migration
 
     /**
      * Returns a short UID column.
-     *
-     * @return ColumnSchemaBuilder
      */
-    public function shortUid()
+    public function shortUid(): ColumnSchemaBuilder
     {
         return $this->char(17)->notNull()->defaultValue('0');
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
-     * Creates the tables needed for the Records used by the plugin
-     *
-     * @return boolean
+     * Creates the tables needed for the records used by the plugin.
      */
     protected function createTables(): bool
     {
@@ -370,12 +348,9 @@ class Install extends Migration
     }
 
     /**
-     * Delete elements
-     *
-     * @return void
-     * @throws Throwable
+     * Deletes elements.
      */
-    protected function deleteElements()
+    protected function deleteElements(): void
     {
         $elementTypes = [
             CampaignElement::class,
@@ -398,11 +373,9 @@ class Install extends Migration
     }
 
     /**
-     * Delete field layouts
-     *
-     * @return void
+     * Delete field layouts.
      */
-    protected function deleteFieldLayouts()
+    protected function deleteFieldLayouts(): void
     {
         Craft::$app->fields->deleteLayoutsByType(CampaignElement::class);
         Craft::$app->fields->deleteLayoutsByType(MailingListElement::class);
@@ -410,11 +383,9 @@ class Install extends Migration
     }
 
     /**
-     * Delete tables
-     *
-     * @return void
+     * Deletes tables.
      */
-    protected function deleteTables()
+    protected function deleteTables(): void
     {
         // Drop tables with foreign keys first
         $this->dropTableIfExists('{{%campaign_sendouts}}');
@@ -432,11 +403,9 @@ class Install extends Migration
     }
 
     /**
-     * Delete project config
-     *
-     * @return void
+     * Deletes project config.
      */
-    protected function deleteProjectConfig()
+    protected function deleteProjectConfig(): void
     {
         Craft::$app->getProjectConfig()->remove('campaign');
     }

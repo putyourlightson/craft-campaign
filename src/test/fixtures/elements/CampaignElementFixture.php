@@ -21,12 +21,12 @@ abstract class CampaignElementFixture extends BaseElementFixture
     /**
      * @var array
      */
-    public $campaignTypeIds = [];
+    public array $campaignTypeIds = [];
 
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         foreach (Campaign::$plugin->campaignTypes->getAllCampaignTypes() as $campaignType) {
             $this->campaignTypeIds[$campaignType->handle] = $campaignType->id;

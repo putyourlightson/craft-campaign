@@ -5,84 +5,60 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\base\Model;
 use DateTime;
-use putyourlightson\campaign\base\BaseModel;
 
-/**
- * ContactActivityModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
-class ContactActivityModel extends BaseModel
+class ContactActivityModel extends Model
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var ContactCampaignModel|ContactMailingListModel
      */
-    public $model;
+    public ContactCampaignModel|ContactMailingListModel $model;
 
     /**
      * @var string Title
      */
-    public $title;
+    public string $title;
 
     /**
      * @var string Email
      */
-    public $email;
+    public string $email;
 
     /**
      * @var string Interaction
      */
-    public $interaction;
+    public string $interaction;
 
     /**
      * @var int Count
      */
-    public $count;
+    public int $count;
 
     /**
      * @var DateTime
      */
-    public $date;
+    public DateTime $date;
 
     /**
      * @var string Source URL
      */
-    public $sourceUrl;
+    public string $sourceUrl;
 
     /**
      * @var string URL
      */
-    public $url;
+    public string $url;
 
     /**
      * @var array Links
      */
-    public $links = [];
-
-    // Public Methods
-    // =========================================================================
+    public array $links = [];
 
     /**
      * @inheritdoc
      */
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'date';
-
-        return $attributes;
-    }
-
-    /**
-     * @return array
-     */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['title', 'interaction', 'date'], 'required']

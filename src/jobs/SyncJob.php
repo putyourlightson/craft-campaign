@@ -16,31 +16,19 @@ use putyourlightson\campaign\services\SyncService;
 use Throwable;
 
 /**
- * SyncJob
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class SyncJob extends BaseJob
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int
      */
-    public $mailingListId;
-
-    // Public Methods
-    // =========================================================================
+    public int $mailingListId;
 
     /**
      * @inheritdoc
-     * @throws Exception
-     * @throws Throwable
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
 
@@ -87,9 +75,6 @@ class SyncJob extends BaseJob
             ]));
         }
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

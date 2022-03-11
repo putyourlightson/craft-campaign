@@ -12,24 +12,11 @@ use putyourlightson\campaign\elements\CampaignElement;
 
 use Craft;
 use craft\web\Controller;
-use Throwable;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * CampaignTypesController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignTypesController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,11 +29,7 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * @param int|null $campaignTypeId The campaign type’s ID, if editing an existing campaign type.
-     * @param CampaignTypeModel|null $campaignType The campaign type being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException
+     * Edit the campaign type.
      */
     public function actionEditCampaignType(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
     {
@@ -82,12 +65,9 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws Throwable
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Saves the campaign type.
      */
-    public function actionSaveCampaignType()
+    public function actionSaveCampaignType(): ?Response
     {
         $this->requirePostRequest();
 
@@ -139,11 +119,7 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * Deletes a campaign type
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes a campaign type.
      */
     public function actionDeleteCampaignType(): Response
     {

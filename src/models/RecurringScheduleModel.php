@@ -11,36 +11,24 @@ use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * RecurringScheduleModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
- *
- * @property array $intervalOptions
+ * @since 1.2.0
  */
 class RecurringScheduleModel extends ScheduleModel
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int Frequency
      */
-    public $frequency = 1;
+    public int $frequency = 1;
 
     /**
      * @var string Frequency interval
      */
-    public $frequencyInterval = '';
+    public string $frequencyInterval = '';
 
     /**
      * @var array|null Days of the month
      */
-    public $daysOfMonth;
-
-    // Public Methods
-    // =========================================================================
+    public ?array $daysOfMonth;
 
     /**
      * @inheritdoc
@@ -57,15 +45,13 @@ class RecurringScheduleModel extends ScheduleModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-
-        $rules[] = [['frequency'], 'required'];
-        $rules[] = [['frequency'], 'integer', 'min' => 1];
-        $rules[] = ['frequencyInterval', 'in', 'range' => array_keys($this->getIntervalOptions())];
-
-        return $rules;
+        return [
+            [['frequency'], 'required'],
+            [['frequency'], 'integer', 'min' => 1],
+            ['frequencyInterval', 'in', 'range' => array_keys($this->getIntervalOptions())],
+        ];
     }
 
     /**

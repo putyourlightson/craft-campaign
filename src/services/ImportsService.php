@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\services;
 
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\jobs\ImportJob;
@@ -15,45 +14,27 @@ use putyourlightson\campaign\records\ImportRecord;
 use Craft;
 use craft\base\Component;
 use craft\base\Field;
-use craft\base\FieldInterface;
 use craft\elements\User;
-use Throwable;
 
 /**
- * ImportsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property FieldInterface[] $contactFields
- * @property ImportModel[] $allImports
+ * @property-read ImportModel[] $allImports
  */
 class ImportsService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event ImportEvent
+     */
+    public const EVENT_BEFORE_IMPORT = 'beforeImport';
 
     /**
      * @event ImportEvent
      */
-    const EVENT_BEFORE_IMPORT = 'beforeImport';
-
-    /**
-     * @event ImportEvent
-     */
-    const EVENT_AFTER_IMPORT = 'afterImport';
-
-    // Properties
-    // =========================================================================
+    public const EVENT_AFTER_IMPORT = 'afterImport';
 
     /**
      * @var array
      */
-    private $_mailingLists = [];
-
-    // Public Methods
-    // =========================================================================
+    private array $_mailingLists = [];
 
     /**
      * Returns all imports
@@ -68,13 +49,9 @@ class ImportsService extends Component
     }
 
     /**
-     * Returns import by ID
-     *
-     * @param int $importId
-     *
-     * @return ImportModel|null
+     * Returns an import by ID.
      */
-    public function getImportById(int $importId)
+    public function getImportById(int $importId): ?ImportModel
     {
         if (!$importId) {
             return null;
@@ -86,16 +63,14 @@ class ImportsService extends Component
             return null;
         }
 
-        /** @var ImportModel $import */
-        $import = ImportModel::populateModel($importRecord, false);
+        $import = new ImportModel();
+        $import->setAttributes($importRecord->getAttributes(), false);
 
         return $import;
     }
 
     /**
      * Returns an import's resource handle.
-     *
-     * @param ImportModel $import
      *
      * @return resource|null
      */
@@ -129,11 +104,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Returns columns
-     *
-     * @param ImportModel $import
-     *
-     * @return array
+     * Returns columns.
      */
     public function getColumns(ImportModel $import): array
     {
@@ -169,13 +140,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Returns rows
-     *
-     * @param ImportModel $import
-     * @param int|null $offset
-     * @param int|null $length
-     *
-     * @return array
+     * Returns rows.
      */
     public function getRows(ImportModel $import, int $offset = null, int $length = null): array
     {
@@ -225,11 +190,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Saves an import
-     *
-     * @param ImportModel $import
-     *
-     * @return bool Whether the import was saved successfully
+     * Saves an import.
      */
     public function saveImport(ImportModel $import): bool
     {
@@ -265,9 +226,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Queues an import
-     *
-     * @param ImportModel $import
+     * Queues an import.
      */
     public function queueImport(ImportModel $import)
     {
@@ -276,14 +235,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Imports a row into a contact
-     *
-     * @param ImportModel $import
-     * @param array $row
-     * @param int $lineNumber
-     *
-     * @return ImportModel
-     * @throws Throwable if reasons
+     * Imports a row into a contact.
      */
     public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
     {
@@ -361,12 +313,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Deletes an import
-     *
-     * @param int $importId
-     *
-     * @return bool Whether the action was successful
-     * @throws Exception|Throwable in case delete failed.
+     * Deletes an import.
      */
     public function deleteImportById(int $importId): bool
     {

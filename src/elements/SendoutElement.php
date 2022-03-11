@@ -25,57 +25,68 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\actions\Delete;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
-use craft\helpers\Json;
 use craft\validators\DateTimeValidator;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 
 /**
- * SendoutElement
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property bool $isResumable
- * @property array $pendingRecipients
- * @property string $sendoutTypeLabel
- * @property string $fromNameEmail
- * @property float $progressFraction
- * @property int $segmentCount
- * @property SegmentElement[] $segments
- * @property int $pendingRecipientCount
- * @property bool $isDeletable
- * @property bool $isPausable
- * @property int $excludedMailingListCount
- * @property int $mailingListCount
- * @property bool $canSendNow
- * @property MailingListElement[] $excludedMailingLists
- * @property bool $isSendable
- * @property User|null $sender
- * @property bool $isCancellable
- * @property CampaignElement|null $campaign
- * @property string $progress
- * @property string $fromNameEmailLabel
- * @property bool $isModifiable
- * @property MailingListElement[] $mailingLists
+ * @property-read bool $isResumable
+ * @property-read array $pendingRecipients
+ * @property-read string $sendoutTypeLabel
+ * @property-read string $fromNameEmail
+ * @property-read float $progressFraction
+ * @property-read bool $isModifiable
+ * @property-read int $segmentCount
+ * @property-read SegmentElement[] $segments
+ * @property-read int $pendingRecipientCount
+ * @property-read bool $isDeletable
+ * @property-read bool $isPausable
+ * @property-read bool $isEditable
+ * @property-read int $excludedMailingListCount
+ * @property-read int $mailingListCount
+ * @property-read bool $canSendNow
+ * @property-read MailingListElement[] $excludedMailingLists
+ * @property-read string $fromNameEmailLabel
+ * @property-read bool $isSendable
+ * @property-read User|null $sender
+ * @property-read bool $isCancellable
+ * @property-read null|CampaignElement $campaign
+ * @property-read string $progress
+ * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
 {
-    // Constants
-    // =========================================================================
-
-    const STATUS_SENT = 'sent';
-    const STATUS_SENDING = 'sending';
-    const STATUS_QUEUED = 'queued';
-    const STATUS_PENDING = 'pending';
-    const STATUS_PAUSED = 'paused';
-    const STATUS_CANCELLED = 'cancelled';
-    const STATUS_FAILED = 'failed';
-    const STATUS_DRAFT = 'draft';
-
-    // Static Methods
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_SENT = 'sent';
+    /**
+     * @const string
+     */
+    public const STATUS_SENDING = 'sending';
+    /**
+     * @const string
+     */
+    public const STATUS_QUEUED = 'queued';
+    /**
+     * @const string
+     */
+    public const STATUS_PENDING = 'pending';
+    /**
+     * @const string
+     */
+    public const STATUS_PAUSED = 'paused';
+    /**
+     * @const string
+     */
+    public const STATUS_CANCELLED = 'cancelled';
+    /**
+     * @const string
+     */
+    public const STATUS_FAILED = 'failed';
+    /**
+     * @const string
+     */
+    public const STATUS_DRAFT = 'draft';
 
     /**
      * Returns the sendout types.
@@ -132,7 +143,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'sendout';
     }
@@ -355,146 +366,140 @@ class SendoutElement extends Element
         return ['title', 'sid', 'subject', 'fromName'];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var string SID
      */
-    public $sid;
+    public string $sid;
 
     /**
-     * @var int Campaign ID
+     * @var int|null Campaign ID
      */
-    public $campaignId;
+    public ?int $campaignId;
 
     /**
      * @var int|null Sender ID
      */
-    public $senderId;
+    public ?int $senderId;
 
     /**
      * @var string Sendout type
      */
-    public $sendoutType;
+    public string $sendoutType;
 
     /**
      * @var string Send status
      */
-    public $sendStatus = self::STATUS_DRAFT;
+    public string $sendStatus = self::STATUS_DRAFT;
 
     /**
      * @var string Send from name
      */
-    public $fromName;
+    public string $fromName;
 
     /**
      * @var string Send from email
      */
-    public $fromEmail;
+    public string $fromEmail;
 
     /**
      * @var string Reply to email
      */
-    public $replyToEmail;
+    public string $replyToEmail;
 
     /**
      * @var string Email subject
      */
-    public $subject;
+    public string $subject;
 
     /**
      * @var string|null Notification email address
      */
-    public $notificationEmailAddress;
+    public ?string $notificationEmailAddress;
 
     /**
      * @var string Mailing list IDs
      */
-    public $mailingListIds;
+    public string $mailingListIds;
 
     /**
      * @var string Excluded mailing list IDs
      */
-    public $excludedMailingListIds;
+    public string $excludedMailingListIds;
 
     /**
      * @var string Segment IDs
      */
-    public $segmentIds;
+    public string $segmentIds;
 
     /**
      * @var int Recipients
      */
-    public $recipients = 0;
+    public int $recipients = 0;
 
     /**
      * @var int Fails
      */
-    public $fails = 0;
+    public int $fails = 0;
 
     /**
      * @var ScheduleModel|null Schedule
      */
-    public $schedule;
+    public ?ScheduleModel $schedule;
 
     /**
      * @var string HTML body
      */
-    public $htmlBody;
+    public string $htmlBody;
 
     /**
      * @var string Plaintext body
      */
-    public $plaintextBody;
+    public string $plaintextBody;
 
     /**
-     * @var DateTime Send date
+     * @var DateTime|null Send date
      */
-    public $sendDate;
+    public ?DateTime $sendDate;
 
     /**
-     * @var DateTime Last sent
+     * @var DateTime|null Last sent
      */
-    public $lastSent;
+    public ?DateTime $lastSent;
 
     /**
      * @var CampaignElement|null
      */
-    private $_campaign;
+    private ?CampaignElement $_campaign;
 
     /**
      * @var User|null
      */
-    private $_sender;
+    private ?User $_sender;
 
     /**
      * @var MailingListElement[]|null
      */
-    private $_mailingLists;
+    private ?array $_mailingLists;
 
     /**
      * @var MailingListElement[]|null
      */
-    private $_excludedMailingLists;
+    private ?array $_excludedMailingLists;
 
     /**
      * @var SegmentElement[]|null
      */
-    private $_segments;
+    private ?array $_segments;
 
     /**
      * @var array|null
      */
-    private $_pendingRecipients;
-
-    // Public Methods
-    // =========================================================================
+    private ?array $_pendingRecipients;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -504,24 +509,13 @@ class SendoutElement extends Element
         }
 
         // Create schedule
+        // TODO: test!
         if ($this->sendoutType == 'automated') {
-            $this->schedule = new AutomatedScheduleModel(Json::decode($this->schedule));
+            $this->schedule = new AutomatedScheduleModel($this->schedule->toArray());
         }
         elseif ($this->sendoutType == 'recurring') {
-            $this->schedule = new RecurringScheduleModel(Json::decode($this->schedule));
+            $this->schedule = new RecurringScheduleModel($this->schedule->toArray());
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function datetimeAttributes(): array
-    {
-        $names = parent::datetimeAttributes();
-        $names[] = 'sendDate';
-        $names[] = 'lastSent';
-
-        return $names;
     }
 
     /**
@@ -621,9 +615,8 @@ class SendoutElement extends Element
         $expectedRecipients = $this->getPendingRecipientCount();
 
         $progress = $expectedRecipients == 0 ?: $this->recipients / ($this->recipients + $expectedRecipients);
-        $progress = $progress < 1 ? $progress : 1;
 
-        return $progress;
+        return $progress < 1 ? $progress : 1;
     }
 
     /**
@@ -643,11 +636,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's campaign
-     *
-     * @return CampaignElement|null
+     * Returns the sendout's campaign.
      */
-    public function getCampaign()
+    public function getCampaign(): ?CampaignElement
     {
         if ($this->campaignId === null) {
             return null;
@@ -663,11 +654,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sender
-     *
-     * @return User|null
+     * Returns the sender.
      */
-    public function getSender()
+    public function getSender(): ?User
     {
         if ($this->senderId === null) {
             return null;
@@ -821,13 +810,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's HTML body
-     *
-     * @return string|null
-     * @throws Exception
-     * @throws InvalidConfigException
+     * Returns the sendout's HTML body.
      */
-    public function getHtmlBody()
+    public function getHtmlBody(): ?string
     {
         if ($this->sendStatus == self::STATUS_SENT) {
             return $this->htmlBody;
@@ -843,13 +828,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's plaintext body
-     *
-     * @return string|null
-     * @throws InvalidConfigException
-     * @throws Exception
+     * Returns the sendout's plaintext body.
      */
-    public function getPlaintextBody()
+    public function getPlaintextBody(): ?string
     {
         if ($this->sendStatus == self::STATUS_SENT) {
             return $this->plaintextBody;
@@ -870,7 +851,7 @@ class SendoutElement extends Element
     public function getSearchKeywords(string $attribute): string
     {
         if ($attribute == 'subject') {
-            return LitEmoji::unicodeToShortcode($this->$attribute);
+            return LitEmoji::unicodeToShortcode($this->{$attribute});
         }
 
         return parent::getSearchKeywords($attribute);
@@ -879,7 +860,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->sendStatus;
     }
@@ -967,7 +948,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/sendouts/'.$this->sendoutType.'/'.$this->id);
     }
@@ -1063,7 +1044,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             $sendoutRecord = new SendoutRecord();

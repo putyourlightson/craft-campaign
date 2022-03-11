@@ -14,57 +14,41 @@ use yii\db\Connection;
 use yii\db\Expression;
 
 /**
- * SendoutElementQuery
- *
  * @method SendoutElement[]|array all($db = null)
  * @method SendoutElement|array|null one($db = null)
  * @method SendoutElement|array|null nth(int $n, Connection $db = null)
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
 class SendoutElementQuery extends ElementQuery
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string SID
      */
-    public $sid;
+    public string $sid;
 
     /**
      * @var array|string|null The sendout type(s) that the resulting sendouts must have.
      */
-    public $sendoutType;
+    public string|array|null $sendoutType;
 
     /**
      * @var int The campaign ID that the resulting sendouts must be to.
      */
-    public $campaignId;
+    public int $campaignId;
 
     /**
      * @var int The mailing list ID that the resulting sendouts must contain.
      */
-    public $mailingListId;
+    public int $mailingListId;
 
     /**
      * @var int The segment ID that the resulting sendouts must contain.
      */
-    public $segmentId;
-
-    // Public Methods
-    // =========================================================================
+    public int $segmentId;
 
     /**
      * Sets the [[sid]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function sid(string $value)
+    public function sid(string $value): static
     {
         $this->sid = $value;
 
@@ -73,12 +57,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[sendoutType]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function sendoutType(string $value)
+    public function sendoutType(string $value): static
     {
         $this->sendoutType = $value;
 
@@ -87,12 +67,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[campaignId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function campaignId(int $value)
+    public function campaignId(int $value): static
     {
         $this->campaignId = $value;
 
@@ -101,12 +77,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[mailingListId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function mailingListId(int $value)
+    public function mailingListId(int $value): static
     {
         $this->mailingListId = $value;
 
@@ -115,20 +87,13 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[segmentId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function segmentId(int $value)
+    public function segmentId(int $value): static
     {
         $this->segmentId = $value;
 
         return $this;
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -210,7 +175,7 @@ class SendoutElementQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
         $statuses = SendoutElement::statuses();
 

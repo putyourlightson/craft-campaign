@@ -16,38 +16,26 @@ use craft\helpers\Db;
 use yii\db\Connection;
 
 /**
- * MailingListElementQuery
- *
  * @method MailingListElement[]|array all($db = null)
  * @method MailingListElement|array|null one($db = null)
  * @method MailingListElement|array|null nth(int $n, Connection $db = null)
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
 class MailingListElementQuery extends ElementQuery
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|int[]|null The mailing list type ID(s) that the resulting mailing lists must have.
      */
-    public $mailingListTypeId;
+    public array|int|null $mailingListTypeId;
 
     /**
      * @var int|int[]|null The synced user group ID(s) that the resulting mailing lists must have.
      */
-    public $syncedUserGroupId;
+    public array|int|null $syncedUserGroupId;
 
     /**
      * @var bool Whether to only return mailing lists that have synced user groups.
      */
-    public $synced = false;
-
-    // Public Methods
-    // =========================================================================
+    public bool $synced = false;
 
     /**
      * @inheritdoc
@@ -65,12 +53,8 @@ class MailingListElementQuery extends ElementQuery
 
     /**
      * Sets the [[mailingListType]] property.
-     *
-     * @param string|string[]|MailingListTypeModel|null $value The property value
-     *
-     * @return static self reference
      */
-    public function mailingListType($value)
+    public function mailingListType(array|MailingListTypeModel|string|null $value): static
     {
         if ($value instanceof MailingListTypeModel) {
             $this->mailingListTypeId = $value->id;
@@ -90,12 +74,8 @@ class MailingListElementQuery extends ElementQuery
 
     /**
      * Sets the [[mailingListTypeId]] property.
-     *
-     * @param int|int[]|null $value The property value
-     *
-     * @return static self reference
      */
-    public function mailingListTypeId($value)
+    public function mailingListTypeId(array|int|null $value): static
     {
         $this->mailingListTypeId = $value;
 
@@ -104,12 +84,8 @@ class MailingListElementQuery extends ElementQuery
 
     /**
      * Sets the [[syncedUserGroupId]] property.
-     *
-     * @param int|int[]|null $value The property value
-     *
-     * @return static self reference
      */
-    public function syncedUserGroupId($value)
+    public function syncedUserGroupId(array|int|null $value): static
     {
         $this->syncedUserGroupId = $value;
 
@@ -118,12 +94,8 @@ class MailingListElementQuery extends ElementQuery
 
     /**
      * Sets the [[synced]] property.
-     *
-     * @param bool|null $value The property value
-     *
-     * @return static self reference
      */
-    public function synced(bool $value = null)
+    public function synced(bool $value = null): static
     {
         $value = $value ?? true;
 
@@ -131,9 +103,6 @@ class MailingListElementQuery extends ElementQuery
 
         return $this;
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

@@ -7,35 +7,20 @@ namespace putyourlightson\campaign\services;
 
 use craft\base\Component;
 use DateTime;
-use Exception;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ContactMailingListModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-use Throwable;
 
 /**
- * MailingListsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property MailingListElement[] $allMailingLists
+ * @property-read MailingListElement[] $allMailingLists
  */
 class MailingListsService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns a mailing list by ID
-     *
-     * @param int $mailingListId
-     *
-     * @return MailingListElement|null
+     * Returns a mailing list by ID.
      */
-    public function getMailingListById(int $mailingListId)
+    public function getMailingListById(int $mailingListId): ?MailingListElement
     {
         return MailingListElement::find()
             ->id($mailingListId)
@@ -45,10 +30,9 @@ class MailingListsService extends Component
     }
 
     /**
-     * Returns an array of mailing lists by IDs
+     * Returns an array of mailing lists by IDs.
      *
      * @param int[] $mailingListIds
-     *
      * @return MailingListElement[]
      */
     public function getMailingListsByIds(array $mailingListIds): array
@@ -65,13 +49,9 @@ class MailingListsService extends Component
     }
 
     /**
-     * Returns a mailing list by its slug, in the current site
-     *
-     * @param string $mailingListSlug
-     *
-     * @return MailingListElement|null
+     * Returns a mailing list by its slug, in the current site.
      */
-    public function getMailingListBySlug(string $mailingListSlug)
+    public function getMailingListBySlug(string $mailingListSlug): ?MailingListElement
     {
         return MailingListElement::find()
             ->slug($mailingListSlug)
@@ -79,7 +59,7 @@ class MailingListsService extends Component
     }
 
     /**
-     * Returns all mailing lists
+     * Returns all mailing lists.
      *
      * @return MailingListElement[]
      */
@@ -91,16 +71,9 @@ class MailingListsService extends Component
     }
 
     /**
-     * Adds a contact interaction
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param string $interaction
-     * @param string $sourceType
-     * @param string|int $source
-     * @param bool $verify
+     * Adds a contact interaction.
      */
-    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', $source = '', bool $verify = false)
+    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', int|string $source = '', bool $verify = false)
     {
         // Ensure that interaction exists
         if (!in_array($interaction, ContactMailingListModel::INTERACTIONS)) {
@@ -142,12 +115,7 @@ class MailingListsService extends Component
     }
 
     /**
-     * Deletes a contact's subscription to a mailing list
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     *
-     * @throws Exception|Throwable in case delete failed.
+     * Deletes a contact's subscription to a mailing list.
      */
     public function deleteContactSubscription(ContactElement $contact, MailingListElement $mailingList)
     {

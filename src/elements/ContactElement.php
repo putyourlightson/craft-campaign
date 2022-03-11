@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\models\FieldLayout;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\HardDeleteContacts;
@@ -25,43 +26,45 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
-use yii\base\Exception;
 
 /**
- * ContactElement
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $unsubscribedCount
- * @property int $complainedCount
- * @property MailingListElement[] $complainedMailingLists
- * @property int $bouncedCount
- * @property string $reportUrl
- * @property MailingListElement[] $unsubscribedMailingLists
- * @property MailingListElement[] $subscribedMailingLists
- * @property MailingListElement[] $bouncedMailingLists
- * @property int $pendingCount
- * @property string $countryCode
- * @property MailingListElement[] $mailingLists
- * @property bool $isSubscribed
- * @property User|null $user
- * @property bool $hasRoundedThumb
- * @property int $subscribedCount
+ * @property-read int $complainedCount
+ * @property-read int $unsubscribedCount
+ * @property-read MailingListElement[] $complainedMailingLists
+ * @property-read int $bouncedCount
+ * @property-read string $reportUrl
+ * @property-read MailingListElement[] $unsubscribedMailingLists
+ * @property-read MailingListElement[] $subscribedMailingLists
+ * @property-read bool $hasRoundedThumb
+ * @property-read bool $isSubscribed
+ * @property-read MailingListElement[] $bouncedMailingLists
+ * @property-read bool $isEditable
+ * @property-read string $countryCode
+ * @property-read int $subscribedCount
+ * @property-read User|null $user
+ * @property-read MailingListElement[] $mailingLists
  */
 class ContactElement extends Element
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_ACTIVE = 'active';
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_COMPLAINED = 'complained';
-    const STATUS_BOUNCED = 'bounced';
-    const STATUS_BLOCKED = 'blocked';
+    /**
+     * @const string
+     */
+    public const STATUS_COMPLAINED = 'complained';
 
-    // Static Methods
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_BOUNCED = 'bounced';
+
+    /**
+     * @const string
+     */
+    public const STATUS_BLOCKED = 'blocked';
 
     /**
      * @inheritdoc
@@ -97,7 +100,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'contact';
     }
@@ -265,7 +268,7 @@ class ContactElement extends Element
     {
         $settings = Campaign::$plugin->getSettings();
 
-        $attributes = [
+        return [
             'email' => ['label' => $settings->emailFieldLabel],
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
@@ -274,8 +277,6 @@ class ContactElement extends Element
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
-
-        return $attributes;
     }
 
     /**
@@ -294,114 +295,108 @@ class ContactElement extends Element
         return $attributes;
     }
 
-    // Public Properties
-    // =========================================================================
-
     /**
      * User ID
      *
      * @var int|null
      */
-    public $userId;
+    public ?int $userId;
 
     /**
      * Contact ID
      *
-     * @var string
+     * @var null|string
      */
-    public $cid;
+    public ?string $cid;
 
     /**
      * Email
      *
      * @var string
      */
-    public $email;
+    public string $email;
 
     /**
      * Country name
      *
      * @var string|null
      */
-    public $country;
+    public ?string $country;
 
     /**
      * GeoIP
      *
      * @var mixed
      */
-    public $geoIp;
+    public mixed $geoIp;
 
     /**
      * Device
      *
      * @var string|null
      */
-    public $device;
+    public ?string $device;
 
     /**
      * OS
      *
      * @var string|null
      */
-    public $os;
+    public ?string $os;
 
     /**
      * Client
      *
      * @var string|null
      */
-    public $client;
+    public ?string $client;
 
     /**
      * Last activity
      *
      * @var DateTime|null
      */
-    public $lastActivity;
+    public ?DateTime $lastActivity;
 
     /**
      * Verified
      *
      * @var DateTime|null
      */
-    public $verified;
+    public ?DateTime $verified;
 
     /**
      * Complained
      *
      * @var DateTime|null
      */
-    public $complained;
+    public ?DateTime $complained;
 
     /**
      * Bounced
      *
      * @var DateTime|null
      */
-    public $bounced;
+    public ?DateTime $bounced;
 
     /**
      * Blocked
      *
      * @var DateTime|null
      */
-    public $blocked;
+    public ?DateTime $blocked;
 
     /**
      * Subscription status, only used when a mailing list is selected in element index
      *
      * @var string
      */
-    public $subscriptionStatus;
-
-    // Public Methods
-    // =========================================================================
+    public string $subscriptionStatus;
 
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->email;
     }
@@ -409,27 +404,12 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
         // Decode geoIp if not empty
         $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function datetimeAttributes(): array
-    {
-        $names = parent::datetimeAttributes();
-        $names[] = 'lastActivity';
-        $names[] = 'verified';
-        $names[] = 'complained';
-        $names[] = 'bounced';
-        $names[] = 'blocked';
-
-        return $names;
     }
 
     /**
@@ -448,23 +428,21 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-
-        $rules[] = [['cid', 'email'], 'required'];
-        $rules[] = [['cid'], 'string', 'max' => 17];
-        $rules[] = [['email'], 'email'];
-        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
-        $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
-
-        return $rules;
+        return [
+            [['cid', 'email'], 'required'],
+            [['cid'], 'string', 'max' => 17],
+            [['email'], 'email'],
+            [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true],
+            [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class],
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function getFieldLayout()
+    public function getFieldLayout(): ?FieldLayout
     {
         return Craft::$app->getFields()->getLayoutByType(self::class);
     }
@@ -478,12 +456,11 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the user that this contact is associated with
+     * Returns the user that this contact is associated with.
      *
-     * @return User|null
      * @since 1.15.1
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         // Try synced user first
         if ($this->userId !== null) {
@@ -494,9 +471,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Checks whether the contact is subscribed to at least one mailing list
-     *
-     * @return bool
+     * Checks whether the contact is subscribed to at least one mailing list.
      */
     public function getIsSubscribed(): bool
     {
@@ -512,12 +487,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the unsubscribe URL
-     *
-     * @param SendoutElement|null $sendout
-     *
-     * @return string
-     * @throws Exception
+     * Returns the unsubscribe URL.
      */
     public function getUnsubscribeUrl(SendoutElement $sendout = null): string
     {
@@ -660,7 +630,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         if ($this->complained) {
             return self::STATUS_COMPLAINED;
@@ -680,12 +650,10 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getThumbUrl(int $size)
+    public function getThumbUrl(int $size): ?string
     {
         // Get image from Gravatar, defaulting to a blank image
-        $photo = 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=blank&s='.$size;
-
-        return $photo;
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=blank&s='.$size;
     }
 
     /**
@@ -707,7 +675,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/contacts/'.$this->id);
     }
@@ -748,11 +716,10 @@ class ContactElement extends Element
      */
     protected function tableAttributeHtml(string $attribute): string
     {
-        switch ($attribute) {
-            case 'subscriptionStatus':
-                if ($this->subscriptionStatus) {
-                    return Template::raw('<label class="subscriptionStatus '.$this->subscriptionStatus.'">'.$this->subscriptionStatus.'</label>');
-                }
+        if ($attribute == 'subscriptionStatus') {
+            if ($this->subscriptionStatus) {
+                return Template::raw('<label class="subscriptionStatus ' . $this->subscriptionStatus . '">' . $this->subscriptionStatus . '</label>');
+            }
         }
 
         return parent::tableAttributeHtml($attribute);
@@ -773,9 +740,6 @@ class ContactElement extends Element
         return $html;
     }
 
-    // Events
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
@@ -795,7 +759,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             $contactRecord = new ContactRecord();
@@ -828,15 +792,8 @@ class ContactElement extends Element
         parent::afterSave($isNew);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the number of mailing lists that this contact is in
-     *
-     * @param string|null $subscriptionStatus
-     *
-     * @return int
+     * Returns the number of mailing lists that this contact is in.
      */
     private function _getMailingListCount(string $subscriptionStatus = null): int
     {
@@ -848,17 +805,13 @@ class ContactElement extends Element
             $condition['subscriptionStatus'] = $subscriptionStatus;
         }
 
-        $count = ContactMailingListRecord::find()
+        return ContactMailingListRecord::find()
             ->where($condition)
             ->count();
-
-        return $count;
     }
 
     /**
-     * Returns the mailing lists that this contact is in
-     *
-     * @param string|null $subscriptionStatus
+     * Returns the mailing lists that this contact is in.
      *
      * @return MailingListElement[]
      */

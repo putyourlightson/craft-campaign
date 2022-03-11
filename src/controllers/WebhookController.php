@@ -8,30 +8,18 @@ namespace putyourlightson\campaign\controllers;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
+use craft\helpers\App;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
 use craft\web\Controller;
-use Throwable;
-use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * WebhookController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class WebhookController extends Controller
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -40,15 +28,12 @@ class WebhookController extends Controller
     /**
      * @var bool Disable Snaptcha validation
      */
-    public $enableSnaptchaValidation = false;
+    public bool $enableSnaptchaValidation = false;
 
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
-
-    // Public Methods
-    // =========================================================================
+    protected int|bool|array $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
 
     /**
      * @inheritdoc
@@ -57,7 +42,7 @@ class WebhookController extends Controller
     {
         // Verify API key
         $key = Craft::$app->getRequest()->getParam('key');
-        $apiKey = Craft::parseEnv(Campaign::$plugin->getSettings()->apiKey);
+        $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
         if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
@@ -67,9 +52,9 @@ class WebhookController extends Controller
     }
 
     /**
-     * Test
+     * Test.
      */
-    public function actionTest(): Response
+    public function actionTest(): ?Response
     {
         return $this->asJson(['success' => true]);
     }
@@ -77,10 +62,8 @@ class WebhookController extends Controller
     /**
      * Amazon SES
      * https://docs.aws.amazon.com/ses/latest/DeveloperGuide/notification-examples.html
-     *
-     * @throws Throwable
      */
-    public function actionAmazonSes(): Response
+    public function actionAmazonSes(): ?Response
     {
         $this->requirePostRequest();
 
@@ -93,7 +76,7 @@ class WebhookController extends Controller
         try {
             $validator->validate($message);
         }
-        catch (InvalidSnsMessageException $e) {
+        catch (InvalidSnsMessageException) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
         }
 
@@ -108,7 +91,8 @@ class WebhookController extends Controller
             try {
                 $client->get($message['SubscribeURL']);
             }
-            catch (ConnectException $e) {}
+            catch (ConnectException) {
+            }
         }
 
         if ($message['Type'] === 'Notification') {
@@ -130,10 +114,8 @@ class WebhookController extends Controller
 
     /**
      * Mailgun
-     *
-     * @throws Throwable
      */
-    public function actionMailgun(): Response
+    public function actionMailgun(): ?Response
     {
         $this->requirePostRequest();
 
@@ -144,7 +126,7 @@ class WebhookController extends Controller
 
         // Validate the event signature if a signing key is set
         // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-        $signingKey = Craft::parseEnv(Campaign::$plugin->getSettings()->mailgunWebhookSigningKey);
+        $signingKey = App::parseEnv(Campaign::$plugin->getSettings()->mailgunWebhookSigningKey);
 
         if ($signingKey) {
             $eventSignature = $eventData['signature'] ?? '';
@@ -188,10 +170,8 @@ class WebhookController extends Controller
 
     /**
      * Mandrill
-     *
-     * @throws Throwable
      */
-    public function actionMandrill(): Response
+    public function actionMandrill(): ?Response
     {
         $this->requirePostRequest();
 
@@ -217,10 +197,8 @@ class WebhookController extends Controller
 
     /**
      * Postmark
-     *
-     * @throws Throwable
      */
-    public function actionPostmark(): Response
+    public function actionPostmark(): ?Response
     {
         $this->requirePostRequest();
 
@@ -273,10 +251,8 @@ class WebhookController extends Controller
 
     /**
      * Sendgrid
-     *
-     * @throws Throwable
      */
-    public function actionSendgrid(): Response
+    public function actionSendgrid(): ?Response
     {
         $this->requirePostRequest();
 
@@ -303,21 +279,10 @@ class WebhookController extends Controller
         return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Call webhook
-     *
-     * @param string $event
-     * @param string|null $email
-     *
-     * @return Response
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
+     * Calls a webhook.
      */
-    private function _callWebhook(string $event, string $email = null): Response
+    private function _callWebhook(string $event, string $email = null): ?Response
     {
         // Log request
         Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'campaign');

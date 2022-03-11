@@ -9,25 +9,15 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\base\Event;
 
-/**
- * UnsubscribeContactEvent
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class UnsubscribeContactEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
-    public $contact;
+    public ContactElement $contact;
 
     /**
      * @var MailingListElement
      */
-    public $mailingList;
+    public MailingListElement $mailingList;
 }

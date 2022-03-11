@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Component;
 use craft\base\FieldInterface;
 use craft\helpers\Db;
+use craft\helpers\ElementHelper;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -17,25 +18,14 @@ use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 
 /**
- * SegmentsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.9.0
+ * @since 1.9.0
  */
 class SegmentsService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns a segment by ID
-     *
-     * @param int $segmentId
-     *
-     * @return SegmentElement|null
+     * Returns a segment by ID.
      */
-    public function getSegmentById(int $segmentId)
+    public function getSegmentById(int $segmentId): ?SegmentElement
     {
         return SegmentElement::find()
             ->id($segmentId)
@@ -45,7 +35,7 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns segments by IDs
+     * Returns segments by IDs.
      *
      * @param int[] $segmentIds
      *
@@ -65,9 +55,7 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns the segment's contacts
-     *
-     * @param SegmentElement $segment
+     * Returns the segment's contacts.
      *
      * @return ContactElement[]
      */
@@ -77,9 +65,7 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns the segment's contact IDs
-     *
-     * @param SegmentElement $segment
+     * Returns the segment's contact IDs.
      *
      * @return int[]
      */
@@ -89,10 +75,7 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns the segment's contacts filtered by the provided contact IDs
-     *
-     * @param SegmentElement $segment
-     * @param int[]|null $contactIds
+     * Returns the segment's contacts filtered by the provided contact IDs.
      *
      * @return ContactElement[]
      */
@@ -121,9 +104,8 @@ class SegmentsService extends Component
                     if ($evaluated) {
                         $filteredContacts[] = $contact;
                     }
+                } catch (LoaderError|SyntaxError) {
                 }
-                catch (LoaderError $e) {}
-                catch (SyntaxError $e) {}
             }
         }
 
@@ -131,10 +113,7 @@ class SegmentsService extends Component
     }
 
     /**
-     * Returns the segment's contact IDs filtered by the provided contact IDs
-     *
-     * @param SegmentElement $segment
-     * @param int[]|null $contactIds
+     * Returns the segment's contact IDs filtered by the provided contact IDs.
      *
      * @return int[]
      */
@@ -158,14 +137,22 @@ class SegmentsService extends Component
         return $filteredContactIds;
     }
 
+    /**
+     * Updates a field.
+     */
     public function updateField(FieldInterface $field)
     {
         if (!SegmentHelper::isContactField($field)) {
             return;
         }
 
-        $newFieldColumn = SegmentHelper::fieldColumnFromField($field);
-        $oldFieldColumn = SegmentHelper::oldFieldColumnFromField($field);
+        if (!$field::hasContentColumn()) {
+            return;
+        }
+
+        // TODO: test!
+        $newFieldColumn = ElementHelper::fieldColumnFromField($field);
+        $oldFieldColumn = ElementHelper::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
 
         if ($newFieldColumn == $oldFieldColumn) {
             return;
@@ -193,6 +180,9 @@ class SegmentsService extends Component
         }
     }
 
+    /**
+     * Deletes a field.
+     */
     public function deleteField(FieldInterface $field)
     {
         if (!SegmentHelper::isContactField($field)) {
@@ -223,13 +213,8 @@ class SegmentsService extends Component
         }
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the conditions
-     *
-     * @param SegmentElement $segment
+     * Returns the conditions.
      *
      * @return array[]
      */
@@ -250,14 +235,14 @@ class SegmentsService extends Component
                 $operator = $orCondition[0];
 
                 // If operator contains %v
-                if (strpos($operator, '%v') !== false) {
+                if (str_contains($operator, '%v')) {
                     $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
                     $orCondition[2] = '%'.$orCondition[2];
                     $orCondition[3] = false;
                 }
 
                 // If operator contains v%
-                if (strpos($operator, 'v%') !== false) {
+                if (str_contains($operator, 'v%')) {
                     $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
                     $orCondition[2] .= '%';
                     $orCondition[3] = false;
@@ -277,11 +262,6 @@ class SegmentsService extends Component
         return $conditions;
     }
 
-    /**
-     * @param int[]|null $contactIds
-     *
-     * @return ContactElementQuery
-     */
     private function _getContactElementQuery(array $contactIds = null): ContactElementQuery
     {
         $contactQuery = ContactElement::find();

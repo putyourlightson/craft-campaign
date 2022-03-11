@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\controllers;
 
 use craft\elements\Asset;
-use craft\errors\MissingComponentException;
 use craft\helpers\Assets;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -16,25 +15,11 @@ use Craft;
 use craft\web\Controller;
 use craft\helpers\FileHelper;
 use craft\web\UploadedFile;
-use Throwable;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * ImportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ImportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -47,11 +32,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     *
-     * @return Response
+     * Default action.
      */
-    public function actionIndex(string $siteHandle = null): Response
+    public function actionIndex(string $siteHandle = null): ?Response
     {
         // Set the current site to the site handle if set
         if ($siteHandle !== null) {
@@ -67,17 +50,11 @@ class ImportsController extends Controller
     }
 
     /**
-     * Uploads a file
+     * Uploads a file.
      *
      * @param ImportModel|null $import The import, if there were any validation errors.
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws MissingComponentException
      */
-    public function actionUploadFile(ImportModel $import = null)
+    public function actionUploadFile(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
 
@@ -136,12 +113,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * Imports a file
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Imports a file.
      */
-    public function actionImportFile()
+    public function actionImportFile(): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -188,15 +162,11 @@ class ImportsController extends Controller
     }
 
     /**
-     * Select user group
+     * Selects a user group.
      *
      * @param ImportModel|null $import The import, if there were any validation errors.
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
      */
-    public function actionSelectUserGroup(ImportModel $import = null)
+    public function actionSelectUserGroup(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -225,12 +195,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * Imports a user group
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Imports a user group.
      */
-    public function actionImportUserGroup()
+    public function actionImportUserGroup(): ?Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
@@ -284,12 +251,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * Downloads a file
-     *
-     * @return Response
-     * @throws BadRequestHttpException
+     * Downloads a file.
      */
-    public function actionDownloadFile(): Response
+    public function actionDownloadFile(): ?Response
     {
         $importId = Craft::$app->getRequest()->getRequiredParam('importId');
 
@@ -312,13 +276,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * Deletes an import
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes an import.
      */
-    public function actionDeleteImport(): Response
+    public function actionDeleteImport(): ?Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -330,18 +290,10 @@ class ImportsController extends Controller
         return $this->asJson(['success' => true]);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the fields template
-     *
-     * @param ImportModel $import
-     * @param array|string|null $mailingListIds
-     *
-     * @return Response
+     * Returns the fields template.
      */
-    private function _returnFieldsTemplate(ImportModel $import, $mailingListIds = []): Response
+    private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): ?Response
     {
         $variables = [];
         $variables['import'] = $import;

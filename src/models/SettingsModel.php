@@ -15,43 +15,34 @@ use putyourlightson\campaign\elements\ContactElement;
 use yii\validators\EmailValidator;
 
 /**
- * SettingsModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
  * @mixin FieldLayoutBehavior
  *
- * @property FieldLayout $contactFieldLayout
- * @property FieldInterface[] $contactFields
+ * @property-read FieldLayout $contactFieldLayout
+ * @property-read FieldInterface[] $contactFields
  */
 class SettingsModel extends Model
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @var bool Sendout emails will be saved into local files (in storage/runtime/debug/mail) rather that actually being sent
      */
-    public $testMode = false;
+    public bool $testMode = false;
 
     /**
      * @var string An API key to use for triggering tasks and notifications (min. 16 characters)
      */
-    public $apiKey;
+    public string $apiKey;
 
     /**
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      * @since 1.19.0
      */
-    public $mailgunWebhookSigningKey;
+    public ?string $mailgunWebhookSigningKey;
 
     /**
      * @var array The allowed IP addresses for incoming webhook requests from Postmark
      * @since 1.19.0
      */
-    public $postmarkAllowedIpAddresses = [
+    public array $postmarkAllowedIpAddresses = [
         '3.134.147.250',
         '50.31.156.6',
         '50.31.156.77',
@@ -62,33 +53,33 @@ class SettingsModel extends Model
      * @var array|null The AJAX origins that should be allowed to access live preview.
      * @since 1.21.0
      */
-    public $allowedOrigins;
+    public ?array $allowedOrigins;
 
     /**
      * @var bool Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
      * @since 1.22.0
      */
-    public $sendVerificationEmailsViaCraft = false;
+    public bool $sendVerificationEmailsViaCraft = false;
 
     /**
      * @var array|null The names and emails that sendouts can be sent from
      */
-    public $fromNamesEmails;
+    public ?array $fromNamesEmails;
 
     /**
      * @var string|null The transport type that should be used
      */
-    public $transportType;
+    public ?string $transportType;
 
     /**
      * @var array|null The transport type’s settings
      */
-    public $transportSettings;
+    public ?array $transportSettings;
 
     /**
      * @var string A label to use for the email field
      */
-    public $emailFieldLabel = 'Email';
+    public string $emailFieldLabel = 'Email';
 
     /**
      * TODO: remove in version 2.0.0
@@ -96,134 +87,134 @@ class SettingsModel extends Model
      * @var int|null Contact field layout ID
      * @deprecated Since 1.15.0
      */
-    public $contactFieldLayoutId;
+    public ?int $contactFieldLayoutId;
 
     /**
      * @var int The maximum size of sendout batches
      */
-    public $maxBatchSize = 10000;
+    public int $maxBatchSize = 10000;
 
     /**
      * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
      */
-    public $memoryLimit = '1024M';
+    public mixed $memoryLimit = '1024M';
 
     /**
      * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
      */
-    public $timeLimit = 3600;
+    public int $timeLimit = 3600;
 
     /**
      * @var float The threshold for memory usage per sendout batch as a fraction
      */
-    public $memoryThreshold = 0.8;
+    public float $memoryThreshold = 0.8;
 
     /**
      * @var float The threshold for execution time per sendout batch as a fraction
      */
-    public $timeThreshold = 0.8;
+    public float $timeThreshold = 0.8;
 
     /**
      * @var int The maximum number of times to attempt sending a sendout to a single contact before failing
      * @since 1.10.0
      */
-    public $maxSendAttempts = 3;
+    public int $maxSendAttempts = 3;
 
     /**
      * @var int The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
      * @since 1.15.4
      */
-    public $maxSendFailsAllowed = 1;
+    public int $maxSendFailsAllowed = 1;
 
     /**
      * @var int The maximum number of times to attempt retrying a failed sendout job
      */
-    public $maxRetryAttempts = 10;
+    public int $maxRetryAttempts = 10;
 
     /**
      * @var int The amount of time in seconds to delay jobs between sendout batches
      */
-    public $batchJobDelay = 10;
+    public int $batchJobDelay = 10;
 
     /**
      * @var int The amount of time in seconds to reserve a sendout job
      * @since 1.9.0
      */
-    public $sendoutJobTtr = 300;
+    public int $sendoutJobTtr = 300;
 
     /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
      */
-    public $geoIp = false;
+    public bool $geoIp = false;
 
     /**
      * @var string|null The ipstack.com API key
      */
-    public $ipstackApiKey;
+    public ?string $ipstackApiKey;
 
     /**
      * @var bool Enable reCAPTCHA to protect mailing list subscription forms from bots
      */
-    public $reCaptcha = false;
+    public bool $reCaptcha = false;
 
     /**
      * TODO: change to `3` in version 2.0.0
      *
      * @var int|null The reCAPTCHA version
      */
-    public $reCaptchaVersion = 2;
+    public ?int $reCaptchaVersion = 2;
 
     /**
      * @var string|null The reCAPTCHA site key
      */
-    public $reCaptchaSiteKey;
+    public ?string $reCaptchaSiteKey;
 
     /**
      * @var string|null The reCAPTCHA secret key
      */
-    public $reCaptchaSecretKey;
+    public ?string $reCaptchaSecretKey;
 
     /**
      * @var string The reCAPTCHA error message
      */
-    public $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
+    public string $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
 
     /**
      * TODO: remove in version 2.0.0
      *
      * @var string|null The size of the reCAPTCHA widget
      */
-    public $reCaptchaSize;
+    public ?string $reCaptchaSize;
 
     /**
      * TODO: remove in version 2.0.0
      *
      * @var string|null The color theme of the reCAPTCHA widget
      */
-    public $reCaptchaTheme;
+    public ?string $reCaptchaTheme;
 
     /**
      * TODO: remove in version 2.0.0
      *
      * @var string|null The position of the reCAPTCHA badge (when invisible)
      */
-    public $reCaptchaBadge;
+    public ?string $reCaptchaBadge;
 
     /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
      */
-    public $maxPendingContacts = 5;
+    public int $maxPendingContacts = 5;
 
     /**
      * @var mixed The amount of time to wait before purging pending contacts in seconds or as an interval (0 for disabled)
      */
-    public $purgePendingContactsDuration = 0;
+    public mixed $purgePendingContactsDuration = 0;
 
     /**
      * @var array Extra fields and the operators that should be available to segments
      * @since 1.7.3
      */
-    public $extraSegmentFieldOperators = [];
+    public array $extraSegmentFieldOperators = [];
 
     // Public Methods
     // =========================================================================
@@ -304,11 +295,9 @@ class SettingsModel extends Model
     }
 
     /**
-     * Validates the from names and emails
-     *
-     * @param mixed $attribute
+     * Validates the from names and emails.
      */
-    public function validateFromNamesEmails($attribute)
+    public function validateFromNamesEmails(mixed $attribute)
     {
         if (empty($this->fromNamesEmails)) {
             $this->addError($attribute, Craft::t('campaign', 'You must enter at least one name and email.'));

@@ -11,22 +11,19 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
  * @since     1.10.0
  */
-
 abstract class MailingListElementFixture extends BaseElementFixture
 {
     /**
      * @var array
      */
-    public $mailingListTypeIds = [];
+    public array $mailingListTypeIds = [];
 
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         foreach (Campaign::$plugin->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
             $this->mailingListTypeIds[$mailingListType->handle] = $mailingListType->id;

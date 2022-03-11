@@ -9,22 +9,12 @@ use Html2Text\Html2Text;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-/**
- * CampaignTwigExtension
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignTwigExtension extends AbstractExtension
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('html_to_plaintext', [$this, 'htmlToPlaintext']),
@@ -32,11 +22,7 @@ class CampaignTwigExtension extends AbstractExtension
     }
 
     /**
-     * Converts HTML to plaintext (with line breaks)
-     *
-     * @param string|null $html
-     *
-     * @return string
+     * Converts HTML to plaintext (with line breaks).
      */
     public function htmlToPlaintext(string $html = null): string
     {
@@ -52,8 +38,6 @@ class CampaignTwigExtension extends AbstractExtension
         $text = $html2Text->getText();
 
         // Convert [[br]] tags to new lines
-        $text = str_replace('[[br]]', "\r\n", $text);
-
-        return $text;
+        return str_replace('[[br]]', "\r\n", $text);
     }
 }

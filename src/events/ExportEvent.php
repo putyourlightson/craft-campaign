@@ -9,19 +9,12 @@ use craft\events\CancelableEvent;
 use putyourlightson\campaign\models\ExportModel;
 
 /**
- * ExportEvent
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class ExportEvent extends CancelableEvent
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var ExportModel|null
      */
-    public $export;
+    public ?ExportModel $export;
 }

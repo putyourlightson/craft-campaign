@@ -6,9 +6,9 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
+use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\HandleValidator;
@@ -16,96 +16,81 @@ use craft\validators\UniqueValidator;
 use craft\models\Site;
 use craft\validators\SiteIdValidator;
 use craft\validators\UriFormatValidator;
-use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 
 /**
- * CampaignTypeModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
  * @mixin FieldLayoutBehavior
  *
- * @property Site|null $site
- * @property ContactElement[] $testContacts
- * @property FieldLayout $fieldLayout
- * @property string $cpEditUrl
+ * @property-read null|Site $site
+ * @property-read string $cpEditUrl
+ * @property-read ContactElement[] $testContacts
+ * @property-read ContactElement[] $testContactsWithDefault
  *
  * @method FieldLayout getFieldLayout()
  * @method setFieldLayout(FieldLayout $fieldLayout)
  */
-class CampaignTypeModel extends BaseModel
+class CampaignTypeModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id;
 
     /**
      * @var int|null Site ID
      */
-    public $siteId;
+    public ?int $siteId;
 
     /**
      * @var int|null Field layout ID
      */
-    public $fieldLayoutId;
+    public ?int $fieldLayoutId;
 
     /**
      * @var string|null Name
      */
-    public $name;
+    public ?string $name;
 
     /**
      * @var string|null Handle
      */
-    public $handle;
+    public ?string $handle;
 
     /**
      * @var string|null URI format
      */
-    public $uriFormat;
+    public ?string $uriFormat;
 
     /**
      * @var string|null HTML template
      */
-    public $htmlTemplate;
+    public ?string $htmlTemplate;
 
     /**
      * @var string|null Plaintext template
      */
-    public $plaintextTemplate;
+    public ?string $plaintextTemplate;
 
     /**
      * @var string|null Query string parameters
      */
-    public $queryStringParameters;
+    public ?string $queryStringParameters;
 
     /**
      * @var int[]|string|null
      */
-    public $testContactIds;
+    public string|array|null $testContactIds;
 
     /**
      * @var string|null UID
      */
-    public $uid;
-
-    // Public Methods
-    // =========================================================================
+    public ?string $uid;
 
     /**
-     * Use the handle as the string representation.
-     *
-     * @return string
+     * Returns the handle as the string representation.
      */
     public function __toString(): string
     {
@@ -115,7 +100,7 @@ class CampaignTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
+    protected function defineBehaviors(): array
     {
         return [
             'fieldLayout' => [
@@ -128,7 +113,7 @@ class CampaignTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['id', 'siteId', 'fieldLayoutId'], 'integer'],
@@ -143,8 +128,6 @@ class CampaignTypeModel extends BaseModel
 
     /**
      * Returns the CP edit URL.
-     *
-     * @return string
      */
     public function getCpEditUrl(): string
     {
@@ -153,10 +136,8 @@ class CampaignTypeModel extends BaseModel
 
     /**
      * Returns the site.
-     *
-     * @return Site|null
      */
-    public function getSite()
+    public function getSite(): ?Site
     {
         if ($this->siteId === null) {
             return Craft::$app->getSites()->getPrimarySite();
@@ -220,8 +201,6 @@ class CampaignTypeModel extends BaseModel
 
     /**
      * Returns whether the URI format is set and if the template paths are valid.
-     *
-     * @return bool
      */
     public function hasValidTemplates(): bool
     {

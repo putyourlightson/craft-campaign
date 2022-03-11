@@ -7,23 +7,15 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\services\SendoutsService;
-use Throwable;
 use yii\queue\RetryableJobInterface;
 
 /**
- * SendoutJob
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $ttr
+ * @property-read int $ttr
  */
 class SendoutJob extends BaseJob implements RetryableJobInterface
 {
@@ -33,25 +25,22 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
     /**
      * @var int
      */
-    public $sendoutId;
+    public int $sendoutId;
 
     /**
      * @var string|null
      */
-    public $title;
+    public ?string $title;
 
     /**
      * @var int
      */
-    public $batch = 1;
-
-    // Public Methods
-    // =========================================================================
+    public int $batch = 1;
 
     /**
      * @inheritdoc
      */
-    public function getTtr()
+    public function getTtr(): int
     {
         return Campaign::$plugin->getSettings()->sendoutJobTtr;
     }
@@ -66,11 +55,8 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
 
     /**
      * @inheritdoc
-     * @return void
-     * @throws Exception
-     * @throws Throwable
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         // Get sendout
         $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
@@ -163,9 +149,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             ]));
         }
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

@@ -19,61 +19,44 @@ use putyourlightson\campaign\models\PendingContactModel;
 use Craft;
 use craft\base\Component;
 use Twig\Error\Error;
-use yii\base\Exception;
 
 /**
- * FormsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
 class FormsService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event SubscribeContactEvent
+     */
+    public const EVENT_BEFORE_SUBSCRIBE_CONTACT = 'beforeSubscribeContact';
 
     /**
      * @event SubscribeContactEvent
      */
-    const EVENT_BEFORE_SUBSCRIBE_CONTACT = 'beforeSubscribeContact';
-
-    /**
-     * @event SubscribeContactEvent
-     */
-    const EVENT_AFTER_SUBSCRIBE_CONTACT = 'afterSubscribeContact';
+    public const EVENT_AFTER_SUBSCRIBE_CONTACT = 'afterSubscribeContact';
 
     /**
      * @event UnsubscribeContactEvent
      */
-    const EVENT_BEFORE_UNSUBSCRIBE_CONTACT = 'beforeUnsubscribeContact';
+    public const EVENT_BEFORE_UNSUBSCRIBE_CONTACT = 'beforeUnsubscribeContact';
 
     /**
      * @event UnsubscribeContactEvent
      */
-    const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
+    public const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
 
     /**
      * @event UpdateContactEvent
      */
-    const EVENT_BEFORE_UPDATE_CONTACT = 'beforeUpdateContact';
+    public const EVENT_BEFORE_UPDATE_CONTACT = 'beforeUpdateContact';
 
     /**
      * @event UpdateContactEvent
      */
-    const EVENT_AFTER_UPDATE_CONTACT = 'afterUpdateContact';
-
-    // Public Methods
-    // =========================================================================
+    public const EVENT_AFTER_UPDATE_CONTACT = 'afterUpdateContact';
 
     /**
-     * Sends a verify subscribe email
-     *
-     * @param PendingContactModel $pendingContact
-     * @param MailingListElement $mailingList
-     *
-     * @return bool
-     * @throws Exception
+     * Sends a verify subscribe email.
      */
     public function sendVerifySubscribeEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
@@ -108,20 +91,15 @@ class FormsService extends Component
                     'pendingContact' => $pendingContact,
                 ]);
             }
-            catch (Error $e) {}
+            catch (Error) {
+            }
         }
 
         return $this->_sendEmail($pendingContact->email, $subject, $body, $mailingList->siteId);
     }
 
     /**
-     * Sends a verify unsubscribe email
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     *
-     * @return bool
-     * @throws Exception
+     * Sends a verify unsubscribe email.
      */
     public function sendVerifyUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
     {
@@ -157,20 +135,15 @@ class FormsService extends Component
                     'contact' => $contact,
                 ]);
             }
-            catch (Error $e) {}
+            catch (Error) {
+            }
         }
 
         return $this->_sendEmail($contact->email, $subject, $body, $mailingList->siteId);
     }
 
     /**
-     * Subscribe contact
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param string|null $sourceType
-     * @param string|null $source
-     * @param bool|null $verify
+     * Subscribes a contact.
      */
     public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
     {
@@ -205,10 +178,7 @@ class FormsService extends Component
     }
 
     /**
-     * Unsubscribes a contact
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
+     * Unsubscribes a contact.
      */
     public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList)
     {
@@ -235,11 +205,7 @@ class FormsService extends Component
     }
 
     /**
-     * Updates a contact
-     *
-     * @param ContactElement $contact
-     *
-     * @return bool
+     * Updates a contact.
      */
     public function updateContact(ContactElement $contact): bool
     {
@@ -267,18 +233,8 @@ class FormsService extends Component
         return true;
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Sends an email to a contact
-     *
-     * @param string $email
-     * @param string $subject
-     * @param string $body
-     * @param int $siteId
-     *
-     * @return bool
+     * Sends an email to a contact.
      */
     public function _sendEmail(string $email, string $subject, string $body, int $siteId): bool
     {

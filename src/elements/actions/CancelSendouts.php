@@ -48,7 +48,7 @@ class CancelSendouts extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getConfirmationMessage()
+    public function getConfirmationMessage(): ?string
     {
         return Craft::t('campaign', 'Are you sure you want to cancel the selected sendouts?');
     }
@@ -56,7 +56,7 @@ class CancelSendouts extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getTriggerHtml()
+    public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
 
@@ -64,7 +64,7 @@ class CancelSendouts extends ElementAction
 (function()
 {
     var trigger = new Craft.ElementActionTrigger({
-        type: {$type},
+        type: $type,
         batch: true,
         validateSelection: function(\$selectedItems)
         {

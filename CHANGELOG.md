@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.0-beta.1 - Unreleased
+### Added
+- Added compatibility with Craft 4.
+
 ## 1.23.0 - 2022-02-28
 ### Added
 - Added a German translation of the plugin ([#296](https://github.com/putyourlightson/craft-campaign/issues/296) ❤️@andreasbecker).

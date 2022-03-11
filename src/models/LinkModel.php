@@ -5,52 +5,42 @@
 
 namespace putyourlightson\campaign\models;
 
-use putyourlightson\campaign\base\BaseModel;
+use craft\base\Model;
 
-/**
- * LinkModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0   
- */
-class LinkModel extends BaseModel
+class LinkModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id;
 
     /**
      * @var string|null Link ID
      */
-    public $lid;
+    public ?string $lid;
 
     /**
      * @var int Campaign ID
      */
-    public $campaignId;
+    public int $campaignId;
 
     /**
      * @var string|null URL
      */
-    public $url;
+    public ?string $url;
 
     /**
      * @var string|null Title
      */
-    public $title;
+    public ?string $title;
 
     /**
      * @var int Clicked
      */
-    public $clicked = 0;
+    public int $clicked = 0;
 
     /**
      * @var int Clicks
      */
-    public $clicks = 0;
+    public int $clicks = 0;
 }

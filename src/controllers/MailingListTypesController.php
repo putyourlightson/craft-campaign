@@ -11,24 +11,11 @@ use putyourlightson\campaign\elements\MailingListElement;
 
 use Craft;
 use craft\web\Controller;
-use Throwable;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * MailingListTypesController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class MailingListTypesController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,11 +28,10 @@ class MailingListTypesController extends Controller
     }
 
     /**
+     * Main edit page.
+     *
      * @param int|null $mailingListTypeId The mailing list type’s ID, if editing an existing mailing list type.
      * @param MailingListTypeModel|null $mailingListType The mailing list type being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException if the requested mailing list type is not found
      */
     public function actionEditMailingListType(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
     {
@@ -87,11 +73,9 @@ class MailingListTypesController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws Throwable
-     * @throws BadRequestHttpException
+     * Saves a mailing list type.
      */
-    public function actionSaveMailingListType()
+    public function actionSaveMailingListType(): ?Response
     {
         $this->requirePostRequest();
 
@@ -147,11 +131,7 @@ class MailingListTypesController extends Controller
     }
 
     /**
-     * Deletes a mailing list type
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes a mailing list type.
      */
     public function actionDeleteMailingListType(): Response
     {

@@ -25,30 +25,23 @@ use craft\elements\User;
 use yii\base\Event;
 
 /**
- * SyncService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class SyncService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event SyncEvent
+     */
+    public const EVENT_BEFORE_SYNC = 'beforeSync';
 
     /**
      * @event SyncEvent
      */
-    const EVENT_BEFORE_SYNC = 'beforeSync';
+    public const EVENT_AFTER_SYNC = 'afterSync';
 
     /**
-     * @event SyncEvent
+     * Registers user events.
      */
-    const EVENT_AFTER_SYNC = 'afterSync';
-
-    // Public Methods
-    // =========================================================================
-
     public function registerUserEvents()
     {
         $events = [
@@ -67,11 +60,9 @@ class SyncService extends Component
     }
 
     /**
-     * Handles a user event
-     *
-     * @param Event $event
+     * Handles a user event.
      */
-    public function handleUserEvent(Event $event)
+    public function handleUserEvent(Event $event): void
     {
         // Ensure pro version
         if (!Campaign::$plugin->getIsPro()) {
@@ -100,9 +91,7 @@ class SyncService extends Component
     }
 
     /**
-     * Queues a sync
-     *
-     * @param MailingListElement $mailingList
+     * Queues a sync.
      */
     public function queueSync(MailingListElement $mailingList)
     {
@@ -114,9 +103,7 @@ class SyncService extends Component
     }
 
     /**
-     * Syncs a user
-     *
-     * @param User $user
+     * Syncs a user.
      */
     public function syncUser(User $user)
     {
@@ -141,9 +128,7 @@ class SyncService extends Component
     }
 
     /**
-     * Deletes a user
-     *
-     * @param User $user
+     * Deletes a user.
      */
     public function deleteUser(User $user)
     {
@@ -155,10 +140,7 @@ class SyncService extends Component
     }
 
     /**
-     * Syncs a user to a contact in a mailing list
-     *
-     * @param User $user
-     * @param MailingListElement $mailingList
+     * Syncs a user to a contact in a mailing list.
      */
     public function syncUserMailingList(User $user, MailingListElement $mailingList)
     {
@@ -217,10 +199,7 @@ class SyncService extends Component
     }
 
     /**
-     * Removes a user synced contact from a mailing list
-     *
-     * @param User $user
-     * @param MailingListElement $mailingList
+     * Removes a user synced contact from a mailing list.
      */
     public function removeUserMailingList(User $user, MailingListElement $mailingList)
     {
