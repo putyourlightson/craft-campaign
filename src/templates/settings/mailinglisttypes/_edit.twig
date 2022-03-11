@@ -170,11 +170,9 @@
 
     <hr>
 
-    {% include "_includes/fieldlayoutdesigner" with {
+    {{ forms.fieldLayoutDesignerField({
         fieldLayout: mailingListType.getFieldLayout(),
-        customizableTabs: false,
-        pretendTabName: "Mailing List"|t('campaign')
-    } only %}
+    }) }}
 
 {% endblock %}
 

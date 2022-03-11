@@ -65,12 +65,19 @@ class CampaignTypesService extends Component
      */
     public function getAllCampaignTypes(): array
     {
+        $campaignTypes = [];
         $campaignTypeRecords = CampaignTypeRecord::find()
             ->innerJoinWith('site')
             ->orderBy(['name' => SORT_ASC])
             ->all();
 
-        return CampaignTypeModel::populateModels($campaignTypeRecords, false);
+        foreach ($campaignTypeRecords as $campaignTypeRecord) {
+            $campaignType = new CampaignTypeModel();
+            $campaignType->setAttributes($campaignTypeRecord->getAttributes(), false);
+            $campaignTypes[] = $campaignType;
+        }
+
+        return $campaignTypes;
     }
 
     /**

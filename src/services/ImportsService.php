@@ -37,15 +37,22 @@ class ImportsService extends Component
     private array $_mailingLists = [];
 
     /**
-     * Returns all imports
+     * Returns all imports.
      *
      * @return ImportModel[]
      */
     public function getAllImports(): array
     {
+        $imports = [];
         $importRecords = ImportRecord::find()->all();
 
-        return ImportModel::populateModels($importRecords, false);
+        foreach ($importRecords as $importRecord) {
+            $import = new ImportModel();
+            $import->setAttributes($importRecord->getAttributes(), false);
+            $imports[] = $import;
+        }
+
+        return $imports;
     }
 
     /**

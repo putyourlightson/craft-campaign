@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\UrlHelper;
-use craft\models\FieldLayout;
 use craft\models\Site;
 
 use craft\validators\HandleValidator;
@@ -23,36 +22,33 @@ use putyourlightson\campaign\records\MailingListTypeRecord;
  *
  * @property-read null|Site $site
  * @property-read string $cpEditUrl
- *
- * @method FieldLayout getFieldLayout()
- * @method setFieldLayout(FieldLayout $fieldLayout)
  */
 class MailingListTypeModel extends Model
 {
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Site ID
      */
-    public ?int $siteId;
+    public ?int $siteId = null;
 
     /**
      * @var int|null Field layout ID
      */
-    public ?int $fieldLayoutId;
+    public ?int $fieldLayoutId = null;
 
     /**
      * @var string|null Name
      */
-    public ?string $name;
+    public ?string $name = null;
 
     /**
      * @var string|null Handle
      */
-    public ?string $handle;
+    public ?string $handle = null;
 
     /**
      * @var bool Subscribe verification required
@@ -62,22 +58,22 @@ class MailingListTypeModel extends Model
     /**
      * @var string|null Subscribe verification email subject
      */
-    public ?string $subscribeVerificationEmailSubject;
+    public ?string $subscribeVerificationEmailSubject = null;
 
     /**
      * @var string|null Subscribe verification email template
      */
-    public ?string $subscribeVerificationEmailTemplate;
+    public ?string $subscribeVerificationEmailTemplate = null;
 
     /**
      * @var string|null Subscribe verification success template
      */
-    public ?string $subscribeVerificationSuccessTemplate;
+    public ?string $subscribeVerificationSuccessTemplate = null;
 
     /**
      * @var string|null Subscribe success template
      */
-    public ?string $subscribeSuccessTemplate;
+    public ?string $subscribeSuccessTemplate = null;
 
     /**
      * @var bool Unsubscribe form allowed
@@ -87,22 +83,22 @@ class MailingListTypeModel extends Model
     /**
      * @var string|null Unsubscribe verification email subject
      */
-    public ?string $unsubscribeVerificationEmailSubject;
+    public ?string $unsubscribeVerificationEmailSubject = null;
 
     /**
      * @var string|null Unsubscribe verification email template
      */
-    public ?string $unsubscribeVerificationEmailTemplate;
+    public ?string $unsubscribeVerificationEmailTemplate = null;
 
     /**
      * @var string|null Unsubscribe success template
      */
-    public ?string $unsubscribeSuccessTemplate;
+    public ?string $unsubscribeSuccessTemplate = null;
 
     /**
      * @var string|null UID
      */
-    public ?string $uid;
+    public ?string $uid = null;
 
     /**
      * Returns the handle as the string representation.

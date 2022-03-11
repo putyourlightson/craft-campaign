@@ -32,21 +32,6 @@
         instructions: "Add the following tag to all Campaign forms (not doing so will prevent forms from submitting)."|t('campaign'),
     }, code) }}
 
-    {{ forms.selectField({
-        label: "reCAPTCHA Version"|t('campaign'),
-        instructions: "The reCAPTCHA version."|t('campaign'),
-        warning: (config.reCaptchaVersion is defined ? macros.configWarning('reCaptchaVersion')),
-        id: 'reCaptchaVersion',
-        name: 'reCaptchaVersion',
-        value: settings.reCaptchaVersion,
-        options: {
-            3: 'v3',
-            2: 'v2 (deprecated)',
-        },
-        errors: settings.getErrors('reCaptchaVersion'),
-        toggle: true,
-    }) }}
-
     {{ forms.autosuggestField({
         label: "reCAPTCHA Site Key"|t('campaign'),
         instructions: "The reCAPTCHA site key for this domain."|t('campaign'),
@@ -79,54 +64,6 @@
         value: settings.reCaptchaErrorMessage,
         errors: settings.getErrors('reCaptchaErrorMessage')
     }) }}
-
-    <div id="2" {{ settings.reCaptchaVersion == 3 ? 'class="hidden"' }}>
-
-        {{ forms.selectField({
-            label: "reCAPTCHA Size"|t('campaign'),
-            instructions: "The size of the reCAPTCHA widget."|t('campaign'),
-            warning: (config.reCaptchaSize is defined ? macros.configWarning('reCaptchaSize')),
-            id: 'reCaptchaSize',
-            name: 'reCaptchaSize',
-            value: settings.reCaptchaSize,
-            options: {
-                'normal': 'Normal'|t('campaign'),
-                'compact': 'Compact'|t('campaign'),
-                'invisible': 'Invisible'|t('campaign'),
-            },
-            errors: settings.getErrors('reCaptchaSize')
-        }) }}
-
-        {{ forms.selectField({
-            label: "reCAPTCHA Theme"|t('campaign'),
-            instructions: "The color theme of the reCAPTCHA widget."|t('campaign'),
-            warning: (config.reCaptchaTheme is defined ? macros.configWarning('reCaptchaTheme')),
-            id: 'reCaptchaTheme',
-            name: 'reCaptchaTheme',
-            value: settings.reCaptchaTheme,
-            options: {
-                'light': 'Light'|t('campaign'),
-                'dark': 'Dark '|t('campaign'),
-            },
-            errors: settings.getErrors('reCaptchaTheme')
-        }) }}
-
-        {{ forms.selectField({
-            label: "reCAPTCHA Badge"|t('campaign'),
-            instructions: "The position of the reCAPTCHA badge (when invisible)."|t('campaign'),
-            warning: (config.reCaptchaBadge is defined ? macros.configWarning('reCaptchaBadge')),
-            id: 'reCaptchaBadge',
-            name: 'reCaptchaBadge',
-            value: settings.reCaptchaBadge,
-            options: {
-                'bottomright': 'Bottom right '|t('campaign'),
-                'bottomleft': 'Bottom left '|t('campaign'),
-                'inline': 'Inline'|t('campaign'),
-            },
-            errors: settings.getErrors('reCaptchaBadge')
-        }) }}
-
-    </div>
 
     <p>
         <em>

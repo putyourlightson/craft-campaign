@@ -65,12 +65,19 @@ class MailingListTypesService extends Component
      */
     public function getAllMailingListTypes(): array
     {
+        $mailingListTypes = [];
         $mailingListTypeRecords = MailingListTypeRecord::find()
             ->innerJoinWith('site')
             ->orderBy(['name' => SORT_ASC])
             ->all();
 
-        return MailingListTypeModel::populateModels($mailingListTypeRecords, false);
+        foreach ($mailingListTypeRecords as $mailingListTypeRecord) {
+            $mailingListType = new MailingListTypeModel();
+            $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
+            $mailingListTypes[] = $mailingListType;
+        }
+
+        return $mailingListTypes;
     }
 
     /**

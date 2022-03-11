@@ -3,6 +3,10 @@
 ## 2.0.0-beta.1 - Unreleased
 ### Added
 - Added compatibility with Craft 4.
+- Added field layout designers to campaign types, mailing list types and contacts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198)).
+
+### Removed
+- Removed support for reCAPTCHA version 2, leaving support for version 3 only.
 
 ## 1.23.0 - 2022-02-28
 ### Added

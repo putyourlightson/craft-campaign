@@ -219,38 +219,19 @@ class CampaignVariable
             $id = 'campaign-recaptcha-' . StringHelper::randomString(6);
             $reCaptchaSiteKey = App::parseEnv($settings->reCaptchaSiteKey);
 
-            // TODO: only allow reCAPTCHA v3 in 2.0.0
-            if ($settings->reCaptchaVersion == 3) {
-                $output = '
-                    <input id="' . $id . '" type="hidden" name="g-recaptcha-response" value="">
-                    <script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSiteKey . '"></script>
-                    <script>
-                        grecaptcha.ready(function() {
-                            grecaptcha.execute("' . $reCaptchaSiteKey . '", {
-                                action: "' . RecaptchaHelper::RECAPTCHA_ACTION . '"
-                            }).then(function(token) {
-                                document.getElementById("' . $id . '").value = token;
-                            });
+            $output = '
+                <input id="' . $id . '" type="hidden" name="g-recaptcha-response" value="">
+                <script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSiteKey . '"></script>
+                <script>
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute("' . $reCaptchaSiteKey . '", {
+                            action: "' . RecaptchaHelper::RECAPTCHA_ACTION . '"
+                        }).then(function(token) {
+                            document.getElementById("' . $id . '").value = token;
                         });
-                    </script>
-                ';
-            } else {
-                $output = '
-                    <div id="' . $id . '"></div>
-                    <script type="text/javascript">
-                        var onloadCampaignRecaptchaCallback = function() {
-                            var widgetId = grecaptcha.render("' . $id . '", {
-                                sitekey : "' . $reCaptchaSiteKey . '",
-                                size : "' . $settings->reCaptchaSize . '",
-                                theme : "' . $settings->reCaptchaTheme . '",
-                                badge : "' . $settings->reCaptchaBadge . '",
-                            });
-                            ' . ($settings->reCaptchaSize == 'invisible' ? 'grecaptcha.execute(widgetId);' : '') . '
-                        };
-                    </script>
-                    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCampaignRecaptchaCallback&render=explicit&hl=' . Craft::$app->getSites()->getCurrentSite()->language . '" async defer></script>
-                ';
-            }
+                    });
+                </script>
+            ';
         }
 
         return Template::raw($output);

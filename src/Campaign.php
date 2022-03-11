@@ -9,13 +9,14 @@ use Craft;
 use craft\base\Plugin;
 use craft\controllers\LivePreviewController;
 use craft\elements\User;
-use craft\errors\MissingComponentException;
+use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\FieldEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
@@ -24,6 +25,7 @@ use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
+use craft\models\FieldLayout;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
@@ -41,6 +43,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\fieldlayoutelements\contacts\EmailField;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
@@ -162,54 +165,24 @@ class Campaign extends Plugin
         $this->_registerProjectConfigListeners();
         $this->_registerTemplateHooks();
         $this->_registerAllowedOrigins();
+        $this->_registerTwigExtensions();
+        $this->_registerVariables();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
             $this->controllerMap = ['t' => TrackerController::class];
         }
 
-        // Register Twig extension
-        Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
-
-        // Register variable
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
-            function(Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('campaign', CampaignVariable::class);
-            }
-        );
-
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            // Register universal CSS
-            Craft::$app->view->registerAssetBundle(UniversalAsset::class);
-
-            // Register CP URL rules event
-            Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
-                function(RegisterUrlRulesEvent $event) {
-                    $event->rules = array_merge($event->rules, $this->getCpRoutes());
-                }
-            );
-
-            // Register utility
-            Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
-                function(RegisterComponentTypesEvent $event) {
-                    if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
-                        $event->types[] = CampaignUtility::class;
-                    }
-                }
-            );
+            $this->_registerNativeFields();
+            $this->_registerAssetBundles();
+            $this->_registerCpUrlRules();
+            $this->_registerUtilities();
         }
 
         // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
-            // Register user permissions
-            Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
-                function(RegisterUserPermissionsEvent $event) {
-                    $event->permissions['Campaign'] = $this->getCpPermissions();
-                }
-            );
-
+            $this->_registerUserPermissions();
             $this->sync->registerUserEvents();
         }
     }
@@ -421,43 +394,6 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns the CP permissions.
-     */
-    protected function getCpPermissions(): array
-    {
-        $permissions = [
-            'campaign:reports' => ['label' => Craft::t('campaign', 'Manage reports')],
-            'campaign:campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
-            'campaign:contacts' => [
-                'label' => Craft::t('campaign', 'Manage contacts'),
-                'nested' => [
-                    'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
-                    'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
-                ],
-            ],
-            'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
-        ];
-
-        if ($this->getIsPro()) {
-            $permissions['campaign:contacts']['nested']['campaign:syncContacts'] = ['label' => Craft::t('campaign', 'Sync contacts')];
-            $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
-        }
-
-        $permissions['campaign:sendouts'] = [
-            'label' => Craft::t('campaign', 'Manage sendouts'),
-            'nested' => [
-                'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')],
-            ],
-        ];
-
-        $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
-
-        $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
-
-        return $permissions;
-    }
-
-    /**
      * Registers components.
      */
     private function _registerComponents()
@@ -663,6 +599,139 @@ class Campaign extends Plugin
                         }
                     }
                 }
+            }
+        );
+    }
+
+    /**
+     * Registers Twig extensions.
+     *
+     * @since 2.0.0
+     */
+    private function _registerTwigExtensions()
+    {
+        Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
+    }
+
+    /**
+     * Registers variables.
+     *
+     * @since 2.0.0
+     */
+    private function _registerVariables()
+    {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
+            function(Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('campaign', CampaignVariable::class);
+            }
+        );
+    }
+
+    /**
+     * Registers native fields.
+     *
+     * @since 2.0.0
+     */
+    private function _registerNativeFields()
+    {
+        Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
+            function(DefineFieldLayoutFieldsEvent $event) {
+                /** @var FieldLayout $layout */
+                $layout = $event->sender;
+
+                if ($layout->type === CampaignElement::class || $layout->type === MailingListElement::class) {
+                    $event->fields[] = TitleField::class;
+                }
+
+                if ($layout->type === ContactElement::class) {
+                    $event->fields[] = EmailField::class;
+                }
+            }
+        );
+    }
+
+    /**
+     * Registers asset bundles.
+     *
+     * @since 2.0.0
+     */
+    private function _registerAssetBundles()
+    {
+        Craft::$app->view->registerAssetBundle(UniversalAsset::class);
+    }
+
+    /**
+     * Registers CP URL rules.
+     *
+     * @since 2.0.0
+     */
+    private function _registerCpUrlRules()
+    {
+        Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function(RegisterUrlRulesEvent $event) {
+                $event->rules = array_merge($event->rules, $this->getCpRoutes());
+            }
+        );
+    }
+
+    /**
+     * Registers utilities.
+     *
+     * @since 2.0.0
+     */
+    private function _registerUtilities()
+    {
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
+                    $event->types[] = CampaignUtility::class;
+                }
+            }
+        );
+    }
+
+    /**
+     * Registers user permissions.
+     *
+     * @since 2.0.0
+     */
+    private function _registerUserPermissions()
+    {
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event) {
+                $permissions = [
+                    'campaign:reports' => ['label' => Craft::t('campaign', 'Manage reports')],
+                    'campaign:campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
+                    'campaign:contacts' => [
+                        'label' => Craft::t('campaign', 'Manage contacts'),
+                        'nested' => [
+                            'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
+                            'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
+                        ],
+                    ],
+                    'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
+                ];
+
+                if ($this->getIsPro()) {
+                    $permissions['campaign:contacts']['nested']['campaign:syncContacts'] = ['label' => Craft::t('campaign', 'Sync contacts')];
+                    $permissions['campaign:segments'] = ['label' => Craft::t('campaign', 'Manage segments')];
+                }
+
+                $permissions['campaign:sendouts'] = [
+                    'label' => Craft::t('campaign', 'Manage sendouts'),
+                    'nested' => [
+                        'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')],
+                    ],
+                ];
+                $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
+                $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
+
+                $event->permissions[] = [
+                    'heading' => 'Campaign',
+                    'permissions' => $permissions,
+                ];
             }
         );
     }

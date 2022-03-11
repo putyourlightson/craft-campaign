@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\elements\db;
 
 use Craft;
 use craft\elements\db\ElementQuery;
-
 use craft\helpers\Db;
 use putyourlightson\campaign\elements\SendoutElement;
 use yii\db\Connection;
@@ -21,29 +20,29 @@ use yii\db\Expression;
 class SendoutElementQuery extends ElementQuery
 {
     /**
-     * @var string SID
+     * @var string|null SID
      */
-    public string $sid;
+    public ?string $sid = null;
 
     /**
      * @var array|string|null The sendout type(s) that the resulting sendouts must have.
      */
-    public string|array|null $sendoutType;
+    public string|array|null $sendoutType = null;
 
     /**
-     * @var int The campaign ID that the resulting sendouts must be to.
+     * @var int|null The campaign ID that the resulting sendouts must be to.
      */
-    public int $campaignId;
+    public ?int $campaignId = null;
 
     /**
-     * @var int The mailing list ID that the resulting sendouts must contain.
+     * @var int|null The mailing list ID that the resulting sendouts must contain.
      */
-    public int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
-     * @var int The segment ID that the resulting sendouts must contain.
+     * @var int|null The segment ID that the resulting sendouts must contain.
      */
-    public int $segmentId;
+    public ?int $segmentId = null;
 
     /**
      * Sets the [[sid]] property.

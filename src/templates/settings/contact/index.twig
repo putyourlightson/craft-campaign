@@ -14,24 +14,8 @@
 
     <input type="hidden" name="action" value="campaign/settings/save-contact">
 
-    {{ forms.textField({
-        label: "Email Field Label"|t('campaign'),
-        instructions: "A label to use for the email field."|t('campaign'),
-        warning: (config.emailFieldLabel is defined ? macros.configWarning('emailFieldLabel')),
-        id: 'emailFieldLabel',
-        name: 'emailFieldLabel',
-        placeholder: 'Email',
-        value: settings.emailFieldLabel,
-        errors: settings.getErrors('emailFieldLabel'),
-        required: true
-    }) }}
-
-    <hr/>
-
-    {% include "_includes/fieldlayoutdesigner" with {
+    {{ forms.fieldLayoutDesignerField({
         fieldLayout: settings.getContactFieldLayout(),
-        customizableTabs: false,
-        pretendTabName: "Contact"|t('campaign')
-    } only %}
+    }) }}
 
 {% endblock %}

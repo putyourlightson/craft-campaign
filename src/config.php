@@ -98,9 +98,6 @@ return [
         // Enable reCAPTCHA to protect mailing list subscription forms from bots
         //'reCaptcha' => false,
 
-        // The reCAPTCHA version
-        //'reCaptchaVersion' => 2,
-
         // The reCAPTCHA site key
         //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
 
@@ -109,15 +106,6 @@ return [
 
         // The reCAPTCHA error message
         //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
-
-        // The size of the reCAPTCHA widget
-        // 'reCaptchaSize' => 'normal',
-
-        // The color theme of the reCAPTCHA widget
-        // 'reCaptchaTheme' => 'light',
-
-        // The position of the reCAPTCHA badge (when invisible)
-        // 'reCaptchaBadge' => 'bottomright',
 
         // The maximum number of pending contacts to store per email address and mailing list
         //'maxPendingContacts' => 5,

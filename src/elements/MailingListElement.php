@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
@@ -369,9 +370,9 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
-    public function getIsEditable(): bool
+    public function getFieldLayout(): ?FieldLayout
     {
-        return true;
+        return parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
     }
 
     /**
@@ -403,24 +404,6 @@ class MailingListElement extends Element
             'bounced' => (string)$this->getBouncedCount(),
             default => parent::tableAttributeHtml($attribute),
         };
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEditorHtml(): string
-    {
-        // Get the title field
-        $html = Craft::$app->getView()->renderTemplate('campaign/mailinglists/_includes/titlefield', [
-            'mailingList' => $this,
-        ]);
-
-        // Set the field layout ID
-        $this->fieldLayoutId = $this->getMailingListType()->fieldLayoutId;
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
     }
 
     /**

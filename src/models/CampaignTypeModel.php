@@ -10,7 +10,6 @@ use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
-use craft\models\FieldLayout;
 use craft\models\Site;
 use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
@@ -28,66 +27,63 @@ use putyourlightson\campaign\records\CampaignTypeRecord;
  * @property-read string $cpEditUrl
  * @property-read ContactElement[] $testContacts
  * @property-read ContactElement[] $testContactsWithDefault
- *
- * @method FieldLayout getFieldLayout()
- * @method setFieldLayout(FieldLayout $fieldLayout)
  */
 class CampaignTypeModel extends Model
 {
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Site ID
      */
-    public ?int $siteId;
+    public ?int $siteId = null;
 
     /**
      * @var int|null Field layout ID
      */
-    public ?int $fieldLayoutId;
+    public ?int $fieldLayoutId = null;
 
     /**
      * @var string|null Name
      */
-    public ?string $name;
+    public ?string $name = null;
 
     /**
      * @var string|null Handle
      */
-    public ?string $handle;
+    public ?string $handle = null;
 
     /**
      * @var string|null URI format
      */
-    public ?string $uriFormat;
+    public ?string $uriFormat = null;
 
     /**
      * @var string|null HTML template
      */
-    public ?string $htmlTemplate;
+    public ?string $htmlTemplate = null;
 
     /**
      * @var string|null Plaintext template
      */
-    public ?string $plaintextTemplate;
+    public ?string $plaintextTemplate = null;
 
     /**
      * @var string|null Query string parameters
      */
-    public ?string $queryStringParameters;
+    public ?string $queryStringParameters = null;
 
     /**
      * @var int[]|string|null
      */
-    public string|array|null $testContactIds;
+    public string|array|null $testContactIds = null;
 
     /**
      * @var string|null UID
      */
-    public ?string $uid;
+    public ?string $uid = null;
 
     /**
      * Returns the handle as the string representation.

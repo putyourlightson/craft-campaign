@@ -21,29 +21,29 @@ use yii\db\Connection;
 class ContactElementQuery extends ElementQuery
 {
     /**
-     * @var int
+     * @var int|null
      */
-    public int $userId;
+    public ?int $userId = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $cid;
+    public ?string $cid = null;
 
     /**
-     * @var string The email address that the resulting contact must have.
+     * @var string|null The email address that the resulting contact must have.
      */
-    public string $email;
+    public ?string $email = null;
 
     /**
-     * @var int The mailing list ID that the resulting contacts must be in.
+     * @var int|null The mailing list ID that the resulting contacts must be in.
      */
-    public int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
-     * @var int The segment ID that the resulting contacts must be in.
+     * @var int|null The segment ID that the resulting contacts must be in.
      */
-    public int $segmentId;
+    public ?int $segmentId = null;
 
     /**
      * Sets the [[userId]] property.

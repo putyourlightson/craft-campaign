@@ -9,7 +9,6 @@ use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use putyourlightson\campaign\elements\CampaignElement;
-
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -25,7 +24,7 @@ class CampaignElementQuery extends ElementQuery
     /**
      * @var int|int[]|null The campaign type ID(s) that the resulting campaigns must have.
      */
-    public array|int|null $campaignTypeId;
+    public array|int|null $campaignTypeId = null;
 
     /**
      * @inheritdoc

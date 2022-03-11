@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\View;
 use DateTime;
@@ -181,6 +182,23 @@ class CampaignElement extends Element
         }
 
         return $sources;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected static function defineFieldLayouts(string $source): array
+    {
+        return [];
+        $fieldLayouts = [];
+        if (
+            preg_match('/^group:(.+)$/', $source, $matches) &&
+            ($group = Craft::$app->getCategories()->getGroupByUid($matches[1]))
+        ) {
+            $fieldLayouts[] = $group->getFieldLayout();
+        }
+        return $fieldLayouts;
     }
 
     /**
@@ -493,19 +511,9 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    public function getEditorHtml(): string
+    public function getFieldLayout(): ?FieldLayout
     {
-        // Get the title field
-        $html = Craft::$app->getView()->renderTemplate('campaign/campaigns/_includes/titlefield', [
-            'campaign' => $this,
-        ]);
-
-        // Set the field layout ID
-        $this->fieldLayoutId = $this->getCampaignType()->fieldLayoutId;
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
+        return parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
     }
 
     /**

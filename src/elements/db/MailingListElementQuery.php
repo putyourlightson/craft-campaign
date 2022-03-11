@@ -9,8 +9,6 @@ use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use putyourlightson\campaign\elements\MailingListElement;
-
-
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use yii\db\Connection;
@@ -25,12 +23,12 @@ class MailingListElementQuery extends ElementQuery
     /**
      * @var int|int[]|null The mailing list type ID(s) that the resulting mailing lists must have.
      */
-    public array|int|null $mailingListTypeId;
+    public array|int|null $mailingListTypeId = null;
 
     /**
      * @var int|int[]|null The synced user group ID(s) that the resulting mailing lists must have.
      */
-    public array|int|null $syncedUserGroupId;
+    public array|int|null $syncedUserGroupId = null;
 
     /**
      * @var bool Whether to only return mailing lists that have synced user groups.

@@ -133,11 +133,9 @@
 
     <hr>
 
-    {% include "_includes/fieldlayoutdesigner" with {
+    {{ forms.fieldLayoutDesignerField({
         fieldLayout: campaignType.getFieldLayout(),
-        customizableTabs: false,
-        pretendTabName: "Campaign"|t('campaign')
-    } only %}
+    }) }}
 
 {% endblock %}
 

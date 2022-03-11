@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\elements\db;
 
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
-
 use putyourlightson\campaign\elements\SegmentElement;
 use yii\db\Connection;
 
@@ -21,7 +20,7 @@ class SegmentElementQuery extends ElementQuery
     /**
      * @var string|null The segment type that the resulting segments must have.
      */
-    public ?string $segmentType;
+    public ?string $segmentType = null;
 
     /**
      * Sets the [[segmentType]] property.

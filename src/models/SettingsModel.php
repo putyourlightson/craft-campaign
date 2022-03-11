@@ -36,7 +36,7 @@ class SettingsModel extends Model
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      * @since 1.19.0
      */
-    public ?string $mailgunWebhookSigningKey;
+    public ?string $mailgunWebhookSigningKey = null;
 
     /**
      * @var array The allowed IP addresses for incoming webhook requests from Postmark
@@ -53,7 +53,7 @@ class SettingsModel extends Model
      * @var array|null The AJAX origins that should be allowed to access live preview.
      * @since 1.21.0
      */
-    public ?array $allowedOrigins;
+    public ?array $allowedOrigins = null;
 
     /**
      * @var bool Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
@@ -64,17 +64,17 @@ class SettingsModel extends Model
     /**
      * @var array|null The names and emails that sendouts can be sent from
      */
-    public ?array $fromNamesEmails;
+    public ?array $fromNamesEmails = null;
 
     /**
      * @var string|null The transport type that should be used
      */
-    public ?string $transportType;
+    public ?string $transportType = null;
 
     /**
      * @var array|null The transport type’s settings
      */
-    public ?array $transportSettings;
+    public ?array $transportSettings = null;
 
     /**
      * @var string A label to use for the email field
@@ -87,7 +87,7 @@ class SettingsModel extends Model
      * @var int|null Contact field layout ID
      * @deprecated Since 1.15.0
      */
-    public ?int $contactFieldLayoutId;
+    public ?int $contactFieldLayoutId = null;
 
     /**
      * @var int The maximum size of sendout batches
@@ -150,7 +150,7 @@ class SettingsModel extends Model
     /**
      * @var string|null The ipstack.com API key
      */
-    public ?string $ipstackApiKey;
+    public ?string $ipstackApiKey = null;
 
     /**
      * @var bool Enable reCAPTCHA to protect mailing list subscription forms from bots
@@ -158,47 +158,19 @@ class SettingsModel extends Model
     public bool $reCaptcha = false;
 
     /**
-     * TODO: change to `3` in version 2.0.0
-     *
-     * @var int|null The reCAPTCHA version
-     */
-    public ?int $reCaptchaVersion = 2;
-
-    /**
      * @var string|null The reCAPTCHA site key
      */
-    public ?string $reCaptchaSiteKey;
+    public ?string $reCaptchaSiteKey = null;
 
     /**
      * @var string|null The reCAPTCHA secret key
      */
-    public ?string $reCaptchaSecretKey;
+    public ?string $reCaptchaSecretKey = null;
 
     /**
      * @var string The reCAPTCHA error message
      */
     public string $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
-
-    /**
-     * TODO: remove in version 2.0.0
-     *
-     * @var string|null The size of the reCAPTCHA widget
-     */
-    public ?string $reCaptchaSize;
-
-    /**
-     * TODO: remove in version 2.0.0
-     *
-     * @var string|null The color theme of the reCAPTCHA widget
-     */
-    public ?string $reCaptchaTheme;
-
-    /**
-     * TODO: remove in version 2.0.0
-     *
-     * @var string|null The position of the reCAPTCHA badge (when invisible)
-     */
-    public ?string $reCaptchaBadge;
 
     /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
