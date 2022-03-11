@@ -5,12 +5,12 @@
 
 namespace putyourlightson\campaign\elements\db;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\records\ContactMailingListRecord;
-
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use putyourlightson\campaign\Campaign;
+
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use yii\db\Connection;
 
 /**
@@ -132,7 +132,7 @@ class ContactElementQuery extends ElementQuery
 
         if ($this->mailingListId) {
             $this->query->addSelect('subscriptionStatus');
-            $this->subQuery->innerJoin(ContactMailingListRecord::tableName().' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
+            $this->subQuery->innerJoin(ContactMailingListRecord::tableName() . ' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
             $this->subQuery->select('campaign_contacts_mailinglists.subscriptionStatus AS subscriptionStatus');
             $this->subQuery->andWhere(Db::parseParam('campaign_contacts_mailinglists.mailingListId', $this->mailingListId));
         }

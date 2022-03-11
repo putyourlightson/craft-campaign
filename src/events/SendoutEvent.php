@@ -5,9 +5,9 @@
 
 namespace putyourlightson\campaign\events;
 
-use putyourlightson\campaign\elements\SendoutElement;
-
 use craft\events\CancelableEvent;
+
+use putyourlightson\campaign\elements\SendoutElement;
 
 class SendoutEvent extends CancelableEvent
 {

@@ -5,9 +5,20 @@
 
 namespace putyourlightson\campaign\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\actions\Delete;
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
+use craft\helpers\Json;
+use craft\helpers\Template;
+use craft\helpers\UrlHelper;
+
 use craft\models\FieldLayout;
+use craft\validators\DateTimeValidator;
+use craft\validators\UniqueValidator;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\HardDeleteContacts;
@@ -15,17 +26,6 @@ use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
-use craft\elements\actions\Delete;
-use craft\helpers\Json;
-use craft\helpers\Template;
-use craft\helpers\UrlHelper;
-use craft\validators\DateTimeValidator;
-use craft\validators\UniqueValidator;
 
 /**
  * @property-read int $complainedCount
@@ -152,8 +152,8 @@ class ContactElement extends Element
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All contacts'),
                 'criteria' => [],
-                'hasThumbs' => true
-            ]
+                'hasThumbs' => true,
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('campaign', 'Mailing Lists')];
@@ -162,16 +162,16 @@ class ContactElement extends Element
 
         foreach ($mailingLists as $mailingList) {
             $sources[] = [
-                'key' => 'mailingList:'.$mailingList->id,
+                'key' => 'mailingList:' . $mailingList->id,
                 'label' => $mailingList->title,
                 'sites' => [$mailingList->siteId],
                 'data' => [
-                    'id' => $mailingList->id
+                    'id' => $mailingList->id,
                 ],
                 'criteria' => [
-                    'mailingListId' => $mailingList->id
+                    'mailingListId' => $mailingList->id,
                 ],
-                'hasThumbs' => true
+                'hasThumbs' => true,
             ];
         }
 
@@ -182,15 +182,15 @@ class ContactElement extends Element
 
             foreach ($segments as $segment) {
                 $sources[] = [
-                    'key' => 'segment:'.$segment->id,
+                    'key' => 'segment:' . $segment->id,
                     'label' => $segment->title,
                     'data' => [
-                        'id' => $segment->id
+                        'id' => $segment->id,
                     ],
                     'criteria' => [
-                        'segmentId' => $segment->id
+                        'segmentId' => $segment->id,
                     ],
-                    'hasThumbs' => true
+                    'hasThumbs' => true,
                 ];
             }
         }
@@ -251,12 +251,12 @@ class ContactElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -501,7 +501,7 @@ class ContactElement extends Element
             $params['sid'] = $sendout->sid;
         }
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/unsubscribe';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/unsubscribe';
 
         return UrlHelper::siteUrl($path, $params);
     }
@@ -653,7 +653,7 @@ class ContactElement extends Element
     public function getThumbUrl(int $size): ?string
     {
         // Get image from Gravatar, defaulting to a blank image
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=blank&s='.$size;
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=blank&s=' . $size;
     }
 
     /**
@@ -677,7 +677,7 @@ class ContactElement extends Element
      */
     public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/contacts/'.$this->id);
+        return UrlHelper::cpUrl('campaign/contacts/' . $this->id);
     }
 
     /**
@@ -687,7 +687,7 @@ class ContactElement extends Element
      */
     public function getReportUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/reports/contacts/'.$this->id);
+        return UrlHelper::cpUrl('campaign/reports/contacts/' . $this->id);
     }
 
     /**
@@ -766,8 +766,7 @@ class ContactElement extends Element
             $contactRecord->id = $this->id;
             $contactRecord->userId = $this->userId;
             $contactRecord->cid = $this->cid;
-        }
-        else {
+        } else {
             $contactRecord = ContactRecord::findOne($this->id);
         }
 

@@ -5,16 +5,16 @@
 
 namespace putyourlightson\campaign\services;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\jobs\ImportJob;
-use putyourlightson\campaign\models\ImportModel;
-use putyourlightson\campaign\records\ImportRecord;
-
 use Craft;
 use craft\base\Component;
 use craft\base\Field;
 use craft\elements\User;
+use putyourlightson\campaign\Campaign;
+
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\jobs\ImportJob;
+use putyourlightson\campaign\models\ImportModel;
+use putyourlightson\campaign\records\ImportRecord;
 
 /**
  * @property-read ImportModel[] $allImports
@@ -89,8 +89,7 @@ class ImportsService extends Component
             if ($handle === false) {
                 $handle = null;
             }
-        }
-        elseif ($import->assetId !== null) {
+        } elseif ($import->assetId !== null) {
             $asset = Craft::$app->getAssets()->getAssetById($import->assetId);
 
             if ($asset === null) {
@@ -204,8 +203,7 @@ class ImportsService extends Component
             if ($importRecord === null) {
                 return false;
             }
-        }
-        else {
+        } else {
             $importRecord = new ImportRecord();
         }
 
@@ -288,7 +286,7 @@ class ImportsService extends Component
         if (!Craft::$app->getElements()->saveElement($contact)) {
             $import->fails++;
 
-            Campaign::$plugin->log('Line '.$lineNumber.': '.implode('. ', $contact->getErrorSummary(true)));
+            Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
 
             Campaign::$plugin->imports->saveImport($import);
 
@@ -297,8 +295,7 @@ class ImportsService extends Component
 
         if ($newContact) {
             $import->added++;
-        }
-        else {
+        } else {
             $import->updated++;
         }
 

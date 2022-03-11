@@ -5,15 +5,15 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
 use craft\helpers\DateTimeHelper;
+
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 use Throwable;
-use yii\web\Response;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
 class MailingListsController extends Controller
@@ -62,8 +62,7 @@ class MailingListsController extends Controller
                 if ($mailingList === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
                 }
-            }
-            else {
+            } else {
                 $mailingList = new MailingListElement();
                 $mailingList->mailingListTypeId = $mailingListType->id;
                 $mailingList->enabled = true;
@@ -86,8 +85,7 @@ class MailingListsController extends Controller
 
         if ($mailingListId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
-        }
-        else {
+        } else {
             $variables['title'] = $mailingList->title;
             $variables['slug'] = $mailingList->slug;
         }
@@ -102,7 +100,7 @@ class MailingListsController extends Controller
 
         // Full page form variables
         $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/mailinglists/'.$mailingListTypeHandle.'/{id}';
+        $variables['continueEditingUrl'] = 'campaign/mailinglists/' . $mailingListTypeHandle . '/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
         // Render the template
@@ -126,8 +124,7 @@ class MailingListsController extends Controller
             if ($mailingList === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
             }
-        }
-        else {
+        } else {
             $mailingList = new MailingListElement();
             $mailingList->mailingListTypeId = $request->getRequiredBodyParam('mailingListTypeId');
         }
@@ -137,8 +134,7 @@ class MailingListsController extends Controller
             try {
                 /** @var MailingListElement $mailingList */
                 $mailingList = Craft::$app->getElements()->duplicateElement($mailingList);
-            }
-            catch (Throwable $e) {
+            } catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the mailing list.'), 0, $e);
             }
         }
@@ -171,7 +167,7 @@ class MailingListsController extends Controller
 
             // Send the mailingList back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'mailingList' => $mailingList
+                'mailingList' => $mailingList,
             ]);
 
             return null;
@@ -222,7 +218,7 @@ class MailingListsController extends Controller
 
             // Send the mailing list back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'mailingList' => $mailingList
+                'mailingList' => $mailingList,
             ]);
 
             return null;

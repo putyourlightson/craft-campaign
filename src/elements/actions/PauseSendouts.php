@@ -4,14 +4,13 @@
  */
 namespace putyourlightson\campaign\elements\actions;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\SendoutElement;
-
 use Craft;
 use craft\base\ElementAction;
+
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
-use Throwable;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\SendoutElement;
 
 /**
  * @property-read null $triggerHtml

@@ -18,9 +18,9 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
-use craft\helpers\UrlHelper;
-use craft\helpers\StringHelper;
 use craft\helpers\MailerHelper;
+use craft\helpers\StringHelper;
+use craft\helpers\UrlHelper;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
@@ -32,8 +32,8 @@ use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
 use craft\web\Response;
-use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
 use putyourlightson\campaign\assets\UniversalAsset;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -363,7 +363,7 @@ class Campaign extends Plugin
                 App::parseEnv($mailSettings->fromEmail),
                 '',
                 Craft::$app->getSites()->getPrimarySite()->id,
-            ]
+            ],
         ];
         $settings->transportType = Sendmail::class;
 
@@ -458,7 +458,7 @@ class Campaign extends Plugin
         $permissions['campaign:sendouts'] = [
             'label' => Craft::t('campaign', 'Manage sendouts'),
             'nested' => [
-                'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')]
+                'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')],
             ],
         ];
 
@@ -591,17 +591,17 @@ class Campaign extends Plugin
 
         // Campaign types
         Craft::$app->projectConfig
-            ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
-            ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
-            ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY.'.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
+            ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
+            ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
+            ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->campaignTypes, 'handleDeletedSite']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->campaignTypes, 'pruneDeletedField']);
 
         // Mailing list types types
         Craft::$app->projectConfig
-            ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
-            ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
-            ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY.'.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
+            ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
+            ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
+            ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->mailingListTypes, 'handleDeletedSite']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingListTypes, 'pruneDeletedField']);
 
@@ -633,7 +633,7 @@ class Campaign extends Plugin
             }
 
             return Craft::$app->getView()->renderTemplate('campaign/_includes/user-contact', [
-                'contact' => $contact
+                'contact' => $contact,
             ]);
         });
     }

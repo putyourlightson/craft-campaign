@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
@@ -13,11 +15,9 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
+
 use putyourlightson\campaign\helpers\ContactActivityHelper;
 use putyourlightson\campaign\models\PendingContactModel;
-
-use Craft;
-use craft\base\Component;
 use Twig\Error\Error;
 
 /**
@@ -63,7 +63,7 @@ class FormsService extends Component
         // Set the current site from the mailing list's site ID
         Craft::$app->sites->setCurrentSite($mailingList->siteId);
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-subscribe';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-subscribe';
         $url = UrlHelper::siteUrl($path, [
             'pid' => $pendingContact->pid,
             'mlid' => $mailingList->id,
@@ -71,7 +71,7 @@ class FormsService extends Component
 
         $subject = Craft::t('campaign', 'Verify your email address');
         $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
-        $body = $bodyText."\n".$url;
+        $body = $bodyText . "\n" . $url;
 
         // Get subject from setting if defined
         $subject = $mailingList->mailingListType->subscribeVerificationEmailSubject ?: $subject;
@@ -90,8 +90,7 @@ class FormsService extends Component
                     'mailingList' => $mailingList,
                     'pendingContact' => $pendingContact,
                 ]);
-            }
-            catch (Error) {
+            } catch (Error) {
             }
         }
 
@@ -106,7 +105,7 @@ class FormsService extends Component
         // Set the current site from the mailing list's site ID
         Craft::$app->sites->setCurrentSite($mailingList->siteId);
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/forms/verify-unsubscribe';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-unsubscribe';
         $url = UrlHelper::siteUrl($path, [
             'cid' => $contact->cid,
             'uid' => $contact->uid,
@@ -115,7 +114,7 @@ class FormsService extends Component
 
         $subject = Craft::t('campaign', 'Verify unsubscribe');
         $bodyText = Craft::t('campaign', 'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:');
-        $body = $bodyText."\n".$url;
+        $body = $bodyText . "\n" . $url;
 
         // Get subject from setting if defined
         $subject = $mailingList->mailingListType->unsubscribeVerificationEmailSubject ?: $subject;
@@ -134,8 +133,7 @@ class FormsService extends Component
                     'mailingList' => $mailingList,
                     'contact' => $contact,
                 ]);
-            }
-            catch (Error) {
+            } catch (Error) {
             }
         }
 

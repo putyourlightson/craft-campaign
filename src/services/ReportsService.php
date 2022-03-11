@@ -5,7 +5,11 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\db\ActiveRecord;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use DateTime;
@@ -16,18 +20,14 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\models\ContactActivityModel;
-use putyourlightson\campaign\models\LinkModel;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\models\ContactMailingListModel;
-use putyourlightson\campaign\records\ContactRecord;
-use putyourlightson\campaign\records\LinkRecord;
+use putyourlightson\campaign\models\LinkModel;
+
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-
-use Craft;
-use craft\base\Component;
-use craft\helpers\DateTimeHelper;
-use craft\helpers\Db;
+use putyourlightson\campaign\records\ContactRecord;
+use putyourlightson\campaign\records\LinkRecord;
 
 /**
  * @property-read array $contactsReportData
@@ -44,7 +44,7 @@ class ReportsService extends Component
      */
     public function getMaxIntervals(string $interval): int
     {
-        $maxIntervals = ['minutes' => 60, 'hours' => 24, 'days' => 14, 'months'=> 12, 'years' => 10];
+        $maxIntervals = ['minutes' => 60, 'hours' => 24, 'days' => 14, 'months' => 12, 'years' => 10];
 
         return $maxIntervals[$interval] ?? 12;
     }
@@ -171,7 +171,7 @@ class ReportsService extends Component
                 'unsubscribed' => null,
                 'complained' => null,
                 'bounced' => null,
-            ]
+            ],
         ];
 
         $contactCampaignRecords = ContactCampaignRecord::find()
@@ -455,7 +455,7 @@ class ReportsService extends Component
                 'unsubscribed' => null,
                 'complained' => null,
                 'bounced' => null,
-            ]
+            ],
         ];
 
         $contactMailingListRecords = ContactMailingListRecord::find()
@@ -535,15 +535,15 @@ class ReportsService extends Component
 
         /** @var ActiveRecord $record */
         // Get start and end date times
-        $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 '.$interval);
+        $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 ' . $interval);
         $endDateTime = clone $startDateTime;
-        $endDateTime->modify('+'.$this->getMaxIntervals($interval).' '.$interval);
+        $endDateTime->modify('+' . $this->getMaxIntervals($interval) . ' ' . $interval);
 
         $fields = [];
 
         /** @var ActiveRecord $recordClass */
         foreach ($record->fields() as $field) {
-            $fields[] = 'MIN([['.$field.']]) AS '.$field;
+            $fields[] = 'MIN([[' . $field . ']]) AS ' . $field;
         }
 
         // Get records within date range
@@ -620,18 +620,17 @@ class ReportsService extends Component
 
                     if ($interactionType == 'opened') {
                         $contactActivityModel->count = $model->opens;
-                    }
-                    elseif ($interactionType == 'clicked') {
+                    } elseif ($interactionType == 'clicked') {
                         $contactActivityModel->count = $model->clicks;
                     }
 
                     if (!empty($model->sourceType)) {
                         switch ($model->sourceType) {
                             case 'import':
-                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/'.$model->source);
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/' . $model->source);
                                 break;
                             case 'user':
-                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/'.$model->source : 'myaccount';
+                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/' . $model->source : 'myaccount';
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
                                 break;
                             default:
@@ -639,7 +638,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$contactActivityModel->date->getTimestamp().'-'.$key.'-'.$interactionType.'-'.$model->contactId] = $contactActivityModel;
+                    $activity[$contactActivityModel->date->getTimestamp() . '-' . $key . '-' . $interactionType . '-' . $model->contactId] = $contactActivityModel;
                 }
             }
         }
@@ -675,7 +674,7 @@ class ReportsService extends Component
                 ->groupBy('contactId')
                 ->column();
 
-            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
+            $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
         }
 
         /** @var ContactRecord[]|ContactCampaignRecord[]|ContactMailingListRecord[] $records */
@@ -744,7 +743,7 @@ class ReportsService extends Component
                 ->groupBy('contactId')
                 ->column();
 
-            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
+            $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
         }
 
         /** @var ContactRecord[]|ContactCampaignRecord[]|ContactMailingListRecord[] $records */

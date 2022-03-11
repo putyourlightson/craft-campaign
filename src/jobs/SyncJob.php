@@ -5,15 +5,13 @@
 
 namespace putyourlightson\campaign\jobs;
 
-use craft\elements\User;
-use Exception;
-use putyourlightson\campaign\Campaign;
-
 use Craft;
+use craft\elements\User;
+
 use craft\queue\BaseJob;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\SyncEvent;
 use putyourlightson\campaign\services\SyncService;
-use Throwable;
 
 /**
  * @since 1.2.0

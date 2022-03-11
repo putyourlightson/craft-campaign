@@ -5,14 +5,13 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\helpers\DateTimeHelper;
+use craft\web\Controller;
+
 use DateTime;
 use putyourlightson\campaign\Campaign;
-
-use Craft;
-use craft\web\Controller;
 use putyourlightson\campaign\services\ReportsService;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class ReportsController extends Controller
@@ -88,7 +87,7 @@ class ReportsController extends Controller
                 break;
             }
 
-            $dateTime->modify('+1 '.$data['interval']);
+            $dateTime->modify('+1 ' . $data['interval']);
         }
 
         $chart['series'] = [];

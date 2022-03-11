@@ -5,11 +5,11 @@
 
 namespace putyourlightson\campaign\events;
 
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\SendoutElement;
-
 use craft\events\CancelableEvent;
 use craft\mail\Message;
+
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\SendoutElement;
 
 class SendoutEmailEvent extends CancelableEvent
 {

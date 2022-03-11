@@ -152,7 +152,7 @@ class BaseFunctionalCest
             Campaign::$plugin,
             'mailer',
             [
-                'send' => function (Message $message) {
+                'send' => function(Message $message) {
                     if ($message->getSubject() == 'Fail') {
                         return false;
                     }
@@ -160,7 +160,7 @@ class BaseFunctionalCest
                     $this->message = $message;
 
                     return true;
-                }
+                },
             ]
         );
     }

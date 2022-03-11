@@ -9,7 +9,6 @@ use DateTime;
 use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
-
 /**
  * ImportRecord
  *

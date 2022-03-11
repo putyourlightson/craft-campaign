@@ -9,7 +9,7 @@ return [
         'segmentType' => 'regular',
         'conditions' => [
             [
-                ['like', 'email', 'contact@']
+                ['like', 'email', 'contact@'],
             ],
         ],
     ],

@@ -11,11 +11,11 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\LinksFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -35,16 +35,16 @@ class TrackerServiceTest extends BaseUnitTest
     {
         return [
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'campaigns' => [
-                'class' => CampaignsFixture::class
+                'class' => CampaignsFixture::class,
             ],
             'sendouts' => [
-                'class' => SendoutsFixture::class
+                'class' => SendoutsFixture::class,
             ],
             'links' => [
-                'class' => LinksFixture::class
+                'class' => LinksFixture::class,
             ],
         ];
     }

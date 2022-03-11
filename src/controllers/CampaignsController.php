@@ -5,22 +5,22 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
+use craft\web\Controller;
 use DateTime;
+
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
-
-use Craft;
-use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
-use craft\helpers\Json;
 use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
-use yii\web\Response;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -77,8 +77,7 @@ class CampaignsController extends Controller
                 if ($campaign === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
                 }
-            }
-            else {
+            } else {
                 $campaign = new CampaignElement();
                 $campaign->campaignTypeId = $campaignType->id;
             }
@@ -102,8 +101,7 @@ class CampaignsController extends Controller
 
         if ($campaignId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        }
-        else {
+        } else {
             $variables['title'] = $campaign->title;
         }
 
@@ -114,7 +112,7 @@ class CampaignsController extends Controller
 
         // Enable live preview?
         if (!$request->isMobileBrowser(true) && $campaignType->hasValidTemplates()) {
-            $this->getView()->registerJs('Craft.LivePreview.init('.Json::encode([
+            $this->getView()->registerJs('Craft.LivePreview.init(' . Json::encode([
                 'fields' => '#title-field, #fields > div > div > .field',
                 'extraFields' => '#settings',
                 'previewUrl' => $campaign->getUrl(),
@@ -123,8 +121,8 @@ class CampaignsController extends Controller
                     'campaignId' => $campaign->id,
                     'campaignTypeId' => $campaignType->id,
                     'siteId' => $campaignType->siteId,
-                ]
-            ]).');');
+                ],
+            ]) . ');');
 
             $variables['showPreviewBtn'] = true;
 
@@ -132,8 +130,7 @@ class CampaignsController extends Controller
             if ($campaign->id !== null && $campaign->enabled) {
                 $variables['shareUrl'] = $campaign->getUrl();
             }
-        }
-        else {
+        } else {
             $variables['showPreviewBtn'] = false;
         }
 
@@ -156,7 +153,7 @@ class CampaignsController extends Controller
                 'action' => 'campaign/campaigns/close-campaign',
                 'destructive' => 'true',
                 'label' => Craft::t('campaign', 'Close this campaign'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.')
+                'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
             ];
         }
 
@@ -165,12 +162,12 @@ class CampaignsController extends Controller
             'destructive' => 'true',
             'redirect' => 'campaign/campaigns',
             'label' => Craft::t('app', 'Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign.')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign.'),
         ];
 
         // Full page form variables
         $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/campaigns/'.$campaignTypeHandle.'/{id}';
+        $variables['continueEditingUrl'] = 'campaign/campaigns/' . $campaignTypeHandle . '/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
         // Render the template
@@ -249,8 +246,7 @@ class CampaignsController extends Controller
         if ($request->getBodyParam('duplicate')) {
             try {
                 $campaign = Craft::$app->getElements()->duplicateElement($campaign);
-            }
-            catch (Throwable $e) {
+            } catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the campaign.'), 0, $e);
             }
 
@@ -288,7 +284,7 @@ class CampaignsController extends Controller
 
             // Send the campaign back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign
+                'campaign' => $campaign,
             ]);
 
             return null;
@@ -346,7 +342,7 @@ class CampaignsController extends Controller
 
             // Send the campaign back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign
+                'campaign' => $campaign,
             ]);
 
             return null;
@@ -389,7 +385,7 @@ class CampaignsController extends Controller
 
             // Send the campaign back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign
+                'campaign' => $campaign,
             ]);
 
             return null;
@@ -419,8 +415,7 @@ class CampaignsController extends Controller
             if (!$campaign) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
             }
-        }
-        else {
+        } else {
             $campaign = new CampaignElement();
             $campaign->campaignTypeId = $request->getRequiredBodyParam('campaignTypeId');
         }

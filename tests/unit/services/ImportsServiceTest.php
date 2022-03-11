@@ -9,9 +9,9 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -31,10 +31,10 @@ class ImportsServiceTest extends BaseUnitTest
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
         ];
     }

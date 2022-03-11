@@ -5,11 +5,11 @@
 
 namespace putyourlightson\campaign\models;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
 use craft\base\Model;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
  *

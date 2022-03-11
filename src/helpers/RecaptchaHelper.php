@@ -42,14 +42,13 @@ class RecaptchaHelper
                     'secret' => App::parseEnv($settings->reCaptchaSecretKey),
                     'response' => $recaptchaResponse,
                     'remoteip' => $ip,
-                ]
+                ],
             ]);
 
             if ($response->getStatusCode() == 200) {
                 $result = Json::decodeIfJson($response->getBody());
             }
-        }
-        catch (ConnectException) {
+        } catch (ConnectException) {
         }
 
         if (empty($result['success'])) {

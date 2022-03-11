@@ -5,16 +5,13 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\models\ExportModel;
-
 use Craft;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
-use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\models\ExportModel;
 use yii\web\Response;
 
 class ExportsController extends Controller
@@ -83,13 +80,13 @@ class ExportsController extends Controller
         }
 
         // Get storage directory path
-        $path = Craft::$app->path->getStoragePath().'/campaign/exports/'.gmdate('YmdHis').'/';
+        $path = Craft::$app->path->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';
 
         // Create directory
         FileHelper::createDirectory($path);
 
         // Set file path
-        $export->filePath = $path.'export.csv';
+        $export->filePath = $path . 'export.csv';
 
         // Validate it
         if ($export->validate() === false) {
@@ -97,7 +94,7 @@ class ExportsController extends Controller
 
             // Send the export back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export
+                'export' => $export,
             ]);
 
             return null;
@@ -109,7 +106,7 @@ class ExportsController extends Controller
 
             // Send the export back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export
+                'export' => $export,
             ]);
 
             return null;

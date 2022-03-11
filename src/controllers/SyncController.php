@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-
 use Craft;
+
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -74,7 +74,7 @@ class SyncController extends Controller
 
             // Send the errors back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'errors' => ['mailingListId' => [Craft::t('campaign', 'Mailing list is required.')]]
+                'errors' => ['mailingListId' => [Craft::t('campaign', 'Mailing list is required.')]],
             ]);
 
             return null;

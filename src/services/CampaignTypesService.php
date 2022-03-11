@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
@@ -15,15 +17,13 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
+
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
-use putyourlightson\campaign\elements\CampaignElement;
-
-use Craft;
-use craft\base\Component;
 use Throwable;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
@@ -84,7 +84,7 @@ class CampaignTypesService extends Component
 
         $campaignTypeRecord = CampaignTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([CampaignTypeRecord::tableName().'.id' => $campaignTypeId])
+            ->where([CampaignTypeRecord::tableName() . '.id' => $campaignTypeId])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -104,7 +104,7 @@ class CampaignTypesService extends Component
     {
         $campaignTypeRecord = CampaignTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([CampaignTypeRecord::tableName().'.handle' => $campaignTypeHandle])
+            ->where([CampaignTypeRecord::tableName() . '.handle' => $campaignTypeHandle])
             ->one();
 
         if ($campaignTypeRecord === null) {
@@ -144,15 +144,14 @@ class CampaignTypesService extends Component
         // Ensure the campaign type has a UID
         if ($isNew) {
             $campaignType->uid = StringHelper::UUID();
-        }
-        elseif (!$campaignType->uid) {
+        } elseif (!$campaignType->uid) {
             /** @var CampaignTypeRecord|null $campaignTypeRecord */
             $campaignTypeRecord = CampaignTypeRecord::find()
-                ->andWhere([CampaignTypeRecord::tableName().'.id' => $campaignType->id])
+                ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignType->id])
                 ->one();
 
             if ($campaignTypeRecord === null) {
-                throw new NotFoundHttpException('No campaign type exists with the ID '.$campaignType->id);
+                throw new NotFoundHttpException('No campaign type exists with the ID ' . $campaignType->id);
             }
 
             $campaignType->uid = $campaignTypeRecord->uid;
@@ -162,7 +161,7 @@ class CampaignTypesService extends Component
         $configData = ProjectConfigDataHelper::getCampaignTypeData($campaignType);
 
         // Save it to project config
-        $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
+        $path = self::CONFIG_CAMPAIGNTYPES_KEY . '.' . $campaignType->uid;
         Craft::$app->projectConfig->set($path, $configData);
 
         // Set the ID on the campaign type
@@ -214,8 +213,7 @@ class CampaignTypesService extends Component
                 $layout->uid = key($data['fieldLayouts']);
                 $fieldsService->saveLayout($layout);
                 $campaignTypeRecord->fieldLayoutId = $layout->id;
-            }
-            elseif ($campaignTypeRecord->fieldLayoutId) {
+            } elseif ($campaignTypeRecord->fieldLayoutId) {
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
                 $campaignTypeRecord->fieldLayoutId = null;
@@ -294,7 +292,7 @@ class CampaignTypesService extends Component
         }
 
         // Remove it from project config
-        $path = self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignType->uid;
+        $path = self::CONFIG_CAMPAIGNTYPES_KEY . '.' . $campaignType->uid;
         Craft::$app->projectConfig->remove($path);
 
         return true;
@@ -387,7 +385,7 @@ class CampaignTypesService extends Component
                     foreach ($campaignType['fieldLayouts'] as $layoutUid => $layout) {
                         if (!empty($layout['tabs'])) {
                             foreach ($layout['tabs'] as $tabUid => $tab) {
-                                $projectConfig->remove(self::CONFIG_CAMPAIGNTYPES_KEY.'.'.$campaignTypeUid.'.fieldLayouts.'.$layoutUid.'.tabs.'.$tabUid.'.fields.'.$fieldUid);
+                                $projectConfig->remove(self::CONFIG_CAMPAIGNTYPES_KEY . '.' . $campaignTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid);
                             }
                         }
                     }

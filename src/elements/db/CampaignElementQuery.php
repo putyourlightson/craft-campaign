@@ -6,12 +6,12 @@
 namespace putyourlightson\campaign\elements\db;
 
 use craft\db\Table;
-use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\models\CampaignTypeModel;
-use putyourlightson\campaign\records\CampaignTypeRecord;
-
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use putyourlightson\campaign\elements\CampaignElement;
+
+use putyourlightson\campaign\models\CampaignTypeModel;
+use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 use yii\db\Connection;
 
@@ -48,14 +48,12 @@ class CampaignElementQuery extends ElementQuery
     {
         if ($value instanceof CampaignTypeModel) {
             $this->campaignTypeId = $value->id;
-        }
-        elseif ($value !== null) {
+        } elseif ($value !== null) {
             $this->campaignTypeId = CampaignTypeRecord::find()
                 ->select(['id'])
                 ->where(Db::parseParam('handle', $value))
                 ->column();
-        }
-        else {
+        } else {
             $this->campaignTypeId = null;
         }
 
@@ -106,8 +104,8 @@ class CampaignElementQuery extends ElementQuery
         $this->subQuery->select('campaign_sendouts.lastSent AS lastSent');
 
         // Filter by campaign types in sites that have not been deleted
-        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
-        $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
+        $this->subQuery->innerJoin(CampaignTypeRecord::tableName() . ' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
+        $this->subQuery->innerJoin(Table::SITES . ' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
         $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 
         return parent::beforePrepare();
@@ -125,7 +123,7 @@ class CampaignElementQuery extends ElementQuery
                     'elements.enabled' => 1,
                     'campaign_campaigns.dateClosed' => null,
                 ],
-                ['>', 'campaign_campaigns.recipients', 0]
+                ['>', 'campaign_campaigns.recipients', 0],
             ],
             CampaignElement::STATUS_PENDING => [
                 'and',
@@ -133,7 +131,7 @@ class CampaignElementQuery extends ElementQuery
                     'elements.enabled' => 1,
                     'campaign_campaigns.dateClosed' => null,
                     'campaign_campaigns.recipients' => 0,
-                ]
+                ],
             ],
             CampaignElement::STATUS_CLOSED => [
                 'and',

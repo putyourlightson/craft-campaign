@@ -11,10 +11,10 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
-use craft\validators\HandleValidator;
-use craft\validators\UniqueValidator;
 use craft\models\Site;
+use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
+use craft\validators\UniqueValidator;
 use craft\validators\UriFormatValidator;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -105,7 +105,7 @@ class CampaignTypeModel extends Model
         return [
             'fieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
-                'elementType' => CampaignElement::class
+                'elementType' => CampaignElement::class,
             ],
         ];
     }
@@ -131,7 +131,7 @@ class CampaignTypeModel extends Model
      */
     public function getCpEditUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/settings/campaigntypes/'.$this->id);
+        return UrlHelper::cpUrl('campaign/settings/campaigntypes/' . $this->id);
     }
 
     /**

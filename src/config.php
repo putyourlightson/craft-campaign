@@ -138,5 +138,5 @@ return [
         //        'not like %v' => 'does not end with',
         //    ]
         //],
-    ]
+    ],
 ];

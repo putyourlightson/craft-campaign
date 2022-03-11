@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\elements\db;
 
-use craft\helpers\Db;
-use putyourlightson\campaign\elements\SegmentElement;
-
 use craft\elements\db\ElementQuery;
+use craft\helpers\Db;
+
+use putyourlightson\campaign\elements\SegmentElement;
 use yii\db\Connection;
 
 /**

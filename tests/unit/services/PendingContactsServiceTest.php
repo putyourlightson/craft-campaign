@@ -7,8 +7,8 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -28,7 +28,7 @@ class PendingContactsServiceTest extends BaseUnitTest
     {
         return [
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }

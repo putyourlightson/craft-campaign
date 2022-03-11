@@ -5,8 +5,12 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\helpers\StringHelper;
+use craft\helpers\UrlHelper;
 use craft\queue\Queue;
 use craft\web\View;
 use DateTime;
@@ -19,15 +23,11 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
+
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\LinkRecord;
-
-use Craft;
-use craft\base\Component;
-use craft\helpers\Db;
-use craft\helpers\UrlHelper;
 use putyourlightson\campaign\records\SendoutRecord;
 use Twig\Error\Error;
 use yii\db\ActiveQuery;
@@ -128,7 +128,7 @@ class SendoutsService extends Component
             ->where($baseCondition);
 
         // Ensure contacts have not complained or bounced (in contact record)
-        $query->innerJoin(ContactRecord::tableName().' contact', '[[contact.id]] = [[contactId]]')
+        $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
             ->andWhere([
                 'contact.complained' => null,
                 'contact.bounced' => null,
@@ -169,7 +169,7 @@ class SendoutsService extends Component
             // Remove any contacts that do not meet the conditions
             foreach ($recipients as $key => $recipient) {
                 $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
-                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+'.$automatedSchedule->timeDelay.' '.$automatedSchedule->timeDelayInterval);
+                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $automatedSchedule->timeDelay . ' ' . $automatedSchedule->timeDelayInterval);
 
                 // If subscribed date was before sendout was created or time plus delay has not yet passed
                 if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
@@ -260,8 +260,7 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
-        }
-        catch (Error) {
+        } catch (Error) {
             Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
             ]);
@@ -276,7 +275,7 @@ class SendoutsService extends Component
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
-            ->setSubject('[Test] '.$subject)
+            ->setSubject('[Test] ' . $subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
@@ -319,8 +318,7 @@ class SendoutsService extends Component
             $contactCampaignRecord = new ContactCampaignRecord();
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
-        }
-        elseif ($contactCampaignRecord->sent !== null) {
+        } elseif ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
             if (!($sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes)) {
                 return;
@@ -349,8 +347,7 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout, $mailingList);
-        }
-        catch (Error) {
+        } catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
             $this->_updateSendoutRecord($sendout, ['sendStatus']);
@@ -366,9 +363,9 @@ class SendoutsService extends Component
         $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
 
         // Add tracking image to HTML body
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/open';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/open';
         $trackingImageUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
-        $htmlBody .= '<img src="'.$trackingImageUrl.'" width="1" height="1" alt="" />';
+        $htmlBody .= '<img src="' . $trackingImageUrl . '" width="1" height="1" alt="" />';
 
         // If test mode is enabled then use file transport instead of sending emails
         if (Campaign::$plugin->getSettings()->testMode) {
@@ -423,8 +420,7 @@ class SendoutsService extends Component
             $sendout->lastSent = new DateTime();
 
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
-        }
-        else {
+        } else {
             // Update fails and send status
             $sendout->fails++;
 
@@ -478,8 +474,7 @@ class SendoutsService extends Component
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
-        }
-        else {
+        } else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
@@ -679,14 +674,14 @@ class SendoutsService extends Component
     private function _convertLinks(string $body, ContactElement $contact, SendoutElement $sendout): string
     {
         // Get base URL
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/click';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/click';
         $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
 
         // Use DOMDocument to parse links
         $dom = new DOMDocument();
 
         // Suppress markup errors and prepend XML tag to force utf-8 encoding (https://gist.github.com/Xeoncross/9401853)
-        @$dom->loadHTML('<?xml encoding="utf-8"?>'.$body);
+        @$dom->loadHTML('<?xml encoding="utf-8"?>' . $body);
 
         /** @var DOMElement[] $elements*/
         $elements = $dom->getElementsByTagName('a');
@@ -702,7 +697,7 @@ class SendoutsService extends Component
                     continue;
                 }
 
-                $key = $url.':'.$title;
+                $key = $url . ':' . $title;
 
                 // If link has not yet been converted
                 if (!isset($this->_links[$key])) {
@@ -730,7 +725,7 @@ class SendoutsService extends Component
                 $lid = $this->_links[$key];
 
                 // Replace href attribute
-                $element->setAttribute('href', $baseUrl.'&lid='.$lid);
+                $element->setAttribute('href', $baseUrl . '&lid=' . $lid);
             }
         }
 

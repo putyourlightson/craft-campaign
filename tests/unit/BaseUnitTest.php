@@ -46,7 +46,7 @@ class BaseUnitTest extends Unit
             Campaign::$plugin,
             'mailer',
             [
-                'send' => function (Message $message) {
+                'send' => function(Message $message) {
                     if ($message->getSubject() == 'Fail') {
                         return false;
                     }
@@ -54,7 +54,7 @@ class BaseUnitTest extends Unit
                     $this->message = $message;
 
                     return true;
-                }
+                },
             ]
         );
     }

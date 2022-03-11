@@ -5,20 +5,20 @@
 
 namespace putyourlightson\campaign\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\actions\Delete;
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\db\ElementQueryInterface;
+use craft\helpers\UrlHelper;
+
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\MailingListRecord;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
-use craft\elements\actions\Delete;
-use craft\helpers\UrlHelper;
 use yii\base\InvalidConfigException;
 
 /**
@@ -127,8 +127,8 @@ class MailingListElement extends Element
             [
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All mailing lists'),
-                'criteria' => []
-            ]
+                'criteria' => [],
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('campaign', 'Mailing List Types')];
@@ -137,15 +137,15 @@ class MailingListElement extends Element
 
         foreach ($mailingListTypes as $mailingListType) {
             $sources[] = [
-                'key' => 'mailingListType:'.$mailingListType->id,
+                'key' => 'mailingListType:' . $mailingListType->id,
                 'label' => $mailingListType->name,
                 'sites' => [$mailingListType->siteId],
                 'data' => [
-                    'handle' => $mailingListType->handle
+                    'handle' => $mailingListType->handle,
                 ],
                 'criteria' => [
-                    'mailingListTypeId' => $mailingListType->id
-                ]
+                    'mailingListTypeId' => $mailingListType->id,
+                ],
             ];
         }
 
@@ -195,12 +195,12 @@ class MailingListElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -350,7 +350,7 @@ class MailingListElement extends Element
         $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($this->mailingListTypeId);
 
         if ($mailingListType === null) {
-            throw new InvalidConfigException('Invalid mailing list type ID: '.$this->mailingListTypeId);
+            throw new InvalidConfigException('Invalid mailing list type ID: ' . $this->mailingListTypeId);
         }
 
         return $mailingListType;
@@ -381,7 +381,7 @@ class MailingListElement extends Element
      */
     public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/mailinglists/'.$this->getMailingListType()->handle.'/'.$this->id);
+        return UrlHelper::cpUrl('campaign/mailinglists/' . $this->getMailingListType()->handle . '/' . $this->id);
     }
 
     /**
@@ -389,7 +389,7 @@ class MailingListElement extends Element
      */
     public function getReportUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/reports/mailinglists/'.$this->id);
+        return UrlHelper::cpUrl('campaign/reports/mailinglists/' . $this->id);
     }
 
     /**
@@ -414,7 +414,7 @@ class MailingListElement extends Element
     {
         // Get the title field
         $html = Craft::$app->getView()->renderTemplate('campaign/mailinglists/_includes/titlefield', [
-            'mailingList' => $this
+            'mailingList' => $this,
         ]);
 
         // Set the field layout ID
@@ -433,8 +433,7 @@ class MailingListElement extends Element
         if ($isNew) {
             $mailingListRecord = new MailingListRecord();
             $mailingListRecord->id = $this->id;
-        }
-        else {
+        } else {
             $mailingListRecord = MailingListRecord::findOne($this->id);
         }
 
@@ -478,7 +477,7 @@ class MailingListElement extends Element
             ->select('contactId')
             ->where([
                 'mailingListId' => $this->id,
-                'subscriptionStatus' => $subscriptionStatus
+                'subscriptionStatus' => $subscriptionStatus,
             ])
             ->column();
 

@@ -106,8 +106,8 @@ class SettingsService extends Component
                 $fromEmail = $fromNameEmail[1];
                 $replyTo = $fromNameEmail[2] ?? '';
 
-                $key = $fromName.':'.$fromEmail.':'.$replyTo;
-                $value = $fromName.' <'.$fromEmail.'> ';
+                $key = $fromName . ':' . $fromEmail . ':' . $replyTo;
+                $value = $fromName . ' <' . $fromEmail . '> ';
 
                 if ($replyTo) {
                     $value .= Craft::t('campaign', '(reply to {email})', ['email' => $replyTo]);
@@ -152,8 +152,7 @@ class SettingsService extends Component
             if ($site !== null) {
                 $sites[] = $site;
             }
-        }
-        else {
+        } else {
             $sites = Craft::$app->getSites()->getAllSites();
         }
 
@@ -162,8 +161,7 @@ class SettingsService extends Component
             // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
             if (version_compare(Craft::$app->getVersion(), '3.6.0', '>=')) {
                 $unparsedBaseUrl = $site->getBaseUrl(false);
-            }
-            else {
+            } else {
                 $unparsedBaseUrl = $site->baseUrl;
             }
 

@@ -6,13 +6,13 @@
 namespace putyourlightson\campaign\elements\db;
 
 use craft\db\Table;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\models\MailingListTypeModel;
-use putyourlightson\campaign\records\MailingListTypeRecord;
-
-
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use putyourlightson\campaign\elements\MailingListElement;
+
+
+use putyourlightson\campaign\models\MailingListTypeModel;
+use putyourlightson\campaign\records\MailingListTypeRecord;
 use yii\db\Connection;
 
 /**
@@ -58,14 +58,12 @@ class MailingListElementQuery extends ElementQuery
     {
         if ($value instanceof MailingListTypeModel) {
             $this->mailingListTypeId = $value->id;
-        }
-        elseif ($value !== null) {
+        } elseif ($value !== null) {
             $this->mailingListTypeId = MailingListTypeRecord::find()
                 ->select(['id'])
                 ->where(Db::parseParam('handle', $value))
                 ->column();
-        }
-        else {
+        } else {
             $this->mailingListTypeId = null;
         }
 
@@ -120,10 +118,10 @@ class MailingListElementQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('campaign_mailinglists.mailingListTypeId', $this->mailingListTypeId));
         }
 
-        $this->subQuery->innerJoin(MailingListTypeRecord::tableName().' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
+        $this->subQuery->innerJoin(MailingListTypeRecord::tableName() . ' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
         $this->subQuery->select('campaign_mailinglisttypes.name AS mailingListType');
 
-        $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_mailinglisttypes.siteId]]');
+        $this->subQuery->innerJoin(Table::SITES . ' sites', '[[sites.id]] = [[campaign_mailinglisttypes.siteId]]');
         $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 
         if ($this->syncedUserGroupId) {

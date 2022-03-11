@@ -5,14 +5,14 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Component;
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ExportEvent;
-use putyourlightson\campaign\models\ExportModel;
 
-use craft\base\Component;
+use putyourlightson\campaign\models\ExportModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 
 class ExportsService extends Component

@@ -5,16 +5,16 @@
 
 namespace putyourlightson\campaign\models;
 
+use Craft;
 use craft\base\Model;
+use craft\elements\User;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
+
+use craft\models\UserGroup;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
-
-use Craft;
-use craft\elements\User;
-use craft\helpers\UrlHelper;
-use craft\models\UserGroup;
 
 /**
  * @property-read string $cpViewUrl
@@ -132,7 +132,7 @@ class ImportModel extends Model
      */
     public function getCpViewUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/contacts/import/'.$this->id);
+        return UrlHelper::cpUrl('campaign/contacts/import/' . $this->id);
     }
 
     /**

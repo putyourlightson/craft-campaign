@@ -95,7 +95,7 @@ class SegmentHelper
         }
 
         $event = new RegisterSegmentFieldOperatorsEvent([
-            'fieldOperators' => $fieldOperators
+            'fieldOperators' => $fieldOperators,
         ]);
         Event::trigger(static::class, self::EVENT_REGISTER_FIELD_OPERATORS, $event);
 
@@ -150,7 +150,7 @@ class SegmentHelper
         ];
 
         $event = new RegisterSegmentAvailableFieldsEvent([
-            'availableFields' => $availableFields
+            'availableFields' => $availableFields,
         ]);
         Event::trigger(static::class, self::EVENT_REGISTER_AVAILABLE_FIELDS, $event);
 

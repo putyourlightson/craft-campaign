@@ -13,8 +13,8 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\helpers\ContactActivityHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
-use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
+use putyourlightson\campaign\records\LinkRecord;
 
 class TrackerService extends Component
 {

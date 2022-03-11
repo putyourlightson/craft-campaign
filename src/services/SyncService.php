@@ -5,6 +5,9 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
+use craft\elements\User;
 use craft\events\ElementEvent;
 use craft\events\UserEvent;
 use craft\events\UserGroupsAssignEvent;
@@ -15,13 +18,10 @@ use craft\services\Users;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\jobs\SyncJob;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-
-use Craft;
-use craft\base\Component;
-use craft\elements\User;
 use yii\base\Event;
 
 /**
@@ -71,17 +71,14 @@ class SyncService extends Component
 
         if ($event instanceof UserEvent) {
             $this->syncUser($event->user);
-        }
-        elseif ($event instanceof ElementEvent && $event->element instanceof User) {
+        } elseif ($event instanceof ElementEvent && $event->element instanceof User) {
             // If user was deleted
             if ($event->name == Elements::EVENT_AFTER_DELETE_ELEMENT) {
                 $this->deleteUser($event->element);
-            }
-            else {
+            } else {
                 $this->syncUser($event->element);
             }
-        }
-        elseif ($event instanceof UserGroupsAssignEvent) {
+        } elseif ($event instanceof UserGroupsAssignEvent) {
             $user = Craft::$app->getUsers()->getUserById($event->userId);
 
             if ($user !== null) {
@@ -120,8 +117,7 @@ class SyncService extends Component
             // If the mailing list is synced with user's user group ID
             if (in_array($mailingList->syncedUserGroupId, $userGroupIds)) {
                 $this->syncUserMailingList($user, $mailingList);
-            }
-            else {
+            } else {
                 $this->removeUserMailingList($user, $mailingList);
             }
         }

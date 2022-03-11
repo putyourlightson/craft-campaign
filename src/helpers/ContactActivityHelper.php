@@ -86,13 +86,12 @@ class ContactActivityHelper
             $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->ipstackApiKey);
 
             /** @noinspection HttpUrlsUsage */
-            $response = $client->get('http://api.ipstack.com/'.$ip.'?access_key='.$apiKey);
+            $response = $client->get('http://api.ipstack.com/' . $ip . '?access_key=' . $apiKey);
 
             if ($response->getStatusCode() == 200) {
                 $geoIp = Json::decodeIfJson($response->getBody());
             }
-        }
-        catch (ConnectException) {
+        } catch (ConnectException) {
         }
 
         // If country is empty then return null

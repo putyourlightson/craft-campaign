@@ -5,18 +5,18 @@
 
 namespace putyourlightson\campaign\models;
 
-use craft\base\Model;
-use craft\models\FieldLayout;
-use craft\models\Site;
-use craft\validators\SiteIdValidator;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\records\MailingListTypeRecord;
-
 use Craft;
+use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
+use craft\models\Site;
+
 use craft\validators\HandleValidator;
+use craft\validators\SiteIdValidator;
 use craft\validators\UniqueValidator;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\records\MailingListTypeRecord;
 
 /**
  * @mixin FieldLayoutBehavior
@@ -120,7 +120,7 @@ class MailingListTypeModel extends Model
         return [
             'fieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
-                'elementType' => MailingListElement::class
+                'elementType' => MailingListElement::class,
             ],
         ];
     }
@@ -146,7 +146,7 @@ class MailingListTypeModel extends Model
      */
     public function getCpEditUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/settings/mailinglisttypes/'.$this->id);
+        return UrlHelper::cpUrl('campaign/settings/mailinglisttypes/' . $this->id);
     }
 
     /**

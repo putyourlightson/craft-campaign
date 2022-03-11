@@ -5,13 +5,13 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\models\CampaignTypeModel;
-use putyourlightson\campaign\elements\CampaignElement;
-
 use Craft;
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\CampaignElement;
+
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\models\CampaignTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -40,8 +40,7 @@ class CampaignTypesController extends Controller
                 if ($campaignType === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
                 }
-            }
-            else {
+            } else {
                 $campaignType = new CampaignTypeModel();
             }
         }
@@ -56,8 +55,7 @@ class CampaignTypesController extends Controller
 
         if ($campaignTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        }
-        else {
+        } else {
             $variables['title'] = $campaignType->name;
         }
 
@@ -81,8 +79,7 @@ class CampaignTypesController extends Controller
             if (!$campaignType) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
             }
-        }
-        else {
+        } else {
             $campaignType = new CampaignTypeModel();
         }
 
@@ -107,7 +104,7 @@ class CampaignTypesController extends Controller
 
             // Send the campaign type back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'campaignType' => $campaignType
+                'campaignType' => $campaignType,
             ]);
 
             return null;

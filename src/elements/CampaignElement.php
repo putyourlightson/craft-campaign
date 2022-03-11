@@ -134,7 +134,7 @@ class CampaignElement extends Element
             self::STATUS_SENT => Craft::t('campaign', 'Sent'),
             self::STATUS_PENDING => Craft::t('campaign', 'Pending'),
             self::STATUS_CLOSED => Craft::t('campaign', 'Closed'),
-            self::STATUS_DISABLED => Craft::t('app', 'Disabled')
+            self::STATUS_DISABLED => Craft::t('app', 'Disabled'),
         ];
     }
 
@@ -157,7 +157,7 @@ class CampaignElement extends Element
                 'label' => Craft::t('campaign', 'All campaigns'),
                 'criteria' => [],
                 'defaultSort' => ['lastSent', 'desc'],
-            ]
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('campaign', 'Campaign Types')];
@@ -167,14 +167,14 @@ class CampaignElement extends Element
         foreach ($campaignTypes as $campaignType) {
             /** @var CampaignTypeModel $campaignType */
             $sources[] = [
-                'key' => 'campaignType:'.$campaignType->id,
+                'key' => 'campaignType:' . $campaignType->id,
                 'label' => $campaignType->name,
                 'sites' => [$campaignType->siteId],
                 'data' => [
-                    'handle' => $campaignType->handle
+                    'handle' => $campaignType->handle,
                 ],
                 'criteria' => [
-                    'campaignTypeId' => $campaignType->id
+                    'campaignTypeId' => $campaignType->id,
                 ],
                 'defaultSort' => ['lastSent', 'desc'],
             ];
@@ -236,12 +236,12 @@ class CampaignElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -383,8 +383,8 @@ class CampaignElement extends Element
                     'contact' => new ContactElement(),
                     'unsubscribeUrl' => '',
                     'isWebRequest' => true,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -406,7 +406,7 @@ class CampaignElement extends Element
         $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($this->campaignTypeId);
 
         if ($campaignType === null) {
-            throw new InvalidConfigException('Invalid campaign type ID: '.$this->campaignTypeId);
+            throw new InvalidConfigException('Invalid campaign type ID: ' . $this->campaignTypeId);
         }
 
         $this->_campaignType = $campaignType;
@@ -479,7 +479,7 @@ class CampaignElement extends Element
      */
     public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/campaigns/'.$this->getCampaignType()->handle.'/'.$this->id);
+        return UrlHelper::cpUrl('campaign/campaigns/' . $this->getCampaignType()->handle . '/' . $this->id);
     }
 
     /**
@@ -487,7 +487,7 @@ class CampaignElement extends Element
      */
     public function getReportUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/reports/campaigns/'.$this->id);
+        return UrlHelper::cpUrl('campaign/reports/campaigns/' . $this->id);
     }
 
     /**
@@ -497,7 +497,7 @@ class CampaignElement extends Element
     {
         // Get the title field
         $html = Craft::$app->getView()->renderTemplate('campaign/campaigns/_includes/titlefield', [
-            'campaign' => $this
+            'campaign' => $this,
         ]);
 
         // Set the field layout ID
@@ -516,8 +516,7 @@ class CampaignElement extends Element
         if ($isNew) {
             $campaignRecord = new CampaignRecord();
             $campaignRecord->id = $this->id;
-        }
-        else {
+        } else {
             $campaignRecord = CampaignRecord::findOne($this->id);
         }
 
@@ -611,8 +610,7 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
                 'isWebRequest' => false,
             ]);
-        }
-        catch (Error $exception) {
+        } catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
 
             throw $exception;

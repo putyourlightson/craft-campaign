@@ -5,9 +5,9 @@
 
 namespace putyourlightson\campaign\services;
 
-use putyourlightson\campaign\elements\ContactElement;
-
 use craft\base\Component;
+
+use putyourlightson\campaign\elements\ContactElement;
 
 class ContactsService extends Component
 {

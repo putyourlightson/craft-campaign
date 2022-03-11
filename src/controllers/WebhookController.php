@@ -8,13 +8,13 @@ namespace putyourlightson\campaign\controllers;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
+use Craft;
 use craft\helpers\App;
+use craft\helpers\Json;
+
+use craft\web\Controller;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
-
-use Craft;
-use craft\helpers\Json;
-use craft\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -75,8 +75,7 @@ class WebhookController extends Controller
         // Validate the message
         try {
             $validator->validate($message);
-        }
-        catch (InvalidSnsMessageException) {
+        } catch (InvalidSnsMessageException) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
         }
 
@@ -90,8 +89,7 @@ class WebhookController extends Controller
 
             try {
                 $client->get($message['SubscribeURL']);
-            }
-            catch (ConnectException) {
+            } catch (ConnectException) {
             }
         }
 
@@ -130,7 +128,7 @@ class WebhookController extends Controller
 
         if ($signingKey) {
             $eventSignature = $eventData['signature'] ?? '';
-            $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'].$eventSignature['token'], $signingKey);
+            $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'] . $eventSignature['token'], $signingKey);
 
             if (!$eventSignature || $eventSignature['signature'] != $hashedValue) {
                 return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Signature could not be authenticated.')]);
@@ -236,11 +234,9 @@ class WebhookController extends Controller
 
                 if ($reason == 'SpamComplaint') {
                     return $this->_callWebhook('complained', $email);
-                }
-                elseif ($reason == 'HardBounce') {
+                } elseif ($reason == 'HardBounce') {
                     return $this->_callWebhook('bounced', $email);
-                }
-                else {
+                } else {
                     return $this->_callWebhook('unsubscribed', $email);
                 }
             }
@@ -285,7 +281,7 @@ class WebhookController extends Controller
     private function _callWebhook(string $event, string $email = null): ?Response
     {
         // Log request
-        Craft::warning('Webhook request: '.Craft::$app->getRequest()->getRawBody(), 'campaign');
+        Craft::warning('Webhook request: ' . Craft::$app->getRequest()->getRawBody(), 'campaign');
 
         if ($email === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
@@ -299,11 +295,9 @@ class WebhookController extends Controller
 
         if ($event == 'complained') {
             Campaign::$plugin->webhook->complain($contact);
-        }
-        elseif ($event == 'bounced') {
+        } elseif ($event == 'bounced') {
             Campaign::$plugin->webhook->bounce($contact);
-        }
-        elseif ($event == 'unsubscribed') {
+        } elseif ($event == 'unsubscribed') {
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 

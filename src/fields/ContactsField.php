@@ -5,10 +5,10 @@
 
 namespace putyourlightson\campaign\fields;
 
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
+
 use craft\fields\BaseRelationField;
+use putyourlightson\campaign\elements\ContactElement;
 
 class ContactsField extends BaseRelationField
 {

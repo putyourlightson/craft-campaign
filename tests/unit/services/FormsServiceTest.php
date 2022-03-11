@@ -10,10 +10,10 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -33,13 +33,13 @@ class FormsServiceTest extends BaseUnitTest
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }

@@ -31,13 +31,13 @@ class FormsControllerTest extends BaseControllerTest
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }

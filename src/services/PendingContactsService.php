@@ -5,16 +5,16 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\helpers\ConfigHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use DateTime;
 use putyourlightson\campaign\Campaign;
+
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\models\PendingContactModel;
-
-use Craft;
-use craft\base\Component;
 use putyourlightson\campaign\records\PendingContactRecord;
 use yii\helpers\Json;
 

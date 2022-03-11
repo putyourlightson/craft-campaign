@@ -7,10 +7,10 @@ namespace putyourlightson\campaign\elements;
 
 use Craft;
 use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
@@ -132,8 +132,8 @@ class SegmentElement extends Element
             [
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All segments'),
-                'criteria' => []
-            ]
+                'criteria' => [],
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('campaign', 'Segment Types')];
@@ -143,14 +143,14 @@ class SegmentElement extends Element
 
         foreach ($segmentTypes as $segmentType => $label) {
             $sources[] = [
-                'key' => 'segmentTypeId:'.$index,
+                'key' => 'segmentTypeId:' . $index,
                 'label' => $label,
                 'data' => [
-                    'handle' => $segmentType
+                    'handle' => $segmentType,
                 ],
                 'criteria' => [
-                    'segmentType' => $segmentType
-                ]
+                    'segmentType' => $segmentType,
+                ],
             ];
 
             $index++;
@@ -202,12 +202,12 @@ class SegmentElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -234,11 +234,9 @@ class SegmentElement extends Element
     {
         if ($source == '*') {
             $attributes = ['title', 'segmentType', 'conditions', 'contacts'];
-        }
-        elseif ($source == 'regular') {
+        } elseif ($source == 'regular') {
             $attributes = ['title', 'conditions', 'contacts'];
-        }
-        else {
+        } else {
             $attributes = ['title', 'contacts'];
         }
 
@@ -397,7 +395,7 @@ class SegmentElement extends Element
      */
     public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/segments/'.$this->segmentType.'/'.$this->id);
+        return UrlHelper::cpUrl('campaign/segments/' . $this->segmentType . '/' . $this->id);
     }
 
     /**
@@ -418,8 +416,7 @@ class SegmentElement extends Element
         if ($isNew) {
             $segmentRecord = new SegmentRecord();
             $segmentRecord->id = $this->id;
-        }
-        else {
+        } else {
             $segmentRecord = SegmentRecord::findOne($this->id);
         }
 

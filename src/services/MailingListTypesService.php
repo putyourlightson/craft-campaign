@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
@@ -15,15 +17,13 @@ use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
+
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
-use putyourlightson\campaign\elements\MailingListElement;
-
-use Craft;
-use craft\base\Component;
 use Throwable;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
@@ -80,7 +80,7 @@ class MailingListTypesService extends Component
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([MailingListTypeRecord::tableName().'.id' => $mailingListTypeId])
+            ->where([MailingListTypeRecord::tableName() . '.id' => $mailingListTypeId])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -100,7 +100,7 @@ class MailingListTypesService extends Component
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([MailingListTypeRecord::tableName().'.handle' => $mailingListTypeHandle])
+            ->where([MailingListTypeRecord::tableName() . '.handle' => $mailingListTypeHandle])
             ->one();
 
         if ($mailingListTypeRecord === null) {
@@ -140,15 +140,14 @@ class MailingListTypesService extends Component
         // Ensure the mailing list type has a UID
         if ($isNew) {
             $mailingListType->uid = StringHelper::UUID();
-        }
-        elseif (!$mailingListType->uid) {
+        } elseif (!$mailingListType->uid) {
             /** @var MailingListTypeRecord $mailingListTypeRecord */
             $mailingListTypeRecord = MailingListTypeRecord::find()
-                ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListType->id])
+                ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListType->id])
                 ->one();
 
             if ($mailingListTypeRecord === null) {
-                throw new NotFoundHttpException('No mailing list type exists with the ID '.$mailingListType->id);
+                throw new NotFoundHttpException('No mailing list type exists with the ID ' . $mailingListType->id);
             }
 
             $mailingListType->uid = $mailingListTypeRecord->uid;
@@ -158,7 +157,7 @@ class MailingListTypesService extends Component
         $configData = ProjectConfigDataHelper::getMailingListTypeData($mailingListType);
 
         // Save it to project config
-        $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
+        $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
         Craft::$app->projectConfig->set($path, $configData);
 
         // Set the ID on the mailing list type
@@ -210,8 +209,7 @@ class MailingListTypesService extends Component
                 $layout->uid = key($data['fieldLayouts']);
                 $fieldsService->saveLayout($layout);
                 $mailingListTypeRecord->fieldLayoutId = $layout->id;
-            }
-            elseif ($mailingListTypeRecord->fieldLayoutId) {
+            } elseif ($mailingListTypeRecord->fieldLayoutId) {
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($mailingListTypeRecord->fieldLayoutId);
                 $mailingListTypeRecord->fieldLayoutId = null;
@@ -290,7 +288,7 @@ class MailingListTypesService extends Component
         }
 
         // Remove it from project config
-        $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
+        $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
         Craft::$app->projectConfig->remove($path);
 
         return true;
@@ -383,7 +381,7 @@ class MailingListTypesService extends Component
                     foreach ($mailingListType['fieldLayouts'] as $layoutUid => $layout) {
                         if (!empty($layout['tabs'])) {
                             foreach ($layout['tabs'] as $tabUid => $tab) {
-                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListTypeUid.'.fieldLayouts.'.$layoutUid.'.tabs.'.$tabUid.'.fields.'.$fieldUid);
+                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid);
                             }
                         }
                     }

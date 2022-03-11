@@ -7,8 +7,8 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -28,7 +28,7 @@ class ContactsServiceTest extends BaseUnitTest
     {
         return [
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
         ];
     }

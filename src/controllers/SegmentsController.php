@@ -5,16 +5,16 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\SegmentElement;
-
 use Craft;
 use craft\helpers\DateTimeHelper;
+
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\helpers\SegmentHelper;
 use Throwable;
-use yii\web\Response;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
 class SegmentsController extends Controller
@@ -59,8 +59,7 @@ class SegmentsController extends Controller
                 if ($segment === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
                 }
-            }
-            else {
+            } else {
                 $segment = new SegmentElement();
                 $segment->segmentType = $segmentType;
                 $segment->enabled = true;
@@ -88,8 +87,7 @@ class SegmentsController extends Controller
 
         if ($segmentId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new segment');
-        }
-        else {
+        } else {
             $variables['title'] = $segment->title;
             $variables['slug'] = $segment->slug;
         }
@@ -103,7 +101,7 @@ class SegmentsController extends Controller
 
         // Full page form variables
         $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/segments/'.$segmentType.'/{id}';
+        $variables['continueEditingUrl'] = 'campaign/segments/' . $segmentType . '/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
         // Render the template
@@ -127,8 +125,7 @@ class SegmentsController extends Controller
             if ($segment === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
             }
-        }
-        else {
+        } else {
             $segment = new SegmentElement();
         }
 
@@ -137,8 +134,7 @@ class SegmentsController extends Controller
             try {
                 /** @var SegmentElement $segment */
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
-            }
-            catch (Throwable $e) {
+            } catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the segment.'), 0, $e);
             }
         }
@@ -174,7 +170,7 @@ class SegmentsController extends Controller
 
             // Send the segment back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'segment' => $segment
+                'segment' => $segment,
             ]);
 
             return null;
@@ -225,7 +221,7 @@ class SegmentsController extends Controller
 
             // Send the segment back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'segment' => $segment
+                'segment' => $segment,
             ]);
 
             return null;

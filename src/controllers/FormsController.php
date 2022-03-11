@@ -5,14 +5,14 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\helpers\App;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
-use putyourlightson\campaign\models\PendingContactModel;
 
-use Craft;
+use putyourlightson\campaign\models\PendingContactModel;
 use yii\web\ForbiddenHttpException;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
@@ -77,7 +77,7 @@ class FormsController extends BaseMessageController
 
                 // Send the contact back to the template
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'contact' => $contact
+                    'contact' => $contact,
                 ]);
 
                 return null;
@@ -109,8 +109,7 @@ class FormsController extends BaseMessageController
 
             // Send verification email
             Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
-        }
-        else {
+        } else {
             // Save contact
             if (!Craft::$app->getElements()->saveElement($contact)) {
                 if ($request->getAcceptsJson()) {
@@ -121,7 +120,7 @@ class FormsController extends BaseMessageController
 
                 // Send the contact back to the template
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'contact' => $contact
+                    'contact' => $contact,
                 ]);
 
                 return null;
@@ -229,7 +228,7 @@ class FormsController extends BaseMessageController
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
+                'contact' => $contact,
             ]);
 
             return null;
@@ -283,8 +282,7 @@ class FormsController extends BaseMessageController
                     'mailingList' => $mailingList,
                     'contact' => null,
                 ]);
-            }
-            else {
+            } else {
                 return $this->renderMessageTemplate('', [
                     'title' => Craft::t('campaign', 'Verified'),
                     'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),

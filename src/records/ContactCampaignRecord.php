@@ -54,8 +54,8 @@ class ContactCampaignRecord extends BaseActiveRecord
     {
         // Create a subquery to ensure only contacts and campaigns that are not deleted are returned
         $subquery = parent::find()
-            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
+            ->innerJoin(Table::ELEMENTS . ' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS . ' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
             ->where([
                 'contactElement.dateDeleted' => null,
                 'campaignElement.dateDeleted' => null,

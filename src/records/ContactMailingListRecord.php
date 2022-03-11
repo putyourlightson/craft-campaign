@@ -42,8 +42,8 @@ class ContactMailingListRecord extends BaseActiveRecord
     {
         // Create a subquery to ensure only contacts and mailing lists that are not deleted are returned
         $subquery = parent::find()
-            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->innerJoin(Table::ELEMENTS.' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
+            ->innerJoin(Table::ELEMENTS . ' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS . ' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
             ->where([
                 'contactElement.dateDeleted' => null,
                 'mailingListElement.dateDeleted' => null,

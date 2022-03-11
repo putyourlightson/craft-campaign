@@ -5,13 +5,13 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\errors\ElementNotFoundException;
-use DateTime;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
 use craft\base\Component;
+use craft\errors\ElementNotFoundException;
+use DateTime;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use Throwable;
 use yii\base\Exception;

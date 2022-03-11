@@ -5,15 +5,15 @@
 
 namespace putyourlightson\campaign\migrations;
 
+use Craft;
 use craft\base\Element;
+use craft\db\Migration;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
-
-use Craft;
-use craft\db\Migration;
 use yii\db\ColumnSchemaBuilder;
 
 class Install extends Migration

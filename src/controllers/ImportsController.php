@@ -5,16 +5,16 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\elements\Asset;
 use craft\helpers\Assets;
+use craft\helpers\FileHelper;
+use craft\web\Controller;
+
+use craft\web\UploadedFile;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
-
-use Craft;
-use craft\web\Controller;
-use craft\helpers\FileHelper;
-use craft\web\UploadedFile;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -217,7 +217,7 @@ class ImportsController extends Controller
         // Prepend `field_` to each custom field index
         foreach ($import->fieldIndexes as $key => $fieldIndex) {
             if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
-                $import->fieldIndexes[$key] = 'field_'.$fieldIndex;
+                $import->fieldIndexes[$key] = 'field_' . $fieldIndex;
             }
         }
 

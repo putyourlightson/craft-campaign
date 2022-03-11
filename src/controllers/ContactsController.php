@@ -5,20 +5,20 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\elements\User;
+use craft\errors\ElementNotFoundException;
+use craft\helpers\DateTimeHelper;
+
+use craft\web\Controller;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-
-use Craft;
-use craft\errors\ElementNotFoundException;
-use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
 use Throwable;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
-use yii\web\Response;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class ContactsController extends Controller
 {
@@ -71,8 +71,7 @@ class ContactsController extends Controller
                 if ($contact === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
                 }
-            }
-            else {
+            } else {
                 $contact = new ContactElement();
                 $contact->enabled = true;
             }
@@ -89,8 +88,7 @@ class ContactsController extends Controller
 
         if ($contactId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new contact');
-        }
-        else {
+        } else {
             $variables['title'] = $contact->email;
         }
 
@@ -109,8 +107,7 @@ class ContactsController extends Controller
                 'label' => Craft::t('campaign', 'Mark contact as complained'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
             ];
-        }
-        else {
+        } else {
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-complained',
                 'redirect' => 'campaign/contacts/{id}',
@@ -126,8 +123,7 @@ class ContactsController extends Controller
                 'label' => Craft::t('campaign', 'Mark contact as bounced'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
             ];
-        }
-        else {
+        } else {
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-bounced',
                 'redirect' => 'campaign/contacts/{id}',
@@ -143,8 +139,7 @@ class ContactsController extends Controller
                 'label' => Craft::t('campaign', 'Mark contact as blocked'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
             ];
-        }
-        else {
+        } else {
             $variables['actions'][0][] = [
                 'action' => 'campaign/contacts/unmark-contact-blocked',
                 'redirect' => 'campaign/contacts/{id}',
@@ -158,7 +153,7 @@ class ContactsController extends Controller
             'destructive' => 'true',
             'redirect' => 'campaign/contacts',
             'label' => Craft::t('campaign', 'Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact?')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact?'),
         ];
 
         $variables['actions'][1][] = [
@@ -166,7 +161,7 @@ class ContactsController extends Controller
             'destructive' => 'true',
             'redirect' => 'campaign/contacts',
             'label' => Craft::t('campaign', 'Delete permanently'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.')
+            'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.'),
         ];
 
         // Get the settings
@@ -198,8 +193,7 @@ class ContactsController extends Controller
             if ($contact === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
             }
-        }
-        else {
+        } else {
             $contact = new ContactElement();
         }
 
@@ -222,7 +216,7 @@ class ContactsController extends Controller
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
+                'contact' => $contact,
             ]);
 
             return null;
@@ -316,7 +310,7 @@ class ContactsController extends Controller
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
+                'contact' => $contact,
             ]);
 
             return null;
@@ -399,8 +393,7 @@ class ContactsController extends Controller
 
         if ($subscriptionStatus === '') {
             Campaign::$plugin->mailingLists->deleteContactSubscription($contact, $mailingList);
-        }
-        else {
+        } else {
             /** @var User|null $currentUser */
             $currentUser = Craft::$app->getUser()->getIdentity();
             $currentUserId = $currentUser ? $currentUser->id : '';
@@ -443,11 +436,11 @@ class ContactsController extends Controller
                 return $this->asJson(['success' => false]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t mark contact as '.$status.'.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t mark contact as ' . $status . '.'));
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
+                'contact' => $contact,
             ]);
 
             return null;
@@ -457,7 +450,7 @@ class ContactsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact marked as '.$status.'.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact marked as ' . $status . '.'));
 
         return $this->redirectToPostedUrl($contact);
     }
@@ -487,11 +480,11 @@ class ContactsController extends Controller
                 return $this->asJson(['success' => false]);
             }
 
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t unmark contact as '.$status.'.'));
+            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t unmark contact as ' . $status . '.'));
 
             // Send the contact back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact
+                'contact' => $contact,
             ]);
 
             return null;
@@ -501,7 +494,7 @@ class ContactsController extends Controller
             return $this->asJson(['success' => true]);
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact unmarked as '.$status.'.'));
+        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact unmarked as ' . $status . '.'));
 
         return $this->redirectToPostedUrl($contact);
     }

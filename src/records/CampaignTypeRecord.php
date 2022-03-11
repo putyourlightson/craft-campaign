@@ -9,7 +9,6 @@ use craft\records\Site;
 use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
-
 /**
  * CampaignTypeRecord
  *

@@ -29,7 +29,7 @@ class WebhookControllerTest extends BaseControllerTest
     {
         return [
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
         ];
     }
@@ -95,7 +95,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->assertEquals(['success' => false, 'error' => 'Signature could not be authenticated.'], $response->data);
 
-        $eventData['event-data']['signature']['signature'] = hash_hmac('sha256', $timestamp.$token, $signingKey);
+        $eventData['event-data']['signature']['signature'] = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
         Craft::$app->getRequest()->setRawBody(json_encode($eventData));
 

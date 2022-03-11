@@ -5,27 +5,27 @@
 
 namespace putyourlightson\campaign\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
+use craft\helpers\UrlHelper;
+use craft\validators\DateTimeValidator;
 use DateTime;
 use LitEmoji\LitEmoji;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\db\SendoutElementQuery;
-use putyourlightson\campaign\elements\actions\PauseSendouts;
+
 use putyourlightson\campaign\elements\actions\CancelSendouts;
+use putyourlightson\campaign\elements\actions\PauseSendouts;
+use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Delete;
-use craft\elements\User;
-use craft\helpers\UrlHelper;
-use craft\validators\DateTimeValidator;
 
 /**
  *
@@ -221,7 +221,7 @@ class SendoutElement extends Element
                 'label' => Craft::t('campaign', 'All sendouts'),
                 'criteria' => [],
                 'defaultSort' => ['lastSent', 'desc'],
-            ]
+            ],
         ];
 
         $sources[] = ['heading' => Craft::t('campaign', 'Sendout Types')];
@@ -231,13 +231,13 @@ class SendoutElement extends Element
 
         foreach ($sendoutTypes as $sendoutType => $label) {
             $sources[] = [
-                'key' => 'sendoutTypeId:'.$index,
+                'key' => 'sendoutTypeId:' . $index,
                 'label' => $label,
                 'data' => [
-                    'handle' => $sendoutType
+                    'handle' => $sendoutType,
                 ],
                 'criteria' => [
-                    'sendoutType' => $sendoutType
+                    'sendoutType' => $sendoutType,
                 ],
                 'defaultSort' => ['lastSent', 'desc'],
             ];
@@ -301,12 +301,12 @@ class SendoutElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -347,11 +347,9 @@ class SendoutElement extends Element
     {
         if ($source == '*') {
             $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
-        }
-        elseif ($source == 'regular' || $source == 'scheduled') {
+        } elseif ($source == 'regular' || $source == 'scheduled') {
             $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
-        }
-        else {
+        } else {
             $attributes = ['title', 'campaignId', 'recipients', 'lastSent'];
         }
 
@@ -512,8 +510,7 @@ class SendoutElement extends Element
         // TODO: test!
         if ($this->sendoutType == 'automated') {
             $this->schedule = new AutomatedScheduleModel($this->schedule->toArray());
-        }
-        elseif ($this->sendoutType == 'recurring') {
+        } elseif ($this->sendoutType == 'recurring') {
             $this->schedule = new RecurringScheduleModel($this->schedule->toArray());
         }
     }
@@ -581,7 +578,7 @@ class SendoutElement extends Element
      */
     public function getFromNameEmail(): string
     {
-        return $this->fromName ? $this->fromName.':'.$this->fromEmail.':'.$this->replyToEmail : '';
+        return $this->fromName ? $this->fromName . ':' . $this->fromEmail . ':' . $this->replyToEmail : '';
     }
 
     /**
@@ -591,7 +588,7 @@ class SendoutElement extends Element
      */
     public function getFromNameEmailLabel(): string
     {
-        $label = $this->fromName ? $this->fromName.' <'.$this->fromEmail.'> ' : '';
+        $label = $this->fromName ? $this->fromName . ' <' . $this->fromEmail . '> ' : '';
 
         if ($this->replyToEmail) {
             $label .= Craft::t('campaign', '(reply to {email})', ['email' => $this->replyToEmail]);
@@ -632,7 +629,7 @@ class SendoutElement extends Element
 
         $progress = round(100 * $this->getProgressFraction());
 
-        return $progress.'%';
+        return $progress . '%';
     }
 
     /**
@@ -950,7 +947,7 @@ class SendoutElement extends Element
      */
     public function getCpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/sendouts/'.$this->sendoutType.'/'.$this->id);
+        return UrlHelper::cpUrl('campaign/sendouts/' . $this->sendoutType . '/' . $this->id);
     }
 
     // Indexes, etc.
@@ -985,7 +982,7 @@ class SendoutElement extends Element
     {
         // Get the title field
         $html = Craft::$app->getView()->renderTemplate('campaign/sendouts/_includes/titlefield', [
-            'sendout' => $this
+            'sendout' => $this,
         ]);
 
         $html .= parent::getEditorHtml();
@@ -1049,8 +1046,7 @@ class SendoutElement extends Element
         if ($isNew) {
             $sendoutRecord = new SendoutRecord();
             $sendoutRecord->id = $this->id;
-        }
-        else {
+        } else {
             $sendoutRecord = SendoutRecord::findOne($this->id);
         }
 

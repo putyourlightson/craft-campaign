@@ -5,20 +5,20 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\elements\User;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\helpers\SendoutHelper;
-use putyourlightson\campaign\models\SettingsModel;
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
-use craft\web\Controller;
+use craft\elements\User;
+use craft\errors\MissingComponentException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
-use craft\errors\MissingComponentException;
+
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
+use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\helpers\SendoutHelper;
+use putyourlightson\campaign\models\SettingsModel;
 use Throwable;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -75,11 +75,10 @@ class SettingsController extends Controller
             $settings->transportType = $settings->transportType ?: Sendmail::class;
             try {
                 $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
-            }
-            catch (MissingComponentException) {
+            } catch (MissingComponentException) {
                 $adapter = new Sendmail();
                 $adapter->addError('type', Craft::t('app', 'The transport type “{type}” could not be found.', [
-                    'type' => $settings->transportType
+                    'type' => $settings->transportType,
                 ]));
             }
         }
@@ -101,7 +100,7 @@ class SettingsController extends Controller
                 $allTransportAdapters[] = MailerHelper::createTransportAdapter($transportAdapterType);
                 $transportTypeOptions[] = [
                     'value' => $transportAdapterType,
-                    'label' => $transportAdapterType::displayName()
+                    'label' => $transportAdapterType::displayName(),
                 ];
             }
         }
@@ -212,7 +211,7 @@ class SettingsController extends Controller
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
+                'settings' => $settings,
             ]);
 
             return null;
@@ -235,7 +234,7 @@ class SettingsController extends Controller
         // Set the simple stuff
         $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
+        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.' . $settings->transportType);
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -251,7 +250,7 @@ class SettingsController extends Controller
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
                 'settings' => $settings,
-                'adapter' => $adapter
+                'adapter' => $adapter,
             ]);
 
             return null;
@@ -288,7 +287,7 @@ class SettingsController extends Controller
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
+                'settings' => $settings,
             ]);
 
             return null;
@@ -319,7 +318,7 @@ class SettingsController extends Controller
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
+                'settings' => $settings,
             ]);
 
             return null;
@@ -349,7 +348,7 @@ class SettingsController extends Controller
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
+                'settings' => $settings,
             ]);
 
             return null;
@@ -385,7 +384,7 @@ class SettingsController extends Controller
 
             // Send the settings back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
+                'settings' => $settings,
             ]);
 
             return null;
@@ -408,7 +407,7 @@ class SettingsController extends Controller
         // Set the simple stuff
         $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
+        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.' . $settings->transportType);
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -420,8 +419,7 @@ class SettingsController extends Controller
 
         if ($settings->hasErrors() || $adapter->hasErrors()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t send test email.'));
-        }
-        else {
+        } else {
             // Create mailer with settings
             $mailer = Campaign::$plugin->createMailer($settings);
 
@@ -448,8 +446,7 @@ class SettingsController extends Controller
             // Send message
             try {
                 $response = $message->send();
-            }
-            catch (Throwable $e) {
+            } catch (Throwable $e) {
                 Craft::error($e);
                 Craft::$app->getErrorHandler()->logException($e);
                 $response = false;
@@ -457,8 +454,7 @@ class SettingsController extends Controller
 
             if ($response) {
                 Craft::$app->getSession()->setNotice(Craft::t('app', 'Email sent successfully! Check your inbox.'));
-            }
-            else {
+            } else {
                 Craft::$app->getSession()->setError(Craft::t('app', 'There was an error testing your email settings.'));
             }
         }
@@ -466,7 +462,7 @@ class SettingsController extends Controller
         // Send the settings back to the template
         Craft::$app->getUrlManager()->setRouteParams([
             'settings' => $settings,
-            'adapter' => $adapter
+            'adapter' => $adapter,
         ]);
     }
 }

@@ -10,11 +10,11 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
  * @author    PutYourLightsOn
@@ -34,16 +34,16 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'campaigns' => [
-                'class' => CampaignsFixture::class
+                'class' => CampaignsFixture::class,
             ],
             'sendouts' => [
-                'class' => SendoutsFixture::class
+                'class' => SendoutsFixture::class,
             ],
         ];
     }
@@ -187,8 +187,8 @@ class SendoutsServiceTest extends BaseUnitTest
         $body = str_replace(['3D', "=\r\n"], '', $body);
 
         // Assert that the message body contains a link with the correct IDs
-        $this->assertStringContainsStringIgnoringCase('&amp;cid='.$this->contact->cid, $body);
-        $this->assertStringContainsStringIgnoringCase('&amp;sid='.$this->sendout->sid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;cid=' . $this->contact->cid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;sid=' . $this->sendout->sid, $body);
         $this->assertStringContainsStringIgnoringCase('&amp;lid=', $body);
 
         // Assert that the message body contains the tracking image

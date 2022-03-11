@@ -5,12 +5,12 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\models\MailingListTypeModel;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
+
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\models\MailingListTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -43,22 +43,20 @@ class MailingListTypesController extends Controller
                 if ($mailingListType === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
                 }
-            }
-            else {
+            } else {
                 $mailingListType = new MailingListTypeModel();
             }
         }
 
         $variables = [
             'mailingListTypeId' => $mailingListTypeId,
-            'mailingListType' => $mailingListType
+            'mailingListType' => $mailingListType,
         ];
 
         // Set the title
         if ($mailingListTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
-        }
-        else {
+        } else {
             $variables['title'] = $mailingListType->name;
         }
 
@@ -89,8 +87,7 @@ class MailingListTypesController extends Controller
             if ($mailingListType === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
             }
-        }
-        else {
+        } else {
             $mailingListType = new MailingListTypeModel();
         }
 
@@ -119,7 +116,7 @@ class MailingListTypesController extends Controller
 
             // Send the mailing list type back to the template
             Craft::$app->getUrlManager()->setRouteParams([
-                'mailingListType' => $mailingListType
+                'mailingListType' => $mailingListType,
             ]);
 
             return null;

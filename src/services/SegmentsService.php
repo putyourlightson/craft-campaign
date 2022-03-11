@@ -88,8 +88,7 @@ class SegmentsService extends Component
             $filteredContacts = $contactElementQuery
                 ->where($this->_getConditions($segment))
                 ->all();
-        }
-        elseif ($segment->segmentType == 'template') {
+        } elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
 
             foreach ($contacts as $contact) {
@@ -124,9 +123,7 @@ class SegmentsService extends Component
 
         if ($segment->segmentType == 'regular') {
             $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
-        }
-
-        elseif ($segment->segmentType == 'template') {
+        } elseif ($segment->segmentType == 'template') {
             $contacts = $this->getFilteredContacts($segment, $contactIds);
 
             foreach ($contacts as $contact) {
@@ -237,7 +234,7 @@ class SegmentsService extends Component
                 // If operator contains %v
                 if (str_contains($operator, '%v')) {
                     $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
-                    $orCondition[2] = '%'.$orCondition[2];
+                    $orCondition[2] = '%' . $orCondition[2];
                     $orCondition[3] = false;
                 }
 

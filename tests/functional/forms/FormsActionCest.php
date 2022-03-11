@@ -36,7 +36,7 @@ class FormsActionCest extends BaseFunctionalCest
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
         ];
     }

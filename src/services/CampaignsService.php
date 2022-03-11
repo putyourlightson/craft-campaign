@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Component;
+use craft\mail\Message;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -12,11 +14,9 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\CampaignRecord;
+
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
-
-use craft\base\Component;
-use craft\mail\Message;
 
 class CampaignsService extends Component
 {
@@ -97,7 +97,7 @@ class CampaignsService extends Component
                 }
 
                 // Append link ID
-                $contactCampaignRecord->links = $contactCampaignRecord->links ? $contactCampaignRecord->links.','.$linkRecord->id : $linkRecord->id;
+                $contactCampaignRecord->links = $contactCampaignRecord->links ? $contactCampaignRecord->links . ',' . $linkRecord->id : $linkRecord->id;
 
                 $linkRecord->save();
             }
@@ -125,7 +125,7 @@ class CampaignsService extends Component
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($contact->email)
-            ->setSubject('[Test] '.$campaign->title)
+            ->setSubject('[Test] ' . $campaign->title)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 

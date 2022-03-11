@@ -61,7 +61,7 @@ class ContactActivityModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['title', 'interaction', 'date'], 'required']
+            [['title', 'interaction', 'date'], 'required'],
         ];
     }
 }
