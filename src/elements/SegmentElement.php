@@ -10,7 +10,6 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
-use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use putyourlightson\campaign\Campaign;
@@ -116,9 +115,9 @@ class SegmentElement extends Element
     }
 
     /**
-     * @return SegmentElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): SegmentElementQuery
     {
         return new SegmentElementQuery(static::class);
     }

@@ -16,26 +16,10 @@ use putyourlightson\campaign\records\ContactCampaignRecord;
 use Throwable;
 use yii\base\Exception;
 
-/**
- * WebhookService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class WebhookService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Complain
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as complained.
      */
     public function complain(ContactElement $contact)
     {
@@ -45,13 +29,7 @@ class WebhookService extends Component
     }
 
     /**
-     * Bounce
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as bounced.
      */
     public function bounce(ContactElement $contact)
     {
@@ -61,13 +39,7 @@ class WebhookService extends Component
     }
 
     /**
-     * Unsubscribe
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as unsubscribed.
      */
     public function unsubscribe(ContactElement $contact)
     {
@@ -76,18 +48,8 @@ class WebhookService extends Component
         $this->_addInteraction($contact, 'unsubscribed');
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Add interaction
-     *
-     * @param ContactElement $contact
-     * @param string $interaction
-     *
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
+     * Adds an interaction.
      */
     private function _addInteraction(ContactElement $contact, string $interaction)
     {

@@ -10,7 +10,6 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\validators\DateTimeValidator;
@@ -18,7 +17,6 @@ use DateTime;
 use LitEmoji\LitEmoji;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
-
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
@@ -28,7 +26,6 @@ use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
 
 /**
- *
  * @property-read bool $isResumable
  * @property-read array $pendingRecipients
  * @property-read string $sendoutTypeLabel
@@ -198,9 +195,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * @return SendoutElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): SendoutElementQuery
     {
         $elementQuery = new SendoutElementQuery(static::class);
 
@@ -992,9 +989,6 @@ class SendoutElement extends Element
 
     /**
      * @inheritdoc
-     * @param string $attribute
-     *
-     * @return string
      */
     protected function tableAttributeHtml(string $attribute): string
     {
@@ -1016,9 +1010,6 @@ class SendoutElement extends Element
 
         return parent::tableAttributeHtml($attribute);
     }
-
-    // Events
-    // -------------------------------------------------------------------------
 
     /**
      * @inheritdoc

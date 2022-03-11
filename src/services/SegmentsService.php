@@ -38,7 +38,6 @@ class SegmentsService extends Component
      * Returns segments by IDs.
      *
      * @param int[] $segmentIds
-     *
      * @return SegmentElement[]
      */
     public function getSegmentsByIds(array $segmentIds): array
@@ -193,7 +192,7 @@ class SegmentsService extends Component
             ->all();
 
         foreach ($segments as $segment) {
-            $fieldColumn = SegmentHelper::fieldColumnFromField($field);
+            $fieldColumn = ElementHelper::fieldColumnFromField($field);
 
             foreach ($segment->conditions as &$andCondition) {
                 foreach ($andCondition as $key => $orCondition) {

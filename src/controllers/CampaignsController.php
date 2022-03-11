@@ -16,9 +16,6 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use Throwable;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -44,13 +41,11 @@ class CampaignsController extends Controller
     }
 
     /**
-     * @param string               $campaignTypeHandle The campaign type’s handle
-     * @param int|null             $campaignId         The campaign’s ID, if editing an existing campaign.
-     * @param CampaignElement|null $campaign           The campaign being edited, if there were any validation errors.
+     * Main edit page.
      *
-     * @return Response
-     * @throws NotFoundHttpException if the campaign or campaign type handle is not found
-     * @throws InvalidConfigException
+     * @param string $campaignTypeHandle The campaign type’s handle
+     * @param int|null $campaignId The campaign’s ID, if editing an existing campaign.
+     * @param CampaignElement|null $campaign The campaign being edited, if there were any validation errors.
      */
     public function actionEditCampaign(string $campaignTypeHandle, int $campaignId = null, CampaignElement $campaign = null): Response
     {
@@ -176,11 +171,6 @@ class CampaignsController extends Controller
 
     /**
      * Previews a campaign.
-     *
-     * @return Response
-     * @throws NotFoundHttpException
-     * @throws InvalidConfigException
-     * @throws BadRequestHttpException
      */
     public function actionPreviewCampaign(): Response
     {
@@ -202,11 +192,6 @@ class CampaignsController extends Controller
 
     /**
      * Sends a test
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws NotFoundHttpException
      */
     public function actionSendTest(): Response
     {

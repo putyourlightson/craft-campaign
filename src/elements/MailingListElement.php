@@ -10,9 +10,7 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
-use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
-
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
@@ -111,9 +109,9 @@ class MailingListElement extends Element
     }
 
     /**
-     * @return MailingListElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): MailingListElementQuery
     {
         return new MailingListElementQuery(static::class);
     }

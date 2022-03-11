@@ -5,24 +5,10 @@
 
 namespace putyourlightson\campaign\helpers;
 
-/**
- * StringHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class StringHelper extends \craft\helpers\StringHelper
 {
-    // Static Methods
-    // =========================================================================
-
     /**
-     * Generates a 17 character unique ID with an optional prefix
-     *
-     * @param string $prefix
-     *
-     * @return string
+     * Generates a 17 character unique ID with an optional prefix.
      */
     public static function uniqueId(string $prefix = ''): string
     {

@@ -6,23 +6,12 @@
 namespace putyourlightson\campaign\helpers;
 
 /**
- * SendoutHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.8.2
+ * @since 1.8.2
  */
 class SendoutHelper
 {
-    // Static Methods
-    // =========================================================================
-
     /**
-     * Returns the provided memory converted to bytes
-     *
-     * @param string $value
-     *
-     * @return int
+     * Returns the provided memory converted to bytes.
      */
     public static function memoryInBytes(string $value): int
     {

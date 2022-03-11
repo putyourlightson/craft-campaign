@@ -13,21 +13,12 @@ use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
 
 /**
- * ProjectConfigDataHelper
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.12.0
+ * @since 1.12.0
  */
 class ProjectConfigDataHelper
 {
-    // Static Methods
-    // =========================================================================
-
     /**
-     * Rebuild project config
-     *
-     * @return array
+     * Rebuilds the project config.
      */
     public static function rebuildProjectConfig(): array
     {
@@ -57,11 +48,7 @@ class ProjectConfigDataHelper
     }
 
     /**
-     * Returns campaign type data
-     *
-     * @param CampaignTypeModel $campaignType
-     *
-     * @return array
+     * Returns the campaign type data.
      */
     public static function getCampaignTypeData(CampaignTypeModel $campaignType): array
     {
@@ -90,11 +77,7 @@ class ProjectConfigDataHelper
     }
 
     /**
-     * Returns mailing list type data
-     *
-     * @param MailingListTypeModel $mailingListType
-     *
-     * @return array
+     * Returns the mailing list type data.
      */
     public static function getMailingListTypeData(MailingListTypeModel $mailingListType): array
     {

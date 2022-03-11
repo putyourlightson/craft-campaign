@@ -32,9 +32,9 @@ class MailingListsController extends Controller
     /**
      * Main edit page.
      *
-     * @param string                  $mailingListTypeHandle The mailing list type’s handle
-     * @param int|null                $mailingListId         The mailing list’s ID, if editing an existing mailingList.
-     * @param MailingListElement|null $mailingList           The mailing list being edited, if there were any validation errors.
+     * @param string $mailingListTypeHandle The mailing list type’s handle
+     * @param int|null $mailingListId The mailing list’s ID, if editing an existing mailingList.
+     * @param MailingListElement|null $mailingList The mailing list being edited, if there were any validation errors.
      */
     public function actionEditMailingList(string $mailingListTypeHandle, int $mailingListId = null, MailingListElement $mailingList = null): Response
     {

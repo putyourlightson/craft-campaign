@@ -10,12 +10,10 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
-
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
@@ -135,9 +133,9 @@ class ContactElement extends Element
     }
 
     /**
-     * @return ContactElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): ContactElementQuery
     {
         return new ContactElementQuery(static::class);
     }
@@ -507,11 +505,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the mailing list subscription status
-     *
-     * @param int $mailingListId
-     *
-     * @return string
+     * Returns the mailing list subscription status.
      */
     public function getMailingListSubscriptionStatus(int $mailingListId): string
     {
@@ -528,9 +522,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of subscribed mailing lists
-     *
-     * @return int
+     * Returns the number of subscribed mailing lists.
      */
     public function getSubscribedCount(): int
     {
@@ -538,9 +530,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of unsubscribed mailing lists
-     *
-     * @return int
+     * Returns the number of unsubscribed mailing lists.
      */
     public function getUnsubscribedCount(): int
     {
@@ -548,9 +538,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of complained mailing lists
-     *
-     * @return int
+     * Returns the number of complained mailing lists.
      */
     public function getComplainedCount(): int
     {
@@ -558,9 +546,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of bounced mailing lists
-     *
-     * @return int
+     * Returns the number of bounced mailing lists.
      */
     public function getBouncedCount(): int
     {
@@ -568,9 +554,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the subscribed mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the subscribed mailing lists.
      */
     public function getSubscribedMailingLists(): array
     {
@@ -578,9 +562,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the subscribed mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the subscribed mailing lists.
      */
     public function getUnsubscribedMailingLists(): array
     {
@@ -588,9 +570,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the complained mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the complained mailing lists.
      */
     public function getComplainedMailingLists(): array
     {
@@ -598,9 +578,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the bounced mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the bounced mailing lists.
      */
     public function getBouncedMailingLists(): array
     {
@@ -608,9 +586,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns all mailing lists that this contact is in
-     *
-     * @return MailingListElement[]
+     * Returns all mailing lists that this contact is in.
      */
     public function getMailingLists(): array
     {
@@ -618,9 +594,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the country code
-     *
-     * @return string
+     * Returns the country code.
      */
     public function getCountryCode(): string
     {
@@ -681,9 +655,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the contact's report URL
-     *
-     * @return string
+     * Returns the contact's report URL.
      */
     public function getReportUrl(): string
     {
@@ -691,9 +663,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns whether the contact can receive email
-     *
-     * @return bool
+     * Returns whether the contact can receive email.
      */
     public function canReceiveEmail(): bool
     {
@@ -707,9 +677,6 @@ class ContactElement extends Element
     {
         return ['email', 'cid'];
     }
-
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
 
     /**
      * @inheritdoc

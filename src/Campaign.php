@@ -290,12 +290,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Creates a mailer
-     *
-     * @param SettingsModel|null $settings
-     *
-     * @return Mailer
-     * @throws MissingComponentException
+     * Creates a mailer.
      */
     public function createMailer(SettingsModel $settings = null): Mailer
     {
@@ -314,7 +309,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Sets memory and time limits
+     * Sets max memory and time limits.
      */
     public function maxPowerLieutenant()
     {
@@ -328,10 +323,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Logs an action
-     *
-     * @param string $message
-     * @param array $params
+     * Logs an action.
      */
     public function log(string $message, array $params = [])
     {
@@ -371,9 +363,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns the CP routes
-     *
-     * @return array
+     * Returns the CP routes.
      */
     protected function getCpRoutes(): array
     {
@@ -431,9 +421,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns the CP permissions
-     *
-     * @return array
+     * Returns the CP permissions.
      */
     protected function getCpPermissions(): array
     {

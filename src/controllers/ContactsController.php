@@ -7,16 +7,11 @@ namespace putyourlightson\campaign\controllers;
 
 use Craft;
 use craft\elements\User;
-use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
-
 use craft\web\Controller;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -52,7 +47,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * Edit contact page.
+     * Main edit page.
      *
      * @param int|null $contactId The contact’s ID, if editing an existing contact.
      * @param ContactElement|null $contact The contact being edited, if there were any validation errors.
@@ -369,15 +364,6 @@ class ContactsController extends Controller
         return $contact;
     }
 
-    /**
-     * @param string $subscriptionStatus
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException if the requested contact or mailing list cannot be found
-     * @throws Exception
-     * @throws Throwable
-     */
     private function _updateSubscription(string $subscriptionStatus): ?Response
     {
         $this->requirePostRequest();
@@ -412,16 +398,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * Marks a contact status
-     *
-     * @param string $status
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Marks a contact status.
      */
     private function _markContactStatus(string $status): ?Response
     {
@@ -456,16 +433,7 @@ class ContactsController extends Controller
     }
 
     /**
-     * Unmarks a contact status
-     *
-     * @param string $status
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Unmarks a contact status.
      */
     private function _unmarkContactStatus(string $status): ?Response
     {
