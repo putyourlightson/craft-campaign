@@ -11,11 +11,8 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 abstract class CampaignElementFixture extends BaseElementFixture
 {
     /**

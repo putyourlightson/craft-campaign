@@ -188,9 +188,6 @@ class SettingsModel extends Model
      */
     public array $extraSegmentFieldOperators = [];
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

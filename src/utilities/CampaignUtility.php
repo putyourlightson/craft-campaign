@@ -11,9 +11,6 @@ use putyourlightson\campaign\Campaign;
 
 class CampaignUtility extends Utility
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

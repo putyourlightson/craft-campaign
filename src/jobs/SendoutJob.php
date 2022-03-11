@@ -19,9 +19,6 @@ use yii\queue\RetryableJobInterface;
  */
 class SendoutJob extends BaseJob implements RetryableJobInterface
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int
      */

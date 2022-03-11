@@ -13,21 +13,12 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * CancelSendouts
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property void   $triggerHtml
- * @property string $triggerLabel
- * @property mixed  $confirmationMessage
+ * @property-read null|string $triggerHtml
+ * @property-read string $triggerLabel
+ * @property-read null|string $confirmationMessage
  */
 class CancelSendouts extends ElementAction
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

@@ -26,13 +26,8 @@ use putyourlightson\campaign\records\SegmentRecord;
  */
 class SegmentElement extends Element
 {
-    // Static Methods
-    // =========================================================================
-
     /**
      * Returns the segment types.
-     *
-     * @return array
      */
     public static function segmentTypes(): array
     {
