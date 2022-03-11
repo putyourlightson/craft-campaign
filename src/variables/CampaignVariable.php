@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\variables;
 
-use Craft;
 use craft\helpers\App;
 use craft\helpers\Template;
 use putyourlightson\campaign\Campaign;

@@ -11,7 +11,6 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
-use Throwable;
 
 /**
  * CancelSendouts
