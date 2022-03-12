@@ -12,6 +12,8 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\actions\View as ViewAction;
 use craft\elements\User;
+use craft\helpers\Cp;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -25,6 +27,7 @@ use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
 use yii\base\InvalidConfigException;
+use yii\i18n\Formatter;
 
 /**
  * @property-read CampaignTypeModel $campaignType
@@ -727,10 +730,51 @@ class CampaignElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
+    protected function metadata(): array
+    {
+        $metadata = parent::metadata();
+        $formatter = Craft::$app->getFormatter();
+
+        if ($this->lastSent) {
+            $metadata[Craft::t('campaign', 'Last sent')] = $formatter->asDatetime($this->lastSent, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        if ($this->dateClosed) {
+            $metadata[Craft::t('campaign', 'Closed at')] = $formatter->asDatetime($this->dateClosed, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
     protected function metaFieldsHtml(bool $static): string
     {
+        $testEmailFieldHtml = Cp::elementSelectFieldHtml([
+            'label' => Craft::t('campaign', 'Test Email'),
+            'fieldClass' => 'test-email',
+            'id' => 'testContacts',
+            'name' => 'testContacts',
+            'elementType' => ContactElement::class,
+            'selectionLabel' => Craft::t('campaign', 'Add a contact'),
+            'criteria' => [
+                'status' => ContactElement::STATUS_ACTIVE,
+            ],
+            'elements' => $this->getCampaignType()->getTestContacts(),
+        ]);
+        $testEmailFieldHtml .= Html::a(
+            Craft::t('campaign', 'Send Test'),
+            '',
+            [
+                'class' => 'send-test btn',
+            ]
+        );
+
         return implode('', [
             $this->slugFieldHtml($static),
+            $testEmailFieldHtml,
             parent::metaFieldsHtml($static),
         ]);
     }
