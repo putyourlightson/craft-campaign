@@ -18,7 +18,6 @@ use yii\db\ActiveQuery;
  * @property bool $subscribeVerificationRequired
  * @property string $subscribeVerificationEmailSubject
  * @property string $subscribeVerificationEmailTemplate
- * @property string $subscribeVerificationSuccessTemplate
  * @property string $subscribeSuccessTemplate
  * @property bool $unsubscribeFormAllowed
  * @property string $unsubscribeVerificationEmailSubject

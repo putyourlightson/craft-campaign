@@ -137,7 +137,6 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl();
         }
 
-        // TODO: remove in 2.0.0
         return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
             'title' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
             'message' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
@@ -275,8 +274,7 @@ class FormsController extends BaseMessageController
             }
 
             if ($mailingList) {
-                // TODO: change template to `subscribeSuccessTemplate` in 2.0.0
-                return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
+                return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
                     'title' => Craft::t('campaign', 'Verified'),
                     'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
                     'mailingList' => $mailingList,
@@ -310,8 +308,7 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl($contact);
         }
 
-        // TODO: change template to `subscribeSuccessTemplate` in 2.0.0
-        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeVerificationSuccessTemplate, [
+        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
             'title' => Craft::t('campaign', 'Verified'),
             'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
             'mailingList' => $mailingList,

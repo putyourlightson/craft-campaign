@@ -66,11 +66,6 @@ class MailingListTypeModel extends Model
     public ?string $subscribeVerificationEmailTemplate = null;
 
     /**
-     * @var string|null Subscribe verification success template
-     */
-    public ?string $subscribeVerificationSuccessTemplate = null;
-
-    /**
      * @var string|null Subscribe success template
      */
     public ?string $subscribeSuccessTemplate = null;

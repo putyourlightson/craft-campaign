@@ -6,6 +6,7 @@
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
 
 ### Removed
+- Removed the `subscribeVerificationSuccessTemplate` setting from the mailing list type settings page. Use the `subscribeSuccessTemplate` setting instead.
 - Removed support for reCAPTCHA version 2, leaving support for version 3 only.
 
 ## 1.23.0 - 2022-02-28

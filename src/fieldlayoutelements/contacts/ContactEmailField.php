@@ -10,6 +10,8 @@ use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TextField;
 
 /**
+ * TODO: add validation
+ *
  * @since 2.0.0
  */
 class ContactEmailField extends TextField

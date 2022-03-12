@@ -197,7 +197,6 @@ class Install extends Migration
                 'subscribeVerificationRequired' => $this->boolean()->defaultValue(true)->notNull(),
                 'subscribeVerificationEmailSubject' => $this->text(),
                 'subscribeVerificationEmailTemplate' => $this->string(500),
-                'subscribeVerificationSuccessTemplate' => $this->string(500),
                 'subscribeSuccessTemplate' => $this->string(500),
                 'unsubscribeFormAllowed' => $this->boolean()->defaultValue(false)->notNull(),
                 'unsubscribeVerificationEmailSubject' => $this->text(),

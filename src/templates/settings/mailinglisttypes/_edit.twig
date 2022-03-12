@@ -94,18 +94,6 @@
             autocomplete: true
         }) }}
 
-        {{ forms.autosuggestField({
-            label: "Subscribe Verification Success Template"|t('campaign'),
-            instructions: "The template to use when a contact verifies their email address (leave blank for default message template)."|t('campaign') ~ ' ' ~ macros.info(infoText, {tags: '`message`, `mailingList`, `contact`'}),
-            name: 'subscribeVerificationSuccessTemplate',
-            class: 'code',
-            suggestions: craft.cp.getTemplateSuggestions(),
-            value: mailingListType.subscribeVerificationSuccessTemplate,
-            errors: mailingListType.getErrors('subscribeVerificationSuccessTemplate'),
-            autocomplete: true,
-            warning: 'This setting is deprecated and will be removed in version 2.0.0. Use the `Subscribe Success Template` setting instead.'
-        }) }}
-
     </div>
 
     {{ forms.autosuggestField({
