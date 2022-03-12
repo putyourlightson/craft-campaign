@@ -14,6 +14,7 @@ use craft\elements\actions\View as ViewAction;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 use craft\validators\DateTimeValidator;
 use craft\web\View;
 use DateTime;
@@ -21,6 +22,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
+use putyourlightson\campaign\models\ReportFieldLayoutTab;
 use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
 use yii\base\InvalidConfigException;
@@ -625,15 +627,15 @@ class CampaignElement extends Element
      */
     public function getStatus(): ?string
     {
-        if (!$this->enabled || !$this->enabledForSite) {
+        if (!$this->enabled) { // || !$this->enabledForSite) {
             return self::STATUS_DISABLED;
         }
 
-        if ($this->dateClosed) {
+        if ($this->dateClosed !== null) {
             return self::STATUS_CLOSED;
         }
 
-        if ($this->recipients) {
+        if ($this->recipients > 0) {
             return self::STATUS_SENT;
         }
 
@@ -711,7 +713,19 @@ class CampaignElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        return parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+        $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+
+//        if ($this->getStatus() == self::STATUS_SENT) {
+            $reportTab = new ReportFieldLayoutTab();
+            $fieldLayoutTabs = array_merge(
+                $fieldLayout->getTabs(),
+                [$reportTab],
+            );
+
+            $fieldLayout->setTabs($fieldLayoutTabs);
+//        }
+
+        return $fieldLayout;
     }
 
     /**

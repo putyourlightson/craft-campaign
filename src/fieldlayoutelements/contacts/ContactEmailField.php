@@ -62,6 +62,14 @@ class ContactEmailField extends TextField
     /**
      * @inheritdoc
      */
+    protected function conditional(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function statusClass(?ElementInterface $element = null, bool $static = false): ?string
     {
         if ($element && ($status = $element->getAttributeStatus('email'))) {

@@ -6,10 +6,10 @@
 namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\records\Element;
 use craft\records\User;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
 
 /**
  * @property int $id ID
@@ -30,7 +30,7 @@ use putyourlightson\campaign\base\BaseActiveRecord;
  * @property-read Element $element
  * @property-read User $user
  */
-class ContactRecord extends BaseActiveRecord
+class ContactRecord extends ActiveRecord
 {
     /**
      * @var null|int

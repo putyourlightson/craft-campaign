@@ -11,7 +11,7 @@
 {% from _self import linkInteration %}
 
 
-{% set data = craft.campaign.reports.getCampaignReportData(campaignId) %}
+{% set data = craft.campaign.reports.getCampaignReportData(campaign.id) %}
 
 {% if data.dateFirstSent is not null %}
     <p class="light">{{ 'Campaign first sent on {date}.'|t('campaign', {date: data.dateFirstSent|datetime('full')}) }}</p>
@@ -38,7 +38,7 @@
     {% js %}
         new Campaign.Chart({
             action: 'campaign/reports/get-campaign-chart-data',
-            campaignId: '{{ campaignId }}'
+            campaign.id: '{{ campaign.id }}'
         }).getChart();
     {% endjs %}
 {% endif %}
@@ -102,20 +102,20 @@
 {% set limit = 5 %}
 
 <h2>{{ "Contact Activity"|t('campaign') }}</h2>
-{% include 'campaign/reports/campaigns/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getCampaignContactActivity(campaignId, null, limit), reportUrl: url('campaign/reports/campaigns/' ~ campaignId ~ '/contact-activity') } %}
+{% include 'campaign/reports/campaigns/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getCampaignContactActivity(campaign.id, null, limit), reportUrl: url('campaign/reports/campaigns/' ~ campaign.id ~ '/contact-activity') } %}
 
 <h2>{{ "Links"|t('campaign') }}</h2>
-{% include 'campaign/reports/campaigns/_includes/links' with { links: craft.campaign.reports.getCampaignLinks(campaignId, limit), reportUrl: url('campaign/reports/campaigns/' ~ campaignId ~ '/links') } %}
+{% include 'campaign/reports/campaigns/_includes/links' with { links: craft.campaign.reports.getCampaignLinks(campaign.id, limit), reportUrl: url('campaign/reports/campaigns/' ~ campaign.id ~ '/links') } %}
 
 <div class="cols">
     <div class="half">
         <h2>{{ "Locations"|t('campaign') }}</h2>
-        {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getCampaignLocations(campaignId, limit), countLabel: 'Opened', reportUrl: url('campaign/reports/campaigns/' ~ campaignId ~ '/locations') } %}
+        {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getCampaignLocations(campaign.id, limit), countLabel: 'Opened', reportUrl: url('campaign/reports/campaigns/' ~ campaign.id ~ '/locations') } %}
     </div>
 
     <div class="half">
         <h2>{{ "Devices"|t('campaign') }}</h2>
-        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getCampaignDevices(campaignId, false, limit), countLabel: 'Opened', reportUrl: url('campaign/reports/campaigns/' ~ campaignId ~ '/devices') } %}
+        {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getCampaignDevices(campaign.id, false, limit), countLabel: 'Opened', reportUrl: url('campaign/reports/campaigns/' ~ campaign.id ~ '/devices') } %}
     </div>
 </div>
 <div class="clear"></div>
