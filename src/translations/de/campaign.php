@@ -6,6 +6,7 @@
 /**
  * Campaign German Translation
  *
+ * @author    PutYourLightsOn
  * @author    Andreas Becker
  * @package   Campaign
  * @since     1.23.0
@@ -635,10 +636,11 @@ return [
     'Verified' => 'Verifiziert',
     'Verify unsubscribe' => 'Abmeldung verifizieren',
     'Verify your email address' => 'Verifizieren Sie Ihre E-Mail-Adresse',
+    'View' => 'Ansehen',
     'View `storage/logs/campaign.log` file for errors.' => 'Schauen Sie in `storage/logs/campaign.log` nach Fehlern.',
     'View all' => 'Alle ansehen',
+    'View campaign' => 'Kampagne ansehen',
     'View details' => 'Details ansehen',
-    'View' => 'Ansehen',
     'Webhook URL' => '',
     'Webhooks' => '',
     'week(s)' => 'Woche(n)',

@@ -509,9 +509,6 @@ class SendoutsService extends Component
 
         // Set the current site from the sendout's site ID
         Craft::$app->getSites()->setCurrentSite($sendout->siteId);
-
-        // Set template mode to site
-        Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_SITE);
     }
 
     /**

@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\actions\View as ViewAction;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -221,12 +222,15 @@ class CampaignElement extends Element
     protected static function defineFieldLayouts(string $source): array
     {
         $fieldLayouts = [];
-        if (
-            preg_match('/^campaignType:(.+)$/', $source, $matches) &&
-            ($campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByUid($matches[1]))
-        ) {
-            $fieldLayouts[] = $campaignType->getFieldLayout();
+
+        if (preg_match('/^campaignType:(.+)$/', $source, $matches)) {
+            $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByUid($matches[1]);
+
+            if ($campaignType) {
+                $fieldLayouts[] = $campaignType->getFieldLayout();
+            }
         }
+
         return $fieldLayouts;
     }
 
@@ -236,13 +240,18 @@ class CampaignElement extends Element
     protected static function defineActions(string $source = null): array
     {
         $actions = [];
-
         $elementsService = Craft::$app->getElements();
 
         // Edit
         $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit campaign'),
+        ]);
+
+        // View
+        $actions[] = $elementsService->createAction([
+            'type' => ViewAction::class,
+            'label' => Craft::t('campaign', 'View campaign'),
         ]);
 
         // Delete
@@ -732,16 +741,6 @@ class CampaignElement extends Element
             $mailingList = new MailingListElement();
         }
 
-        $view = Craft::$app->getView();
-
-        // Get template mode so we can reset later
-        $templateMode = $view->getTemplateMode();
-
-        // Set template mode to site if different
-        if ($templateMode !== View::TEMPLATE_MODE_SITE) {
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-        }
-
         // Get body from rendered template with variables
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
 
@@ -752,25 +751,24 @@ class CampaignElement extends Element
         Craft::$app->language = $this->_getLanguage();
 
         try {
-            $body = $view->renderTemplate($template, [
-                'campaign' => $this,
-                'browserVersionUrl' => $this->url,
-                'contact' => $contact,
-                'sendout' => $sendout,
-                'mailingList' => $mailingList,
-                'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
-                'isWebRequest' => false,
-            ]);
+            $body = Craft::$app->getView()->renderTemplate(
+                $template,
+                [
+                    'campaign' => $this,
+                    'browserVersionUrl' => $this->url,
+                    'contact' => $contact,
+                    'sendout' => $sendout,
+                    'mailingList' => $mailingList,
+                    'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
+                    'isWebRequest' => false,
+                ],
+                View::TEMPLATE_MODE_SITE,
+            );
         }
         catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
 
             throw $exception;
-        }
-
-        // Reset template mode if different
-        if ($templateMode !== View::TEMPLATE_MODE_SITE) {
-            $view->setTemplateMode($templateMode);
         }
 
         return $body;

@@ -25,8 +25,7 @@ abstract class BaseMessageController extends Controller
             // Use message template
             $template = 'campaign/message';
 
-            // Set template mode to CP
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+            return parent::renderTemplate($template, $variables, View::TEMPLATE_MODE_CP);
         }
 
         return parent::renderTemplate($template, $variables);

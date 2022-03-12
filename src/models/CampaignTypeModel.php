@@ -15,6 +15,7 @@ use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
 use craft\validators\UniqueValidator;
 use craft\validators\UriFormatValidator;
+use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -204,17 +205,9 @@ class CampaignTypeModel extends Model
             return false;
         }
 
-        // Set Craft to the site template mode
-        $view = Craft::$app->getView();
-        $oldTemplateMode = $view->getTemplateMode();
-        $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
-
-        // Do the templates exist?
-        $templatesExist = $this->htmlTemplate !== null && $view->doesTemplateExist((string)$this->htmlTemplate) && $this->plaintextTemplate !== null && $view->doesTemplateExist((string)$this->plaintextTemplate);
-
-        // Restore the original template mode
-        $view->setTemplateMode($oldTemplateMode);
-
-        return $templatesExist;
+        // Return whether both templates exist.
+        return $this->htmlTemplate !== null && $this->plaintextTemplate !== null
+            && Craft::$app->view->doesTemplateExist($this->htmlTemplate, View::TEMPLATE_MODE_SITE)
+            && Craft::$app->view->doesTemplateExist($this->plaintextTemplate, View::TEMPLATE_MODE_SITE);
     }
 }

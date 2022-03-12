@@ -78,18 +78,17 @@ class FormsService extends Component
 
         // Get body from template if defined
         if ($mailingList->mailingListType->subscribeVerificationEmailTemplate) {
-            $view = Craft::$app->getView();
-
-            // Set template mode to site
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
             try {
-                $body = $view->renderTemplate($mailingList->mailingListType->subscribeVerificationEmailTemplate, [
-                    'message' => $bodyText,
-                    'url' => $url,
-                    'mailingList' => $mailingList,
-                    'pendingContact' => $pendingContact,
-                ]);
+                $body = Craft::$app->getView()->renderTemplate(
+                    $mailingList->mailingListType->subscribeVerificationEmailTemplate,
+                    [
+                        'message' => $bodyText,
+                        'url' => $url,
+                        'mailingList' => $mailingList,
+                        'pendingContact' => $pendingContact,
+                    ],
+                    View::TEMPLATE_MODE_SITE,
+                );
             }
             catch (Error) {
             }
@@ -122,18 +121,17 @@ class FormsService extends Component
 
         // Get body from template if defined
         if ($mailingList->mailingListType->unsubscribeVerificationEmailTemplate) {
-            $view = Craft::$app->getView();
-
-            // Set template mode to site
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
             try {
-                $body = $view->renderTemplate($mailingList->mailingListType->unsubscribeVerificationEmailTemplate, [
-                    'message' => $bodyText,
-                    'url' => $url,
-                    'mailingList' => $mailingList,
-                    'contact' => $contact,
-                ]);
+                $body = Craft::$app->getView()->renderTemplate(
+                    $mailingList->mailingListType->unsubscribeVerificationEmailTemplate,
+                    [
+                        'message' => $bodyText,
+                        'url' => $url,
+                        'mailingList' => $mailingList,
+                        'contact' => $contact,
+                    ],
+                    View::TEMPLATE_MODE_SITE,
+                );
             }
             catch (Error) {
             }

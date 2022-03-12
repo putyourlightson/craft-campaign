@@ -6,6 +6,7 @@
 /**
  * Campaign French Translation
  *
+ * @author    PutYourLightsOn
  * @author    Scandella
  * @package   Campaign
  * @since     1.22.0
@@ -635,10 +636,11 @@ return [
     'Verified' => 'Vérifié',
     'Verify unsubscribe' => 'Vérifiez le désabonnement',
     'Verify your email address' => 'Vérifiez votre adresse mail',
+    'View' => 'Vue',
     'View `storage/logs/campaign.log` file for errors.' => 'Consultez le fichier `storage/logs/campaign.log` pour les erreurs',
     'View all' => 'Voir tout',
+    'View campaign' => 'Voir newsletter',
     'View details' => 'Voir les détails',
-    'View' => 'Vue',
     'Webhook URL' => '',
     'Webhooks' => '',
     'week(s)' => 'semaine(s)',
