@@ -154,32 +154,32 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @param CampaignTypeModel $context
      * @since 2.0.0
      */
     public static function gqlTypeNameByContext(mixed $context): string
     {
-        /** @var CampaignTypeModel $context */
         return $context->handle . '_CampaignType';
     }
 
     /**
      * @inheritdoc
+     * @param CampaignTypeModel $context
      * @since 2.0.0
      */
     public static function gqlScopesByContext(mixed $context): array
     {
-        /** @var CampaignTypeModel $context */
         return ['campaigntypes.' . $context->uid];
     }
 
     /**
      * @inheritdoc
+     * @param CampaignTypeModel $context
      * @since 2.0.0
      */
     public static function gqlMutationNameByContext(mixed $context): string
     {
-        /** @var CampaignTypeModel $context */
-        return 'save_' . $context->handle . '_CampaignType';
+        return 'save_' . self::gqlTypeNameByContext($context);
     }
 
     /**
