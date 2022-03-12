@@ -15,6 +15,7 @@ use yii\db\ActiveQuery;
  * @property int $fieldLayoutId
  * @property string $name
  * @property string $handle
+ * @property bool $enableVersioning
  * @property string $uriFormat
  * @property string $htmlTemplate
  * @property string $plaintextTemplate

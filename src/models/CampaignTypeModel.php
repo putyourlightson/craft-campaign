@@ -57,6 +57,11 @@ class CampaignTypeModel extends Model
     public ?string $handle = null;
 
     /**
+     * @var bool Enable versioning
+     */
+    public bool $enableVersioning = true;
+
+    /**
      * @var string|null URI format
      */
     public ?string $uriFormat = null;

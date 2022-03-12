@@ -463,6 +463,21 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    protected function previewTargets(): array
+    {
+        return [
+            [
+                'label' => Craft::t('app', 'Primary {type} page', [
+                    'type' => self::lowerDisplayName(),
+                ]),
+                'url' => $this->getUrl(),
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function route(): array|string|null
     {
         return [
@@ -611,6 +626,15 @@ class CampaignElement extends Element
         }
 
         return self::STATUS_PENDING;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function hasRevisions(): bool
+    {
+        return $this->getCampaignType()->enableVersioning;
     }
 
     /**
