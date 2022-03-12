@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
@@ -14,8 +15,10 @@ use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
+use craft\models\CategoryGroup;
 use craft\models\FieldLayout;
 use craft\queue\Queue;
+use craft\records\CategoryGroup as CategoryGroupRecord;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\events\CampaignTypeEvent;
@@ -59,25 +62,19 @@ class CampaignTypesService extends Component
     public const CONFIG_CAMPAIGNTYPES_KEY = 'campaign.campaignTypes';
 
     /**
+     * @var MemoizableArray<CampaignTypeModel>|null
+     * @see _campaignTypes()
+     */
+    private ?MemoizableArray $_campaignTypes = null;
+
+    /**
      * Returns all campaign types.
      *
      * @return CampaignTypeModel[]
      */
     public function getAllCampaignTypes(): array
     {
-        $campaignTypes = [];
-        $campaignTypeRecords = CampaignTypeRecord::find()
-            ->innerJoinWith('site')
-            ->orderBy(['name' => SORT_ASC])
-            ->all();
-
-        foreach ($campaignTypeRecords as $campaignTypeRecord) {
-            $campaignType = new CampaignTypeModel();
-            $campaignType->setAttributes($campaignTypeRecord->getAttributes(), false);
-            $campaignTypes[] = $campaignType;
-        }
-
-        return $campaignTypes;
+        return $this->_campaignTypes()->all();
     }
 
     /**
@@ -85,23 +82,15 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeById(int $campaignTypeId): ?CampaignTypeModel
     {
-        if (!$campaignTypeId) {
-            return null;
-        }
+        return $this->_campaignTypes()->firstWhere('id', $campaignTypeId);
+    }
 
-        $campaignTypeRecord = CampaignTypeRecord::find()
-            ->innerJoinWith('site')
-            ->where([CampaignTypeRecord::tableName() . '.id' => $campaignTypeId])
-            ->one();
-
-        if ($campaignTypeRecord === null) {
-            return null;
-        }
-
-        $campaignType = new CampaignTypeModel();
-        $campaignType->setAttributes($campaignTypeRecord->getAttributes(), false);
-
-        return $campaignType;
+    /**
+     * Returns a campaign type by UID.
+     */
+    public function getCampaignTypeByUid(string $uid): ?CampaignTypeModel
+    {
+        return $this->_campaignTypes()->firstWhere('uid', $uid, true);
     }
 
     /**
@@ -109,19 +98,7 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeByHandle(string $campaignTypeHandle): ?CampaignTypeModel
     {
-        $campaignTypeRecord = CampaignTypeRecord::find()
-            ->innerJoinWith('site')
-            ->where([CampaignTypeRecord::tableName() . '.handle' => $campaignTypeHandle])
-            ->one();
-
-        if ($campaignTypeRecord === null) {
-            return null;
-        }
-
-        $campaignType = new CampaignTypeModel();
-        $campaignType->setAttributes($campaignTypeRecord->getAttributes(), false);
-
-        return $campaignType;
+        return $this->_campaignTypes()->firstWhere('handle', $campaignTypeHandle, true);
     }
 
     /**
@@ -399,5 +376,31 @@ class CampaignTypesService extends Component
                 }
             }
         }
+    }
+
+    /**
+     * Returns a memoizable array of all campaign types.
+     *
+     * @return MemoizableArray<CampaignTypeModel>
+     */
+    private function _campaignTypes(): MemoizableArray
+    {
+        if (!isset($this->_campaignTypes)) {
+            $campaignTypes = [];
+            $campaignTypeRecords = CampaignTypeRecord::find()
+                ->innerJoinWith('site')
+                ->orderBy(['name' => SORT_ASC])
+                ->all();
+
+            foreach ($campaignTypeRecords as $campaignTypeRecord) {
+                $campaignType = new CampaignTypeModel();
+                $campaignType->setAttributes($campaignTypeRecord->getAttributes(), false);
+                $campaignTypes[] = $campaignType;
+            }
+
+            $this->_campaignTypes = new MemoizableArray($campaignTypes);
+        }
+
+        return $this->_campaignTypes;
     }
 }

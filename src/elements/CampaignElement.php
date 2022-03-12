@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -27,6 +28,9 @@ use yii\base\InvalidConfigException;
  * @property-read CampaignTypeModel $campaignType
  * @property-read bool $isEditable
  * @property-read int $clickThroughRate
+ * @property-read string[] $cacheTags
+ * @property-read null|string $postEditUrl
+ * @property-read array[] $crumbs
  * @property-read string $reportUrl
  */
 class CampaignElement extends Element
@@ -149,6 +153,36 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
+     */
+    public static function gqlTypeNameByContext(mixed $context): string
+    {
+        /** @var CampaignTypeModel $context */
+        return $context->handle . '_CampaignType';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public static function gqlScopesByContext(mixed $context): array
+    {
+        /** @var CampaignTypeModel $context */
+        return ['campaigntypes.' . $context->uid];
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public static function gqlMutationNameByContext(mixed $context): string
+    {
+        /** @var CampaignTypeModel $context */
+        return 'save_' . $context->handle . '_CampaignType';
+    }
+
+    /**
+     * @inheritdoc
      */
     protected static function defineSources(string $context = null): array
     {
@@ -159,24 +193,20 @@ class CampaignElement extends Element
                 'criteria' => [],
                 'defaultSort' => ['lastSent', 'desc'],
             ],
+            [
+                'heading' => Craft::t('campaign', 'Campaign Types'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Campaign Types')];
 
         $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
 
         foreach ($campaignTypes as $campaignType) {
-            /** @var CampaignTypeModel $campaignType */
             $sources[] = [
-                'key' => 'campaignType:' . $campaignType->id,
+                'key' => 'campaignType:' . $campaignType->uid,
                 'label' => $campaignType->name,
                 'sites' => [$campaignType->siteId],
-                'data' => [
-                    'handle' => $campaignType->handle,
-                ],
-                'criteria' => [
-                    'campaignTypeId' => $campaignType->id,
-                ],
+                'data' => ['handle' => $campaignType->handle],
+                'criteria' => ['campaignTypeId' => $campaignType->id],
                 'defaultSort' => ['lastSent', 'desc'],
             ];
         }
@@ -190,13 +220,12 @@ class CampaignElement extends Element
      */
     protected static function defineFieldLayouts(string $source): array
     {
-        return [];
         $fieldLayouts = [];
         if (
-            preg_match('/^group:(.+)$/', $source, $matches) &&
-            ($group = Craft::$app->getCategories()->getGroupByUid($matches[1]))
+            preg_match('/^campaignType:(.+)$/', $source, $matches) &&
+            ($campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByUid($matches[1]))
         ) {
-            $fieldLayouts[] = $group->getFieldLayout();
+            $fieldLayouts[] = $campaignType->getFieldLayout();
         }
         return $fieldLayouts;
     }
@@ -307,6 +336,41 @@ class CampaignElement extends Element
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'number', 'integerOnly' => true];
+        $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
+
+        return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tableAttributeHtml(string $attribute): string
+    {
+        return match ($attribute) {
+            'campaignType' => $this->getCampaignType()->name,
+            'clickThroughRate' => $this->getClickThroughRate() . '%',
+            default => parent::tableAttributeHtml($attribute),
+        };
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCacheTags(): array
+    {
+        return [
+            "campaignType:$this->campaignTypeId",
+        ];
+    }
+
+    /**
      * @var int|null Campaign type ID
      */
     public ?int $campaignTypeId = null;
@@ -407,9 +471,65 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's campaign type
-     *
-     * @return CampaignTypeModel
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:campaigns');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:campaigns');
+    }
+
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:campaigns');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns the campaign's campaign type.
      */
     public function getCampaignType(): CampaignTypeModel
     {
@@ -433,7 +553,7 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's HTML body
+     * Returns the campaign's HTML body.
      */
     public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
@@ -441,7 +561,7 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's plaintext body
+     * Returns the campaign's plaintext body.
      */
     public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
@@ -449,7 +569,7 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's rate
+     * Returns the campaign's rate.
      */
     public function getRate(string $field): int
     {
@@ -457,7 +577,7 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's click-through rate
+     * Returns the campaign's click-through rate.
      */
     public function getClickThroughRate(): int
     {
@@ -486,18 +606,20 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
-    public function getIsEditable(): bool
+    protected function cpEditUrl(): ?string
     {
-        return true;
-    }
+        $campaignType = $this->getCampaignType();
 
-    /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl(): ?string
-    {
-        return UrlHelper::cpUrl('campaign/campaigns/' . $this->getCampaignType()->handle . '/' . $this->id);
+        $path = sprintf('campaign/campaigns/%s/%s', $campaignType->handle, $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
@@ -511,9 +633,52 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public function getPostEditUrl(): ?string
+    {
+        $campaignType = $this->getCampaignType();
+
+        return UrlHelper::cpUrl("campaign/campaigns/$campaignType->handle");
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCrumbs(): array
+    {
+        $campaignType = $this->getCampaignType();
+
+        return [
+            [
+                'label' => Craft::t('campaign', 'Campaigns'),
+                'url' => UrlHelper::url('campaign/campaigns'),
+            ],
+            [
+                'label' => Craft::t('campaign', $campaignType->name),
+                'url' => UrlHelper::url('campaign/campaigns/' . $campaignType->handle),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
     public function getFieldLayout(): ?FieldLayout
     {
         return parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function metaFieldsHtml(bool $static): string
+    {
+        return implode('', [
+            $this->slugFieldHtml($static),
+            parent::metaFieldsHtml($static),
+        ]);
     }
 
     /**
@@ -545,29 +710,6 @@ class CampaignElement extends Element
         }
 
         parent::afterSave($isNew);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function defineRules(): array
-    {
-        return [
-            [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'integer'],
-            [['dateClosed', 'lastSent'], DateTimeValidator::class],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tableAttributeHtml(string $attribute): string
-    {
-        return match ($attribute) {
-            'campaignType' => $this->getCampaignType()->name,
-            'clickThroughRate' => $this->getClickThroughRate() . '%',
-            default => parent::tableAttributeHtml($attribute),
-        };
     }
 
     /**
