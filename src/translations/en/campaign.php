@@ -624,6 +624,7 @@ return [
     'Unsubscribe Verification Email Template' => '',
     'Unsubscribe' => '',
     'Unsubscribed' => '',
+    'Untitled campaign' => '',
     'Updated' => '',
     'URL' => '',
     'User group not found.' => '',

@@ -463,6 +463,18 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    protected function uiLabel(): ?string
+    {
+        if (!isset($this->title) || trim($this->title) === '') {
+            return Craft::t('campaign', 'Untitled campaign');
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function previewTargets(): array
     {
         return [

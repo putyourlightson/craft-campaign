@@ -626,6 +626,7 @@ return [
     'Unsubscribe' => 'Désabonné',
     'Unsubscribe link clicked in a test email without a sendout.' => '',
     'Unsubscribed' => 'Désabonnements',
+    'Untitled campaign' => '',
     'Updated' => 'Mis à jour',
     'URL' => 'URL',
     'User group not found.' => 'Groupe d’utilisateur introuvable.',
