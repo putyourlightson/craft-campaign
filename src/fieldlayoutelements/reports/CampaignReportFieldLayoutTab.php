@@ -3,38 +3,23 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\models;
+namespace putyourlightson\campaign\fieldlayoutelements\reports;
 
-use Craft;
 use craft\base\ElementInterface;
-use craft\models\FieldLayoutTab;
 use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\fieldlayoutelements\reports\ReportField;
 
 /**
  * @since 2.0.0
- *
- * @property-read ReportField[] $fields
  */
-class ReportFieldLayoutTab extends FieldLayoutTab
+class CampaignReportFieldLayoutTab extends BaseReportFieldLayoutTab
 {
-    /**
-     * @inheritdoc
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        $this->name = Craft::t('campaign', 'Report');
-    }
-
     /**
      * @inheritdoc
      */
     public function getElements(): array
     {
         return [
-            new ReportField(),
+            new CampaignReportField(),
         ];
     }
 
