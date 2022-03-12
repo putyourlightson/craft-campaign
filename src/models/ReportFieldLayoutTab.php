@@ -5,8 +5,10 @@
 
 namespace putyourlightson\campaign\models;
 
+use Craft;
 use craft\base\ElementInterface;
 use craft\models\FieldLayoutTab;
+use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\fieldlayoutelements\reports\ReportField;
 
 /**
@@ -19,14 +21,21 @@ class ReportFieldLayoutTab extends FieldLayoutTab
     /**
      * @inheritdoc
      */
-    public ?string $name = 'Report';
+    public function init(): void
+    {
+        parent::init();
+
+        $this->name = Craft::t('campaign', 'Report');
+    }
 
     /**
      * @inheritdoc
      */
     public function getElements(): array
     {
-        return [new ReportField()];
+        return [
+            new ReportField(),
+        ];
     }
 
     /**
@@ -34,6 +43,6 @@ class ReportFieldLayoutTab extends FieldLayoutTab
      */
     public function showInForm(?ElementInterface $element = null): bool
     {
-        return true;
+        return $element->getStatus() == CampaignElement::STATUS_SENT;
     }
 }

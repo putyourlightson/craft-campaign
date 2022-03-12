@@ -714,16 +714,12 @@ class CampaignElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
-
-//        if ($this->getStatus() == self::STATUS_SENT) {
-            $reportTab = new ReportFieldLayoutTab();
-            $fieldLayoutTabs = array_merge(
-                $fieldLayout->getTabs(),
-                [$reportTab],
-            );
-
-            $fieldLayout->setTabs($fieldLayoutTabs);
-//        }
+        $fieldLayout->setTabs(array_merge(
+            $fieldLayout->getTabs(),
+            [
+                new ReportFieldLayoutTab(),
+            ],
+        ));
 
         return $fieldLayout;
     }
