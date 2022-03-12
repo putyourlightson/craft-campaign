@@ -26,7 +26,7 @@ class m220312_120000_drop_subscribeVerificationSuccessTemplate_column extends Mi
      */
     public function safeDown(): bool
     {
-        echo self::class." cannot be reverted.\n";
+        echo self::class . " cannot be reverted.\n";
 
         return false;
     }

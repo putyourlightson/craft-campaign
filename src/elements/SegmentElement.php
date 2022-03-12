@@ -228,9 +228,11 @@ class SegmentElement extends Element
     {
         if ($source == '*') {
             $attributes = ['title', 'segmentType', 'conditions', 'contacts'];
-        } elseif ($source == 'regular') {
+        }
+        elseif ($source == 'regular') {
             $attributes = ['title', 'conditions', 'contacts'];
-        } else {
+        }
+        else {
             $attributes = ['title', 'contacts'];
         }
 
@@ -410,7 +412,8 @@ class SegmentElement extends Element
         if ($isNew) {
             $segmentRecord = new SegmentRecord();
             $segmentRecord->id = $this->id;
-        } else {
+        }
+        else {
             $segmentRecord = SegmentRecord::findOne($this->id);
         }
 

@@ -90,7 +90,8 @@ class FormsService extends Component
                     'mailingList' => $mailingList,
                     'pendingContact' => $pendingContact,
                 ]);
-            } catch (Error) {
+            }
+            catch (Error) {
             }
         }
 
@@ -133,7 +134,8 @@ class FormsService extends Component
                     'mailingList' => $mailingList,
                     'contact' => $contact,
                 ]);
-            } catch (Error) {
+            }
+            catch (Error) {
             }
         }
 

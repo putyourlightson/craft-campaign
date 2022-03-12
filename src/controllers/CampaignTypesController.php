@@ -40,7 +40,8 @@ class CampaignTypesController extends Controller
                 if ($campaignType === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
                 }
-            } else {
+            }
+            else {
                 $campaignType = new CampaignTypeModel();
             }
         }
@@ -55,7 +56,8 @@ class CampaignTypesController extends Controller
 
         if ($campaignTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        } else {
+        }
+        else {
             $variables['title'] = $campaignType->name;
         }
 
@@ -79,7 +81,8 @@ class CampaignTypesController extends Controller
             if (!$campaignType) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
             }
-        } else {
+        }
+        else {
             $campaignType = new CampaignTypeModel();
         }
 

@@ -59,7 +59,8 @@ class SegmentsController extends Controller
                 if ($segment === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
                 }
-            } else {
+            }
+            else {
                 $segment = new SegmentElement();
                 $segment->segmentType = $segmentType;
                 $segment->enabled = true;
@@ -87,7 +88,8 @@ class SegmentsController extends Controller
 
         if ($segmentId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new segment');
-        } else {
+        }
+        else {
             $variables['title'] = $segment->title;
             $variables['slug'] = $segment->slug;
         }
@@ -125,7 +127,8 @@ class SegmentsController extends Controller
             if ($segment === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
             }
-        } else {
+        }
+        else {
             $segment = new SegmentElement();
         }
 
@@ -134,7 +137,8 @@ class SegmentsController extends Controller
             try {
                 /** @var SegmentElement $segment */
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
-            } catch (Throwable $e) {
+            }
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the segment.'), 0, $e);
             }
         }

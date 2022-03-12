@@ -122,7 +122,8 @@ class CampaignsController extends Controller
                 if ($campaign === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
                 }
-            } else {
+            }
+            else {
                 $campaign = new CampaignElement();
                 $campaign->campaignTypeId = $campaignType->id;
             }
@@ -146,7 +147,8 @@ class CampaignsController extends Controller
 
         if ($campaignId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        } else {
+        }
+        else {
             $variables['title'] = $campaign->title;
         }
 
@@ -175,7 +177,8 @@ class CampaignsController extends Controller
             if ($campaign->id !== null && $campaign->enabled) {
                 $variables['shareUrl'] = $campaign->getUrl();
             }
-        } else {
+        }
+        else {
             $variables['showPreviewBtn'] = false;
         }
 
@@ -281,7 +284,8 @@ class CampaignsController extends Controller
         if ($request->getBodyParam('duplicate')) {
             try {
                 $campaign = Craft::$app->getElements()->duplicateElement($campaign);
-            } catch (Throwable $e) {
+            }
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the campaign.'), 0, $e);
             }
 
@@ -450,7 +454,8 @@ class CampaignsController extends Controller
             if (!$campaign) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
             }
-        } else {
+        }
+        else {
             $campaign = new CampaignElement();
             $campaign->campaignTypeId = $request->getRequiredBodyParam('campaignTypeId');
         }

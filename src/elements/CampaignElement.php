@@ -689,7 +689,8 @@ class CampaignElement extends Element
         if ($isNew) {
             $campaignRecord = new CampaignRecord();
             $campaignRecord->id = $this->id;
-        } else {
+        }
+        else {
             $campaignRecord = CampaignRecord::findOne($this->id);
         }
 
@@ -760,7 +761,8 @@ class CampaignElement extends Element
                 'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
                 'isWebRequest' => false,
             ]);
-        } catch (Error $exception) {
+        }
+        catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
 
             throw $exception;

@@ -41,7 +41,8 @@ class SendoutsController extends Controller
         // Require permission if posted from utility
         if ($request->getIsPost() && $request->getParam('utility')) {
             $this->requirePermission('campaign:utility');
-        } else {
+        }
+        else {
             // Verify API key
             $key = $request->getParam('key');
             $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
@@ -137,7 +138,8 @@ class SendoutsController extends Controller
                 if ($sendout === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
                 }
-            } else {
+            }
+            else {
                 $sendout = new SendoutElement();
                 $sendout->sendoutType = $sendoutType;
 
@@ -168,7 +170,8 @@ class SendoutsController extends Controller
         // Get the schedule
         if ($sendoutType == 'automated') {
             $sendout->schedule = new AutomatedScheduleModel($sendout->schedule);
-        } elseif ($sendoutType == 'recurring') {
+        }
+        elseif ($sendoutType == 'recurring') {
             $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
         }
 
@@ -303,7 +306,8 @@ class SendoutsController extends Controller
 
         if ($sendoutId) {
             $sendout = $this->_getSendoutFromParamId();
-        } else {
+        }
+        else {
             $sendout = new SendoutElement();
         }
 
@@ -343,7 +347,8 @@ class SendoutsController extends Controller
 
             if ($sendout->sendoutType == 'automated') {
                 $sendout->schedule = new AutomatedScheduleModel($schedule);
-            } else {
+            }
+            else {
                 $sendout->schedule = new RecurringScheduleModel($schedule);
             }
 

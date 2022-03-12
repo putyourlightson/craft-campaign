@@ -260,7 +260,8 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
-        } catch (Error) {
+        }
+        catch (Error) {
             Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
             ]);
@@ -318,7 +319,8 @@ class SendoutsService extends Component
             $contactCampaignRecord = new ContactCampaignRecord();
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
-        } elseif ($contactCampaignRecord->sent !== null) {
+        }
+        elseif ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
             if (!($sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes)) {
                 return;
@@ -347,7 +349,8 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout, $mailingList);
-        } catch (Error) {
+        }
+        catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
             $this->_updateSendoutRecord($sendout, ['sendStatus']);
@@ -420,7 +423,8 @@ class SendoutsService extends Component
             $sendout->lastSent = new DateTime();
 
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
-        } else {
+        }
+        else {
             // Update fails and send status
             $sendout->fails++;
 
@@ -474,7 +478,8 @@ class SendoutsService extends Component
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
-        } else {
+        }
+        else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);

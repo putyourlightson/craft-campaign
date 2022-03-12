@@ -344,9 +344,11 @@ class SendoutElement extends Element
     {
         if ($source == '*') {
             $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
-        } elseif ($source == 'regular' || $source == 'scheduled') {
+        }
+        elseif ($source == 'regular' || $source == 'scheduled') {
             $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
-        } else {
+        }
+        else {
             $attributes = ['title', 'campaignId', 'recipients', 'lastSent'];
         }
 
@@ -507,7 +509,8 @@ class SendoutElement extends Element
         // TODO: test!
         if ($this->sendoutType == 'automated') {
             $this->schedule = new AutomatedScheduleModel($this->schedule->toArray());
-        } elseif ($this->sendoutType == 'recurring') {
+        }
+        elseif ($this->sendoutType == 'recurring') {
             $this->schedule = new RecurringScheduleModel($this->schedule->toArray());
         }
     }
@@ -1037,7 +1040,8 @@ class SendoutElement extends Element
         if ($isNew) {
             $sendoutRecord = new SendoutRecord();
             $sendoutRecord->id = $this->id;
-        } else {
+        }
+        else {
             $sendoutRecord = SendoutRecord::findOne($this->id);
         }
 

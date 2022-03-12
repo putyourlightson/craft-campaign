@@ -733,7 +733,8 @@ class ContactElement extends Element
             $contactRecord->id = $this->id;
             $contactRecord->userId = $this->userId;
             $contactRecord->cid = $this->cid;
-        } else {
+        }
+        else {
             $contactRecord = ContactRecord::findOne($this->id);
         }
 

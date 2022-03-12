@@ -62,7 +62,8 @@ class MailingListsController extends Controller
                 if ($mailingList === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
                 }
-            } else {
+            }
+            else {
                 $mailingList = new MailingListElement();
                 $mailingList->mailingListTypeId = $mailingListType->id;
                 $mailingList->enabled = true;
@@ -85,7 +86,8 @@ class MailingListsController extends Controller
 
         if ($mailingListId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
-        } else {
+        }
+        else {
             $variables['title'] = $mailingList->title;
             $variables['slug'] = $mailingList->slug;
         }
@@ -124,7 +126,8 @@ class MailingListsController extends Controller
             if ($mailingList === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
             }
-        } else {
+        }
+        else {
             $mailingList = new MailingListElement();
             $mailingList->mailingListTypeId = $request->getRequiredBodyParam('mailingListTypeId');
         }
@@ -134,7 +137,8 @@ class MailingListsController extends Controller
             try {
                 /** @var MailingListElement $mailingList */
                 $mailingList = Craft::$app->getElements()->duplicateElement($mailingList);
-            } catch (Throwable $e) {
+            }
+            catch (Throwable $e) {
                 throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the mailing list.'), 0, $e);
             }
         }

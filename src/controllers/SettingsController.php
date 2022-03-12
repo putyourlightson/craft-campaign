@@ -75,7 +75,8 @@ class SettingsController extends Controller
             $settings->transportType = $settings->transportType ?: Sendmail::class;
             try {
                 $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
-            } catch (MissingComponentException) {
+            }
+            catch (MissingComponentException) {
                 $adapter = new Sendmail();
                 $adapter->addError('type', Craft::t('app', 'The transport type “{type}” could not be found.', [
                     'type' => $settings->transportType,
@@ -415,7 +416,8 @@ class SettingsController extends Controller
 
         if ($settings->hasErrors() || $adapter->hasErrors()) {
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t send test email.'));
-        } else {
+        }
+        else {
             // Create mailer with settings
             $mailer = Campaign::$plugin->createMailer($settings);
 
@@ -442,7 +444,8 @@ class SettingsController extends Controller
             // Send message
             try {
                 $response = $message->send();
-            } catch (Throwable $e) {
+            }
+            catch (Throwable $e) {
                 Craft::error($e);
                 Craft::$app->getErrorHandler()->logException($e);
                 $response = false;
@@ -450,7 +453,8 @@ class SettingsController extends Controller
 
             if ($response) {
                 Craft::$app->getSession()->setNotice(Craft::t('app', 'Email sent successfully! Check your inbox.'));
-            } else {
+            }
+            else {
                 Craft::$app->getSession()->setError(Craft::t('app', 'There was an error testing your email settings.'));
             }
         }

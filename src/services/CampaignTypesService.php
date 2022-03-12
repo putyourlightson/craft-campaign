@@ -15,10 +15,8 @@ use craft\events\FieldEvent;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
-use craft\models\CategoryGroup;
 use craft\models\FieldLayout;
 use craft\queue\Queue;
-use craft\records\CategoryGroup as CategoryGroupRecord;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\events\CampaignTypeEvent;
@@ -128,7 +126,8 @@ class CampaignTypesService extends Component
         // Ensure the campaign type has a UID
         if ($isNew) {
             $campaignType->uid = StringHelper::UUID();
-        } elseif (!$campaignType->uid) {
+        }
+        elseif (!$campaignType->uid) {
             /** @var CampaignTypeRecord|null $campaignTypeRecord */
             $campaignTypeRecord = CampaignTypeRecord::find()
                 ->andWhere([CampaignTypeRecord::tableName() . '.id' => $campaignType->id])
@@ -197,7 +196,8 @@ class CampaignTypesService extends Component
                 $layout->uid = key($data['fieldLayouts']);
                 $fieldsService->saveLayout($layout);
                 $campaignTypeRecord->fieldLayoutId = $layout->id;
-            } elseif ($campaignTypeRecord->fieldLayoutId) {
+            }
+            elseif ($campaignTypeRecord->fieldLayoutId) {
                 // Delete the field layout
                 $fieldsService->deleteLayoutById($campaignTypeRecord->fieldLayoutId);
                 $campaignTypeRecord->fieldLayoutId = null;
@@ -209,7 +209,8 @@ class CampaignTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (Throwable $exception) {
+        }
+        catch (Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }
@@ -317,7 +318,8 @@ class CampaignTypesService extends Component
             $campaignTypeRecord->delete();
 
             $transaction->commit();
-        } catch (Throwable $exception) {
+        }
+        catch (Throwable $exception) {
             $transaction->rollBack();
 
             throw $exception;
