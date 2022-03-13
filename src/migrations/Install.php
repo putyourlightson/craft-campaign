@@ -8,21 +8,28 @@ namespace putyourlightson\campaign\migrations;
 use Craft;
 use craft\base\Element;
 use craft\db\Migration;
+use craft\db\Table;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
-
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\records\CampaignRecord;
+use putyourlightson\campaign\records\CampaignTypeRecord;
+use putyourlightson\campaign\records\ContactCampaignRecord;
+use putyourlightson\campaign\records\ContactMailingListRecord;
+use putyourlightson\campaign\records\ContactRecord;
+use putyourlightson\campaign\records\ImportRecord;
+use putyourlightson\campaign\records\LinkRecord;
+use putyourlightson\campaign\records\MailingListRecord;
+use putyourlightson\campaign\records\MailingListTypeRecord;
+use putyourlightson\campaign\records\PendingContactRecord;
+use putyourlightson\campaign\records\SegmentRecord;
+use putyourlightson\campaign\records\SendoutRecord;
 use yii\db\ColumnSchemaBuilder;
 
 class Install extends Migration
 {
-    /**
-     * @var string The database driver to use
-     */
-    public string $driver;
-
     /**
      * @inheritdoc
      */
@@ -65,8 +72,8 @@ class Install extends Migration
      */
     protected function createTables(): bool
     {
-        if (!$this->db->tableExists('{{%campaign_campaigns}}')) {
-            $this->createTable('{{%campaign_campaigns}}', [
+        if (!$this->db->tableExists(CampaignRecord::tableName())) {
+            $this->createTable(CampaignRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'campaignTypeId' => $this->integer()->notNull(),
                 'recipients' => $this->integer()->defaultValue(0)->notNull(),
@@ -84,8 +91,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_campaigntypes}}')) {
-            $this->createTable('{{%campaign_campaigntypes}}', [
+        if (!$this->db->tableExists(CampaignTypeRecord::tableName())) {
+            $this->createTable(CampaignTypeRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
                 'fieldLayoutId' => $this->integer(),
@@ -103,8 +110,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_links}}')) {
-            $this->createTable('{{%campaign_links}}', [
+        if (!$this->db->tableExists(LinkRecord::tableName())) {
+            $this->createTable(LinkRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'lid' => $this->shortUid(),
                 'campaignId' => $this->integer()->notNull(),
@@ -118,12 +125,12 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_contacts}}')) {
-            $this->createTable('{{%campaign_contacts}}', [
+        if (!$this->db->tableExists(ContactRecord::tableName())) {
+            $this->createTable(ContactRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'userId' => $this->integer(),
                 'cid' => $this->shortUid(),
-                'email' => $this->string()->notNull(),
+                'email' => $this->string(),
                 'country' => $this->string(),
                 'geoIp' => $this->text(),
                 'device' => $this->string(),
@@ -140,8 +147,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_pendingcontacts}}')) {
-            $this->createTable('{{%campaign_pendingcontacts}}', [
+        if (!$this->db->tableExists(PendingContactRecord::tableName())) {
+            $this->createTable(PendingContactRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'pid' => $this->shortUid(),
                 'email' => $this->string()->notNull(),
@@ -155,8 +162,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_contacts_campaigns}}')) {
-            $this->createTable('{{%campaign_contacts_campaigns}}', [
+        if (!$this->db->tableExists(ContactCampaignRecord::tableName())) {
+            $this->createTable(ContactCampaignRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'contactId' => $this->integer()->notNull(),
                 'campaignId' => $this->integer()->notNull(),
@@ -177,8 +184,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_mailinglists}}')) {
-            $this->createTable('{{%campaign_mailinglists}}', [
+        if (!$this->db->tableExists(MailingListRecord::tableName())) {
+            $this->createTable(MailingListRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'mailingListTypeId' => $this->integer()->notNull(),
                 'syncedUserGroupId' => $this->integer(),
@@ -188,8 +195,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_mailinglisttypes}}')) {
-            $this->createTable('{{%campaign_mailinglisttypes}}', [
+        if (!$this->db->tableExists(MailingListTypeRecord::tableName())) {
+            $this->createTable(MailingListTypeRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
                 'fieldLayoutId' => $this->integer(),
@@ -209,8 +216,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_contacts_mailinglists}}')) {
-            $this->createTable('{{%campaign_contacts_mailinglists}}', [
+        if (!$this->db->tableExists(ContactMailingListRecord::tableName())) {
+            $this->createTable(ContactMailingListRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'contactId' => $this->integer()->notNull(),
                 'mailingListId' => $this->integer()->notNull(),
@@ -228,8 +235,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_segments}}')) {
-            $this->createTable('{{%campaign_segments}}', [
+        if (!$this->db->tableExists(SegmentRecord::tableName())) {
+            $this->createTable(SegmentRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'segmentType' => $this->string()->notNull(),
                 'conditions' => $this->text(),
@@ -239,8 +246,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_sendouts}}')) {
-            $this->createTable('{{%campaign_sendouts}}', [
+        if (!$this->db->tableExists(SendoutRecord::tableName())) {
+            $this->createTable(SendoutRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'sid' => $this->shortUid(),
                 'campaignId' => $this->integer(),
@@ -268,8 +275,8 @@ class Install extends Migration
             ]);
         }
 
-        if (!$this->db->tableExists('{{%campaign_imports}}')) {
-            $this->createTable('{{%campaign_imports}}', [
+        if (!$this->db->tableExists(ImportRecord::tableName())) {
+            $this->createTable(ImportRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'assetId' => $this->integer(),
                 'fileName' => $this->string(),
@@ -300,20 +307,20 @@ class Install extends Migration
      */
     protected function createIndexes()
     {
-        $this->createIndex(null, '{{%campaign_campaigntypes}}', 'handle', true);
-        $this->createIndex(null, '{{%campaign_contacts}}', 'email', false);
-        $this->createIndex(null, '{{%campaign_contacts}}', 'cid', true);
-        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'pid', true);
-        $this->createIndex(null, '{{%campaign_pendingcontacts}}', 'email, mailingListId', false);
-        $this->createIndex(null, '{{%campaign_contacts_campaigns}}', 'contactId, sendoutId', true);
-        $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'contactId, mailingListId', true);
-        $this->createIndex(null, '{{%campaign_contacts_mailinglists}}', 'subscriptionStatus', false);
-        $this->createIndex(null, '{{%campaign_links}}', 'lid', true);
-        $this->createIndex(null, '{{%campaign_mailinglisttypes}}', 'handle', true);
-        $this->createIndex(null, '{{%campaign_segments}}', 'segmentType', false);
-        $this->createIndex(null, '{{%campaign_sendouts}}', 'sid', true);
-        $this->createIndex(null, '{{%campaign_sendouts}}', 'sendoutType', false);
-        $this->createIndex(null, '{{%campaign_sendouts}}', 'sendStatus', false);
+        $this->createIndex(null, CampaignTypeRecord::tableName(), 'handle', true);
+        $this->createIndex(null, ContactRecord::tableName(), 'email', false);
+        $this->createIndex(null, ContactRecord::tableName(), 'cid', true);
+        $this->createIndex(null, PendingContactRecord::tableName(), 'pid', true);
+        $this->createIndex(null, PendingContactRecord::tableName(), 'email, mailingListId', false);
+        $this->createIndex(null, ContactCampaignRecord::tableName(), 'contactId, sendoutId', true);
+        $this->createIndex(null, ContactMailingListRecord::tableName(), 'contactId, mailingListId', true);
+        $this->createIndex(null, ContactMailingListRecord::tableName(), 'subscriptionStatus', false);
+        $this->createIndex(null, LinkRecord::tableName(), 'lid', true);
+        $this->createIndex(null, MailingListTypeRecord::tableName(), 'handle', true);
+        $this->createIndex(null, SegmentRecord::tableName(), 'segmentType', false);
+        $this->createIndex(null, SendoutRecord::tableName(), 'sid', true);
+        $this->createIndex(null, SendoutRecord::tableName(), 'sendoutType', false);
+        $this->createIndex(null, SendoutRecord::tableName(), 'sendStatus', false);
     }
 
     /**
@@ -323,28 +330,28 @@ class Install extends Migration
      */
     protected function addForeignKeys()
     {
-        $this->addForeignKey(null, '{{%campaign_campaigns}}', 'id', '{{%elements}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_campaigns}}', 'campaignTypeId', '{{%campaign_campaigntypes}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_campaigntypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_contacts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_contacts}}', 'userId', '{{%users}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_contacts_campaigns}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_contacts_mailinglists}}', 'contactId', '{{%campaign_contacts}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_contacts_mailinglists}}', 'mailingListId', '{{%campaign_mailinglists}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_imports}}', 'userId', '{{%users}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_imports}}', 'mailingListId', '{{%campaign_mailinglists}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_links}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'id', '{{%elements}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'mailingListTypeId', '{{%campaign_mailinglisttypes}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_mailinglists}}', 'syncedUserGroupId', '{{%usergroups}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'siteId', '{{%sites}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_mailinglisttypes}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL');
-        $this->addForeignKey(null, '{{%campaign_segments}}', 'id', '{{%elements}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_sendouts}}', 'id', '{{%elements}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_sendouts}}', 'campaignId', '{{%campaign_campaigns}}', 'id', 'CASCADE');
-        $this->addForeignKey(null, '{{%campaign_sendouts}}', 'senderId', '{{%users}}', 'id', 'SET NULL');
+        $this->addForeignKey(null, CampaignRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
+        $this->addForeignKey(null, CampaignRecord::tableName(), 'campaignTypeId', CampaignTypeRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, CampaignTypeRecord::tableName(), 'siteId', Table::SITES, 'id', 'CASCADE');
+        $this->addForeignKey(null, CampaignTypeRecord::tableName(), 'fieldLayoutId', Table::FIELDLAYOUTS, 'id', 'SET NULL');
+        $this->addForeignKey(null, ContactRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
+        $this->addForeignKey(null, ContactRecord::tableName(), 'userId', Table::USERS, 'id', 'CASCADE');
+        $this->addForeignKey(null, ContactCampaignRecord::tableName(), 'contactId', ContactRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, ContactCampaignRecord::tableName(), 'campaignId', CampaignRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, ContactMailingListRecord::tableName(), 'contactId', ContactRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, ContactMailingListRecord::tableName(), 'mailingListId', MailingListRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, ImportRecord::tableName(), 'userId', Table::USERS, 'id', 'SET NULL');
+        $this->addForeignKey(null, ImportRecord::tableName(), 'mailingListId', MailingListRecord::tableName(), 'id', 'SET NULL');
+        $this->addForeignKey(null, LinkRecord::tableName(), 'campaignId', CampaignRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, MailingListRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
+        $this->addForeignKey(null, MailingListRecord::tableName(), 'mailingListTypeId', MailingListTypeRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, MailingListRecord::tableName(), 'syncedUserGroupId', Table::USERGROUPS, 'id', 'SET NULL');
+        $this->addForeignKey(null, MailingListTypeRecord::tableName(), 'siteId', Table::SITES, 'id', 'CASCADE');
+        $this->addForeignKey(null, MailingListTypeRecord::tableName(), 'fieldLayoutId', Table::FIELDLAYOUTS, 'id', 'SET NULL');
+        $this->addForeignKey(null, SegmentRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
+        $this->addForeignKey(null, SendoutRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
+        $this->addForeignKey(null, SendoutRecord::tableName(), 'campaignId', CampaignRecord::tableName(), 'id', 'CASCADE');
+        $this->addForeignKey(null, SendoutRecord::tableName(), 'senderId', Table::USERS, 'id', 'SET NULL');
     }
 
     /**
@@ -388,18 +395,18 @@ class Install extends Migration
     protected function deleteTables(): void
     {
         // Drop tables with foreign keys first
-        $this->dropTableIfExists('{{%campaign_sendouts}}');
-        $this->dropTableIfExists('{{%campaign_contacts_campaigns}}');
-        $this->dropTableIfExists('{{%campaign_links}}');
-        $this->dropTableIfExists('{{%campaign_campaigns}}');
-        $this->dropTableIfExists('{{%campaign_campaigntypes}}');
-        $this->dropTableIfExists('{{%campaign_contacts_mailinglists}}');
-        $this->dropTableIfExists('{{%campaign_imports}}');
-        $this->dropTableIfExists('{{%campaign_mailinglists}}');
-        $this->dropTableIfExists('{{%campaign_mailinglisttypes}}');
-        $this->dropTableIfExists('{{%campaign_segments}}');
-        $this->dropTableIfExists('{{%campaign_contacts}}');
-        $this->dropTableIfExists('{{%campaign_pendingcontacts}}');
+        $this->dropTableIfExists(SendoutRecord::tableName());
+        $this->dropTableIfExists(ContactCampaignRecord::tableName());
+        $this->dropTableIfExists(LinkRecord::tableName());
+        $this->dropTableIfExists(CampaignRecord::tableName());
+        $this->dropTableIfExists(CampaignTypeRecord::tableName());
+        $this->dropTableIfExists(ContactMailingListRecord::tableName());
+        $this->dropTableIfExists(ImportRecord::tableName());
+        $this->dropTableIfExists(MailingListRecord::tableName());
+        $this->dropTableIfExists(MailingListTypeRecord::tableName());
+        $this->dropTableIfExists(SegmentRecord::tableName());
+        $this->dropTableIfExists(ContactRecord::tableName());
+        $this->dropTableIfExists(PendingContactRecord::tableName());
     }
 
     /**
