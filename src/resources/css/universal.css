@@ -1,9 +1,0 @@
-.send-test {
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
-
-.element.hasthumb[data-type="putyourlightson\\campaign\\elements\\ContactElement"] .elementthumb {
-    background: url('../images/user.svg');
-    background-size: cover;
-}

@@ -36,7 +36,7 @@ use craft\services\Utilities;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use putyourlightson\campaign\assets\UniversalAsset;
+use putyourlightson\campaign\assets\CpAsset;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -659,7 +659,7 @@ class Campaign extends Plugin
      */
     private function _registerAssetBundles()
     {
-        Craft::$app->view->registerAssetBundle(UniversalAsset::class);
+        Craft::$app->view->registerAssetBundle(CpAsset::class);
     }
 
     /**
