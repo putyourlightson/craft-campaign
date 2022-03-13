@@ -3,7 +3,9 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
+use craft\helpers\Db;
 use putyourlightson\campaign\records\CampaignTypeRecord;
+use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
 class m220312_120000_update_columns extends Migration
@@ -13,7 +15,9 @@ class m220312_120000_update_columns extends Migration
      */
     public function safeUp(): bool
     {
-        if (!$this->db->columnExists(CampaignTypeRecord::tableName(), 'subscribeVerificationSuccessTemplate')) {
+        $this->alterColumn(ContactRecord::tableName(), 'email', $this->string());
+
+        if (!$this->db->columnExists(CampaignTypeRecord::tableName(), 'enableVersioning')) {
             $this->addColumn(
                 CampaignTypeRecord::tableName(),
                 'enableVersioning',

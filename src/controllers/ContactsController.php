@@ -6,10 +6,12 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
+use craft\controllers\ElementsController;
 use craft\elements\User;
-use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
+use craft\web\CpScreenResponseBehavior;
 use DateTime;
+use putyourlightson\campaign\assets\ContactEditAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use yii\web\NotFoundHttpException;
@@ -47,208 +49,115 @@ class ContactsController extends Controller
     }
 
     /**
-     * Main edit page.
+     * Creates a new unpublished draft and redirects to its edit page.
      *
-     * @param int|null $contactId The contact’s ID, if editing an existing contact.
-     * @param ContactElement|null $contact The contact being edited, if there were any validation errors.
+     * @since 2.0.0
      */
-    public function actionEditContact(int $contactId = null, ContactElement $contact = null): Response
+    public function actionCreate(): Response
     {
-        $variables = [];
+        /**
+         * The create action expects `elementType` to be set in a body param.
+         * @see ElementsController::actionCreate()
+         */
+        $this->request->setBodyParams([
+            'elementType' => ContactElement::class,
+        ]);
 
-        // Get the contact
-        // ---------------------------------------------------------------------
-
-        if ($contact === null) {
-            if ($contactId !== null) {
-                $contact = Campaign::$plugin->contacts->getContactById($contactId);
-
-                if ($contact === null) {
-                    throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
-                }
-            }
-            else {
-                $contact = new ContactElement();
-                $contact->enabled = true;
-            }
-        }
-
-        // Set the variables
-        // ---------------------------------------------------------------------
-
-        $variables['contactId'] = $contactId;
-        $variables['contact'] = $contact;
-
-        // Set the title
-        // ---------------------------------------------------------------------
-
-        if ($contactId === null) {
-            $variables['title'] = Craft::t('campaign', 'Create a new contact');
-        }
-        else {
-            $variables['title'] = $contact->email;
-        }
-
-        $variables['fields'] = $contact->getFieldLayout()->getFields();
-
-        // Determine which actions should be available
-        // ---------------------------------------------------------------------
-
-        $variables['actions'] = [];
-
-        // Add complain, bounce and blocked actions
-        if ($contact->complained === null) {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/mark-contact-complained',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Mark contact as complained'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
-            ];
-        }
-        else {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/unmark-contact-complained',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Unmark contact as complained'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
-            ];
-        }
-
-        if ($contact->bounced === null) {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/mark-contact-bounced',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Mark contact as bounced'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
-            ];
-        }
-        else {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/unmark-contact-bounced',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Unmark contact as bounced'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
-            ];
-        }
-
-        if ($contact->blocked === null) {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/mark-contact-blocked',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Mark contact as blocked'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
-            ];
-        }
-        else {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/contacts/unmark-contact-blocked',
-                'redirect' => 'campaign/contacts/{id}',
-                'label' => Craft::t('campaign', 'Unmark contact as blocked'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
-            ];
-        }
-
-        $variables['actions'][1][] = [
-            'action' => 'campaign/contacts/delete-contact',
-            'destructive' => 'true',
-            'redirect' => 'campaign/contacts',
-            'label' => Craft::t('campaign', 'Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this contact?'),
-        ];
-
-        $variables['actions'][1][] = [
-            'action' => 'campaign/contacts/delete-contact-permanently',
-            'destructive' => 'true',
-            'redirect' => 'campaign/contacts',
-            'label' => Craft::t('campaign', 'Delete permanently'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.'),
-        ];
-
-        // Get the settings
-        $variables['settings'] = Campaign::$plugin->getSettings();
-
-        // Full page form variables
-        $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/contacts/{id}';
-        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
-
-        // Render the template
-        return $this->renderTemplate('campaign/contacts/_edit', $variables);
+        return Craft::$app->runAction('elements/create');
     }
 
     /**
-     * Saves a contact.
+     * Main edit page.
      */
-    public function actionSaveContact(): ?Response
+    public function actionEdit(int $elementId = null): Response
     {
-        $this->requirePostRequest();
+        $this->view->registerAssetBundle(ContactEditAsset::class);
 
-        $request = Craft::$app->getRequest();
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response = Craft::$app->runAction('elements/edit', [
+            'elementId' => $elementId,
+        ]);
 
-        $contactId = $request->getBodyParam('contactId');
+        // Add actions
+        $contact = Campaign::$plugin->contacts->getContactById($elementId);
 
-        if ($contactId) {
-            $contact = Campaign::$plugin->contacts->getContactById($contactId);
+        if ($contact === null) {
+            return $response;
+        }
 
-            if ($contact === null) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
-            }
+        if ($contact->complained === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/mark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
+                ],
+            );
         }
         else {
-            $contact = new ContactElement();
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/unmark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
+                ],
+            );
         }
 
-        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $contact->email = $request->getBodyParam('email', $contact->email);
-
-        // Set the field values using the fields location
-        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
-        $contact->setFieldValuesFromRequest($fieldsLocation);
-
-        // Save it
-        if (!Craft::$app->getElements()->saveElement($contact)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact,
-            ]);
-
-            return null;
+        if ($contact->bounced === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/mark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/unmark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
+                ],
+            );
         }
 
-        if ($request->getAcceptsJson()) {
-            $return = [];
-
-            $return['success'] = true;
-            $return['id'] = $contact->id;
-            $return['email'] = $contact->email;
-
-            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
-                $return['cpEditUrl'] = $contact->getCpEditUrl();
-            }
-
-            $return['dateCreated'] = DateTimeHelper::toIso8601($contact->dateCreated);
-            $return['dateUpdated'] = DateTimeHelper::toIso8601($contact->dateUpdated);
-
-            return $this->asJson($return);
+        if ($contact->blocked === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/mark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/unmark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
+                ],
+            );
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact saved.'));
+        $response->addAltAction(
+            Craft::t('campaign', 'Delete permanently'),
+            [
+                'action' => 'campaign/contacts/delete-permanently',
+                'destructive' => 'true',
+                'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.'),
+            ],
+        );
 
-        return $this->redirectToPostedUrl($contact);
+        return $response;
     }
 
     /**
      * Marks a contact as complained.
      */
-    public function actionMarkContactComplained(): ?Response
+    public function actionMarkComplained(): ?Response
     {
         return $this->_markContactStatus('complained');
     }
@@ -256,7 +165,7 @@ class ContactsController extends Controller
     /**
      * Marks a contact as bounced.
      */
-    public function actionMarkContactBounced(): ?Response
+    public function actionMarkBounced(): ?Response
     {
         return $this->_markContactStatus('bounced');
     }
@@ -264,7 +173,7 @@ class ContactsController extends Controller
     /**
      * Marks a contact as blocked.
      */
-    public function actionMarkContactBlocked(): ?Response
+    public function actionMarkBlocked(): ?Response
     {
         return $this->_markContactStatus('blocked');
     }
@@ -272,7 +181,7 @@ class ContactsController extends Controller
     /**
      * Unmarks a contact as complained.
      */
-    public function actionUnmarkContactComplained(): ?Response
+    public function actionUnmarkComplained(): ?Response
     {
         return $this->_unmarkContactStatus('complained');
     }
@@ -280,7 +189,7 @@ class ContactsController extends Controller
     /**
      * Unmarks a contact as bounced.
      */
-    public function actionUnmarkContactBounced(): ?Response
+    public function actionUnmarkBounced(): ?Response
     {
         return $this->_unmarkContactStatus('bounced');
     }
@@ -288,7 +197,7 @@ class ContactsController extends Controller
     /**
      * Unmarks a contact as blocked.
      */
-    public function actionUnmarkContactBlocked(): ?Response
+    public function actionUnmarkBlocked(): ?Response
     {
         return $this->_unmarkContactStatus('blocked');
     }
@@ -296,7 +205,7 @@ class ContactsController extends Controller
     /**
      * Deletes a contact.
      */
-    public function actionDeleteContact(bool $hardDelete = false): ?Response
+    public function actionDelete(bool $hardDelete = false): ?Response
     {
         $this->requirePostRequest();
 
@@ -329,9 +238,9 @@ class ContactsController extends Controller
     /**
      * Deletes a contact permanently.
      */
-    public function actionDeleteContactPermanently(): ?Response
+    public function actionDeletePermanently(): ?Response
     {
-        return $this->actionDeleteContact(true);
+        return $this->actionDelete(true);
     }
 
     /**

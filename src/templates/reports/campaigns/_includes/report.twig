@@ -43,61 +43,65 @@
     {% endjs %}
 {% endif %}
 
-<div class="cols padded-right">
-    <div class="percentage-chart" data-label="{{ 'Opened'|t('campaign') }}" data-value="{{ data.campaign.getRate('opened') }}" data-color="#4486EC"></div>
-    <div class="percentage-chart" data-label="{{ 'Clicked'|t('campaign') }}" data-value="{{ data.campaign.getRate('clicked') }}" data-color="#008000"></div>
-    <div class="percentage-chart" data-label="{{ 'Unsubscribed'|t('campaign') }}" data-value="{{ data.campaign.getRate('unsubscribed') }}" data-color="#D0021B"></div>
-</div>
-<div class="clear"></div>
+{% if data.campaign %}
 
-<h2>{{ "Campaign Details"|t('campaign') }}</h2>
+    <div class="cols padded-right">
+        <div class="percentage-chart" data-label="{{ 'Opened'|t('campaign') }}" data-value="{{ data.campaign.getRate('opened') }}" data-color="#4486EC"></div>
+        <div class="percentage-chart" data-label="{{ 'Clicked'|t('campaign') }}" data-value="{{ data.campaign.getRate('clicked') }}" data-color="#008000"></div>
+        <div class="percentage-chart" data-label="{{ 'Unsubscribed'|t('campaign') }}" data-value="{{ data.campaign.getRate('unsubscribed') }}" data-color="#D0021B"></div>
+    </div>
+    <div class="clear"></div>
 
-<table class="data fullwidth collapsible">
-    <tbody>
-        <tr>
-            <th class="light">{{ 'Sendouts'|t('campaign') }}</th>
-            <td>{{ data.sendouts|length }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Recipients'|t('campaign') }}</th>
-            <td>
-                <a href="{{ campaign.reportUrl ~ '/recipients' }}">
-                    {{ data.campaign.recipients }}
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Opened'|t('campaign') }}</th>
-            <td>{{ linkInteration(data.campaign, 'opened') }} <code>[{{ data.campaign.getRate('opened') }}%]</code>
-            </td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Clicked'|t('campaign') }}</th>
-            <td>{{ linkInteration(data.campaign, 'clicked') }} <code>[{{ data.campaign.getRate('clicked') }}%]</code></td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Unsubscribed'|t('campaign') }}</th>
-            <td>{{ linkInteration(data.campaign, 'unsubscribed') }} <code>[{{ data.campaign.getRate('unsubscribed') }}%]</code></td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Complained'|t('campaign') }}</th>
-            <td>{{ linkInteration(data.campaign, 'complained') }} <code>[{{ data.campaign.getRate('complained') }}%]</code></td>
-        </tr>
-        <tr>
-            <th class="light">{{ 'Bounced'|t('campaign') }}</th>
-            <td>{{ linkInteration(data.campaign, 'bounced') }} <code>[{{ data.campaign.getRate('bounced') }}%]</code></td>
-        </tr>
-        <tr>
-            <th class="light">
-                {{ 'Click Through Rate'|t('campaign') }}
-                <span class="info">{{ "Click Through Rate is calculated by dividing the number of contacts that clicked on a link in an email by the number of contacts that opened the email."|t('campaign') }}</span>
-            </th>
-            <td>{{ data.campaign.clickThroughRate }}%</td>
-        </tr>
-    </tbody>
-</table>
+    <h2>{{ "Campaign Details"|t('campaign') }}</h2>
 
-<br/><br/>
+    <table class="data fullwidth collapsible">
+        <tbody>
+            <tr>
+                <th class="light">{{ 'Sendouts'|t('campaign') }}</th>
+                <td>{{ data.sendouts|length }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Recipients'|t('campaign') }}</th>
+                <td>
+                    <a href="{{ campaign.reportUrl ~ '/recipients' }}">
+                        {{ data.campaign.recipients }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Opened'|t('campaign') }}</th>
+                <td>{{ linkInteration(data.campaign, 'opened') }} <code>[{{ data.campaign.getRate('opened') }}%]</code>
+                </td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Clicked'|t('campaign') }}</th>
+                <td>{{ linkInteration(data.campaign, 'clicked') }} <code>[{{ data.campaign.getRate('clicked') }}%]</code></td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Unsubscribed'|t('campaign') }}</th>
+                <td>{{ linkInteration(data.campaign, 'unsubscribed') }} <code>[{{ data.campaign.getRate('unsubscribed') }}%]</code></td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Complained'|t('campaign') }}</th>
+                <td>{{ linkInteration(data.campaign, 'complained') }} <code>[{{ data.campaign.getRate('complained') }}%]</code></td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Bounced'|t('campaign') }}</th>
+                <td>{{ linkInteration(data.campaign, 'bounced') }} <code>[{{ data.campaign.getRate('bounced') }}%]</code></td>
+            </tr>
+            <tr>
+                <th class="light">
+                    {{ 'Click Through Rate'|t('campaign') }}
+                    <span class="info">{{ "Click Through Rate is calculated by dividing the number of contacts that clicked on a link in an email by the number of contacts that opened the email."|t('campaign') }}</span>
+                </th>
+                <td>{{ data.campaign.clickThroughRate }}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br/><br/>
+
+{% endif %}
 
 {% set limit = 5 %}
 

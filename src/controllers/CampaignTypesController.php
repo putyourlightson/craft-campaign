@@ -29,9 +29,9 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * Edit the campaign type.
+     * Main edit page.
      */
-    public function actionEditCampaignType(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
+    public function actionEdit(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
     {
         if ($campaignType === null) {
             if ($campaignTypeId !== null) {
@@ -67,7 +67,7 @@ class CampaignTypesController extends Controller
     /**
      * Saves the campaign type.
      */
-    public function actionSaveCampaignType(): ?Response
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -90,6 +90,7 @@ class CampaignTypesController extends Controller
         $campaignType->siteId = $request->getBodyParam('siteId', $campaignType->siteId);
         $campaignType->name = $request->getBodyParam('name', $campaignType->name);
         $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
+        $campaignType->enableVersioning = $request->getBodyParam('enableVersioning', $campaignType->enableVersioning);
         $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
         $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
@@ -121,7 +122,7 @@ class CampaignTypesController extends Controller
     /**
      * Deletes a campaign type.
      */
-    public function actionDeleteCampaignType(): Response
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();

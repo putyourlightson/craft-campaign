@@ -24,6 +24,7 @@ use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
+use yii\i18n\Formatter;
 
 /**
  * @property-read int $complainedCount
@@ -40,6 +41,7 @@ use putyourlightson\campaign\records\ContactRecord;
  * @property-read string $countryCode
  * @property-read int $subscribedCount
  * @property-read User|null $user
+ * @property-read array[] $crumbs
  * @property-read MailingListElement[] $mailingLists
  */
 class ContactElement extends Element
@@ -298,98 +300,96 @@ class ContactElement extends Element
      *
      * @var int|null
      */
-    public ?int $userId;
+    public ?int $userId = null;
 
     /**
      * Contact ID
      *
      * @var null|string
      */
-    public ?string $cid;
+    public ?string $cid = null;
 
     /**
      * Email
      *
-     * @var string
+     * @var string|null
      */
-    public string $email;
+    public ?string $email = null;
 
     /**
      * Country name
      *
      * @var string|null
      */
-    public ?string $country;
+    public ?string $country = null;
 
     /**
      * GeoIP
      *
      * @var mixed
      */
-    public mixed $geoIp;
+    public mixed $geoIp = null;
 
     /**
      * Device
      *
      * @var string|null
      */
-    public ?string $device;
+    public ?string $device = null;
 
     /**
      * OS
      *
      * @var string|null
      */
-    public ?string $os;
+    public ?string $os = null;
 
     /**
      * Client
      *
      * @var string|null
      */
-    public ?string $client;
+    public ?string $client = null;
 
     /**
      * Last activity
      *
      * @var DateTime|null
      */
-    public ?DateTime $lastActivity;
+    public ?DateTime $lastActivity = null;
 
     /**
      * Verified
      *
      * @var DateTime|null
      */
-    public ?DateTime $verified;
+    public ?DateTime $verified = null;
 
     /**
      * Complained
      *
      * @var DateTime|null
      */
-    public ?DateTime $complained;
+    public ?DateTime $complained = null;
 
     /**
      * Bounced
      *
      * @var DateTime|null
      */
-    public ?DateTime $bounced;
+    public ?DateTime $bounced = null;
 
     /**
      * Blocked
      *
      * @var DateTime|null
      */
-    public ?DateTime $blocked;
+    public ?DateTime $blocked = null;
 
     /**
-     * Subscription status, only used when a mailing list is selected in element index
-     *
-     * @var string
+     * @var string|null Subscription status, only used when a mailing list is selected in element index
      */
-    public string $subscriptionStatus;
+    public ?string $subscriptionStatus = null;
 
     /**
      * @inheritdoc
@@ -428,17 +428,33 @@ class ContactElement extends Element
      */
     protected function defineRules(): array
     {
+        $rules = parent::defineRules();
+        $rules[] = [['cid', 'email'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['cid'], 'string', 'max' => 17];
+        $rules[] = [['email'], 'email'];
+        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
+        $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
+
+        return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCrumbs(): array
+    {
         return [
-            [['cid', 'email'], 'required'],
-            [['cid'], 'string', 'max' => 17],
-            [['email'], 'email'],
-            [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true],
-            [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class],
+            [
+                'label' => Craft::t('campaign', 'Contacts'),
+                'url' => UrlHelper::url('campaign/contacts'),
+            ],
         ];
     }
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
     public function getFieldLayout(): ?FieldLayout
     {
@@ -447,10 +463,97 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function metadata(): array
+    {
+        $formatter = Craft::$app->getFormatter();
+        $metadata = parent::metadata();
+
+        $metadata[Craft::t('campaign', 'CID')] = '<code>' . $this->cid . '</code>';
+
+        if ($this->lastActivity) {
+            $metadata[Craft::t('campaign', 'Last activity')] = $formatter->asDatetime($this->lastActivity, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        if ($this->verified) {
+            $metadata[Craft::t('campaign', 'Verified')] = $formatter->asDatetime($this->verified, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function statusFieldHtml(): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getSupportedSites(): array
     {
         return Craft::$app->getSites()->getAllSiteIds();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
     }
 
     /**
@@ -640,16 +743,9 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
-    public function getIsEditable(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl(): ?string
+    protected function cpEditUrl(): ?string
     {
         return UrlHelper::cpUrl('campaign/contacts/' . $this->id);
     }
@@ -695,21 +791,6 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getEditorHtml(): string
-    {
-        $html = Craft::$app->getView()->renderTemplate('campaign/contacts/_includes/titlefield', [
-            'contact' => $this,
-            'settings' => Campaign::$plugin->getSettings(),
-        ]);
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function beforeSave(bool $isNew): bool
     {
         if ($isNew) {
@@ -718,7 +799,7 @@ class ContactElement extends Element
         }
 
         // Set the live scenario
-        $this->setScenario(Element::SCENARIO_LIVE);
+        //$this->setScenario(Element::SCENARIO_LIVE);
 
         return parent::beforeSave($isNew);
     }

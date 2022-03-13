@@ -529,13 +529,12 @@ class CampaignElement extends Element
      */
     public function canSave(User $user): bool
     {
-        if (parent::canView($user)) {
+        if (parent::canSave($user)) {
             return true;
         }
 
         return $user->can('campaign:campaigns');
     }
-
 
     /**
      * @inheritdoc
@@ -552,7 +551,7 @@ class CampaignElement extends Element
      */
     public function canDelete(User $user): bool
     {
-        if (parent::canView($user)) {
+        if (parent::canDelete($user)) {
             return true;
         }
 
@@ -732,8 +731,8 @@ class CampaignElement extends Element
      */
     protected function metadata(): array
     {
-        $metadata = parent::metadata();
         $formatter = Craft::$app->getFormatter();
+        $metadata = parent::metadata();
 
         if ($this->lastSent) {
             $metadata[Craft::t('campaign', 'Last sent')] = $formatter->asDatetime($this->lastSent, Formatter::FORMAT_WIDTH_SHORT);

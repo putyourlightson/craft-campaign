@@ -9,16 +9,14 @@ use Craft;
 use craft\base\Element;
 use craft\controllers\CategoriesController;
 use craft\helpers\Cp;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\ElementHelper;
-use craft\helpers\Json;
 use craft\web\Controller;
+use craft\web\CpScreenResponseBehavior;
 use DateTime;
+use putyourlightson\campaign\assets\CampaignEditAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
-use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
-use Throwable;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -60,17 +58,14 @@ class CampaignsController extends Controller
 
         $user = Craft::$app->getUser()->getIdentity();
 
-        // Create & populate the draft
         $campaign = Craft::createObject(CampaignElement::class);
         $campaign->siteId = $site->id;
         $campaign->campaignTypeId = $campaignType->id;
 
-        // Make sure the user is allowed to create this category
         if (!$campaign->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this campaign.');
         }
 
-        // Title & slug
         $campaign->title = $this->request->getQueryParam('title');
         $campaign->slug = $this->request->getQueryParam('slug');
         if ($campaign->title && !$campaign->slug) {
@@ -80,167 +75,44 @@ class CampaignsController extends Controller
             $campaign->slug = ElementHelper::tempSlug();
         }
 
-        // Save it
         $campaign->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($campaign, Craft::$app->getUser()->getId(), null, null, false)) {
             throw new ServerErrorHttpException(sprintf('Unable to save campaign as a draft: %s', implode(', ', $campaign->getErrorSummary(true))));
         }
 
-        // Redirect to its edit page
         return $this->redirect($campaign->getCpEditUrl());
     }
 
     /**
      * Main edit page.
-     *
-     * @param string $campaignTypeHandle The campaign type’s handle
-     * @param int|null $campaignId The campaign’s ID, if editing an existing campaign.
-     * @param CampaignElement|null $campaign The campaign being edited, if there were any validation errors.
      */
-    public function actionEditCampaign(string $campaignTypeHandle, int $campaignId = null, CampaignElement $campaign = null): Response
+    public function actionEdit(int $elementId = null): Response
     {
-        $request = Craft::$app->getRequest();
+        $this->view->registerAssetBundle(CampaignEditAsset::class);
 
-        $variables = [];
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response = Craft::$app->runAction('elements/edit', [
+            'elementId' => $elementId,
+        ]);
 
-        // Get the campaign type
-        // ---------------------------------------------------------------------
-
-        $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
-
-        if ($campaignType === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign type not found.'));
-        }
-
-        // Get the campaign
-        // ---------------------------------------------------------------------
+        // Add actions
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($elementId);
 
         if ($campaign === null) {
-            if ($campaignId !== null) {
-                $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-                if ($campaign === null) {
-                    throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
-                }
-            }
-            else {
-                $campaign = new CampaignElement();
-                $campaign->campaignTypeId = $campaignType->id;
-            }
+            return $response;
         }
-
-        $campaign->fieldLayoutId = $campaignType->fieldLayoutId;
-
-        // Set the current site
-        Craft::$app->getSites()->setCurrentSite($campaignType->siteId);
-
-        // Set the variables
-        // ---------------------------------------------------------------------
-
-        $variables['campaignTypeHandle'] = $campaignTypeHandle;
-        $variables['campaignId'] = $campaignId;
-        $variables['campaign'] = $campaign;
-        $variables['campaignType'] = $campaignType;
-
-        // Set the title
-        // ---------------------------------------------------------------------
-
-        if ($campaignId === null) {
-            $variables['title'] = Craft::t('campaign', 'Create a new campaign');
-        }
-        else {
-            $variables['title'] = $campaign->title;
-        }
-
-        // Get fields from first field layout tab
-        $fieldLayoutTabs = $campaignType->getFieldLayout()->getTabs();
-        $fieldLayoutTab = $fieldLayoutTabs[0] ?? null;
-        $variables['fields'] = $fieldLayoutTab !== null ? $fieldLayoutTab->getFields() : [];
-
-        // Enable live preview?
-        if (!$request->isMobileBrowser(true) && $campaignType->hasValidTemplates()) {
-            $this->getView()->registerJs('Craft.LivePreview.init(' . Json::encode([
-                'fields' => '#title-field, #fields > div > div > .field',
-                'extraFields' => '#settings',
-                'previewUrl' => $campaign->getUrl(),
-                'previewAction' => Craft::$app->security->hashData('campaign/campaigns/preview-campaign'),
-                'previewParams' => [
-                    'campaignId' => $campaign->id,
-                    'campaignTypeId' => $campaignType->id,
-                    'siteId' => $campaignType->siteId,
-                ],
-            ]) . ');');
-
-            $variables['showPreviewBtn'] = true;
-
-            // Set share URL
-            if ($campaign->id !== null && $campaign->enabled) {
-                $variables['shareUrl'] = $campaign->getUrl();
-            }
-        }
-        else {
-            $variables['showPreviewBtn'] = false;
-        }
-
-        // Contact element selector variables
-        $variables['contactElementType'] = ContactElement::class;
-        $variables['contactElementCriteria'] = [
-            'status' => ContactElement::STATUS_ACTIVE,
-        ];
-
-        // Get test contacts
-        $variables['testContacts'] = $campaignType->getTestContactsWithDefault();
-
-        // Determine which actions should be available
-        // ---------------------------------------------------------------------
-
-        $variables['actions'] = [];
 
         if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/campaigns/close-campaign',
-                'destructive' => 'true',
-                'label' => Craft::t('campaign', 'Close this campaign'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
-            ];
+            $response->addAltAction(
+                Craft::t('campaign', 'Close this campaign'),
+                [
+                    'action' => 'campaign/campaigns/close',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
+                ],
+            );
         }
 
-        $variables['actions'][0][] = [
-            'action' => 'campaign/campaigns/delete-campaign',
-            'destructive' => 'true',
-            'redirect' => 'campaign/campaigns',
-            'label' => Craft::t('app', 'Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this campaign? This will also delete all reports and contact activity related to this campaign.'),
-        ];
-
-        // Full page form variables
-        $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/campaigns/' . $campaignTypeHandle . '/{id}';
-        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
-
-        // Render the template
-        return $this->renderTemplate('campaign/campaigns/_edit', $variables);
-    }
-
-    /**
-     * Previews a campaign.
-     */
-    public function actionPreviewCampaign(): Response
-    {
-        $this->requirePostRequest();
-
-        $campaign = $this->_getCampaign();
-
-        $this->_populateCampaign($campaign);
-
-        // Have this campaign override any freshly queried campaigns with the same ID/site ID
-        if ($campaign->id !== null) {
-            Craft::$app->getElements()->setPlaceholderElement($campaign);
-        }
-
-        $this->response->data = $campaign->getHtmlBody();
-
-        return $this->response;
+        return $response;
     }
 
     /**
@@ -251,10 +123,15 @@ class CampaignsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $contactIds = Craft::$app->getRequest()->getBodyParam('contactIds');
-        $campaign = $this->_getCampaign();
+        $campaignId = $this->request->getRequiredBodyParam('campaignId');
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
-        // Validate test contacts
+        if (!$campaign) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
+        }
+
+        $contactIds = $this->request->getBodyParam('contactIds');
+
         if (empty($contactIds)) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'At least one contact must be submitted.')]);
         }
@@ -271,96 +148,13 @@ class CampaignsController extends Controller
     }
 
     /**
-     * Saves a campaign.
-     */
-    public function actionSaveCampaign(): ?Response
-    {
-        $this->requirePostRequest();
-
-        $campaign = $this->_getCampaign();
-        $request = Craft::$app->getRequest();
-
-        // If this campaign should be duplicated then swap it for a duplicate
-        if ($request->getBodyParam('duplicate')) {
-            try {
-                $campaign = Craft::$app->getElements()->duplicateElement($campaign);
-            }
-            catch (Throwable $e) {
-                throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the campaign.'), 0, $e);
-            }
-
-            // Reset the stats
-            /** @var CampaignElement $campaign */
-            $campaign->setAttributes([
-                'recipients' => 0,
-                'opened' => 0,
-                'clicked' => 0,
-                'opens' => 0,
-                'clicks' => 0,
-                'unsubscribed' => 0,
-                'complained' => 0,
-                'bounced' => 0,
-                'dateClosed' => null,
-            ]);
-        }
-
-        $this->_populateCampaign($campaign);
-
-        // Set the live scenario if enabled
-        if ($campaign->enabled && $campaign->enabledForSite) {
-            $campaign->setScenario($campaign::SCENARIO_LIVE);
-        }
-
-        // Save it
-        if (!Craft::$app->getElements()->saveElement($campaign)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $campaign->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save campaign.'));
-
-            // Send the campaign back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign,
-            ]);
-
-            return null;
-        }
-
-        if ($request->getAcceptsJson()) {
-            $return = [];
-
-            $return['success'] = true;
-            $return['id'] = $campaign->id;
-            $return['title'] = $campaign->title;
-
-            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
-                $return['cpEditUrl'] = $campaign->getCpEditUrl();
-            }
-
-            $return['dateCreated'] = DateTimeHelper::toIso8601($campaign->dateCreated);
-            $return['dateUpdated'] = DateTimeHelper::toIso8601($campaign->dateUpdated);
-
-            return $this->asJson($return);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign saved.'));
-
-        return $this->redirectToPostedUrl($campaign);
-    }
-
-    /**
      * Closes a campaign.
      */
-    public function actionCloseCampaign(): ?Response
+    public function actionClose(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $campaignId = $request->getRequiredBodyParam('campaignId');
+        $campaignId = $this->request->getRequiredBodyParam('campaignId');
         $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
         if (!$campaign) {
@@ -371,7 +165,7 @@ class CampaignsController extends Controller
         $campaign->dateClosed = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($campaign)) {
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => $campaign->getErrors(),
                 ]);
@@ -390,99 +184,12 @@ class CampaignsController extends Controller
         // Delete all contact activity for this campaign
         ContactCampaignRecord::deleteAll(['campaignId' => $campaign->id]);
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign closed.'));
 
         return $this->redirectToPostedUrl($campaign);
-    }
-
-    /**
-     * Deletes a campaign.
-     */
-    public function actionDeleteCampaign(): ?Response
-    {
-        $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
-
-        $campaignId = $request->getRequiredBodyParam('campaignId');
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-        if (!$campaign) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
-        }
-
-        if (!Craft::$app->getElements()->deleteElement($campaign)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t delete campaign.'));
-
-            // Send the campaign back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign,
-            ]);
-
-            return null;
-        }
-
-        if ($request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign deleted.'));
-
-        return $this->redirectToPostedUrl($campaign);
-    }
-
-    /**
-     * Gets a campaign or creates one if none was supplied.
-     */
-    private function _getCampaign(): CampaignElement
-    {
-        $request = Craft::$app->getRequest();
-
-        $campaignId = $request->getBodyParam('campaignId');
-
-        if ($campaignId) {
-            $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-            if (!$campaign) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
-            }
-        }
-        else {
-            $campaign = new CampaignElement();
-            $campaign->campaignTypeId = $request->getRequiredBodyParam('campaignTypeId');
-        }
-
-        return $campaign;
-    }
-
-    /**
-     * Populates a campaign with post data.
-     */
-    private function _populateCampaign(CampaignElement $campaign)
-    {
-        $request = Craft::$app->getRequest();
-
-        // Set the title, slug, enabled
-        $campaign->title = $request->getBodyParam('title', $campaign->title);
-        $campaign->slug = $request->getBodyParam('slug', $campaign->slug);
-        $campaign->enabled = (bool)$request->getBodyParam('enabled', $campaign->enabled);
-
-        // Set the site ID
-        $campaign->siteId = $campaign->getCampaignType()->siteId;
-
-        // Set the field layout ID
-        $campaign->fieldLayoutId = $campaign->getCampaignType()->fieldLayoutId;
-
-        // Set the field locations
-        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
-        $campaign->setFieldValuesFromRequest($fieldsLocation);
     }
 }
