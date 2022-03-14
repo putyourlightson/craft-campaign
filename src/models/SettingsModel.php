@@ -260,7 +260,7 @@ class SettingsModel extends Model
      */
     public function getContactFields(): array
     {
-        return $this->getContactFieldLayout()->getFields();
+        return $this->getContactFieldLayout()->getCustomFields();
     }
 
     /**

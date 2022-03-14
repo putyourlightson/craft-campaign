@@ -10,8 +10,12 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\User;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\records\SegmentRecord;
@@ -254,24 +258,24 @@ class SegmentElement extends Element
     }
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $segmentType;
+    public ?string $segmentType = null;
 
     /**
      * @var array|string|null
      */
-    public string|array|null $conditions;
+    public string|array|null $conditions = null;
 
     /**
      * @var ContactElement[]|null
      */
-    private ?array $_contacts;
+    private ?array $_contacts = null;
 
     /**
      * @var int[]|null
      */
-    private ?array $_contactIds;
+    private ?array $_contactIds = null;
 
     /**
      * @inheritdoc
@@ -296,6 +300,25 @@ class SegmentElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getFieldLayout(): ?FieldLayout
+    {
+        $fieldLayout = new FieldLayout();
+        $fieldLayoutTab = new FieldLayoutTab();
+        $fieldLayoutTab->name = 'Segment';
+        $fieldLayoutTab->setLayout($fieldLayout);
+        $fieldLayoutTab->setElements([
+            new TitleField(),
+        ]);
+
+        $fieldLayout->setTabs([$fieldLayoutTab]);
+
+        return $fieldLayout;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getSupportedSites(): array
     {
@@ -304,6 +327,54 @@ class SegmentElement extends Element
         }
 
         return parent::getSupportedSites();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:segments');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:segments');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:segments');
     }
 
     /**

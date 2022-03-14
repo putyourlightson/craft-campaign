@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\controllers;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
@@ -35,14 +34,10 @@ class SegmentsController extends Controller
 
     /**
      * Main edit page.
-     *
-     * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
      */
-    public function actionEditSegment(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
+    public function actionEdit(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
     {
         // Check that the segment type exists
-        // ---------------------------------------------------------------------
-
         $segmentTypes = SegmentElement::segmentTypes();
 
         if (empty($segmentTypes[$segmentType])) {
@@ -50,8 +45,6 @@ class SegmentsController extends Controller
         }
 
         // Get the segment
-        // ---------------------------------------------------------------------
-
         if ($segment === null) {
             if ($segmentId !== null) {
                 $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
@@ -75,8 +68,6 @@ class SegmentsController extends Controller
         }
 
         // Set the variables
-        // ---------------------------------------------------------------------
-
         $variables = [
             'segmentType' => $segmentType,
             'segmentId' => $segmentId,
@@ -84,8 +75,6 @@ class SegmentsController extends Controller
         ];
 
         // Set the title and slug
-        // ---------------------------------------------------------------------
-
         if ($segmentId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new segment');
         }
@@ -113,7 +102,7 @@ class SegmentsController extends Controller
     /**
      * Saves a segment.
      */
-    public function actionSaveSegment(): ?Response
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -203,7 +192,7 @@ class SegmentsController extends Controller
     /**
      * Deletes a segment.
      */
-    public function actionDeleteSegment(): ?Response
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
