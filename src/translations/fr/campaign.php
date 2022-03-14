@@ -412,6 +412,7 @@ return [
     'Paused' => 'Mis en pause',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => 'Les campagnes en attente sont généralement mis en file d’attente directement après avoir été activées sur une base planifiée avec un cron job. Cependant, vous pouvez forcer les campagnes en attente à être mise en file d’attente en cliquant ci-dessous.',
     'Pending' => 'En attente',
+    'Personal data successfully anonymized.' => '',
     'Plaintext Body' => '',
     'Plaintext Template' => '',
     'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:' => 'Veuillez vérifier que vous voulez vous désabonner de la liste de diffusion en cliquant sur le lien suivant :',

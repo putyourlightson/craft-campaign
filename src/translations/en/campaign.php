@@ -410,6 +410,7 @@ return [
     'Paused' => '',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => '',
     'Pending' => '',
+    'Personal data successfully anonymized.' => '',
     'Plaintext Body' => '',
     'Plaintext Template' => '',
     'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:' => '',

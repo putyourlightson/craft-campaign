@@ -412,6 +412,7 @@ return [
     'Paused' => 'Pausiert',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => 'Anstehende Sendungen werden gewöhnlich direkt nach Aktivierung und nach einem geplanten Zeitraum über einen Cronjob in die Warteschlange gesetzt. Durch Klicken unten können Sie dies erzwingen.',
     'Pending' => 'Anstehend',
+    'Personal data successfully anonymized.' => '',
     'Plaintext Body' => 'Text-Inhalt',
     'Plaintext Template' => 'Text-Template',
     'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:' => 'Bestätigen Sie bitte, dass Sie sich von der Mailing-Liste abmelden wollen durch Klick auf folgenden Link:',
