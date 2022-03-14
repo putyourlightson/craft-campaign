@@ -48,7 +48,7 @@
 
 {% block content %}
 
-    <input type="hidden" name="action" value="campaign/sendouts/save-sendout">
+    <input type="hidden" name="action" value="campaign/sendouts/save">
     <input type="hidden" name="sendoutId" value="{{ sendout.id }}">
     <input type="hidden" name="siteId" value="{{ sendout.siteId }}">
     <input type="hidden" name="sendoutType" value="{{ sendoutType }}">
@@ -62,7 +62,18 @@
             }, '') }}
         {% endif %}
 
-        {% include 'campaign/sendouts/_includes/titlefield' %}
+        {{ forms.textField({
+            label: 'Title'|t('app'),
+            id: 'title',
+            name: 'title',
+            value: sendout.title,
+            errors: sendout.getErrors('title'),
+            first: true,
+            autofocus: true,
+            required: true,
+            pending: true,
+            maxlength: 255
+        }) }}
 
         {% include 'campaign/sendouts/_includes/fields' %}
 

@@ -11,7 +11,10 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\fieldlayoutelements\TitleField;
 use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
+use craft\models\FieldLayoutTab;
 use craft\validators\DateTimeValidator;
 use DateTime;
 use LitEmoji\LitEmoji;
@@ -534,10 +537,10 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-        $rules[] = [['recipients', 'campaignId', 'senderId'], 'integer'];
+        $rules = parent::defineRules();
+        $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required'];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
@@ -545,6 +548,33 @@ class SendoutElement extends Element
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getFieldLayout(): ?FieldLayout
+    {
+        $fieldLayout = new FieldLayout();
+        $fieldLayoutTab = new FieldLayoutTab();
+        $fieldLayoutTab->name = 'Sendout';
+        $fieldLayoutTab->setLayout($fieldLayout);
+        $fieldLayoutTab->setElements([
+            new TitleField(),
+        ]);
+
+        $fieldLayout->setTabs([$fieldLayoutTab]);
+
+        return $fieldLayout;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function statusFieldHtml(): string
+    {
+        return '';
     }
 
     /**
@@ -557,6 +587,54 @@ class SendoutElement extends Element
         }
 
         return parent::getSupportedSites();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:sendouts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:sendouts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:sendouts');
     }
 
     /**
@@ -863,16 +941,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getIsEditable(): bool
-    {
-        return true;
-    }
-
-    /**
      * Returns whether the sendout can be modified.
-     * This method exists in addition to `getIsEditable` so that sendout titles can always be edited.
      * https://github.com/putyourlightson/craft-campaign/issues/161
      */
     public function getIsModifiable(): bool
@@ -950,9 +1019,6 @@ class SendoutElement extends Element
         return UrlHelper::cpUrl('campaign/sendouts/' . $this->sendoutType . '/' . $this->id);
     }
 
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
@@ -973,21 +1039,6 @@ class SendoutElement extends Element
         }
 
         return $htmlAttributes;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEditorHtml(): string
-    {
-        // Get the title field
-        $html = Craft::$app->getView()->renderTemplate('campaign/sendouts/_includes/titlefield', [
-            'sendout' => $this,
-        ]);
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
     }
 
     /**

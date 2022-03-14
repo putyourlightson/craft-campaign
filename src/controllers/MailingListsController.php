@@ -89,7 +89,7 @@ class MailingListsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $elementId = null): Response
+    public function actionEdit(int $mailingListId = null): Response
     {
         $this->view->registerAssetBundle(ContactEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
@@ -98,7 +98,7 @@ class MailingListsController extends Controller
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'mailinglists');
 
         return Craft::$app->runAction('elements/edit', [
-            'elementId' => $elementId,
+            'elementId' => $mailingListId,
         ]);
     }
 }

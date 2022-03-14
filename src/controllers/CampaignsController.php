@@ -87,7 +87,7 @@ class CampaignsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $elementId = null): Response
+    public function actionEdit(int $campaignId = null): Response
     {
         $this->view->registerAssetBundle(CampaignEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
@@ -97,11 +97,11 @@ class CampaignsController extends Controller
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
-            'elementId' => $elementId,
+            'elementId' => $campaignId,
         ]);
 
         // Add actions
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($elementId);
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
         if ($campaign === null) {
             return $response;

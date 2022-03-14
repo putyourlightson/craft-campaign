@@ -70,7 +70,7 @@ class ContactsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $elementId = null): Response
+    public function actionEdit(int $contactId = null): Response
     {
         $this->view->registerAssetBundle(ContactEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
@@ -80,11 +80,11 @@ class ContactsController extends Controller
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
-            'elementId' => $elementId,
+            'elementId' => $contactId,
         ]);
 
         // Add actions
-        $contact = Campaign::$plugin->contacts->getContactById($elementId);
+        $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
         if ($contact === null) {
             return $response;
