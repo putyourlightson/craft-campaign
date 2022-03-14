@@ -90,7 +90,7 @@ class CampaignTypesController extends Controller
         $campaignType->siteId = $request->getBodyParam('siteId', $campaignType->siteId);
         $campaignType->name = $request->getBodyParam('name', $campaignType->name);
         $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
-        $campaignType->enableVersioning = $request->getBodyParam('enableVersioning', $campaignType->enableVersioning);
+        $campaignType->enableAnonymousTracking = $request->getBodyParam('enableAnonymousTracking', $campaignType->enableAnonymousTracking);
         $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
         $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);

@@ -17,11 +17,11 @@ class m220312_120000_update_columns extends Migration
     {
         $this->alterColumn(ContactRecord::tableName(), 'email', $this->string());
 
-        if (!$this->db->columnExists(CampaignTypeRecord::tableName(), 'enableVersioning')) {
+        if (!$this->db->columnExists(CampaignTypeRecord::tableName(), 'enableAnonymousTracking')) {
             $this->addColumn(
                 CampaignTypeRecord::tableName(),
-                'enableVersioning',
-                $this->boolean()->defaultValue(true)->notNull()->after('handle'),
+                'enableAnonymousTracking',
+                $this->boolean()->defaultValue(false)->notNull()->after('handle'),
             );
         }
 

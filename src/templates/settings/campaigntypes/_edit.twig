@@ -59,6 +59,14 @@
         <input type="hidden" name="siteId" value="{{ currentSite.id }}" />
     {% endif %}
 
+    {{ forms.lightswitchField({
+        label: "Enable Anonymous Tracking"|t('campaign'),
+        instructions: "Whether to enable anonymous tracking of contact interactions."|t('campaign'),
+        name: 'enableAnonymousTracking',
+        on: campaignType.enableAnonymousTracking,
+        errors: campaignType.getErrors('enableAnonymousTracking'),
+    }) }}
+
     <hr>
 
     {{ forms.textField({
