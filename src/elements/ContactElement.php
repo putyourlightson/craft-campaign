@@ -21,6 +21,8 @@ use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\HardDeleteContacts;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactMailingListFieldLayoutTab;
+use putyourlightson\campaign\fieldlayoutelements\reports\ContactReportFieldLayoutTab;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -432,10 +434,18 @@ class ContactElement extends Element
         $rules[] = [['cid', 'email'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['cid'], 'string', 'max' => 17];
         $rules[] = [['email'], 'email'];
-        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
+        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
 
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl("campaign/contacts");
     }
 
     /**
@@ -458,7 +468,19 @@ class ContactElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        return Craft::$app->getFields()->getLayoutByType(self::class);
+        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
+
+        if (!$this->getIsDraft()) {
+            $fieldLayout->setTabs(array_merge(
+                $fieldLayout->getTabs(),
+                [
+                    new ContactMailingListFieldLayoutTab(),
+                    new ContactReportFieldLayoutTab(),
+                ],
+            ));
+        }
+
+        return $fieldLayout;
     }
 
     /**

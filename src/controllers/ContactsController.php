@@ -269,7 +269,7 @@ class ContactsController extends Controller
 
     private function _getPostedContact(): ContactElement
     {
-        $contactId = Craft::$app->getRequest()->getRequiredBodyParam('contactId');
+        $contactId = Craft::$app->getRequest()->getRequiredBodyParam('elementId');
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
         if ($contact === null) {
