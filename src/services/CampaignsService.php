@@ -43,7 +43,10 @@ class CampaignsService extends Component
         }
 
         /** @var CampaignRecord|null $campaignRecord */
-        $campaignRecord = CampaignRecord::findOne($sendout->campaignId);
+        $campaignRecord = CampaignRecord::find()
+            ->where(['id' => $sendout->campaignId])
+            ->with('campaignType')
+            ->one();
 
         if ($campaignRecord === null) {
             return;
@@ -103,7 +106,10 @@ class CampaignsService extends Component
             }
         }
 
-        $contactCampaignRecord->save();
+        // Only save is anonymous tracking is not enabled
+        if ($campaignRecord->campaignType->enableAnonymousTracking === false) {
+            $contactCampaignRecord->save();
+        }
 
         $campaignRecord->save();
     }

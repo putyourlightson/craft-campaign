@@ -649,7 +649,7 @@ class CampaignElement extends Element
      */
     public function hasRevisions(): bool
     {
-        return $this->getCampaignType()->enableVersioning;
+        return true;
     }
 
     /**
