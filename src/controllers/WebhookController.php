@@ -41,7 +41,7 @@ class WebhookController extends Controller
     public function beforeAction($action): bool
     {
         // Verify API key
-        $key = Craft::$app->getRequest()->getParam('key');
+        $key = $this->request->getParam('key');
         $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
         if ($key === null || empty($apiKey) || $key != $apiKey) {
@@ -120,8 +120,7 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         // Get event data from raw body
-        $request = Craft::$app->getRequest();
-        $body = Json::decodeIfJson($request->getRawBody());
+        $body = Json::decodeIfJson($this->request->getRawBody());
         $eventData = $body['event-data'] ?? null;
 
         // Validate the event signature if a signing key is set
@@ -144,8 +143,8 @@ class WebhookController extends Controller
 
         if ($eventData === null) {
             // Get event data from body params (legacy webhooks)
-            $event = $request->getBodyParam('event');
-            $email = $request->getBodyParam('recipient');
+            $event = $this->request->getBodyParam('event');
+            $email = $this->request->getBodyParam('recipient');
         }
 
         if ($event == 'complained') {
@@ -175,7 +174,7 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $events = Craft::$app->getRequest()->getBodyParam('mandrill_events');
+        $events = $this->request->getBodyParam('mandrill_events');
         $events = Json::decodeIfJson($events);
 
         if (is_array($events)) {
@@ -202,18 +201,16 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
         // Ensure IP address is coming from Postmark if allowed IP addresses are set
         // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
         $allowedIpAddresses = Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses;
 
-        if ($allowedIpAddresses && !in_array($request->getUserIP(), $allowedIpAddresses)) {
+        if ($allowedIpAddresses && !in_array($this->request->getUserIP(), $allowedIpAddresses)) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'IP address not allowed.')]);
         }
 
-        $eventType = $request->getBodyParam('RecordType');
-        $email = $request->getBodyParam('Email') ?: $request->getBodyParam('Recipient');
+        $eventType = $this->request->getBodyParam('RecordType');
+        $email = $this->request->getBodyParam('Email') ?: $this->request->getBodyParam('Recipient');
 
         // https://postmarkapp.com/developer/webhooks/spam-complaint-webhook
         if ($eventType == 'SpamComplaint') {
@@ -221,7 +218,7 @@ class WebhookController extends Controller
         }
         // https://postmarkapp.com/developer/webhooks/bounce-webhook
         elseif ($eventType == 'Bounce') {
-            $bounceType = $request->getBodyParam('Type');
+            $bounceType = $this->request->getBodyParam('Type');
 
             if ($bounceType == 'HardBounce') {
                 return $this->_callWebhook('bounced', $email);
@@ -229,10 +226,10 @@ class WebhookController extends Controller
         }
         // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
         elseif ($eventType == 'SubscriptionChange') {
-            $suppress = $request->getBodyParam('SuppressSending');
+            $suppress = $this->request->getBodyParam('SuppressSending');
 
             if ($suppress) {
-                $reason = $request->getBodyParam('SuppressionReason');
+                $reason = $this->request->getBodyParam('SuppressionReason');
 
                 if ($reason == 'SpamComplaint') {
                     return $this->_callWebhook('complained', $email);
@@ -259,7 +256,7 @@ class WebhookController extends Controller
         // TODO: Validate the signature if a verification key is set
         // https://sendgrid.com/docs/for-developers/tracking-events/getting-started-event-webhook-security-features
 
-        $body = Craft::$app->getRequest()->getRawBody();
+        $body = $this->request->getRawBody();
         $events = Json::decodeIfJson($body);
 
         if (is_array($events)) {
@@ -285,7 +282,7 @@ class WebhookController extends Controller
     private function _callWebhook(string $event, string $email = null): ?Response
     {
         // Log request
-        Craft::warning('Webhook request: ' . Craft::$app->getRequest()->getRawBody(), 'campaign');
+        Craft::warning('Webhook request: ' . $this->request->getRawBody(), 'campaign');
 
         if ($email === null) {
             return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);

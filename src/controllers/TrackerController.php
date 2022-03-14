@@ -86,7 +86,7 @@ class TrackerController extends BaseMessageController
      */
     public function actionUnsubscribe(): ?Response
     {
-        if (Craft::$app->getRequest()->getParam('sid') === null) {
+        if ($this->request->getParam('sid') === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
         }
 
@@ -105,7 +105,7 @@ class TrackerController extends BaseMessageController
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -121,7 +121,7 @@ class TrackerController extends BaseMessageController
      */
     private function _getContact(): ?ContactElement
     {
-        $cid = Craft::$app->getRequest()->getParam('cid');
+        $cid = $this->request->getParam('cid');
 
         if ($cid === null) {
             return null;
@@ -135,7 +135,7 @@ class TrackerController extends BaseMessageController
      */
     private function _getSendout(): ?SendoutElement
     {
-        $sid = Craft::$app->getRequest()->getParam('sid');
+        $sid = $this->request->getParam('sid');
 
         if ($sid === null) {
             return null;
@@ -149,7 +149,7 @@ class TrackerController extends BaseMessageController
      */
     private function _getLink(): ?LinkRecord
     {
-        $lid = Craft::$app->getRequest()->getParam('lid');
+        $lid = $this->request->getParam('lid');
 
         if ($lid === null) {
             return null;

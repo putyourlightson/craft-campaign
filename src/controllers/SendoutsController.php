@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
+use craft\queue\Queue;
 use craft\web\Controller;
 use craft\web\View;
 use DateTime;
@@ -36,15 +37,13 @@ class SendoutsController extends Controller
      */
     public function actionQueuePendingSendouts(): Response
     {
-        $request = Craft::$app->getRequest();
-
         // Require permission if posted from utility
-        if ($request->getIsPost() && $request->getParam('utility')) {
+        if ($this->request->getIsPost() && $this->request->getParam('utility')) {
             $this->requirePermission('campaign:utility');
         }
         else {
             // Verify API key
-            $key = $request->getParam('key');
+            $key = $this->request->getParam('key');
             $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
 
             if ($key === null || empty($apiKey) || $key != $apiKey) {
@@ -54,20 +53,21 @@ class SendoutsController extends Controller
 
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 
-        if ($request->getParam('run')) {
-            Craft::$app->getQueue()->run();
+        if ($this->request->getParam('run')) {
+            /** @var Queue $queue */
+            $queue = Craft::$app->getQueue();
+            $queue->run();
         }
 
         // If front-end site request
         if (Craft::$app->getView()->templateMode == View::TEMPLATE_MODE_SITE) {
             // Prep the response
-            $response = Craft::$app->getResponse();
-            $response->content = $count;
+            $this->response->content = $count;
 
-            return $response;
+            return $this->response;
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -84,10 +84,9 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromParamId();
 
         // Prep the response
-        $response = Craft::$app->getResponse();
-        $response->content = $sendout->getPendingRecipientCount();
+        $this->response->content = $sendout->getPendingRecipientCount();
 
-        return $response;
+        return $this->response;
     }
 
     /**
@@ -95,7 +94,7 @@ class SendoutsController extends Controller
      */
     public function actionGetHtmlBody(): Response
     {
-        $sendoutId = Craft::$app->getRequest()->getRequiredParam('sendoutId');
+        $sendoutId = $this->request->getRequiredParam('sendoutId');
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {
@@ -103,25 +102,19 @@ class SendoutsController extends Controller
         }
 
         // Prep the response
-        $response = Craft::$app->getResponse();
-        $response->content = $sendout->getHtmlBody();
+        $this->response->content = $sendout->getHtmlBody();
 
-        return $response;
+        return $this->response;
     }
 
     /**
      * Edit the sendout.
      */
-    public function actionEditSendout(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
+    public function actionEdit(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
     {
-        // Require permission
         $this->requirePermission('campaign:sendouts');
 
-        $request = Craft::$app->getRequest();
-
         // Check that the sendout type exists
-        // ---------------------------------------------------------------------
-
         $sendoutTypes = SendoutElement::sendoutTypes();
 
         if (empty($sendoutTypes[$sendoutType])) {
@@ -129,8 +122,6 @@ class SendoutsController extends Controller
         }
 
         // Get the sendout
-        // ---------------------------------------------------------------------
-
         if ($sendout === null) {
             if ($sendoutId !== null) {
                 $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
@@ -144,7 +135,7 @@ class SendoutsController extends Controller
                 $sendout->sendoutType = $sendoutType;
 
                 // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
-                $campaignId = $request->getParam('campaignId');
+                $campaignId = $this->request->getParam('campaignId');
                 if ($campaignId) {
                     // Set campaign ID
                     $sendout->campaignId = $campaignId;
@@ -176,8 +167,6 @@ class SendoutsController extends Controller
         }
 
         // Set the variables
-        // ---------------------------------------------------------------------
-
         $variables = [
             'sendoutType' => $sendoutType,
             'sendoutId' => $sendoutId,
@@ -225,19 +214,17 @@ class SendoutsController extends Controller
         }
 
         // Determine which actions should be available
-        // ---------------------------------------------------------------------
-
         $variables['actions'] = [];
 
         if ($sendout->getIsPausable()) {
             $variables['actions'][0][] = [
-                'action' => 'campaign/sendouts/pause-sendout',
+                'action' => 'campaign/sendouts/pause',
                 'redirect' => $sendout->getCpEditUrl(),
                 'label' => Craft::t('campaign', 'Pause and Edit'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
             ];
             $variables['actions'][0][] = [
-                'action' => 'campaign/sendouts/pause-sendout',
+                'action' => 'campaign/sendouts/pause',
                 'redirect' => 'campaign/sendouts',
                 'label' => Craft::t('campaign', 'Pause'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
@@ -246,7 +233,7 @@ class SendoutsController extends Controller
 
         if ($sendout->getIsCancellable()) {
             $variables['actions'][1][] = [
-                'action' => 'campaign/sendouts/cancel-sendout',
+                'action' => 'campaign/sendouts/cancel',
                 'destructive' => 'true',
                 'redirect' => 'campaign/sendouts',
                 'label' => Craft::t('campaign', 'Cancel'),
@@ -255,7 +242,7 @@ class SendoutsController extends Controller
         }
 
         $variables['actions'][1][] = [
-            'action' => 'campaign/sendouts/delete-sendout',
+            'action' => 'campaign/sendouts/delete',
             'destructive' => 'true',
             'redirect' => 'campaign/sendouts',
             'label' => Craft::t('campaign', 'Delete'),
@@ -272,7 +259,7 @@ class SendoutsController extends Controller
         $variables['fullPageForm'] = true;
 
         // Render the template
-        if ($sendout->getIsModifiable() && !$request->getParam('preview')) {
+        if ($sendout->getIsModifiable() && !$this->request->getParam('preview')) {
             return $this->renderTemplate('campaign/sendouts/_edit', $variables);
         }
 
@@ -293,16 +280,14 @@ class SendoutsController extends Controller
     /**
      * Saves the sendout.
      */
-    public function actionSaveSendout(): ?Response
+    public function actionSave(): ?Response
     {
         // Require permission
         $this->requirePermission('campaign:sendouts');
 
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $sendoutId = $request->getBodyParam('sendoutId');
+        $sendoutId = $this->request->getBodyParam('sendoutId');
 
         if ($sendoutId) {
             $sendout = $this->_getSendoutFromParamId();
@@ -312,38 +297,37 @@ class SendoutsController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $sendout->siteId = $request->getBodyParam('siteId', $sendout->siteId);
-        $sendout->sendoutType = $request->getBodyParam('sendoutType', $sendout->sendoutType);
-        $sendout->title = $request->getBodyParam('title', $sendout->title);
-        $sendout->subject = $request->getBodyParam('subject', $sendout->subject);
-        $sendout->notificationEmailAddress = $request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
+        $sendout->siteId = $this->request->getBodyParam('siteId', $sendout->siteId);
+        $sendout->sendoutType = $this->request->getBodyParam('sendoutType', $sendout->sendoutType);
+        $sendout->title = $this->request->getBodyParam('title', $sendout->title);
+        $sendout->subject = $this->request->getBodyParam('subject', $sendout->subject);
+        $sendout->notificationEmailAddress = $this->request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
 
         // Get from name and email
-        $fromNameEmail = explode(':', $request->getBodyParam('fromNameEmail', ''));
+        $fromNameEmail = explode(':', $this->request->getBodyParam('fromNameEmail', ''));
         $sendout->fromName = $fromNameEmail[0] ?? '';
         $sendout->fromEmail = $fromNameEmail[1] ?? '';
         $sendout->replyToEmail = $fromNameEmail[2] ?? '';
 
         // Get the selected campaign ID
-        $sendout->campaignId = $request->getBodyParam('campaignId', $sendout->campaignId);
-        $sendout->campaignId = (is_array($sendout->campaignId) && isset($sendout->campaignId[0])) ? $sendout->campaignId[0] : null;
+        $campaignId = $this->request->getBodyParam('campaignId', $sendout->campaignId);
+        $sendout->campaignId = $campaignId[0] ?? null;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
-        $sendout->mailingListIds = $request->getBodyParam('mailingListIds', $sendout->mailingListIds);
-        $sendout->mailingListIds = is_array($sendout->mailingListIds) ? implode(',', $sendout->mailingListIds) : '';
-        $sendout->excludedMailingListIds = $request->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
-        $sendout->excludedMailingListIds = is_array($sendout->excludedMailingListIds) ? implode(',', $sendout->excludedMailingListIds) : '';
+        $mailingListIds = $this->request->getBodyParam('mailingListIds', $sendout->mailingListIds);
+        $sendout->mailingListIds = is_array($mailingListIds) ? implode(',', $mailingListIds) : '';
+        $excludedMailingListIds = $this->request->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
+        $sendout->excludedMailingListIds = is_array($excludedMailingListIds) ? implode(',', $excludedMailingListIds) : '';
 
-        $sendout->segmentIds = $request->getBodyParam('segmentIds', $sendout->segmentIds);
-        $sendout->segmentIds = is_array($sendout->segmentIds) ? implode(',', $sendout->segmentIds) : '';
+        $segmentIds = $this->request->getBodyParam('segmentIds', $sendout->segmentIds);
+        $sendout->segmentIds = is_array($segmentIds) ? implode(',', $segmentIds) : '';
 
         // Convert send date
-        $sendout->sendDate = $request->getBodyParam('sendDate', $sendout->sendDate);
-        $sendout->sendDate = DateTimeHelper::toDateTime($sendout->sendDate);
-        $sendout->sendDate = $sendout->sendDate ?: new DateTime();
+        $sendDate = $this->request->getBodyParam('sendDate', $sendout->sendDate);
+        $sendout->sendDate = DateTimeHelper::toDateTime($sendDate) ?: new DateTime();
 
         if ($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') {
-            $schedule = $request->getBodyParam('schedule');
+            $schedule = $this->request->getBodyParam('schedule');
 
             if ($sendout->sendoutType == 'automated') {
                 $sendout->schedule = new AutomatedScheduleModel($schedule);
@@ -392,14 +376,12 @@ class SendoutsController extends Controller
     /**
      * Sends the sendout.
      */
-    public function actionSendSendout(): ?Response
+    public function actionSend(): ?Response
     {
         // Require permission to send
         $this->requirePermission('campaign:sendSendouts');
 
         $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
 
         $sendout = $this->_getSendoutFromParamId();
 
@@ -411,7 +393,7 @@ class SendoutsController extends Controller
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($sendout)) {
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson(['errors' => $sendout->getErrors()]);
             }
 
@@ -431,7 +413,7 @@ class SendoutsController extends Controller
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -448,7 +430,7 @@ class SendoutsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $contactIds = Craft::$app->getRequest()->getBodyParam('contactIds');
+        $contactIds = $this->request->getBodyParam('contactIds');
         $sendout = $this->_getSendoutFromParamId();
 
         // Validate test contacts
@@ -470,7 +452,7 @@ class SendoutsController extends Controller
     /**
      * Pauses a sendout.
      */
-    public function actionPauseSendout(): ?Response
+    public function actionPause(): ?Response
     {
         $this->requirePostRequest();
 
@@ -493,7 +475,7 @@ class SendoutsController extends Controller
     /**
      * Cancels a sendout.
      */
-    public function actionCancelSendout(): ?Response
+    public function actionCancel(): ?Response
     {
         $this->requirePostRequest();
 
@@ -516,7 +498,7 @@ class SendoutsController extends Controller
     /**
      * Deletes a sendout.
      */
-    public function actionDeleteSendout(): ?Response
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -541,7 +523,7 @@ class SendoutsController extends Controller
      */
     private function _getSendoutFromParamId(): SendoutElement
     {
-        $sendoutId = Craft::$app->getRequest()->getRequiredParam('sendoutId');
+        $sendoutId = $this->request->getRequiredParam('sendoutId');
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {

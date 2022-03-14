@@ -79,9 +79,7 @@ class MailingListTypesController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListTypeId = $request->getBodyParam('mailingListTypeId');
+        $mailingListTypeId = $this->request->getBodyParam('mailingListTypeId');
 
         if ($mailingListTypeId) {
             $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
@@ -95,17 +93,17 @@ class MailingListTypesController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $mailingListType->siteId = $request->getBodyParam('siteId', $mailingListType->siteId);
-        $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
-        $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
-        $mailingListType->subscribeVerificationRequired = (bool)$request->getBodyParam('subscribeVerificationRequired', $mailingListType->subscribeVerificationRequired);
-        $mailingListType->subscribeVerificationEmailSubject = $request->getBodyParam('subscribeVerificationEmailSubject', $mailingListType->subscribeVerificationEmailSubject);
-        $mailingListType->subscribeVerificationEmailTemplate = $request->getBodyParam('subscribeVerificationEmailTemplate', $mailingListType->subscribeVerificationEmailTemplate);
-        $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
-        $mailingListType->unsubscribeFormAllowed = (bool)$request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
-        $mailingListType->unsubscribeVerificationEmailSubject = $request->getBodyParam('unsubscribeVerificationEmailSubject', $mailingListType->unsubscribeVerificationEmailSubject);
-        $mailingListType->unsubscribeVerificationEmailTemplate = $request->getBodyParam('unsubscribeVerificationEmailTemplate', $mailingListType->unsubscribeVerificationEmailTemplate);
-        $mailingListType->unsubscribeSuccessTemplate = $request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
+        $mailingListType->siteId = $this->request->getBodyParam('siteId', $mailingListType->siteId);
+        $mailingListType->name = $this->request->getBodyParam('name', $mailingListType->name);
+        $mailingListType->handle = $this->request->getBodyParam('handle', $mailingListType->handle);
+        $mailingListType->subscribeVerificationRequired = (bool)$this->request->getBodyParam('subscribeVerificationRequired', $mailingListType->subscribeVerificationRequired);
+        $mailingListType->subscribeVerificationEmailSubject = $this->request->getBodyParam('subscribeVerificationEmailSubject', $mailingListType->subscribeVerificationEmailSubject);
+        $mailingListType->subscribeVerificationEmailTemplate = $this->request->getBodyParam('subscribeVerificationEmailTemplate', $mailingListType->subscribeVerificationEmailTemplate);
+        $mailingListType->subscribeSuccessTemplate = $this->request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
+        $mailingListType->unsubscribeFormAllowed = (bool)$this->request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
+        $mailingListType->unsubscribeVerificationEmailSubject = $this->request->getBodyParam('unsubscribeVerificationEmailSubject', $mailingListType->unsubscribeVerificationEmailSubject);
+        $mailingListType->unsubscribeVerificationEmailTemplate = $this->request->getBodyParam('unsubscribeVerificationEmailTemplate', $mailingListType->unsubscribeVerificationEmailTemplate);
+        $mailingListType->unsubscribeSuccessTemplate = $this->request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
@@ -137,7 +135,7 @@ class MailingListTypesController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $mailingListTypeId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $mailingListTypeId = $this->request->getRequiredBodyParam('id');
 
         Campaign::$plugin->mailingListTypes->deleteMailingListTypeById($mailingListTypeId);
 

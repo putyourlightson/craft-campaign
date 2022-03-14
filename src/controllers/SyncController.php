@@ -64,9 +64,7 @@ class SyncController extends Controller
 
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListId = $request->getRequiredBodyParam('mailingListId');
+        $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
         $mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : null;
 
         if ($mailingListId === null) {
@@ -86,7 +84,7 @@ class SyncController extends Controller
             throw new BadRequestHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
-        $userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         if ($userGroupId === null) {
             throw new BadRequestHttpException('User group is required.');
@@ -104,7 +102,7 @@ class SyncController extends Controller
 
         Campaign::$plugin->sync->queueSync($mailingList);
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -122,9 +120,7 @@ class SyncController extends Controller
 
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListId = $request->getRequiredBodyParam('id');
+        $mailingListId = $this->request->getRequiredBodyParam('id');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
@@ -135,7 +131,7 @@ class SyncController extends Controller
 
         Craft::$app->getElements()->saveElement($mailingList);
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 

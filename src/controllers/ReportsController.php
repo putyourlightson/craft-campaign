@@ -34,8 +34,8 @@ class ReportsController extends Controller
     {
         $this->requireAcceptsJson();
 
-        $campaignId = Craft::$app->getRequest()->getRequiredParam('campaignId');
-        $interval = Craft::$app->getRequest()->getParam('interval');
+        $campaignId = $this->request->getRequiredParam('campaignId');
+        $interval = $this->request->getParam('interval');
 
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
@@ -52,8 +52,8 @@ class ReportsController extends Controller
     {
         $this->requireAcceptsJson();
 
-        $mailingListId = Craft::$app->getRequest()->getRequiredParam('mailingListId');
-        $interval = Craft::$app->getRequest()->getParam('interval');
+        $mailingListId = $this->request->getRequiredParam('mailingListId');
+        $interval = $this->request->getParam('interval');
 
         // Get chart data
         $data = Campaign::$plugin->reports->getMailingListChartData($mailingListId, $interval);

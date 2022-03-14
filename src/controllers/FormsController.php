@@ -33,18 +33,16 @@ class FormsController extends BaseMessageController
         $this->requirePostRequest();
         $this->_validateRecaptcha();
 
-        $request = Craft::$app->getRequest();
-
         // Get mailing list by slug
-        $mailingListSlug = $request->getRequiredParam('mailingList');
+        $mailingListSlug = $this->request->getRequiredParam('mailingList');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
 
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
-        $email = $request->getRequiredParam('email');
-        $referrer = $request->getReferrer();
+        $email = $this->request->getRequiredParam('email');
+        $referrer = $this->request->getReferrer();
 
         // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
@@ -69,7 +67,7 @@ class FormsController extends BaseMessageController
 
             // Validate the contact
             if (!$contact->validate()) {
-                if ($request->getAcceptsJson()) {
+                if ($this->request->getAcceptsJson()) {
                     return $this->asJson([
                         'errors' => $contact->getErrors(),
                     ]);
@@ -92,7 +90,7 @@ class FormsController extends BaseMessageController
 
             // Save pending contact
             if (!Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
-                if ($request->getAcceptsJson()) {
+                if ($this->request->getAcceptsJson()) {
                     return $this->asJson([
                         'errors' => $pendingContact->getErrors(),
                     ]);
@@ -113,7 +111,7 @@ class FormsController extends BaseMessageController
         else {
             // Save contact
             if (!Craft::$app->getElements()->saveElement($contact)) {
-                if ($request->getAcceptsJson()) {
+                if ($this->request->getAcceptsJson()) {
                     return $this->asJson([
                         'errors' => $contact->getErrors(),
                     ]);
@@ -130,11 +128,11 @@ class FormsController extends BaseMessageController
             Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $referrer);
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        if ($request->getBodyParam('redirect')) {
+        if ($this->request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl();
         }
 
@@ -153,10 +151,8 @@ class FormsController extends BaseMessageController
         $this->requirePostRequest();
         $this->_validateRecaptcha();
 
-        $request = Craft::$app->getRequest();
-
         // Get mailing list by slug
-        $mailingListSlug = $request->getRequiredParam('mailingList');
+        $mailingListSlug = $this->request->getRequiredParam('mailingList');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
 
         if ($mailingList === null) {
@@ -168,7 +164,7 @@ class FormsController extends BaseMessageController
             throw new ForbiddenHttpException('Unsubscribing through a form is not allowed for this mailing list.');
         }
 
-        $email = $request->getRequiredParam('email');
+        $email = $this->request->getRequiredParam('email');
 
         // Get contact by email
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
@@ -180,7 +176,7 @@ class FormsController extends BaseMessageController
         // Send verification email
         Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($contact, $mailingList);
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -195,15 +191,13 @@ class FormsController extends BaseMessageController
         $this->requirePostRequest();
         $this->_validateRecaptcha();
 
-        $request = Craft::$app->getRequest();
-
         // Get verified contact
         $contact = $this->_getVerifiedContact();
 
         if ($contact === null) {
             $error = Craft::t('campaign', 'Contact not found.');
 
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => [$error],
                 ]);
@@ -213,12 +207,12 @@ class FormsController extends BaseMessageController
         }
 
         // Set the field values using the fields location
-        $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
+        $fieldsLocation = $this->request->getParam('fieldsLocation', 'fields');
         $contact->setFieldValuesFromRequest($fieldsLocation);
 
         // Save it
         if (!Campaign::$plugin->forms->updateContact($contact)) {
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => $contact->getErrors(),
                 ]);
@@ -234,7 +228,7 @@ class FormsController extends BaseMessageController
             return null;
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -246,10 +240,8 @@ class FormsController extends BaseMessageController
      */
     public function actionVerifySubscribe(): Response
     {
-        $request = Craft::$app->getRequest();
-
         // Get pending contact ID
-        $pid = $request->getParam('pid');
+        $pid = $this->request->getParam('pid');
 
         if ($pid === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Invalid verification link.'));
@@ -263,11 +255,11 @@ class FormsController extends BaseMessageController
                 throw new NotFoundHttpException(Craft::t('campaign', 'Verification link has expired'));
             }
 
-            if ($request->getBodyParam('redirect')) {
+            if ($this->request->getBodyParam('redirect')) {
                 return $this->redirectToPostedUrl();
             }
 
-            $mlid = $request->getParam('mlid');
+            $mlid = $this->request->getParam('mlid');
             $mailingList = null;
 
             if ($mlid) {
@@ -306,7 +298,7 @@ class FormsController extends BaseMessageController
 
         Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $pendingContact->source, true);
 
-        if ($request->getBodyParam('redirect')) {
+        if ($this->request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl($contact);
         }
 
@@ -323,15 +315,13 @@ class FormsController extends BaseMessageController
      */
     public function actionVerifyUnsubscribe(): ?Response
     {
-        $request = Craft::$app->getRequest();
-
         // Get verified contact
         $contact = $this->_getVerifiedContact();
 
         if ($contact === null) {
             $error = Craft::t('campaign', 'Contact not found.');
 
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => [$error],
                 ]);
@@ -340,7 +330,7 @@ class FormsController extends BaseMessageController
         }
 
         // Get mailing list by ID
-        $mailingListId = Craft::$app->getRequest()->getRequiredParam('mlid');
+        $mailingListId = $this->request->getRequiredParam('mlid');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
@@ -349,7 +339,7 @@ class FormsController extends BaseMessageController
 
         Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList);
 
-        if ($request->getBodyParam('redirect')) {
+        if ($this->request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl($contact);
         }
 
@@ -365,17 +355,15 @@ class FormsController extends BaseMessageController
      */
     private function _validateRecaptcha()
     {
-        $request = Craft::$app->getRequest();
-
         // Validate reCAPTCHA if enabled
         if (Campaign::$plugin->getSettings()->reCaptcha) {
-            $response = $request->getParam('g-recaptcha-response');
+            $response = $this->request->getParam('g-recaptcha-response');
 
             if ($response === null) {
                 throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->getSettings()->reCaptchaErrorMessage));
             }
 
-            RecaptchaHelper::validateRecaptcha($response, $request->getUserIP());
+            RecaptchaHelper::validateRecaptcha($response, $this->request->getUserIP());
         }
     }
 
@@ -384,10 +372,8 @@ class FormsController extends BaseMessageController
      */
     private function _getVerifiedContact(): ?ContactElement
     {
-        $request = Craft::$app->getRequest();
-
-        $cid = $request->getParam('cid');
-        $uid = $request->getParam('uid');
+        $cid = $this->request->getParam('cid');
+        $uid = $this->request->getParam('uid');
 
         if ($cid === null) {
             return null;

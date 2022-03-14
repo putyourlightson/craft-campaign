@@ -364,24 +364,24 @@ class SendoutElement extends Element
     }
 
     /**
-     * @var string SID
+     * @var string|null SID
      */
-    public string $sid;
+    public ?string $sid = null;
 
     /**
      * @var int|null Campaign ID
      */
-    public ?int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @var int|null Sender ID
      */
-    public ?int $senderId;
+    public ?int $senderId = null;
 
     /**
-     * @var string Sendout type
+     * @var string|null Sendout type
      */
-    public string $sendoutType;
+    public ?string $sendoutType = null;
 
     /**
      * @var string Send status
@@ -389,44 +389,44 @@ class SendoutElement extends Element
     public string $sendStatus = self::STATUS_DRAFT;
 
     /**
-     * @var string Send from name
+     * @var string|null Send from name
      */
-    public string $fromName;
+    public ?string $fromName = null;
 
     /**
-     * @var string Send from email
+     * @var string|null Send from email
      */
-    public string $fromEmail;
+    public ?string $fromEmail = null;
 
     /**
-     * @var string Reply to email
+     * @var string|null Reply to email
      */
-    public string $replyToEmail;
+    public ?string $replyToEmail = null;
 
     /**
-     * @var string Email subject
+     * @var string|null Email subject
      */
-    public string $subject;
+    public ?string $subject = null;
 
     /**
      * @var string|null Notification email address
      */
-    public ?string $notificationEmailAddress;
+    public ?string $notificationEmailAddress = null;
 
     /**
-     * @var string Mailing list IDs
+     * @var string|null Mailing list IDs
      */
-    public string $mailingListIds;
+    public ?string $mailingListIds = null;
 
     /**
-     * @var string Excluded mailing list IDs
+     * @var string|null Excluded mailing list IDs
      */
-    public string $excludedMailingListIds;
+    public ?string $excludedMailingListIds = null;
 
     /**
-     * @var string Segment IDs
+     * @var string|null Segment IDs
      */
-    public string $segmentIds;
+    public ?string $segmentIds = null;
 
     /**
      * @var int Recipients
@@ -441,57 +441,57 @@ class SendoutElement extends Element
     /**
      * @var ScheduleModel|null Schedule
      */
-    public ?ScheduleModel $schedule;
+    public ?ScheduleModel $schedule = null;
 
     /**
-     * @var string HTML body
+     * @var string|null HTML body
      */
-    public string $htmlBody;
+    public ?string $htmlBody = null;
 
     /**
-     * @var string Plaintext body
+     * @var string|null Plaintext body
      */
-    public string $plaintextBody;
+    public ?string $plaintextBody = null;
 
     /**
      * @var DateTime|null Send date
      */
-    public ?DateTime $sendDate;
+    public ?DateTime $sendDate = null;
 
     /**
      * @var DateTime|null Last sent
      */
-    public ?DateTime $lastSent;
+    public ?DateTime $lastSent = null;
 
     /**
      * @var CampaignElement|null
      */
-    private ?CampaignElement $_campaign;
+    private ?CampaignElement $_campaign = null;
 
     /**
      * @var User|null
      */
-    private ?User $_sender;
+    private ?User $_sender = null;
 
     /**
      * @var MailingListElement[]|null
      */
-    private ?array $_mailingLists;
+    private ?array $_mailingLists = null;
 
     /**
      * @var MailingListElement[]|null
      */
-    private ?array $_excludedMailingLists;
+    private ?array $_excludedMailingLists = null;
 
     /**
      * @var SegmentElement[]|null
      */
-    private ?array $_segments;
+    private ?array $_segments = null;
 
     /**
      * @var array|null
      */
-    private ?array $_pendingRecipients;
+    private ?array $_pendingRecipients = null;
 
     /**
      * @inheritdoc

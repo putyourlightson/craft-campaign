@@ -71,9 +71,7 @@ class CampaignTypesController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $campaignTypeId = $request->getBodyParam('campaignTypeId');
+        $campaignTypeId = $this->request->getBodyParam('campaignTypeId');
 
         if ($campaignTypeId) {
             $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
@@ -87,15 +85,15 @@ class CampaignTypesController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $campaignType->siteId = $request->getBodyParam('siteId', $campaignType->siteId);
-        $campaignType->name = $request->getBodyParam('name', $campaignType->name);
-        $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
-        $campaignType->enableAnonymousTracking = $request->getBodyParam('enableAnonymousTracking', $campaignType->enableAnonymousTracking);
-        $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
-        $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
-        $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
-        $campaignType->queryStringParameters = $request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
-        $campaignType->testContactIds = $request->getBodyParam('testContactIds', $campaignType->testContactIds);
+        $campaignType->siteId = $this->request->getBodyParam('siteId', $campaignType->siteId);
+        $campaignType->name = $this->request->getBodyParam('name', $campaignType->name);
+        $campaignType->handle = $this->request->getBodyParam('handle', $campaignType->handle);
+        $campaignType->enableAnonymousTracking = $this->request->getBodyParam('enableAnonymousTracking', $campaignType->enableAnonymousTracking);
+        $campaignType->uriFormat = $this->request->getBodyParam('uriFormat', $campaignType->uriFormat);
+        $campaignType->htmlTemplate = $this->request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
+        $campaignType->plaintextTemplate = $this->request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
+        $campaignType->queryStringParameters = $this->request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
+        $campaignType->testContactIds = $this->request->getBodyParam('testContactIds', $campaignType->testContactIds);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
@@ -127,7 +125,7 @@ class CampaignTypesController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $campaignTypeId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $campaignTypeId = $this->request->getRequiredBodyParam('id');
 
         Campaign::$plugin->campaignTypes->deleteCampaignTypeById($campaignTypeId);
 

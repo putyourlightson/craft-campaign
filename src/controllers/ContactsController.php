@@ -217,7 +217,7 @@ class ContactsController extends Controller
         $contact = $this->_getPostedContact();
 
         if (!Craft::$app->getElements()->deleteElement($contact, $hardDelete)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
 
@@ -231,7 +231,7 @@ class ContactsController extends Controller
             return null;
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -275,8 +275,8 @@ class ContactsController extends Controller
     private function _getPostedContact(): ContactElement
     {
         // Accept either `elementId` or `contactId`
-        $contactId = Craft::$app->getRequest()->getBodyParam('elementId');
-        $contactId = $contactId ?? Craft::$app->getRequest()->getRequiredBodyParam('contactId');
+        $contactId = $this->request->getBodyParam('elementId');
+        $contactId = $contactId ?? $this->request->getRequiredBodyParam('contactId');
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
         if ($contact === null) {
@@ -292,7 +292,7 @@ class ContactsController extends Controller
 
         $contact = $this->_getPostedContact();
 
-        $mailingListId = Craft::$app->getRequest()->getRequiredBodyParam('mailingListId');
+        $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
@@ -309,7 +309,7 @@ class ContactsController extends Controller
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', $currentUserId);
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
                 'subscriptionStatus' => $subscriptionStatus,
@@ -332,7 +332,7 @@ class ContactsController extends Controller
         $contact->{$status} = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
 
@@ -346,7 +346,7 @@ class ContactsController extends Controller
             return null;
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -367,7 +367,7 @@ class ContactsController extends Controller
         $contact->{$status} = null;
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
 
@@ -381,7 +381,7 @@ class ContactsController extends Controller
             return null;
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 

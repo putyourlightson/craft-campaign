@@ -118,20 +118,19 @@ class ImportsController extends Controller
     public function actionImportFile(): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         $import = new ImportModel();
-        $import->assetId = $request->getRequiredBodyParam('assetId');
-        $import->fileName = $request->getRequiredBodyParam('fileName');
+        $import->assetId = $this->request->getRequiredBodyParam('assetId');
+        $import->fileName = $this->request->getRequiredBodyParam('fileName');
 
-        $mailingListIds = $request->getBodyParam('mailingListIds');
+        $mailingListIds = $this->request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
 
-        $import->forceSubscribe = (bool)$request->getBodyParam('forceSubscribe');
+        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 
         // Get email and custom field indexes
-        $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
+        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
+        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
 
         // Validate it
         if (!$import->validate()) {
@@ -169,10 +168,9 @@ class ImportsController extends Controller
     public function actionSelectUserGroup(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         // Get the user group ID
-        $userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         if ($userGroupId === null) {
             throw new BadRequestHttpException('User group is required.');
@@ -200,19 +198,18 @@ class ImportsController extends Controller
     public function actionImportUserGroup(): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         $import = new ImportModel();
-        $import->userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
-        $mailingListIds = $request->getBodyParam('mailingListIds');
+        $mailingListIds = $this->request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? '';
 
-        $import->forceSubscribe = (bool)$request->getBodyParam('forceSubscribe');
+        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 
         // Get core fields and custom field indexes
-        $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $request->getBodyParam('fieldIndexes', []);
+        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
+        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes', []);
 
         // Prepend `field_` to each custom field index
         foreach ($import->fieldIndexes as $key => $fieldIndex) {
@@ -255,7 +252,7 @@ class ImportsController extends Controller
      */
     public function actionDownloadFile(): ?Response
     {
-        $importId = Craft::$app->getRequest()->getRequiredParam('importId');
+        $importId = $this->request->getRequiredParam('importId');
 
         $import = Campaign::$plugin->imports->getImportById($importId);
 
@@ -283,7 +280,7 @@ class ImportsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $importId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $importId = $this->request->getRequiredBodyParam('id');
 
         Campaign::$plugin->imports->deleteImportById($importId);
 
@@ -299,7 +296,7 @@ class ImportsController extends Controller
         $variables['import'] = $import;
 
         // Set the current site to the site handle if set
-        $siteHandle = Craft::$app->getRequest()->getSegment(4);
+        $siteHandle = $this->request->getSegment(4);
 
         if ($siteHandle !== null) {
             $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);

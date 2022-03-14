@@ -202,9 +202,9 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->testMode = Craft::$app->getRequest()->getBodyParam('testMode', $settings->testMode);
-        $settings->apiKey = Craft::$app->getRequest()->getBodyParam('apiKey', $settings->apiKey);
-        $settings->mailgunWebhookSigningKey = Craft::$app->getRequest()->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
+        $settings->testMode = $this->request->getBodyParam('testMode', $settings->testMode);
+        $settings->apiKey = $this->request->getBodyParam('apiKey', $settings->apiKey);
+        $settings->mailgunWebhookSigningKey = $this->request->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
@@ -233,9 +233,9 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
-        $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.' . $settings->transportType);
+        $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
+        $settings->transportType = $this->request->getBodyParam('transportType', $settings->transportType);
+        $settings->transportSettings = $this->request->getBodyParam('transportTypes.' . $settings->transportType);
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -274,7 +274,7 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->emailFieldLabel = Craft::$app->getRequest()->getBodyParam('emailFieldLabel', $settings->emailFieldLabel);
+        $settings->emailFieldLabel = $this->request->getBodyParam('emailFieldLabel', $settings->emailFieldLabel);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
@@ -309,9 +309,9 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('maxBatchSize', $settings->maxBatchSize);
-        $settings->memoryLimit = Craft::$app->getRequest()->getBodyParam('memoryLimit', $settings->memoryLimit);
-        $settings->timeLimit = Craft::$app->getRequest()->getBodyParam('timeLimit', $settings->timeLimit);
+        $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize);
+        $settings->memoryLimit = $this->request->getBodyParam('memoryLimit', $settings->memoryLimit);
+        $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
@@ -340,8 +340,8 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->geoIp = Craft::$app->getRequest()->getBodyParam('geoIp', $settings->geoIp);
-        $settings->ipstackApiKey = Craft::$app->getRequest()->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
+        $settings->geoIp = $this->request->getBodyParam('geoIp', $settings->geoIp);
+        $settings->ipstackApiKey = $this->request->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
@@ -370,10 +370,10 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->reCaptcha = Craft::$app->getRequest()->getBodyParam('reCaptcha', $settings->reCaptcha);
-        $settings->reCaptchaSiteKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSiteKey', $settings->reCaptchaSiteKey);
-        $settings->reCaptchaSecretKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSecretKey', $settings->reCaptchaSecretKey);
-        $settings->reCaptchaErrorMessage = Craft::$app->getRequest()->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
+        $settings->reCaptcha = $this->request->getBodyParam('reCaptcha', $settings->reCaptcha);
+        $settings->reCaptchaSiteKey = $this->request->getBodyParam('reCaptchaSiteKey', $settings->reCaptchaSiteKey);
+        $settings->reCaptchaSecretKey = $this->request->getBodyParam('reCaptchaSecretKey', $settings->reCaptchaSecretKey);
+        $settings->reCaptchaErrorMessage = $this->request->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
 
         // Save it
         if (!Campaign::$plugin->settings->saveSettings($settings)) {
@@ -402,9 +402,9 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         // Set the simple stuff
-        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
-        $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.' . $settings->transportType);
+        $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
+        $settings->transportType = $this->request->getBodyParam('transportType', $settings->transportType);
+        $settings->transportSettings = $this->request->getBodyParam('transportTypes.' . $settings->transportType);
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */

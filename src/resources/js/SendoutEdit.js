@@ -66,7 +66,7 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                 sendoutId: $('input[name=sendoutId]').val()
             };
 
-            Craft.postActionRequest('campaign/sendouts/send-sendout', data, function(response, textStatus) {
+            Craft.postActionRequest('campaign/sendouts/send', data, function(response, textStatus) {
                 $('.preflight .spinner').addClass('hidden');
 
                 if (textStatus === 'success') {

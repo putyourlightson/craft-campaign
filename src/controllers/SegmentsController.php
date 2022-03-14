@@ -117,9 +117,7 @@ class SegmentsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $segmentId = $request->getBodyParam('segmentId');
+        $segmentId = $this->request->getBodyParam('segmentId');
 
         if ($segmentId) {
             $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
@@ -133,7 +131,7 @@ class SegmentsController extends Controller
         }
 
         // If this segment should be duplicated then swap it for a duplicate
-        if ($request->getBodyParam('duplicate')) {
+        if ($this->request->getBodyParam('duplicate')) {
             try {
                 /** @var SegmentElement $segment */
                 $segment = Craft::$app->getElements()->duplicateElement($segment);
@@ -143,14 +141,14 @@ class SegmentsController extends Controller
             }
         }
 
-        $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
-        $segment->segmentType = $request->getBodyParam('segmentType', $segment->segmentType);
-        $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
-        $segment->title = $request->getBodyParam('title', $segment->title);
-        $segment->slug = $request->getBodyParam('slug', $segment->slug);
+        $segment->siteId = $this->request->getBodyParam('siteId', $segment->siteId);
+        $segment->segmentType = $this->request->getBodyParam('segmentType', $segment->segmentType);
+        $segment->enabled = (bool)$this->request->getBodyParam('enabled', $segment->enabled);
+        $segment->title = $this->request->getBodyParam('title', $segment->title);
+        $segment->slug = $this->request->getBodyParam('slug', $segment->slug);
 
         // Get the conditions
-        $segment->conditions = Craft::$app->getRequest()->getBodyParam('conditions', $segment->conditions);
+        $segment->conditions = $this->request->getBodyParam('conditions', $segment->conditions);
 
         if (is_array($segment->conditions)) {
             /** @var array $andCondition */
@@ -164,7 +162,7 @@ class SegmentsController extends Controller
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($segment)) {
-            if ($request->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson([
                     'errors' => $segment->getErrors(),
                 ]);
@@ -180,14 +178,14 @@ class SegmentsController extends Controller
             return null;
         }
 
-        if ($request->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             $return = [];
 
             $return['success'] = true;
             $return['id'] = $segment->id;
             $return['title'] = $segment->title;
 
-            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
+            if (!$this->request->getIsConsoleRequest() && $this->request->getIsCpRequest()) {
                 $return['cpEditUrl'] = $segment->getCpEditUrl();
             }
 
@@ -209,7 +207,7 @@ class SegmentsController extends Controller
     {
         $this->requirePostRequest();
 
-        $segmentId = Craft::$app->getRequest()->getRequiredBodyParam('segmentId');
+        $segmentId = $this->request->getRequiredBodyParam('segmentId');
         $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
 
         if ($segment === null) {
@@ -217,7 +215,7 @@ class SegmentsController extends Controller
         }
 
         if (!Craft::$app->getElements()->deleteElement($segment)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
+            if ($this->request->getAcceptsJson()) {
                 return $this->asJson(['success' => false]);
             }
 
@@ -231,7 +229,7 @@ class SegmentsController extends Controller
             return null;
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
