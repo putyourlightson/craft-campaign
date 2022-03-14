@@ -4,7 +4,8 @@
 ### Added
 - Added compatibility with Craft 4.
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
-- Added revisions to campaign types ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
+- Added drafts and revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
+- Added a duplicate action to campaigns ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 
 ### Removed

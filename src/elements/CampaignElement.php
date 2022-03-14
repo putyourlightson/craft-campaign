@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\actions\View as ViewAction;
@@ -257,6 +258,11 @@ class CampaignElement extends Element
         $actions[] = $elementsService->createAction([
             'type' => ViewAction::class,
             'label' => Craft::t('campaign', 'View campaign'),
+        ]);
+
+        // Duplicate
+        $actions[] = $elementsService->createAction([
+            'type' => Duplicate::class,
         ]);
 
         // Delete
