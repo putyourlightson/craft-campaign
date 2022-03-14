@@ -22,12 +22,4 @@ class CampaignReportFieldLayoutTab extends BaseReportFieldLayoutTab
             new CampaignReportField(),
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function showInForm(?ElementInterface $element = null): bool
-    {
-        return $element->getStatus() == CampaignElement::STATUS_SENT;
-    }
 }

@@ -715,12 +715,15 @@ class CampaignElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
-        $fieldLayout->setTabs(array_merge(
-            $fieldLayout->getTabs(),
-            [
-                new CampaignReportFieldLayoutTab(),
-            ],
-        ));
+
+        if ($this->getStatus() == CampaignElement::STATUS_SENT) {
+            $fieldLayout->setTabs(array_merge(
+                $fieldLayout->getTabs(),
+                [
+                    new CampaignReportFieldLayoutTab(),
+                ],
+            ));
+        }
 
         return $fieldLayout;
     }
@@ -751,31 +754,35 @@ class CampaignElement extends Element
      */
     protected function metaFieldsHtml(bool $static): string
     {
-        $testEmailFieldHtml = Cp::elementSelectFieldHtml([
-            'label' => Craft::t('campaign', 'Test Email'),
-            'fieldClass' => 'test-email',
+        return $this->slugFieldHtml($static) . parent::metaFieldsHtml($static);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function statusFieldHtml(): string
+    {
+        $testEmailField = Cp::elementSelectFieldHtml([
             'id' => 'testContacts',
             'name' => 'testContacts',
             'elementType' => ContactElement::class,
             'selectionLabel' => Craft::t('campaign', 'Add a contact'),
-            'criteria' => [
-                'status' => ContactElement::STATUS_ACTIVE,
-            ],
+            'criteria' => ['status' => ContactElement::STATUS_ACTIVE],
             'elements' => $this->getCampaignType()->getTestContacts(),
         ]);
-        $testEmailFieldHtml .= Html::a(
-            Craft::t('campaign', 'Send Test'),
-            '',
-            [
+
+        $sendTestButton = Cp::fieldHtml(
+            Html::button(Craft::t('campaign', 'Send Test'), [
                 'class' => 'send-test btn',
-            ]
+            ])
         );
 
-        return implode('', [
-            $this->slugFieldHtml($static),
-            $testEmailFieldHtml,
-            parent::metaFieldsHtml($static),
-        ]);
+        $testEmailFieldHtml = Html::beginTag('fieldset') .
+            Html::tag('legend', Craft::t('campaign', 'Test Email'), ['class' => 'h6']) .
+            Html::tag('div', $testEmailField . $sendTestButton, ['class' => 'meta test-email']) .
+            Html::endTag('fieldset');
+
+        return parent::statusFieldHtml() . $testEmailFieldHtml;
     }
 
     /**

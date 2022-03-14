@@ -62,11 +62,6 @@ table th.thin, table td.thin {
     animation: 2s fadeIn 6s forwards;
 }
 
-.send-test {
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
 .preflight {
     max-width: 920px;
     max-height: 490px;
@@ -277,12 +272,16 @@ label.subscriptionStatus.bounced {
     margin-left: -7px;
 }
 
-.meta .field.test-email {
-    display: block;
+.details .meta.test-email > .field {
+    border: none !important;
 }
 
-.meta .field.test-email .heading label {
-    font-weight: bold;
+.details .meta.test-email > .field:first-of-type {
+    padding-top: 10px !important;
+}
+
+.details .meta.test-email > .field:last-of-type {
+    padding-bottom: 10px !important;
 }
 
 .device {

@@ -24,7 +24,6 @@ abstract class BaseReportFieldLayoutTab extends FieldLayoutTab
         $this->name = Craft::t('campaign', 'Report');
     }
 
-
     /**
      * @inheritdoc
      */
