@@ -113,6 +113,6 @@ class ExportsController extends Controller
         // Log it
         Campaign::$plugin->log('File exported by "{username}".');
 
-        return Craft::$app->getResponse()->sendFile($export->filePath);
+        return $this->response->sendFile($export->filePath);
     }
 }

@@ -39,7 +39,7 @@ class TrackerController extends BaseMessageController
         // Return tracking image
         $filePath = Craft::getAlias('@putyourlightson/campaign/resources/images/t.gif');
 
-        return Craft::$app->getResponse()->sendFile($filePath);
+        return $this->response->sendFile($filePath);
     }
 
     /**

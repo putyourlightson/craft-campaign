@@ -574,7 +574,7 @@ class Campaign extends Plugin
         Event::on(LivePreviewController::class, Controller::EVENT_BEFORE_ACTION,
             function(ActionEvent $event) {
                 if ($event->action->id === 'preview') {
-                    $origins = Craft::$app->request->getOrigin();
+                    $origins = Craft::$app->getRequest()->getOrigin();
 
                     if (empty($origins)) {
                         return;

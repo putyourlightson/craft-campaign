@@ -269,7 +269,7 @@ class ImportsController extends Controller
             throw new BadRequestHttpException('Imported file not found.');
         }
 
-        return Craft::$app->getResponse()->sendStreamAsFile($handle, $import->fileName);
+        return $this->response->sendStreamAsFile($handle, $import->fileName);
     }
 
     /**
