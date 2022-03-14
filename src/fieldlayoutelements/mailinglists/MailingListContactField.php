@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\fieldlayoutelements\mailinglists;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
-use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 

@@ -494,7 +494,7 @@ class CampaignElement extends Element
                     'type' => self::lowerDisplayName(),
                 ]),
                 'url' => $this->getUrl(),
-            ]
+            ],
         ];
     }
 

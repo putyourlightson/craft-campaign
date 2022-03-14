@@ -5,9 +5,6 @@
 
 namespace putyourlightson\campaign\fieldlayoutelements\reports;
 
-use craft\base\ElementInterface;
-use putyourlightson\campaign\elements\CampaignElement;
-
 /**
  * @since 2.0.0
  */

@@ -12,7 +12,6 @@ use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\queue\Queue;
-use craft\web\View;
 use DateTime;
 use DOMDocument;
 use DOMElement;

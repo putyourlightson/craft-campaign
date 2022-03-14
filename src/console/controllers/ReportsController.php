@@ -6,8 +6,6 @@
 namespace putyourlightson\campaign\console\controllers;
 
 use Craft;
-use craft\queue\Queue;
-use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use yii\console\Controller;
 use yii\console\ExitCode;

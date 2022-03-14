@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use craft\helpers\Db;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
