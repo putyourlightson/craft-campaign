@@ -247,7 +247,7 @@ class Campaign extends Plugin
      */
     public function getIsPro(): bool
     {
-        return true;//$this->is(self::EDITION_PRO);
+        return $this->is(self::EDITION_PRO);
     }
 
     /**
