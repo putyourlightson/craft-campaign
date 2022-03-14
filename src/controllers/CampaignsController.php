@@ -92,6 +92,9 @@ class CampaignsController extends Controller
         $this->view->registerAssetBundle(CampaignEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
+        // Set the selected subnav item by adding it to the global variables
+        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'campaigns');
+
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $elementId,

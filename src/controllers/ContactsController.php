@@ -75,6 +75,9 @@ class ContactsController extends Controller
         $this->view->registerAssetBundle(ContactEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
+        // Set the selected subnav item by adding it to the global variables
+        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'contacts');
+
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $elementId,

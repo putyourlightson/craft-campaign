@@ -94,6 +94,9 @@ class MailingListsController extends Controller
         $this->view->registerAssetBundle(ContactEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
+        // Set the selected subnav item by adding it to the global variables
+        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'mailinglists');
+
         return Craft::$app->runAction('elements/edit', [
             'elementId' => $elementId,
         ]);
