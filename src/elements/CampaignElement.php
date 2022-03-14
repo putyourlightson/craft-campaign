@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\actions\View as ViewAction;
+use craft\elements\Entry;
 use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Html;
@@ -815,6 +816,36 @@ class CampaignElement extends Element
         }
 
         parent::afterSave($isNew);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterPropagate(bool $isNew): void
+    {
+        parent::afterPropagate($isNew);
+
+        // Save a new revision?
+        if ($this->_shouldSaveRevision()) {
+            Craft::$app->getRevisions()->createRevision($this, $this->revisionCreatorId, $this->revisionNotes);
+        }
+    }
+
+    /**
+     * Returns whether the entry should be saving revisions on save.
+     *
+     * @see Entry::_shouldSaveRevision()
+     * @return bool
+     */
+    private function _shouldSaveRevision(): bool
+    {
+        return (
+            $this->id &&
+            !$this->propagating &&
+            !$this->resaving &&
+            !$this->getIsDraft() &&
+            !$this->getIsRevision()
+        );
     }
 
     /**
