@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\fieldlayoutelements\contacts;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
 /**
@@ -38,6 +39,7 @@ class ContactMailingListField extends BaseNativeField
             'campaign/contacts/_includes/mailinglists',
             [
                 'contact' => $element,
+                'mailingLists' => Campaign::$plugin->mailingLists->getAllMailingLists(),
             ],
         );
     }

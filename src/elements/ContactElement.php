@@ -12,6 +12,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\Cp;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
@@ -45,6 +46,7 @@ use yii\i18n\Formatter;
  * @property-read int $subscribedCount
  * @property-read User|null $user
  * @property-read array[] $crumbs
+ * @property-read null|string $postEditUrl
  * @property-read MailingListElement[] $mailingLists
  */
 class ContactElement extends Element
@@ -497,7 +499,7 @@ class ContactElement extends Element
             $metadata[Craft::t('campaign', 'Synced')] = Cp::elementHtml($syncedUser);
         }
 
-        $metadata[Craft::t('campaign', 'CID')] = '<code>' . $this->cid . '</code>';
+        $metadata[Craft::t('campaign', 'CID')] = Html::tag('code', $this->cid);
 
         if ($this->lastActivity) {
             $metadata[Craft::t('campaign', 'Last activity')] = $formatter->asDatetime($this->lastActivity, Formatter::FORMAT_WIDTH_SHORT);

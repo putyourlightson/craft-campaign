@@ -21,7 +21,6 @@ use putyourlightson\campaign\records\MailingListRecord;
 use yii\base\InvalidConfigException;
 
 /**
- *
  * @property-read int $unsubscribedCount
  * @property-read int $complainedCount
  * @property-read ContactElement[] $bouncedContacts
@@ -242,19 +241,22 @@ class MailingListElement extends Element
     /**
      * @var int|null Mailing list type ID
      */
-    public ?int $mailingListTypeId;
+    public ?int $mailingListTypeId = null;
 
     /**
      * @var int|null Synced user group ID
      */
-    public ?int $syncedUserGroupId;
+    public ?int $syncedUserGroupId = null;
 
     /**
      * @inheritdoc
      */
     protected function defineRules(): array
     {
-        return [['mailingListTypeId'], 'integer'];
+        $rules = parent::defineRules();
+        $rules[] = [['mailingListTypeId'], 'integer'];
+
+        return $rules;
     }
 
     /**
