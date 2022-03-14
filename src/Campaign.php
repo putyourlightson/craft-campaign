@@ -701,9 +701,26 @@ class Campaign extends Plugin
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
+                $campaignTypePermissions = [];
+                foreach ($this->campaignTypes->getAllCampaignTypes() as $campaignType) {
+                    $campaignTypePermissions['campaign:campaigns:' . $campaignType->uid] = [
+                        'label' => $campaignType->name,
+                    ];
+                }
+
+                $mailingListTypePermissions = [];
+                foreach ($this->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
+                    $mailingListTypePermissions['campaign:mailingLists:' . $mailingListType->uid] = [
+                        'label' => $mailingListType->name,
+                    ];
+                }
+
                 $permissions = [
                     'campaign:reports' => ['label' => Craft::t('campaign', 'Manage reports')],
-                    'campaign:campaigns' => ['label' => Craft::t('campaign', 'Manage campaigns')],
+                    'campaign:campaigns' => [
+                        'label' => Craft::t('campaign', 'Manage campaigns'),
+                        'nested' => $campaignTypePermissions,
+                    ],
                     'campaign:contacts' => [
                         'label' => Craft::t('campaign', 'Manage contacts'),
                         'nested' => [
@@ -711,7 +728,10 @@ class Campaign extends Plugin
                             'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
                         ],
                     ],
-                    'campaign:mailingLists' => ['label' => Craft::t('campaign', 'Manage mailing lists')],
+                    'campaign:mailingLists' => [
+                        'label' => Craft::t('campaign', 'Manage mailing lists'),
+                        'nested' => $mailingListTypePermissions,
+                    ],
                 ];
 
                 if ($this->getIsPro()) {

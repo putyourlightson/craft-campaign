@@ -306,7 +306,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $user->can('campaign:mailingLists');
+        return $this->_canManage($user);
     }
 
     /**
@@ -319,7 +319,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $user->can('campaign:mailingLists');
+        return $this->_canManage($user);
     }
 
     /**
@@ -341,7 +341,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $user->can('campaign:mailingLists');
+        return $this->_canManage($user);
     }
 
     /**
@@ -611,5 +611,13 @@ class MailingListElement extends Element
             ->column();
 
         return Campaign::$plugin->contacts->getContactsByIds($contactIds);
+    }
+
+    /**
+     * Returns whether the mailing list can be managed by the user.
+     */
+    private function _canManage(User $user): bool
+    {
+        return $user->can('campaign:mailingLists:' . $this->getMailingListType()->uid);
     }
 }

@@ -527,7 +527,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $user->can('campaign:campaigns');
+        return $this->_canManage($user);
     }
 
     /**
@@ -540,7 +540,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $user->can('campaign:campaigns');
+        return $this->_canManage($user);
     }
 
     /**
@@ -562,7 +562,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $user->can('campaign:campaigns');
+        return $this->_canManage($user);
     }
 
     /**
@@ -916,5 +916,13 @@ class CampaignElement extends Element
         }
 
         return $this->_language;
+    }
+
+    /**
+     * Returns whether the campaign can be managed by the user.
+     */
+    private function _canManage(User $user): bool
+    {
+        return $user->can('campaign:campaigns:' . $this->getCampaignType()->uid);
     }
 }
