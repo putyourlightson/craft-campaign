@@ -12,8 +12,8 @@
 - Added the `campaign/reports/anonimize` console controllers that anonymizes all previously collected personal data.
 
 ### Removed
-- Removed the `subscribeVerificationSuccessTemplate` setting from the mailing list type settings page. Use the `subscribeSuccessTemplate` setting instead.
 - Removed support for reCAPTCHA version 2, leaving support for version 3 only.
+- Removed the `subscribeVerificationSuccessTemplate` setting from the mailing list type settings page. Use the `subscribeSuccessTemplate` setting instead.
 
 ## 1.23.0 - 2022-02-28
 ### Added
