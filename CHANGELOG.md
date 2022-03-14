@@ -6,10 +6,10 @@
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
 - Added drafts and revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
 - Added a "duplicate" action to campaigns ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
-- Add campaign and mailing list type user group permissions.
+- Added campaign and mailing list type user group permissions.
 - Added the ability to view disabled campaigns using a token URL.
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
-- Added the `campaign/reports/anonimize` console controllers that anonymizes all previously collected personal data.
+- Added the `campaign/reports/anonymize` console controllers that anonymizes all previously collected personal data.
 
 ### Removed
 - Removed support for reCAPTCHA version 2, leaving support for version 3 only.
