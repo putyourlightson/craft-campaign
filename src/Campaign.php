@@ -370,7 +370,7 @@ class Campaign extends Plugin
             'campaign/contacts/sync/<siteHandle:{handle}>' => 'campaign/sync/index',
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>' => ['template' => 'campaign/mailinglists/index'],
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/new' => 'campaign/mailing-lists/create',
-            'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+>' => 'elements/edit',
+            'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'campaign/mailing-lists/edit',
             'campaign/segments/<segmentType:{handle}>' => ['template' => 'campaign/segments/index'],
             'campaign/segments/<segmentType:{handle}>/new' => 'campaign/segments/edit-segment',
             'campaign/segments/<segmentType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/segments/edit-segment',

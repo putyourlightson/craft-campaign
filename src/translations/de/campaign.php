@@ -632,6 +632,7 @@ return [
     'Unsubscribe link clicked in a test email without a sendout.' => 'Abmelde-Link in einer Test-Mail ohne Sendung geklickt.',
     'Unsubscribed' => 'Abgemeldet',
     'Untitled campaign' => '',
+    'Untitled mailing list' => '',
     'Updated' => 'Aktualisiert',
     'URL' => 'URL',
     'User group not found.' => 'Benutzergruppe nicht gefunden.',

@@ -356,41 +356,6 @@ class CampaignElement extends Element
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function defineRules(): array
-    {
-        $rules = parent::defineRules();
-        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'number', 'integerOnly' => true];
-        $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
-
-        return $rules;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tableAttributeHtml(string $attribute): string
-    {
-        return match ($attribute) {
-            'campaignType' => $this->getCampaignType()->name,
-            'clickThroughRate' => $this->getClickThroughRate() . '%',
-            default => parent::tableAttributeHtml($attribute),
-        };
-    }
-
-    /**
-     * @inheritdoc
-     * @since 2.0.0
-     */
-    public function getCacheTags(): array
-    {
-        return [
-            "campaignType:$this->campaignTypeId",
-        ];
-    }
-
-    /**
      * @var int|null Campaign type ID
      */
     public ?int $campaignTypeId = null;
@@ -454,6 +419,41 @@ class CampaignElement extends Element
      * @var null|string
      */
     private ?string $_language = null;
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'number', 'integerOnly' => true];
+        $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
+
+        return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tableAttributeHtml(string $attribute): string
+    {
+        return match ($attribute) {
+            'campaignType' => $this->getCampaignType()->name,
+            'clickThroughRate' => $this->getClickThroughRate() . '%',
+            default => parent::tableAttributeHtml($attribute),
+        };
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCacheTags(): array
+    {
+        return [
+            "campaignType:$this->campaignTypeId",
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -631,6 +631,14 @@ class CampaignElement extends Element
     }
 
     /**
+     * Returns the campaign's report URL
+     */
+    public function getReportUrl(): string
+    {
+        return UrlHelper::cpUrl('campaign/reports/campaigns/' . $this->id);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getStatus(): ?string
@@ -675,14 +683,6 @@ class CampaignElement extends Element
         }
 
         return UrlHelper::cpUrl($path);
-    }
-
-    /**
-     * Returns the campaign's report URL
-     */
-    public function getReportUrl(): string
-    {
-        return UrlHelper::cpUrl('campaign/reports/campaigns/' . $this->id);
     }
 
     /**

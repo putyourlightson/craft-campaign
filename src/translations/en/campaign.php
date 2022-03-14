@@ -630,6 +630,7 @@ return [
     'Unsubscribe' => '',
     'Unsubscribed' => '',
     'Untitled campaign' => '',
+    'Untitled mailing list' => '',
     'Updated' => '',
     'URL' => '',
     'User group not found.' => '',

@@ -12,6 +12,7 @@ use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\assets\ContactEditAsset;
+use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use yii\web\NotFoundHttpException;
@@ -72,6 +73,7 @@ class ContactsController extends Controller
     public function actionEdit(int $elementId = null): Response
     {
         $this->view->registerAssetBundle(ContactEditAsset::class);
+        $this->view->registerAssetBundle(ReportsAsset::class);
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
@@ -269,7 +271,9 @@ class ContactsController extends Controller
 
     private function _getPostedContact(): ContactElement
     {
-        $contactId = Craft::$app->getRequest()->getRequiredBodyParam('elementId');
+        // Accept either `elementId` or `contactId`
+        $contactId = Craft::$app->getRequest()->getBodyParam('elementId');
+        $contactId = $contactId ?? Craft::$app->getRequest()->getRequiredBodyParam('contactId');
         $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
         if ($contact === null) {

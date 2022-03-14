@@ -10,11 +10,14 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
+use putyourlightson\campaign\fieldlayoutelements\mailinglists\MailingListContactFieldLayoutTab;
+use putyourlightson\campaign\fieldlayoutelements\reports\MailingListReportFieldLayoutTab;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\MailingListRecord;
@@ -32,6 +35,9 @@ use yii\base\InvalidConfigException;
  * @property-read int $subscribedCount
  * @property-read MailingListTypeModel $mailingListType
  * @property-read ContactElement[] $complainedContacts
+ * @property-read string[] $cacheTags
+ * @property-read null|string $postEditUrl
+ * @property-read array[] $crumbs
  * @property-read ContactElement[] $subscribedContacts
  */
 class MailingListElement extends Element
@@ -254,9 +260,20 @@ class MailingListElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['mailingListTypeId'], 'integer'];
+        $rules[] = [['mailingListTypeId'], 'number', 'integerOnly' => true];
 
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCacheTags(): array
+    {
+        return [
+            "mailingListType:$this->mailingListTypeId",
+        ];
     }
 
     /**
@@ -265,6 +282,75 @@ class MailingListElement extends Element
     public function getSupportedSites(): array
     {
         return [$this->getMailingListType()->siteId];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function uiLabel(): ?string
+    {
+        if (!isset($this->title) || trim($this->title) === '') {
+            return Craft::t('campaign', 'Untitled mailing list');
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:mailingLists');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:mailingLists');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:mailingLists');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
     }
 
     /**
@@ -371,18 +457,77 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
-    public function getFieldLayout(): ?FieldLayout
+    protected function cpEditUrl(): ?string
     {
-        return parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
+        $mailingListType = $this->getMailingListType();
+
+        $path = sprintf('campaign/mailinglists/%s/%s', $mailingListType->handle, $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl(): ?string
+    public function getFieldLayout(): ?FieldLayout
     {
-        return UrlHelper::cpUrl('campaign/mailinglists/' . $this->getMailingListType()->handle . '/' . $this->id);
+        $fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
+
+        $fieldLayout->setTabs(array_merge(
+            $fieldLayout->getTabs(),
+            [
+                new MailingListContactFieldLayoutTab(),
+                new MailingListReportFieldLayoutTab(),
+            ],
+        ));
+
+        return $fieldLayout;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function metaFieldsHtml(bool $static): string
+    {
+        return $this->slugFieldHtml($static) . parent::metaFieldsHtml($static);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        $mailingListType = $this->getMailingListType();
+
+        return UrlHelper::cpUrl("campaign/mailinglists/$mailingListType->handle");
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCrumbs(): array
+    {
+        $mailingListType = $this->getMailingListType();
+
+        return [
+            [
+                'label' => Craft::t('campaign', 'Mailing Lists'),
+                'url' => UrlHelper::url('campaign/mailinglists'),
+            ],
+            [
+                'label' => Craft::t('campaign', $mailingListType->name),
+                'url' => UrlHelper::url('campaign/mailinglists/' . $mailingListType->handle),
+            ],
+        ];
     }
 
     /**

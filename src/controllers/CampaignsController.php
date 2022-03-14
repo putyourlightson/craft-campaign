@@ -14,6 +14,7 @@ use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\assets\CampaignEditAsset;
+use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -89,6 +90,7 @@ class CampaignsController extends Controller
     public function actionEdit(int $elementId = null): Response
     {
         $this->view->registerAssetBundle(CampaignEditAsset::class);
+        $this->view->registerAssetBundle(ReportsAsset::class);
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response = Craft::$app->runAction('elements/edit', [
