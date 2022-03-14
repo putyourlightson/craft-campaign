@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
@@ -491,6 +492,10 @@ class ContactElement extends Element
     {
         $formatter = Craft::$app->getFormatter();
         $metadata = parent::metadata();
+
+        if ($syncedUser = $this->getUser()) {
+            $metadata[Craft::t('campaign', 'Synced')] = Cp::elementHtml($syncedUser);
+        }
 
         $metadata[Craft::t('campaign', 'CID')] = '<code>' . $this->cid . '</code>';
 
