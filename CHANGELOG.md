@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.23.1 - Unreleased
+### Changed
+- Mailing list slugs now must be unique and are updated automatically when a mailing list is duplicated.
+
 ## 1.23.0 - 2022-02-28
 ### Added
 - Added a German translation of the plugin ([#296](https://github.com/putyourlightson/craft-campaign/issues/296) ❤️@andreasbecker).

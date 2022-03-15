@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\elements;
 
 use craft\elements\actions\Restore;
+use craft\helpers\ElementHelper;
 use craft\models\UserGroup;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
@@ -290,6 +291,14 @@ class MailingListElement extends Element
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getUriFormat()
+    {
+        return '{slug}';
+    }
+
+    /**
      * Returns the number of subscribed contacts
      *
      * @return int
@@ -479,6 +488,18 @@ class MailingListElement extends Element
 
     // Events
     // -------------------------------------------------------------------------
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave(bool $isNew): bool
+    {
+        // Ensure the slug is unique, even though mailing lists don't have URIs,
+        // which prevents us from depending on the SlugValidator class.
+        ElementHelper::setUniqueUri($this);
+
+        return parent::beforeSave($isNew);
+    }
 
     /**
      * @inheritdoc
