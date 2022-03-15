@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
@@ -171,6 +172,11 @@ class SegmentElement extends Element
         $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit segment'),
+        ]);
+
+        // Duplicate
+        $actions[] = $elementsService->createAction([
+            'type' => Duplicate::class,
         ]);
 
         // Delete
