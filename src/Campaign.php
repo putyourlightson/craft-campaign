@@ -247,7 +247,7 @@ class Campaign extends Plugin
      */
     public function getIsPro(): bool
     {
-        return $this->is(self::EDITION_PRO);
+        return true;//$this->is(self::EDITION_PRO);
     }
 
     /**
@@ -372,11 +372,11 @@ class Campaign extends Plugin
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/new' => 'campaign/mailing-lists/create',
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<mailingListId:\d+><slug:(?:-[^\/]*)?>' => 'campaign/mailing-lists/edit',
             'campaign/segments/<segmentType:{handle}>' => ['template' => 'campaign/segments/index'],
-            'campaign/segments/<segmentType:{handle}>/new' => 'campaign/segments/edit',
-            'campaign/segments/<segmentType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/segments/edit',
-            'campaign/segments/<segmentType:{handle}>/<segmentId:\d+>' => 'campaign/segments/edit',
+            'campaign/segments/<segmentType:{handle}>/new' => 'campaign/segments/create',
+            'campaign/segments/<segmentType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/segments/create',
+            'campaign/segments/<segmentType:{handle}>/<segmentId:\d+><slug:(?:-[^\/]*)?>' => 'campaign/segments/edit',
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
-            'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/edit',
+            'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/create',
             'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/edit',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit',

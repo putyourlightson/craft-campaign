@@ -6,19 +6,12 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\base\Element;
 use craft\controllers\CategoriesController;
-use craft\helpers\Cp;
-use craft\helpers\ElementHelper;
 use craft\web\Controller;
-use putyourlightson\campaign\assets\ContactEditAsset;
-use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class MailingListsController extends Controller
 {
@@ -47,37 +40,16 @@ class MailingListsController extends Controller
             throw new BadRequestHttpException("Invalid mailing list type handle: $mailingListType");
         }
 
-        $site = Cp::requestedSite();
+        /**
+         * The create action expects attributes to be passed in as body params.
+         * @see ElementsController::actionCreate()
+         */
+        $this->request->setBodyParams([
+            'elementType' => MailingListElement::class,
+            'mailingListTypeId' => $mailingListType->id,
+        ]);
 
-        if (!$site) {
-            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
-        }
-
-        $user = Craft::$app->getUser()->getIdentity();
-
-        $mailingList = Craft::createObject(MailingListElement::class);
-        $mailingList->siteId = $site->id;
-        $mailingList->mailingListTypeId = $mailingListType->id;
-
-        if (!$mailingList->canSave($user)) {
-            throw new ForbiddenHttpException('User not authorized to save this mailing list.');
-        }
-
-        $mailingList->title = $this->request->getQueryParam('title');
-        $mailingList->slug = $this->request->getQueryParam('slug');
-        if ($mailingList->title && !$mailingList->slug) {
-            $mailingList->slug = ElementHelper::generateSlug($mailingList->title, null, $site->language);
-        }
-        if (!$mailingList->slug) {
-            $mailingList->slug = ElementHelper::tempSlug();
-        }
-
-        $mailingList->setScenario(Element::SCENARIO_ESSENTIALS);
-        if (!Craft::$app->getDrafts()->saveElementAsDraft($mailingList, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save mailing list as a draft: %s', implode(', ', $mailingList->getErrorSummary(true))));
-        }
-
-        return $this->redirect($mailingList->getCpEditUrl());
+        return Craft::$app->runAction('elements/create');
     }
 
     /**
@@ -85,9 +57,6 @@ class MailingListsController extends Controller
      */
     public function actionEdit(int $mailingListId = null): Response
     {
-        $this->view->registerAssetBundle(ContactEditAsset::class);
-        $this->view->registerAssetBundle(ReportsAsset::class);
-
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'mailinglists');
 

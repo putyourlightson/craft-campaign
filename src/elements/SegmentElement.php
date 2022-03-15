@@ -11,13 +11,12 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
-use craft\models\FieldLayoutTab;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
+use putyourlightson\campaign\fieldlayoutelements\segments\SegmentFieldLayoutTab;
 use putyourlightson\campaign\records\SegmentRecord;
 
 /**
@@ -26,6 +25,8 @@ use putyourlightson\campaign\records\SegmentRecord;
  * @property-read string $segmentTypeLabel
  * @property-read int $conditionCount
  * @property-read ContactElement[] $contacts
+ * @property-read null|string $postEditUrl
+ * @property-read array[] $crumbs
  * @property-read int[] $contactIds
  */
 class SegmentElement extends Element
@@ -293,9 +294,53 @@ class SegmentElement extends Element
      */
     protected function defineRules(): array
     {
+        $rules = parent::defineRules();
+        $rules[] = [['segmentType'], 'required'];
+        $rules[] = [['segmentType'], 'string'];
+
+        return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl("campaign/segments");
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCrumbs(): array
+    {
         return [
-            [['segmentType'], 'required'],
+            [
+                'label' => Craft::t('campaign', 'Segments'),
+                'url' => UrlHelper::url('campaign/segments'),
+            ],
+            [
+                'label' => $this->getSegmentTypeLabel(),
+                'url' => UrlHelper::url('campaign/segments/' . $this->segmentType),
+            ],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function cpEditUrl(): ?string
+    {
+        $path = sprintf('campaign/segments/%s/%s', $this->segmentType, $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
@@ -304,17 +349,25 @@ class SegmentElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = new FieldLayout();
-        $fieldLayoutTab = new FieldLayoutTab();
-        $fieldLayoutTab->name = 'Segment';
-        $fieldLayoutTab->setLayout($fieldLayout);
-        $fieldLayoutTab->setElements([
-            new TitleField(),
-        ]);
+        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
-        $fieldLayout->setTabs([$fieldLayoutTab]);
+        $fieldLayout->setTabs(array_merge(
+            $fieldLayout->getTabs(),
+            [
+                new SegmentFieldLayoutTab(),
+            ],
+        ));
 
         return $fieldLayout;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function metaFieldsHtml(bool $static): string
+    {
+        return $this->slugFieldHtml($static) . parent::metaFieldsHtml($static);
     }
 
     /**
@@ -375,6 +428,15 @@ class SegmentElement extends Element
         }
 
         return $user->can('campaign:segments');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
     }
 
     /**
@@ -447,22 +509,6 @@ class SegmentElement extends Element
     public function getContactCount(): int
     {
         return count($this->getContactIds());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIsEditable(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl(): ?string
-    {
-        return UrlHelper::cpUrl('campaign/segments/' . $this->segmentType . '/' . $this->id);
     }
 
     /**

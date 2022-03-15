@@ -597,7 +597,11 @@ class ContactElement extends Element
             return Craft::$app->getUsers()->getUserById($this->userId);
         }
 
-        return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->email);
+        if ($this->email !== null) {
+            return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->email);
+        }
+
+        return null;
     }
 
     /**

@@ -260,6 +260,7 @@ class MailingListElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
+        $rules[] = [['mailingListTypeId'], 'required'];
         $rules[] = [['mailingListTypeId'], 'number', 'integerOnly' => true];
 
         return $rules;
@@ -480,13 +481,15 @@ class MailingListElement extends Element
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
 
-        $fieldLayout->setTabs(array_merge(
-            $fieldLayout->getTabs(),
-            [
-                new MailingListContactFieldLayoutTab(),
-                new MailingListReportFieldLayoutTab(),
-            ],
-        ));
+        if (!$this->getIsDraft()) {
+            $fieldLayout->setTabs(array_merge(
+                $fieldLayout->getTabs(),
+                [
+                    new MailingListContactFieldLayoutTab(),
+                    new MailingListReportFieldLayoutTab(),
+                ],
+            ));
+        }
 
         return $fieldLayout;
     }

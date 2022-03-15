@@ -10,8 +10,8 @@ use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
-use putyourlightson\campaign\helpers\SegmentHelper;
 use Throwable;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -33,70 +33,40 @@ class SegmentsController extends Controller
     }
 
     /**
+     * Creates a new unpublished draft and redirects to its edit page.
+     *
+     * @see CategoriesController::actionCreate()
+     * @since 2.0.0
+     */
+    public function actionCreate(string $segmentType): Response
+    {
+        if (!isset(SegmentElement::segmentTypes()[$segmentType])) {
+            throw new BadRequestHttpException("Invalid segment type: $segmentType");
+        }
+
+        /**
+         * The create action expects attributes to be passed in as body params.
+         * @see ElementsController::actionCreate()
+         */
+        $this->request->setBodyParams([
+            'elementType' => SegmentElement::class,
+            'segmentType' => $segmentType,
+        ]);
+
+        return Craft::$app->runAction('elements/create');
+    }
+
+    /**
      * Main edit page.
      */
-    public function actionEdit(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
+    public function actionEdit(int $segmentId = null): Response
     {
-        // Check that the segment type exists
-        $segmentTypes = SegmentElement::segmentTypes();
+        // Set the selected subnav item by adding it to the global variables
+        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'segments');
 
-        if (empty($segmentTypes[$segmentType])) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Segment type not found.'));
-        }
-
-        // Get the segment
-        if ($segment === null) {
-            if ($segmentId !== null) {
-                $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
-
-                if ($segment === null) {
-                    throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
-                }
-            }
-            else {
-                $segment = new SegmentElement();
-                $segment->segmentType = $segmentType;
-                $segment->enabled = true;
-            }
-        }
-
-        // Get the site if site handle is set
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-            $segment->siteId = $site->id;
-        }
-
-        // Set the variables
-        $variables = [
-            'segmentType' => $segmentType,
-            'segmentId' => $segmentId,
-            'segment' => $segment,
-        ];
-
-        // Set the title and slug
-        if ($segmentId === null) {
-            $variables['title'] = Craft::t('campaign', 'Create a new segment');
-        }
-        else {
-            $variables['title'] = $segment->title;
-            $variables['slug'] = $segment->slug;
-        }
-
-        // Get the settings
-        $variables['settings'] = Campaign::$plugin->getSettings();
-
-        // Get available fields and operators
-        $variables['availableFields'] = SegmentHelper::getAvailableFields();
-        $variables['fieldOperators'] = SegmentHelper::getFieldOperators();
-
-        // Full page form variables
-        $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/segments/' . $segmentType . '/{id}';
-        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
-
-        // Render the template
-        return $this->renderTemplate('campaign/segments/_edit', $variables);
+        return Craft::$app->runAction('elements/edit', [
+            'elementId' => $segmentId,
+        ]);
     }
 
     /**

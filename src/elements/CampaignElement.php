@@ -426,6 +426,7 @@ class CampaignElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
+        $rules[] = [['campaignTypeId'], 'required'];
         $rules[] = [['campaignTypeId', 'recipients', 'opened', 'clicked', 'opens', 'clicks', 'unsubscribed', 'complained', 'bounced'], 'number', 'integerOnly' => true];
         $rules[] = [['dateClosed', 'lastSent'], DateTimeValidator::class];
 
@@ -723,7 +724,7 @@ class CampaignElement extends Element
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
 
-        if ($this->getStatus() == CampaignElement::STATUS_SENT) {
+        if (!$this->getIsDraft() && $this->getStatus() == CampaignElement::STATUS_SENT) {
             $fieldLayout->setTabs(array_merge(
                 $fieldLayout->getTabs(),
                 [

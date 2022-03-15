@@ -1,41 +1,46 @@
-<div class="heading">
-    <label>{{ "Conditions"|t('campaign') }}</label>
-    <div class="instructions">
-        <p>{{ "Create one or more conditions to apply to this segment."|t('campaign') }}</p>
+{% import '_includes/forms' as forms %}
+
+{% set content %}
+
+    <div id="newCondition" class="andCondition field hidden">
+        <table class="heading data fullwidth collapsible">
+            <tbody>
+                {% include 'campaign/segments/_includes/condition' %}
+            </tbody>
+        </table>
+        <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
     </div>
-</div>
 
-<div id="newCondition" class="andCondition field hidden">
-    <table class="heading data fullwidth collapsible">
-        <tbody>
-            {% include 'campaign/segments/_includes/condition' %}
-        </tbody>
-    </table>
-    <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
-</div>
-
-<div class="conditions">
-    {% if segment.conditions|length %}
-        {% for andIndex, conditions in segment.conditions %}
-            <div class="andCondition field">
+    <div class="conditions">
+        {% if segment.conditions|length %}
+            {% for andIndex, conditions in segment.conditions %}
+                <div class="andCondition field">
+                    <table class="heading data fullwidth collapsible">
+                        <tbody>
+                            {% for orIndex, condition in conditions %}
+                                {% include 'campaign/segments/_includes/condition' %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
+                </div>
+            {% endfor %}
+        {% else %}
+             <div class="andCondition field">
                 <table class="heading data fullwidth collapsible">
                     <tbody>
-                        {% for orIndex, condition in conditions %}
-                            {% include 'campaign/segments/_includes/condition' %}
-                        {% endfor %}
+                        {% include 'campaign/segments/_includes/condition' %}
                     </tbody>
                 </table>
                 <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
             </div>
-        {% endfor %}
-    {% else %}
-         <div class="andCondition field">
-            <table class="heading data fullwidth collapsible">
-                <tbody>
-                    {% include 'campaign/segments/_includes/condition' %}
-                </tbody>
-            </table>
-            <a class="addAndCondition btn add icon" title="{{ 'AND'|t('campaign') }}" role="button">{{ 'AND'|t('campaign') }}</a>
-        </div>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
+
+{% endset %}
+
+{{ forms.field({
+    id: 'conditions',
+    label: "Conditions"|t('campaign'),
+    instructions: "Create one or more conditions to apply to this segment."|t('campaign'),
+}, content) }}

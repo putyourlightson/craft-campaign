@@ -57,7 +57,7 @@ class ContactsController extends Controller
     public function actionCreate(): Response
     {
         /**
-         * The create action expects `elementType` to be set in a body param.
+         * The create action expects attributes to be passed in as body params.
          * @see ElementsController::actionCreate()
          */
         $this->request->setBodyParams([
