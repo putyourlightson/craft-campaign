@@ -27,47 +27,47 @@ class ImportModel extends Model
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Asset ID
      */
-    public ?int $assetId;
+    public ?int $assetId = null;
 
     /**
      * @var string|null File name
      */
-    public ?string $fileName;
+    public ?string $fileName = null;
 
     /**
      * @var string|null File path
      */
-    public ?string $filePath;
+    public ?string $filePath = null;
 
     /**
      * @var int|null User group ID
      */
-    public ?int $userGroupId;
+    public ?int $userGroupId = null;
 
     /**
      * @var int|null User ID
      */
-    public ?int $userId;
+    public ?int $userId = null;
 
     /**
-     * @var string Email field index
+     * @var string|null Email field index
      */
-    public string $emailFieldIndex;
+    public ?string $emailFieldIndex = null;
 
     /**
      * @var mixed Field indexes
      */
-    public mixed $fieldIndexes;
+    public mixed $fieldIndexes = null;
 
     /**
      * @var int|null Mailing list ID
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @var bool Force subscribe
@@ -90,9 +90,9 @@ class ImportModel extends Model
     public int $fails = 0;
 
     /**
-     * @var DateTime|null Date imported
+     * @var DateTime|string|null Date imported
      */
-    public ?DateTime $dateImported;
+    public DateTime|string|null $dateImported = null;
 
     /**
      * @inheritdoc

@@ -39,8 +39,7 @@
             instructions: "Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed."|t('campaign'),
             name: 'forceSubscribe',
             on: import.forceSubscribe,
-            errors: import.getErrors('forceSubscribe'),
-            required: true
+            errors: import.getErrors('forceSubscribe')
         }) }}
 
         {% set input %}

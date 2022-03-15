@@ -275,7 +275,7 @@ class ImportsController extends Controller
     /**
      * Deletes an import.
      */
-    public function actionDeleteImport(): ?Response
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
