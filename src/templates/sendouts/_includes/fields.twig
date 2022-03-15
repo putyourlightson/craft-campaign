@@ -1,12 +1,13 @@
 {% import '_includes/forms' as forms %}
 
+{% set editable = true %}
 {% set editable = editable ?? false %}
 
 {% set input %}
     {% if editable %}
         {{ forms.elementSelect({
-            id: 'campaignId',
-            name: 'campaignId',
+            id: 'campaignIds',
+            name: 'campaignIds',
             elementType: campaignElementType,
             selectionLabel: "Choose a campaign"|t('campaign'),
             criteria: campaignElementCriteria,

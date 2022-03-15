@@ -377,7 +377,7 @@ class Campaign extends Plugin
             'campaign/segments/<segmentType:{handle}>/<segmentId:\d+><slug:(?:-[^\/]*)?>' => 'campaign/segments/edit',
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
             'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/create',
-            'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/edit',
+            'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/create',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit',
             'campaign/settings/general' => 'campaign/settings/edit-general',

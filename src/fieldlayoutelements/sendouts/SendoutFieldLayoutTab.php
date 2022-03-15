@@ -3,16 +3,17 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\fieldlayoutelements\segments;
+namespace putyourlightson\campaign\fieldlayoutelements\sendouts;
 
 use Craft;
+use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TitleField;
 use craft\models\FieldLayoutTab;
 
 /**
  * @since 2.0.0
  */
-class SegmentFieldLayoutTab extends FieldLayoutTab
+class SendoutFieldLayoutTab extends FieldLayoutTab
 {
     /**
      * @inheritdoc
@@ -21,7 +22,7 @@ class SegmentFieldLayoutTab extends FieldLayoutTab
     {
         parent::init();
 
-        $this->name = Craft::t('campaign', 'Segment');
+        $this->name = Craft::t('campaign', 'Sendout');
     }
 
     /**
@@ -31,7 +32,7 @@ class SegmentFieldLayoutTab extends FieldLayoutTab
     {
         return [
             new TitleField(),
-            new SegmentField(),
+            new SendoutField(),
         ];
     }
 }

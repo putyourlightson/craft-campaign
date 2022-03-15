@@ -6,6 +6,7 @@ use craft\db\Migration;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
+use putyourlightson\campaign\records\SendoutRecord;
 
 class m220312_120000_update_columns extends Migration
 {
@@ -15,6 +16,9 @@ class m220312_120000_update_columns extends Migration
     public function safeUp(): bool
     {
         $this->alterColumn(ContactRecord::tableName(), 'email', $this->string());
+        $this->alterColumn(SendoutRecord::tableName(), 'sendStatus', $this->string());
+        $this->alterColumn(SendoutRecord::tableName(), 'fromName', $this->string());
+        $this->alterColumn(SendoutRecord::tableName(), 'fromEmail', $this->string());
 
         if (!$this->db->columnExists(CampaignTypeRecord::tableName(), 'enableAnonymousTracking')) {
             $this->addColumn(

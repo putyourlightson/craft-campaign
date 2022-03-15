@@ -11,10 +11,8 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
-use craft\models\FieldLayoutTab;
 use craft\validators\DateTimeValidator;
 use DateTime;
 use LitEmoji\LitEmoji;
@@ -23,6 +21,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
+use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutTab;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
@@ -32,7 +31,6 @@ use putyourlightson\campaign\records\SendoutRecord;
  * @property-read bool $isResumable
  * @property-read array $pendingRecipients
  * @property-read string $sendoutTypeLabel
- * @property-read string $fromNameEmail
  * @property-read float $progressFraction
  * @property-read bool $isModifiable
  * @property-read int $segmentCount
@@ -51,6 +49,8 @@ use putyourlightson\campaign\records\SendoutRecord;
  * @property-read bool $isCancellable
  * @property-read null|CampaignElement $campaign
  * @property-read string $progress
+ * @property-read array[] $crumbs
+ * @property-read null|string $postEditUrl
  * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
@@ -372,6 +372,12 @@ class SendoutElement extends Element
     public ?string $sid = null;
 
     /**
+     * @var array|null Campaign IDs, used for posted params
+     * @see SendoutElement::beforeSave()
+     */
+    public ?array $campaignIds = null;
+
+    /**
      * @var int|null Campaign ID
      */
     public ?int $campaignId = null;
@@ -390,6 +396,12 @@ class SendoutElement extends Element
      * @var string Send status
      */
     public string $sendStatus = self::STATUS_DRAFT;
+
+    /**
+     * @var string|null Send from name/email/reply combo, used for posted params
+     * @see SendoutElement::beforeSave()
+     */
+    public ?string $fromNameEmail = null;
 
     /**
      * @var string|null Send from name
@@ -540,14 +552,60 @@ class SendoutElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
+        $rules[] = [['sendoutType', ], 'required'];
+        $rules[] = [['fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
-        $rules[] = [['sendoutType', 'fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required'];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
         $rules[] = [['notificationEmailAddress'], 'email'];
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
+        // Safe rules, since these are just used for posted params
+        $rules[] = [['campaignIds', 'fromNameEmails'], 'safe'];
+
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPostEditUrl(): ?string
+    {
+        return UrlHelper::cpUrl("campaign/sendouts");
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getCrumbs(): array
+    {
+        return [
+            [
+                'label' => Craft::t('campaign', 'Sendouts'),
+                'url' => UrlHelper::url('campaign/sendouts'),
+            ],
+            [
+                'label' => $this->getSendoutTypeLabel(),
+                'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function cpEditUrl(): ?string
+    {
+        $path = sprintf('campaign/sendouts/%s/%s', $this->sendoutType, $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
@@ -556,15 +614,14 @@ class SendoutElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = new FieldLayout();
-        $fieldLayoutTab = new FieldLayoutTab();
-        $fieldLayoutTab->name = 'Sendout';
-        $fieldLayoutTab->setLayout($fieldLayout);
-        $fieldLayoutTab->setElements([
-            new TitleField(),
-        ]);
+        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
-        $fieldLayout->setTabs([$fieldLayoutTab]);
+        $fieldLayout->setTabs(array_merge(
+            $fieldLayout->getTabs(),
+            [
+                new SendoutFieldLayoutTab(),
+            ],
+        ));
 
         return $fieldLayout;
     }
@@ -635,6 +692,15 @@ class SendoutElement extends Element
         }
 
         return $user->can('campaign:sendouts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
     }
 
     /**
@@ -1014,14 +1080,6 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl(): ?string
-    {
-        return UrlHelper::cpUrl('campaign/sendouts/' . $this->sendoutType . '/' . $this->id);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getHtmlAttributes(string $context): array
     {
         $htmlAttributes = parent::getHtmlAttributes($context);
@@ -1079,6 +1137,15 @@ class SendoutElement extends Element
             // Encode subject for emojis
             $this->subject = LitEmoji::unicodeToShortcode($this->subject);
         }
+
+        // Get from name and email
+        $fromNameEmail = explode(':', $this->fromNameEmail);
+        $this->fromName = $fromNameEmail[0] ?? '';
+        $this->fromEmail = $fromNameEmail[1] ?? '';
+        $this->replyToEmail = $fromNameEmail[2] ?? '';
+
+        // Get the selected campaign ID
+        $this->campaignId = $this->campaignIds[0] ?? null;
 
         return parent::beforeSave($isNew);
     }

@@ -21,6 +21,7 @@ use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -108,9 +109,62 @@ class SendoutsController extends Controller
     }
 
     /**
+     * Creates a new unpublished draft and redirects to its edit page.
+     *
+     * @see CategoriesController::actionCreate()
+     * @since 2.0.0
+     */
+    public function actionCreate(string $sendoutType): Response
+    {
+        if (!isset(SendoutElement::sendoutTypes()[$sendoutType])) {
+            throw new BadRequestHttpException("Invalid sendout type: $sendoutType");
+        }
+
+        /**
+         * The create action expects attributes to be passed in as body params.
+         * @see ElementsController::actionCreate()
+         */
+        $this->request->setBodyParams([
+            'elementType' => SendoutElement::class,
+            'sendoutType' => $sendoutType,
+        ]);
+
+        // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
+        if ($campaignId = $this->request->getParam('campaignId')) {
+            // Set title and subject to campaign title
+            $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+
+            if ($campaign) {
+                $this->request->setBodyParams(
+                    array_merge($this->request->getBodyParams(), [
+                        'campaignId' => $campaign->id,
+                        'title' => $campaign->title,
+                        'subject' => $campaign->title,
+                    ])
+                );
+            }
+        }
+
+        return Craft::$app->runAction('elements/create');
+    }
+
+    /**
+     * Main edit page.
+     */
+    public function actionEdit(int $sendoutId = null): Response
+    {
+        // Set the selected subnav item by adding it to the global variables
+        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'sendouts');
+
+        return Craft::$app->runAction('elements/edit', [
+            'elementId' => $sendoutId,
+        ]);
+    }
+
+    /**
      * Edit the sendout.
      */
-    public function actionEdit(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
+    public function xactionEdit(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
     {
         $this->requirePermission('campaign:sendouts');
 
