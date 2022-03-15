@@ -8,9 +8,11 @@ namespace putyourlightson\campaign\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\UserGroup;
@@ -117,6 +119,14 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
+    public function getUriFormat(): ?string
+    {
+        return '{slug}';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function find(): MailingListElementQuery
     {
         return new MailingListElementQuery(static::class);
@@ -169,6 +179,11 @@ class MailingListElement extends Element
         $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit mailing list'),
+        ]);
+
+        // Duplicate
+        $actions[] = $elementsService->createAction([
+            'type' => Duplicate::class,
         ]);
 
         // Delete
@@ -554,6 +569,18 @@ class MailingListElement extends Element
             'bounced' => (string)$this->getBouncedCount(),
             default => parent::tableAttributeHtml($attribute),
         };
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave(bool $isNew): bool
+    {
+        // Ensure the slug is unique, even though mailing lists don't have URIs,
+        // which prevents us from depending on the SlugValidator class.
+        ElementHelper::setUniqueUri($this);
+
+        return parent::beforeSave($isNew);
     }
 
     /**
