@@ -46,12 +46,6 @@
             }) }}
         {% endfor %}
 
-        {{ forms.lightswitchField({
-            label: "Subscribed Date"|t('campaign'),
-            name: 'subscribedDate',
-            on: export.subscribedDate is defined ? export.subscribedDate : 1
-        }) }}
-
         <input type="submit" class="btn submit" value="{{ 'Export'|t('campaign') }}" />
     </form>
 

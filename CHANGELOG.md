@@ -11,6 +11,9 @@
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 - Added the `campaign/reports/anonymize` console controllers that anonymizes all previously collected personal data.
 
+### Changed
+- Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
+
 ### Removed
 - Removed support for reCAPTCHA version 2, leaving support for version 3 only.
 - Removed the `subscribeVerificationSuccessTemplate` setting from the mailing list type settings page. Use the `subscribeSuccessTemplate` setting instead.

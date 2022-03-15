@@ -18,24 +18,19 @@ use putyourlightson\campaign\elements\MailingListElement;
 class ExportModel extends Model
 {
     /**
-     * @var string File path
+     * @var string|null File path
      */
-    public string $filePath;
+    public ?string $filePath = null;
 
     /**
-     * @var array|null Mailing list IDs
+     * @var array|null Mailing list ID
      */
-    public ?array $mailingListIds;
+    public ?array $mailingListIds = null;
 
     /**
      * @var array|null Fields
      */
-    public ?array $fields;
-
-    /**
-     * @var bool|null
-     */
-    public ?bool $subscribedDate;
+    public ?array $fields = null;
 
     /**
      * @inheritdoc

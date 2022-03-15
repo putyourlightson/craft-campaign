@@ -10,6 +10,8 @@ use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\ExportEvent;
 
 use putyourlightson\campaign\models\ExportModel;
@@ -48,67 +50,54 @@ class ExportsService extends Component
         // Open file for writing
         $handle = fopen($export->filePath, 'wb');
 
-        // Write field names to file
-        $fieldNames = $export->fields;
-
-        if ($export->subscribedDate) {
-            $fieldNames[] = 'subscribedDate';
-        }
+        $fieldNames = array_merge([
+            'mailingList',
+            'subscriptionStatus',
+            'subscribedDate',
+        ], $export->fields);
 
         fputcsv($handle, $fieldNames);
 
-        $contactIds = [];
         $mailingLists = $export->getMailingLists();
 
         foreach ($mailingLists as $mailingList) {
-            // Get subscribed contacts
-            $contacts = $mailingList->getSubscribedContacts();
+            // Get all contacts in mailing list
+            $contacts = ContactElement::find()
+                ->mailingListId($mailingList->id)
+                ->all();
 
             foreach ($contacts as $contact) {
-                // If not already added
-                if (!in_array($contact->id, $contactIds)) {
-                    // Populate row with contact fields
-                    $row = [];
-                    foreach ($export->fields as $field) {
-                        $value = $contact->{$field};
+                $subscription = $this->_getSubscription($contact, $mailingList);
 
-                        if ($value instanceof ElementQuery) {
-                            $elements = $value->all();
+                $row = [];
+                $row[] = $mailingList->title;
+                $row[] = $subscription->subscriptionStatus;
+                $row[] = $subscription->subscribed;
 
-                            // Use the string representation of each element
-                            /** @var Element $element */
-                            foreach ($elements as &$element) {
-                                $element = $element->__toString();
-                            }
+                foreach ($export->fields as $field) {
+                    $value = $contact->{$field};
 
-                            $value = implode(',', $elements);
-                        }
-                        // https://github.com/putyourlightson/craft-campaign/issues/297
-                        elseif ($value instanceof MultiOptionsFieldData) {
-                            $value = implode(',', iterator_to_array($value));
+                    if ($value instanceof ElementQuery) {
+                        $elements = $value->all();
+
+                        // Use the string representation of each element
+                        /** @var Element $element */
+                        foreach ($elements as &$element) {
+                            $element = $element->__toString();
                         }
 
-                        $row[] = $value;
+                        $value = implode(',', $elements);
+                    }
+                    // https://github.com/putyourlightson/craft-campaign/issues/297
+                    elseif ($value instanceof MultiOptionsFieldData) {
+                        $value = implode(',', iterator_to_array($value));
                     }
 
-                    // If subscribed date should be added
-                    if ($export->subscribedDate) {
-                        $subscribedDate = ContactMailingListRecord::find()
-                            ->select('subscribed')
-                            ->where([
-                                'contactId' => $contact->id,
-                                'mailingListId' => $mailingList->id,
-                            ])
-                            ->scalar();
-
-                        $row[] = $subscribedDate;
-                    }
-
-                    // Write contact fields to file
-                    fputcsv($handle, $row);
-
-                    $contactIds[] = $contact->id;
+                    $row[] = $value;
                 }
+
+                // Write contact fields to file
+                fputcsv($handle, $row);
             }
         }
 
@@ -123,5 +112,19 @@ class ExportsService extends Component
         }
 
         return true;
+    }
+
+    private function _getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
+    {
+        return ContactMailingListRecord::find()
+            ->select([
+                'subscriptionStatus',
+                'subscribed',
+            ])
+            ->where([
+                'contactId' => $contact->id,
+                'mailingListId' => $mailingList->id,
+            ])
+            ->one();
     }
 }
