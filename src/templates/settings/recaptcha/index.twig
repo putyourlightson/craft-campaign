@@ -17,7 +17,7 @@
     {{ forms.lightswitchField({
         first: true,
         label: "reCAPTCHA"|t('campaign'),
-        instructions: "Enable reCAPTCHA to protect mailing list subscription forms from bots."|t('campaign'),
+        instructions: 'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('campaign', { url: 'https://developers.google.com/recaptcha/docs/v3' }),
         warning: (config.reCaptcha is defined ? macros.configWarning('reCaptcha')),
         id: 'reCaptcha',
         name: 'reCaptcha',

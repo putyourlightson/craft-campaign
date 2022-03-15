@@ -254,7 +254,7 @@ return [
     'Email Settings' => '',
     'Email' => '',
     'Enable GeoIP to geolocate contacts by their IP addresses.' => '',
-    'Enable reCAPTCHA to protect mailing list subscription forms from bots.' => '',
+    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank">Learn more</a>' => '',
     'Enable Anonymous Tracking' => '',
     'End Date' => '',
     'ends with' => '',

@@ -256,7 +256,7 @@ return [
     'Email Settings' => 'Réglages email',
     'Email' => 'Email',
     'Enable GeoIP to geolocate contacts by their IP addresses.' => 'Activer GeoIP pour géocaliser les contacts par leurs valeurs d’adresses IP.',
-    'Enable reCAPTCHA to protect mailing list subscription forms from bots.' => 'Activer reCAPTCHA pour empêcher des inscriptions de robots aux listes de diffusion.',
+    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank">Learn more</a>' => 'Activer reCAPTCHA v3 pour empêcher des inscriptions de robots aux listes de diffusion. <a href="{url}" class="go" target="_blank">Learn more</a>',
     'Enable Anonymous Tracking' => '',
     'End Date' => 'Date de fin',
     'ends with' => 'Se terminant par',
