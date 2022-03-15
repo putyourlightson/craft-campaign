@@ -135,8 +135,8 @@ class ImportsService extends Component
                 'lastName' => Craft::t('campaign', 'Last Name'),
             ];
 
-            /** @var Field[] $fields */
-            $fields = Craft::$app->fields->getFieldsByElementType(User::class);
+            $fieldLayout = Craft::$app->fields->getLayoutByType(User::class);
+            $fields = $fieldLayout->getCustomFields();
 
             foreach ($fields as $field) {
                 $columns[$field->handle] = $field->name;
