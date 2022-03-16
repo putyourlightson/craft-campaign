@@ -3,16 +3,13 @@
 {% import '_includes/forms' as forms %}
 
 {% set title = sendout.title %}
-
 {% set crumbs = [
     { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
-
 {% set tabs = {
     'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
     'preview': {'label': 'Preview'|t('app'), 'url': '#preview'},
 } %}
-
 {% set mailingLists = sendout.mailingLists %}
 {% set schedule = sendout.schedule %}
 
@@ -20,6 +17,7 @@
 {% do view.registerTranslations('campaign', [
     'Test email sent.',
 ]) %}
+
 
 {% block pageTitle %}
 

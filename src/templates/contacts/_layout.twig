@@ -1,7 +1,6 @@
-{% extends 'campaign/_layout' %}
+{% extends elementType is defined ? '_layouts/elementindex' : '_layouts/cp' %}
 
 {% set selectedSubnavItem = 'contacts' %}
-
 {% set baseCrumbs = [
     { label: 'Contacts'|t('campaign'), url: url('campaign/contacts') }
 ] %}

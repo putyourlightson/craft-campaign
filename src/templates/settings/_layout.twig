@@ -1,12 +1,10 @@
-{% extends 'campaign/_layout' %}
+{% extends '_layouts/cp' %}
 
 {% set selectedSubnavItem = 'settings' %}
-
 {% set baseCrumbs = [
     { label: 'Settings'|t('campaign'), url: url('campaign/settings') }
 ] %}
 {% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
-
 {% set segment3 = craft.app.request.getSegment(3) %}
 
 

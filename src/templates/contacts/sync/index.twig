@@ -1,17 +1,15 @@
+{% extends 'campaign/contacts/_layout' %}
+
 {% do craft.campaign.requirePro() %}
 
 {% if not currentUser.can('campaign:syncContacts') %}
     {% redirect 'campaign/contacts' %}
 {% endif %}
 
-{% extends 'campaign/contacts/_layout' %}
-
 {% import '_includes/forms' as forms %}
 
 {% set title = 'Sync'|t('campaign') %}
-
 {% set crumbs = [] %}
-
 {% set syncedMailingLists = craft.campaign.getMailingLists().synced().all() %}
 
 

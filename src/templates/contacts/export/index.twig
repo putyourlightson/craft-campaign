@@ -1,13 +1,12 @@
+{% extends 'campaign/contacts/_layout' %}
+
 {% if not currentUser.can('campaign:exportContacts') %}
     {% redirect 'campaign' %}
 {% endif %}
 
-{% extends 'campaign/contacts/_layout' %}
-
 {% import '_includes/forms' as forms %}
 
 {% set title = 'Export'|t('campaign') %}
-
 {% set crumbs = [] %}
 
 

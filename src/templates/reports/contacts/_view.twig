@@ -2,7 +2,6 @@
 
 {% set contact = craft.campaign.getContactById(contactId) %}
 {% set title = contact.email %}
-
 {% set crumbs = [
     { label: 'Contacts'|t('campaign'), url: url('campaign/reports/contacts') }
 ] %}

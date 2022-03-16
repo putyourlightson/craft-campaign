@@ -36,6 +36,7 @@ use craft\services\Utilities;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use putyourlightson\campaign\assets\CampaignAsset;
 use putyourlightson\campaign\assets\CpAsset;
 use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -660,6 +661,10 @@ class Campaign extends Plugin
     private function _registerAssetBundles()
     {
         Craft::$app->view->registerAssetBundle(CpAsset::class);
+
+        if (Craft::$app->request->getSegment(1) == 'campaign') {
+            Craft::$app->view->registerAssetBundle(CampaignAsset::class);
+        }
     }
 
     /**

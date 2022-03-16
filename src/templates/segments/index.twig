@@ -1,9 +1,9 @@
+{% extends '_layouts/elementindex' %}
+
 {% do craft.campaign.requirePro() %}
 
-{% extends 'campaign/segments/_layout' %}
-
+{% set selectedSubnavItem = 'segments' %}
 {% set elementType = 'putyourlightson\\campaign\\elements\\SegmentElement' %}
-
 {% set title = 'Segments'|t('campaign') %}
 
 {% do view.registerTranslations('campaign', [

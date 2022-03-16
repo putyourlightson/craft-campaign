@@ -2,7 +2,6 @@
 
 {% set campaign = craft.campaign.getCampaignById(campaignId) %}
 {% set title = 'Locations'|t('campaign') %}
-
 {% set crumbs = [
     { label: 'Campaigns'|t('campaign'), url: url('campaign/reports/campaigns') },
     { label: campaign.title, url: campaign.reportUrl }

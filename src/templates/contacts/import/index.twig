@@ -1,20 +1,17 @@
+{% extends 'campaign/contacts/_layout' %}
+
 {% if not currentUser.can('campaign:importContacts') %}
     {% redirect 'campaign' %}
 {% endif %}
 
-{% extends 'campaign/contacts/_layout' %}
-
 {% import '_includes/forms' as forms %}
 
 {% set title = 'Import'|t('campaign') %}
-
 {% set crumbs = [] %}
-
 {% set contactFieldNames = ['Email [' ~ 'required'|t('campaign') ~ ']'] %}
 {% for field in craft.campaign.settings.getContactFields() %}
     {% set contactFieldNames = contactFieldNames|merge([field.name ~ (field.required ? ' [' ~ 'required'|t('campaign') ~ ']')]) %}
 {% endfor %}
-
 {% set imports = craft.campaign.getAllImports() %}
 
 
