@@ -226,7 +226,12 @@ class ContactElement extends Element
         ]);
 
         // Hard delete
-        $actions[] = HardDeleteContacts::class;
+        $actions[] = $elementsService->createAction([
+            'type' => Delete::class,
+            'hard' => true,
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to permanently delete the selected contacts? This action cannot be undone.'),
+            'successMessage' => Craft::t('campaign', 'Contacts permanently deleted.'),
+        ]);
 
         // Restore
         $actions[] = $elementsService->createAction([

@@ -147,15 +147,6 @@ class ContactsController extends Controller
             );
         }
 
-        $response->addAltAction(
-            Craft::t('campaign', 'Delete permanently'),
-            [
-                'action' => 'campaign/contacts/delete-permanently',
-                'destructive' => 'true',
-                'confirm' => Craft::t('campaign', 'Are you sure you want to permanently delete this contact? This action cannot be undone.'),
-            ],
-        );
-
         return $response;
     }
 
@@ -205,47 +196,6 @@ class ContactsController extends Controller
     public function actionUnmarkBlocked(): ?Response
     {
         return $this->_unmarkContactStatus('blocked');
-    }
-
-    /**
-     * Deletes a contact.
-     */
-    public function actionDelete(bool $hardDelete = false): ?Response
-    {
-        $this->requirePostRequest();
-
-        $contact = $this->_getPostedContact();
-
-        if (!Craft::$app->getElements()->deleteElement($contact, $hardDelete)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t delete contact.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact,
-            ]);
-
-            return null;
-        }
-
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact deleted.'));
-
-        return $this->redirectToPostedUrl($contact);
-    }
-
-    /**
-     * Deletes a contact permanently.
-     */
-    public function actionDeletePermanently(): ?Response
-    {
-        return $this->actionDelete(true);
     }
 
     /**

@@ -16,17 +16,6 @@ use yii\web\Response;
 class MailingListsController extends Controller
 {
     /**
-     * @inheritdoc
-     */
-    public function beforeAction($action): bool
-    {
-        // Require permission
-        $this->requirePermission('campaign:mailingLists');
-
-        return parent::beforeAction($action);
-    }
-
-    /**
      * Creates a new unpublished draft and redirects to its edit page.
      *
      * @see CategoriesController::actionCreate()
