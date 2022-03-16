@@ -626,14 +626,10 @@ class SendoutElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
-
-        $fieldLayout->setTabs(array_merge(
-            $fieldLayout->getTabs(),
-            [
-                new SendoutFieldLayoutTab(),
-            ],
-        ));
+        $fieldLayout = new FieldLayout();
+        $fieldLayout->setTabs([
+            new SendoutFieldLayoutTab(),
+        ]);
 
         return $fieldLayout;
     }
@@ -1150,19 +1146,21 @@ class SendoutElement extends Element
             $this->subject = LitEmoji::unicodeToShortcode($this->subject);
         }
 
-        // Get from name and email
-        $fromNameEmail = explode(':', $this->fromNameEmail);
-        $this->fromName = $fromNameEmail[0] ?? '';
-        $this->fromEmail = $fromNameEmail[1] ?? '';
-        $this->replyToEmail = $fromNameEmail[2] ?? '';
+        // Get from name and email if submitted
+        if ($this->fromNameEmail) {
+            $fromNameEmail = explode(':', $this->fromNameEmail);
+            $this->fromName = $fromNameEmail[0] ?? '';
+            $this->fromEmail = $fromNameEmail[1] ?? '';
+            $this->replyToEmail = $fromNameEmail[2] ?? '';
+        }
 
         // Get the selected campaign ID
-        $this->campaignId = $this->campaignIds[0] ?? null;
+        $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
-        $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : '';
-        $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : '';
-        $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : '';
+        $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
+        $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : $this->excludedMailingListIds;
+        $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : $this->segmentIds;
 
         return parent::beforeSave($isNew);
     }
