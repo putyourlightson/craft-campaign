@@ -50,8 +50,14 @@ class CampaignsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $campaignId = null): Response
+    public function actionEdit(int $campaignId): Response
     {
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+
+        if ($campaign === null) {
+            throw new BadRequestHttpException("Invalid campaign ID: $campaignId");
+        }
+
         $this->view->registerAssetBundle(CampaignEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
@@ -62,13 +68,6 @@ class CampaignsController extends Controller
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $campaignId,
         ]);
-
-        // Add actions
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-        if ($campaign === null) {
-            return $response;
-        }
 
         if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
             $response->addAltAction(

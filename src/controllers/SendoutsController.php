@@ -9,8 +9,10 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\UrlHelper;
 use craft\queue\Queue;
 use craft\web\Controller;
+use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -19,6 +21,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutField;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use yii\web\BadRequestHttpException;
@@ -151,14 +154,69 @@ class SendoutsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $sendoutId = null): Response
+    public function actionEdit(int $sendoutId): Response
     {
+        $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
+
+        if ($sendout === null) {
+            throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
+        }
+
+        if (!$sendout->getIsModifiable()) {
+            return $this->redirect($sendout->getCpPreviewUrl());
+        }
+
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'sendouts');
 
-        return Craft::$app->runAction('elements/edit', [
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response =  Craft::$app->runAction('elements/edit', [
             'elementId' => $sendoutId,
         ]);
+
+        $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
+        $response->redirectUrl = $sendout->getCpPreviewUrl();
+
+        return $response;
+    }
+
+    /**
+     * Preview page.
+     */
+    public function actionPreview(int $sendoutId): Response
+    {
+        $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
+
+        if ($sendout === null) {
+            throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
+        }
+
+        $campaign = $sendout->getCampaign();
+        $campaignType = $campaign->getCampaignType();
+
+        $variables = [
+            'sendout' => $sendout,
+            'settings' => Campaign::$plugin->getSettings(),
+            'fullPageForm' => true,
+            'contactElementType' => ContactElement::class,
+            'contactElementCriteria' => [
+                'status' => ContactElement::STATUS_ACTIVE,
+            ],
+            'testContacts' => $campaignType->getTestContactsWithDefault(),
+            'actions' => [],
+            'system' => [
+                'memoryLimit' => ini_get('memory_limit'),
+                'timeLimit' => ini_get('max_execution_time'),
+            ],
+            'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed($sendout->siteId),
+        ];
+
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
+        $sendoutField = new SendoutField();
+        $sendoutField->formHtml($sendout);
+        return $this->renderTemplate('campaign/sendouts/_view', $variables);
     }
 
     /**

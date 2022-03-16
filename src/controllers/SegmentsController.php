@@ -55,7 +55,7 @@ class SegmentsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $segmentId = null): Response
+    public function actionEdit(int $segmentId): Response
     {
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'segments');

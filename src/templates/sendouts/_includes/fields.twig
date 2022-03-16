@@ -1,6 +1,5 @@
 {% import '_includes/forms' as forms %}
 
-{% set editable = true %}
 {% set editable = editable ?? false %}
 
 {% set input %}
@@ -79,7 +78,7 @@
             elements: sendout.mailingListIds ? sendout.mailingLists,
         }) }}
     {% else %}
-        {% for mailingList in mailingLists %}
+        {% for mailingList in sendout.mailingLists %}
             <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
             <br/>
         {% endfor %}

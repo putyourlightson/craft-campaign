@@ -44,7 +44,7 @@ class MailingListsController extends Controller
     /**
      * Main edit page.
      */
-    public function actionEdit(int $mailingListId = null): Response
+    public function actionEdit(int $mailingListId): Response
     {
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'mailinglists');

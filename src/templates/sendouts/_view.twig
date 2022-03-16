@@ -4,7 +4,7 @@
 
 {% set title = sendout.title %}
 {% set crumbs = [
-    { label: sendout.sendoutTypes[sendoutType], url: url('campaign/sendouts/' ~ sendout.sendoutType) }
+    { label: sendout.sendoutTypeLabel, url: url('campaign/sendouts/' ~ sendout.sendoutType) }
 ] %}
 {% set tabs = {
     'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
@@ -99,26 +99,6 @@
 
 {% block details %}
 
-    {% if sendout.sendStatus != 'sent' %}
-        <fieldset>
-            <legend class="h6">Test Email</legend>
-            <div class="meta test-email">
-                {{ forms.elementSelectField({
-                    id: 'testContacts',
-                    name: 'testContacts',
-                    elementType: contactElementType,
-                    selectionLabel: "Add a contact"|t('campaign'),
-                    criteria: contactElementCriteria,
-                    elements: testContacts
-                }) }}
-                {% set button %}
-                    <a class="send-test btn">{{ 'Send Test'|t('campaign') }}</a>
-                {% endset %}
-                {{ forms.field({}, button) }}
-            </div>
-        </fieldset>
-    {% endif %}
-
     <div class="meta read-only">
         <div class="data first">
             <h5 class="heading">{{ 'Status'|t('app') }}</h5>
@@ -202,6 +182,26 @@
         {% endif %}
 
     </div>
+
+    {% if sendout.sendStatus != 'sent' %}
+        <fieldset>
+            <legend class="h6">Test Email</legend>
+            <div class="meta test-email">
+                {{ forms.elementSelectField({
+                    id: 'testContacts',
+                    name: 'testContacts',
+                    elementType: contactElementType,
+                    selectionLabel: "Add a contact"|t('campaign'),
+                    criteria: contactElementCriteria,
+                    elements: testContacts
+                }) }}
+                {% set button %}
+                    <a class="send-test btn">{{ 'Send Test'|t('campaign') }}</a>
+                {% endset %}
+                {{ forms.field({}, button) }}
+            </div>
+        </fieldset>
+    {% endif %}
 
     {% if not fullPageForm %}
         </form>

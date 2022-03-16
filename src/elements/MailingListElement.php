@@ -172,7 +172,6 @@ class MailingListElement extends Element
     protected static function defineActions(string $source = null): array
     {
         $actions = [];
-
         $elementsService = Craft::$app->getElements();
 
         // Edit

@@ -254,7 +254,6 @@ class SendoutElement extends Element
     protected static function defineActions(string $source = null): array
     {
         $actions = [];
-
         $elementsService = Craft::$app->getElements();
 
         // Edit
@@ -429,19 +428,19 @@ class SendoutElement extends Element
     public ?string $notificationEmailAddress = null;
 
     /**
-     * @var string|null Mailing list IDs
+     * @var string|array|null Mailing list IDs
      */
-    public ?string $mailingListIds = null;
+    public string|array|null $mailingListIds = null;
 
     /**
-     * @var string|null Excluded mailing list IDs
+     * @var string|array|null Excluded mailing list IDs
      */
-    public ?string $excludedMailingListIds = null;
+    public string|array|null $excludedMailingListIds = null;
 
     /**
-     * @var string|null Segment IDs
+     * @var string|array|null Segment IDs
      */
-    public ?string $segmentIds = null;
+    public string|array|null $segmentIds = null;
 
     /**
      * @var int Recipients
@@ -560,8 +559,8 @@ class SendoutElement extends Element
         $rules[] = [['notificationEmailAddress'], 'email'];
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
-        // Safe rules, since these are just used for posted params
-        $rules[] = [['campaignIds', 'fromNameEmails'], 'safe'];
+        // Safe rules
+        $rules[] = [['campaignIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail'], 'safe'];
 
         return $rules;
     }
@@ -590,6 +589,19 @@ class SendoutElement extends Element
                 'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
             ],
         ];
+    }
+
+
+    /**
+     * Returns the sendout’s preview URL in the control panel.
+     *
+     * @since 2.0.0
+     */
+    public function getCpPreviewUrl(): ?string
+    {
+        $path = sprintf('campaign/sendouts/%s/%s/%s', $this->sendoutType, 'preview', $this->getCanonicalId());
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
@@ -819,7 +831,7 @@ class SendoutElement extends Element
      */
     public function getMailingListIds(): array
     {
-        return $this->mailingListIds ? explode(',', $this->mailingListIds) : [];
+        return is_string($this->mailingListIds) ? explode(',', $this->mailingListIds) : $this->mailingListIds;
     }
 
     /**
@@ -1146,6 +1158,11 @@ class SendoutElement extends Element
 
         // Get the selected campaign ID
         $this->campaignId = $this->campaignIds[0] ?? null;
+
+        // Get the selected included and excluded mailing list IDs and segment IDs
+        $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : '';
+        $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : '';
+        $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : '';
 
         return parent::beforeSave($isNew);
     }

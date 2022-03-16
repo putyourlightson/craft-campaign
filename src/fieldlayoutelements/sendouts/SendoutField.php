@@ -40,10 +40,13 @@ class SendoutField extends BaseNativeField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        Craft::$app->view->registerAssetBundle(SendoutEditAsset::class);
+        if (!$element->getIsModifiable()) {
+            return '';
+        }
 
         $siteId = $element->siteId;
         $variables = [
+            'editable' => !$static,
             'sendout' => $element,
             'fromNameEmailOptions' => Campaign::$plugin->settings->getFromNameEmailOptions($siteId),
             'campaignElementType' => CampaignElement::class,

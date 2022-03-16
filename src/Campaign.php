@@ -381,6 +381,7 @@ class Campaign extends Plugin
             'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/create',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit',
             'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit',
+            'campaign/sendouts/<sendoutType:{handle}>/preview/<sendoutId:\d+>' => 'campaign/sendouts/preview',
             'campaign/settings/general' => 'campaign/settings/edit-general',
             'campaign/settings/email' => 'campaign/settings/edit-email',
             'campaign/settings/sendout' => 'campaign/settings/edit-sendout',

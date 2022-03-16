@@ -309,7 +309,7 @@ class Install extends Migration
     {
         $this->createIndex(null, CampaignTypeRecord::tableName(), 'handle', true);
         $this->createIndex(null, ContactRecord::tableName(), 'email', false);
-        $this->createIndex(null, ContactRecord::tableName(), 'cid', true);
+        $this->createIndex(null, ContactRecord::tableName(), 'cid', false);
         $this->createIndex(null, PendingContactRecord::tableName(), 'pid', true);
         $this->createIndex(null, PendingContactRecord::tableName(), 'email, mailingListId', false);
         $this->createIndex(null, ContactCampaignRecord::tableName(), 'contactId, sendoutId', true);
@@ -318,7 +318,7 @@ class Install extends Migration
         $this->createIndex(null, LinkRecord::tableName(), 'lid', true);
         $this->createIndex(null, MailingListTypeRecord::tableName(), 'handle', true);
         $this->createIndex(null, SegmentRecord::tableName(), 'segmentType', false);
-        $this->createIndex(null, SendoutRecord::tableName(), 'sid', true);
+        $this->createIndex(null, SendoutRecord::tableName(), 'sid', false);
         $this->createIndex(null, SendoutRecord::tableName(), 'sendoutType', false);
         $this->createIndex(null, SendoutRecord::tableName(), 'sendStatus', false);
     }

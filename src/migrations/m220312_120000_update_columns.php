@@ -35,6 +35,11 @@ class m220312_120000_update_columns extends Migration
             );
         }
 
+        $this->dropIndexIfExists(ContactRecord::tableName(), 'cid', true);
+        $this->createIndexIfMissing(ContactRecord::tableName(), 'cid', false);
+        $this->dropIndexIfExists(SendoutRecord::tableName(), 'sid', true);
+        $this->createIndexIfMissing(SendoutRecord::tableName(), 'sid', false);
+
         return true;
     }
 

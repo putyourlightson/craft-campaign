@@ -15,6 +15,7 @@ use putyourlightson\campaign\assets\ContactEditAsset;
 use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -72,6 +73,12 @@ class ContactsController extends Controller
      */
     public function actionEdit(int $contactId = null): Response
     {
+        $contact = Campaign::$plugin->contacts->getContactById($contactId);
+
+        if ($contact === null) {
+            throw new BadRequestHttpException("Invalid contact ID: $contactId");
+        }
+
         $this->view->registerAssetBundle(ContactEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
@@ -82,13 +89,6 @@ class ContactsController extends Controller
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $contactId,
         ]);
-
-        // Add actions
-        $contact = Campaign::$plugin->contacts->getContactById($contactId);
-
-        if ($contact === null) {
-            return $response;
-        }
 
         if ($contact->complained === null) {
             $response->addAltAction(
