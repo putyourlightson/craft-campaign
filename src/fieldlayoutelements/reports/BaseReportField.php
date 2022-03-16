@@ -9,7 +9,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
 use putyourlightson\campaign\assets\ReportsAsset;
-use putyourlightson\campaign\elements\CampaignElement;
 
 /**
  * @since 2.0.0

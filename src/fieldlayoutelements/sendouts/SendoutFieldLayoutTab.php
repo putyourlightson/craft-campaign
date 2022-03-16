@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\fieldlayoutelements\sendouts;
 
 use Craft;
-use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TitleField;
 use craft\models\FieldLayoutTab;
 

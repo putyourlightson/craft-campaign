@@ -21,7 +21,6 @@ use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\actions\HardDeleteContacts;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactMailingListFieldLayoutTab;
 use putyourlightson\campaign\fieldlayoutelements\reports\ContactReportFieldLayoutTab;
