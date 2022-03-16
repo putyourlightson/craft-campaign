@@ -12,6 +12,7 @@ use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\helpers\ElementHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -113,6 +114,14 @@ class SegmentElement extends Element
     public static function hasStatuses(): bool
     {
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUriFormat(): ?string
+    {
+        return '{slug}';
     }
 
     /**
@@ -301,7 +310,7 @@ class SegmentElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['segmentType'], 'required'];
+        $rules[] = [['segmentType', 'conditions'], 'required'];
         $rules[] = [['segmentType'], 'string'];
 
         return $rules;
@@ -357,12 +366,9 @@ class SegmentElement extends Element
     {
         $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
-        $fieldLayout->setTabs(array_merge(
-            $fieldLayout->getTabs(),
-            [
-                new SegmentFieldLayoutTab(),
-            ],
-        ));
+        $fieldLayout->setTabs([
+            new SegmentFieldLayoutTab(),
+        ]);
 
         return $fieldLayout;
     }
@@ -520,11 +526,22 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public function getEditorHtml(): string
+    public function beforeSave(bool $isNew): bool
     {
-        return Craft::$app->getView()->renderTemplate('campaign/segments/_includes/titlefield', [
-            'segment' => $this,
-        ]);
+        // Ensure the slug is unique, even though mailing lists don't have URIs,
+        // which prevents us from depending on the SlugValidator class.
+        ElementHelper::setUniqueUri($this);
+
+        // Sort OR conditions by keys
+        if (is_array($this->conditions)) {
+            foreach ($this->conditions as &$andCondition) {
+                foreach ($andCondition as &$orCondition) {
+                    ksort($orCondition);
+                }
+            }
+        }
+
+        return parent::beforeSave($isNew);
     }
 
     /**

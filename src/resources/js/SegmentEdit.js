@@ -7,7 +7,7 @@
 Campaign.SegmentEdit = Garnish.Base.extend(
     {
         init: function() {
-            this.addListeners($('#conditions-field'));
+            this.addListeners($('#segment-conditions-field'));
 
             this.refreshConditions();
         },
