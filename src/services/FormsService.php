@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
@@ -17,6 +18,7 @@ use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
 
 use putyourlightson\campaign\helpers\ContactActivityHelper;
+use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use Twig\Error\Error;
 
@@ -71,7 +73,8 @@ class FormsService extends Component
 
         $subject = Craft::t('campaign', 'Verify your email address');
         $bodyText = Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please verify your email address by clicking on the following link:');
-        $body = $bodyText . "\n" . $url;
+        $htmlBody = $bodyText . '<br>' . Html::a($url, $url);
+        $plaintextBody = $bodyText . PHP_EOL . $url;
 
         // Get subject from setting if defined
         $subject = $mailingList->mailingListType->subscribeVerificationEmailSubject ?: $subject;
@@ -79,7 +82,7 @@ class FormsService extends Component
         // Get body from template if defined
         if ($mailingList->mailingListType->subscribeVerificationEmailTemplate) {
             try {
-                $body = Craft::$app->getView()->renderTemplate(
+                $htmlBody = Craft::$app->getView()->renderTemplate(
                     $mailingList->mailingListType->subscribeVerificationEmailTemplate,
                     [
                         'message' => $bodyText,
@@ -89,12 +92,13 @@ class FormsService extends Component
                     ],
                     View::TEMPLATE_MODE_SITE,
                 );
+                $plaintextBody = StringHelper::htmlToPlaintext($htmlBody);
             }
             catch (Error) {
             }
         }
 
-        return $this->_sendEmail($pendingContact->email, $subject, $body, $mailingList->siteId);
+        return $this->_sendEmail($pendingContact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
     }
 
     /**
@@ -114,7 +118,8 @@ class FormsService extends Component
 
         $subject = Craft::t('campaign', 'Verify unsubscribe');
         $bodyText = Craft::t('campaign', 'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:');
-        $body = $bodyText . "\n" . $url;
+        $htmlBody = $bodyText . '<br>' . Html::a($url, $url);
+        $plaintextBody = $bodyText . PHP_EOL . $url;
 
         // Get subject from setting if defined
         $subject = $mailingList->mailingListType->unsubscribeVerificationEmailSubject ?: $subject;
@@ -122,7 +127,7 @@ class FormsService extends Component
         // Get body from template if defined
         if ($mailingList->mailingListType->unsubscribeVerificationEmailTemplate) {
             try {
-                $body = Craft::$app->getView()->renderTemplate(
+                $htmlBody = Craft::$app->getView()->renderTemplate(
                     $mailingList->mailingListType->unsubscribeVerificationEmailTemplate,
                     [
                         'message' => $bodyText,
@@ -137,7 +142,7 @@ class FormsService extends Component
             }
         }
 
-        return $this->_sendEmail($contact->email, $subject, $body, $mailingList->siteId);
+        return $this->_sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
     }
 
     /**
@@ -234,7 +239,7 @@ class FormsService extends Component
     /**
      * Sends an email to a contact.
      */
-    public function _sendEmail(string $email, string $subject, string $body, int $siteId): bool
+    public function _sendEmail(string $email, string $subject, string $htmlBody, string $plaintextBody, int $siteId): bool
     {
         // Get from name and email
         $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($siteId);
@@ -245,8 +250,8 @@ class FormsService extends Component
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($email)
             ->setSubject($subject)
-            ->setHtmlBody($body)
-            ->setTextBody($body);
+            ->setHtmlBody($htmlBody)
+            ->setTextBody($plaintextBody);
 
         if ($fromNameEmail['replyTo']) {
             $message->setReplyTo($fromNameEmail['replyTo']);
