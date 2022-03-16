@@ -13,7 +13,7 @@
 
 ### Changed
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
-- Verification emails are now sent HTML and plaintext format ([#303](https://github.com/putyourlightson/craft-campaign/issues/303)).
+- Verification emails are now sent in HTML and plaintext format ([#303](https://github.com/putyourlightson/craft-campaign/issues/303)).
 
 ### Removed
 - Removed support for reCAPTCHA version 2, leaving support for version 3 only.
