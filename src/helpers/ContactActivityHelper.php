@@ -23,12 +23,12 @@ class ContactActivityHelper
     /**
      * @var array|null
      */
-    private static ?array $_geoIp;
+    private static ?array $_geoIp = null;
 
     /**
      * @var array|null
      */
-    private static ?array $_device;
+    private static ?array $_device = null;
 
     /**
      * Updates contact activity.

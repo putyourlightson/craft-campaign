@@ -4,9 +4,7 @@
 {% import 'campaign/_macros' as macros %}
 
 {% set title = 'Email Settings'|t('campaign') %}
-
 {% set crumbs = [] %}
-
 {% set fullPageForm = true %}
 
 
@@ -55,8 +53,6 @@
         required: true,
         first: true,
     }) }}
-
-    <hr/>
 
     {{ forms.selectField({
         label: "Transport Type"|t('campaign'),
