@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\App;
 use craft\helpers\DateTimeHelper;
-use craft\helpers\UrlHelper;
 use craft\queue\Queue;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
@@ -170,7 +169,7 @@ class SendoutsController extends Controller
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'sendouts');
 
         /** @var Response|CpScreenResponseBehavior $response */
-        $response =  Craft::$app->runAction('elements/edit', [
+        $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $sendoutId,
         ]);
 

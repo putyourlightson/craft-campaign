@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
-use putyourlightson\campaign\assets\SendoutEditAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;

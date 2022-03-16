@@ -371,15 +371,9 @@ class SendoutElement extends Element
     public ?string $sid = null;
 
     /**
-     * @var array|null Campaign IDs, used for posted params
-     * @see SendoutElement::beforeSave()
+     * @var int|array|null Campaign ID
      */
-    public ?array $campaignIds = null;
-
-    /**
-     * @var int|null Campaign ID
-     */
-    public ?int $campaignId = null;
+    public int|array|null $campaignId = null;
 
     /**
      * @var int|null Sender ID
@@ -560,7 +554,7 @@ class SendoutElement extends Element
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         // Safe rules
-        $rules[] = [['campaignIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail'], 'safe'];
+        $rules[] = [['excludedMailingListIds', 'segmentIds', 'fromNameEmail'], 'safe'];
 
         return $rules;
     }
@@ -1155,7 +1149,7 @@ class SendoutElement extends Element
         }
 
         // Get the selected campaign ID
-        $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
+        $this->campaignId = $this->campaignId[0] ?? $this->campaignId;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
         $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
