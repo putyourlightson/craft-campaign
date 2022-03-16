@@ -310,8 +310,9 @@ class SegmentElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['segmentType', 'conditions'], 'required'];
+        $rules[] = [['segmentType'], 'required'];
         $rules[] = [['segmentType'], 'string'];
+        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
 
         return $rules;
     }
