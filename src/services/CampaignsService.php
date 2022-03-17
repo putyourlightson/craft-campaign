@@ -33,20 +33,6 @@ class CampaignsService extends Component
     }
 
     /**
-     * Returns a campaign by ID, including drafts.
-     */
-    public function getCampaignByIdWithDrafts(int $campaignId): ?CampaignElement
-    {
-        return CampaignElement::find()
-            ->id($campaignId)
-            ->site('*')
-            ->status(null)
-            ->drafts(true)
-            ->provisionalDrafts(true)
-            ->one();
-    }
-
-    /**
      * Adds a contact interaction.
      */
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)

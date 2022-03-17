@@ -52,12 +52,6 @@ class CampaignsController extends Controller
      */
     public function actionEdit(int $campaignId): Response
     {
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-        if ($campaign === null) {
-            throw new BadRequestHttpException("Invalid campaign ID: $campaignId");
-        }
-
         $this->view->registerAssetBundle(CampaignEditAsset::class);
         $this->view->registerAssetBundle(ReportsAsset::class);
 
@@ -68,6 +62,12 @@ class CampaignsController extends Controller
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $campaignId,
         ]);
+
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+
+        if ($campaign === null) {
+            return $response;
+        }
 
         if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
             $response->addAltAction(
@@ -91,7 +91,9 @@ class CampaignsController extends Controller
         $this->requireAcceptsJson();
 
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
-        $campaign = Campaign::$plugin->campaigns->getCampaignByIdWithDrafts($campaignId);
+
+        // Use the elements service since it might be a draft.
+        $campaign = Craft::$app->getElements()->getElementById($campaignId);
 
         if (!$campaign) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));

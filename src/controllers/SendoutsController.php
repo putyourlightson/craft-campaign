@@ -151,16 +151,6 @@ class SendoutsController extends Controller
      */
     public function actionEdit(int $sendoutId): Response
     {
-        $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
-
-        if ($sendout === null) {
-            throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
-        }
-
-        if (!$sendout->getIsModifiable()) {
-            return $this->redirect($sendout->getCpPreviewUrl());
-        }
-
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'sendouts');
 
@@ -168,6 +158,17 @@ class SendoutsController extends Controller
         $response = Craft::$app->runAction('elements/edit', [
             'elementId' => $sendoutId,
         ]);
+
+        // Use the elements service, in case this is a provisional draft.
+        $sendout = Craft::$app->getElements()->getElementById($sendoutId, SendoutElement::class);
+
+        if ($sendout === null) {
+            return $response;
+        }
+
+        if (!$sendout->getIsModifiable()) {
+            return $this->redirect($sendout->getCpPreviewUrl());
+        }
 
         $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
         $response->redirectUrl = $sendout->getCpPreviewUrl();
