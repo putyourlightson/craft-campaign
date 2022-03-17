@@ -2,9 +2,9 @@
 /** global: Craft */
 /** global: Garnish */
 /**
- * SendoutEdit class
+ * SendoutPreview class
  */
-Campaign.SendoutEdit = Garnish.Base.extend(
+Campaign.SendoutPreview = Garnish.Base.extend(
     {
         modal: null,
 
@@ -66,27 +66,27 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                 sendoutId: $('input[name=sendoutId]').val()
             };
 
-            Craft.postActionRequest('campaign/sendouts/send', data, function(response, textStatus) {
-                $('.preflight .spinner').addClass('hidden');
-
-                if (textStatus === 'success') {
-                    if (response.success) {
-                        if (Craft.runQueueAutomatically) {
-                            Craft.postActionRequest('queue/run');
-                        }
-
-                        $('.preflight .confirm').fadeOut(function() {
-                            $('.preflight .launched').fadeIn();
-                        });
+            Craft.sendActionRequest('POST', 'campaign/sendouts/send', {data})
+                .then((response) => {
+                    if (Craft.runQueueAutomatically) {
+                        Craft.sendActionRequest('POST', 'queue/run');
                     }
-                    else if (response.errors) {
-                        $('.preflight .error').text(response.error).removeClass('hidden');
+
+                    $('.preflight .confirm').fadeOut(function() {
+                        $('.preflight .launched').fadeIn();
+                    });
+                })
+                .catch(({response}) => {
+                    if (response.data.message) {
+                        $('.preflight .error').text(response.data.message).removeClass('hidden');
                     }
                     else {
                         Craft.cp.displayError();
                     }
-                }
-            });
+                })
+                .finally(() => {
+                    $('.preflight .spinner').addClass('hidden');
+                });
         },
 
         sendTest: function(event) {
@@ -106,20 +106,23 @@ Campaign.SendoutEdit = Garnish.Base.extend(
                 sendoutId: $('input[name=sendoutId]').val()
             };
 
-            Craft.postActionRequest('campaign/sendouts/send-test', data, function(response, textStatus) {
-                if (textStatus === 'success') {
-                    if (response.success) {
-                        Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
+            Craft.sendActionRequest('POST', 'campaign/sendouts/send-test', {data})
+                .then((response) => {
+                    Craft.cp.displayNotice(response.data.message);
+                })
+                .catch(({response}) => {
+                    if (response.data.message) {
+                        Craft.cp.displayError(response.data.message);
                     }
                     else {
-                        Craft.cp.displayError(response.error);
+                        Craft.cp.displayError();
                     }
-                }
-
-                $('.send-test').removeClass('disabled');
-            });
+                })
+                .finally(() => {
+                    $('.send-test').removeClass('disabled');
+                });
         },
     }
 );
 
-new Campaign.SendoutEdit();
+new Campaign.SendoutPreview();

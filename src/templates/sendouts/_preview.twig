@@ -13,11 +13,6 @@
 {% set mailingLists = sendout.mailingLists %}
 {% set schedule = sendout.schedule %}
 
-{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\SendoutEditAsset') %}
-{% do view.registerTranslations('campaign', [
-    'Test email sent.',
-]) %}
-
 
 {% block pageTitle %}
 

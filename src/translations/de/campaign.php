@@ -81,7 +81,7 @@ return [
     'Are you sure you want to unmark this contact as bounced?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `bounced` markieren möchten?',
     'Are you sure you want to unmark this contact as complained?' => 'Sind Sie sicher, dass Sie diesen Kontakt nicht mehr als `complained` markieren möchten?',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => 'Sind Sie sicher, dass Sie diesen Kontakt aus dieser Mailing-Liste entfernen möchten?',
-    'At least one contact must be submitted.' => 'Es muss mindestes ein Kontakt gesendet werden.',
+    'At least one contact must be selected.' => 'Es muss mindestes ein Kontakt gesendet werden.',
     'Automated' => 'Automatisiert',
     'Blocked' => 'Blockiert',
     'Bottom left ' => 'Unten links',

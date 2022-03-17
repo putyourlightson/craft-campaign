@@ -80,7 +80,7 @@ return [
     'Are you sure you want to unmark this contact as bounced?' => '',
     'Are you sure you want to unmark this contact as complained?' => '',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => '',
-    'At least one contact must be submitted.' => '',
+    'At least one contact must be selected.' => '',
     'Automated' => '',
     'Blocked' => '',
     'Bottom left ' => '',

@@ -62,9 +62,7 @@ class ImportsController extends Controller
         $file = UploadedFile::getInstanceByName('file');
 
         if ($file === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'A CSV file must be selected to upload.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'A CSV file must be selected to upload.'));
         }
 
         $tempFilePath = $file->saveAsTempFile();
@@ -73,9 +71,7 @@ class ImportsController extends Controller
         $mimeType = FileHelper::getMimeType($tempFilePath);
 
         if ($mimeType != 'text/plain' && $mimeType != 'text/csv' && $mimeType != 'application/csv') {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
         }
 
         // Copy to user temporary folder
@@ -97,9 +93,7 @@ class ImportsController extends Controller
         $asset->setScenario(Asset::SCENARIO_CREATE);
 
         if (!Craft::$app->getElements()->saveElement($asset)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Unable to upload CSV file.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Unable to upload CSV file.'));
         }
 
         if ($import === null) {
@@ -155,9 +149,7 @@ class ImportsController extends Controller
 
         Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'CSV file successfully queued for importing.'));
-
-        return $this->redirectToPostedUrl($import);
+        return $this->asModelSuccess($import, Craft::t('campaign', 'CSV file successfully queued for importing.'), 'import');
     }
 
     /**
@@ -242,9 +234,7 @@ class ImportsController extends Controller
         // Log it
         Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'User group successfully queued for importing.'));
-
-        return $this->redirectToPostedUrl($import);
+        return $this->asModelSuccess($import, Craft::t('campaign', 'User group successfully queued for importing.'), 'import');
     }
 
     /**
@@ -281,10 +271,9 @@ class ImportsController extends Controller
         $this->requireAcceptsJson();
 
         $importId = $this->request->getRequiredBodyParam('id');
-
         Campaign::$plugin->imports->deleteImportById($importId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 
     /**

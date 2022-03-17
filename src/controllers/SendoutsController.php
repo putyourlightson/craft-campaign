@@ -14,6 +14,8 @@ use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use DateTime;
+use putyourlightson\campaign\assets\ContactEditAsset;
+use putyourlightson\campaign\assets\SendoutPreviewAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -70,13 +72,7 @@ class SendoutsController extends Controller
             return $this->response;
         }
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]));
     }
 
     /**
@@ -190,6 +186,8 @@ class SendoutsController extends Controller
             throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
         }
 
+        $this->view->registerAssetBundle(SendoutPreviewAsset::class);
+
         $campaign = $sendout->getCampaign();
         $campaignType = $campaign->getCampaignType();
 
@@ -215,7 +213,8 @@ class SendoutsController extends Controller
 
         $sendoutField = new SendoutField();
         $sendoutField->formHtml($sendout);
-        return $this->renderTemplate('campaign/sendouts/_view', $variables);
+
+        return $this->renderTemplate('campaign/sendouts/_preview', $variables);
     }
 
     /**
@@ -457,31 +456,16 @@ class SendoutsController extends Controller
 
             // If errors then send the sendout back to the template
             if ($sendout->schedule->hasErrors() || $sendout->hasErrors()) {
-                Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
-
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'sendout' => $sendout,
-                ]);
-
-                return null;
+                return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
             }
         }
 
         // Save it without propagating across all sites
         if (!Craft::$app->getElements()->saveElement($sendout, true, false)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
-
-            // Send the sendout back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'sendout' => $sendout,
-            ]);
-
-            return null;
+            return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout saved.'));
-
-        return $this->redirectToPostedUrl($sendout);
+        return $this->asModelSuccess($sendout, Craft::t('campaign', 'Sendout saved.'), 'sendout');
     }
 
     /**
@@ -504,18 +488,7 @@ class SendoutsController extends Controller
 
         // Save it
         if (!Craft::$app->getElements()->saveElement($sendout)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson(['errors' => $sendout->getErrors()]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout.'));
-
-            // Send the sendout back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'sendout' => $sendout,
-            ]);
-
-            return null;
+            return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
         }
 
         // Log it
@@ -524,13 +497,7 @@ class SendoutsController extends Controller
         // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout saved.'));
-
-        return $this->redirectToPostedUrl($sendout);
+        return $this->asModelSuccess($sendout, Craft::t('campaign', 'Sendout saved.'), 'sendout');
     }
 
     /**
@@ -546,18 +513,18 @@ class SendoutsController extends Controller
 
         // Validate test contacts
         if (empty($contactIds)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'At least one contact must be submitted.')]);
+            return $this->asFailure(Craft::t('campaign', 'At least one contact must be selected.'));
         }
 
         $contacts = Campaign::$plugin->contacts->getContactsByIds($contactIds);
 
         foreach ($contacts as $contact) {
             if (!Campaign::$plugin->sendouts->sendTest($sendout, $contact)) {
-                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
+                return $this->asFailure(Craft::t('campaign', 'Couldn’t send test email.'));
             }
         }
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess(Craft::t('campaign', 'Test email sent.'));
     }
 
     /**
@@ -570,17 +537,13 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->pauseSendout($sendout)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be paused.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Sendout could not be paused.'));
         }
 
         // Log it
         Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout paused.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Sendout paused.'));
     }
 
     /**
@@ -593,17 +556,13 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->cancelSendout($sendout)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be cancelled.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Sendout could not be cancelled.'));
         }
 
         // Log it
         Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout cancelled.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Sendout cancelled.'));
     }
 
     /**
@@ -616,17 +575,13 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->deleteSendout($sendout)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Sendout could not be deleted.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Sendout could not be deleted.'));
         }
 
         // Log it
         Campaign::$plugin->log('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout deleted.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Sendout deleted.'));
     }
 
     /**

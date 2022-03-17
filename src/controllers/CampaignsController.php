@@ -91,7 +91,7 @@ class CampaignsController extends Controller
         $this->requireAcceptsJson();
 
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+        $campaign = Campaign::$plugin->campaigns->getCampaignByIdWithDrafts($campaignId);
 
         if (!$campaign) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
@@ -100,18 +100,18 @@ class CampaignsController extends Controller
         $contactIds = $this->request->getBodyParam('contactIds');
 
         if (empty($contactIds)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'At least one contact must be submitted.')]);
+            return $this->asFailure(Craft::t('campaign', 'At least one contact must be selected.'));
         }
 
         $contacts = Campaign::$plugin->contacts->getContactsByIds($contactIds);
 
         foreach ($contacts as $contact) {
             if (!Campaign::$plugin->campaigns->sendTest($campaign, $contact)) {
-                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Couldn’t send test email.')]);
+                return $this->asFailure(Craft::t('campaign', 'Couldn’t send test email.'));
             }
         }
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess(Craft::t('campaign', 'Test email sent.'));
     }
 
     /**
@@ -132,31 +132,14 @@ class CampaignsController extends Controller
         $campaign->dateClosed = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($campaign)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $campaign->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t close campaign.'));
-
-            // Send the campaign back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaign' => $campaign,
+            return $this->asModelFailure($campaign, Craft::t('app', 'Couldn’t close campaign.'), 'campaign', [
+                'errors' => $campaign->getErrors(),
             ]);
-
-            return null;
         }
 
         // Delete all contact activity for this campaign
         ContactCampaignRecord::deleteAll(['campaignId' => $campaign->id]);
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign closed.'));
-
-        return $this->redirectToPostedUrl($campaign);
+        return $this->asModelSuccess($campaign, Craft::t('campaign', 'Campaign closed.'), 'campaign');
     }
 }

@@ -11,7 +11,6 @@ use Aws\Sns\MessageValidator;
 use Craft;
 use craft\helpers\App;
 use craft\helpers\Json;
-
 use craft\web\Controller;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
@@ -52,11 +51,11 @@ class WebhookController extends Controller
     }
 
     /**
-     * Test.
+     * Test webhook.
      */
     public function actionTest(): ?Response
     {
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 
     /**
@@ -77,7 +76,7 @@ class WebhookController extends Controller
             $validator->validate($message);
         }
         catch (InvalidSnsMessageException) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'SNS message validation error.')]);
+            return $this->asFailure(Craft::t('campaign', 'SNS message validation error.'));
         }
 
         // Check the type of the message and handle the subscription.
@@ -109,7 +108,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+        return $this->asFailure(Craft::t('campaign', 'Event not found.'));
     }
 
     /**
@@ -132,7 +131,7 @@ class WebhookController extends Controller
             $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'] . $eventSignature['token'], $signingKey);
 
             if (!$eventSignature || $eventSignature['signature'] != $hashedValue) {
-                return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Signature could not be authenticated.')]);
+                return $this->asFailure(Craft::t('campaign', 'Signature could not be authenticated.'));
             }
         }
 
@@ -164,7 +163,7 @@ class WebhookController extends Controller
             return $this->_callWebhook('bounced', $email);
         }
 
-        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+        return $this->asFailure(Craft::t('campaign', 'Event not found.'));
     }
 
     /**
@@ -191,7 +190,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+        return $this->asFailure(Craft::t('campaign', 'Event not found.'));
     }
 
     /**
@@ -206,7 +205,7 @@ class WebhookController extends Controller
         $allowedIpAddresses = Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses;
 
         if ($allowedIpAddresses && !in_array($this->request->getUserIP(), $allowedIpAddresses)) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'IP address not allowed.')]);
+            return $this->asFailure(Craft::t('campaign', 'IP address not allowed.'));
         }
 
         $eventType = $this->request->getBodyParam('RecordType');
@@ -243,7 +242,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+        return $this->asFailure(Craft::t('campaign', 'Event not found.'));
     }
 
     /**
@@ -273,7 +272,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Event not found.')]);
+        return $this->asFailure(Craft::t('campaign', 'Event not found.'));
     }
 
     /**
@@ -285,13 +284,13 @@ class WebhookController extends Controller
         Craft::warning('Webhook request: ' . $this->request->getRawBody(), 'campaign');
 
         if ($email === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Email not found.')]);
+            return $this->asFailure(Craft::t('campaign', 'Email not found.'));
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
-            return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Contact not found.')]);
+            return $this->asFailure(Craft::t('campaign', 'Contact not found.'));
         }
 
         if ($event == 'complained') {
@@ -304,6 +303,6 @@ class WebhookController extends Controller
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 }

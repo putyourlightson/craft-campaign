@@ -779,6 +779,8 @@ class CampaignElement extends Element
             'elements' => $this->getCampaignType()->getTestContacts(),
         ]);
 
+        $testEmailField .= Html::hiddenInput('campaignId', $this->id);
+
         $sendTestButton = Cp::fieldHtml(
             Html::button(Craft::t('campaign', 'Send Test'), [
                 'class' => 'send-test btn',

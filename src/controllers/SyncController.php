@@ -60,22 +60,13 @@ class SyncController extends Controller
      */
     public function actionAddSyncedMailingList(): ?Response
     {
-        $this->requirePermission('campaign:sync');
-
         $this->requirePostRequest();
 
         $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
         $mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : null;
 
         if ($mailingListId === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t sync mailing list.'));
-
-            // Send the errors back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'errors' => ['mailingListId' => [Craft::t('campaign', 'Mailing list is required.')]],
-            ]);
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Mailing list is required.'));
         }
 
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
@@ -97,18 +88,10 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = $userGroup->id;
-
         Craft::$app->getElements()->saveElement($mailingList);
-
         Campaign::$plugin->sync->queueSync($mailingList);
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
     }
 
     /**
@@ -116,8 +99,6 @@ class SyncController extends Controller
      */
     public function actionRemoveSyncedMailingList(): Response
     {
-        $this->requirePermission('campaign:sync');
-
         $this->requirePostRequest();
 
         $mailingListId = $this->request->getRequiredBodyParam('id');
@@ -128,15 +109,8 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = null;
-
         Craft::$app->getElements()->saveElement($mailingList);
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Syncing successfully removed.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Syncing successfully removed.'));
     }
 }

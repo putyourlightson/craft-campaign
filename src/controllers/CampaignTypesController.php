@@ -102,19 +102,10 @@ class CampaignTypesController extends Controller
 
         // Save it
         if (!Campaign::$plugin->campaignTypes->saveCampaignType($campaignType)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save campaign type.'));
-
-            // Send the campaign type back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaignType' => $campaignType,
-            ]);
-
-            return null;
+            return $this->asModelFailure($campaignType, Craft::t('campaign', 'Couldn’t save campaign type.'), 'campaignType');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign type saved.'));
-
-        return $this->redirectToPostedUrl($campaignType);
+        return $this->asModelSuccess($campaignType, Craft::t('campaign', 'Campaign type saved.'), 'campaignType');
     }
 
     /**
@@ -126,9 +117,8 @@ class CampaignTypesController extends Controller
         $this->requireAcceptsJson();
 
         $campaignTypeId = $this->request->getRequiredBodyParam('id');
-
         Campaign::$plugin->campaignTypes->deleteCampaignTypeById($campaignTypeId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 }

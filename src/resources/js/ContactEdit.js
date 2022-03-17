@@ -30,29 +30,33 @@ Campaign.ContactEdit = Garnish.Base.extend(
                     mailingListId: $row.attr('data-mailing-list-id'),
                 };
 
-                Craft.postActionRequest($this.attr('data-action'), data, $.proxy(function(response, textStatus) {
-                    if (textStatus === 'success') {
-                        $row.find('.subscriptionStatus').attr('class', 'subscriptionStatus ' + response.subscriptionStatus).text(response.subscriptionStatusLabel);
+                Craft.sendActionRequest('POST', $this.attr('data-action'), {data})
+                    .then((response) => {
+                        $row.find('.subscriptionStatus').attr('class', 'subscriptionStatus ' + response.data.subscriptionStatus).text(response.data.subscriptionStatusLabel);
 
                         $row.find('input, .remove').addClass('hidden');
 
-                        if (response.subscriptionStatus == 'subscribed') {
+                        if (response.data.subscriptionStatus == 'subscribed') {
                             $row.find('input.unsubscribe').removeClass('hidden');
                         }
                         else {
                             $row.find('input.subscribe').removeClass('hidden');
                         }
 
-                        if (response.subscriptionStatus) {
+                        if (response.data.subscriptionStatus) {
                             $row.find('.remove').removeClass('hidden');
                         }
 
-                        Craft.cp.displayNotice(Craft.t('campaign', 'Subscription successfully updated.'));
-                    }
-                    else {
-                        Craft.cp.displayError(Craft.t('campaign', 'Couldn’t update subscription.'));
-                    }
-                }, this));
+                        Craft.cp.displayNotice(response.data.message);
+                    })
+                    .catch(({response}) => {
+                        if (response.data.message) {
+                            Craft.cp.displayError(response.data.message);
+                        }
+                        else {
+                            Craft.cp.displayError();
+                        }
+                    });
             }
         },
     }

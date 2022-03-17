@@ -10,7 +10,6 @@ use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
-
 use putyourlightson\campaign\records\LinkRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

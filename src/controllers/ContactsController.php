@@ -241,7 +241,6 @@ class ContactsController extends Controller
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
-
         $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
@@ -259,15 +258,10 @@ class ContactsController extends Controller
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $subscriptionStatus, 'user', $currentUserId);
         }
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson([
-                'success' => true,
-                'subscriptionStatus' => $subscriptionStatus,
-                'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
-            ]);
-        }
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Subscription successfully updated.'), [
+            'subscriptionStatus' => $subscriptionStatus,
+            'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
+        ]);
     }
 
     /**
@@ -278,31 +272,13 @@ class ContactsController extends Controller
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
-
         $contact->{$status} = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t mark contact as ' . $status . '.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact,
-            ]);
-
-            return null;
+            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t mark contact as ' . $status . '.'), 'contact');
         }
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact marked as ' . $status . '.'));
-
-        return $this->redirectToPostedUrl($contact);
+        return $this->asModelSuccess($contact, Craft::t('campaign', 'Contact marked as ' . $status . '.'), 'contact');
     }
 
     /**
@@ -313,30 +289,12 @@ class ContactsController extends Controller
         $this->requirePostRequest();
 
         $contact = $this->_getPostedContact();
-
         $contact->{$status} = null;
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t unmark contact as ' . $status . '.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact,
-            ]);
-
-            return null;
+            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t unmark contact as ' . $status . '.'), 'contact');
         }
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact unmarked as ' . $status . '.'));
-
-        return $this->redirectToPostedUrl($contact);
+        return $this->asModelSuccess($contact, Craft::t('campaign', 'Contact unmarked as ' . $status . '.'), 'contact');
     }
 }

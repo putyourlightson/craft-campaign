@@ -67,18 +67,9 @@ class FormsController extends BaseMessageController
 
             // Validate the contact
             if (!$contact->validate()) {
-                if ($this->request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'errors' => $contact->getErrors(),
-                    ]);
-                }
-
-                // Send the contact back to the template
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'contact' => $contact,
+                return $this->asModelFailure($contact, '', 'contact', [
+                    'errors' => $contact->getErrors(),
                 ]);
-
-                return null;
             }
 
             // Create pending contact
@@ -90,19 +81,10 @@ class FormsController extends BaseMessageController
 
             // Save pending contact
             if (!Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
-                if ($this->request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'errors' => $pendingContact->getErrors(),
-                    ]);
-                }
-
-                // Send the contact and the pending contact errors back to the template
-                Craft::$app->getUrlManager()->setRouteParams([
+                return $this->asModelFailure($pendingContact, '', 'pendingContact', [
                     'contact' => $contact,
                     'errors' => $pendingContact->getErrors(),
                 ]);
-
-                return null;
             }
 
             // Send verification email
@@ -111,25 +93,16 @@ class FormsController extends BaseMessageController
         else {
             // Save contact
             if (!Craft::$app->getElements()->saveElement($contact)) {
-                if ($this->request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'errors' => $contact->getErrors(),
-                    ]);
-                }
-
-                // Send the contact back to the template
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'contact' => $contact,
+                return $this->asModelFailure($contact, '', 'contact', [
+                    'errors' => $contact->getErrors(),
                 ]);
-
-                return null;
             }
 
             Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $referrer);
         }
 
         if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
+            return $this->asSuccess();
         }
 
         if ($this->request->getBodyParam('redirect')) {
@@ -176,11 +149,7 @@ class FormsController extends BaseMessageController
         // Send verification email
         Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($contact, $mailingList);
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        return $this->redirectToPostedUrl($contact);
+        return $this->asModelSuccess($contact, '', 'contact');
     }
 
     /**
@@ -195,15 +164,7 @@ class FormsController extends BaseMessageController
         $contact = $this->_getVerifiedContact();
 
         if ($contact === null) {
-            $error = Craft::t('campaign', 'Contact not found.');
-
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => [$error],
-                ]);
-            }
-
-            throw new NotFoundHttpException($error);
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
         }
 
         // Set the field values using the fields location
@@ -212,27 +173,12 @@ class FormsController extends BaseMessageController
 
         // Save it
         if (!Campaign::$plugin->forms->updateContact($contact)) {
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact.'));
-
-            // Send the contact back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'contact' => $contact,
+            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), 'contact', [
+                'errors' => $contact->getErrors(),
             ]);
-
-            return null;
         }
 
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        return $this->redirectToPostedUrl($contact);
+        return $this->asModelSuccess($contact, '', 'contact');
     }
 
     /**
@@ -319,14 +265,7 @@ class FormsController extends BaseMessageController
         $contact = $this->_getVerifiedContact();
 
         if ($contact === null) {
-            $error = Craft::t('campaign', 'Contact not found.');
-
-            if ($this->request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => [$error],
-                ]);
-            }
-            throw new NotFoundHttpException($error);
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
         }
 
         // Get mailing list by ID

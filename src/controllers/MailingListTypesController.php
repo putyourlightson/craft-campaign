@@ -33,7 +33,7 @@ class MailingListTypesController extends Controller
      * @param int|null $mailingListTypeId The mailing list type’s ID, if editing an existing mailing list type.
      * @param MailingListTypeModel|null $mailingListType The mailing list type being edited, if there were any validation errors.
      */
-    public function actionEditMailingListType(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
+    public function actionEdit(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
     {
         // Get the mailing list type
         if ($mailingListType === null) {
@@ -75,7 +75,7 @@ class MailingListTypesController extends Controller
     /**
      * Saves a mailing list type.
      */
-    public function actionSaveMailingListType(): ?Response
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -112,33 +112,23 @@ class MailingListTypesController extends Controller
 
         // Save it
         if (!Campaign::$plugin->mailingListTypes->saveMailingListType($mailingListType)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save mailing list type.'));
-
-            // Send the mailing list type back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'mailingListType' => $mailingListType,
-            ]);
-
-            return null;
+            return $this->asModelFailure($mailingListType, Craft::t('campaign', 'Couldn’t save mailing list type.'), 'mailingListType');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list type saved.'));
-
-        return $this->redirectToPostedUrl($mailingListType);
+        return $this->asModelSuccess($mailingListType, Craft::t('campaign', 'Mailing list type saved.'), 'mailingListType');
     }
 
     /**
      * Deletes a mailing list type.
      */
-    public function actionDeleteMailingListType(): Response
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
         $mailingListTypeId = $this->request->getRequiredBodyParam('id');
-
         Campaign::$plugin->mailingListTypes->deleteMailingListTypeById($mailingListTypeId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 }

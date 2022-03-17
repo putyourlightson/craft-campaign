@@ -87,26 +87,12 @@ class ExportsController extends Controller
 
         // Validate it
         if ($export->validate() === false) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t export file.'));
-
-            // Send the export back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export,
-            ]);
-
-            return null;
+            return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
         }
 
         // Export it
         if (!Campaign::$plugin->exports->exportFile($export)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t export file.'));
-
-            // Send the export back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export,
-            ]);
-
-            return null;
+            return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
         }
 
         // Log it

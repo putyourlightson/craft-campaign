@@ -7,7 +7,7 @@ namespace putyourlightson\campaign\assets;
 
 use craft\web\AssetBundle;
 
-class SendoutEditAsset extends AssetBundle
+class SendoutPreviewAsset extends AssetBundle
 {
     /**
      * @inheritdoc
@@ -25,6 +25,6 @@ class SendoutEditAsset extends AssetBundle
      * @inheritdoc
      */
     public $js = [
-        'js/SendoutEdit.js',
+        'js/SendoutPreview.js',
     ];
 }

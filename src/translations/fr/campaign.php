@@ -81,7 +81,7 @@ return [
     'Are you sure you want to unmark this contact as bounced?' => 'Êtes-vous sûr de vouloir enlever la mention rejet de ce contact ?',
     'Are you sure you want to unmark this contact as complained?' => 'Êtes-vous sûr de vouloir enlever la mention plaignant de ce contact ?',
     'Are you sure you want to unsubscribe this contact from this mailing list?' => 'Êtes-vous sûr de vouloir désabonner ce contact de cette liste de diffusion ?',
-    'At least one contact must be submitted.' => '',
+    'At least one contact must be selected.' => '',
     'Automated' => 'Automatique',
     'Blocked' => 'Bloqué',
     'Bottom left ' => 'Bas gauche',

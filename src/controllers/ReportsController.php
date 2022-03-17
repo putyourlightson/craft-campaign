@@ -39,7 +39,6 @@ class ReportsController extends Controller
 
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
-
         $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);
@@ -57,7 +56,6 @@ class ReportsController extends Controller
 
         // Get chart data
         $data = Campaign::$plugin->reports->getMailingListChartData($mailingListId, $interval);
-
         $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);

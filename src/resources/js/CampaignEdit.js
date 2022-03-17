@@ -26,21 +26,21 @@ Campaign.CampaignEdit = Garnish.Base.extend({
             campaignId: $('input[name=campaignId]').val()
         };
 
-        Craft.postActionRequest('campaign/campaigns/send-test', data, function(response, textStatus) {
-            if (textStatus === 'success') {
-                if (response.success) {
-                    Craft.cp.displayNotice(Craft.t('campaign', 'Test email sent.'));
+        Craft.sendActionRequest('POST', 'campaign/campaigns/send-test', {data})
+            .then((response) => {
+                Craft.cp.displayNotice(response.data.message);
+            })
+            .catch(({response}) => {
+                if (response.data.message) {
+                    Craft.cp.displayError(response.data.message);
                 }
                 else {
-                    Craft.cp.displayError(response.error);
+                    Craft.cp.displayError();
                 }
-            }
-            else if (typeof response.error !== 'undefined') {
-                Craft.cp.displayError(response.error);
-            }
-
-            $('.send-test').removeClass('disabled');
-        });
+            })
+            .finally(() => {
+                $('.send-test').removeClass('disabled');
+            });
     },
 });
 
