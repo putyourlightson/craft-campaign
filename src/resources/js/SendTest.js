@@ -2,14 +2,16 @@
 /** global: Craft */
 /** global: Garnish */
 /**
- * CampaignEdit class
+ * SendTest class
  */
-Campaign.CampaignEdit = Garnish.Base.extend({
+Campaign.SendTest = Garnish.Base.extend({
     init: function() {
         this.addListener($('.send-test'), 'click', 'sendTest');
     },
 
     sendTest: function(event) {
+        event.preventDefault();
+
         if ($('.send-test').hasClass('disabled')) {
             return;
         }
@@ -17,16 +19,17 @@ Campaign.CampaignEdit = Garnish.Base.extend({
         $('.send-test').addClass('disabled');
 
         var contactIds = [];
-        $('#testContacts input').each(function() {
+        $('.test-email .elementselect input').each(function() {
             contactIds.push($(this).val());
         });
 
         var data = {
             contactIds: contactIds,
-            campaignId: $('input[name=campaignId]').val()
+            campaignId: $('.send-test').data('campaign'),
+            sendoutId: $('.send-test').data('sendout'),
         };
 
-        Craft.sendActionRequest('POST', 'campaign/campaigns/send-test', {data})
+        Craft.sendActionRequest('POST', $('.send-test').data('action'), {data})
             .then((response) => {
                 Craft.cp.displayNotice(response.data.message);
             })
@@ -44,4 +47,4 @@ Campaign.CampaignEdit = Garnish.Base.extend({
     },
 });
 
-new Campaign.CampaignEdit();
+new Campaign.SendTest();

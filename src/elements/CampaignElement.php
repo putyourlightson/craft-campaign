@@ -21,6 +21,7 @@ use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\View;
 use DateTime;
+use putyourlightson\campaign\assets\SendTestAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\reports\CampaignReportFieldLayoutTab;
@@ -770,6 +771,8 @@ class CampaignElement extends Element
      */
     protected function statusFieldHtml(): string
     {
+        Craft::$app->getView()->registerAssetBundle(SendTestAsset::class);
+
         $testEmailField = Cp::elementSelectFieldHtml([
             'id' => 'testContacts',
             'name' => 'testContacts',
@@ -779,10 +782,12 @@ class CampaignElement extends Element
             'elements' => $this->getCampaignType()->getTestContacts(),
         ]);
 
-        $testEmailField .= Html::hiddenInput('campaignId', $this->id);
-
         $sendTestButton = Cp::fieldHtml(
             Html::button(Craft::t('campaign', 'Send Test'), [
+                'data' => [
+                    'action' => 'campaign/campaigns/send-test',
+                    'campaign' => $this->id,
+                ],
                 'class' => 'send-test btn',
             ])
         );

@@ -54,7 +54,7 @@
 {% block content %}
 
     {% if fullPageForm %}
-        <input type="hidden" name="action" value="campaign/sendouts/send-sendout">
+        <input type="hidden" name="action" value="campaign/sendouts/send">
     {% else %}
         <form action="" method="post">
             {{ csrfInput() }}
@@ -191,7 +191,14 @@
                     elements: testContacts
                 }) }}
                 {% set button %}
-                    <a class="send-test btn">{{ 'Send Test'|t('campaign') }}</a>
+                    {{ tag('button', {
+                        text: 'Send Test'|t('campaign'),
+                        class: 'send-test btn',
+                        data: {
+                            action: 'campaign/sendouts/send-test',
+                            sendout: sendout.id,
+                        }
+                    }) }}
                 {% endset %}
                 {{ forms.field({}, button) }}
             </div>

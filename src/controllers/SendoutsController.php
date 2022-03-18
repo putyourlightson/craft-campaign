@@ -16,7 +16,8 @@ use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use DateTime;
-use putyourlightson\campaign\assets\SendoutPreviewAsset;
+use putyourlightson\campaign\assets\SendoutPreflightAsset;
+use putyourlightson\campaign\assets\SendTestAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -199,7 +200,8 @@ class SendoutsController extends Controller
             throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
         }
 
-        $this->view->registerAssetBundle(SendoutPreviewAsset::class);
+        $this->view->registerAssetBundle(SendoutPreflightAsset::class);
+        $this->view->registerAssetBundle(SendTestAsset::class);
 
         $campaign = $sendout->getCampaign();
         $campaignType = $campaign->getCampaignType();

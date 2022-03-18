@@ -7,7 +7,7 @@ namespace putyourlightson\campaign\assets;
 
 use craft\web\AssetBundle;
 
-class SendoutPreviewAsset extends AssetBundle
+class SendTestAsset extends AssetBundle
 {
     /**
      * @inheritdoc
@@ -18,13 +18,13 @@ class SendoutPreviewAsset extends AssetBundle
      * @inheritdoc
      */
     public $depends = [
-        CampaignAsset::class,
+        CpAsset::class,
     ];
 
     /**
      * @inheritdoc
      */
     public $js = [
-        'js/SendoutPreview.js',
+        'js/SendTest.js',
     ];
 }

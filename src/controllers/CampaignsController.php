@@ -13,8 +13,6 @@ use craft\helpers\ElementHelper;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
-use putyourlightson\campaign\assets\CampaignEditAsset;
-use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -71,9 +69,6 @@ class CampaignsController extends Controller
      */
     public function actionEdit(int $campaignId): Response
     {
-        $this->view->registerAssetBundle(CampaignEditAsset::class);
-        $this->view->registerAssetBundle(ReportsAsset::class);
-
         // Set the selected subnav item by adding it to the global variables
         Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'campaigns');
 

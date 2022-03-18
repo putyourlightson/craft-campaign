@@ -8,6 +8,8 @@ namespace putyourlightson\campaign\fieldlayoutelements\contacts;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
+use putyourlightson\campaign\assets\ContactEditAsset;
+use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 
@@ -35,6 +37,8 @@ class ContactMailingListField extends BaseNativeField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
+        Craft::$app->getView()->registerAssetBundle(ContactEditAsset::class);
+
         return Craft::$app->view->renderTemplate(
             'campaign/contacts/_includes/mailinglists',
             [

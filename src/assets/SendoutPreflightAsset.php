@@ -7,7 +7,7 @@ namespace putyourlightson\campaign\assets;
 
 use craft\web\AssetBundle;
 
-class CampaignEditAsset extends AssetBundle
+class SendoutPreflightAsset extends AssetBundle
 {
     /**
      * @inheritdoc
@@ -17,14 +17,7 @@ class CampaignEditAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $depends = [
-        CampaignAsset::class,
-    ];
-
-    /**
-     * @inheritdoc
-     */
     public $js = [
-        'js/CampaignEdit.js',
+        'js/SendoutPreflight.js',
     ];
 }

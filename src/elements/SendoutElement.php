@@ -372,9 +372,15 @@ class SendoutElement extends Element
     public ?string $sid = null;
 
     /**
-     * @var string|array|int|null Campaign ID
+     * @var array|null Campaign IDs, used for posted params
+     * @see SendoutElement::beforeSave()
      */
-    public string|array|int|null $campaignId = null;
+    public ?array $campaignIds = null;
+
+    /**
+     * @var int|null Campaign ID
+     */
+    public ?int $campaignId = null;
 
     /**
      * @var int|null Sender ID
@@ -1150,7 +1156,7 @@ class SendoutElement extends Element
         }
 
         // Get the selected campaign ID
-        $this->campaignId = $this->campaignId[0] ?? $this->campaignId;
+        $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
 
         // Get the selected included and excluded mailing list IDs and segment IDs
         $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
