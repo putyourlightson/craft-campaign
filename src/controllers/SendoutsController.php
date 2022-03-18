@@ -8,13 +8,14 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\base\Element;
 use craft\helpers\App;
+use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\ElementHelper;
 use craft\queue\Queue;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use DateTime;
-use putyourlightson\campaign\assets\ContactEditAsset;
 use putyourlightson\campaign\assets\SendoutPreviewAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -29,6 +30,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 class SendoutsController extends Controller
 {
@@ -112,20 +114,27 @@ class SendoutsController extends Controller
      * @see CategoriesController::actionCreate()
      * @since 2.0.0
      */
-    public function actionCreate(string $sendoutType): Response
+    public function actionCreate(string $sendoutType = null): Response
     {
         if (!isset(SendoutElement::sendoutTypes()[$sendoutType])) {
             throw new BadRequestHttpException("Invalid sendout type: $sendoutType");
         }
 
-        /**
-         * The create action expects attributes to be passed in as body params.
-         * @see ElementsController::actionCreate()
-         */
-        $this->request->setBodyParams([
-            'elementType' => SendoutElement::class,
-            'sendoutType' => $sendoutType,
-        ]);
+        $site = Cp::requestedSite();
+
+        if (!$site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+
+        $sendout = Craft::createObject(SendoutElement::class);
+        $sendout->siteId = $site->id;
+        $sendout->sendoutType = $sendoutType;
+
+        if (!$sendout->canSave($user)) {
+            throw new ForbiddenHttpException('User not authorized to save this sendout.');
+        }
 
         // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
         if ($campaignId = $this->request->getParam('campaignId')) {
@@ -133,17 +142,20 @@ class SendoutsController extends Controller
             $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
 
             if ($campaign) {
-                $this->request->setBodyParams(
-                    array_merge($this->request->getBodyParams(), [
-                        'campaignId' => $campaign->id,
-                        'title' => $campaign->title,
-                        'subject' => $campaign->title,
-                    ])
-                );
+                $sendout->campaignId = $campaign->id;
+                $sendout->title = $campaign->title;
+                $sendout->subject = $campaign->title;
             }
         }
 
-        return Craft::$app->runAction('elements/create');
+        // Save it
+        $sendout->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($sendout, Craft::$app->getUser()->getId(), null, null, false)) {
+            throw new ServerErrorHttpException(sprintf('Unable to save sendout as a draft: %s', implode(', ', $sendout->getErrorSummary(true))));
+        }
+
+        // Redirect to its edit page
+        return $this->redirect($sendout->getCpEditUrl());
     }
 
     /**

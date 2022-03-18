@@ -6,7 +6,10 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
+use craft\base\Element;
 use craft\controllers\CategoriesController;
+use craft\helpers\Cp;
+use craft\helpers\ElementHelper;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
@@ -16,8 +19,10 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 class CampaignsController extends Controller
 {
@@ -30,21 +35,35 @@ class CampaignsController extends Controller
     public function actionCreate(string $campaignTypeHandle): Response
     {
         $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
-
         if (!$campaignType) {
             throw new BadRequestHttpException("Invalid campaign type handle: $campaignTypeHandle");
         }
 
-        /**
-         * The create action expects attributes to be passed in as body params.
-         * @see ElementsController::actionCreate()
-         */
-        $this->request->setBodyParams([
-            'elementType' => CampaignElement::class,
-            'campaignTypeId' => $campaignType->id,
-        ]);
+        $site = Cp::requestedSite();
 
-        return Craft::$app->runAction('elements/create');
+        if (!$site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+
+        $campaign = Craft::createObject(CampaignElement::class);
+        $campaign->siteId = $site->id;
+        $campaign->campaignTypeId = $campaignType->id;
+        $campaign->slug = ElementHelper::tempSlug();
+
+        if (!$campaign->canSave($user)) {
+            throw new ForbiddenHttpException('User not authorized to save this campaign.');
+        }
+
+        // Save it
+        $campaign->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($campaign, Craft::$app->getUser()->getId(), null, null, false)) {
+            throw new ServerErrorHttpException(sprintf('Unable to save campaign as a draft: %s', implode(', ', $campaign->getErrorSummary(true))));
+        }
+
+        // Redirect to its edit page
+        return $this->redirect($campaign->getCpEditUrl());
     }
 
     /**
@@ -68,6 +87,19 @@ class CampaignsController extends Controller
         if ($campaign === null) {
             return $response;
         }
+
+        $response->addAltAction(
+            Craft::t('campaign', 'Save and create new regular sendout'),
+            [
+                'redirect' => 'campaign/sendouts/regular/new?campaignId=' . $campaignId,
+            ],
+        );
+        $response->addAltAction(
+            Craft::t('campaign', 'Save and create new scheduled sendout'),
+            [
+                'redirect' => 'campaign/sendouts/scheduled/new?campaignId=' . $campaignId,
+            ],
+        );
 
         if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
             $response->addAltAction(

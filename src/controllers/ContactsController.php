@@ -6,7 +6,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\controllers\ElementsController;
+use craft\base\Element;
 use craft\elements\User;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
@@ -15,9 +15,10 @@ use putyourlightson\campaign\assets\ContactEditAsset;
 use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 class ContactsController extends Controller
 {
@@ -57,15 +58,21 @@ class ContactsController extends Controller
      */
     public function actionCreate(): Response
     {
-        /**
-         * The create action expects attributes to be passed in as body params.
-         * @see ElementsController::actionCreate()
-         */
-        $this->request->setBodyParams([
-            'elementType' => ContactElement::class,
-        ]);
+        $user = Craft::$app->getUser()->getIdentity();
+        $contact = Craft::createObject(ContactElement::class);
 
-        return Craft::$app->runAction('elements/create');
+        if (!$contact->canSave($user)) {
+            throw new ForbiddenHttpException('User not authorized to save this contact.');
+        }
+
+        // Save it
+        $contact->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($contact, Craft::$app->getUser()->getId(), null, null, false)) {
+            throw new ServerErrorHttpException(sprintf('Unable to save contact as a draft: %s', implode(', ', $contact->getErrorSummary(true))));
+        }
+
+        // Redirect to its edit page
+        return $this->redirect($contact->getCpEditUrl());
     }
 
     /**
