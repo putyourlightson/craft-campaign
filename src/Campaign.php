@@ -755,7 +755,7 @@ class Campaign extends Plugin
                 $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
 
                 $event->permissions[] = [
-                    'heading' => 'Campaign',
+                    'heading' => $this->name,
                     'permissions' => $permissions,
                 ];
             }
