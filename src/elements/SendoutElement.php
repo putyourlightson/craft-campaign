@@ -51,6 +51,7 @@ use putyourlightson\campaign\records\SendoutRecord;
  * @property-read string $progress
  * @property-read array[] $crumbs
  * @property-read null|string $postEditUrl
+ * @property-read null|string $cpPreviewUrl
  * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
@@ -371,9 +372,9 @@ class SendoutElement extends Element
     public ?string $sid = null;
 
     /**
-     * @var int|array|null Campaign ID
+     * @var string|array|int|null Campaign ID
      */
-    public int|array|null $campaignId = null;
+    public string|array|int|null $campaignId = null;
 
     /**
      * @var int|null Sender ID
