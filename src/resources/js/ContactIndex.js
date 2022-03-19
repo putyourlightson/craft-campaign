@@ -5,7 +5,7 @@
  * ContactIndex class
  */
 Campaign.ContactIndex = Craft.BaseElementIndex.extend({
-    $newContactBtnGroup: null,
+    $newContactBtn: null,
 
     init: function(elementType, $container, settings) {
         this.on('selectSource', this.updateButton.bind(this));
@@ -19,7 +19,7 @@ Campaign.ContactIndex = Craft.BaseElementIndex.extend({
             this.$newContactBtn.remove();
         }
 
-        this.$newContactBtn = $menuBtn = Craft.ui.createButton({
+        this.$newContactBtn = Craft.ui.createButton({
                 label: Craft.t('campaign', 'New contact'),
                 spinner: true,
             })

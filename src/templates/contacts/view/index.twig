@@ -2,12 +2,3 @@
 
 {% set elementType = 'putyourlightson\\campaign\\elements\\ContactElement' %}
 {% set title = 'Contacts'|t('campaign') %}
-
-
-{% block actionButton %}
-    <div id="extra-headers">
-        <div class="buttons right">
-            <a href="{{ url('campaign/contacts/new') }}" class="btn submit add icon">{{ "New contact"|t('campaign') }}</a>
-        </div>
-    </div>
-{% endblock %}
