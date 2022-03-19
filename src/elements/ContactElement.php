@@ -467,7 +467,7 @@ class ContactElement extends Element
     {
         $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
-        if (!$this->getIsDraft()) {
+        if (!$this->getIsFresh()) {
             $fieldLayout->setTabs(array_merge(
                 $fieldLayout->getTabs(),
                 [
@@ -774,7 +774,14 @@ class ContactElement extends Element
      */
     protected function cpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/contacts/' . $this->id);
+        $path = sprintf('campaign/contacts/%s', $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**

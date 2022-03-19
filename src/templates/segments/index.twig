@@ -2,9 +2,10 @@
 
 {% do craft.campaign.requirePro() %}
 
-{% set selectedSubnavItem = 'segments' %}
 {% set elementType = 'putyourlightson\\campaign\\elements\\SegmentElement' %}
+{% set canHaveDrafts = true %}
 {% set title = 'Segments'|t('campaign') %}
+{% set selectedSubnavItem = 'segments' %}
 
 {% do view.registerTranslations('campaign', [
     'New segment',

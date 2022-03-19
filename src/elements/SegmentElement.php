@@ -360,8 +360,7 @@ class SegmentElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
-
+        $fieldLayout = new FieldLayout();
         $fieldLayout->setTabs([
             new SegmentFieldLayoutTab(),
         ]);

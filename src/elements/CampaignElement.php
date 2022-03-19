@@ -101,6 +101,14 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public static function trackChanges(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasContent(): bool
     {
         return true;
@@ -644,7 +652,7 @@ class CampaignElement extends Element
      */
     public function getStatus(): ?string
     {
-        if (!$this->enabled) { // || !$this->enabledForSite) {
+        if (!$this->enabled) {
             return self::STATUS_DISABLED;
         }
 
@@ -724,7 +732,7 @@ class CampaignElement extends Element
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
 
-        if (!$this->getIsDraft() && $this->getStatus() == CampaignElement::STATUS_SENT) {
+        if ($this->getStatus() == CampaignElement::STATUS_SENT) {
             $fieldLayout->setTabs(array_merge(
                 $fieldLayout->getTabs(),
                 [
