@@ -143,23 +143,19 @@ class MailingListElement extends Element
                 'label' => Craft::t('campaign', 'All mailing lists'),
                 'criteria' => [],
             ],
+            [
+                'heading' => Craft::t('campaign', 'Mailing List Types'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Mailing List Types')];
-
         $mailingListTypes = Campaign::$plugin->mailingListTypes->getAllMailingListTypes();
 
         foreach ($mailingListTypes as $mailingListType) {
             $sources[] = [
-                'key' => 'mailingListType:' . $mailingListType->id,
+                'key' => 'mailingListType:' . $mailingListType->uid,
                 'label' => $mailingListType->name,
                 'sites' => [$mailingListType->siteId],
-                'data' => [
-                    'handle' => $mailingListType->handle,
-                ],
-                'criteria' => [
-                    'mailingListTypeId' => $mailingListType->id,
-                ],
+                'data' => ['handle' => $mailingListType->handle],
+                'criteria' => ['mailingListTypeId' => $mailingListType->id],
             ];
         }
 

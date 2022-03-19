@@ -158,42 +158,33 @@ class ContactElement extends Element
                 'criteria' => [],
                 'hasThumbs' => true,
             ],
+            [
+                'heading' => Craft::t('campaign', 'Mailing Lists'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Mailing Lists')];
-
         $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
 
         foreach ($mailingLists as $mailingList) {
             $sources[] = [
-                'key' => 'mailingList:' . $mailingList->id,
+                'key' => 'mailingList:' . $mailingList->uid,
                 'label' => $mailingList->title,
                 'sites' => [$mailingList->siteId],
-                'data' => [
-                    'id' => $mailingList->id,
-                ],
-                'criteria' => [
-                    'mailingListId' => $mailingList->id,
-                ],
+                'data' => ['id' => $mailingList->id],
+                'criteria' => ['mailingListId' => $mailingList->id],
                 'hasThumbs' => true,
             ];
         }
 
         if (Campaign::$plugin->getIsPro()) {
             $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
-
             $segments = SegmentElement::findAll();
 
             foreach ($segments as $segment) {
                 $sources[] = [
-                    'key' => 'segment:' . $segment->id,
+                    'key' => 'segment:' . $segment->uid,
                     'label' => $segment->title,
-                    'data' => [
-                        'id' => $segment->id,
-                    ],
-                    'criteria' => [
-                        'segmentId' => $segment->id,
-                    ],
+                    'data' => ['id' => $segment->id],
+                    'criteria' => ['segmentId' => $segment->id],
                     'hasThumbs' => true,
                 ];
             }

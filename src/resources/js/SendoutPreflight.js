@@ -25,7 +25,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
             var url = Craft.getActionUrl('campaign/sendouts/get-pending-recipient-count');
             var sendoutId = $('input[name=sendoutId]').val();
 
-            $.get(url, {sendoutId: sendoutId}, function(data) {
+            $.get(url, {sendoutId: sendoutId}, (data) => {
                 $('.pendingRecipientCount').replaceWith(data);
             });
         }

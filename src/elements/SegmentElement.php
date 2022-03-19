@@ -143,26 +143,22 @@ class SegmentElement extends Element
                 'label' => Craft::t('campaign', 'All segments'),
                 'criteria' => [],
             ],
+            [
+                'heading' => Craft::t('campaign', 'Segment Types'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Segment Types')];
-
         $segmentTypes = self::segmentTypes();
-        $index = 1;
+        $id = 1;
 
         foreach ($segmentTypes as $segmentType => $label) {
             $sources[] = [
-                'key' => 'segmentTypeId:' . $index,
+                'key' => 'segmentTypeId:' . $id,
                 'label' => $label,
-                'data' => [
-                    'handle' => $segmentType,
-                ],
-                'criteria' => [
-                    'segmentType' => $segmentType,
-                ],
+                'data' => ['handle' => $segmentType],
+                'criteria' => ['segmentType' => $segmentType],
             ];
 
-            $index++;
+            $id++;
         }
 
         return $sources;
@@ -278,7 +274,7 @@ class SegmentElement extends Element
     public ?string $segmentType = null;
 
     /**
-     * @var array|string|null
+     * @var string|array|null
      */
     public string|array|null $conditions = null;
 

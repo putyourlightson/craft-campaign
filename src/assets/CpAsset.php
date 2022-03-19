@@ -47,7 +47,7 @@ class CpAsset extends AssetBundle
             $this->_registerTranslations($view);
         }
 
-        $this->_registerPublishableTypes($view);
+        $this->_registerEditableTypes($view);
     }
 
     /**
@@ -63,10 +63,28 @@ class CpAsset extends AssetBundle
         ]);
     }
 
-    private function _registerPublishableTypes(View $view): void
+    private function _registerEditableTypes(View $view): void
+    {
+        $editableCampaignTypes = Json::encode($this->_getEditableCampaignTypes(), JSON_UNESCAPED_UNICODE);
+        $editableMailingListTypes = Json::encode($this->_getEditableMailingListTypes(), JSON_UNESCAPED_UNICODE);
+        $editableSegmentTypes = Json::encode($this->_getEditableSegmentTypes(), JSON_UNESCAPED_UNICODE);
+        $editableSendoutTypes = Json::encode($this->_getEditableSendoutTypes(), JSON_UNESCAPED_UNICODE);
+
+        $js = <<<JS
+window.Craft.editableCampaignTypes = $editableCampaignTypes;
+window.Craft.editableMailingListTypes = $editableMailingListTypes;
+window.Craft.editableSegmentTypes = $editableSegmentTypes;
+window.Craft.editableSendoutTypes = $editableSendoutTypes;
+JS;
+
+        $view->registerJs($js, BaseView::POS_HEAD);
+    }
+
+    private function _getEditableCampaignTypes(): array
     {
         $campaignTypes = [];
-        foreach (Campaign::$plugin->campaignTypes->getAllCampaignTypes() as $campaignType) {
+
+        foreach (Campaign::$plugin->campaignTypes->getEditableCampaignTypes() as $campaignType) {
             $campaignTypes[] = [
                 'id' => $campaignType->id,
                 'handle' => $campaignType->handle,
@@ -75,10 +93,15 @@ class CpAsset extends AssetBundle
                 'uid' => $campaignType->uid,
             ];
         }
-        $publishableCampaignTypes = Json::encode($campaignTypes, JSON_UNESCAPED_UNICODE);
 
+        return $campaignTypes;
+    }
+
+    private function _getEditableMailingListTypes(): array
+    {
         $mailingListTypes = [];
-        foreach (Campaign::$plugin->mailingListTypes->getAllMailingListTypes() as $mailingListType) {
+
+        foreach (Campaign::$plugin->mailingListTypes->getEditableMailingListTypes() as $mailingListType) {
             $mailingListTypes[] = [
                 'id' => $mailingListType->id,
                 'handle' => $mailingListType->handle,
@@ -87,39 +110,41 @@ class CpAsset extends AssetBundle
                 'uid' => $mailingListType->uid,
             ];
         }
-        $publishableMailingListTypes = Json::encode($mailingListTypes, JSON_UNESCAPED_UNICODE);
 
+        return $mailingListTypes;
+    }
+
+    private function _getEditableSegmentTypes(): array
+    {
         $segmentTypes = [];
         $i = 1;
-        foreach (SegmentElement::segmentTypes() as $segmentType => $segmentTypeLabel) {
+
+        foreach (SegmentElement::segmentTypes() as $handle => $label) {
             $segmentTypes[] = [
                 'id' => $i,
-                'handle' => $segmentType,
-                'name' => Craft::t('campaign', $segmentTypeLabel),
+                'handle' => $handle,
+                'name' => Craft::t('campaign', $label),
             ];
             $i++;
         }
-        $publishableSegmentTypes = Json::encode($segmentTypes, JSON_UNESCAPED_UNICODE);
 
+        return $segmentTypes;
+    }
+
+    private function _getEditableSendoutTypes(): array
+    {
         $sendoutTypes = [];
         $i = 1;
-        foreach (SendoutElement::sendoutTypes() as $sendoutType => $sendoutTypeLabel) {
+
+        foreach (SendoutElement::sendoutTypes() as $handle => $abel) {
             $sendoutTypes[] = [
                 'id' => $i,
-                'handle' => $sendoutType,
-                'name' => Craft::t('campaign', $sendoutTypeLabel),
+                'handle' => $handle,
+                'name' => Craft::t('campaign', $abel),
             ];
             $i++;
         }
-        $publishableSendoutTypes = Json::encode($sendoutTypes, JSON_UNESCAPED_UNICODE);
 
-        $js = <<<JS
-window.Craft.publishableCampaignTypes = $publishableCampaignTypes;
-window.Craft.publishableMailingListTypes = $publishableMailingListTypes;
-window.Craft.publishableSegmentTypes = $publishableSegmentTypes;
-window.Craft.publishableSendoutTypes = $publishableSendoutTypes;
-JS;
-
-        $view->registerJs($js, BaseView::POS_HEAD);
+        return $sendoutTypes;
     }
 }

@@ -223,27 +223,23 @@ class SendoutElement extends Element
                 'criteria' => [],
                 'defaultSort' => ['lastSent', 'desc'],
             ],
+            [
+                'heading' => Craft::t('campaign', 'Sendout Types'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Sendout Types')];
-
         $sendoutTypes = self::sendoutTypes();
-        $index = 1;
+        $id = 1;
 
         foreach ($sendoutTypes as $sendoutType => $label) {
             $sources[] = [
-                'key' => 'sendoutTypeId:' . $index,
+                'key' => 'sendoutTypeId:' . $id,
                 'label' => $label,
-                'data' => [
-                    'handle' => $sendoutType,
-                ],
-                'criteria' => [
-                    'sendoutType' => $sendoutType,
-                ],
+                'data' => ['handle' => $sendoutType],
+                'criteria' => ['sendoutType' => $sendoutType],
                 'defaultSort' => ['lastSent', 'desc'],
             ];
 
-            $index++;
+            $id++;
         }
 
         return $sources;

@@ -5,38 +5,30 @@
  * CampaignIndex class
  */
 Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
-    publishableCampaignTypes: null,
+    editableCampaignTypes: null,
     $newCampaignBtnGroup: null,
     $newCampaignBtn: null,
 
     init: function(elementType, $container, settings) {
+        this.editableCampaignTypes = [];
         this.on('selectSource', this.updateButton.bind(this));
         this.on('selectSite', this.updateButton.bind(this));
         this.base(elementType, $container, settings);
     },
 
     afterInit: function() {
-        // Get publishable campaign types
-        this.publishableCampaignTypes = [];
-
-        for (var i = 0; i < Craft.publishableCampaignTypes.length; i++) {
-            var campaignType = Craft.publishableCampaignTypes[i];
-
-            if (this.getSourceByKey('campaignType:' + campaignType.uid)) {
-                this.publishableCampaignTypes.push(campaignType);
-            }
-        }
+        // Find which of the visible campaign types the user has permission to create new campaigns in
+        this.editableCampaignTypes = Craft.editableCampaignTypes.filter(g => !!this.getSourceByKey(`campaignType:${g.uid}`));
 
         this.base();
     },
 
     getDefaultSourceKey: function() {
         // Did they request a specific campaign type in the URL?
-        if (this.settings.context == 'index' && typeof defaultCampaignTypeHandle !== 'undefined') {
-            for (var i = 0; i < this.$sources.length; i++) {
-                var $source = $(this.$sources[i]);
-
-                if ($source.data('handle') == defaultCampaignTypeHandle) {
+        if (this.settings.context === 'index' && typeof defaultCampaignTypeHandle !== 'undefined') {
+            for (let i = 0; i < this.$sources.length; i++) {
+                const $source = $(this.$sources[i]);
+                if ($source.data('handle') === defaultCampaignTypeHandle) {
                     return $source.data('key');
                 }
             }
@@ -51,89 +43,99 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         }
 
         // Get the handle of the selected source
-        var selectedSourceHandle = this.$source.data('handle');
+        const selectedSourceHandle = this.$source.data('handle');
 
         // Update the New campaign button
         // ---------------------------------------------------------------------
 
-        if (this.publishableCampaignTypes.length) {
+        if (this.editableCampaignTypes.length) {
             // Remove the old button, if there is one
             if (this.$newCampaignBtnGroup) {
                 this.$newCampaignBtnGroup.remove();
             }
 
-            // Determine if they are viewing a campaign type
-            var selectedCampaignType;
+            // Determine if they are viewing a campaign type that they have permission to create campaigns in
+            const selectedCampaignType = this.editableCampaignTypes.find(g => g.handle === selectedSourceHandle);
 
-            if (selectedSourceHandle) {
-                for (var i = 0; i < this.publishableCampaignTypes.length; i++) {
-                    if (this.publishableCampaignTypes[i].handle == selectedSourceHandle) {
-                        selectedCampaignType = this.publishableCampaignTypes[i];
-                        break;
-                    }
-                }
-            }
-
-            this.$newCampaignBtnGroup = $('<div class="btngroup submit"/>');
-            var $menuBtn;
+            this.$newCampaignBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
+            let $menuBtn;
+            const menuId = 'new-campaign-menu-' + Craft.randomString(10);
 
             // If they are, show a primary "New campaign" button, and a dropdown of the other campaign types (if any).
             // Otherwise only show a menu button
             if (selectedCampaignType) {
-                var href = this._getCampaignTypeTriggerHref(selectedCampaignType),
-                    label = (this.settings.context == 'index' ? Craft.t('campaign', 'New campaign') : Craft.t('campaign', 'New {campaignType} campaign', {campaignType: selectedCampaignType.name}));
-                this.$newCampaignBtn = $('<a class="btn submit add icon" ' + href + '>' + Craft.escapeHtml(label) + '</a>').appendTo(this.$newCampaignBtnGroup);
+                this.$newCampaignBtn = Craft.ui.createButton({
+                        label: this.settings.context === 'index'
+                            ? Craft.t('campaign', 'New campaign')
+                            : Craft.t('campaign', 'New {campaignType} campaign', {
+                                campaignType: selectedCampaignType.name,
+                            }),
+                        spinner: true,
+                    })
+                    .addClass('submit add icon')
+                    .appendTo(this.$newCampaignBtnGroup);
 
-                if (this.settings.context != 'index') {
-                    this.addListener(this.$newCampaignBtn, 'click', function(ev) {
-                        this._openCreateCampaignModal(ev.currentTarget.getAttribute('data-id'));
-                    });
-                }
+                this.addListener(this.$newCampaignBtn, 'click', () => {
+                    this._createCampaign(selectedCampaignType.id);
+                });
 
-                if (this.publishableCampaignTypes.length > 1) {
-                    $menuBtn = $('<div class="btn submit menubtn"></div>').appendTo(this.$newCampaignBtnGroup);
+                if (this.editableCampaignTypes.length > 1) {
+                    $menuBtn = $('<button/>', {
+                        type: 'button',
+                        class: 'btn submit menubtn btngroup-btn-last',
+                        'aria-controls': menuId,
+                        'data-disclosure-trigger': '',
+                    }).appendTo(this.$newCampaignBtnGroup);
                 }
             }
             else {
-                this.$newCampaignBtn = $menuBtn = $('<div class="btn submit add icon menubtn">' + Craft.t('campaign', 'New campaign') + '</div>').appendTo(this.$newCampaignBtnGroup);
-            }
-
-            if ($menuBtn) {
-                var menuHtml = '<div class="menu"><ul>';
-
-                for (var i = 0; i < this.publishableCampaignTypes.length; i++) {
-                    var campaignType = this.publishableCampaignTypes[i];
-
-                    if (
-                        (this.settings.context === 'index' && this.siteId == campaignType.siteId) ||
-                        (this.settings.context !== 'index' && campaignType != selectedCampaignType)
-                    ) {
-                        href = this._getCampaignTypeTriggerHref(campaignType);
-                        label = (this.settings.context == 'index' ? campaignType.name : Craft.t('campaign', 'New {campaignType} campaign', {campaignType: campaignType.name}));
-                        menuHtml += '<li><a ' + href + '">' + Craft.escapeHtml(label) + '</a></li>';
-                    }
-                }
-
-                menuHtml += '</ul></div>';
-
-                $(menuHtml).appendTo(this.$newCampaignBtnGroup);
-                var menuBtn = new Garnish.MenuBtn($menuBtn);
-
-                if (this.settings.context != 'index') {
-                    menuBtn.on('optionSelect', ev => {
-                        this._openCreateCampaignModal(ev.option.getAttribute('data-id'));
-                    });
-                }
+                this.$newCampaignBtn = $menuBtn = Craft.ui.createButton({
+                        label: Craft.t('campaign', 'New campaign'),
+                        spinner: true,
+                    })
+                    .addClass('submit add icon menubtn btngroup-btn-last')
+                    .attr('aria-controls', menuId)
+                    .attr('data-disclosure-trigger', '')
+                    .appendTo(this.$newCampaignBtnGroup);
             }
 
             this.addButton(this.$newCampaignBtnGroup);
+
+            if ($menuBtn) {
+                const $menuContainer = $('<div/>', {
+                    id: menuId,
+                    class: 'menu menu--disclosure',
+                }).appendTo(this.$newCampaignBtnGroup);
+                const $ul = $('<ul/>').appendTo($menuContainer);
+
+                for (const campaignType of this.editableCampaignTypes) {
+                    if (
+                        (this.settings.context === 'index' || campaignType !== selectedCampaignType)
+                    ) {
+                        const $li = $('<li/>').appendTo($ul);
+                        const $a = $('<a/>', {
+                            role: 'button',
+                            tabindex: '0',
+                            text: Craft.t('campaign', 'New {campaignType} campaign', {
+                                campaignType: campaignType.name,
+                            }),
+                        }).appendTo($li);
+                        this.addListener($a, 'click', () => {
+                            $menuBtn.data('trigger').hide();
+                            this._createCampaign(campaignType.id);
+                        });
+                    }
+                }
+
+                new Garnish.DisclosureMenu($menuBtn);
+            }
         }
 
         // Update the URL if we're on the Campaigns index
         // ---------------------------------------------------------------------
 
         if (this.settings.context == 'index' && typeof history !== 'undefined') {
-            var uri = 'campaign/campaigns';
+            let uri = 'campaign/campaigns';
 
             if (selectedSourceHandle) {
                 uri += '/' + selectedSourceHandle;
@@ -144,61 +146,55 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _getCampaignTypeTriggerHref: function(campaignType) {
-        if (this.settings.context == 'index') {
-            const uri = `campaign/campaigns/${campaignType.handle}/new`;
-            const site = this.getSite();
-            const params = site ? {site: site.handle} : undefined;
-            return `href="${Craft.getUrl(uri, params)}"`;
-        }
-
-        return `data-id="${campaignType.id}"`;
-    },
-
-    _openCreateCampaignModal: function(campaignTypeId) {
+    _createCampaign: function(campaignTypeId) {
         if (this.$newCampaignBtn.hasClass('loading')) {
+            console.warn('New campaign creation already in progress.');
             return;
         }
 
-        // Find the campaign type
-        var campaignType;
-
-        for (var i = 0; i < this.publishableCampaignTypes.length; i++) {
-            if (this.publishableCampaignTypes[i].id == campaignTypeId) {
-                campaignType = this.publishableCampaignTypes[i];
-                break;
-            }
-        }
+        // Find the campaignType
+        const campaignType = this.editableCampaignTypes.find(s => s.id === campaignTypeId);
 
         if (!campaignType) {
-            return;
+            throw `Invalid campaign type ID: ${campaignTypeId}`;
         }
 
-        this.$newCampaignBtn.addClass('inactive');
-        var newCampaignBtnText = this.$newCampaignBtn.text();
-        this.$newCampaignBtn.text(Craft.t('campaign', 'New {campaignType} campaign', {campaignType: campaignType.name}));
+        this.$newCampaignBtn.addClass('loading');
 
-        Craft.createElementEditor(this.elementType, {
-            siteId: this.siteId,
-            attributes: {
-                campaignTypeId: campaignTypeId
+        Craft.sendActionRequest('POST', 'elements/create', {
+            data: {
+                elementType: this.elementType,
+                siteId: this.siteId,
+                campaignTypeId: campaignTypeId,
             },
-            onHideHud: () => {
-                this.$newCategoryBtn.removeClass('inactive').text(newCategoryBtnText);
-            },
-            onSaveElement: response => {
-                // Make sure the right campaign type is selected
-                var campaignTypeSourceKey = 'campaignType:' + campaignType.uid;
+        }).then(ev => {
+            if (this.settings.context === 'index') {
+                document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
+            } else {
+                const slideout = Craft.createElementEditor(this.elementType, {
+                    siteId: this.siteId,
+                    elementId: ev.data.element.id,
+                    draftId: ev.data.element.draftId,
+                    params: {
+                        fresh: 1,
+                    },
+                });
+                slideout.on('submit', () => {
+                    // Make sure the right campaignType is selected
+                    const campaignTypeSourceKey = `campaignType:${campaignType.uid}`;
 
-                if (this.sourceKey != campaignTypeSourceKey) {
-                    this.selectSourceByKey(campaignTypeSourceKey);
-                }
+                    if (this.sourceKey !== campaignTypeSourceKey) {
+                        this.selectSourceByKey(campaignTypeSourceKey);
+                    }
 
-                this.selectElementAfterUpdate(response.id);
-                this.updateElements();
-            },
+                    this.selectElementAfterUpdate(ev.data.element.id);
+                    this.updateElements();
+                });
+            }
+        }).finally(() => {
+            this.$newCampaignBtn.removeClass('loading');
         });
-    }
+    },
 });
 
 // Register it!

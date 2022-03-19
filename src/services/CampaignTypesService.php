@@ -12,6 +12,7 @@ use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
@@ -22,7 +23,6 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\events\CampaignTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
-
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use Throwable;
@@ -30,7 +30,8 @@ use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**
- * @property CampaignTypeModel[] $allCampaignTypes
+ * @property-read CampaignTypeModel[] $editableCampaignTypes
+ * @property-read CampaignTypeModel[] $allCampaignTypes
  */
 class CampaignTypesService extends Component
 {
@@ -73,6 +74,31 @@ class CampaignTypesService extends Component
     public function getAllCampaignTypes(): array
     {
         return $this->_campaignTypes()->all();
+    }
+
+    /**
+     * Returns all editable campaign types.
+     *
+     * @return CampaignTypeModel[]
+     */
+    public function getEditableCampaignTypes(): array
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return $this->getAllCampaignTypes();
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if (!$user) {
+            return [];
+        }
+
+        return ArrayHelper::where($this->getAllCampaignTypes(),
+            function(CampaignTypeModel $campaignType) use ($user) {
+                return $user->can('campaign:campaigns:' . $campaignType->uid);
+            },
+            true, true, false
+        );
     }
 
     /**

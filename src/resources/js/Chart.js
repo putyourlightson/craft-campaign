@@ -15,21 +15,21 @@ Campaign.Chart = Garnish.Base.extend(
             this.drawPercentageCharts();
 
             // Add listener to report tab
-            $('#tab-report').click($.proxy(function() {
+            $('#tab-report').click(() => {
                 this.getChart();
                 this.drawPercentageCharts();
-            }, this));
+            });
 
             // Add listener to interval select
-            $('#interval').change($.proxy(function() {
+            $('#interval').change(() => {
                 this.getChart();
-            }, this));
+            });
 
             // Add listener to refresh button
-            $('#refresh').click($.proxy(function(event) {
+            $('#refresh').click((event) => {
                 event.preventDefault();
                 this.getChart();
-            }, this));
+            });
         },
 
         drawPercentageCharts: function() {
@@ -86,10 +86,10 @@ Campaign.Chart = Garnish.Base.extend(
                     mailingListId: this.settings.mailingListId,
                     interval: $('#interval').val(),
                 },
-                success: $.proxy(function(data) {
+                success: (data) => {
                     $('.report-chart .spinner').hide();
                     this.drawChart(data);
-                }, this)
+                }
             });
         },
 

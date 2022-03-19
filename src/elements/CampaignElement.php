@@ -205,7 +205,6 @@ class CampaignElement extends Element
                 'heading' => Craft::t('campaign', 'Campaign Types'),
             ],
         ];
-
         $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
 
         foreach ($campaignTypes as $campaignType) {

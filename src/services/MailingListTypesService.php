@@ -7,10 +7,12 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
@@ -21,7 +23,6 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
-
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use Throwable;
@@ -29,6 +30,7 @@ use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**
+ * @property-read MailingListTypeModel[] $editableMailingListTypes
  * @property-read MailingListTypeModel[] $allMailingListTypes
  */
 class MailingListTypesService extends Component
@@ -59,25 +61,44 @@ class MailingListTypesService extends Component
     public const CONFIG_MAILINGLISTTYPES_KEY = 'campaign.mailingListTypes';
 
     /**
+     * @var MemoizableArray<MailingListTypeModel>|null
+     * @see _mailingListTypes()
+     */
+    private ?MemoizableArray $_mailingListTypes = null;
+
+    /**
      * Returns all mailing list types.
      *
      * @return MailingListTypeModel[]
      */
     public function getAllMailingListTypes(): array
     {
-        $mailingListTypes = [];
-        $mailingListTypeRecords = MailingListTypeRecord::find()
-            ->innerJoinWith('site')
-            ->orderBy(['name' => SORT_ASC])
-            ->all();
+        return $this->_mailingListTypes()->all();
+    }
 
-        foreach ($mailingListTypeRecords as $mailingListTypeRecord) {
-            $mailingListType = new MailingListTypeModel();
-            $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
-            $mailingListTypes[] = $mailingListType;
+    /**
+     * Returns all editable mailing list types.
+     *
+     * @return MailingListTypeModel[]
+     */
+    public function getEditableMailingListTypes(): array
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return $this->getAllMailingListTypes();
         }
 
-        return $mailingListTypes;
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if (!$user) {
+            return [];
+        }
+
+        return ArrayHelper::where($this->getAllMailingListTypes(),
+            function(MailingListTypeModel $mailingListType) use ($user) {
+                return $user->can('campaign:mailingLists:' . $mailingListType->uid);
+            },
+            true, true, false
+        );
     }
 
     /**
@@ -399,5 +420,31 @@ class MailingListTypesService extends Component
                 }
             }
         }
+    }
+
+    /**
+     * Returns a memoizable array of all mailing list types.
+     *
+     * @return MemoizableArray<MailingListTypeModel>
+     */
+    private function _mailingListTypes(): MemoizableArray
+    {
+        if (!isset($this->_mailingListTypes)) {
+            $mailingListTypes = [];
+            $mailingListTypeRecords = MailingListTypeRecord::find()
+                ->innerJoinWith('site')
+                ->orderBy(['name' => SORT_ASC])
+                ->all();
+
+            foreach ($mailingListTypeRecords as $mailingListTypeRecord) {
+                $mailingListType = new MailingListTypeModel();
+                $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
+                $mailingListTypes[] = $mailingListType;
+            }
+
+            $this->_mailingListTypes = new MemoizableArray($mailingListTypes);
+        }
+
+        return $this->_mailingListTypes;
     }
 }
