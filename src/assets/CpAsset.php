@@ -50,9 +50,6 @@ class CpAsset extends AssetBundle
         $this->_registerEditableTypes($view);
     }
 
-    /**
-     * @param View $view
-     */
     private function _registerTranslations(View $view): void
     {
         $view->registerTranslations('app', [

@@ -302,8 +302,6 @@ class Install extends Migration
 
     /**
      * Creates the indexes needed for the Records used by the plugin
-     *
-     * @return void
      */
     protected function createIndexes()
     {
@@ -324,9 +322,7 @@ class Install extends Migration
     }
 
     /**
-     * Creates the foreign keys needed for the Records used by the plugin
-     *
-     * @return void
+     * Creates the foreign keys needed for the records used by the plugin.
      */
     protected function addForeignKeys()
     {

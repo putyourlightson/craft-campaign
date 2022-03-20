@@ -242,9 +242,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns true if pro version
-     *
-     * @return bool
+     * Returns true if pro version.
      */
     public function getIsPro(): bool
     {
@@ -252,9 +250,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Throws an exception if the plugin edition is not pro
-     *
-     * @throws ForbiddenHttpException
+     * Throws an exception if the plugin edition is not pro.
      */
     public function requirePro()
     {

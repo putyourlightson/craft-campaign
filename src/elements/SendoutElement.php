@@ -93,8 +93,6 @@ class SendoutElement extends Element
 
     /**
      * Returns the sendout types.
-     *
-     * @return array
      */
     public static function sendoutTypes(): array
     {
@@ -703,8 +701,6 @@ class SendoutElement extends Element
 
     /**
      * Returns the sendout type label for the given sendout type.
-     *
-     * @return string
      */
     public function getSendoutTypeLabel(): string
     {
@@ -714,9 +710,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the from name, email and reply to
-     *
-     * @return string
+     * Returns the from name, email and reply to.
      */
     public function getFromNameEmail(): string
     {
@@ -724,9 +718,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the from name, email and reply to label
-     *
-     * @return string
+     * Returns the from name, email and reply to label.
      */
     public function getFromNameEmailLabel(): string
     {
@@ -740,9 +732,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's progress as a fraction
-     *
-     * @return float
+     * Returns the sendout's progress as a fraction.
      */
     public function getProgressFraction(): float
     {
@@ -759,9 +749,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's progress
-     *
-     * @return string
+     * Returns the sendout's progress.
      */
     public function getProgress(): string
     {
@@ -811,9 +799,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's mailing list IDs
+     * Returns the sendout's mailing list IDs.
      *
-     * @return array
+     * @return int[]
      */
     public function getMailingListIds(): array
     {
@@ -825,9 +813,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's mailing list count
-     *
-     * @return int
+     * Returns the sendout's mailing list count.
      */
     public function getMailingListCount(): int
     {
@@ -835,7 +821,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's mailing lists
+     * Returns the sendout's mailing lists.
      *
      * @return MailingListElement[]
      */
@@ -851,9 +837,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's excluded mailing list IDs
+     * Returns the sendout's excluded mailing list IDs.
      *
-     * @return array
+     * @return int[]
      */
     public function getExcludedMailingListIds(): array
     {
@@ -865,9 +851,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's excluded mailing list count
-     *
-     * @return int
+     * Returns the sendout's excluded mailing list count.
      */
     public function getExcludedMailingListCount(): int
     {
@@ -875,7 +859,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's excluded mailing lists
+     * Returns the sendout's excluded mailing lists.
      *
      * @return MailingListElement[]
      */
@@ -891,9 +875,9 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's segment IDs
+     * Returns the sendout's segment IDs.
      *
-     * @return array
+     * @return int[]
      */
     public function getSegmentIds(): array
     {
@@ -905,9 +889,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's segment count
-     *
-     * @return int
+     * Returns the sendout's segment count.
      */
     public function getSegmentCount(): int
     {
@@ -915,7 +897,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's segments
+     * Returns the sendout's segments.
      *
      * @return SegmentElement[]
      */
@@ -1061,9 +1043,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns whether the sendout is sendable
-     *
-     * @return bool
+     * Returns whether the sendout is sendable.
      */
     public function getIsSendable(): bool
     {
@@ -1071,9 +1051,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns whether the sendout is pausable
-     *
-     * @return bool
+     * Returns whether the sendout is pausable.
      */
     public function getIsPausable(): bool
     {
@@ -1081,9 +1059,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns whether the sendout is resumable
-     *
-     * @return bool
+     * Returns whether the sendout is resumable.
      */
     public function getIsResumable(): bool
     {
@@ -1091,9 +1067,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns whether the sendout is cancellable
-     *
-     * @return bool
+     * Returns whether the sendout is cancellable.
      */
     public function getIsCancellable(): bool
     {
@@ -1101,9 +1075,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns whether the sendout is deletable
-     *
-     * @return bool
+     * Returns whether the sendout is deletable.
      */
     public function getIsDeletable(): bool
     {

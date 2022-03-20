@@ -856,7 +856,6 @@ class CampaignElement extends Element
      * Returns whether the entry should be saving revisions on save.
      *
      * @see Entry::_shouldSaveRevision()
-     * @return bool
      */
     private function _shouldSaveRevision(): bool
     {
