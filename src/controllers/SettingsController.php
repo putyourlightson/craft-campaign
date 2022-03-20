@@ -366,20 +366,11 @@ class SettingsController extends Controller
             $message->setReplyTo($fromNameEmail['replyTo']);
         }
 
-        // Send message
-        try {
-            $response = $message->send();
+        if ($message->send()) {
+            $this->setSuccessFlash(Craft::t('app', 'Email sent successfully! Check your inbox.'));
         }
-        catch (Throwable $e) {
-            Craft::error($e);
-            Craft::$app->getErrorHandler()->logException($e);
-            $response = false;
-        }
-
-        if (!$response) {
-            return $this->asModelFailure($settings, Craft::t('campaign', 'There was an error testing your email settings.'), 'settings', [], [
-                'adapter' => $adapter,
-            ]);
+        else {
+            $this->setFailFlash(Craft::t('app', 'There was an error testing your email settings.'));
         }
 
         // Send the settings and adapter back to the template
