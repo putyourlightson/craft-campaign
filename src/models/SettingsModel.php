@@ -77,19 +77,6 @@ class SettingsModel extends Model
     public ?array $transportSettings = null;
 
     /**
-     * @var string A label to use for the email field
-     */
-    public string $emailFieldLabel = 'Email';
-
-    /**
-     * TODO: remove in version 2.0.0
-     *
-     * @var int|null Contact field layout ID
-     * @deprecated Since 1.15.0
-     */
-    public ?int $contactFieldLayoutId = null;
-
-    /**
      * @var int The maximum size of sendout batches
      */
     public int $maxBatchSize = 10000;
@@ -198,24 +185,19 @@ class SettingsModel extends Model
                 'class' => EnvAttributeParserBehavior::class,
                 'attributes' => ['apiKey'],
             ],
-            'contactFieldLayout' => [
-                'class' => FieldLayoutBehavior::class,
-                'elementType' => ContactElement::class,
-                'idAttribute' => 'contactFieldLayoutId',
-            ],
         ];
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'emailFieldLabel', 'maxBatchSize', 'memoryLimit', 'timeLimit'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize', 'memoryLimit', 'timeLimit'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
-            [['contactFieldLayoutId', 'maxBatchSize', 'timeLimit'], 'integer'],
+            [['maxBatchSize', 'timeLimit'], 'integer'],
             [['ipstackApiKey'], 'required', 'when' => function($model) {
                 return $model->geoIp;
             }],
@@ -245,12 +227,21 @@ class SettingsModel extends Model
 
     /**
      * Returns the contact field layout.
-     *
-     * @return FieldLayout
      */
     public function getContactFieldLayout(): FieldLayout
     {
         return Craft::$app->getFields()->getLayoutByType(ContactElement::class);
+    }
+
+    /**
+     * Returns the email field label.
+     */
+    public function getEmailFieldLabel(): string
+    {
+        $fieldLayout = $this->getContactFieldLayout();
+        $field = $fieldLayout->getField('email');
+
+        return $field->label();
     }
 
     /**
@@ -260,7 +251,12 @@ class SettingsModel extends Model
      */
     public function getContactFields(): array
     {
-        return $this->getContactFieldLayout()->getCustomFields();
+        $fieldLayout = $this->getContactFieldLayout();
+
+        return array_merge(
+            [$fieldLayout->getField('email')],
+            $fieldLayout->getCustomFields(),
+        );
     }
 
     /**

@@ -7,11 +7,14 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Field;
+use craft\db\Table;
 use craft\events\CancelableEvent;
+use craft\events\ConfigEvent;
 use craft\events\FieldEvent;
 use craft\helpers\App;
+use craft\helpers\Db;
 use craft\helpers\ProjectConfig;
+use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\mail\Mailer;
 use craft\models\FieldLayout;
@@ -230,29 +233,17 @@ class SettingsService extends Component
      *
      * @since 1.15.0
      */
-    public function handleChangedContactFieldLayout()
+    public function handleChangedContactFieldLayout(ConfigEvent $event)
     {
-        // Use this because we want this to trigger this if anything changes inside but ONLY ONCE
-        static $parsed = false;
-        if ($parsed) {
-            return;
-        }
+        $data = $event->newValue;
 
-        $parsed = true;
-        $data = Craft::$app->getProjectConfig()->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY, true);
+        // Make sure all fields are processed
+        ProjectConfigHelper::ensureAllFieldsProcessed();
 
         $fieldsService = Craft::$app->getFields();
 
-        if (empty($data) || empty($config = reset($data))) {
-            $fieldsService->deleteLayoutsByType(ContactElement::class);
-            return;
-        }
-
-        // Make sure fields are processed
-        ProjectConfig::ensureAllFieldsProcessed();
-
         // Save the field layout
-        $layout = FieldLayout::createFromConfig($config);
+        $layout = FieldLayout::createFromConfig(reset($data));
         $layout->id = $fieldsService->getLayoutByType(ContactElement::class)->id;
         $layout->type = ContactElement::class;
         $layout->uid = key($data);
@@ -264,7 +255,6 @@ class SettingsService extends Component
      */
     public function pruneDeletedField(FieldEvent $event)
     {
-        /** @var Field $field */
         $field = $event->field;
         $fieldUid = $field->uid;
 
@@ -286,9 +276,9 @@ class SettingsService extends Component
         }
 
         // Nuke all the layout fields from the DB
-        Craft::$app->getDb()->createCommand()
-            ->delete('{{%fieldlayoutfields}}', ['fieldId' => $field->id])
-            ->execute();
+        Db::delete(Table::FIELDLAYOUTFIELDS, [
+            'fieldId' => $field->id,
+        ]);
 
         // Allow events again
         $projectConfig->muteEvents = false;

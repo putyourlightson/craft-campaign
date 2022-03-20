@@ -56,9 +56,6 @@ return [
         // The transport type’s settings
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
-        // A label to use for the email field
-        //'emailFieldLabel' => 'Email',
-
         // The maximum size of sendout batches
         //'maxBatchSize' => 10000,
 

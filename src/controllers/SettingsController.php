@@ -120,17 +120,13 @@ class SettingsController extends Controller
 
     /**
      * Edit contact settings.
-     *
-     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
-    public function actionEditContact(SettingsModel $settings = null): Response
+    public function actionEditContact(): Response
     {
-        if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
-        }
+        $settings = Campaign::$plugin->getSettings();
 
         return $this->renderTemplate('campaign/settings/contact', [
-            'settings' => $settings,
+            'fieldLayout' => $settings->getContactFieldLayout(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
     }
@@ -246,20 +242,13 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
-
-        // Set the simple stuff
-        $settings->emailFieldLabel = $this->request->getBodyParam('emailFieldLabel', $settings->emailFieldLabel);
-
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = ContactElement::class;
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)
-            || !Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)
-        ) {
-            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save contact settings.'), 'settings');
+        if (!Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)) {
+            return $this->asFailure(Craft::t('campaign', 'Couldn’t save contact settings.'));
         }
 
         return $this->asSuccess(Craft::t('campaign', 'Contact settings saved.'));

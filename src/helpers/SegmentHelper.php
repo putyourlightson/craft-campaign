@@ -108,10 +108,11 @@ class SegmentHelper
     public static function getAvailableFields(): array
     {
         $settings = Campaign::$plugin->getSettings();
+
         $availableFields = [[
             'type' => Email::class,
             'column' => 'email',
-            'name' => $settings->emailFieldLabel,
+            'name' => $settings->getEmailFieldLabel(),
             'options' => null,
         ]];
 

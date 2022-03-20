@@ -202,37 +202,35 @@ class MailingListTypesService extends Component
      */
     public function handleChangedMailingListType(ConfigEvent $event)
     {
-        // Make sure all sites and fields are processed
-        ProjectConfigHelper::ensureAllSitesProcessed();
-        ProjectConfigHelper::ensureAllFieldsProcessed();
-
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
-
-        $isNew = $mailingListTypeRecord === null;
-
-        if ($isNew) {
-            $mailingListTypeRecord = new MailingListTypeRecord();
-        }
-
-        // Save old site ID for resaving elements later
-        $oldSiteId = $mailingListTypeRecord->siteId;
+        // Make sure all sites and fields are processed
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
 
         $transaction = Craft::$app->getDb()->beginTransaction();
-
         try {
+            $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
+            $isNew = $mailingListTypeRecord === null;
+
+            if ($isNew) {
+                $mailingListTypeRecord = new MailingListTypeRecord();
+            }
+
+            // Save old site ID for resaving elements later
+            $oldSiteId = $mailingListTypeRecord->siteId;
+
             $mailingListTypeRecord->setAttributes($data, false);
             $mailingListTypeRecord->siteId = Db::idByUid(Table::SITES, $data['siteUid']);
             $mailingListTypeRecord->uid = $uid;
 
             $fieldsService = Craft::$app->getFields();
 
-            if (!empty($data['fieldLayouts']) && !empty($config = reset($data['fieldLayouts']))) {
+            if (!empty($data['fieldLayouts'])) {
                 // Save the field layout
-                $layout = FieldLayout::createFromConfig($config);
+                $layout = FieldLayout::createFromConfig(reset($data['fieldLayouts']));
                 $layout->id = $mailingListTypeRecord->fieldLayoutId;
                 $layout->type = MailingListElement::class;
                 $layout->uid = key($data['fieldLayouts']);
@@ -402,9 +400,14 @@ class MailingListTypesService extends Component
      */
     public function pruneDeletedField(FieldEvent $event)
     {
-        $fieldUid = $event->field->uid;
+        $field = $event->field;
+        $fieldUid = $field->uid;
+
         $projectConfig = Craft::$app->getProjectConfig();
         $mailingListTypes = $projectConfig->get(self::CONFIG_MAILINGLISTTYPES_KEY);
+
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
 
         // Loop through the types and prune the UID from field layouts.
         if (is_array($mailingListTypes)) {
@@ -413,13 +416,21 @@ class MailingListTypesService extends Component
                     foreach ($mailingListType['fieldLayouts'] as $layoutUid => $layout) {
                         if (!empty($layout['tabs'])) {
                             foreach ($layout['tabs'] as $tabUid => $tab) {
-                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid);
+                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
                             }
                         }
                     }
                 }
             }
         }
+
+        // Nuke all the layout fields from the DB
+        Db::delete(Table::FIELDLAYOUTFIELDS, [
+            'fieldId' => $field->id,
+        ]);
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 
     /**

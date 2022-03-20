@@ -241,7 +241,7 @@ class ContactElement extends Element
         $settings = Campaign::$plugin->getSettings();
 
         return [
-            'email' => $settings->emailFieldLabel,
+            'email' => $settings->getEmailFieldLabel(),
             'cid' => Craft::t('campaign', 'Contact ID'),
             'subscriptionStatus' => Craft::t('campaign', 'Subscription Status'),
             'country' => Craft::t('campaign', 'Country'),
@@ -268,7 +268,7 @@ class ContactElement extends Element
         $settings = Campaign::$plugin->getSettings();
 
         return [
-            'email' => ['label' => $settings->emailFieldLabel],
+            'email' => ['label' => $settings->getEmailFieldLabel()],
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],
@@ -417,7 +417,7 @@ class ContactElement extends Element
         $labels = parent::attributeLabels();
 
         // Set the email field label
-        $labels['email'] = Campaign::$plugin->getSettings()->emailFieldLabel;
+        $labels['email'] = Campaign::$plugin->getSettings()->getEmailFieldLabel();
 
         return $labels;
     }
