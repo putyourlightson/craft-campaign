@@ -2,17 +2,23 @@
 
 {% set input %}
     {% if editable %}
-        {{ forms.date({
-            name: 'sendDate',
-            value: sendout.sendDate ?? now,
-        }) }}
-        {{ forms.time({
-            name: 'sendDate',
-            value: sendout.sendDate ?? now,
-        }) }}
-        {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}
+        {% set name = 'sendDate' %}
+        {% set value = sendout.sendDate ?? now %}
+        {% set hasOuterContainer = true %}
+        {% set isDateTime = true %}
+
+        <div class="datetimewrapper">
+            {% include '_includes/forms/date' %}
+            {% include '_includes/forms/time' %}
+            <div class="timezone">
+                {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}
+            </div>
+        </div>
     {% else %}
-        <p>{{ sendout.sendDate|datetime }} {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}</p>
+        <p>
+            {{ sendout.sendDate|datetime }}
+            {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}
+        </p>
     {% endif %}
 {% endset %}
 {{ forms.field({
