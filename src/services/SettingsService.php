@@ -14,7 +14,6 @@ use craft\events\FieldEvent;
 use craft\helpers\App;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig;
-use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\mail\Mailer;
 use craft\models\FieldLayout;
@@ -238,7 +237,7 @@ class SettingsService extends Component
         $data = $event->newValue;
 
         // Make sure all fields are processed
-        ProjectConfigHelper::ensureAllFieldsProcessed();
+        ProjectConfig::ensureAllFieldsProcessed();
 
         $fieldsService = Craft::$app->getFields();
 

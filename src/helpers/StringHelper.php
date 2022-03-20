@@ -32,7 +32,7 @@ class StringHelper extends \craft\helpers\StringHelper
         $html = preg_replace('/<br\s?\/?>/i', '[[br]]', $html);
 
         // Convert to plaintext
-        $html2Text =new Html2Text($html);
+        $html2Text = new Html2Text($html);
         $plaintext = $html2Text->getText();
 
         // Convert [[br]] tags to new lines

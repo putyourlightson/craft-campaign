@@ -11,8 +11,6 @@ use craft\elements\User;
 use craft\web\Controller;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
-use putyourlightson\campaign\assets\ContactEditAsset;
-use putyourlightson\campaign\assets\ReportsAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use yii\web\ForbiddenHttpException;

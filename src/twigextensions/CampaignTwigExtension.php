@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\twigextensions;
 
-use Html2Text\Html2Text;
 use putyourlightson\campaign\helpers\StringHelper;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;

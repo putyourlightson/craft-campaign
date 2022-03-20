@@ -11,7 +11,6 @@ use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
