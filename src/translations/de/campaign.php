@@ -395,7 +395,6 @@ return [
     'No mailing list activity for this contact.' => 'Keine Mailing-Listen-Aktivität für diesen Kontakt.',
     'No mailing list types exist.' => 'Es existieren keine Mailing-Listen-Typen.',
     'No mailing lists exist.' => 'Es existieren keine Mailing-Listen.',
-    'No mailing lists have been sent.' => 'Es wurden keine Mailing-Listen versendet.',
     'No recipients for this campaign.' => 'Keine Empfänger für diese Kampagne.',
     'No sendouts for this campaign.' => 'Keine Sendungen für diese Kampagne.',
     'No sendouts have been sent to this mailing list.' => 'Es wurden keine Sendungen an diese Mailing-Liste verschickt.',

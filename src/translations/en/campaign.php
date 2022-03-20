@@ -393,7 +393,6 @@ return [
     'No mailing list activity for this contact.' => '',
     'No mailing list types exist.' => '',
     'No mailing lists exist.' => '',
-    'No mailing lists have been sent.' => '',
     'No recipients for this campaign.' => '',
     'No sendouts for this campaign.' => '',
     'No sendouts have been sent to this mailing list.' => '',

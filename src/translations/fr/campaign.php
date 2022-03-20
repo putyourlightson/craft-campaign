@@ -395,7 +395,6 @@ return [
     'No mailing list activity for this contact.' => 'Aucune activité de liste de diffusion pour ce contact.',
     'No mailing list types exist.' => 'Aucun types de liste de diffusion n’existent.',
     'No mailing lists exist.' => 'Aucune listes de diffusion n’existent.',
-    'No mailing lists have been sent.' => 'Aucune listes de diffusion n’ont été envoyées.',
     'No recipients for this campaign.' => '',
     'No sendouts for this campaign.' => 'Aucune campagnes pour cette newsletter',
     'No sendouts have been sent to this mailing list.' => 'Aucune campagne n’a été envoyée à cette liste de diffusion.',
