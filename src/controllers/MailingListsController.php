@@ -43,7 +43,7 @@ class MailingListsController extends Controller
 
         $mailingList = Craft::createObject(MailingListElement::class);
         $mailingList->siteId = $site->id;
-        $mailingList->campaignTypeId = $mailingListType->id;
+        $mailingList->mailingListTypeId = $mailingListType->id;
         $mailingList->slug = ElementHelper::tempSlug();
 
         if (!$mailingList->canSave($user)) {

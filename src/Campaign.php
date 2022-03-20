@@ -7,7 +7,7 @@ namespace putyourlightson\campaign;
 
 use Craft;
 use craft\base\Plugin;
-use craft\controllers\LivePreviewController;
+use craft\controllers\PreviewController;
 use craft\elements\User;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\FieldEvent;
@@ -569,7 +569,7 @@ class Campaign extends Plugin
      */
     private function _registerAllowedOrigins()
     {
-        Event::on(LivePreviewController::class, Controller::EVENT_BEFORE_ACTION,
+        Event::on(PreviewController::class, Controller::EVENT_BEFORE_ACTION,
             function(ActionEvent $event) {
                 if ($event->action->id === 'preview') {
                     $origins = Craft::$app->getRequest()->getOrigin();
