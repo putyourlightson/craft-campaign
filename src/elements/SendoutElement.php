@@ -11,6 +11,8 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -425,19 +427,19 @@ class SendoutElement extends Element
     public ?string $notificationEmailAddress = null;
 
     /**
-     * @var string|array|null Mailing list IDs
+     * @var array|string|null Mailing list IDs
      */
-    public string|array|null $mailingListIds = null;
+    public array|string|null $mailingListIds = null;
 
     /**
-     * @var string|array|null Excluded mailing list IDs
+     * @var array|string|null Excluded mailing list IDs
      */
-    public string|array|null $excludedMailingListIds = null;
+    public array|string|null $excludedMailingListIds = null;
 
     /**
-     * @var string|array|null Segment IDs
+     * @var array|string|null Segment IDs
      */
-    public string|array|null $segmentIds = null;
+    public array|string|null $segmentIds = null;
 
     /**
      * @var int Recipients
@@ -450,9 +452,9 @@ class SendoutElement extends Element
     public int $fails = 0;
 
     /**
-     * @var ScheduleModel|null Schedule
+     * @var array|string|null Schedule
      */
-    public ?ScheduleModel $schedule = null;
+    public array|string|null $schedule = null;
 
     /**
      * @var string|null HTML body
@@ -515,15 +517,6 @@ class SendoutElement extends Element
             // Decode subject for emojis
             $this->subject = LitEmoji::shortcodeToUnicode($this->subject);
         }
-
-        // Create schedule
-        // TODO: test!
-        if ($this->sendoutType == 'automated') {
-            $this->schedule = new AutomatedScheduleModel($this->schedule->toArray());
-        }
-        elseif ($this->sendoutType == 'recurring') {
-            $this->schedule = new RecurringScheduleModel($this->schedule->toArray());
-        }
     }
 
     /**
@@ -557,7 +550,7 @@ class SendoutElement extends Element
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         // Safe rules
-        $rules[] = [['excludedMailingListIds', 'segmentIds', 'fromNameEmail'], 'safe'];
+        $rules[] = [['campaignIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail', 'schedule'], 'safe'];
 
         return $rules;
     }
@@ -824,7 +817,11 @@ class SendoutElement extends Element
      */
     public function getMailingListIds(): array
     {
-        return StringHelper::split($this->mailingListIds);
+        if (is_string($this->mailingListIds)) {
+            return StringHelper::split($this->mailingListIds);
+        }
+
+        return $this->mailingListIds;
     }
 
     /**
@@ -860,7 +857,11 @@ class SendoutElement extends Element
      */
     public function getExcludedMailingListIds(): array
     {
-        return StringHelper::split($this->excludedMailingListIds);
+        if (is_string($this->excludedMailingListIds)) {
+            return StringHelper::split($this->excludedMailingListIds);
+        }
+
+        return $this->excludedMailingListIds;
     }
 
     /**
@@ -896,7 +897,11 @@ class SendoutElement extends Element
      */
     public function getSegmentIds(): array
     {
-        return StringHelper::split($this->segmentIds);
+        if (is_string($this->segmentIds)) {
+            return StringHelper::split($this->segmentIds);
+        }
+
+        return $this->segmentIds;
     }
 
     /**
@@ -930,9 +935,34 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's pending recipient contact and mailing list IDs based on its mailing lists, segments and schedule
-     *
-     * @return array
+     * Returns the sendout's schedule.
+     */
+    public function getSchedule(): ?ScheduleModel
+    {
+        $schedule = null;
+
+        if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
+            $config = is_string($this->schedule) ? Json::decode($this->schedule) : (array)$this->schedule;
+
+            if ($this->sendoutType == 'automated') {
+                $schedule = new AutomatedScheduleModel($config ?: []);
+            }
+
+            if ($this->sendoutType == 'recurring') {
+                $schedule = new RecurringScheduleModel($config ?: []);
+            }
+
+            // Convert end date and time of day or set to null
+            $schedule->endDate = DateTimeHelper::toDateTime($schedule->endDate) ?: null;
+            $schedule->timeOfDay = DateTimeHelper::toDateTime($schedule->timeOfDay) ?: null;
+        }
+
+        return $schedule;
+    }
+
+    /**
+     * Returns the sendout's pending recipient contact and mailing list IDs based
+     * on its mailing lists, segments and schedule.
      */
     public function getPendingRecipients(): array
     {
@@ -947,8 +977,6 @@ class SendoutElement extends Element
 
     /**
      * Returns the sendout's pending recipient count
-     *
-     * @return int
      */
     public function getPendingRecipientCount(): int
     {
@@ -1026,7 +1054,7 @@ class SendoutElement extends Element
     public function getCanSendNow(): bool
     {
         if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
-            return $this->schedule->canSendNow($this);
+            return $this->getSchedule()->canSendNow($this);
         }
 
         return true;
@@ -1158,6 +1186,18 @@ class SendoutElement extends Element
         $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
         $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : $this->excludedMailingListIds;
         $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : $this->segmentIds;
+
+        // Convert send date
+        $this->sendDate = DateTimeHelper::toDateTime($this->sendDate) ?: new DateTime();
+
+        if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
+            // Validate schedule
+            if ($this->getScenario() != self::SCENARIO_ESSENTIALS) {
+                if (!$this->getSchedule()->validate()) {
+                    return false;
+                }
+            }
+        }
 
         return parent::beforeSave($isNew);
     }

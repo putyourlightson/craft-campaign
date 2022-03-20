@@ -2,11 +2,16 @@
 
 {% set input %}
     {% if editable %}
-        {{ forms.time({
-            name: 'schedule[timeOfDay]',
-            value: schedule.timeOfDay ?? '',
-        }) }}
-        {{ schedule.timeOfDay.getTimezone().getName() ?? craft.app.timezone }}
+        <div class="datetimewrapper">
+            {{ include('_includes/forms/time', {
+                name: 'schedule[timeOfDay]',
+                value: schedule.timeOfDay ?? '',
+                hasOuterContainer: true,
+            }) }}
+            <div class="timezone">
+                {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}
+            </div>
+        </div>
     {% else %}
         <p>{{ schedule.timeOfDay ? schedule.timeOfDay|time ~ ' ' ~ (schedule.timeOfDay.getTimezone().getName() ?? craft.app.timezone) : '-' }}</p>
     {% endif %}

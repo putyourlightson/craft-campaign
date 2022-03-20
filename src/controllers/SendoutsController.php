@@ -186,6 +186,50 @@ class SendoutsController extends Controller
         $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
         $response->redirectUrl = $sendout->getCpPreviewUrl();
 
+        if ($sendout->getIsPausable()) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Pause and Edit'),
+                [
+                    'action' => 'campaign/sendouts/pause',
+                    'redirect' => $sendout->getCpEditUrl(),
+                    'label' => Craft::t('campaign', 'Pause and Edit'),
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
+                ]
+            );
+            $response->addAltAction(
+                Craft::t('campaign', 'Pause'),
+                [
+                    'action' => 'campaign/sendouts/pause',
+                    'redirect' => 'campaign/sendouts',
+                    'label' => Craft::t('campaign', 'Pause'),
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
+                ]
+            );
+        }
+
+        if ($sendout->getIsCancellable()) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Cancel'),
+                [
+                    'action' => 'campaign/sendouts/cancel',
+                    'destructive' => 'true',
+                    'redirect' => 'campaign/sendouts',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
+                ]
+            );
+        }
+
+        $response->addAltAction(
+            Craft::t('campaign', 'Cancel'),
+            [
+                'action' => 'campaign/sendouts/delete',
+                'destructive' => 'true',
+                'redirect' => 'campaign/sendouts',
+                'label' => Craft::t('campaign', 'Delete'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
+            ]
+        );
+
         return $response;
     }
 
@@ -230,257 +274,6 @@ class SendoutsController extends Controller
         $sendoutField->formHtml($sendout);
 
         return $this->renderTemplate('campaign/sendouts/_preview', $variables);
-    }
-
-    /**
-     * Edit the sendout.
-     */
-    public function xactionEdit(string $sendoutType, int $sendoutId = null, string $siteHandle = null, SendoutElement $sendout = null): Response
-    {
-        $this->requirePermission('campaign:sendouts');
-
-        // Check that the sendout type exists
-        $sendoutTypes = SendoutElement::sendoutTypes();
-
-        if (empty($sendoutTypes[$sendoutType])) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout type not found.'));
-        }
-
-        // Get the sendout
-        if ($sendout === null) {
-            if ($sendoutId !== null) {
-                $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
-
-                if ($sendout === null) {
-                    throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
-                }
-            }
-            else {
-                $sendout = new SendoutElement();
-                $sendout->sendoutType = $sendoutType;
-
-                // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
-                $campaignId = $this->request->getParam('campaignId');
-                if ($campaignId) {
-                    // Set campaign ID
-                    $sendout->campaignId = $campaignId;
-
-                    // Set title and subject to campaign title
-                    $campaign = $sendout->getCampaign();
-                    $sendout->title = $campaign !== null ? $campaign->title : '';
-                    $sendout->subject = $sendout->title;
-                }
-            }
-        }
-
-        // Get the site if site handle is set
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-            $sendout->siteId = $site->id;
-        }
-
-        // Get from name and email options
-        $fromNameEmailOptions = Campaign::$plugin->settings->getFromNameEmailOptions($sendout->siteId);
-
-        // Get the schedule
-        if ($sendoutType == 'automated') {
-            $sendout->schedule = new AutomatedScheduleModel($sendout->schedule);
-        }
-        elseif ($sendoutType == 'recurring') {
-            $sendout->schedule = new RecurringScheduleModel($sendout->schedule);
-        }
-
-        // Set the variables
-        $variables = [
-            'sendoutType' => $sendoutType,
-            'sendoutId' => $sendoutId,
-            'sendout' => $sendout,
-            'fromNameEmailOptions' => $fromNameEmailOptions,
-        ];
-
-        // Campaign element selector variables
-        $variables['campaignElementType'] = CampaignElement::class;
-        $variables['campaignElementCriteria'] = [
-            'siteId' => $sendout->site->id,
-            'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
-        ];
-
-        // Mailing list element selector variables
-        $variables['mailingListElementType'] = MailingListElement::class;
-        $variables['mailingListElementCriteria'] = [
-            'siteId' => $sendout->site->id,
-            'status' => Element::STATUS_ENABLED,
-        ];
-
-        if (Campaign::$plugin->getIsPro()) {
-            // Segment element selector variables
-            $variables['segmentElementType'] = SegmentElement::class;
-            $variables['segmentElementCriteria'] = [
-                'siteId' => $sendout->site->id,
-                'status' => Element::STATUS_ENABLED,
-            ];
-        }
-
-        // Contact element selector variables
-        $variables['contactElementType'] = ContactElement::class;
-        $variables['contactElementCriteria'] = [
-            'status' => ContactElement::STATUS_ACTIVE,
-        ];
-
-        // Get test contacts
-        $variables['testContacts'] = [];
-
-        $campaign = $sendout->getCampaign();
-
-        if ($campaign !== null) {
-            $campaignType = $campaign->getCampaignType();
-            $variables['testContacts'] = $campaignType->getTestContactsWithDefault();
-        }
-
-        // Determine which actions should be available
-        $variables['actions'] = [];
-
-        if ($sendout->getIsPausable()) {
-            $variables['actions'][0][] = [
-                'action' => 'campaign/sendouts/pause',
-                'redirect' => $sendout->getCpEditUrl(),
-                'label' => Craft::t('campaign', 'Pause and Edit'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
-            ];
-            $variables['actions'][0][] = [
-                'action' => 'campaign/sendouts/pause',
-                'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Pause'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
-            ];
-        }
-
-        if ($sendout->getIsCancellable()) {
-            $variables['actions'][1][] = [
-                'action' => 'campaign/sendouts/cancel',
-                'destructive' => 'true',
-                'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Cancel'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
-            ];
-        }
-
-        $variables['actions'][1][] = [
-            'action' => 'campaign/sendouts/delete',
-            'destructive' => 'true',
-            'redirect' => 'campaign/sendouts',
-            'label' => Craft::t('campaign', 'Delete'),
-            'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
-        ];
-
-        if ($sendoutType == 'automated' || $sendoutType == 'recurring') {
-            // Get the interval options
-            $variables['intervalOptions'] = $sendout->schedule->getIntervalOptions();
-        }
-
-        $variables['settings'] = Campaign::$plugin->getSettings();
-
-        $variables['fullPageForm'] = true;
-
-        // Render the template
-        if ($sendout->getIsModifiable() && !$this->request->getParam('preview')) {
-            return $this->renderTemplate('campaign/sendouts/_edit', $variables);
-        }
-
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
-        // Get the system limits
-        $variables['system'] = [
-            'memoryLimit' => ini_get('memory_limit'),
-            'timeLimit' => ini_get('max_execution_time'),
-        ];
-
-        $variables['isDynamicWebAliasUsed'] = Campaign::$plugin->settings->isDynamicWebAliasUsed($sendout->siteId);
-
-        return $this->renderTemplate('campaign/sendouts/_view', $variables);
-    }
-
-    /**
-     * Saves the sendout.
-     */
-    public function actionSave(): ?Response
-    {
-        // Require permission
-        $this->requirePermission('campaign:sendouts');
-
-        $this->requirePostRequest();
-
-        $sendoutId = $this->request->getBodyParam('sendoutId');
-
-        if ($sendoutId) {
-            $sendout = $this->_getSendoutFromParamId();
-        }
-        else {
-            $sendout = new SendoutElement();
-        }
-
-        // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $sendout->siteId = $this->request->getBodyParam('siteId', $sendout->siteId);
-        $sendout->sendoutType = $this->request->getBodyParam('sendoutType', $sendout->sendoutType);
-        $sendout->title = $this->request->getBodyParam('title', $sendout->title);
-        $sendout->subject = $this->request->getBodyParam('subject', $sendout->subject);
-        $sendout->notificationEmailAddress = $this->request->getBodyParam('notificationEmailAddress', $sendout->notificationEmailAddress);
-
-        // Get from name and email
-        $fromNameEmail = explode(':', $this->request->getBodyParam('fromNameEmail', ''));
-        $sendout->fromName = $fromNameEmail[0] ?? '';
-        $sendout->fromEmail = $fromNameEmail[1] ?? '';
-        $sendout->replyToEmail = $fromNameEmail[2] ?? '';
-
-        // Get the selected campaign ID
-        $campaignId = $this->request->getBodyParam('campaignId', $sendout->campaignId);
-        $sendout->campaignId = $campaignId[0] ?? null;
-
-        // Get the selected included and excluded mailing list IDs and segment IDs
-        $mailingListIds = $this->request->getBodyParam('mailingListIds', $sendout->mailingListIds);
-        $sendout->mailingListIds = is_array($mailingListIds) ? implode(',', $mailingListIds) : '';
-        $excludedMailingListIds = $this->request->getBodyParam('excludedMailingListIds', $sendout->excludedMailingListIds);
-        $sendout->excludedMailingListIds = is_array($excludedMailingListIds) ? implode(',', $excludedMailingListIds) : '';
-
-        $segmentIds = $this->request->getBodyParam('segmentIds', $sendout->segmentIds);
-        $sendout->segmentIds = is_array($segmentIds) ? implode(',', $segmentIds) : '';
-
-        // Convert send date
-        $sendDate = $this->request->getBodyParam('sendDate', $sendout->sendDate);
-        $sendout->sendDate = DateTimeHelper::toDateTime($sendDate) ?: new DateTime();
-
-        if ($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring') {
-            $schedule = $this->request->getBodyParam('schedule');
-
-            if ($sendout->sendoutType == 'automated') {
-                $sendout->schedule = new AutomatedScheduleModel($schedule);
-            }
-            else {
-                $sendout->schedule = new RecurringScheduleModel($schedule);
-            }
-
-            // Convert end date and time of day or set to null
-            $sendout->schedule->endDate = DateTimeHelper::toDateTime($sendout->schedule->endDate) ?: null;
-            $sendout->schedule->timeOfDay = DateTimeHelper::toDateTime($sendout->schedule->timeOfDay) ?: null;
-
-            // Validate schedule and sendout
-            $sendout->schedule->validate();
-            $sendout->validate();
-
-            // If errors then send the sendout back to the template
-            if ($sendout->schedule->hasErrors() || $sendout->hasErrors()) {
-                return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
-            }
-        }
-
-        // Save it without propagating across all sites
-        if (!Craft::$app->getElements()->saveElement($sendout, true, false)) {
-            return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
-        }
-
-        return $this->asModelSuccess($sendout, Craft::t('campaign', 'Sendout saved.'), 'sendout');
     }
 
     /**

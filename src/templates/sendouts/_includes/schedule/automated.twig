@@ -12,7 +12,7 @@
         }) }}
         {{ forms.select({
             name: 'schedule[timeDelayInterval]',
-            options: intervalOptions,
+            options: schedule.getIntervalOptions(),
             value: schedule.timeDelayInterval,
         }) }}
     {% else %}

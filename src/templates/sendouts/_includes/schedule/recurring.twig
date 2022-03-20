@@ -13,7 +13,7 @@
         }) }}
         {{ forms.select({
             name: 'schedule[frequencyInterval]',
-            options: intervalOptions,
+            options: schedule.getIntervalOptions(),
             value: schedule.frequencyInterval,
             toggle: true,
             targetPrefix: 'frequency-',

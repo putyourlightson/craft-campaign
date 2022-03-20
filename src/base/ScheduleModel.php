@@ -23,17 +23,17 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
     /**
      * @var DateTime|null End date
      */
-    public ?DateTime $endDate;
+    public ?DateTime $endDate = null;
 
     /**
      * @var array|null Days of the week
      */
-    public ?array $daysOfWeek;
+    public ?array $daysOfWeek = null;
 
     /**
      * @var DateTime|null Time of day
      */
-    public ?DateTime $timeOfDay;
+    public ?DateTime $timeOfDay = null;
 
     /**
      * Returns the schedule's interval options.

@@ -2,14 +2,19 @@
 
 {% set input %}
     {% if editable %}
-        {% set name = 'sendDate' %}
-        {% set value = sendout.sendDate ?? now %}
-        {% set hasOuterContainer = true %}
-        {% set isDateTime = true %}
-
         <div class="datetimewrapper">
-            {% include '_includes/forms/date' %}
-            {% include '_includes/forms/time' %}
+            {{ include('_includes/forms/date', {
+                name: 'sendDate',
+                value: sendout.sendDate ?? now,
+                hasOuterContainer: true,
+                isDateTime: true,
+            }) }}
+            {{ include('_includes/forms/time', {
+                name: 'sendDate',
+                value: sendout.sendDate ?? now,
+                hasOuterContainer: true,
+                isDateTime: true,
+            }) }}
             <div class="timezone">
                 {{ sendout.sendDate.getTimezone().getName() ?? craft.app.timezone }}
             </div>
