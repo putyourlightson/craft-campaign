@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\Field;
 use craft\db\Table;
 use craft\events\CancelableEvent;
 use craft\events\ConfigEvent;
@@ -254,6 +255,7 @@ class SettingsService extends Component
      */
     public function pruneDeletedField(FieldEvent $event)
     {
+        /** @var Field $field */
         $field = $event->field;
         $fieldUid = $field->uid;
 

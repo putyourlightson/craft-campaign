@@ -19,6 +19,7 @@ use yii\validators\EmailValidator;
  *
  * @property-read FieldLayout $contactFieldLayout
  * @property-read FieldInterface[] $contactFields
+ * @property-read string $emailFieldLabel
  */
 class SettingsModel extends Model
 {

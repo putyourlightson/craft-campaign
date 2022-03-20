@@ -12,7 +12,7 @@
 */
 return [
     'Plugin Name' => 'Campaign',
-
+    // -------------------------------------------------------------------------
     '(reply to {email})' => '',
     '{count} pending sendout(s) queued.' => '',
     'A contact with that email address could not be found.' => '',

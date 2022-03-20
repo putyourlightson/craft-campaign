@@ -524,6 +524,7 @@ class ReportsService extends Component
 
         // Get first record
         /** @var ActiveRecord $recordClass */
+        /** @var ActiveRecord|null $record */
         $record = $recordClass::find()
             ->where($condition)
             ->orderBy(['dateCreated' => SORT_ASC])
@@ -533,7 +534,6 @@ class ReportsService extends Component
             return [];
         }
 
-        /** @var ActiveRecord $record */
         // Get start and end date times
         $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 ' . $interval);
         $endDateTime = clone $startDateTime;
@@ -541,7 +541,6 @@ class ReportsService extends Component
 
         $fields = [];
 
-        /** @var ActiveRecord $recordClass */
         foreach ($record->fields() as $field) {
             $fields[] = 'MIN([[' . $field . ']]) AS ' . $field;
         }

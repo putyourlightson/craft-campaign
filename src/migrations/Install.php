@@ -306,19 +306,19 @@ class Install extends Migration
     protected function createIndexes()
     {
         $this->createIndex(null, CampaignTypeRecord::tableName(), 'handle', true);
-        $this->createIndex(null, ContactRecord::tableName(), 'email', false);
-        $this->createIndex(null, ContactRecord::tableName(), 'cid', false);
+        $this->createIndex(null, ContactRecord::tableName(), 'email');
+        $this->createIndex(null, ContactRecord::tableName(), 'cid');
         $this->createIndex(null, PendingContactRecord::tableName(), 'pid', true);
-        $this->createIndex(null, PendingContactRecord::tableName(), 'email, mailingListId', false);
+        $this->createIndex(null, PendingContactRecord::tableName(), 'email, mailingListId');
         $this->createIndex(null, ContactCampaignRecord::tableName(), 'contactId, sendoutId', true);
         $this->createIndex(null, ContactMailingListRecord::tableName(), 'contactId, mailingListId', true);
-        $this->createIndex(null, ContactMailingListRecord::tableName(), 'subscriptionStatus', false);
+        $this->createIndex(null, ContactMailingListRecord::tableName(), 'subscriptionStatus');
         $this->createIndex(null, LinkRecord::tableName(), 'lid', true);
         $this->createIndex(null, MailingListTypeRecord::tableName(), 'handle', true);
-        $this->createIndex(null, SegmentRecord::tableName(), 'segmentType', false);
-        $this->createIndex(null, SendoutRecord::tableName(), 'sid', false);
-        $this->createIndex(null, SendoutRecord::tableName(), 'sendoutType', false);
-        $this->createIndex(null, SendoutRecord::tableName(), 'sendStatus', false);
+        $this->createIndex(null, SegmentRecord::tableName(), 'segmentType');
+        $this->createIndex(null, SendoutRecord::tableName(), 'sid');
+        $this->createIndex(null, SendoutRecord::tableName(), 'sendoutType');
+        $this->createIndex(null, SendoutRecord::tableName(), 'sendStatus');
     }
 
     /**

@@ -9,12 +9,12 @@ use craft\db\ActiveRecord;
 use DateTime;
 
 /**
- * @property int $idID
+ * @property int $id ID
  * @property int $assetId Asset ID
  * @property string $fileNameFile name
  * @property string $filePathFile path
  * @property int $userGroupId User group ID
- * @property int $userIdUser ID
+ * @property int $userId User ID
  * @property int $mailingListId Mailing list ID
  * @property bool $forceSubscribeForce
  * @property string $emailFieldIndex Email field index

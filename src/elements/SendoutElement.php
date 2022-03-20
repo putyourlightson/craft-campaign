@@ -18,7 +18,6 @@ use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use DateTime;
 use LitEmoji\LitEmoji;
-use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
@@ -918,8 +917,10 @@ class SendoutElement extends Element
 
     /**
      * Returns the sendout's schedule.
+     *
+     * @return AutomatedScheduleModel|RecurringScheduleModel|null
      */
-    public function getSchedule(): ?ScheduleModel
+    public function getSchedule(): AutomatedScheduleModel|RecurringScheduleModel|null
     {
         $schedule = null;
 

@@ -13,7 +13,7 @@
 */
 return [
     'Plugin Name' => 'Campaign',
-
+    // -------------------------------------------------------------------------
     '(reply to {email})' => '(an {email} antworten)',
     '{count} pending sendout(s) queued.' => '{count} Sendung(en) in Warteschlange',
     'A contact with that email address could not be found.' => 'Es wurde kein Kontakt mit dieser E-Mail-Adresse gefunden.',
@@ -166,7 +166,6 @@ return [
     'Contacts Overview' => 'Kontakte-Übersicht',
     'Contacts permanently deleted.' => 'Kontakte für immer gelöscht.',
     'Contacts restored.' => 'Kontakte wiederhergestellt.',
-    'Contacts' => 'Kontakte',
     'contains' => 'enthält',
     'Continent' => 'Kontinent',
     'Continue' => 'Weiter',

@@ -13,7 +13,7 @@
 */
 return [
     'Plugin Name' => 'Newsletters',
-
+    // -------------------------------------------------------------------------
     '(reply to {email})' => '(répondre à {email})',
     '{count} pending sendout(s) queued.' => '{count} envoi(s) en attente.',
     'A contact with that email address could not be found.' => 'Le contact avec cette adresse email n’a pas été trouvé.',
@@ -166,7 +166,6 @@ return [
     'Contacts Overview' => 'Aperçu des contacts.',
     'Contacts permanently deleted.' => 'Contacts supprimés définitivement.',
     'Contacts restored.' => 'Contacts restaurés.',
-    'Contacts' => 'Contacts',
     'contains' => 'contient',
     'Continent' => '',
     'Continue' => 'Continuez',

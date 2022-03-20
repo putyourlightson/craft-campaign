@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\Field;
 use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;
@@ -400,6 +401,7 @@ class MailingListTypesService extends Component
      */
     public function pruneDeletedField(FieldEvent $event)
     {
+        /** @var Field $field */
         $field = $event->field;
         $fieldUid = $field->uid;
 

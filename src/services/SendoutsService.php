@@ -21,8 +21,6 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
-use putyourlightson\campaign\models\AutomatedScheduleModel;
-
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -108,7 +106,8 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the sendout's pending contact and mailing list IDs based on its mailing lists, segments and schedule.
+     * Returns the sendout's pending contact and mailing list IDs based on its
+     * mailing lists, segments and schedule.
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
@@ -137,7 +136,8 @@ class SendoutsService extends Component
         $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
 
         // Check whether we should exclude recipients that were sent to today only
-        $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes;
+        $schedule = $sendout->getSchedule();
+        $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $schedule->canSendToContactsMultipleTimes;
 
         // Exclude sent recipients
         $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
@@ -162,13 +162,10 @@ class SendoutsService extends Component
             ->all();
 
         if ($sendout->sendoutType == 'automated') {
-            /** @var AutomatedScheduleModel $automatedSchedule */
-            $automatedSchedule = $sendout->schedule;
-
             // Remove any contacts that do not meet the conditions
             foreach ($recipients as $key => $recipient) {
                 $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
-                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $automatedSchedule->timeDelay . ' ' . $automatedSchedule->timeDelayInterval);
+                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $schedule->timeDelay . ' ' . $schedule->timeDelayInterval);
 
                 // If subscribed date was before sendout was created or time plus delay has not yet passed
                 if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
@@ -260,6 +257,7 @@ class SendoutsService extends Component
             $htmlBody = $campaign->getHtmlBody($contact, $sendout);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
         }
+        /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
             Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
@@ -321,7 +319,9 @@ class SendoutsService extends Component
         }
         elseif ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
-            if (!($sendout->sendoutType == 'recurring' && $sendout->schedule->canSendToContactsMultipleTimes)) {
+            $schedule = $sendout->getSchedule();
+
+            if (!($sendout->sendoutType == 'recurring' && $schedule->canSendToContactsMultipleTimes)) {
                 return;
             }
 
@@ -349,6 +349,7 @@ class SendoutsService extends Component
             $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout, $mailingList);
         }
+        /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
