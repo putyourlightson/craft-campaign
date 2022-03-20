@@ -824,7 +824,7 @@ class SendoutElement extends Element
      */
     public function getMailingListIds(): array
     {
-        return is_string($this->mailingListIds) ? explode(',', $this->mailingListIds) : $this->mailingListIds;
+        return StringHelper::split($this->mailingListIds);
     }
 
     /**
@@ -860,7 +860,7 @@ class SendoutElement extends Element
      */
     public function getExcludedMailingListIds(): array
     {
-        return $this->excludedMailingListIds ? explode(',', $this->excludedMailingListIds) : [];
+        return StringHelper::split($this->excludedMailingListIds);
     }
 
     /**
@@ -896,7 +896,7 @@ class SendoutElement extends Element
      */
     public function getSegmentIds(): array
     {
-        return $this->segmentIds ? explode(',', $this->segmentIds) : [];
+        return StringHelper::split($this->segmentIds);
     }
 
     /**
