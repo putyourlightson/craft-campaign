@@ -2,7 +2,7 @@
 
 {% set content %}
 
-    <div id="newCondition" class="andCondition field hidden">
+    <div class="andCondition field hidden" data-new="1">
         <table class="heading data fullwidth collapsible">
             <tbody>
                 {% include 'campaign/segments/_includes/condition' %}
@@ -39,8 +39,9 @@
 
 {% endset %}
 
-{{ forms.field({
-    id: 'segment-conditions',
-    label: "Conditions"|t('campaign'),
-    instructions: "Create one or more conditions to apply to this segment."|t('campaign'),
-}, content) }}
+<div class="segment-conditions">
+    {{ forms.field({
+        label: "Conditions"|t('campaign'),
+        instructions: "Create one or more conditions to apply to this segment."|t('campaign'),
+    }, content) }}
+</div>

@@ -527,7 +527,7 @@ class SegmentElement extends Element
         // which prevents us from depending on the SlugValidator class.
         ElementHelper::setUniqueUri($this);
 
-        // Sort OR conditions by keys
+        // Sort OR conditions by keys, since they'll come in unordered.
         if (is_array($this->conditions)) {
             foreach ($this->conditions as &$andCondition) {
                 foreach ($andCondition as &$orCondition) {
