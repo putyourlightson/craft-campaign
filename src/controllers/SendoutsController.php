@@ -259,6 +259,25 @@ class SendoutsController extends Controller
             'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed($sendout->siteId),
         ];
 
+        if ($sendout->getIsPausable()) {
+            $variables['actions'][0][] = [
+                'action' => 'campaign/sendouts/pause-sendout',
+                'redirect' => $sendout->getCpEditUrl(),
+                'label' => Craft::t('campaign', 'Pause'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
+            ];
+        }
+
+        if ($sendout->getIsCancellable()) {
+            $variables['actions'][1][] = [
+                'action' => 'campaign/sendouts/cancel-sendout',
+                'destructive' => 'true',
+                'redirect' => $sendout->getCpEditUrl(),
+                'label' => Craft::t('campaign', 'Cancel'),
+                'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
+            ];
+        }
+
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
@@ -363,25 +382,6 @@ class SendoutsController extends Controller
         Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title]);
 
         return $this->asSuccess(Craft::t('campaign', 'Sendout cancelled.'));
-    }
-
-    /**
-     * Deletes a sendout.
-     */
-    public function actionDelete(): ?Response
-    {
-        $this->requirePostRequest();
-
-        $sendout = $this->_getSendoutFromParamId();
-
-        if (!Campaign::$plugin->sendouts->deleteSendout($sendout)) {
-            return $this->asFailure(Craft::t('campaign', 'Sendout could not be deleted.'));
-        }
-
-        // Log it
-        Campaign::$plugin->log('Sendout "{title}" deleted by "{username}".', ['title' => $sendout->title]);
-
-        return $this->asSuccess(Craft::t('campaign', 'Sendout deleted.'));
     }
 
     /**
