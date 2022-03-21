@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
+use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
@@ -256,6 +257,11 @@ class SendoutElement extends Element
         $actions[] = $elementsService->createAction([
             'type' => Edit::class,
             'label' => Craft::t('campaign', 'Edit sendout'),
+        ]);
+
+        // Duplicate
+        $actions[] = $elementsService->createAction([
+            'type' => Duplicate::class,
         ]);
 
         // Pause
@@ -1137,6 +1143,16 @@ class SendoutElement extends Element
         if ($isNew) {
             // Create unique ID
             $this->sid = StringHelper::uniqueId('s');
+        }
+
+        // Reset stats if this is a duplicate of a non-draft sendout.
+        if ($this->firstSave && $this->duplicateOf !== null) {
+            $this->senderId = null;
+            $this->sendStatus = self::STATUS_DRAFT;
+            $this->recipients = 0;
+            $this->fails = 0;
+            $this->sendDate = null;
+            $this->lastSent = null;
         }
 
         if (Craft::$app->getDb()->getIsMysql()) {

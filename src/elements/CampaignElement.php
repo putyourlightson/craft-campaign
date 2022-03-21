@@ -810,6 +810,27 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public function beforeSave(bool $isNew): bool
+    {
+        // Reset stats if this is a duplicate of a non-draft campaign.
+        if ($this->firstSave && $this->duplicateOf !== null) {
+            $this->recipients = 0;
+            $this->opened = 0;
+            $this->clicked = 0;
+            $this->opens = 0;
+            $this->clicks = 0;
+            $this->unsubscribed = 0;
+            $this->complained = 0;
+            $this->bounced = 0;
+            $this->dateClosed = null;
+        }
+
+        return parent::beforeSave($isNew);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function afterSave(bool $isNew): void
     {
         if ($isNew) {
