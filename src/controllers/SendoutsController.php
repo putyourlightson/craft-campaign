@@ -178,50 +178,6 @@ class SendoutsController extends Controller
         $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
         $response->redirectUrl = $sendout->getCpPreviewUrl();
 
-        if ($sendout->getIsPausable()) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Pause and Edit'),
-                [
-                    'action' => 'campaign/sendouts/pause',
-                    'redirect' => $sendout->getCpEditUrl(),
-                    'label' => Craft::t('campaign', 'Pause and Edit'),
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to pause and edit this sendout?'),
-                ]
-            );
-            $response->addAltAction(
-                Craft::t('campaign', 'Pause'),
-                [
-                    'action' => 'campaign/sendouts/pause',
-                    'redirect' => 'campaign/sendouts',
-                    'label' => Craft::t('campaign', 'Pause'),
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
-                ]
-            );
-        }
-
-        if ($sendout->getIsCancellable()) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Cancel'),
-                [
-                    'action' => 'campaign/sendouts/cancel',
-                    'destructive' => 'true',
-                    'redirect' => 'campaign/sendouts',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to cancel this sendout? It cannot be sent again if cancelled.'),
-                ]
-            );
-        }
-
-        $response->addAltAction(
-            Craft::t('campaign', 'Cancel'),
-            [
-                'action' => 'campaign/sendouts/delete',
-                'destructive' => 'true',
-                'redirect' => 'campaign/sendouts',
-                'label' => Craft::t('campaign', 'Delete'),
-                'confirm' => Craft::t('campaign', 'Are you sure you want to delete this sendout?'),
-            ]
-        );
-
         return $response;
     }
 
@@ -261,7 +217,7 @@ class SendoutsController extends Controller
 
         if ($sendout->getIsPausable()) {
             $variables['actions'][0][] = [
-                'action' => 'campaign/sendouts/pause-sendout',
+                'action' => 'campaign/sendouts/pause',
                 'redirect' => $sendout->getCpEditUrl(),
                 'label' => Craft::t('campaign', 'Pause'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
@@ -270,7 +226,7 @@ class SendoutsController extends Controller
 
         if ($sendout->getIsCancellable()) {
             $variables['actions'][1][] = [
-                'action' => 'campaign/sendouts/cancel-sendout',
+                'action' => 'campaign/sendouts/cancel',
                 'destructive' => 'true',
                 'redirect' => $sendout->getCpEditUrl(),
                 'label' => Craft::t('campaign', 'Cancel'),
