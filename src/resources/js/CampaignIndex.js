@@ -152,7 +152,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
             return;
         }
 
-        // Find the campaignType
+        // Find the campaign type
         const campaignType = this.editableCampaignTypes.find(s => s.id === campaignTypeId);
 
         if (!campaignType) {
@@ -180,7 +180,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                     },
                 });
                 slideout.on('submit', () => {
-                    // Make sure the right campaignType is selected
+                    // Make sure the right campaign type is selected
                     const campaignTypeSourceKey = `campaignType:${campaignType.uid}`;
 
                     if (this.sourceKey !== campaignTypeSourceKey) {

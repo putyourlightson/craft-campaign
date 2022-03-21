@@ -18,7 +18,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible sendout types the user has permission to create new sendouts in
-        this.editableSendoutTypes = Craft.editableSendoutTypes.filter(g => !!this.getSourceByKey(`sendoutTypeId:${g.id}`));
+        this.editableSendoutTypes = Craft.editableSendoutTypes.filter(g => !!this.getSourceByKey(`sendoutType:${g.handle}`));
 
         this.base();
     },
@@ -76,7 +76,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
                     .appendTo(this.$newSendoutBtnGroup);
 
                 this.addListener(this.$newSendoutBtn, 'click', () => {
-                    this._createSendout(selectedSendoutType.id);
+                    this._createSendout(selectedSendoutType.handle);
                 });
 
                 if (this.editableSendoutTypes.length > 1) {
@@ -122,7 +122,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
                         }).appendTo($li);
                         this.addListener($a, 'click', () => {
                             $menuBtn.data('trigger').hide();
-                            this._createSendout(sendoutType.id);
+                            this._createSendout(sendoutType.handle);
                         });
                     }
                 }
@@ -146,17 +146,17 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _createSendout: function(sendoutTypeId) {
+    _createSendout: function(sendoutTypeHandle) {
         if (this.$newSendoutBtn.hasClass('loading')) {
             console.warn('New sendout creation already in progress.');
             return;
         }
 
-        // Find the sendoutType
-        const sendoutType = this.editableSendoutTypes.find(s => s.id === sendoutTypeId);
+        // Find the sendout type
+        const sendoutType = this.editableSendoutTypes.find(s => s.handle === sendoutTypeHandle);
 
         if (!sendoutType) {
-            throw `Invalid sendout type ID: ${sendoutTypeId}`;
+            throw `Invalid sendout type: ${sendoutTypeHandle}`;
         }
 
         this.$newSendoutBtn.addClass('loading');
@@ -165,7 +165,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
             data: {
                 elementType: this.elementType,
                 siteId: this.siteId,
-                sendoutType: sendoutType.handle,
+                sendoutType: sendoutTypeHandle,
             },
         }).then(ev => {
             if (this.settings.context === 'index') {
@@ -181,7 +181,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
                 });
                 slideout.on('submit', () => {
                     // Make sure the right sendoutType is selected
-                    const sendoutTypeSourceKey = `sendoutType:${sendoutType.uid}`;
+                    const sendoutTypeSourceKey = `sendoutType:${sendoutType.handle}`;
 
                     if (this.sourceKey !== sendoutTypeSourceKey) {
                         this.selectSourceByKey(sendoutTypeSourceKey);

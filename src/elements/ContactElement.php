@@ -265,10 +265,7 @@ class ContactElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $settings = Campaign::$plugin->getSettings();
-
         return [
-            'email' => ['label' => $settings->getEmailFieldLabel()],
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],

@@ -11,7 +11,6 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
-use craft\queue\Queue;
 use DateTime;
 use DOMDocument;
 use DOMElement;
@@ -106,75 +105,19 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the sendout's pending contact and mailing list IDs based on its
-     * mailing lists, segments and schedule.
+     * Returns the sendout's pending recipients.
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
-        $baseCondition = [
-            'mailingListId' => $sendout->getMailingListIds(),
-            'subscriptionStatus' => 'subscribed',
-        ];
-
-        // Get contacts subscribed to sendout's mailing lists
-        $query = ContactMailingListRecord::find()
-            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
-            ->groupBy('contactId')
-            ->where($baseCondition);
-
-        // Ensure contacts have not complained or bounced (in contact record)
-        $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
-            ->andWhere([
-                'contact.complained' => null,
-                'contact.bounced' => null,
-            ]);
-
-        // Exclude contacts subscribed to sendout's excluded mailing lists
-        $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
-
-        // Check whether we should exclude recipients that were sent to today only
-        $schedule = $sendout->getSchedule();
-        $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $schedule->canSendToContactsMultipleTimes;
-
-        // Exclude sent recipients
-        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
-
-        // Get contact IDs
-        $contactIds = $query->column();
-
-        // Filter recipients by segments
-        if ($sendout->segmentIds) {
-            foreach ($sendout->getSegments() as $segment) {
-                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
-            }
+        if ($sendout->sendoutType == 'singular') {
+            return $this->_getPendingRecipientsSingular($sendout);
         }
-
-        // Get recipients as array
-        $recipients = ContactMailingListRecord::find()
-            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
-            ->groupBy('contactId')
-            ->where($baseCondition)
-            ->andWhere(['contactId' => $contactIds])
-            ->asArray()
-            ->all();
 
         if ($sendout->sendoutType == 'automated') {
-            // Remove any contacts that do not meet the conditions
-            foreach ($recipients as $key => $recipient) {
-                $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
-                $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $schedule->timeDelay . ' ' . $schedule->timeDelayInterval);
-
-                // If subscribed date was before sendout was created or time plus delay has not yet passed
-                if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
-                    unset($recipients[$key]);
-                }
-            }
+            return $this->_getPendingRecipientsAutomated($sendout);
         }
 
-        return $recipients;
+        return $this->_getPendingRecipientsStandard($sendout);
     }
 
 
@@ -194,11 +137,11 @@ class SendoutsService extends Component
         $count = 0;
         $now = new DateTime();
 
-        // Get sites to loop through so we can ensure that we get all sendouts
+        // Get sites to loop through, so we can ensure that we get all sendouts.
         $sites = Craft::$app->getSites()->getAllSites();
 
         foreach ($sites as $site) {
-            // Find pending sendouts whose send date is in the past
+            // Find pending sendouts whose send date is in the past.
             $sendouts = SendoutElement::find()
                 ->site($site)
                 ->status(SendoutElement::STATUS_PENDING)
@@ -207,13 +150,7 @@ class SendoutsService extends Component
 
             /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
-                // Queue regular and scheduled sendouts, automated and recurring sendouts if pro version and the sendout can send now
-                if ($sendout->sendoutType == 'regular' || $sendout->sendoutType == 'scheduled'
-                    || (($sendout->sendoutType == 'automated' || $sendout->sendoutType == 'recurring')
-                        && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow()
-                    )
-                ) {
-                    /** @var Queue $queue */
+                if ($sendout->getCanSendNow()) {
                     $queue = Craft::$app->getQueue();
 
                     // Add sendout job to queue
@@ -223,9 +160,7 @@ class SendoutsService extends Component
                     ]));
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
-
                     $this->_updateSendoutRecord($sendout, ['sendStatus']);
-
                     $count++;
                 }
             }
@@ -287,7 +222,7 @@ class SendoutsService extends Component
     /**
      * Sends an email.
      */
-    public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId)
+    public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId = null)
     {
         if ($sendout->getIsSendable() === false) {
             return;
@@ -336,7 +271,7 @@ class SendoutsService extends Component
         $contactCampaignRecord->campaignId = $campaign->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
 
-        $mailingList = $this->_getMailingList($mailingListId);
+        $mailingList = $mailingListId ? $this->_getMailingListById($mailingListId) : null;
 
         // Get subject
         $subject = Craft::$app->getView()->renderString($sendout->subject, [
@@ -606,7 +541,7 @@ class SendoutsService extends Component
     /**
      * Returns a mailing list by ID.
      */
-    private function _getMailingList(int $mailingListId): MailingListElement
+    private function _getMailingListById(int $mailingListId): MailingListElement
     {
         if (!empty($this->_mailingLists[$mailingListId])) {
             return $this->_mailingLists[$mailingListId];
@@ -633,10 +568,8 @@ class SendoutsService extends Component
     /**
      * Returns excluded recipients query.
      */
-    private function _getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = null): ActiveQuery
+    private function _getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = false): ActiveQuery
     {
-        $todayOnly = $todayOnly ?? false;
-
         $query = ContactCampaignRecord::find()
             ->select('contactId')
             ->where(['sendoutId' => $sendout->id])
@@ -650,6 +583,105 @@ class SendoutsService extends Component
         }
 
         return $query;
+    }
+
+    /**
+     * Returns the singular sendout's pending contact IDs.
+     */
+    private function _getPendingRecipientsSingular(SendoutElement $sendout): array
+    {
+        $recipients = [];
+        $sendoutContactIds = $sendout->getContactIds();
+        $sentContactIds = $this->_getSentRecipientsQuery($sendout)->column();
+        $contactIds = array_diff($sendoutContactIds, $sentContactIds);
+
+        foreach ($contactIds as $contactId) {
+            $recipients[] = [
+                'contactId' => $contactId,
+                'mailingListId' => null,
+                'subscribed' => null,
+            ];
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * Returns the automated sendout's pending recipients.
+     */
+    private function _getPendingRecipientsAutomated(SendoutElement $sendout): array
+    {
+        $recipients = $this->_getPendingRecipientsStandard($sendout);
+        $schedule = $sendout->getSchedule();
+
+        // Remove any contacts that do not meet the conditions
+        foreach ($recipients as $key => $recipient) {
+            $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
+            $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $schedule->timeDelay . ' ' . $schedule->timeDelayInterval);
+
+            // If subscribed date was before sendout was created or time plus delay has not yet passed
+            if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
+                unset($recipients[$key]);
+            }
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * Returns the standard sendout's pending contact IDs.
+     */
+    private function _getPendingRecipientsStandard(SendoutElement $sendout): array
+    {
+        // Call for max power
+        Campaign::$plugin->maxPowerLieutenant();
+
+        $baseCondition = [
+            'mailingListId' => $sendout->getMailingListIds(),
+            'subscriptionStatus' => 'subscribed',
+        ];
+
+        // Get contacts subscribed to sendout's mailing lists
+        $query = ContactMailingListRecord::find()
+            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
+            ->groupBy('contactId')
+            ->where($baseCondition);
+
+        // Ensure contacts have not complained or bounced (in contact record)
+        $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
+            ->andWhere([
+                'contact.complained' => null,
+                'contact.bounced' => null,
+            ]);
+
+        // Exclude contacts subscribed to sendout's excluded mailing lists
+        $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
+
+        // Check whether we should exclude recipients that were sent to today only
+        $schedule = $sendout->getSchedule();
+        $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $schedule->canSendToContactsMultipleTimes;
+
+        // Exclude sent recipients
+        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
+
+        // Get contact IDs
+        $contactIds = $query->column();
+
+        // Filter recipients by segments
+        if ($sendout->segmentIds) {
+            foreach ($sendout->getSegments() as $segment) {
+                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
+            }
+        }
+
+        // Get recipients as array
+        return ContactMailingListRecord::find()
+            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
+            ->groupBy('contactId')
+            ->where($baseCondition)
+            ->andWhere(['contactId' => $contactIds])
+            ->asArray()
+            ->all();
     }
 
     /**

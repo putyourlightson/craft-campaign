@@ -516,6 +516,7 @@ return [
     'Showing the first {limit} of {total} contacts.' => 'Zeige die ersten {limit} von {total} Kontakten.',
     'SID' => 'SID',
     'Signature could not be authenticated.' => 'Signatur konnte authentifiziert werden.',
+    'Singular' => 'Einmalig',
     'SNS message validation error.' => 'SNS-Validierungsfehler',
     'Some campaigns restored.' => 'Einige Kampagnen wiederhergestellt.',
     'Some contacts restored.' => 'Einige Kontakte wiederhergestellt.',

@@ -85,7 +85,7 @@ JS;
             $campaignTypes[] = [
                 'id' => $campaignType->id,
                 'handle' => $campaignType->handle,
-                'name' => Craft::t('campaign', $campaignType->name),
+                'name' => $campaignType->name,
                 'siteId' => $campaignType->siteId,
                 'uid' => $campaignType->uid,
             ];
@@ -102,7 +102,7 @@ JS;
             $mailingListTypes[] = [
                 'id' => $mailingListType->id,
                 'handle' => $mailingListType->handle,
-                'name' => Craft::t('campaign', $mailingListType->name),
+                'name' => $mailingListType->name,
                 'siteId' => $mailingListType->siteId,
                 'uid' => $mailingListType->uid,
             ];
@@ -114,15 +114,12 @@ JS;
     private function _getEditableSegmentTypes(): array
     {
         $segmentTypes = [];
-        $i = 1;
 
-        foreach (SegmentElement::segmentTypes() as $handle => $label) {
+        foreach (SegmentElement::segmentTypes() as $handle => $name) {
             $segmentTypes[] = [
-                'id' => $i,
                 'handle' => $handle,
-                'name' => Craft::t('campaign', $label),
+                'name' => Craft::t('campaign', $name),
             ];
-            $i++;
         }
 
         return $segmentTypes;
@@ -131,15 +128,12 @@ JS;
     private function _getEditableSendoutTypes(): array
     {
         $sendoutTypes = [];
-        $i = 1;
 
-        foreach (SendoutElement::sendoutTypes() as $handle => $abel) {
+        foreach (SendoutElement::sendoutTypes() as $handle => $name) {
             $sendoutTypes[] = [
-                'id' => $i,
                 'handle' => $handle,
-                'name' => Craft::t('campaign', $abel),
+                'name' => Craft::t('campaign', $name),
             ];
-            $i++;
         }
 
         return $sendoutTypes;

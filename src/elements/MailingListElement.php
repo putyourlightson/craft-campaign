@@ -225,7 +225,6 @@ class MailingListElement extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'title' => ['label' => Craft::t('app', 'Title')],
             'mailingListType' => ['label' => Craft::t('campaign', 'Mailing List Type')],
             'subscribed' => ['label' => Craft::t('campaign', 'Subscribed')],
             'unsubscribed' => ['label' => Craft::t('campaign', 'Unsubscribed')],

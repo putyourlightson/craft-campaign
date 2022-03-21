@@ -24,9 +24,7 @@ class SendoutsController extends Controller
      */
     public function actionQueue(): int
     {
-        $count = Campaign::$plugin->sendouts->queuePendingSendouts();
-
-        $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]) . PHP_EOL, BaseConsole::FG_GREEN);
+        $this->_queuePendingSendouts();
 
         return ExitCode::OK;
     }
@@ -36,12 +34,19 @@ class SendoutsController extends Controller
      */
     public function actionRun(): int
     {
-        $this->actionQueue();
+        $this->_queuePendingSendouts();
 
         /** @var Queue $queue */
         $queue = Craft::$app->getQueue();
         $queue->run();
 
         return ExitCode::OK;
+    }
+
+    private function _queuePendingSendouts()
+    {
+        $count = Campaign::$plugin->sendouts->queuePendingSendouts();
+
+        $this->stdout(Craft::t('campaign', '{count} pending sendout(s) queued.', ['count' => $count]) . PHP_EOL, BaseConsole::FG_GREEN);
     }
 }

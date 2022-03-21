@@ -30,6 +30,8 @@ use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
 
 /**
+ *
+ * @property-read null|string $cpPreviewUrl
  * @property-read bool $isResumable
  * @property-read array $pendingRecipients
  * @property-read string $sendoutTypeLabel
@@ -39,21 +41,21 @@ use putyourlightson\campaign\records\SendoutRecord;
  * @property-read SegmentElement[] $segments
  * @property-read int $pendingRecipientCount
  * @property-read bool $isDeletable
+ * @property-read int $contactCount
  * @property-read bool $isPausable
- * @property-read bool $isEditable
  * @property-read int $excludedMailingListCount
+ * @property-read null|string $postEditUrl
  * @property-read int $mailingListCount
  * @property-read bool $canSendNow
  * @property-read MailingListElement[] $excludedMailingLists
  * @property-read string $fromNameEmailLabel
  * @property-read bool $isSendable
  * @property-read User|null $sender
+ * @property-read array[] $crumbs
  * @property-read bool $isCancellable
  * @property-read null|CampaignElement $campaign
  * @property-read string $progress
- * @property-read array[] $crumbs
- * @property-read null|string $postEditUrl
- * @property-read null|string $cpPreviewUrl
+ * @property-read ContactElement[] $contacts
  * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
@@ -99,6 +101,7 @@ class SendoutElement extends Element
         $sendoutTypes = [
             'regular' => Craft::t('campaign', 'Regular'),
             'scheduled' => Craft::t('campaign', 'Scheduled'),
+            'singular' => Craft::t('campaign', 'Singular'),
         ];
 
         if (Campaign::$plugin->getIsPro()) {
@@ -228,18 +231,15 @@ class SendoutElement extends Element
             ],
         ];
         $sendoutTypes = self::sendoutTypes();
-        $id = 1;
 
         foreach ($sendoutTypes as $sendoutType => $label) {
             $sources[] = [
-                'key' => 'sendoutTypeId:' . $id,
+                'key' => 'sendoutType:' . $sendoutType,
                 'label' => $label,
                 'data' => ['handle' => $sendoutType],
                 'criteria' => ['sendoutType' => $sendoutType],
                 'defaultSort' => ['lastSent', 'desc'],
             ];
-
-            $id++;
         }
 
         return $sources;
@@ -347,16 +347,16 @@ class SendoutElement extends Element
     protected static function defineDefaultTableAttributes(string $source): array
     {
         if ($source == '*') {
-            $attributes = ['title', 'sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
-        }
-        elseif ($source == 'regular' || $source == 'scheduled') {
-            $attributes = ['title', 'campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
-        }
-        else {
-            $attributes = ['title', 'campaignId', 'recipients', 'lastSent'];
+            return ['sendoutType', 'campaignId', 'recipients', 'lastSent', 'progress'];
         }
 
-        return $attributes;
+        $sendoutType = str_replace('sendoutType:', '', $source);
+
+        if ($sendoutType == 'regular' || $sendoutType == 'scheduled' || $sendoutType == 'singular') {
+            return ['campaignId', 'recipients', 'sendDate', 'lastSent', 'progress'];
+        }
+
+        return ['campaignId', 'recipients', 'lastSent'];
     }
 
     /**
@@ -430,6 +430,11 @@ class SendoutElement extends Element
     public ?string $notificationEmailAddress = null;
 
     /**
+     * @var array|string|null Contact IDs
+     */
+    public array|string|null $contactIds = null;
+
+    /**
      * @var array|string|null Mailing list IDs
      */
     public array|string|null $mailingListIds = null;
@@ -490,6 +495,11 @@ class SendoutElement extends Element
     private ?User $_sender = null;
 
     /**
+     * @var ContactElement[]|null
+     */
+    private ?array $_contacts = null;
+
+    /**
      * @var MailingListElement[]|null
      */
     private ?array $_mailingLists = null;
@@ -533,6 +543,7 @@ class SendoutElement extends Element
         $labels['campaignId'] = Craft::t('campaign', 'Campaign');
         $labels['mailingListIds'] = Craft::t('campaign', 'Mailing lists');
         $labels['excludedMailingListIds'] = Craft::t('campaign', 'Excluded mailing lists');
+        $labels['contactIds'] = Craft::t('campaign', 'Contacts');
         $labels['segmentIds'] = Craft::t('campaign', 'Segments');
 
         return $labels;
@@ -545,7 +556,9 @@ class SendoutElement extends Element
     {
         $rules = parent::defineRules();
         $rules[] = [['sendoutType', ], 'required'];
-        $rules[] = [['fromName', 'fromEmail', 'subject', 'campaignId', 'mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['fromName', 'fromEmail', 'subject', 'campaignId'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['contactIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
+        $rules[] = [['mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
@@ -804,6 +817,44 @@ class SendoutElement extends Element
     }
 
     /**
+     * Returns the sendout's contact IDs.
+     *
+     * @return int[]
+     */
+    public function getContactIds(): array
+    {
+        if (is_string($this->contactIds)) {
+            return StringHelper::split($this->contactIds);
+        }
+
+        return $this->contactIds ?: [];
+    }
+
+    /**
+     * Returns the sendout's contact count.
+     */
+    public function getContactCount(): int
+    {
+        return count($this->getContactIds());
+    }
+
+    /**
+     * Returns the sendout's contacts.
+     *
+     * @return ContactElement[]
+     */
+    public function getContacts(): array
+    {
+        if ($this->_contacts !== null) {
+            return $this->_contacts;
+        }
+
+        $this->_contacts = Campaign::$plugin->contacts->getContactsByIds($this->getContactIds());
+
+        return $this->_contacts;
+    }
+
+    /**
      * Returns the sendout's mailing list IDs.
      *
      * @return int[]
@@ -814,7 +865,7 @@ class SendoutElement extends Element
             return StringHelper::split($this->mailingListIds);
         }
 
-        return $this->mailingListIds;
+        return $this->mailingListIds ?: [];
     }
 
     /**
@@ -852,7 +903,7 @@ class SendoutElement extends Element
             return StringHelper::split($this->excludedMailingListIds);
         }
 
-        return $this->excludedMailingListIds;
+        return $this->excludedMailingListIds ?: [];
     }
 
     /**
@@ -890,7 +941,7 @@ class SendoutElement extends Element
             return StringHelper::split($this->segmentIds);
         }
 
-        return $this->segmentIds;
+        return $this->segmentIds ?: [];
     }
 
     /**
@@ -1171,7 +1222,8 @@ class SendoutElement extends Element
         // Get the selected campaign ID
         $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
 
-        // Get the selected included and excluded mailing list IDs and segment IDs
+        // Get the selected element IDs
+        $this->contactIds = is_array($this->contactIds) ? implode(',', $this->contactIds) : $this->contactIds;
         $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
         $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : $this->excludedMailingListIds;
         $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : $this->segmentIds;

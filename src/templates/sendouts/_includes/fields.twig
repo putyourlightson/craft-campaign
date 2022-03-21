@@ -66,57 +66,84 @@
     }, input) }}
 {% endif %}
 
-{% set input %}
-    {% if editable %}
-        {{ forms.elementSelect({
-            id: 'mailingListIds',
-            name: 'mailingListIds',
-            elementType: mailingListElementType,
-            selectionLabel: "Add a mailing list"|t('campaign'),
-            criteria: mailingListElementCriteria,
-            limit: 100,
-            elements: sendout.mailingListIds ? sendout.mailingLists,
-        }) }}
-    {% else %}
-        {% for mailingList in sendout.mailingLists %}
-            <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
-            <br/>
-        {% endfor %}
-    {% endif %}
-{% endset %}
-{{ forms.field({
-    label: "To"|t('campaign'),
-    instructions: "The mailing list(s) to send the campaign to."|t('campaign'),
-    errors: sendout.getErrors('mailingListIds'),
-    required: true,
-}, input) }}
-
-{% set input %}
-    {% if editable %}
-        {{ forms.elementSelect({
-            id: 'excludedMailingListIds',
-            name: 'excludedMailingListIds',
-            elementType: mailingListElementType,
-            selectionLabel: "Add a mailing list"|t('campaign'),
-            criteria: mailingListElementCriteria,
-            limit: 100,
-            elements: sendout.excludedMailingListIds ? sendout.excludedMailingLists,
-        }) }}
-    {% else %}
-        {% for excludedMailingList in sendout.excludedMailingLists %}
-            <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
-            <br/>
-        {% endfor %}
-        {% if sendout.excludedMailingLists|length == 0 %}
-            <p>-</p>
+{% if sendout.sendoutType == 'singular' %}
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'contactIds',
+                name: 'contactIds',
+                elementType: contactElementType,
+                selectionLabel: "Add a contact"|t('campaign'),
+                criteria: contactElementCriteria,
+                limit: 100,
+                elements: sendout.contactIds ? sendout.contacts,
+            }) }}
+        {% else %}
+            {% for contact in sendout.contacts %}
+                <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+                <br/>
+            {% endfor %}
         {% endif %}
-    {% endif %}
-{% endset %}
-{{ forms.field({
-    label: "Exclude"|t('campaign'),
-    instructions: "The mailing list(s) to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
-    errors: sendout.getErrors('excludedMailingListIds'),
-}, input) }}
+    {% endset %}
+    {{ forms.field({
+        label: "To"|t('campaign'),
+        instructions: "The contact(s) to send the campaign to."|t('campaign'),
+        errors: sendout.getErrors('contactIds'),
+        required: true,
+    }, input) }}
+{% else %}
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'mailingListIds',
+                name: 'mailingListIds',
+                elementType: mailingListElementType,
+                selectionLabel: "Add a mailing list"|t('campaign'),
+                criteria: mailingListElementCriteria,
+                limit: 100,
+                elements: sendout.mailingListIds ? sendout.mailingLists,
+            }) }}
+        {% else %}
+            {% for mailingList in sendout.mailingLists %}
+                <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+                <br/>
+            {% endfor %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "To"|t('campaign'),
+        instructions: "The mailing list(s) to send the campaign to."|t('campaign'),
+        errors: sendout.getErrors('mailingListIds'),
+        required: true,
+    }, input) }}
+
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'excludedMailingListIds',
+                name: 'excludedMailingListIds',
+                elementType: mailingListElementType,
+                selectionLabel: "Add a mailing list"|t('campaign'),
+                criteria: mailingListElementCriteria,
+                limit: 100,
+                elements: sendout.excludedMailingListIds ? sendout.excludedMailingLists,
+            }) }}
+        {% else %}
+            {% for excludedMailingList in sendout.excludedMailingLists %}
+                <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
+                <br/>
+            {% endfor %}
+            {% if sendout.excludedMailingLists|length == 0 %}
+                <p>-</p>
+            {% endif %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "Exclude"|t('campaign'),
+        instructions: "The mailing list(s) to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
+        errors: sendout.getErrors('excludedMailingListIds'),
+    }, input) }}
+{% endif %}
 
 {% if craft.campaign.getIsPro() %}
     {% set input %}

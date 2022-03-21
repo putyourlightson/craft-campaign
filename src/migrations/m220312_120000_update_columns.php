@@ -35,6 +35,14 @@ class m220312_120000_update_columns extends Migration
             );
         }
 
+        if (!$this->db->columnExists(SendoutRecord::tableName(), 'contactIds')) {
+            $this->addColumn(
+                SendoutRecord::tableName(),
+                'contactIds',
+                $this->text()->after('notificationEmailAddress'),
+            );
+        }
+
         $this->dropIndexIfExists(ContactRecord::tableName(), 'cid', true);
         $this->createIndexIfMissing(ContactRecord::tableName(), 'cid');
         $this->dropIndexIfExists(SendoutRecord::tableName(), 'sid', true);

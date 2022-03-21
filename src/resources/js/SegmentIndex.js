@@ -18,7 +18,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible segment types the user has permission to create new segments in
-        this.editableSegmentTypes = Craft.editableSegmentTypes.filter(g => !!this.getSourceByKey(`segmentTypeId:${g.id}`));
+        this.editableSegmentTypes = Craft.editableSegmentTypes.filter(g => !!this.getSourceByKey(`segmentType:${g.handle}`));
 
         this.base();
     },
@@ -76,7 +76,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
                     .appendTo(this.$newSegmentBtnGroup);
 
                 this.addListener(this.$newSegmentBtn, 'click', () => {
-                    this._createSegment(selectedSegmentType.id);
+                    this._createSegment(selectedSegmentType.handle);
                 });
 
                 if (this.editableSegmentTypes.length > 1) {
@@ -146,17 +146,17 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _createSegment: function(segmentTypeId) {
+    _createSegment: function(segmentTypeHandle) {
         if (this.$newSegmentBtn.hasClass('loading')) {
             console.warn('New segment creation already in progress.');
             return;
         }
 
         // Find the segmentType
-        const segmentType = this.editableSegmentTypes.find(s => s.id === segmentTypeId);
+        const segmentType = this.editableSegmentTypes.find(s => s.handle === segmentTypeHandle);
 
         if (!segmentType) {
-            throw `Invalid segment type ID: ${segmentTypeId}`;
+            throw `Invalid segment type: ${segmentTypeHandle}`;
         }
 
         this.$newSegmentBtn.addClass('loading');
@@ -165,7 +165,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
             data: {
                 elementType: this.elementType,
                 siteId: this.siteId,
-                segmentType: segmentType.handle,
+                segmentType: segmentTypeHandle,
             },
         }).then(ev => {
             if (this.settings.context === 'index') {

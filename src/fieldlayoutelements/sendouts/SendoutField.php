@@ -11,6 +11,7 @@ use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -57,6 +58,10 @@ class SendoutField extends BaseNativeField
             'mailingListElementType' => MailingListElement::class,
             'mailingListElementCriteria' => [
                 'siteId' => $siteId,
+                'status' => Element::STATUS_ENABLED,
+            ],
+            'contactElementType' => ContactElement::class,
+            'contactElementCriteria' => [
                 'status' => Element::STATUS_ENABLED,
             ],
             'segmentElementType' => SegmentElement::class,

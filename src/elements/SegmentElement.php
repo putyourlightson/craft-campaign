@@ -148,17 +148,14 @@ class SegmentElement extends Element
             ],
         ];
         $segmentTypes = self::segmentTypes();
-        $id = 1;
 
         foreach ($segmentTypes as $segmentType => $label) {
             $sources[] = [
-                'key' => 'segmentTypeId:' . $id,
+                'key' => 'segmentType:' . $segmentType,
                 'label' => $label,
                 'data' => ['handle' => $segmentType],
                 'criteria' => ['segmentType' => $segmentType],
             ];
-
-            $id++;
         }
 
         return $sources;
@@ -242,17 +239,16 @@ class SegmentElement extends Element
     protected static function defineDefaultTableAttributes(string $source): array
     {
         if ($source == '*') {
-            $attributes = ['title', 'segmentType', 'conditions', 'contacts'];
-        }
-        elseif ($source == 'regular') {
-            $attributes = ['title', 'conditions', 'contacts'];
-        }
-        else {
-            $attributes = ['title', 'contacts'];
+            return ['segmentType', 'conditions', 'contacts'];
         }
 
+        $segmentType = str_replace('segmentType:', '', $source);
 
-        return $attributes;
+        if ($segmentType == 'regular') {
+            return ['conditions', 'contacts'];
+        }
+
+        return ['contacts'];
     }
 
     /**

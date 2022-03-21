@@ -199,12 +199,8 @@ class SettingsModel extends Model
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
             [['maxBatchSize', 'timeLimit'], 'integer'],
-            [['ipstackApiKey'], 'required', 'when' => function($model) {
-                return $model->geoIp;
-            }],
-            [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => function($model) {
-                return $model->reCaptcha;
-            }],
+            [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
+            [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->reCaptcha],
         ];
     }
 
