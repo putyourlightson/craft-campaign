@@ -18,7 +18,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\models\SettingsModel;
-use Throwable;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 

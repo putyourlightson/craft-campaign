@@ -273,7 +273,7 @@ class MailingListTypesService extends Component
 
             // Re-save the mailing lists in this mailing list type
             $queue->push(new ResaveElementsJob([
-                'description' => Craft::t('app', 'Resaving {type} mailing lists ({site})', [
+                'description' => Craft::t('campaign', 'Resaving {type} mailing lists', [
                     'type' => $mailingListType->name,
                     'site' => $mailingListType->getSite()->name,
                 ]),

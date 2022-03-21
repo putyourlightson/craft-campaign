@@ -98,7 +98,7 @@ class CampaignsController extends Controller
 
         if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
             $response->addAltAction(
-                Craft::t('campaign', 'Close this campaign'),
+                Craft::t('campaign', 'Close campaign'),
                 [
                     'action' => 'campaign/campaigns/close',
                     'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
@@ -161,7 +161,7 @@ class CampaignsController extends Controller
         $campaign->dateClosed = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($campaign)) {
-            return $this->asModelFailure($campaign, Craft::t('app', 'Couldn’t close campaign.'), 'campaign', [
+            return $this->asModelFailure($campaign, Craft::t('campaign', 'Couldn’t close campaign.'), 'campaign', [
                 'errors' => $campaign->getErrors(),
             ]);
         }

@@ -257,7 +257,7 @@ class CampaignTypesService extends Component
 
             // Re-save the campaigns in this campaign type
             $queue->push(new ResaveElementsJob([
-                'description' => Craft::t('app', 'Resaving {type} campaigns ({site})', [
+                'description' => Craft::t('campaign', 'Resaving {type} campaigns', [
                     'type' => $campaignType->name,
                     'site' => $campaignType->getSite()->name,
                 ]),
