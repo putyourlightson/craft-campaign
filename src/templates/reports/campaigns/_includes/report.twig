@@ -1,7 +1,7 @@
 {% macro linkInteration(campaign, interaction) -%}
     {% set value = attribute(campaign, interaction) ?? 0 %}
     {% if value %}
-        <a href="{{ campaign.reportUrl ~ '/contact-activity?interaction=' ~ interaction }}">
+        <a href="{{ campaign.getReportUrl('contact-activity?interaction=' ~ interaction) }}">
             {{- value -}}
         </a>
     {% else %}
@@ -65,7 +65,7 @@
                 <tr>
                     <th class="light">{{ 'Recipients'|t('campaign') }}</th>
                     <td>
-                        <a href="{{ campaign.reportUrl ~ '/recipients' }}">
+                        <a href="{{ campaign.getReportUrl('recipients') }}">
                             {{ data.campaign.recipients }}
                         </a>
                     </td>
