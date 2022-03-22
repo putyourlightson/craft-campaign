@@ -163,20 +163,23 @@ class ReportsService extends Component
     public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
-        $interactionCondition = $interaction ? [$interaction => null] : [
-            'or',
-            [
-                'opened' => null,
-                'clicked' => null,
-                'unsubscribed' => null,
-                'complained' => null,
-                'bounced' => null,
+        $interactionCondition = [
+            'not',
+            $interaction ? [$interaction => null] : [
+                'or',
+                [
+                    'opened' => null,
+                    'clicked' => null,
+                    'unsubscribed' => null,
+                    'complained' => null,
+                    'bounced' => null,
+                ],
             ],
         ];
 
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->andWhere(['not', $interactionCondition])
+            ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
@@ -448,19 +451,22 @@ class ReportsService extends Component
     public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
-        $interactionCondition = $interaction ? [$interaction => null] : [
-            'or',
-            [
-                'subscribed' => null,
-                'unsubscribed' => null,
-                'complained' => null,
-                'bounced' => null,
+        $interactionCondition = [
+            'not',
+            $interaction ? [$interaction => null] : [
+                'or',
+                [
+                    'subscribed' => null,
+                    'unsubscribed' => null,
+                    'complained' => null,
+                    'bounced' => null,
+                ],
             ],
         ];
 
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
-            ->andWhere(['not', $interactionCondition])
+            ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
