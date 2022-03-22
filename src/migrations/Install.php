@@ -168,7 +168,7 @@ class Install extends Migration
                 'contactId' => $this->integer()->notNull(),
                 'campaignId' => $this->integer()->notNull(),
                 'sendoutId' => $this->integer()->notNull(),
-                'mailingListId' => $this->integer()->notNull(),
+                'mailingListId' => $this->integer(),
                 'sent' => $this->dateTime(),
                 'opened' => $this->dateTime(),
                 'clicked' => $this->dateTime(),

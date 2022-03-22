@@ -15,7 +15,7 @@ use DateTime;
  * @property int $contactId Contact ID
  * @property int $campaignId Campaign ID
  * @property int $sendoutId Sendout ID
- * @property int $mailingListId Mailing List ID
+ * @property int|null $mailingListId Mailing List ID
  * @property DateTime|null $sent Sent
  * @property DateTime|null $opened Opened
  * @property DateTime|null $clicked Clicked

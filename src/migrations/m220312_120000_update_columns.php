@@ -4,6 +4,7 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 use putyourlightson\campaign\records\CampaignTypeRecord;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 use putyourlightson\campaign\records\SendoutRecord;
@@ -16,6 +17,7 @@ class m220312_120000_update_columns extends Migration
     public function safeUp(): bool
     {
         $this->alterColumn(ContactRecord::tableName(), 'email', $this->string());
+        $this->alterColumn(ContactCampaignRecord::tableName(), 'mailingListId', $this->integer());
         $this->alterColumn(SendoutRecord::tableName(), 'sendStatus', $this->string());
         $this->alterColumn(SendoutRecord::tableName(), 'fromName', $this->string());
         $this->alterColumn(SendoutRecord::tableName(), 'fromEmail', $this->string());
