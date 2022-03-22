@@ -687,7 +687,7 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
-     * @var CpScreenResponseBehavior $response
+     * @var Response|CpScreenResponseBehavior $response
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
