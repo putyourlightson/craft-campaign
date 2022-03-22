@@ -32,10 +32,10 @@ class MailingListsService extends Component
     /**
      * Returns an array of mailing lists by IDs.
      *
-     * @param int[] $mailingListIds
+     * @param int[]|null $mailingListIds
      * @return MailingListElement[]
      */
-    public function getMailingListsByIds(array $mailingListIds): array
+    public function getMailingListsByIds(?array $mailingListIds): array
     {
         if (empty($mailingListIds)) {
             return [];

@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\models;
 use Craft;
 use craft\base\Model;
 use craft\elements\User;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 
 use craft\models\UserGroup;
@@ -60,9 +59,9 @@ class ImportModel extends Model
     public ?string $emailFieldIndex = null;
 
     /**
-     * @var mixed Field indexes
+     * @var array|null Field indexes
      */
-    public mixed $fieldIndexes = null;
+    public ?array $fieldIndexes = null;
 
     /**
      * @var int|null Mailing list ID
@@ -90,20 +89,9 @@ class ImportModel extends Model
     public int $fails = 0;
 
     /**
-     * @var DateTime|string|null Date imported
+     * @var DateTime|null Date imported
      */
-    public DateTime|string|null $dateImported = null;
-
-    /**
-     * @inheritdoc
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        // Decode JSON properties
-        $this->fieldIndexes = empty($this->fieldIndexes) ? [] : Json::decode($this->fieldIndexes);
-    }
+    public ?DateTime $dateImported = null;
 
     /**
      * Returns the file name as the string representation.

@@ -28,7 +28,7 @@ class ContactsService extends Component
      * @param int[] $contactIds
      * @return ContactElement[]
      */
-    public function getContactsByIds(array $contactIds): array
+    public function getContactsByIds(?array $contactIds): array
     {
         if (empty($contactIds)) {
             return [];

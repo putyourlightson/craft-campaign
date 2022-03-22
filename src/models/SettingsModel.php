@@ -242,18 +242,13 @@ class SettingsModel extends Model
     }
 
     /**
-     * Returns the contact fields.
+     * Returns the contact's custom fields.
      *
      * @return FieldInterface[]
      */
     public function getContactFields(): array
     {
-        $fieldLayout = $this->getContactFieldLayout();
-
-        return array_merge(
-            [$fieldLayout->getField('email')],
-            $fieldLayout->getCustomFields(),
-        );
+        return $this->getContactFieldLayout()->getCustomFields();
     }
 
     /**

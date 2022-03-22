@@ -240,6 +240,7 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'segmentType' => $this->string()->notNull(),
                 'conditions' => $this->text(),
+                'template' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

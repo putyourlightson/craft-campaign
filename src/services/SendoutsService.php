@@ -560,7 +560,7 @@ class SendoutsService extends Component
         return ContactMailingListRecord::find()
             ->select('contactId')
             ->where([
-                'mailingListId' => $sendout->getExcludedMailingListIds(),
+                'mailingListId' => $sendout->excludedMailingListIds,
                 'subscriptionStatus' => 'subscribed',
             ]);
     }
@@ -591,9 +591,8 @@ class SendoutsService extends Component
     private function _getPendingRecipientsSingular(SendoutElement $sendout): array
     {
         $recipients = [];
-        $sendoutContactIds = $sendout->getContactIds();
-        $sentContactIds = $this->_getSentRecipientsQuery($sendout)->column();
-        $contactIds = array_diff($sendoutContactIds, $sentContactIds);
+        $excludeContactIds = $this->_getSentRecipientsQuery($sendout)->column();
+        $contactIds = array_diff($sendout->contactIds, $excludeContactIds);
 
         foreach ($contactIds as $contactId) {
             $recipients[] = [
@@ -637,7 +636,7 @@ class SendoutsService extends Component
         Campaign::$plugin->maxPowerLieutenant();
 
         $baseCondition = [
-            'mailingListId' => $sendout->getMailingListIds(),
+            'mailingListId' => $sendout->mailingListIds,
             'subscriptionStatus' => 'subscribed',
         ];
 

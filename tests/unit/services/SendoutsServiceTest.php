@@ -80,7 +80,7 @@ class SendoutsServiceTest extends BaseUnitTest
         Campaign::$plugin->edition = Campaign::EDITION_PRO;
 
         // Set sendout's mailing list
-        $this->sendout->mailingListIds = $this->mailingList->id;
+        $this->sendout->mailingListIds = [$this->mailingList->id];
 
         // Subscribe contacts (including trashed) to all mailing lists
         $mailingLists = MailingListElement::find()->all();

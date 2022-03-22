@@ -129,7 +129,7 @@ class MailingListElementQuery extends ElementQuery
         }
 
         if ($this->synced === true) {
-            $this->subQuery->andWhere(['not', ['syncedUserGroupId' => 'null']]);
+            $this->subQuery->andWhere(['not', ['syncedUserGroupId' => null]]);
         }
 
         return parent::beforePrepare();

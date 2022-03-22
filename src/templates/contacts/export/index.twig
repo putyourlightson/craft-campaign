@@ -32,7 +32,7 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Email"|t('campaign'),
+            label: emailFieldLabel,
             name: 'fields[email]',
             on: export.fields['email'] is defined ? export.fields['email'] : 1
         }) }}
@@ -40,7 +40,7 @@
         {% for field in fields %}
             {{ forms.lightswitchField({
                 label: field.name,
-                name: 'fields[' ~ field.handle ~ ']',
+                name: 'fields[' ~ field.handle ?? field.attribute ~ ']',
                 on: export.fields[field.handle] is defined ? export.fields[field.handle] : 1
             }) }}
         {% endfor %}

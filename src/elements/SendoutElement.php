@@ -13,7 +13,6 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
@@ -373,15 +372,15 @@ class SendoutElement extends Element
     public ?string $sid = null;
 
     /**
+     * @var int|null Campaign ID
+     */
+    public ?int $campaignId = null;
+
+    /**
      * @var array|null Campaign IDs, used for posted params
      * @see SendoutElement::beforeSave()
      */
     public ?array $campaignIds = null;
-
-    /**
-     * @var int|null Campaign ID
-     */
-    public ?int $campaignId = null;
 
     /**
      * @var int|null Sender ID
@@ -430,24 +429,24 @@ class SendoutElement extends Element
     public ?string $notificationEmailAddress = null;
 
     /**
-     * @var array|string|null Contact IDs
+     * @var array|null Contact IDs
      */
-    public array|string|null $contactIds = null;
+    public ?array $contactIds = [];
 
     /**
-     * @var array|string|null Mailing list IDs
+     * @var array|null Mailing list IDs
      */
-    public array|string|null $mailingListIds = null;
+    public ?array $mailingListIds = [];
 
     /**
-     * @var array|string|null Excluded mailing list IDs
+     * @var array|null Excluded mailing list IDs
      */
-    public array|string|null $excludedMailingListIds = null;
+    public ?array $excludedMailingListIds = [];
 
     /**
-     * @var array|string|null Segment IDs
+     * @var array|null Segment IDs
      */
-    public array|string|null $segmentIds = null;
+    public ?array $segmentIds = [];
 
     /**
      * @var int Recipients
@@ -460,9 +459,9 @@ class SendoutElement extends Element
     public int $fails = 0;
 
     /**
-     * @var array|string|null Schedule
+     * @var array|null Schedule
      */
-    public array|string|null $schedule = null;
+    public ?array $schedule = [];
 
     /**
      * @var string|null HTML body
@@ -817,25 +816,11 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's contact IDs.
-     *
-     * @return int[]
-     */
-    public function getContactIds(): array
-    {
-        if (is_string($this->contactIds)) {
-            return StringHelper::split($this->contactIds);
-        }
-
-        return $this->contactIds ?: [];
-    }
-
-    /**
      * Returns the sendout's contact count.
      */
     public function getContactCount(): int
     {
-        return count($this->getContactIds());
+        return count($this->contactIds);
     }
 
     /**
@@ -849,23 +834,9 @@ class SendoutElement extends Element
             return $this->_contacts;
         }
 
-        $this->_contacts = Campaign::$plugin->contacts->getContactsByIds($this->getContactIds());
+        $this->_contacts = Campaign::$plugin->contacts->getContactsByIds($this->contactIds);
 
         return $this->_contacts;
-    }
-
-    /**
-     * Returns the sendout's mailing list IDs.
-     *
-     * @return int[]
-     */
-    public function getMailingListIds(): array
-    {
-        if (is_string($this->mailingListIds)) {
-            return StringHelper::split($this->mailingListIds);
-        }
-
-        return $this->mailingListIds ?: [];
     }
 
     /**
@@ -873,7 +844,7 @@ class SendoutElement extends Element
      */
     public function getMailingListCount(): int
     {
-        return count($this->getMailingListIds());
+        return count($this->mailingListIds);
     }
 
     /**
@@ -887,23 +858,9 @@ class SendoutElement extends Element
             return $this->_mailingLists;
         }
 
-        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->getMailingListIds());
+        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->mailingListIds);
 
         return $this->_mailingLists;
-    }
-
-    /**
-     * Returns the sendout's excluded mailing list IDs.
-     *
-     * @return int[]
-     */
-    public function getExcludedMailingListIds(): array
-    {
-        if (is_string($this->excludedMailingListIds)) {
-            return StringHelper::split($this->excludedMailingListIds);
-        }
-
-        return $this->excludedMailingListIds ?: [];
     }
 
     /**
@@ -911,7 +868,7 @@ class SendoutElement extends Element
      */
     public function getExcludedMailingListCount(): int
     {
-        return count($this->getExcludedMailingListIds());
+        return count($this->excludedMailingListIds);
     }
 
     /**
@@ -925,23 +882,9 @@ class SendoutElement extends Element
             return $this->_excludedMailingLists;
         }
 
-        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->getExcludedMailingListIds());
+        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->excludedMailingListIds);
 
         return $this->_excludedMailingLists;
-    }
-
-    /**
-     * Returns the sendout's segment IDs.
-     *
-     * @return int[]
-     */
-    public function getSegmentIds(): array
-    {
-        if (is_string($this->segmentIds)) {
-            return StringHelper::split($this->segmentIds);
-        }
-
-        return $this->segmentIds ?: [];
     }
 
     /**
@@ -949,7 +892,7 @@ class SendoutElement extends Element
      */
     public function getSegmentCount(): int
     {
-        return count($this->getSegmentIds());
+        return count($this->segmentIds);
     }
 
     /**
@@ -967,7 +910,7 @@ class SendoutElement extends Element
             return $this->_segments;
         }
 
-        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->getSegmentIds());
+        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->segmentIds);
 
         return $this->_segments;
     }
@@ -982,14 +925,12 @@ class SendoutElement extends Element
         $schedule = null;
 
         if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
-            $config = is_string($this->schedule) ? Json::decode($this->schedule) : (array)$this->schedule;
-
             if ($this->sendoutType == 'automated') {
-                $schedule = new AutomatedScheduleModel($config ?: []);
+                $schedule = new AutomatedScheduleModel($this->schedule);
             }
 
             if ($this->sendoutType == 'recurring') {
-                $schedule = new RecurringScheduleModel($config ?: []);
+                $schedule = new RecurringScheduleModel($this->schedule);
             }
 
             // Convert end date and time of day or set to null
@@ -1221,12 +1162,6 @@ class SendoutElement extends Element
 
         // Get the selected campaign ID
         $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
-
-        // Get the selected element IDs
-        $this->contactIds = is_array($this->contactIds) ? implode(',', $this->contactIds) : $this->contactIds;
-        $this->mailingListIds = is_array($this->mailingListIds) ? implode(',', $this->mailingListIds) : $this->mailingListIds;
-        $this->excludedMailingListIds = is_array($this->excludedMailingListIds) ? implode(',', $this->excludedMailingListIds) : $this->excludedMailingListIds;
-        $this->segmentIds = is_array($this->segmentIds) ? implode(',', $this->segmentIds) : $this->segmentIds;
 
         // Convert send date
         $this->sendDate = DateTimeHelper::toDateTime($this->sendDate) ?: new DateTime();

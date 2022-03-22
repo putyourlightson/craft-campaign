@@ -281,9 +281,6 @@ class ImportsController extends Controller
      */
     private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): ?Response
     {
-        $variables = [];
-        $variables['import'] = $import;
-
         // Set the current site to the site handle if set
         $siteHandle = $this->request->getSegment(4);
 
@@ -295,11 +292,14 @@ class ImportsController extends Controller
             }
         }
 
-        // Mailing list element selector variables
-        $variables['mailingListElementType'] = MailingListElement::class;
-
-        // Get mailing lists
-        $variables['mailingLists'] = [];
+        $variables = [
+            'import' => $import,
+            'mailingListElementType' => MailingListElement::class,
+            'mailingLists' => [],
+            'emailFieldLabel' => Campaign::$plugin->getSettings()->getEmailFieldLabel(),
+            'fields' => Campaign::$plugin->getSettings()->getContactFields(),
+            'columns' => Campaign::$plugin->imports->getColumns($import),
+        ];
 
         if (is_array($mailingListIds)) {
             foreach ($mailingListIds as $mailingListId) {
@@ -310,12 +310,6 @@ class ImportsController extends Controller
                 }
             }
         }
-
-        // Get contact fields
-        $variables['fields'] = Campaign::$plugin->getSettings()->getContactFields();
-
-        // Get columns
-        $variables['columns'] = Campaign::$plugin->imports->getColumns($import);
 
         return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
     }

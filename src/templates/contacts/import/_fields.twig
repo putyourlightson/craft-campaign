@@ -60,7 +60,7 @@
             </div>
         {% endset %}
         {{ forms.field({
-            label: "Email"|t('campaign'),
+            label: emailFieldLabel,
             required: true,
             errors: import.getErrors('emailFieldIndex')
         }, input) }}

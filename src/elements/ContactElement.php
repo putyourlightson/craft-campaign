@@ -13,7 +13,6 @@ use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Html;
-use craft\helpers\Json;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -292,93 +291,67 @@ class ContactElement extends Element
     }
 
     /**
-     * User ID
-     *
-     * @var int|null
+     * @var int|null User ID
      */
     public ?int $userId = null;
 
     /**
-     * Contact ID
-     *
-     * @var null|string
+     * @var null|string Contact ID
      */
     public ?string $cid = null;
 
     /**
-     * Email
-     *
-     * @var string|null
+     * @var string|null Email
      */
     public ?string $email = null;
 
     /**
-     * Country name
-     *
-     * @var string|null
+     * @var string|null Country name
      */
     public ?string $country = null;
 
     /**
-     * GeoIP
-     *
-     * @var mixed
+     * @var array|null GeoIP
      */
-    public mixed $geoIp = null;
+    public ?array $geoIp = null;
 
     /**
-     * Device
-     *
-     * @var string|null
+     * @var string|null Device
      */
     public ?string $device = null;
 
     /**
-     * OS
-     *
-     * @var string|null
+     * @var string|null OS
      */
     public ?string $os = null;
 
     /**
-     * Client
-     *
-     * @var string|null
+     * @var string|null Client
      */
     public ?string $client = null;
 
     /**
-     * Last activity
-     *
-     * @var DateTime|null
+     * @var DateTime|null Last activity
      */
     public ?DateTime $lastActivity = null;
 
     /**
-     * Verified
-     *
-     * @var DateTime|null
+     * @var DateTime|null Verified
      */
     public ?DateTime $verified = null;
 
     /**
-     * Complained
-     *
-     * @var DateTime|null
+     * @var DateTime|null Complained
      */
     public ?DateTime $complained = null;
 
     /**
-     * Bounced
-     *
-     * @var DateTime|null
+     * @var DateTime|null Bounced
      */
     public ?DateTime $bounced = null;
 
     /**
-     * Blocked
-     *
-     * @var DateTime|null
+     * @var DateTime|null Blocked
      */
     public ?DateTime $blocked = null;
 
@@ -393,17 +366,6 @@ class ContactElement extends Element
     public function __toString(): string
     {
         return $this->email;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        // Decode geoIp if not empty
-        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
     }
 
     /**

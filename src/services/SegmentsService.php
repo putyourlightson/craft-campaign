@@ -37,10 +37,10 @@ class SegmentsService extends Component
     /**
      * Returns segments by IDs.
      *
-     * @param int[] $segmentIds
+     * @param int[]|null $segmentIds
      * @return SegmentElement[]
      */
-    public function getSegmentsByIds(array $segmentIds): array
+    public function getSegmentsByIds(?array $segmentIds): array
     {
         if (empty($segmentIds)) {
             return [];
@@ -93,7 +93,7 @@ class SegmentsService extends Component
 
             foreach ($contacts as $contact) {
                 try {
-                    $rendered = Craft::$app->getView()->renderString($segment->conditions, [
+                    $rendered = Craft::$app->getView()->renderString($segment->template, [
                         'contact' => $contact,
                     ]);
 

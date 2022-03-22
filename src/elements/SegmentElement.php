@@ -13,7 +13,6 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\ElementHelper;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
@@ -270,9 +269,14 @@ class SegmentElement extends Element
     public ?string $segmentType = null;
 
     /**
-     * @var string|array|null
+     * @var array|null
      */
-    public string|array|null $conditions = null;
+    public ?array $conditions = [];
+
+    /**
+     * @var string|null
+     */
+    public ?string $template = '';
 
     /**
      * @var ContactElement[]|null
@@ -287,23 +291,13 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public function init(): void
-    {
-        parent::init();
-
-        // Decode JSON properties
-        $this->conditions = Json::decodeIfJson($this->conditions);
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
         $rules[] = [['segmentType'], 'required'];
         $rules[] = [['segmentType'], 'string'];
-        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'regular'];
+        $rules[] = [['template'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'template'];
 
         return $rules;
     }
@@ -461,10 +455,6 @@ class SegmentElement extends Element
             return 1;
         }
 
-        if (!is_array($this->conditions)) {
-            return 0;
-        }
-
         $count = 0;
 
         foreach ($this->conditions as $conditions) {
@@ -524,11 +514,9 @@ class SegmentElement extends Element
         ElementHelper::setUniqueUri($this);
 
         // Sort OR conditions by keys, since they'll come in unordered.
-        if (is_array($this->conditions)) {
-            foreach ($this->conditions as &$andCondition) {
-                foreach ($andCondition as &$orCondition) {
-                    ksort($orCondition);
-                }
+        foreach ($this->conditions as &$andCondition) {
+            foreach ($andCondition as &$orCondition) {
+                ksort($orCondition);
             }
         }
 
@@ -551,7 +539,8 @@ class SegmentElement extends Element
         if ($segmentRecord) {
             // Set attributes
             $segmentRecord->segmentType = $this->segmentType;
-            $segmentRecord->conditions = Json::encode($this->conditions);
+            $segmentRecord->conditions = $this->conditions;
+            $segmentRecord->template = $this->template;
 
             $segmentRecord->save(false);
         }
