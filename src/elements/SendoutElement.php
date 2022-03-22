@@ -431,22 +431,22 @@ class SendoutElement extends Element
     /**
      * @var array|null Contact IDs
      */
-    public ?array $contactIds = [];
+    public ?array $contactIds = null;
 
     /**
      * @var array|null Mailing list IDs
      */
-    public ?array $mailingListIds = [];
+    public ?array $mailingListIds = null;
 
     /**
      * @var array|null Excluded mailing list IDs
      */
-    public ?array $excludedMailingListIds = [];
+    public ?array $excludedMailingListIds = null;
 
     /**
      * @var array|null Segment IDs
      */
-    public ?array $segmentIds = [];
+    public ?array $segmentIds = null;
 
     /**
      * @var int Recipients
@@ -461,7 +461,7 @@ class SendoutElement extends Element
     /**
      * @var array|null Schedule
      */
-    public ?array $schedule = [];
+    public ?array $schedule = null;
 
     /**
      * @var string|null HTML body
