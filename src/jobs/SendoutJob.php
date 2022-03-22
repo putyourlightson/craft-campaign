@@ -12,6 +12,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\services\SendoutsService;
+use yii\base\Exception;
 use yii\queue\RetryableJobInterface;
 
 /**

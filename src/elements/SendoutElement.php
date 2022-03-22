@@ -1084,20 +1084,20 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    public function getHtmlAttributes(string $context): array
+    protected function htmlAttributes(string $context): array
     {
-        $htmlAttributes = parent::getHtmlAttributes($context);
+        $htmlAttributes = [];
 
         if ($this->getIsPausable()) {
-            $htmlAttributes['data-pausable'] = null;
+            $htmlAttributes['data-pausable'] = true;
         }
 
         if ($this->getIsResumable()) {
-            $htmlAttributes['data-resumable'] = null;
+            $htmlAttributes['data-resumable'] = true;
         }
 
         if ($this->getIsCancellable()) {
-            $htmlAttributes['data-cancellable'] = null;
+            $htmlAttributes['data-cancellable'] = true;
         }
 
         return $htmlAttributes;
