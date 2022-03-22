@@ -736,10 +736,10 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
+     * @var CpScreenResponseBehavior $response
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        /** @var CpScreenResponseBehavior $response */
         if ($this->complained === null) {
             $response->addAltAction(
                 Craft::t('campaign', 'Mark contact as complained'),

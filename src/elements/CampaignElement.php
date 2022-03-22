@@ -687,13 +687,10 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
+     * @var CpScreenResponseBehavior $response
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        // Set the selected subnav item by adding it to the global variables
-        //Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'campaigns');
-
-        /** @var CpScreenResponseBehavior $response */
         $response->addAltAction(
             Craft::t('campaign', 'Save and create new regular sendout'),
             [
