@@ -106,7 +106,7 @@ class CampaignsService extends Component
         }
 
         // Only save is anonymous tracking is not enabled
-        if ($campaignRecord->campaignType->enableAnonymousTracking === false) {
+        if (!$campaignRecord->campaignType->enableAnonymousTracking) {
             $contactCampaignRecord->save();
         }
 
