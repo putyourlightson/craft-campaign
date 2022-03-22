@@ -18,6 +18,7 @@ use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\validators\UniqueValidator;
+use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
@@ -27,6 +28,7 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use yii\i18n\Formatter;
+use yii\web\Response;
 
 /**
  * @property-read int $complainedCount
@@ -426,6 +428,10 @@ class ContactElement extends Element
     {
         $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
+        if (!Craft::$app->getRequest()->getIsCpRequest()) {
+            return $fieldLayout;
+        }
+
         if (!$this->getIsFresh()) {
             $fieldLayout->setTabs(array_merge(
                 $fieldLayout->getTabs(),
@@ -725,6 +731,71 @@ class ContactElement extends Element
     public function getHasRoundedThumb(): bool
     {
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function prepareEditScreen(Response $response, string $containerId): void
+    {
+        /** @var CpScreenResponseBehavior $response */
+        if ($this->complained === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/mark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/unmark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
+                ],
+            );
+        }
+
+        if ($this->bounced === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/mark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/unmark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
+                ],
+            );
+        }
+
+        if ($this->blocked === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/mark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/unmark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
+                ],
+            );
+        }
     }
 
     /**

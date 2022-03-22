@@ -68,17 +68,4 @@ class SegmentsController extends Controller
         // Redirect to its edit page
         return $this->redirect($segment->getCpEditUrl());
     }
-
-    /**
-     * Main edit page.
-     */
-    public function actionEdit(int $segmentId): Response
-    {
-        // Set the selected subnav item by adding it to the global variables
-        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'segments');
-
-        return Craft::$app->runAction('elements/edit', [
-            'elementId' => $segmentId,
-        ]);
-    }
 }

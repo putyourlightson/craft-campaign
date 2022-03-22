@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-dom": "*",
-        "craftcms/cms": "^4.0.0-beta.1",
+        "craftcms/cms": "^4.0.0-beta.3",
         "putyourlightson/craft-log-to-file": "^2.0.0-alpha.1",
         "matomo/device-detector": "^3.9.1",
         "html2text/html2text": "^4.3.1",

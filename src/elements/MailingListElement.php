@@ -490,6 +490,10 @@ class MailingListElement extends Element
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
 
+        if (!Craft::$app->getRequest()->getIsCpRequest()) {
+            return $fieldLayout;
+        }
+
         if (!$this->getIsFresh()) {
             $fieldLayout->setTabs(array_merge(
                 $fieldLayout->getTabs(),

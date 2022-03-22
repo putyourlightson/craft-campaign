@@ -65,51 +65,6 @@ class CampaignsController extends Controller
     }
 
     /**
-     * Main edit page.
-     */
-    public function actionEdit(int $campaignId): Response
-    {
-        // Set the selected subnav item by adding it to the global variables
-        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'campaigns');
-
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response = Craft::$app->runAction('elements/edit', [
-            'elementId' => $campaignId,
-        ]);
-
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
-        if ($campaign === null) {
-            return $response;
-        }
-
-        $response->addAltAction(
-            Craft::t('campaign', 'Save and create new regular sendout'),
-            [
-                'redirect' => 'campaign/sendouts/regular/new?campaignId=' . $campaignId,
-            ],
-        );
-        $response->addAltAction(
-            Craft::t('campaign', 'Save and create new scheduled sendout'),
-            [
-                'redirect' => 'campaign/sendouts/scheduled/new?campaignId=' . $campaignId,
-            ],
-        );
-
-        if ($campaign->getStatus() == CampaignElement::STATUS_SENT) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Close campaign'),
-                [
-                    'action' => 'campaign/campaigns/close',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
-                ],
-            );
-        }
-
-        return $response;
-    }
-
-    /**
      * Sends a test
      */
     public function actionSendTest(): Response

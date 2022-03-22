@@ -19,6 +19,7 @@ use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
+use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\assets\SendTestAsset;
@@ -31,6 +32,7 @@ use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
 use yii\base\InvalidConfigException;
 use yii\i18n\Formatter;
+use yii\web\Response;
 
 /**
  * @property-read CampaignTypeModel $campaignType
@@ -686,6 +688,40 @@ class CampaignElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
+    public function prepareEditScreen(Response $response, string $containerId): void
+    {
+        // Set the selected subnav item by adding it to the global variables
+        //Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'campaigns');
+
+        /** @var CpScreenResponseBehavior $response */
+        $response->addAltAction(
+            Craft::t('campaign', 'Save and create new regular sendout'),
+            [
+                'redirect' => 'campaign/sendouts/regular/new?campaignId=' . $this->id,
+            ],
+        );
+        $response->addAltAction(
+            Craft::t('campaign', 'Save and create new scheduled sendout'),
+            [
+                'redirect' => 'campaign/sendouts/scheduled/new?campaignId=' . $this->id,
+            ],
+        );
+
+        if ($this->getStatus() == CampaignElement::STATUS_SENT) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Close campaign'),
+                [
+                    'action' => 'campaign/campaigns/close',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to close this campaign? This will remove all contact activity related to this campaign. This action cannot be undone.'),
+                ],
+            );
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
     protected function cpEditUrl(): ?string
     {
         $campaignType = $this->getCampaignType();
@@ -737,6 +773,10 @@ class CampaignElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+
+        if (!Craft::$app->getRequest()->getIsCpRequest()) {
+            return $fieldLayout;
+        }
 
         if ($this->getStatus() == CampaignElement::STATUS_SENT) {
             $fieldLayout->setTabs(array_merge(
