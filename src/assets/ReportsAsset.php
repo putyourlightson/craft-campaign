@@ -10,6 +10,12 @@ use craft\web\AssetBundle;
 class ReportsAsset extends AssetBundle
 {
     /**
+     * https://cdn.datatables.net/#Release
+     * https://cdn.datatables.net/#Responsive
+     */
+    public const DATATABLES_BASE_URL = 'https://cdn.datatables.net/v/dt/dt-1.11.5/r-2.2.9/';
+
+    /**
      * @inheritdoc
      */
     public $sourcePath = '@putyourlightson/campaign/resources';
@@ -25,7 +31,7 @@ class ReportsAsset extends AssetBundle
      * @inheritdoc
      */
     public $css = [
-        'https://cdn.datatables.net/v/dt/dt-1.10.25/r-2.2.9/datatables.min.css',
+        self::DATATABLES_BASE_URL . 'datatables.min.css',
         'css/chart.css',
         'css/datatables.css',
     ];
@@ -35,7 +41,7 @@ class ReportsAsset extends AssetBundle
      */
     public $js = [
         'https://cdn.jsdelivr.net/npm/apexcharts@3',
-        'https://cdn.datatables.net/v/dt/dt-1.10.25/r-2.2.9/datatables.min.js',
+        self::DATATABLES_BASE_URL . 'datatables.min.js',
         'js/Chart.js',
         'js/DataTable.js',
     ];
