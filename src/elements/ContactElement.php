@@ -363,6 +363,11 @@ class ContactElement extends Element
     public ?string $subscriptionStatus = null;
 
     /**
+     * @var null|FieldLayout Field layout
+     */
+    private ?FieldLayout $_fieldLayout = null;
+
+    /**
      * @inheritdoc
      */
     public function __toString(): string
@@ -412,15 +417,20 @@ class ContactElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
+        // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
+        if ($this->_fieldLayout !== null) {
+            return $this->_fieldLayout;
+        }
+
+        $this->_fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $fieldLayout;
+            return $this->_fieldLayout;
         }
 
         if (!$this->getIsFresh()) {
-            $fieldLayout->setTabs(array_merge(
-                $fieldLayout->getTabs(),
+            $this->_fieldLayout->setTabs(array_merge(
+                $this->_fieldLayout->getTabs(),
                 [
                     new ContactMailingListFieldLayoutTab(),
                     new ContactReportFieldLayoutTab(),
@@ -428,7 +438,7 @@ class ContactElement extends Element
             ));
         }
 
-        return $fieldLayout;
+        return $this->_fieldLayout;
     }
 
     /**

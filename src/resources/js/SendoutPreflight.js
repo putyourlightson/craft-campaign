@@ -22,8 +22,8 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
                 );
             }
 
-            var url = Craft.getActionUrl('campaign/sendouts/get-pending-recipient-count');
-            var sendoutId = $('input[name=sendoutId]').val();
+            const url = Craft.getActionUrl('campaign/sendouts/get-pending-recipient-count');
+            const sendoutId = $('input[name=sendoutId]').val();
 
             $.get(url, {sendoutId: sendoutId}, (data) => {
                 $('.pendingRecipientCount').replaceWith(data);
@@ -60,7 +60,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
         $('.preflight .cancel').disable();
         $('.preflight .spinner').removeClass('hidden');
 
-        var data = {
+        const data = {
             sendoutId: $('input[name=sendoutId]').val()
         };
 

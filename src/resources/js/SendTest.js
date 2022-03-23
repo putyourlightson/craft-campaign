@@ -18,12 +18,12 @@ Campaign.SendTest = Garnish.Base.extend({
 
         $('.send-test').addClass('disabled');
 
-        var contactIds = [];
+        const contactIds = [];
         $('.test-email .elementselect input').each(function() {
             contactIds.push($(this).val());
         });
 
-        var data = {
+        const data = {
             contactIds: contactIds,
             campaignId: $('.send-test').data('campaign'),
             sendoutId: $('.send-test').data('sendout'),

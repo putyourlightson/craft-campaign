@@ -11,20 +11,20 @@ Campaign.ContactEdit = Garnish.Base.extend({
     },
 
     initElementThumbs: function() {
-        var elements = $('.meta .element');
+        const elements = $('.meta .element');
 
         if (elements.length) {
-            var thumbLoader = new Craft.ElementThumbLoader();
+            const thumbLoader = new Craft.ElementThumbLoader();
             thumbLoader.load(elements);
         }
     },
 
     updateSubscription: function(event) {
-        var $this = $(event.target);
-        var $row = $this.closest('tr');
+        const $this = $(event.target);
+        const $row = $this.closest('tr');
 
         if (confirm($this.attr('data-confirm'))) {
-            var data = {
+            const data = {
                 contactId: $row.attr('data-contact-id'),
                 mailingListId: $row.attr('data-mailing-list-id'),
             };

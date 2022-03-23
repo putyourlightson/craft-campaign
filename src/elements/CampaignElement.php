@@ -426,6 +426,11 @@ class CampaignElement extends Element
     private ?CampaignTypeModel $_campaignType = null;
 
     /**
+     * @var null|FieldLayout Field layout
+     */
+    private ?FieldLayout $_fieldLayout = null;
+
+    /**
      * @var null|string
      */
     private ?string $_language = null;
@@ -763,22 +768,27 @@ class CampaignElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+        // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
+        if ($this->_fieldLayout !== null) {
+            return $this->_fieldLayout;
+        }
+
+        $this->_fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $fieldLayout;
+            return $this->_fieldLayout;
         }
 
         if ($this->getStatus() == CampaignElement::STATUS_SENT) {
-            $fieldLayout->setTabs(array_merge(
-                $fieldLayout->getTabs(),
+            $this->_fieldLayout->setTabs(array_merge(
+                $this->_fieldLayout->getTabs(),
                 [
                     new CampaignReportFieldLayoutTab(),
                 ],
             ));
         }
 
-        return $fieldLayout;
+        return $this->_fieldLayout;
     }
 
     /**

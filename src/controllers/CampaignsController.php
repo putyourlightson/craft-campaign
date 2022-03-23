@@ -11,7 +11,6 @@ use craft\controllers\CategoriesController;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
 use craft\web\Controller;
-use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;

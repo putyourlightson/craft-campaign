@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Element;
 use craft\elements\User;
 use craft\web\Controller;
-use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;

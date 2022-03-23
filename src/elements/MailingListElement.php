@@ -266,6 +266,11 @@ class MailingListElement extends Element
     public ?int $syncedUserGroupId = null;
 
     /**
+     * @var null|FieldLayout Field layout
+     */
+    private ?FieldLayout $_fieldLayout = null;
+
+    /**
      * @inheritdoc
      */
     protected function defineRules(): array
@@ -514,15 +519,20 @@ class MailingListElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        $fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
+        // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
+        if ($this->_fieldLayout !== null) {
+            return $this->_fieldLayout;
+        }
+
+        $this->_fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $fieldLayout;
+            return $this->_fieldLayout;
         }
 
         if (!$this->getIsFresh()) {
-            $fieldLayout->setTabs(array_merge(
-                $fieldLayout->getTabs(),
+            $this->_fieldLayout->setTabs(array_merge(
+                $this->_fieldLayout->getTabs(),
                 [
                     new MailingListContactFieldLayoutTab(),
                     new MailingListReportFieldLayoutTab(),
@@ -530,7 +540,7 @@ class MailingListElement extends Element
             ));
         }
 
-        return $fieldLayout;
+        return $this->_fieldLayout;
     }
 
     /**

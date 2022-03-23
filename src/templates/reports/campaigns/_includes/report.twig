@@ -12,7 +12,7 @@
 
 
 {% set data = craft.campaign.reports.getCampaignReportData(campaign.id) %}
-
+<script>console.log('here')</script>
 <div>
 
     {% if data.dateFirstSent is not null %}
@@ -38,10 +38,12 @@
         </div>
 
         {% js %}
-            new Campaign.Chart({
-                action: 'campaign/reports/get-campaign-chart-data',
-                campaignId: '{{ campaign.id }}'
-            }).getChart();
+            // setTimeout(function() {
+                new Campaign.Chart({
+                    action: 'campaign/reports/get-campaign-chart-data',
+                    campaignId: '{{ campaign.id }}'
+                });
+{#            }, 1000);#}
         {% endjs %}
     {% endif %}
 

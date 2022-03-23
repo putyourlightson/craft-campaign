@@ -11,7 +11,7 @@ Campaign.CP = Garnish.Base.extend({
     },
 
     loadElementThumbs: function() {
-        var elements = $('.elementThumb');
+        const elements = $('.elementThumb');
 
         if (elements.length) {
             (new Craft.ElementThumbLoader()).load(elements);
@@ -21,9 +21,9 @@ Campaign.CP = Garnish.Base.extend({
     applyFilter: function(event) {
         event.preventDefault();
 
-        var $this = $(event.target);
-        var baseUrl = window.location.href.split('?')[0];
-        var filterType = $this.attr('data-type');
+        const $this = $(event.target);
+        const baseUrl = window.location.href.split('?')[0];
+        const filterType = $this.attr('data-type');
         window.location.href = $this.val() ? baseUrl + '?' + filterType + '=' + $this.val() : baseUrl;
     },
 });

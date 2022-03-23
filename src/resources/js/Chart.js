@@ -10,14 +10,11 @@ Campaign.Chart = Garnish.Base.extend({
     init: function(settings) {
         this.setSettings(settings);
 
-        // Draw percentage charts
-        //this.drawPercentageCharts();
+        this.getChart();
 
         // Add listener to report tab
-        $('[data-id=tab-report]').click(() => {
-            console.log(this);
+        $('.pane-tabs [data-id=tab-report]').click(() => {
             this.getChart();
-            this.drawPercentageCharts();
         });
 
         // Add listener to interval select
@@ -32,8 +29,39 @@ Campaign.Chart = Garnish.Base.extend({
         });
     },
 
+    getChart: function() {
+        $('[data-id=chart]').hide();
+        $('.report-chart .spinner').show();
+
+        $.get({
+            url: Craft.getActionUrl(this.settings.action),
+            dataType: 'json',
+            data: {
+                campaignId: this.settings.campaignId,
+                mailingListId: this.settings.mailingListId,
+                interval: $('[data-id=interval]').val(),
+            },
+            success: (data) => {
+                $('[data-id=chart]').show();
+                $('.report-chart .spinner').hide();
+
+                // Draw the percentage charts here so we can be absolutely sure
+                // that ApexCharts has loaded!
+                this.drawPercentageCharts();
+
+                this.drawChart(data);
+            }
+        });
+    },
+
     drawPercentageCharts: function() {
-        var options = {
+        // Only draw the percentage charts once!
+        if (this.chart !== null) {
+            console.log(this.chart);
+            return;
+        }
+
+        const options = {
             chart: {
                 type: 'radialBar',
                 height: 200,
@@ -65,36 +93,13 @@ Campaign.Chart = Garnish.Base.extend({
             options.labels = [$(this).attr('data-label')];
             options.colors = [$(this).attr('data-color')];
 
-            var chart = new ApexCharts($(this)[0], options);
-
+            const chart = new ApexCharts($(this)[0], options);
             chart.render();
         });
     },
 
-    getChart: function() {
-        if (this.chart) {
-            this.chart.destroy();
-        }
-
-        $('.report-chart .spinner').show();
-
-        $.get({
-            url: Craft.getActionUrl(this.settings.action),
-            dataType: 'json',
-            data: {
-                campaignId: this.settings.campaignId,
-                mailingListId: this.settings.mailingListId,
-                interval: $('[data-id=interval]').val(),
-            },
-            success: (data) => {
-                $('.report-chart .spinner').hide();
-                this.drawChart(data);
-            }
-        });
-    },
-
     drawChart: function(data) {
-        var intervalFormats = {
+        const intervalFormats = {
             minutes: {hour: 'numeric', minute: 'numeric', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
             hours: {hour: 'numeric', minute: 'numeric', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
             days: {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'},
@@ -102,9 +107,9 @@ Campaign.Chart = Garnish.Base.extend({
             years: {year: 'numeric'},
         };
 
-        var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
+        const dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
 
-        this.chart = new ApexCharts(document.querySelector('[data-id=chart]'), {
+        const options = {
             chart: {
                 type: 'line',
                 height: 300,
@@ -164,8 +169,14 @@ Campaign.Chart = Garnish.Base.extend({
             legend: {
                 show: false,
             }
-        });
+        };
 
-        this.chart.render();
+        if (this.chart === null) {
+            this.chart = new ApexCharts(document.querySelector('[data-id=chart]'), options);
+            this.chart.render();
+        }
+        else {
+            this.chart.updateOptions(options);
+        }
     },
 });

@@ -18,7 +18,7 @@ abstract class BaseReportField extends BaseNativeField
     /**
      * @inheritdoc
      */
-    public string $attribute = 'reports';
+    public string $attribute = 'report';
 
     /**
      * @inheritdoc
