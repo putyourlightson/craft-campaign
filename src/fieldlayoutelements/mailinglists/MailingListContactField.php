@@ -40,7 +40,7 @@ class MailingListContactField extends BaseNativeField
 
         $limit = 100;
         $contactsQuery = ContactElement::find()
-            ->mailingListId($element->id)
+            ->mailingListId($element->getCanonicalId())
             ->limit($limit);
         $contacts = $contactsQuery->all();
         $total = $contactsQuery->count();
@@ -48,7 +48,7 @@ class MailingListContactField extends BaseNativeField
         return Craft::$app->view->renderTemplate(
             'campaign/mailinglists/_includes/contacts',
             [
-                'mailingList' => $element,
+                'mailingList' => $element->getCanonical(),
                 'contacts' => $contacts,
                 'total' => $total,
                 'limit' => $limit,

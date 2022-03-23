@@ -23,7 +23,7 @@ class ContactReportField extends BaseReportField
         return Craft::$app->view->renderTemplate(
             'campaign/reports/contacts/_includes/report',
             [
-                'contact' => $element,
+                'contact' => $element->getCanonical(),
             ],
         );
     }

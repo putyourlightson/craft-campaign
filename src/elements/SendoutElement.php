@@ -16,6 +16,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
+use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use LitEmoji\LitEmoji;
 use putyourlightson\campaign\Campaign;
@@ -27,6 +28,7 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
+use yii\web\Response;
 
 /**
  *
@@ -582,9 +584,12 @@ class SendoutElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
-    public function getCrumbs(): array
+    public function prepareEditScreen(Response $response, string $containerId): void
     {
-        return [
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'sendouts';
+
+        $response->crumbs([
             [
                 'label' => Craft::t('campaign', 'Sendouts'),
                 'url' => UrlHelper::url('campaign/sendouts'),
@@ -593,9 +598,8 @@ class SendoutElement extends Element
                 'label' => $this->getSendoutTypeLabel(),
                 'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
             ],
-        ];
+        ]);
     }
-
 
     /**
      * Returns the sendout’s preview URL in the control panel.

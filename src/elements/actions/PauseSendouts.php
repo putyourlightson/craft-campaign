@@ -48,12 +48,9 @@ class PauseSendouts extends ElementAction
     var trigger = new Craft.ElementActionTrigger({
         type: $type,
         batch: true,
-        validateSelection: function(\$selectedItems)
-        {
-            for (var i = 0; i < \$selectedItems.length; i++)
-            {
-                if (!Garnish.hasAttr(\$selectedItems.eq(i).find('.element'), 'data-pausable'))
-                {
+        validateSelection: function(\$selectedItems) {
+            for (let i = 0; i < \$selectedItems.length; i++) {
+                if (!Garnish.hasAttr(\$selectedItems.eq(i).find('.element'), 'data-pausable')) {
                     return false;
                 }
             }

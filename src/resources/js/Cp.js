@@ -7,7 +7,6 @@
 Campaign.CP = Garnish.Base.extend({
     init: function() {
         this.loadElementThumbs();
-        this.addListener($.find('.show-more'), 'click', 'showMore');
         this.addListener($.find('.filter'), 'change', 'applyFilter');
     },
 
@@ -17,14 +16,6 @@ Campaign.CP = Garnish.Base.extend({
         if (elements.length) {
             (new Craft.ElementThumbLoader()).load(elements);
         }
-    },
-
-    showMore: function(event) {
-        event.preventDefault();
-
-        var $this = $(event.target);
-        $('#' + $this.attr('data-id')).find('.hidden').removeClass('hidden');
-        $this.remove();
     },
 
     applyFilter: function(event) {

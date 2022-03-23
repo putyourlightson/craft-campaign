@@ -16,6 +16,7 @@ use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\models\UserGroup;
+use craft\web\CpScreenResponseBehavior;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\MailingListElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\mailinglists\MailingListContactFieldLayoutTab;
@@ -24,6 +25,7 @@ use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\MailingListRecord;
 use yii\base\InvalidConfigException;
+use yii\web\Response;
 
 /**
  * @property-read int $unsubscribedCount
@@ -469,6 +471,30 @@ class MailingListElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
+    public function prepareEditScreen(Response $response, string $containerId): void
+    {
+        Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'mailinglists';
+
+        $mailingListType = $this->getMailingListType();
+        $response->crumbs([
+            [
+                'label' => Craft::t('campaign', 'Mailing Lists'),
+                'url' => UrlHelper::url('campaign/mailinglists'),
+            ],
+            [
+                'label' => Craft::t('campaign', $mailingListType->name),
+                'url' => UrlHelper::url('campaign/mailinglists/' . $mailingListType->handle),
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
     protected function cpEditUrl(): ?string
     {
         $mailingListType = $this->getMailingListType();
@@ -524,26 +550,6 @@ class MailingListElement extends Element
         $mailingListType = $this->getMailingListType();
 
         return UrlHelper::cpUrl("campaign/mailinglists/$mailingListType->handle");
-    }
-
-    /**
-     * @inheritdoc
-     * @since 2.0.0
-     */
-    public function getCrumbs(): array
-    {
-        $mailingListType = $this->getMailingListType();
-
-        return [
-            [
-                'label' => Craft::t('campaign', 'Mailing Lists'),
-                'url' => UrlHelper::url('campaign/mailinglists'),
-            ],
-            [
-                'label' => Craft::t('campaign', $mailingListType->name),
-                'url' => UrlHelper::url('campaign/mailinglists/' . $mailingListType->handle),
-            ],
-        ];
     }
 
     /**

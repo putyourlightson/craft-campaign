@@ -23,7 +23,7 @@ class CampaignReportField extends BaseReportField
         return Craft::$app->view->renderTemplate(
             'campaign/reports/campaigns/_includes/report',
             [
-                'campaign' => $element,
+                'campaign' => $element->getCanonical(),
             ],
         );
     }

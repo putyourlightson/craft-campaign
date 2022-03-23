@@ -11,21 +11,22 @@ Campaign.Chart = Garnish.Base.extend({
         this.setSettings(settings);
 
         // Draw percentage charts
-        this.drawPercentageCharts();
+        //this.drawPercentageCharts();
 
         // Add listener to report tab
-        $('#tab-report').click(() => {
+        $('[data-id=tab-report]').click(() => {
+            console.log(this);
             this.getChart();
             this.drawPercentageCharts();
         });
 
         // Add listener to interval select
-        $('#interval').change(() => {
+        $('[data-id=interval]').change(() => {
             this.getChart();
         });
 
         // Add listener to refresh button
-        $('#refresh').click((event) => {
+        $('[data-id=refresh]').click((event) => {
             event.preventDefault();
             this.getChart();
         });
@@ -83,7 +84,7 @@ Campaign.Chart = Garnish.Base.extend({
             data: {
                 campaignId: this.settings.campaignId,
                 mailingListId: this.settings.mailingListId,
-                interval: $('#interval').val(),
+                interval: $('[data-id=interval]').val(),
             },
             success: (data) => {
                 $('.report-chart .spinner').hide();
@@ -103,7 +104,7 @@ Campaign.Chart = Garnish.Base.extend({
 
         var dateTimeFormat = new Intl.DateTimeFormat(data.locale, intervalFormats[data.interval] ? intervalFormats[data.interval] : {});
 
-        this.chart = new ApexCharts(document.querySelector("#chart"), {
+        this.chart = new ApexCharts(document.querySelector('[data-id=chart]'), {
             chart: {
                 type: 'line',
                 height: 300,

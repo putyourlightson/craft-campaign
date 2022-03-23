@@ -7,7 +7,7 @@
     {% if data.hasChart %}
         <div class="report-chart">
             <div class="select">
-                <select id="interval">
+                <select data-id="interval">
                     <option value="minutes">{{ 'Minutes'|t('campaign') }}</option>
                     <option value="hours" selected>{{ 'Hours'|t('campaign') }}</option>
                     <option value="days">{{ 'Days'|t('campaign') }}</option>
@@ -16,7 +16,7 @@
                 </select>
             </div>
             <div class="spinner big"></div>
-            <div id="chart"></div>
+            <div data-id="chart"></div>
         </div>
 
         {% js %}

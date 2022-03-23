@@ -23,7 +23,7 @@ class MailingListReportField extends BaseReportField
         return Craft::$app->view->renderTemplate(
             'campaign/reports/mailinglists/_includes/report',
             [
-                'mailingList' => $element,
+                'mailingList' => $element->getCanonical(),
             ],
         );
     }

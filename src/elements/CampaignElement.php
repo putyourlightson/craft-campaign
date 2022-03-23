@@ -687,10 +687,24 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
-     * @var Response|CpScreenResponseBehavior $response
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'campaigns';
+
+        $campaignType = $this->getCampaignType();
+        $response->crumbs([
+            [
+                'label' => Craft::t('campaign', 'Campaigns'),
+                'url' => UrlHelper::url('campaign/campaigns'),
+            ],
+            [
+                'label' => Craft::t('campaign', $campaignType->name),
+                'url' => UrlHelper::url('campaign/campaigns/' . $campaignType->handle),
+            ],
+        ]);
+
         $response->addAltAction(
             Craft::t('campaign', 'Save and create new regular sendout'),
             [
@@ -741,26 +755,6 @@ class CampaignElement extends Element
         $campaignType = $this->getCampaignType();
 
         return UrlHelper::cpUrl("campaign/campaigns/$campaignType->handle");
-    }
-
-    /**
-     * @inheritdoc
-     * @since 2.0.0
-     */
-    public function getCrumbs(): array
-    {
-        $campaignType = $this->getCampaignType();
-
-        return [
-            [
-                'label' => Craft::t('campaign', 'Campaigns'),
-                'url' => UrlHelper::url('campaign/campaigns'),
-            ],
-            [
-                'label' => Craft::t('campaign', $campaignType->name),
-                'url' => UrlHelper::url('campaign/campaigns/' . $campaignType->handle),
-            ],
-        ];
     }
 
     /**

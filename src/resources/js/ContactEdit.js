@@ -59,5 +59,3 @@ Campaign.ContactEdit = Garnish.Base.extend({
         }
     },
 });
-
-new Campaign.ContactEdit();

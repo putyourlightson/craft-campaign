@@ -15,10 +15,12 @@ use craft\elements\User;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\web\CpScreenResponseBehavior;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\segments\SegmentFieldLayoutTab;
 use putyourlightson\campaign\records\SegmentRecord;
+use yii\web\Response;
 
 /**
  * @property-read int $contactCount
@@ -314,9 +316,14 @@ class SegmentElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
-    public function getCrumbs(): array
+    public function prepareEditScreen(Response $response, string $containerId): void
     {
-        return [
+        Craft::$app->getView()->registerJs('new Campaign.SegmentEdit();');
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'segments';
+
+        $response->crumbs([
             [
                 'label' => Craft::t('campaign', 'Segments'),
                 'url' => UrlHelper::url('campaign/segments'),
@@ -325,7 +332,7 @@ class SegmentElement extends Element
                 'label' => $this->getSegmentTypeLabel(),
                 'url' => UrlHelper::url('campaign/segments/' . $this->segmentType),
             ],
-        ];
+        ]);
     }
 
     /**

@@ -410,20 +410,6 @@ class ContactElement extends Element
      * @inheritdoc
      * @since 2.0.0
      */
-    public function getCrumbs(): array
-    {
-        return [
-            [
-                'label' => Craft::t('campaign', 'Contacts'),
-                'url' => UrlHelper::url('campaign/contacts'),
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     * @since 2.0.0
-     */
     public function getFieldLayout(): ?FieldLayout
     {
         $fieldLayout = Craft::$app->getFields()->getLayoutByType(self::class);
@@ -736,10 +722,21 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
-     * @var Response|CpScreenResponseBehavior $response
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
+        Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'contacts';
+
+        $response->crumbs([
+            [
+                'label' => Craft::t('campaign', 'Contacts'),
+                'url' => UrlHelper::url('campaign/contacts'),
+            ],
+        ]);
+
         if ($this->complained === null) {
             $response->addAltAction(
                 Craft::t('campaign', 'Mark contact as complained'),

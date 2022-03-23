@@ -94,5 +94,3 @@ Campaign.SegmentEdit = Garnish.Base.extend({
         }
     },
 });
-
-new Campaign.SegmentEdit();
