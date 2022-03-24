@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\fields;
 
 use Craft;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\fields\BaseRelationField;
 use putyourlightson\campaign\elements\CampaignElement;
 
@@ -33,5 +34,13 @@ class CampaignsField extends BaseRelationField
     public static function defaultSelectionLabel(): string
     {
         return Craft::t('campaign', 'Add a campaign');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSelectionCondition(): ?ElementConditionInterface
+    {
+        return CampaignElement::createCondition();
     }
 }
