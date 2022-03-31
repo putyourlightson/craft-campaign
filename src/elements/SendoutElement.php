@@ -929,12 +929,13 @@ class SendoutElement extends Element
         $schedule = null;
 
         if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
-            if ($this->sendoutType == 'automated') {
-                $schedule = new AutomatedScheduleModel($this->schedule);
-            }
+            $config = $this->schedule ?: [];
 
-            if ($this->sendoutType == 'recurring') {
-                $schedule = new RecurringScheduleModel($this->schedule);
+            if ($this->sendoutType == 'automated') {
+                $schedule = new AutomatedScheduleModel($config);
+            }
+            elseif ($this->sendoutType == 'recurring') {
+                $schedule = new RecurringScheduleModel($config);
             }
 
             // Convert end date and time of day or set to null
