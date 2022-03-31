@@ -28,7 +28,7 @@ class RecurringScheduleModel extends ScheduleModel
     /**
      * @var array|null Days of the month
      */
-    public ?array $daysOfMonth;
+    public ?array $daysOfMonth = null;
 
     /**
      * @inheritdoc
