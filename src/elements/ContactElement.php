@@ -422,13 +422,7 @@ class ContactElement extends Element
             return $this->_fieldLayout;
         }
 
-        if ($this->fieldLayoutId) {
-            $this->_fieldLayout = Craft::$app->getFields()->getLayoutById($this->fieldLayoutId);
-
-            return $this->_fieldLayout;
-        }
-
-        $this->_fieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+        $this->_fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->getSettings()->getContactFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
             return $this->_fieldLayout;

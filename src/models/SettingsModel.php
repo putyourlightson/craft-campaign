@@ -229,17 +229,7 @@ class SettingsModel extends Model
      */
     public function getContactFieldLayout(): FieldLayout
     {
-        $fieldLayout = new FieldLayout();
-        $fieldLayout->type = ContactElement::class;
-
-        $tab = new FieldLayoutTab();
-        $tab->name = 'Content';
-        $tab->setLayout($fieldLayout);
-        $tab->setElements([
-            new ContactEmailField(),
-        ]);
-
-        return $fieldLayout;
+        return Craft::$app->getFields()->getLayoutByType(ContactElement::class);
     }
 
     /**
