@@ -42,7 +42,7 @@ class SyncService extends Component
     /**
      * Registers user events.
      */
-    public function registerUserEvents()
+    public function registerUserEvents(): void
     {
         $events = [
             [Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT],
@@ -93,7 +93,7 @@ class SyncService extends Component
     /**
      * Queues a sync.
      */
-    public function queueSync(MailingListElement $mailingList)
+    public function queueSync(MailingListElement $mailingList): void
     {
         /** @var Queue $queue */
         $queue = Craft::$app->getQueue();
@@ -105,7 +105,7 @@ class SyncService extends Component
     /**
      * Syncs a user.
      */
-    public function syncUser(User $user)
+    public function syncUser(User $user): void
     {
         // Get user's user group IDs
         $userGroups = $user->getGroups();
@@ -131,7 +131,7 @@ class SyncService extends Component
     /**
      * Deletes a user.
      */
-    public function deleteUser(User $user)
+    public function deleteUser(User $user): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
@@ -143,7 +143,7 @@ class SyncService extends Component
     /**
      * Syncs a user to a contact in a mailing list.
      */
-    public function syncUserMailingList(User $user, MailingListElement $mailingList)
+    public function syncUserMailingList(User $user, MailingListElement $mailingList): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
@@ -202,7 +202,7 @@ class SyncService extends Component
     /**
      * Removes a user synced contact from a mailing list.
      */
-    public function removeUserMailingList(User $user, MailingListElement $mailingList)
+    public function removeUserMailingList(User $user, MailingListElement $mailingList): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 

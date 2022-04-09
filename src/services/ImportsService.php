@@ -234,7 +234,7 @@ class ImportsService extends Component
     /**
      * Queues an import.
      */
-    public function queueImport(ImportModel $import)
+    public function queueImport(ImportModel $import): void
     {
         // Add import job to queue
         Craft::$app->getQueue()->push(new ImportJob(['importId' => $import->id]));

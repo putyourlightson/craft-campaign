@@ -254,7 +254,7 @@ class SettingsModel extends Model
     /**
      * Validates the from names and emails.
      */
-    public function validateFromNamesEmails(mixed $attribute)
+    public function validateFromNamesEmails(mixed $attribute): void
     {
         if (empty($this->fromNamesEmails)) {
             $this->addError($attribute, Craft::t('campaign', 'You must enter at least one name and email.'));

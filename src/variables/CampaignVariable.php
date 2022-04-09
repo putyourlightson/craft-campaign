@@ -41,7 +41,7 @@ class CampaignVariable
     /**
      * Throws an exception if the plugin edition is not pro.
      */
-    public function requirePro()
+    public function requirePro(): void
     {
         Campaign::$plugin->requirePro();
     }

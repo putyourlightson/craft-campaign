@@ -185,7 +185,7 @@ class CampaignTypesService extends Component
     /**
      * Handles a changed campaign type.
      */
-    public function handleChangedCampaignType(ConfigEvent $event)
+    public function handleChangedCampaignType(ConfigEvent $event): void
     {
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
@@ -311,7 +311,7 @@ class CampaignTypesService extends Component
     /**
      * Handles a deleted campaign type.
      */
-    public function handleDeletedCampaignType(ConfigEvent $event)
+    public function handleDeletedCampaignType(ConfigEvent $event): void
     {
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
@@ -364,7 +364,7 @@ class CampaignTypesService extends Component
     /**
      * Handles a deleted site.
      */
-    public function handleDeletedSite(DeleteSiteEvent $event)
+    public function handleDeletedSite(DeleteSiteEvent $event): void
     {
         $siteUid = $event->site->uid;
 
@@ -383,7 +383,7 @@ class CampaignTypesService extends Component
     /**
      * Prunes a deleted field from the field layouts.
      */
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField(FieldEvent $event): void
     {
         /** @var Field $field */
         $field = $event->field;

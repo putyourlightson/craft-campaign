@@ -144,7 +144,7 @@ class PendingContactsService extends Component
     /**
      * Deletes expired pending contacts
      */
-    public function purgeExpiredPendingContacts()
+    public function purgeExpiredPendingContacts(): void
     {
         $settings = Campaign::$plugin->getSettings();
 

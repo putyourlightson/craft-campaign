@@ -201,7 +201,7 @@ class MailingListTypesService extends Component
     /**
      * Handles a changed mailing list type.
      */
-    public function handleChangedMailingListType(ConfigEvent $event)
+    public function handleChangedMailingListType(ConfigEvent $event): void
     {
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
@@ -327,7 +327,7 @@ class MailingListTypesService extends Component
     /**
      * Handles a deleted mailing list type.
      */
-    public function handleDeletedMailingListType(ConfigEvent $event)
+    public function handleDeletedMailingListType(ConfigEvent $event): void
     {
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
@@ -380,7 +380,7 @@ class MailingListTypesService extends Component
     /**
      * Handles a deleted site.
      */
-    public function handleDeletedSite(DeleteSiteEvent $event)
+    public function handleDeletedSite(DeleteSiteEvent $event): void
     {
         $siteUid = $event->site->uid;
 
@@ -399,7 +399,7 @@ class MailingListTypesService extends Component
     /**
      * Prunes a deleted field from the field layouts.
      */
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField(FieldEvent $event): void
     {
         /** @var Field $field */
         $field = $event->field;

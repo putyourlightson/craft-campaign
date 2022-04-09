@@ -33,7 +33,7 @@ class ContactActivityHelper
     /**
      * Updates contact activity.
      */
-    public static function updateContactActivity(ContactElement $contact)
+    public static function updateContactActivity(ContactElement $contact): void
     {
         // Get contact record
         $contactRecord = ContactRecord::findOne($contact->id);

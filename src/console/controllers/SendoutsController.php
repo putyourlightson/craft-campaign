@@ -43,7 +43,7 @@ class SendoutsController extends Controller
         return ExitCode::OK;
     }
 
-    private function _queuePendingSendouts()
+    private function _queuePendingSendouts(): void
     {
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 

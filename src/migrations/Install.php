@@ -305,7 +305,7 @@ class Install extends Migration
     /**
      * Creates the indexes needed for the Records used by the plugin
      */
-    protected function createIndexes()
+    protected function createIndexes(): void
     {
         $this->createIndex(null, CampaignTypeRecord::tableName(), 'handle', true);
         $this->createIndex(null, ContactRecord::tableName(), 'email');
@@ -326,7 +326,7 @@ class Install extends Migration
     /**
      * Creates the foreign keys needed for the records used by the plugin.
      */
-    protected function addForeignKeys()
+    protected function addForeignKeys(): void
     {
         $this->addForeignKey(null, CampaignRecord::tableName(), 'id', Table::ELEMENTS, 'id', 'CASCADE');
         $this->addForeignKey(null, CampaignRecord::tableName(), 'campaignTypeId', CampaignTypeRecord::tableName(), 'id', 'CASCADE');

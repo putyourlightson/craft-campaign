@@ -31,7 +31,7 @@ class TrackerService extends Component
     /**
      * Tracks an open.
      */
-    public function open(ContactElement $contact, SendoutElement $sendout)
+    public function open(ContactElement $contact, SendoutElement $sendout): void
     {
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
@@ -43,7 +43,7 @@ class TrackerService extends Component
     /**
      * Tracks a click.
      */
-    public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
+    public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord): void
     {
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);

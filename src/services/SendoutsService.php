@@ -223,7 +223,7 @@ class SendoutsService extends Component
     /**
      * Sends an email.
      */
-    public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId = null)
+    public function sendEmail(SendoutElement $sendout, ContactElement $contact, int $mailingListId = null): void
     {
         if ($sendout->getIsSendable() === false) {
             return;
@@ -391,7 +391,7 @@ class SendoutsService extends Component
     /**
      * Sends a notification.
      */
-    public function sendNotification(SendoutElement $sendout)
+    public function sendNotification(SendoutElement $sendout): void
     {
         if (!$sendout->notificationEmailAddress) {
             return;
@@ -435,7 +435,7 @@ class SendoutsService extends Component
     /**
      * Prepares sending.
      */
-    public function prepareSending(SendoutElement $sendout)
+    public function prepareSending(SendoutElement $sendout): void
     {
         if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
             $sendout->sendStatus = SendoutElement::STATUS_SENDING;
@@ -450,7 +450,7 @@ class SendoutsService extends Component
     /**
      * Finalises sending.
      */
-    public function finaliseSending(SendoutElement $sendout)
+    public function finaliseSending(SendoutElement $sendout): void
     {
         // If not failed
         if ($sendout->sendStatus != SendoutElement::STATUS_FAILED) {

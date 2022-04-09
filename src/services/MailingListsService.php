@@ -77,7 +77,7 @@ class MailingListsService extends Component
     /**
      * Adds a contact interaction.
      */
-    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', int|string $source = '', bool $verify = false)
+    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', int|string $source = '', bool $verify = false): void
     {
         // Ensure that interaction exists
         if (!in_array($interaction, ContactMailingListModel::INTERACTIONS)) {
@@ -121,7 +121,7 @@ class MailingListsService extends Component
     /**
      * Deletes a contact's subscription to a mailing list.
      */
-    public function deleteContactSubscription(ContactElement $contact, MailingListElement $mailingList)
+    public function deleteContactSubscription(ContactElement $contact, MailingListElement $mailingList): void
     {
         $contactMailingListRecord = ContactMailingListRecord::find()
             ->where([

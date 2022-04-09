@@ -35,7 +35,7 @@ class CampaignsService extends Component
     /**
      * Adds a contact interaction.
      */
-    public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
+    public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null): void
     {
         // Ensure that interaction exists
         if (!in_array($interaction, ContactCampaignModel::INTERACTIONS)) {

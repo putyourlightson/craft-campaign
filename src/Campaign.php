@@ -152,7 +152,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -252,7 +252,7 @@ class Campaign extends Plugin
     /**
      * Throws an exception if the plugin edition is not pro.
      */
-    public function requirePro()
+    public function requirePro(): void
     {
         if (!$this->getIsPro()) {
             throw new ForbiddenHttpException(Craft::t('campaign', 'Campaign Pro is required to perform this action.'));
@@ -281,7 +281,7 @@ class Campaign extends Plugin
     /**
      * Sets max memory and time limits.
      */
-    public function maxPowerLieutenant()
+    public function maxPowerLieutenant(): void
     {
         $settings = $this->getSettings();
 
@@ -295,7 +295,7 @@ class Campaign extends Plugin
     /**
      * Logs an action.
      */
-    public function log(string $message, array $params = [])
+    public function log(string $message, array $params = []): void
     {
         /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();
@@ -394,7 +394,7 @@ class Campaign extends Plugin
     /**
      * Registers components.
      */
-    private function _registerComponents()
+    private function _registerComponents(): void
     {
         // Register services as components
         $this->setComponents([
@@ -425,7 +425,7 @@ class Campaign extends Plugin
     /**
      * Registers element types.
      */
-    private function _registerElementTypes()
+    private function _registerElementTypes(): void
     {
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES,
             function(RegisterComponentTypesEvent $event) {
@@ -441,7 +441,7 @@ class Campaign extends Plugin
     /**
      * Registers custom field types.
      */
-    private function _registerFieldTypes()
+    private function _registerFieldTypes(): void
     {
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = CampaignsField::class;
@@ -453,7 +453,7 @@ class Campaign extends Plugin
     /**
      * Registers after install event.
      */
-    private function _registerAfterInstallEvent()
+    private function _registerAfterInstallEvent(): void
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function(PluginEvent $event) {
@@ -482,7 +482,7 @@ class Campaign extends Plugin
     /**
      * Registers field events.
      */
-    private function _registerFieldEvents()
+    private function _registerFieldEvents(): void
     {
         Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
             function(FieldEvent $event) {
@@ -502,7 +502,7 @@ class Campaign extends Plugin
     /**
      * Registers event listeners for project config changes.
      */
-    private function _registerProjectConfigListeners()
+    private function _registerProjectConfigListeners(): void
     {
         // Contact field layout
         Craft::$app->projectConfig
@@ -538,7 +538,7 @@ class Campaign extends Plugin
      *
      * @since 1.15.1
      */
-    private function _registerTemplateHooks()
+    private function _registerTemplateHooks(): void
     {
         Craft::$app->getView()->hook('cp.users.edit.details', function($context) {
             /** @var User|null $user */
@@ -567,7 +567,7 @@ class Campaign extends Plugin
      *
      * @since 1.21.0
      */
-    private function _registerAllowedOrigins()
+    private function _registerAllowedOrigins(): void
     {
         Event::on(PreviewController::class, Controller::EVENT_BEFORE_ACTION,
             function(ActionEvent $event) {
@@ -606,7 +606,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerTwigExtensions()
+    private function _registerTwigExtensions(): void
     {
         Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
     }
@@ -616,7 +616,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerVariables()
+    private function _registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
             function(Event $event) {
@@ -632,7 +632,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerNativeFields()
+    private function _registerNativeFields(): void
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             function(DefineFieldLayoutFieldsEvent $event) {
@@ -655,7 +655,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerAssetBundles()
+    private function _registerAssetBundles(): void
     {
         Craft::$app->view->registerAssetBundle(CpAsset::class);
 
@@ -669,7 +669,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerCpUrlRules()
+    private function _registerCpUrlRules(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
@@ -683,7 +683,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerUtilities()
+    private function _registerUtilities(): void
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
             function(RegisterComponentTypesEvent $event) {
@@ -699,7 +699,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerUserPermissions()
+    private function _registerUserPermissions(): void
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {

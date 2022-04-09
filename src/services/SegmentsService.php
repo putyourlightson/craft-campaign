@@ -141,7 +141,7 @@ class SegmentsService extends Component
     /**
      * Updates a field.
      */
-    public function updateField(FieldInterface $field)
+    public function updateField(FieldInterface $field): void
     {
         if (!SegmentHelper::isContactField($field)) {
             return;
@@ -185,7 +185,7 @@ class SegmentsService extends Component
     /**
      * Deletes a field.
      */
-    public function deleteField(FieldInterface $field)
+    public function deleteField(FieldInterface $field): void
     {
         if (!SegmentHelper::isContactField($field)) {
             return;

@@ -148,7 +148,7 @@ class FormsService extends Component
     /**
      * Subscribes a contact.
      */
-    public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
+    public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null): void
     {
         $sourceType = $sourceType ?? '';
         $source = $source ?? '';
@@ -183,7 +183,7 @@ class FormsService extends Component
     /**
      * Unsubscribes a contact.
      */
-    public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList)
+    public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList): void
     {
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {

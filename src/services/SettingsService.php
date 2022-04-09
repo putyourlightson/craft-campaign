@@ -233,7 +233,7 @@ class SettingsService extends Component
      *
      * @since 1.15.0
      */
-    public function handleChangedContactFieldLayout(ConfigEvent $event)
+    public function handleChangedContactFieldLayout(ConfigEvent $event): void
     {
         $data = $event->newValue;
 
@@ -253,7 +253,7 @@ class SettingsService extends Component
     /**
      * Prunes a deleted field from the contact field layout.
      */
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField(FieldEvent $event): void
     {
         /** @var Field $field */
         $field = $event->field;

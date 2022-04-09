@@ -292,7 +292,7 @@ class FormsController extends BaseMessageController
     /**
      * Validates reCAPTCHA if enabled.
      */
-    private function _validateRecaptcha()
+    private function _validateRecaptcha(): void
     {
         // Validate reCAPTCHA if enabled
         if (Campaign::$plugin->getSettings()->reCaptcha) {
