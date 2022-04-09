@@ -71,7 +71,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertEquals($mailingList->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
-        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
+        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->toString());
     }
 
     public function testUpdateContactSuccess()

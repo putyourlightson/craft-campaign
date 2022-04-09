@@ -42,7 +42,7 @@ class FormsController extends BaseMessageController
         }
 
         $email = $this->request->getRequiredParam('email');
-        $referrer = $this->request->getReferrer();
+        $referrer = $this->request->getReferrer() ?: '';
 
         // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
