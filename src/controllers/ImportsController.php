@@ -277,9 +277,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * Returns the fields template.
+     * Returns the `fields` template.
      */
-    private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): ?Response
+    private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): Response
     {
         // Set the current site to the site handle if set
         $siteHandle = $this->request->getSegment(4);

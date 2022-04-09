@@ -12,7 +12,7 @@ use yii\db\ActiveQuery;
 /**
  * @property int $id
  * @property int $siteId
- * @property int $fieldLayoutId
+ * @property int|null $fieldLayoutId
  * @property string $name
  * @property string $handle
  * @property bool $enableAnonymousTracking

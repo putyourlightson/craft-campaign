@@ -22,6 +22,7 @@ class MailingListsService extends Component
      */
     public function getMailingListById(int $mailingListId): ?MailingListElement
     {
+        /** @var MailingListElement|null */
         return MailingListElement::find()
             ->id($mailingListId)
             ->site('*')
@@ -41,6 +42,7 @@ class MailingListsService extends Component
             return [];
         }
 
+        /** @var MailingListElement[] */
         return MailingListElement::find()
             ->id($mailingListIds)
             ->site('*')
@@ -53,6 +55,7 @@ class MailingListsService extends Component
      */
     public function getMailingListBySlug(string $mailingListSlug): ?MailingListElement
     {
+        /** @var MailingListElement|null */
         return MailingListElement::find()
             ->slug($mailingListSlug)
             ->one();
@@ -65,6 +68,7 @@ class MailingListsService extends Component
      */
     public function getAllMailingLists(): array
     {
+        /** @var MailingListElement[]] */
         return MailingListElement::find()
             ->site('*')
             ->all();

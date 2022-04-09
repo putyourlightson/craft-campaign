@@ -31,5 +31,5 @@ class MailingListsFixture extends MailingListElementFixture
     /**
      * @var int[]
      */
-    public $mailingListTypeIds = [];
+    public array $mailingListTypeIds = [];
 }

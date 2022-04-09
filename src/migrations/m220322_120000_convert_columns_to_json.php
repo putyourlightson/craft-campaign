@@ -13,6 +13,7 @@ class m220322_120000_convert_columns_to_json extends Migration
      */
     public function safeUp(): bool
     {
+        /** @var SendoutRecord[] $records */
         $records = SendoutRecord::find()->all();
 
         foreach ($records as $record) {

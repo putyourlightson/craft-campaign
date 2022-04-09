@@ -116,6 +116,7 @@ class ExportsService extends Component
 
     private function _getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
     {
+        /** @var ContactMailingListRecord|null */
         return ContactMailingListRecord::find()
             ->select([
                 'subscriptionStatus',

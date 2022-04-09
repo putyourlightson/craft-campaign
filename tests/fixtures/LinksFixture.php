@@ -38,7 +38,7 @@ class LinksFixture extends ActiveFixture
     /**
      * @var int|null
      */
-    public $campaignId;
+    public ?int $campaignId;
 
     // Public Methods
     // =========================================================================
@@ -46,7 +46,7 @@ class LinksFixture extends ActiveFixture
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         $campaign = CampaignElement::find()->one();
         $this->campaignId = $campaign ? $campaign->id : null;

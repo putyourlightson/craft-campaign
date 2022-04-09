@@ -62,7 +62,7 @@ class SendoutsController extends Controller
         // If front-end site request
         if (Craft::$app->getView()->templateMode == View::TEMPLATE_MODE_SITE) {
             // Prep the response
-            $this->response->content = $count;
+            $this->response->content = (string)$count;
 
             return $this->response;
         }
@@ -78,7 +78,7 @@ class SendoutsController extends Controller
         $sendout = $this->_getSendoutFromParamId();
 
         // Prep the response
-        $this->response->content = $sendout->getPendingRecipientCount();
+        $this->response->content = (string)$sendout->getPendingRecipientCount();
 
         return $this->response;
     }

@@ -16,7 +16,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 abstract class MailingListElementFixture extends BaseElementFixture
 {
     /**
-     * @var array
+     * @var int[]
      */
     public array $mailingListTypeIds = [];
 

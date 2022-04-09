@@ -16,6 +16,7 @@ class ContactsService extends Component
      */
     public function getContactById(int $contactId): ?ContactElement
     {
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->id($contactId)
             ->status(null)
@@ -34,6 +35,7 @@ class ContactsService extends Component
             return [];
         }
 
+        /** @var ContactElement[] */
         return ContactElement::find()
             ->id($contactIds)
             ->status(null)
@@ -49,6 +51,7 @@ class ContactsService extends Component
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->userId($userId)
             ->status(null)
@@ -64,6 +67,7 @@ class ContactsService extends Component
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->cid($cid)
             ->status(null)
@@ -79,6 +83,7 @@ class ContactsService extends Component
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->email($email)
             ->status(null)

@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\records;
 
 use craft\db\ActiveRecord;
 use craft\db\SoftDeleteTrait;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 
 /**
  * @property int $id ID
@@ -15,6 +16,8 @@ use craft\db\SoftDeleteTrait;
  * @property int $mailingListId Mailing List ID
  * @property string $source Source
  * @property mixed $fieldData Field data
+ *
+ * @mixin SoftDeleteBehavior
  */
 class PendingContactRecord extends ActiveRecord
 {

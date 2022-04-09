@@ -24,6 +24,7 @@ class CampaignsService extends Component
      */
     public function getCampaignById(int $campaignId): ?CampaignElement
     {
+        /** @var CampaignElement|null */
         return CampaignElement::find()
             ->id($campaignId)
             ->site('*')

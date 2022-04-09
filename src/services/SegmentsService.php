@@ -27,6 +27,7 @@ class SegmentsService extends Component
      */
     public function getSegmentById(int $segmentId): ?SegmentElement
     {
+        /** @var SegmentElement|null */
         return SegmentElement::find()
             ->id($segmentId)
             ->site('*')
@@ -46,6 +47,7 @@ class SegmentsService extends Component
             return [];
         }
 
+        /** @var SegmentElement[] */
         return SegmentElement::find()
             ->id($segmentIds)
             ->site('*')
@@ -159,6 +161,7 @@ class SegmentsService extends Component
 
         $modified = false;
 
+        /** @var SegmentElement[] $segments */
         $segments = SegmentElement::find()
             ->status(null)
             ->all();
@@ -190,6 +193,7 @@ class SegmentsService extends Component
 
         $modified = false;
 
+        /** @var SegmentElement[] $segments */
         $segments = SegmentElement::find()
             ->status(null)
             ->all();

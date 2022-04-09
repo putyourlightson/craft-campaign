@@ -74,9 +74,10 @@ class CampaignsController extends Controller
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
 
         // Use the elements service since it might be a draft.
+        /** @var CampaignElement|null $campaign */
         $campaign = Craft::$app->getElements()->getElementById($campaignId);
 
-        if (!$campaign) {
+        if ($campaign === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
         }
 

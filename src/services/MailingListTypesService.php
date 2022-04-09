@@ -171,7 +171,7 @@ class MailingListTypesService extends Component
             $mailingListType->uid = StringHelper::UUID();
         }
         elseif (!$mailingListType->uid) {
-            /** @var MailingListTypeRecord $mailingListTypeRecord */
+            /** @var MailingListTypeRecord|null $mailingListTypeRecord */
             $mailingListTypeRecord = MailingListTypeRecord::find()
                 ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListType->id])
                 ->one();

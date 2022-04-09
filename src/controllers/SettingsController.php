@@ -14,6 +14,7 @@ use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
 use craft\web\Controller;
+use craft\web\UrlManager;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\SendoutHelper;
@@ -52,7 +53,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'phpBinPath' => PHP_BINARY ?: '/usr/bin/php',
+            'phpBinPath' => '/usr/bin/php',
             'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed(),
         ]);
     }
@@ -374,7 +375,9 @@ class SettingsController extends Controller
         $this->setSuccessFlash(Craft::t('app', 'Email sent successfully! Check your inbox.'));
 
         // Send the settings and adapter back to the template
-        Craft::$app->getUrlManager()->setRouteParams([
+        /** @var UrlManager $urlManager */
+        $urlManager = Craft::$app->getUrlManager();
+        $urlManager->setRouteParams([
             'settings' => $settings,
             'adapter' => $adapter,
         ]);

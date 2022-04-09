@@ -17,7 +17,7 @@ use DateTime;
  * @property string $cid Contact ID
  * @property string $email Email
  * @property string $country Country
- * @property string $geoIp GeoIP
+ * @property array|string $geoIp GeoIP
  * @property string $device Device
  * @property string $os OS
  * @property string $client Client

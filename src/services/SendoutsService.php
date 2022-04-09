@@ -65,6 +65,7 @@ class SendoutsService extends Component
      */
     public function getSendoutById(int $sendoutId): ?SendoutElement
     {
+        /** @var SendoutElement|null */
         return SendoutElement::find()
             ->id($sendoutId)
             ->site('*')

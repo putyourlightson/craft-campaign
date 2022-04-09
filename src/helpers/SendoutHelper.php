@@ -16,13 +16,12 @@ class SendoutHelper
     public static function memoryInBytes(string $value): int
     {
         $unit = strtolower(substr($value, -1, 1));
-        $value = (int)$value;
-        $value *= match ($unit) {
+
+        return (int)$value * match ($unit) {
             'g' => pow(1024, 3),
             'm' => pow(1024, 2),
             'k' => 1024,
+            default => 1,
         };
-
-        return $value;
     }
 }

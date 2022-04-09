@@ -38,7 +38,7 @@ class PendingContactsFixture extends ActiveFixture
     /**
      * @var int|null
      */
-    public $mailingListId;
+    public ?int $mailingListId;
 
     // Public Methods
     // =========================================================================
@@ -46,7 +46,7 @@ class PendingContactsFixture extends ActiveFixture
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
         $this->mailingListId = $mailingList->id;

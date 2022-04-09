@@ -84,8 +84,8 @@ class ImportsService extends Component
     {
         $handle = null;
 
-        // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
-        ini_set('auto_detect_line_endings', true);
+        // Set run-time configuration to `1` to ensure line endings are recognised when delimited with "\r"
+        ini_set('auto_detect_line_endings', '1');
 
         if ($import->filePath) {
             // Open file for reading

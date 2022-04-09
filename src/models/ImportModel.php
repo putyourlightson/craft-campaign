@@ -144,7 +144,10 @@ class ImportModel extends Model
             return null;
         }
 
-        return User::find()->id($this->userId)->one();
+        /** @var User|null */
+        return User::find()
+            ->id($this->userId)
+            ->one();
     }
 
     /**

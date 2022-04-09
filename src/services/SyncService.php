@@ -111,6 +111,7 @@ class SyncService extends Component
         $userGroups = $user->getGroups();
         $userGroupIds = ArrayHelper::getColumn($userGroups, 'id');
 
+        /** @var MailingListElement[] $mailingLists */
         $mailingLists = MailingListElement::find()
             ->synced(true)
             ->site('*')

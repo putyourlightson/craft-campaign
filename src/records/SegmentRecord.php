@@ -10,8 +10,8 @@ use craft\db\ActiveRecord;
 /**
  * @property int $id
  * @property string $segmentType
- * @property array $conditions
- * @property string $template
+ * @property array|null $conditions
+ * @property string|null $template
  */
 class SegmentRecord extends ActiveRecord
 {
