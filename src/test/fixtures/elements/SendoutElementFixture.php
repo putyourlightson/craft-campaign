@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\test\fixtures\elements;
 
 use craft\base\ElementInterface;
+use craft\elements\User;
 use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -17,6 +18,11 @@ use putyourlightson\campaign\elements\SendoutElement;
  */
 abstract class SendoutElementFixture extends BaseElementFixture
 {
+    /**
+     * @var int|null
+     */
+    public ?int $senderId;
+
     /**
      * @var int|null
      */
@@ -37,7 +43,9 @@ abstract class SendoutElementFixture extends BaseElementFixture
      */
     public function load(): void
     {
-        $campaign = CampaignElement::find()->one();
+        $this->senderId = 1;
+
+        $campaign = CampaignElement::find()->title('Campaign 1')->one();
         $this->campaignId = $campaign ? $campaign->id : null;
 
         $this->mailingListIds = MailingListElement::find()->ids();

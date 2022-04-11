@@ -6,6 +6,7 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -17,19 +18,10 @@ use putyourlightson\campaigntests\fixtures\SendoutsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class SendoutsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -48,26 +40,20 @@ class SendoutsServiceTest extends BaseUnitTest
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var SendoutElement
      */
-    protected $sendout;
+    protected SendoutElement $sendout;
 
     /**
      * @var ContactElement
      */
-    protected $contact;
+    protected ContactElement $contact;
 
     /**
      * @var MailingListElement
      */
-    protected $mailingList;
-
-    // Protected methods
-    // =========================================================================
+    protected MailingListElement $mailingList;
 
     protected function _before()
     {
@@ -92,11 +78,12 @@ class SendoutsServiceTest extends BaseUnitTest
         }
     }
 
-    // Public methods
-    // =========================================================================
-
     public function testGetPendingRecipients()
     {
+        $this->contact->bounced = null;
+        $this->contact->complained = null;
+        Craft::$app->elements->saveElement($this->contact);
+
         $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
 
         // Assert that the number of pending recipients is correct
@@ -164,7 +151,9 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals($sendoutCount, $queuedSendouts);
 
         // Assert that the job was pushed onto the queue
-        $this->assertTrue(Craft::$app->getQueue()->getHasWaitingJobs());
+        /** @var Queue $queue */
+        $queue = Craft::$app->getQueue();
+        $this->assertTrue($queue->getHasWaitingJobs());
     }
 
     public function testSendEmailSent()
@@ -183,7 +172,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals($this->sendout->subject, $this->message->getSubject());
 
         // Get the message body, removing email body nastiness
-        $body = $this->message->getSwiftMessage()->toString();
+        $body = $this->message->toString();
         $body = str_replace(['3D', "=\r\n"], '', $body);
 
         // Assert that the message body contains a link with the correct IDs

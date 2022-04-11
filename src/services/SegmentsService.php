@@ -87,7 +87,7 @@ class SegmentsService extends Component
 
         if ($segment->segmentType == 'regular') {
             $filteredContacts = $contactElementQuery
-                ->where($this->_getConditions($segment))
+                ->andWhere($this->_getConditions($segment))
                 ->all();
         }
         elseif ($segment->segmentType == 'template') {
@@ -99,10 +99,7 @@ class SegmentsService extends Component
                         'contact' => $contact,
                     ]);
 
-                    // Convert rendered value to boolean
-                    $evaluated = (bool)trim($rendered);
-
-                    if ($evaluated) {
+                    if (trim($rendered)) {
                         $filteredContacts[] = $contact;
                     }
                 }

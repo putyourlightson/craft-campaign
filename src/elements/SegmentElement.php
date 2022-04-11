@@ -225,10 +225,10 @@ class SegmentElement extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'title' => ['label' => Craft::t('app', 'Title')],
             'segmentType' => ['label' => Craft::t('campaign', 'Segment Type')],
             'conditions' => ['label' => Craft::t('campaign', 'Conditions')],
             'contacts' => ['label' => Craft::t('campaign', 'Contacts')],
+            'slug' => ['label' => Craft::t('app', 'Slug')],
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
@@ -516,14 +516,16 @@ class SegmentElement extends Element
      */
     public function beforeSave(bool $isNew): bool
     {
-        // Ensure the slug is unique, even though mailing lists don't have URIs,
+        // Ensure the slug is unique, even though segments don't have URIs,
         // which prevents us from depending on the SlugValidator class.
         ElementHelper::setUniqueUri($this);
 
-        // Sort OR conditions by keys, since they'll come in unordered.
-        foreach ($this->conditions as &$andCondition) {
-            foreach ($andCondition as &$orCondition) {
-                ksort($orCondition);
+        if ($this->segmentType == 'regular') {
+            // Sort OR conditions by keys, since they'll come in unordered.
+            foreach ($this->conditions as &$andCondition) {
+                foreach ($andCondition as &$orCondition) {
+                    ksort($orCondition);
+                }
             }
         }
 
@@ -535,16 +537,15 @@ class SegmentElement extends Element
      */
     public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $segmentRecord = new SegmentRecord();
-            $segmentRecord->id = $this->id;
-        }
-        else {
-            $segmentRecord = SegmentRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $segmentRecord = new SegmentRecord();
+                $segmentRecord->id = $this->id;
+            }
+            else {
+                $segmentRecord = SegmentRecord::findOne($this->id);
+            }
 
-        if ($segmentRecord) {
-            // Set attributes
             $segmentRecord->segmentType = $this->segmentType;
             $segmentRecord->conditions = $this->conditions;
             $segmentRecord->template = $this->template;

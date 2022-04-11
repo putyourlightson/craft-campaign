@@ -18,19 +18,10 @@ use putyourlightson\campaigntests\fixtures\SendoutsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.12.2
+ * @since 1.12.2
  */
-
 class TrackerServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -49,9 +40,6 @@ class TrackerServiceTest extends BaseUnitTest
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
@@ -66,9 +54,6 @@ class TrackerServiceTest extends BaseUnitTest
      * @var MailingListElement
      */
     protected $mailingList;
-
-    // Protected methods
-    // =========================================================================
 
     protected function _before()
     {
@@ -87,9 +72,6 @@ class TrackerServiceTest extends BaseUnitTest
 
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'subscribed');
     }
-
-    // Public methods
-    // =========================================================================
 
     public function testOpen()
     {

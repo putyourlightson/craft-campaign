@@ -16,6 +16,6 @@ return [
     [
         'title' => 'Segment 2',
         'segmentType' => 'template',
-        'conditions' => '{{ "contact@" in contact.email ? 1 : 0 }}',
+        'template' => '{{ "contact@" in contact.email ? 1 : 0 }}',
     ],
 ];

@@ -12,19 +12,10 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.19.0
+ * @since 1.19.0
  */
-
 class WebhookControllerTest extends BaseControllerTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -34,20 +25,16 @@ class WebhookControllerTest extends BaseControllerTest
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
-    protected $contact;
-
-    // Protected methods
-    // =========================================================================
+    protected ContactElement $contact;
 
     protected function _before()
     {
         parent::_before();
+
+        Craft::$app->request->getHeaders()->set('Accept', 'application/json');
 
         $this->_getContact();
         $this->contact->bounced = null;
@@ -56,11 +43,11 @@ class WebhookControllerTest extends BaseControllerTest
 
     protected function _getContact()
     {
-        $this->contact = ContactElement::find()->status(null)->one();
+        $this->contact = ContactElement::find()
+            ->email('contact@contacts.com')
+            ->status(null)
+            ->one();
     }
-
-    // Public methods
-    // =========================================================================
 
     public function testMailgunSignature()
     {
@@ -93,7 +80,7 @@ class WebhookControllerTest extends BaseControllerTest
             'key' => Campaign::$plugin->getSettings()->apiKey,
         ]);
 
-        $this->assertEquals(['success' => false, 'error' => 'Signature could not be authenticated.'], $response->data);
+        $this->assertEquals(['message' => 'Signature could not be authenticated.'], $response->data);
 
         $eventData['event-data']['signature']['signature'] = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
@@ -104,7 +91,7 @@ class WebhookControllerTest extends BaseControllerTest
             'key' => Campaign::$plugin->getSettings()->apiKey,
         ]);
 
-        $this->assertEquals(['success' => true], $response->data);
+        $this->assertEquals([], $response->data);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
@@ -122,7 +109,7 @@ class WebhookControllerTest extends BaseControllerTest
             'recipient' => $this->contact->email,
         ]);
 
-        $this->assertEquals(['success' => true], $response->data);
+        $this->assertEquals([], $response->data);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
@@ -142,13 +129,13 @@ class WebhookControllerTest extends BaseControllerTest
         /** @var Response $response */
         $response = $this->runActionWithParams('webhook/postmark', $params);
 
-        $this->assertEquals(['success' => false, 'error' => 'IP address not allowed.'], $response->data);
+        $this->assertEquals(['message' => 'IP address not allowed.'], $response->data);
 
         Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses = [Craft::$app->getRequest()->getUserIP()];
 
         $response = $this->runActionWithParams('webhook/postmark', $params);
 
-        $this->assertEquals(['success' => true], $response->data);
+        $this->assertEquals([], $response->data);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
@@ -172,7 +159,7 @@ class WebhookControllerTest extends BaseControllerTest
             'key' => Campaign::$plugin->getSettings()->apiKey,
         ]);
 
-        $this->assertEquals(['success' => true], $response->data);
+        $this->assertEquals([], $response->data);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());

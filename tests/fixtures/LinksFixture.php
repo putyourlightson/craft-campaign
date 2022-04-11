@@ -10,16 +10,10 @@ use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\LinkRecord;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.12.2
+ * @since 1.12.2
  */
-
 class LinksFixture extends ActiveFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -39,9 +33,6 @@ class LinksFixture extends ActiveFixture
      * @var int|null
      */
     public ?int $campaignId;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

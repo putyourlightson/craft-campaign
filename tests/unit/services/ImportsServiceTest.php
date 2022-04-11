@@ -14,19 +14,10 @@ use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.16.6
+ * @since 1.16.6
  */
-
 class ImportsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -38,9 +29,6 @@ class ImportsServiceTest extends BaseUnitTest
             ],
         ];
     }
-
-    // Public methods
-    // =========================================================================
 
     public function testImportRow()
     {

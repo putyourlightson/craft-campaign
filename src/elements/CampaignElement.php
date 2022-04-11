@@ -880,16 +880,15 @@ class CampaignElement extends Element
      */
     public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $campaignRecord = new CampaignRecord();
-            $campaignRecord->id = $this->id;
-        }
-        else {
-            $campaignRecord = CampaignRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $campaignRecord = new CampaignRecord();
+                $campaignRecord->id = $this->id;
+            }
+            else {
+                $campaignRecord = CampaignRecord::findOne($this->id);
+            }
 
-        if ($campaignRecord) {
-            // Set attributes
             $campaignRecord->campaignTypeId = $this->campaignTypeId;
             $campaignRecord->recipients = $this->recipients;
             $campaignRecord->opened = $this->opened;

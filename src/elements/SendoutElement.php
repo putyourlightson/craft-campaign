@@ -319,7 +319,6 @@ class SendoutElement extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'title' => ['label' => Craft::t('app', 'Title')],
             'sendoutType' => ['label' => Craft::t('campaign', 'Sendout Type')],
             'subject' => ['label' => Craft::t('campaign', 'Subject')],
             'campaignId' => ['label' => Craft::t('campaign', 'Campaign')],
@@ -1174,7 +1173,7 @@ class SendoutElement extends Element
         if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
             // Validate schedule
             if ($this->getScenario() != self::SCENARIO_ESSENTIALS) {
-                if (!$this->getSchedule()->validate()) {
+                if ($this->getSchedule() === null || !$this->getSchedule()->validate()) {
                     return false;
                 }
             }
@@ -1188,16 +1187,15 @@ class SendoutElement extends Element
      */
     public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $sendoutRecord = new SendoutRecord();
-            $sendoutRecord->id = $this->id;
-        }
-        else {
-            $sendoutRecord = SendoutRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $sendoutRecord = new SendoutRecord();
+                $sendoutRecord->id = $this->id;
+            }
+            else {
+                $sendoutRecord = SendoutRecord::findOne($this->id);
+            }
 
-        if ($sendoutRecord) {
-            // Update attributes
             $sendoutRecord->setAttributes($this->getAttributes(), false);
             $sendoutRecord->save(false);
         }

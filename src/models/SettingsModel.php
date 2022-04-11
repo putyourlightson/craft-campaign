@@ -11,9 +11,8 @@ use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
-use craft\models\FieldLayoutTab;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailField;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactFieldLayoutTab;
 use yii\validators\EmailValidator;
 
 /**
@@ -229,7 +228,16 @@ class SettingsModel extends Model
      */
     public function getContactFieldLayout(): FieldLayout
     {
-        return Craft::$app->getFields()->getLayoutByType(ContactElement::class);
+        $fieldLayout = Craft::$app->getFields()->getLayoutByType(ContactElement::class);
+
+        // Ensure email field exists
+        if (!$fieldLayout->isFieldIncluded('email')) {
+            $fieldLayout->setTabs([
+                new ContactFieldLayoutTab(),
+            ]);
+        }
+
+        return $fieldLayout;
     }
 
     /**

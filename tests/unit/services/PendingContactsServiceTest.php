@@ -11,19 +11,10 @@ use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class PendingContactsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -32,9 +23,6 @@ class PendingContactsServiceTest extends BaseUnitTest
             ],
         ];
     }
-
-    // Public methods
-    // =========================================================================
 
     public function testVerifyPendingContact()
     {

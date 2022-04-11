@@ -6,7 +6,7 @@
 namespace putyourlightson\campaign\events;
 
 use craft\events\CancelableEvent;
-use craft\mail\Message;
+use yii\symfonymailer\Message;
 
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;

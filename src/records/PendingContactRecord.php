@@ -10,14 +10,14 @@ use craft\db\SoftDeleteTrait;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 
 /**
+ * @mixin SoftDeleteBehavior
+ *
  * @property int $id ID
  * @property string $pid Pending ID
  * @property string $email Email
  * @property int $mailingListId Mailing List ID
  * @property string $source Source
  * @property mixed $fieldData Field data
- *
- * @mixin SoftDeleteBehavior
  */
 class PendingContactRecord extends ActiveRecord
 {

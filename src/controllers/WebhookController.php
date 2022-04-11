@@ -130,7 +130,7 @@ class WebhookController extends Controller
             $eventSignature = $eventData['signature'] ?? '';
             $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'] . $eventSignature['token'], $signingKey);
 
-            if (!$eventSignature || $eventSignature['signature'] != $hashedValue) {
+            if ($eventSignature['signature'] != $hashedValue) {
                 return $this->asFailure(Craft::t('campaign', 'Signature could not be authenticated.'));
             }
         }

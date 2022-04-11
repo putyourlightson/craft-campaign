@@ -11,27 +11,15 @@ use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\functional\BaseFunctionalCest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class FormsActionCest extends BaseFunctionalCest
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string
      */
     public $email = 'email@anonynous.com';
 
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -40,9 +28,6 @@ class FormsActionCest extends BaseFunctionalCest
             ],
         ];
     }
-
-    // Public methods
-    // =========================================================================
 
     public function subscribe(FunctionalTester $I)
     {

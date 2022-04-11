@@ -10,16 +10,10 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\PendingContactRecord;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class PendingContactsFixture extends ActiveFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -39,9 +33,6 @@ class PendingContactsFixture extends ActiveFixture
      * @var int|null
      */
     public ?int $mailingListId;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

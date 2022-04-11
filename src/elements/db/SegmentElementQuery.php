@@ -42,6 +42,7 @@ class SegmentElementQuery extends ElementQuery
         $this->query->select([
             'campaign_segments.segmentType',
             'campaign_segments.conditions',
+            'campaign_segments.template',
         ]);
 
         if ($this->segmentType) {

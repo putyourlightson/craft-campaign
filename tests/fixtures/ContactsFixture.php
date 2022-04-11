@@ -8,16 +8,10 @@ namespace putyourlightson\campaigntests\fixtures;
 use putyourlightson\campaign\test\fixtures\elements\ContactElementFixture;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class ContactsFixture extends ContactElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

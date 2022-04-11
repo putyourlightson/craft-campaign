@@ -877,18 +877,17 @@ class ContactElement extends Element
      */
     public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $contactRecord = new ContactRecord();
-            $contactRecord->id = $this->id;
-            $contactRecord->userId = $this->userId;
-            $contactRecord->cid = $this->cid;
-        }
-        else {
-            $contactRecord = ContactRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $contactRecord = new ContactRecord();
+                $contactRecord->id = $this->id;
+                $contactRecord->userId = $this->userId;
+                $contactRecord->cid = $this->cid;
+            }
+            else {
+                $contactRecord = ContactRecord::findOne($this->id);
+            }
 
-        if ($contactRecord) {
-            // Set attributes
             $contactRecord->userId = $this->userId;
             $contactRecord->email = $this->email;
             $contactRecord->country = $this->country;

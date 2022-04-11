@@ -14,19 +14,10 @@ use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 use yii\web\NotFoundHttpException;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class FormsControllerTest extends BaseControllerTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
@@ -41,9 +32,6 @@ class FormsControllerTest extends BaseControllerTest
             ],
         ];
     }
-
-    // Public methods
-    // =========================================================================
 
     public function testSubscribeSuccess()
     {

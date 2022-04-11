@@ -11,28 +11,19 @@ use UnitTester;
 use yii\mail\MessageInterface;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class BaseUnitTest extends Unit
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var UnitTester
      */
-    protected $tester;
+    protected UnitTester $tester;
 
     /**
-     * @var MessageInterface
+     * @var MessageInterface|null
      */
-    protected $message;
-
-    // Protected methods
-    // =========================================================================
+    protected ?MessageInterface $message = null;
 
     /**
      * Set up the class properties before running all tests

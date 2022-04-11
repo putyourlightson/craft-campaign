@@ -9,9 +9,9 @@
 {{ forms.textareaField({
     label: "Template Condition"|t('campaign'),
     instructions: "Create a template condition to apply to this segment. The `contact` tag is available in this context."|t('campaign') ~ info,
-    name: 'conditions',
-    value: segment.conditions,
-    errors: segment.getErrors('conditions'),
+    name: 'template',
+    value: segment.template,
+    errors: segment.getErrors('template'),
     rows: 4,
     class: 'code',
     required: true,

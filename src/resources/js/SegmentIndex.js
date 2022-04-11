@@ -122,7 +122,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
                         }).appendTo($li);
                         this.addListener($a, 'click', () => {
                             $menuBtn.data('trigger').hide();
-                            this._createSegment(segmentType.id);
+                            this._createSegment(segmentType.handle);
                         });
                     }
                 }

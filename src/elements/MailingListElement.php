@@ -602,16 +602,15 @@ class MailingListElement extends Element
      */
     public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $mailingListRecord = new MailingListRecord();
-            $mailingListRecord->id = $this->id;
-        }
-        else {
-            $mailingListRecord = MailingListRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $mailingListRecord = new MailingListRecord();
+                $mailingListRecord->id = $this->id;
+            }
+            else {
+                $mailingListRecord = MailingListRecord::findOne($this->id);
+            }
 
-        if ($mailingListRecord) {
-            // Set attributes
             $mailingListRecord->mailingListTypeId = $this->mailingListTypeId;
             $mailingListRecord->syncedUserGroupId = $this->syncedUserGroupId;
 
