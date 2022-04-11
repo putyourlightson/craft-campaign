@@ -35,7 +35,7 @@ class FormsServiceTest extends BaseUnitTest
         ];
     }
 
-    public function testSendVerifySubscribeEmail()
+    public function testSendVerifySubscribeEmail(): void
     {
         $pendingContactRecord = PendingContactRecord::find()
             ->where(['email' => 'pending1@contacts.com'])
@@ -57,7 +57,7 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->toString());
     }
 
-    public function testSendVerifyUnsubscribeEmail()
+    public function testSendVerifyUnsubscribeEmail(): void
     {
         $contact = ContactElement::find()->one();
         $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
@@ -74,7 +74,7 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->toString());
     }
 
-    public function testSubscribeUnsubscribeContact()
+    public function testSubscribeUnsubscribeContact(): void
     {
         $contact = ContactElement::find()->one();
         $mailingList = MailingListElement::find()->one();
@@ -95,7 +95,7 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertEquals(0, $contact->getSubscribedCount());
     }
 
-    public function testUpdateContact()
+    public function testUpdateContact(): void
     {
         $contact = ContactElement::find()->one();
 

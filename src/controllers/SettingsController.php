@@ -375,7 +375,7 @@ class SettingsController extends Controller
         $this->setSuccessFlash(Craft::t('app', 'Email sent successfully! Check your inbox.'));
 
         // Send the settings and adapter back to the template
-        /** @var UrlManager $urlManager */
+        /** @phpstan-var UrlManager $urlManager */
         $urlManager = Craft::$app->getUrlManager();
         $urlManager->setRouteParams([
             'settings' => $settings,

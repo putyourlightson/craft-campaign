@@ -29,14 +29,14 @@ class ContactsServiceTest extends BaseUnitTest
      */
     protected ContactElement $contact;
 
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
         $this->contact = ContactElement::find()->one();
     }
 
-    public function testSaveContactWithSameEmail()
+    public function testSaveContactWithSameEmail(): void
     {
         $newContact = new ContactElement(['email' => $this->contact->email]);
 

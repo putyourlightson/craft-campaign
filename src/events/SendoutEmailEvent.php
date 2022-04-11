@@ -6,10 +6,9 @@
 namespace putyourlightson\campaign\events;
 
 use craft\events\CancelableEvent;
-use yii\symfonymailer\Message;
-
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use yii\symfonymailer\Message;
 
 class SendoutEmailEvent extends CancelableEvent
 {

@@ -881,7 +881,6 @@ class ContactElement extends Element
             if ($isNew) {
                 $contactRecord = new ContactRecord();
                 $contactRecord->id = $this->id;
-                $contactRecord->userId = $this->userId;
                 $contactRecord->cid = $this->cid;
             }
             else {

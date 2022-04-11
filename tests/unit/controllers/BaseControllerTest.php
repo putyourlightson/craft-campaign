@@ -19,7 +19,7 @@ class BaseControllerTest extends BaseUnitTest
      */
     protected string $email = 'email@anonymous.com';
 
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 

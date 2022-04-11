@@ -30,7 +30,7 @@ class ImportsServiceTest extends BaseUnitTest
         ];
     }
 
-    public function testImportRow()
+    public function testImportRow(): void
     {
         $contact = ContactElement::find()->one();
         $mailingList = MailingListElement::find()->one();
@@ -48,12 +48,12 @@ class ImportsServiceTest extends BaseUnitTest
         Campaign::$plugin->imports->importRow($import, $row, 1);
 
         // Assert that contact is unsubscribed from the mailing list
-        $this->assertEquals($contact->getMailingListSubscriptionStatus($mailingList->id), 'unsubscribed');
+        $this->assertEquals('unsubscribed', $contact->getMailingListSubscriptionStatus($mailingList->id));
 
         $import->forceSubscribe = true;
         Campaign::$plugin->imports->importRow($import, $row, 1);
 
         // Assert that contact is subscribed to the mailing list
-        $this->assertEquals($contact->getMailingListSubscriptionStatus($mailingList->id), 'subscribed');
+        $this->assertEquals('subscribed', $contact->getMailingListSubscriptionStatus($mailingList->id));
     }
 }

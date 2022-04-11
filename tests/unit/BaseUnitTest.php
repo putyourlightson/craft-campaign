@@ -28,7 +28,7 @@ class BaseUnitTest extends Unit
     /**
      * Set up the class properties before running all tests
      */
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 

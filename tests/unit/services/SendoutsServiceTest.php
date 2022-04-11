@@ -55,7 +55,7 @@ class SendoutsServiceTest extends BaseUnitTest
      */
     protected MailingListElement $mailingList;
 
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
@@ -78,7 +78,7 @@ class SendoutsServiceTest extends BaseUnitTest
         }
     }
 
-    public function testGetPendingRecipients()
+    public function testGetPendingRecipients(): void
     {
         $this->contact->bounced = null;
         $this->contact->complained = null;
@@ -90,7 +90,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals(1, $count);
     }
 
-    public function testGetPendingRecipientsRemoved()
+    public function testGetPendingRecipientsRemoved(): void
     {
         Campaign::$plugin->mailingLists->deleteContactSubscription($this->contact, $this->mailingList);
 
@@ -99,7 +99,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEmpty($pendingRecipients);
     }
 
-    public function testGetPendingRecipientsUnsubscribed()
+    public function testGetPendingRecipientsUnsubscribed(): void
     {
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'unsubscribed');
 
@@ -108,7 +108,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEmpty($pendingRecipients);
     }
 
-    public function testGetPendingRecipientsSoftDeleted()
+    public function testGetPendingRecipientsSoftDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact);
 
@@ -117,7 +117,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEmpty($pendingRecipients);
     }
 
-    public function testGetPendingRecipientsHardDeleted()
+    public function testGetPendingRecipientsHardDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact, true);
 
@@ -126,7 +126,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEmpty($pendingRecipients);
     }
 
-    public function testGetPendingRecipientsAutomated()
+    public function testGetPendingRecipientsAutomated(): void
     {
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
@@ -137,7 +137,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEmpty($pendingRecipients);
     }
 
-    public function testQueuePendingSendouts()
+    public function testQueuePendingSendouts(): void
     {
         $sendoutCount = SendoutElement::find()->sendoutType('regular')->count();
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
@@ -156,7 +156,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertTrue($queue->getHasWaitingJobs());
     }
 
-    public function testSendEmailSent()
+    public function testSendEmailSent(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -184,7 +184,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertStringContainsStringIgnoringCase('campaign/t/open', $body);
     }
 
-    public function testSendEmailFailed()
+    public function testSendEmailFailed(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -207,7 +207,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);
     }
 
-    public function testSendEmailTemplateError()
+    public function testSendEmailTemplateError(): void
     {
         $sendout2 = SendoutElement::find()->title('Sendout 2')->one();
         $sendout2->sendStatus = SendoutElement::STATUS_SENDING;
@@ -218,7 +218,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals(SendoutElement::STATUS_FAILED, $sendout2->sendStatus);
     }
 
-    public function testSendEmailDuplicate()
+    public function testSendEmailDuplicate(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -235,7 +235,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNull($this->message);
     }
 
-    public function testSendNotificationSent()
+    public function testSendNotificationSent(): void
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_SENT;
@@ -252,7 +252,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertStringContainsString('completed', $this->message->getSubject());
     }
 
-    public function testSendNotificationFailed()
+    public function testSendNotificationFailed(): void
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_FAILED;

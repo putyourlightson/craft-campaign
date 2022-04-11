@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\test\fixtures\elements;
 
 use craft\base\ElementInterface;
-use craft\elements\User;
 use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\MailingListElement;

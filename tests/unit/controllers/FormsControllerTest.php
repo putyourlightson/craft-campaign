@@ -33,7 +33,7 @@ class FormsControllerTest extends BaseControllerTest
         ];
     }
 
-    public function testSubscribeSuccess()
+    public function testSubscribeSuccess(): void
     {
         $mailingList = MailingListElement::find()->mailingListType('mailingListType1')->one();
 
@@ -46,7 +46,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNull($this->message);
     }
 
-    public function testSubscribeVerify()
+    public function testSubscribeVerify(): void
     {
         $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
 
@@ -62,7 +62,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->toString());
     }
 
-    public function testUpdateContactSuccess()
+    public function testUpdateContactSuccess(): void
     {
         $contact = ContactElement::find()->one();
 
@@ -75,7 +75,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNotNull($response);
     }
 
-    public function testUpdateContactFail()
+    public function testUpdateContactFail(): void
     {
         // Expect an exception
         $this->tester->expectThrowable(NotFoundHttpException::class, function() {
@@ -88,7 +88,7 @@ class FormsControllerTest extends BaseControllerTest
         });
     }
 
-    public function testVerifySubscribeSuccess()
+    public function testVerifySubscribeSuccess(): void
     {
         $pendingContact = PendingContactRecord::find()
             ->where(['email' => 'pending1@contacts.com'])
@@ -102,7 +102,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNotNull($response);
     }
 
-    public function testVerifySubscribeFail()
+    public function testVerifySubscribeFail(): void
     {
         // Expect an exception
         $this->tester->expectThrowable(NotFoundHttpException::class, function() {

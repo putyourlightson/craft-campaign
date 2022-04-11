@@ -30,7 +30,7 @@ class WebhookControllerTest extends BaseControllerTest
      */
     protected ContactElement $contact;
 
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
@@ -41,7 +41,7 @@ class WebhookControllerTest extends BaseControllerTest
         Craft::$app->elements->saveElement($this->contact);
     }
 
-    protected function _getContact()
+    protected function _getContact(): void
     {
         $this->contact = ContactElement::find()
             ->email('contact@contacts.com')
@@ -49,7 +49,7 @@ class WebhookControllerTest extends BaseControllerTest
             ->one();
     }
 
-    public function testMailgunSignature()
+    public function testMailgunSignature(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
@@ -97,7 +97,7 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testMailgunLegacy()
+    public function testMailgunLegacy(): void
     {
         Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = null;
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
@@ -115,7 +115,7 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testPostmarkIpAddresses()
+    public function testPostmarkIpAddresses(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
@@ -141,7 +141,7 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testSendgrid()
+    public function testSendgrid(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 

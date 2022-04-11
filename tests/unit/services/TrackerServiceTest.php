@@ -43,19 +43,19 @@ class TrackerServiceTest extends BaseUnitTest
     /**
      * @var ContactElement
      */
-    protected $contact;
+    protected ContactElement $contact;
 
     /**
      * @var SendoutElement
      */
-    protected $sendout;
+    protected SendoutElement $sendout;
 
     /**
      * @var MailingListElement
      */
-    protected $mailingList;
+    protected MailingListElement $mailingList;
 
-    protected function _before()
+    protected function _before(): void
     {
         $this->contact = ContactElement::find()->one();
         $this->sendout = SendoutElement::find()->one();
@@ -73,7 +73,7 @@ class TrackerServiceTest extends BaseUnitTest
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'subscribed');
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         Campaign::$plugin->tracker->open($this->contact, $this->sendout);
 
@@ -83,7 +83,7 @@ class TrackerServiceTest extends BaseUnitTest
         $this->assertEquals(1, $campaign->opens);
     }
 
-    public function testClick()
+    public function testClick(): void
     {
         $link = LinkRecord::find()->one();
 
@@ -99,7 +99,7 @@ class TrackerServiceTest extends BaseUnitTest
         $this->assertEquals(1, $link->clicks);
     }
 
-    public function testUnsubscribe()
+    public function testUnsubscribe(): void
     {
         $status = $this->contact->getMailingListSubscriptionStatus($this->mailingList->id);
 
