@@ -25,6 +25,7 @@ class CampaignAsset extends AssetBundle
      * @inheritdoc
      */
     public $css = [
+        'css/campaign.css',
         'css/flag-icon.min.css',
     ];
 
