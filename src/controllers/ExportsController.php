@@ -77,11 +77,6 @@ class ExportsController extends Controller
         // Set file path
         $export->filePath = $path . 'export.csv';
 
-        // Validate it
-        if ($export->validate() === false) {
-            return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
-        }
-
         // Export it
         if (!Campaign::$plugin->exports->exportFile($export)) {
             return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');

@@ -63,7 +63,7 @@ class SyncController extends Controller
         $this->requirePostRequest();
 
         $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
-        $mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : null;
+        $mailingListId = $mailingListId[0] ?? null;
 
         if ($mailingListId === null) {
             return $this->asFailure(Craft::t('campaign', 'Mailing list is required.'));
