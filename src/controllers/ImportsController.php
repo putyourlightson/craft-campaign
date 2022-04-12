@@ -195,7 +195,7 @@ class ImportsController extends Controller
         $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
-        $import->mailingListId = $mailingListIds[0] ?? '';
+        $import->mailingListId = $mailingListIds[0] ?? null;
 
         $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 

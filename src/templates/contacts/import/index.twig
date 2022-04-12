@@ -71,8 +71,8 @@
                 <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
                 <th scope="col">{{ "Force Subscribe"|t('campaign') }}</th>
                 <th scope="col">{{ "Added"|t('campaign') }}</th>
-                <th scope="col">{{ "Updated"|t('campaign') }}</th>
                 <th scope="col">{{ "Fails"|t('campaign') }}</th>
+                <th scope="col">{{ "Updated"|t('campaign') }}</th>
                 <th scope="col">{{ "Date Imported"|t('campaign') }}</th>
                 <td class="thin"></td>
             </thead>
@@ -105,9 +105,9 @@
                         }) }}
                     </td>
                     <td>{{ import.added }}</td>
-                    <td>{{ import.updated }}</td>
                     <td>{{ import.fails }}</td>
-                    <td>{{ import.dateImported }}</td>
+                    <td>{{ import.updated|datetime('short') }}</td>
+                    <td>{{ import.dateImported|datetime('short') }}</td>
                     <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
                 </tr>
             {% endfor %}
