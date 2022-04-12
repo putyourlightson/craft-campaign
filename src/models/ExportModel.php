@@ -18,9 +18,9 @@ use putyourlightson\campaign\elements\MailingListElement;
 class ExportModel extends Model
 {
     /**
-     * @var string|null File path
+     * @var string File path
      */
-    public ?string $filePath = null;
+    public string $filePath = '';
 
     /**
      * @var array Mailing list IDs

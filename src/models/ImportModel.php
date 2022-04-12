@@ -34,14 +34,14 @@ class ImportModel extends Model
     public ?int $assetId = null;
 
     /**
-     * @var string|null File name
+     * @var string File name
      */
-    public ?string $fileName = null;
+    public string $fileName = '';
 
     /**
-     * @var string|null File path
+     * @var string File path
      */
-    public ?string $filePath = null;
+    public string $filePath = '';
 
     /**
      * @var int|null User group ID
@@ -54,9 +54,9 @@ class ImportModel extends Model
     public ?int $userId = null;
 
     /**
-     * @var string|null Email field index
+     * @var string Email field index
      */
-    public ?string $emailFieldIndex = null;
+    public string $emailFieldIndex = '';
 
     /**
      * @var array|null Field indexes
@@ -98,7 +98,7 @@ class ImportModel extends Model
      */
     public function __toString(): string
     {
-        return (string)$this->fileName;
+        return $this->fileName;
     }
 
     /**
