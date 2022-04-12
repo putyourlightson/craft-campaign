@@ -63,19 +63,10 @@ class ExportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $export = new ExportModel();
-        $export->mailingListIds = $this->request->getBodyParam('mailingListIds');
-
-        // Get fields to export
-        $export->fields = [];
-        $fields = $this->request->getBodyParam('fields');
-        if (is_array($fields)) {
-            foreach ($fields as $field => $value) {
-                if ($value) {
-                    $export->fields[] = $field;
-                }
-            }
-        }
+        $export = new ExportModel([
+            'mailingListIds' => $this->request->getBodyParam('mailingListIds'),
+            'fields' => $this->request->getBodyParam('fields'),
+        ]);
 
         // Get storage directory path
         $path = Craft::$app->path->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';

@@ -23,14 +23,14 @@ class ExportModel extends Model
     public ?string $filePath = null;
 
     /**
-     * @var array|null Mailing list ID
+     * @var array Mailing list IDs
      */
-    public ?array $mailingListIds = null;
+    public array $mailingListIds = [];
 
     /**
-     * @var array|null Fields
+     * @var array Fields
      */
-    public ?array $fields = null;
+    public array $fields = [];
 
     /**
      * @inheritdoc
@@ -63,10 +63,6 @@ class ExportModel extends Model
      */
     public function getMailingLists(): array
     {
-        if ($this->mailingListIds === null) {
-            return [];
-        }
-
         $mailingLists = [];
 
         foreach ($this->mailingListIds as $mailingListId) {

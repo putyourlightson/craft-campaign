@@ -50,13 +50,15 @@ class ExportsService extends Component
         // Open file for writing
         $handle = fopen($export->filePath, 'wb');
 
-        $fieldNames = array_merge([
+        // Get selected field handles
+        $fieldHandles = array_keys(array_filter($export->fields, fn($value) => $value));
+
+        // Output column titles
+        fputcsv($handle, array_merge([
             'mailingList',
             'subscriptionStatus',
             'subscribedDate',
-        ], $export->fields);
-
-        fputcsv($handle, $fieldNames);
+        ], $fieldHandles));
 
         $mailingLists = $export->getMailingLists();
 
@@ -74,8 +76,8 @@ class ExportsService extends Component
                 $row[] = $subscription->subscriptionStatus;
                 $row[] = $subscription->subscribed;
 
-                foreach ($export->fields as $field) {
-                    $value = $contact->{$field};
+                foreach ($fieldHandles as $fieldHandle) {
+                    $value = $contact->{$fieldHandle};
 
                     if ($value instanceof ElementQuery) {
                         $elements = $value->all();
