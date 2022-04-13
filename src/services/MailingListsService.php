@@ -47,6 +47,7 @@ class MailingListsService extends Component
             ->id($mailingListIds)
             ->site('*')
             ->status(null)
+            ->fixedOrder()
             ->all();
     }
 

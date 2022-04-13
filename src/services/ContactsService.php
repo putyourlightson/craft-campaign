@@ -39,6 +39,7 @@ class ContactsService extends Component
         return ContactElement::find()
             ->id($contactIds)
             ->status(null)
+            ->fixedOrder()
             ->all();
     }
 

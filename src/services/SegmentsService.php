@@ -52,6 +52,7 @@ class SegmentsService extends Component
             ->id($segmentIds)
             ->site('*')
             ->status(null)
+            ->fixedOrder()
             ->all();
     }
 
