@@ -4,6 +4,7 @@
 ### Added
 - Added compatibility with Craft 4.
 - Added a new "Singular" sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
+- Added a template condition to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
 - Added drafts and revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
 - Added a "duplicate" action to campaigns ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).

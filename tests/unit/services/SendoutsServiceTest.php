@@ -6,11 +6,14 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\helpers\Db;
 use craft\queue\Queue;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
@@ -83,71 +86,74 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->contact->bounced = null;
         $this->contact->complained = null;
         Craft::$app->elements->saveElement($this->contact);
-
         $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
-
-        // Assert that the number of pending recipients is correct
         $this->assertEquals(1, $count);
     }
 
     public function testGetPendingRecipientsRemoved(): void
     {
         Campaign::$plugin->mailingLists->deleteContactSubscription($this->contact, $this->mailingList);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
     public function testGetPendingRecipientsUnsubscribed(): void
     {
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'unsubscribed');
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
     public function testGetPendingRecipientsSoftDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
     public function testGetPendingRecipientsHardDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact, true);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
     public function testGetPendingRecipientsAutomated(): void
     {
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
-        // Expect this to return 0 since the contact subscribed less than the delay
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(0, $pendingRecipients);
 
-        // Assert that the number of pending recipients is correct
-        $this->assertEmpty($pendingRecipients);
+        // Modify subscription date to 2 days ago
+        ContactMailingListRecord::updateAll(
+            [
+                'subscribed' => Db::prepareDateForDb('-2 days'),
+            ],
+            [
+                'contactId' => $this->contact->id,
+                'mailingListId' => $this->mailingList->id,
+            ],
+        );
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(1, $pendingRecipients);
+
+        $sendout->getSchedule()->condition = '{{ 0 }}';
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(0, $pendingRecipients);
+
+        $sendout->getSchedule()->condition = '{{ 1 }}';
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(1, $pendingRecipients);
     }
 
     public function testQueuePendingSendouts(): void
     {
         $sendoutCount = SendoutElement::find()->sendoutType('regular')->count();
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
-
-        // Assert that the number of queued sendouts is correct
         $this->assertEquals($sendoutCount, $count);
 
         $queuedSendouts = SendoutElement::find()->status(SendoutElement::STATUS_QUEUED)->count();
-
-        // Assert that the sendout status is correct
         $this->assertEquals($sendoutCount, $queuedSendouts);
 
         // Assert that the job was pushed onto the queue

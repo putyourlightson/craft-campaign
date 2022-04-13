@@ -940,7 +940,7 @@ class SendoutElement extends Element
             if ($this->sendoutType == 'automated') {
                 $schedule = new AutomatedScheduleModel($config);
             }
-            elseif ($this->sendoutType == 'recurring') {
+            else {
                 $schedule = new RecurringScheduleModel($config);
             }
 

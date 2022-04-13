@@ -169,8 +169,8 @@ class SendoutsController extends Controller
 
         $variables = [
             'sendout' => $sendout,
+            'schedule' => $sendout->getSchedule(),
             'settings' => Campaign::$plugin->getSettings(),
-            'fullPageForm' => true,
             'contactElementType' => ContactElement::class,
             'contactElementCriteria' => [
                 'status' => ContactElement::STATUS_ACTIVE,

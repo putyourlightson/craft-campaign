@@ -1,4 +1,8 @@
-{% set params = { recipients: '{recipients}', mailingLists: mailingLists|length, sendDate: sendout.sendDate|datetime } %}
+{% set params = {
+    recipients: '{recipients}',
+    mailingLists: sendout.mailingLists|length,
+    sendDate: sendout.sendDate|datetime,
+} %}
 
 {% set prepLabel = 'Prepare to Send Now'|t('campaign') %}
 {% set saveLabel = 'Send Now'|t('campaign') %}

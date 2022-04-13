@@ -1,0 +1,23 @@
+{% import '_includes/forms' as forms %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.textarea({
+            name: 'schedule[condition]',
+            value: schedule.condition,
+            rows: 1,
+            class: 'code',
+        }) }}
+    {% else %}
+        {% if schedule.condition %}
+            <pre><code>{{ schedule.condition }}</code></pre>
+        {% else %}
+            <p>-</p>
+        {% endif %}
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Template Condition"|t('campaign'),
+    instructions: "A template condition to validate against before sending."|t('campaign'),
+    errors: schedule.getErrors('condition'),
+}, input) }}

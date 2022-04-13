@@ -40,9 +40,9 @@ return [
         'subject' => 'Subject 3',
         'sendoutType' => 'automated',
         'schedule' => [
-            'timeDelay' => 0,
-            'timeDelayInterval' => 'minutes',
-            'daysOfWeek' => [1],
+            'timeDelay' => 1,
+            'timeDelayInterval' => 'days',
+            'daysOfWeek' => [1, 2, 3, 4, 5, 6, 7],
         ],
         'sendStatus' => SendoutElement::STATUS_PENDING,
         'senderId' => $this->senderId,

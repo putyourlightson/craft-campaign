@@ -3,6 +3,7 @@
 {% include 'campaign/sendouts/_includes/schedule/dates' %}
 
 {% set input %}
+    {% set intervalOptions = schedule.getIntervalOptions() %}
     {% if editable %}
         {{ forms.text({
             name: 'schedule[timeDelay]',
@@ -12,7 +13,7 @@
         }) }}
         {{ forms.select({
             name: 'schedule[timeDelayInterval]',
-            options: schedule.getIntervalOptions(),
+            options: intervalOptions,
             value: schedule.timeDelayInterval,
         }) }}
     {% else %}
@@ -27,5 +28,5 @@
 }, input) }}
 
 {% include 'campaign/sendouts/_includes/schedule/daysOfWeek' %}
-
 {% include 'campaign/sendouts/_includes/schedule/timeOfDay' %}
+{% include 'campaign/sendouts/_includes/schedule/condition' %}

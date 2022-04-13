@@ -10,8 +10,6 @@
     'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
     'preview': {'label': 'Preview'|t('app'), 'url': '#preview'},
 } %}
-{% set mailingLists = sendout.mailingLists %}
-{% set schedule = sendout.schedule %}
 
 
 {% block pageTitle %}
@@ -54,14 +52,8 @@
 
 {% block content %}
 
-    {% if fullPageForm %}
-        <input type="hidden" name="action" value="campaign/sendouts/send">
-    {% else %}
-        <form action="" method="post">
-            {{ csrfInput() }}
-    {% endif %}
-
-    <input type="hidden" name="sendoutId" value="{{ sendout.id }}">
+    {{ actionInput('campaign/sendouts/send') }}
+    {{ hiddenInput('sendoutId', sendout.id) }}
     {{ redirectInput('campaign/sendouts') }}
 
     <div id="fields">
@@ -204,10 +196,6 @@
                 {{ forms.field({}, button) }}
             </div>
         </fieldset>
-    {% endif %}
-
-    {% if not fullPageForm %}
-        </form>
     {% endif %}
 
 {% endblock %}

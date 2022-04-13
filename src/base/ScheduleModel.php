@@ -5,10 +5,13 @@
 
 namespace putyourlightson\campaign\base;
 
+use Craft;
 use craft\base\Model;
 use craft\helpers\DateTimeHelper;
 use DateTime;
 use putyourlightson\campaign\elements\SendoutElement;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 
 /**
  * @property-read array $intervalOptions
@@ -36,11 +39,34 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
     public ?DateTime $timeOfDay = null;
 
     /**
+     * @var string|null Condition
+     */
+    public ?string $condition = null;
+
+    /**
      * Returns the schedule's interval options.
      */
     public function getIntervalOptions(): array
     {
         return [];
+    }
+
+    /**
+     * Returns whether the condition is valid.
+     */
+    public function validateCondition(): bool
+    {
+        if (empty($this->condition)) {
+            return true;
+        }
+
+        try {
+            return (bool)trim(Craft::$app->getView()->renderString($this->condition));
+        }
+        catch (LoaderError|SyntaxError) {
+        }
+
+        return false;
     }
 
     /**
@@ -66,6 +92,10 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
             if ($this->timeOfDay->format($format) > $now->format($format)) {
                 return false;
             }
+        }
+
+        if (!$this->validateCondition()) {
+            return false;
         }
 
         return true;
