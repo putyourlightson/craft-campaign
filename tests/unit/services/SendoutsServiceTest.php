@@ -6,6 +6,7 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\queue\Queue;
 use DateTime;
@@ -122,29 +123,26 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
+        // Modify creation date and send date to 3 minutes ago so we can test
+        $dateTime = DateTimeHelper::toDateTime(strtotime('-3 minutes'));
+        $sendout->sendDate = $dateTime;
+        $sendout->dateCreated = $dateTime;
+
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
         $this->assertEquals(0, $pendingRecipients);
 
-        // Modify subscription date to 2 days ago
-        ContactMailingListRecord::updateAll(
-            [
-                'subscribed' => Db::prepareDateForDb('-2 days'),
-            ],
-            [
-                'contactId' => $this->contact->id,
-                'mailingListId' => $this->mailingList->id,
-            ],
-        );
+        // Modify subscription dates to 2 minutes ago
+        ContactMailingListRecord::updateAll([
+            'subscribed' => Db::prepareDateForDb(strtotime('-2 minutes')),
+        ]);
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
         $this->assertEquals(1, $pendingRecipients);
 
-        $sendout->getSchedule()->condition = '{{ 0 }}';
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
-        $this->assertEquals(0, $pendingRecipients);
+        $sendout->schedule['condition'] = '{{ 0 }}';
+        $this->assertFalse($sendout->getCanSendNow());
 
-        $sendout->getSchedule()->condition = '{{ 1 }}';
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
-        $this->assertEquals(1, $pendingRecipients);
+        $sendout->schedule['condition'] = '{{ 1 }}';
+        $this->assertTrue($sendout->getCanSendNow());
     }
 
     public function testQueuePendingSendouts(): void
