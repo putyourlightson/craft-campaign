@@ -605,6 +605,7 @@ return [
     'This sendout will be activated for automated sending to {mailingLists} mailing list(s).' => 'Diese Sendung wird aktiviert für automatisches Senden an {mailingLists} Mailing-Liste(n)',
     'This sendout will be activated for recurring sending to {mailingLists} mailing list(s).' => 'Diese Sendung wird aktiviert für wiederkehrendes Senden an {mailingLists} Mailing-Liste(n)',
     'This sendout will be scheduled to send on {sendDate} to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Diese Sendung wird geplant am {sendDate} an {recipients} Kontakt(e) in {mailingLists} Mailing-Liste(n) verschickt.',
+    'This sendout will be sent to {recipients} contact(s).' => 'Diese Sendung wird an {recipients} Kontakt(e) verschickt.',
     'This sendout will be sent to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Diese Sendung wird an {recipients} Kontakt(e) in {mailingLists} Mailing-Liste(n) verschickt.',
     'This sendout will resume sending to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Diese Sendung wird das Senden an {recipients} Kontakt(e) in {mailingLists} Mailing-Liste(n) wieder aufnehmen.',
     'Time Delay' => 'Zeitverzögerung',

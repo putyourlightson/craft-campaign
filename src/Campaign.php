@@ -246,7 +246,7 @@ class Campaign extends Plugin
      */
     public function getIsPro(): bool
     {
-        return true;//$this->is(self::EDITION_PRO);
+        return $this->is(self::EDITION_PRO);
     }
 
     /**
@@ -362,8 +362,7 @@ class Campaign extends Plugin
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
             'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/create',
             'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/create',
-            'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>' => 'campaign/sendouts/edit',
-            'campaign/sendouts/<sendoutType:{handle}>/<sendoutId:\d+>/<siteHandle:{handle}>' => 'campaign/sendouts/edit',
+            'campaign/sendouts/<sendoutType:{handle}>/<elementId:\d+>' => 'elements/edit',
             'campaign/sendouts/<sendoutType:{handle}>/preview/<sendoutId:\d+>' => 'campaign/sendouts/preview',
             'campaign/reports/campaigns/<campaignId:\d+>' => ['template' => 'campaign/reports/campaigns/_view'],
             'campaign/reports/campaigns/<campaignId:\d+>/recipients' => ['template' => 'campaign/reports/campaigns/_recipients'],

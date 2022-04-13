@@ -26,9 +26,9 @@ class RecurringScheduleModel extends ScheduleModel
     public string $frequencyInterval = '';
 
     /**
-     * @var array|null Days of the month
+     * @var array Days of the month
      */
-    public ?array $daysOfMonth = null;
+    public array $daysOfMonth = [];
 
     /**
      * @inheritdoc

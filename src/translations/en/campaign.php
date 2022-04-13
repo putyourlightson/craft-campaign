@@ -604,6 +604,7 @@ return [
     'This sendout will be activated for automated sending to {mailingLists} mailing list(s).' => '',
     'This sendout will be activated for recurring sending to {mailingLists} mailing list(s).' => '',
     'This sendout will be scheduled to send on {sendDate} to {recipients} contact(s) in {mailingLists} mailing list(s).' => '',
+    'This sendout will be sent to {recipients} contact(s).' => '',
     'This sendout will be sent to {recipients} contact(s) in {mailingLists} mailing list(s).' => '',
     'This sendout will resume sending to {recipients} contact(s) in {mailingLists} mailing list(s).' => '',
     'Time Delay' => '',

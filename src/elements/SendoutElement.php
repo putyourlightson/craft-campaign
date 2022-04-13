@@ -102,12 +102,12 @@ class SendoutElement extends Element
         $sendoutTypes = [
             'regular' => Craft::t('campaign', 'Regular'),
             'scheduled' => Craft::t('campaign', 'Scheduled'),
-            'singular' => Craft::t('campaign', 'Singular'),
         ];
 
         if (Campaign::$plugin->getIsPro()) {
             $sendoutTypes['automated'] = Craft::t('campaign', 'Automated');
             $sendoutTypes['recurring'] = Craft::t('campaign', 'Recurring');
+            $sendoutTypes['singular'] = Craft::t('campaign', 'Singular');
         }
 
         return $sendoutTypes;
@@ -586,6 +586,10 @@ class SendoutElement extends Element
     public function prepareEditScreen(Response $response, string $containerId): void
     {
         /** @var Response|CpScreenResponseBehavior $response */
+        if (!$this->getIsModifiable()) {
+            $response->redirect($this->getCpPreviewUrl());
+        }
+
         $response->selectedSubnavItem = 'sendouts';
 
         $response->crumbs([
@@ -598,6 +602,9 @@ class SendoutElement extends Element
                 'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
             ],
         ]);
+
+        $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
+        $response->redirectUrl = $this->getCpPreviewUrl();
     }
 
     /**

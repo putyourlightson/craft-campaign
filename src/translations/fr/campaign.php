@@ -605,6 +605,7 @@ return [
     'This sendout will be activated for automated sending to {mailingLists} mailing list(s).' => 'Cette campagne sera activée pour les envois automatiques à la (aux) {mailingLists} liste(s) de diffusion. ',
     'This sendout will be activated for recurring sending to {mailingLists} mailing list(s).' => 'Cette campagne sera activé pour les envois récurrents à la (aux) {mailingLists} liste(s) de diffusion.',
     'This sendout will be scheduled to send on {sendDate} to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Cette campagne sera programmée pour être envoyée le {sendDate} à (aux) {recipients} contact(s) des {mailingLists} listes de diffusion.',
+    'This sendout will be sent to {recipients} contact(s).' => 'Cette campagne va être distribuée à (aux) {recipients} contact(s).',
     'This sendout will be sent to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Cette campagne va être distribuée à (aux) {recipients} contact(s) de {mailingLists} liste(s) de diffusion.',
     'This sendout will resume sending to {recipients} contact(s) in {mailingLists} mailing list(s).' => 'Cette campagne reprendra l’envoi à (aux){recipients} contact(s) dans {mailingLists} liste(s) de diffusion.',
     'Time Delay' => 'Délai de temporisation',

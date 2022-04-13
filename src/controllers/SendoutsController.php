@@ -11,7 +11,6 @@ use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\queue\Queue;
 use craft\web\Controller;
-use craft\web\CpScreenResponseBehavior;
 use craft\web\View;
 use putyourlightson\campaign\assets\SendoutPreflightAsset;
 use putyourlightson\campaign\assets\SendTestAsset;
@@ -149,36 +148,6 @@ class SendoutsController extends Controller
 
         // Redirect to its edit page
         return $this->redirect($sendout->getCpEditUrl());
-    }
-
-    /**
-     * Main edit page.
-     */
-    public function actionEdit(int $sendoutId): Response
-    {
-        // Set the selected subnav item by adding it to the global variables
-        Craft::$app->view->getTwig()->addGlobal('selectedSubnavItem', 'sendouts');
-
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response = Craft::$app->runAction('elements/edit', [
-            'elementId' => $sendoutId,
-        ]);
-
-        // Use the elements service, in case this is a provisional draft.
-        $sendout = Craft::$app->getElements()->getElementById($sendoutId, SendoutElement::class);
-
-        if ($sendout === null) {
-            return $response;
-        }
-
-        if (!$sendout->getIsModifiable()) {
-            return $this->redirect($sendout->getCpPreviewUrl());
-        }
-
-        $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
-        $response->redirectUrl = $sendout->getCpPreviewUrl();
-
-        return $response;
     }
 
     /**

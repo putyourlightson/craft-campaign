@@ -110,12 +110,12 @@ class SendoutsService extends Component
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
-        if ($sendout->sendoutType == 'singular') {
-            return $this->_getPendingRecipientsSingular($sendout);
-        }
-
         if ($sendout->sendoutType == 'automated') {
             return $this->_getPendingRecipientsAutomated($sendout);
+        }
+
+        if ($sendout->sendoutType == 'singular') {
+            return $this->_getPendingRecipientsSingular($sendout);
         }
 
         return $this->_getPendingRecipientsStandard($sendout);
@@ -587,48 +587,6 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the singular sendout's pending contact IDs.
-     */
-    private function _getPendingRecipientsSingular(SendoutElement $sendout): array
-    {
-        $recipients = [];
-        $excludeContactIds = $this->_getSentRecipientsQuery($sendout)->column();
-        $contactIds = array_diff($sendout->contactIds, $excludeContactIds);
-
-        foreach ($contactIds as $contactId) {
-            $recipients[] = [
-                'contactId' => $contactId,
-                'mailingListId' => null,
-                'subscribed' => null,
-            ];
-        }
-
-        return $recipients;
-    }
-
-    /**
-     * Returns the automated sendout's pending recipients.
-     */
-    private function _getPendingRecipientsAutomated(SendoutElement $sendout): array
-    {
-        $recipients = $this->_getPendingRecipientsStandard($sendout);
-        $schedule = $sendout->getSchedule();
-
-        // Remove any contacts that do not meet the conditions
-        foreach ($recipients as $key => $recipient) {
-            $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
-            $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $schedule->timeDelay . ' ' . $schedule->timeDelayInterval);
-
-            // If subscribed date was before sendout was created or time plus delay has not yet passed
-            if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
-                unset($recipients[$key]);
-            }
-        }
-
-        return $recipients;
-    }
-
-    /**
      * Returns the standard sendout's pending contact IDs.
      */
     private function _getPendingRecipientsStandard(SendoutElement $sendout): array
@@ -682,6 +640,55 @@ class SendoutsService extends Component
             ->andWhere(['contactId' => $contactIds])
             ->asArray()
             ->all();
+    }
+
+    /**
+     * Returns the automated sendout's pending recipients.
+     */
+    private function _getPendingRecipientsAutomated(SendoutElement $sendout): array
+    {
+        $recipients = $this->_getPendingRecipientsStandard($sendout);
+        $schedule = $sendout->getSchedule();
+
+        // Remove any contacts that do not meet the conditions
+        foreach ($recipients as $key => $recipient) {
+            $subscribedDateTime = DateTimeHelper::toDateTime($recipient['subscribed']);
+            $subscribedDateTimePlusDelay = $subscribedDateTime->modify('+' . $schedule->timeDelay . ' ' . $schedule->timeDelayInterval);
+
+            // If subscribed date was before sendout was created or time plus delay has not yet passed
+            if ($subscribedDateTime < $sendout->dateCreated || !DateTimeHelper::isInThePast($subscribedDateTimePlusDelay)) {
+                unset($recipients[$key]);
+            }
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * Returns the singular sendout's pending contact IDs.
+     */
+    private function _getPendingRecipientsSingular(SendoutElement $sendout): array
+    {
+        $recipients = [];
+        $excludeContactIds = $this->_getSentRecipientsQuery($sendout)->column();
+        $contactIds = array_diff($sendout->contactIds, $excludeContactIds);
+
+        // Filter recipients by segments
+        if ($sendout->segmentIds) {
+            foreach ($sendout->getSegments() as $segment) {
+                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
+            }
+        }
+
+        foreach ($contactIds as $contactId) {
+            $recipients[] = [
+                'contactId' => $contactId,
+                'mailingListId' => null,
+                'subscribed' => null,
+            ];
+        }
+
+        return $recipients;
     }
 
     /**
