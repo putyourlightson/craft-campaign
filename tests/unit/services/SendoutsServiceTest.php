@@ -9,7 +9,6 @@ use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\queue\Queue;
-use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;

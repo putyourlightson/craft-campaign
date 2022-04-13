@@ -4,15 +4,16 @@
 ### Added
 - Added compatibility with Craft 4.
 - Added a new "Singular" sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
-- Added a template condition to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
+- Added a "Template Condition" field to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
-- Added drafts and revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
-- Added a "duplicate" action to campaigns ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
-- Added condition settings to the Campaigns, Contacts and Mailing Lists relation fields.
-- Added campaign and mailing list type user group permissions.
+- Added autosaving drafts to campaigns, contacts, mailing lists, segments and sendouts.
+- Added revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
+- Added a "Duplicate" action to campaigns, mailing lists, segments and sendouts ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
+- Added condition settings to the campaigns, contacts and mailing Lists relation fields.
+- Added user group permissions for campaign types and mailing list types.
 - Added the ability to view disabled campaigns using a token URL.
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
-- Added the `campaign/reports/anonymize` console controllers that anonymizes all previously collected personal data.
+- Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
 
 ### Changed
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
