@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.0.0-beta.1 - Unreleased
+## 2.0.0-beta.1 - 2022-04-14
 ### Added
 - Added compatibility with Craft 4.
 - Added a new "Singular" sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
