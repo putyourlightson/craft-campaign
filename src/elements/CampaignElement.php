@@ -649,7 +649,7 @@ class CampaignElement extends Element
     /**
      * Returns the campaign's report URL
      */
-    public function getReportUrl(string $suffix = null): string
+    public function getReportUrl(string $suffix = null, array $params = null): string
     {
         $url = 'campaign/reports/campaigns/' . $this->id;
 
@@ -657,7 +657,7 @@ class CampaignElement extends Element
             $url .= '/' . trim($suffix, '/');
         }
 
-        return UrlHelper::cpUrl($url);
+        return UrlHelper::cpUrl($url, $params);
     }
 
     /**

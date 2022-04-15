@@ -130,7 +130,7 @@
                 <div class="data">
                     <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
                     <div class="value">
-                        <a href="{{ sendout.campaign.reportUrl ~ '/recipients?sendout=' ~ sendout.id }}">
+                        <a href="{{ sendout.campaign.getReportUrl('recipients', { sendout: sendout.id }) }}">
                             {{ sendout.recipients }}
                         </a>
                     </div>
