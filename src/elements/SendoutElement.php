@@ -943,10 +943,6 @@ class SendoutElement extends Element
             else {
                 $schedule = new RecurringScheduleModel($config);
             }
-
-            // Convert end date and time of day or set to null
-            $schedule->endDate = DateTimeHelper::toDateTime($schedule->endDate) ?: null;
-            $schedule->timeOfDay = DateTimeHelper::toDateTime($schedule->timeOfDay) ?: null;
         }
 
         return $schedule;
