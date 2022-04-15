@@ -7,6 +7,14 @@
         id: '{{ id }}',
         placeholder: '{{ 'Search'|t('app') }}',
         options: {
+            {# https://datatables.net/reference/button/ #}
+            dom: 'lfBrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    text: '{{ 'Export to CSV'|t('campaign') }}'
+                },
+            ],
             language: {
                 lengthMenu: '_MENU_ {{ itemName }}',
                 info: '{{ '{first}-{last} of {total}'|t('app', {

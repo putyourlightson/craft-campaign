@@ -10,10 +10,13 @@ use craft\web\AssetBundle;
 class ReportsAsset extends AssetBundle
 {
     /**
-     * https://cdn.datatables.net/#Release
-     * https://cdn.datatables.net/#Responsive
+     * Download builder: https://datatables.net/download/
+     * - Extensions
+     *   - Buttons
+     *     - HTML5 export
+     *   - Responsive
      */
-    public const DATATABLES_BASE_URL = 'https://cdn.datatables.net/v/dt/dt-1.11.5/r-2.2.9/';
+    public const DATATABLES_BASE_URL = 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/b-html5-2.2.2/r-2.2.9/';
 
     /**
      * @inheritdoc

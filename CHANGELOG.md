@@ -14,6 +14,7 @@
 - Added the ability to view disabled campaigns using a token URL.
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 - Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
+- Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
 
 ### Changed
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).

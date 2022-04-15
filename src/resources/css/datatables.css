@@ -87,3 +87,7 @@
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     border-radius: 5px !important;
 }
+
+.dataTables_wrapper .export_button {
+    margin-left: 10px;
+}
