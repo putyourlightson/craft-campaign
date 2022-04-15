@@ -920,7 +920,7 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns whether the entry should be saving revisions on save.
+     * Returns whether the campaign should be saving revisions on save.
      *
      * @see Entry::_shouldSaveRevision()
      */
