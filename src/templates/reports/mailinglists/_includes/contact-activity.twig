@@ -30,7 +30,7 @@
             <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
         {% endif %}
     {% else %}
-        {{ include('campaign/reports/_includes/data-table', {
+        {{ include('campaign/reports/_includes/datatable', {
             id: 'contact-activity',
             itemName: 'interactions'|t('campaign'),
         }) }}
