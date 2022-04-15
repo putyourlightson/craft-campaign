@@ -137,9 +137,9 @@ class SegmentsService extends Component
     }
 
     /**
-     * Updates a field.
+     * Handles a changed field, updating segment conditions if necessary.
      */
-    public function updateField(FieldInterface $field): void
+    public function handleChangedField(FieldInterface $field): void
     {
         if (!SegmentHelper::isContactField($field)) {
             return;
@@ -149,7 +149,6 @@ class SegmentsService extends Component
             return;
         }
 
-        // TODO: test!
         $newFieldColumn = ElementHelper::fieldColumnFromField($field);
         $oldFieldColumn = ElementHelper::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
 
@@ -181,9 +180,9 @@ class SegmentsService extends Component
     }
 
     /**
-     * Deletes a field.
+     * Handles a deleted field, updating segment conditions if necessary.
      */
-    public function deleteField(FieldInterface $field): void
+    public function handleDeletedField(FieldInterface $field): void
     {
         if (!SegmentHelper::isContactField($field)) {
             return;

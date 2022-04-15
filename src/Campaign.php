@@ -486,14 +486,14 @@ class Campaign extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
             function(FieldEvent $event) {
                 if ($event->isNew === false) {
-                    $this->segments->updateField($event->field);
+                    $this->segments->handleChangedField($event->field);
                 }
             }
         );
 
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD,
             function(FieldEvent $event) {
-                $this->segments->deleteField($event->field);
+                $this->segments->handleDeletedField($event->field);
             }
         );
     }

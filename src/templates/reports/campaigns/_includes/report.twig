@@ -38,12 +38,10 @@
         </div>
 
         {% js %}
-            // setTimeout(function() {
-                new Campaign.Chart({
-                    action: 'campaign/reports/get-campaign-chart-data',
-                    campaignId: '{{ campaign.id }}'
-                });
-{#            }, 1000);#}
+            new Campaign.Chart({
+                action: 'campaign/reports/get-campaign-chart-data',
+                campaignId: '{{ campaign.id }}'
+            });
         {% endjs %}
     {% endif %}
 
