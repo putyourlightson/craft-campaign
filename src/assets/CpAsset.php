@@ -39,6 +39,18 @@ class CpAsset extends AssetBundle
     /**
      * @inheritdoc
      */
+    public $js = [
+        'js/Campaign.js',
+        'js/CampaignIndex.js',
+        'js/ContactIndex.js',
+        'js/MailingListIndex.js',
+        'js/SegmentIndex.js',
+        'js/SendoutIndex.js',
+    ];
+
+    /**
+     * @inheritdoc
+     */
     public function registerAssetFiles($view): void
     {
         parent::registerAssetFiles($view);

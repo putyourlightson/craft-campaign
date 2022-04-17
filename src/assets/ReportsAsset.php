@@ -47,5 +47,6 @@ class ReportsAsset extends AssetBundle
         self::DATATABLES_BASE_URL . 'datatables.min.js',
         'js/Chart.js',
         'js/DataTable.js',
+        'js/Report.js',
     ];
 }

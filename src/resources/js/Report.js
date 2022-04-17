@@ -2,9 +2,9 @@
 /** global: Craft */
 /** global: Garnish */
 /**
- * CP class
+ * Report class
  */
-Campaign.CP = Garnish.Base.extend({
+Campaign.Report = Garnish.Base.extend({
     init: function() {
         this.loadElementThumbs();
         this.addListener($.find('.filter'), 'change', 'applyFilter');
@@ -28,4 +28,4 @@ Campaign.CP = Garnish.Base.extend({
     },
 });
 
-new Campaign.CP();
+new Campaign.Report();

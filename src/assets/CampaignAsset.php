@@ -28,17 +28,4 @@ class CampaignAsset extends AssetBundle
         'css/campaign.css',
         'css/flag-icon.min.css',
     ];
-
-    /**
-     * @inheritdoc
-     */
-    public $js = [
-        'js/Campaign.js',
-        'js/Cp.js',
-        'js/CampaignIndex.js',
-        'js/ContactIndex.js',
-        'js/MailingListIndex.js',
-        'js/SegmentIndex.js',
-        'js/SendoutIndex.js',
-    ];
 }
