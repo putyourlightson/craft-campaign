@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\base\Element;
 use craft\elements\User;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -15,7 +16,6 @@ use putyourlightson\campaign\elements\ContactElement;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class ContactsController extends Controller
 {
@@ -55,9 +55,10 @@ class ContactsController extends Controller
      */
     public function actionCreate(): Response
     {
-        $user = Craft::$app->getUser()->getIdentity();
         $contact = Craft::createObject(ContactElement::class);
 
+        // Make sure the user is allowed to create this contact
+        $user = Craft::$app->getUser()->getIdentity();
         if (!$contact->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this contact.');
         }
@@ -65,11 +66,26 @@ class ContactsController extends Controller
         // Save it
         $contact->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($contact, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save contact as a draft: %s', implode(', ', $contact->getErrorSummary(true))));
+            return $this->asModelFailure($contact, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => ContactElement::lowerDisplayName(),
+            ]), 'contact');
         }
 
-        // Redirect to its edit page
-        return $this->redirect($contact->getCpEditUrl());
+        $editUrl = $contact->getCpEditUrl();
+
+        $response = $this->asModelSuccess($contact, Craft::t('app', '{type} created.', [
+            'type' => ContactElement::displayName(),
+        ]), 'contact', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
+
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
+        }
+
+        return $response;
     }
 
     /**

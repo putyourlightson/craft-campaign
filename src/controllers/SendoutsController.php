@@ -9,6 +9,8 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\App;
 use craft\helpers\Cp;
+use craft\helpers\ElementHelper;
+use craft\helpers\UrlHelper;
 use craft\queue\Queue;
 use craft\web\Controller;
 use craft\web\View;
@@ -22,7 +24,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class SendoutsController extends Controller
 {
@@ -118,21 +119,30 @@ class SendoutsController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $user = Craft::$app->getUser()->getIdentity();
-
+        // Create & populate the draft
         $sendout = Craft::createObject(SendoutElement::class);
         $sendout->siteId = $site->id;
         $sendout->sendoutType = $sendoutType;
 
+        // Make sure the user is allowed to create this sendout
+        $user = Craft::$app->getUser()->getIdentity();
         if (!$sendout->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this sendout.');
         }
 
+        // Title & slug
+        $sendout->title = $this->request->getQueryParam('title');
+        $sendout->slug = $this->request->getQueryParam('slug');
+        if ($sendout->title && !$sendout->slug) {
+            $sendout->slug = ElementHelper::generateSlug($sendout->title, null, $site->language);
+        }
+        if (!$sendout->slug) {
+            $sendout->slug = ElementHelper::tempSlug();
+        }
+
         // If a campaign ID was passed in as a parameter (from campaign "save and send" button)
         if ($campaignId = $this->request->getParam('campaignId')) {
-            // Set title and subject to campaign title
             $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
-
             if ($campaign) {
                 $sendout->campaignId = $campaign->id;
                 $sendout->title = $campaign->title;
@@ -143,11 +153,26 @@ class SendoutsController extends Controller
         // Save it
         $sendout->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($sendout, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save sendout as a draft: %s', implode(', ', $sendout->getErrorSummary(true))));
+            return $this->asModelFailure($sendout, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => SendoutElement::lowerDisplayName(),
+            ]), 'sendout');
         }
 
-        // Redirect to its edit page
-        return $this->redirect($sendout->getCpEditUrl());
+        $editUrl = $sendout->getCpEditUrl();
+
+        $response = $this->asModelSuccess($sendout, Craft::t('app', '{type} created.', [
+            'type' => SendoutElement::displayName(),
+        ]), 'sendout', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
+
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
+        }
+
+        return $response;
     }
 
     /**

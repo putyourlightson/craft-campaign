@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\controllers\CategoriesController;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -19,7 +20,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class CampaignsController extends Controller
 {
@@ -42,25 +42,50 @@ class CampaignsController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $user = Craft::$app->getUser()->getIdentity();
-
+        // Create & populate the draft
         $campaign = Craft::createObject(CampaignElement::class);
         $campaign->siteId = $site->id;
         $campaign->campaignTypeId = $campaignType->id;
-        $campaign->slug = ElementHelper::tempSlug();
 
+        // Make sure the user is allowed to create this campaign
+        $user = Craft::$app->getUser()->getIdentity();
         if (!$campaign->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this campaign.');
+        }
+
+        // Title & slug
+        $campaign->title = $this->request->getQueryParam('title');
+        $campaign->slug = $this->request->getQueryParam('slug');
+        if ($campaign->title && !$campaign->slug) {
+            $campaign->slug = ElementHelper::generateSlug($campaign->title, null, $site->language);
+        }
+        if (!$campaign->slug) {
+            $campaign->slug = ElementHelper::tempSlug();
         }
 
         // Save it
         $campaign->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($campaign, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save campaign as a draft: %s', implode(', ', $campaign->getErrorSummary(true))));
+            return $this->asModelFailure($campaign, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => CampaignElement::lowerDisplayName(),
+            ]), 'campaign');
         }
 
-        // Redirect to its edit page
-        return $this->redirect($campaign->getCpEditUrl());
+        $editUrl = $campaign->getCpEditUrl();
+
+        $response = $this->asModelSuccess($campaign, Craft::t('app', '{type} created.', [
+            'type' => CampaignElement::displayName(),
+        ]), 'campaign', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
+
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
+        }
+
+        return $response;
     }
 
     /**

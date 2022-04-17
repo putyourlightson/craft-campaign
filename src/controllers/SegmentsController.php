@@ -9,13 +9,13 @@ use Craft;
 use craft\base\Element;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
 
 class SegmentsController extends Controller
 {
@@ -48,24 +48,49 @@ class SegmentsController extends Controller
             throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        $user = Craft::$app->getUser()->getIdentity();
-
+        // Create & populate the draft
         $segment = Craft::createObject(SegmentElement::class);
         $segment->siteId = $site->id;
         $segment->segmentType = $segmentType;
-        $segment->slug = ElementHelper::tempSlug();
 
+        // Make sure the user is allowed to create this segment
+        $user = Craft::$app->getUser()->getIdentity();
         if (!$segment->canSave($user)) {
             throw new ForbiddenHttpException('User not authorized to save this segment.');
+        }
+
+        // Title & slug
+        $segment->title = $this->request->getQueryParam('title');
+        $segment->slug = $this->request->getQueryParam('slug');
+        if ($segment->title && !$segment->slug) {
+            $segment->slug = ElementHelper::generateSlug($segment->title, null, $site->language);
+        }
+        if (!$segment->slug) {
+            $segment->slug = ElementHelper::tempSlug();
         }
 
         // Save it
         $segment->setScenario(Element::SCENARIO_ESSENTIALS);
         if (!Craft::$app->getDrafts()->saveElementAsDraft($segment, Craft::$app->getUser()->getId(), null, null, false)) {
-            throw new ServerErrorHttpException(sprintf('Unable to save segment as a draft: %s', implode(', ', $segment->getErrorSummary(true))));
+            return $this->asModelFailure($segment, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => SegmentElement::lowerDisplayName(),
+            ]), 'segment');
         }
 
-        // Redirect to its edit page
-        return $this->redirect($segment->getCpEditUrl());
+        $editUrl = $segment->getCpEditUrl();
+
+        $response = $this->asModelSuccess($segment, Craft::t('app', '{type} created.', [
+            'type' => SegmentElement::displayName(),
+        ]), 'segment', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
+
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
+        }
+
+        return $response;
     }
 }
