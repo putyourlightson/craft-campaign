@@ -18,7 +18,6 @@
 
     {{ forms.lightswitchField({
         first: true,
-        required: true,
         label: "Test Mode"|t('campaign'),
         instructions: "Sendout emails will be saved into local files (in {path}) rather that actually being sent."|t('campaign', { path: '<code>storage/runtime/debug/mail</code>' }),
         warning: (config.testMode is defined ? macros.configWarning('testMode')),

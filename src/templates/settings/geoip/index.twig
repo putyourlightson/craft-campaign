@@ -16,7 +16,6 @@
 
     {{ forms.lightswitchField({
         first: true,
-        required: true,
         label: "GeoIP"|t('campaign'),
         instructions: "Enable GeoIP to geolocate contacts by their IP addresses."|t('campaign'),
         warning: (config.geoIp is defined ? macros.configWarning('geoIp')),
