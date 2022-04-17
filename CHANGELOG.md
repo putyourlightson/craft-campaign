@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 2.0.0-beta.2 - Unreleased
+## 2.0.0-beta.2 - 2022-04-17
 ### Added
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
+
+### Fixed
+- Fixed a bug in which the "New" button was not appearing in element type modal windows.
 
 ## 2.0.0-beta.1 - 2022-04-14
 ### Added
@@ -13,7 +16,7 @@
 - Added autosaving drafts to campaigns, contacts, mailing lists, segments and sendouts.
 - Added revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
 - Added a "Duplicate" action to campaigns, mailing lists, segments and sendouts ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
-- Added condition settings to the campaigns, contacts and mailing Lists relation fields.
+- Added condition settings to the campaigns, contacts and mailing lists relation fields.
 - Added user group permissions for campaign types and mailing list types.
 - Added the ability to view disabled campaigns using a token URL.
 - Added the `enableAnonymousTracking` setting to campaign types, which prevents tracking of personal data of contacts ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
