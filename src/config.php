@@ -19,6 +19,9 @@
 
 return [
     '*' => [
+        // Whether to enable anonymous tracking
+        //'enableAnonymousTracking' => false,
+
         // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
         //'testMode' => false,
 

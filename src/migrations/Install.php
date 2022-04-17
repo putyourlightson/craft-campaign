@@ -98,7 +98,6 @@ class Install extends Migration
                 'fieldLayoutId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
-                'enableAnonymousTracking' => $this->boolean()->defaultValue(false)->notNull(),
                 'uriFormat' => $this->text(),
                 'htmlTemplate' => $this->string(500),
                 'plaintextTemplate' => $this->string(500),

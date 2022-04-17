@@ -57,11 +57,6 @@ class CampaignTypeModel extends Model
     public ?string $handle = null;
 
     /**
-     * @var bool Whether to enable anonymous tracking
-     */
-    public bool $enableAnonymousTracking = false;
-
-    /**
      * @var string|null URI format
      */
     public ?string $uriFormat = null;

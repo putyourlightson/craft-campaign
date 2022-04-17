@@ -14,6 +14,18 @@
 
     <input type="hidden" name="action" value="campaign/settings/save-contact">
 
+    {{ forms.lightswitchField({
+        first: true,
+        label: "Enable Anonymous Tracking"|t('campaign'),
+        instructions: "Whether to enable anonymous tracking of contact interactions."|t('campaign'),
+        warning: (config.enableAnonymousTracking is defined ? macros.configWarning('enableAnonymousTracking')),
+        name: 'enableAnonymousTracking',
+        on: settings.enableAnonymousTracking,
+        errors: settings.getErrors('enableAnonymousTracking'),
+    }) }}
+
+    <hr>
+
     {{ forms.fieldLayoutDesignerField({
         fieldLayout: fieldLayout,
         first: true,

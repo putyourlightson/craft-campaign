@@ -126,6 +126,7 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->getSettings();
 
         return $this->renderTemplate('campaign/settings/contact', [
+            'settings' => $settings,
             'fieldLayout' => $settings->getContactFieldLayout(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
@@ -242,12 +243,18 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
+        $settings = $this->_getEmailSettingsFromPost();
+
+        $settings->enableAnonymousTracking = Craft::$app->getRequest()->getBodyParam('enableAnonymousTracking', $settings->enableAnonymousTracking);
+
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = ContactElement::class;
 
         // Save it
-        if (!Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)) {
+        if (!Campaign::$plugin->settings->saveSettings($settings)
+            || !Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)
+        ) {
             return $this->asFailure(Craft::t('campaign', 'Couldn’t save contact settings.'));
         }
 

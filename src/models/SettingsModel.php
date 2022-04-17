@@ -25,6 +25,11 @@ use yii\validators\EmailValidator;
 class SettingsModel extends Model
 {
     /**
+     * @var bool Whether to enable anonymous tracking
+     */
+    public bool $enableAnonymousTracking = false;
+
+    /**
      * @var bool Sendout emails will be saved into local files (in storage/runtime/debug/mail) rather that actually being sent
      */
     public bool $testMode = false;
