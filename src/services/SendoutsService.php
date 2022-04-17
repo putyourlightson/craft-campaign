@@ -307,7 +307,7 @@ class SendoutsService extends Component
         $htmlBody .= '<img src="' . $trackingImageUrl . '" width="1" height="1" alt="" />';
 
         // If test mode is enabled then use file transport instead of sending emails
-        if (Campaign::$plugin->getSettings()->testMode) {
+        if (Campaign::$plugin->settings->testMode) {
             Campaign::$plugin->mailer->useFileTransport = true;
         }
 
@@ -338,7 +338,7 @@ class SendoutsService extends Component
         $success = false;
 
         // Attempt to send message
-        for ($i = 0; $i < Campaign::$plugin->getSettings()->maxSendAttempts; $i++) {
+        for ($i = 0; $i < Campaign::$plugin->settings->maxSendAttempts; $i++) {
             $success = $message->send();
 
             if ($success) {
@@ -364,7 +364,7 @@ class SendoutsService extends Component
             // Update fails and send status
             $sendout->fails++;
 
-            if ($sendout->fails >= Campaign::$plugin->getSettings()->maxSendFailsAllowed) {
+            if ($sendout->fails >= Campaign::$plugin->settings->maxSendFailsAllowed) {
                 $sendout->sendStatus = SendoutElement::STATUS_FAILED;
             }
 
@@ -373,7 +373,7 @@ class SendoutsService extends Component
             Campaign::$plugin->log('Sending of the sendout "{title}" to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
                 'title' => $sendout->title,
                 'email' => $contact->email,
-                'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts,
+                'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
             ]);
         }
 
@@ -407,7 +407,7 @@ class SendoutsService extends Component
             'title' => $sendout->title,
             'emailSettingsUrl' => UrlHelper::cpUrl('campaign/settings/email'),
             'sendoutUrl' => $sendout->cpEditUrl,
-            'sendAttempts' => Campaign::$plugin->getSettings()->maxSendAttempts,
+            'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
         ];
 
         if ($sendout->sendStatus == SendoutElement::STATUS_SENT) {

@@ -49,7 +49,7 @@ class SendoutField extends BaseNativeField
             'editable' => !$static,
             'sendout' => $element,
             'schedule' => $element->getSchedule(),
-            'fromNameEmailOptions' => Campaign::$plugin->settings->getFromNameEmailOptions($siteId),
+            'fromNameEmailOptions' => Campaign::$plugin->settingsService->getFromNameEmailOptions($siteId),
             'campaignElementType' => CampaignElement::class,
             'campaignElementCriteria' => [
                 'siteId' => $siteId,

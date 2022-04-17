@@ -41,7 +41,7 @@ class ContactActivityHelper
         $contactRecord->lastActivity = new DateTime();
 
         // Get GeoIP if enabled
-        if (Campaign::$plugin->getSettings()->geoIp) {
+        if (Campaign::$plugin->settings->geoIp) {
             $geoIp = self::getGeoIp();
 
             // If GeoIP and country exist
@@ -83,7 +83,7 @@ class ContactActivityHelper
 
         try {
             $ip = Craft::$app->getRequest()->getUserIP();
-            $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->ipstackApiKey);
+            $apiKey = App::parseEnv(Campaign::$plugin->settings->ipstackApiKey);
 
             /** @noinspection HttpUrlsUsage */
             $response = $client->get('http://api.ipstack.com/' . $ip . '?access_key=' . $apiKey);

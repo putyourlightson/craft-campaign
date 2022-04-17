@@ -242,10 +242,10 @@ class FormsService extends Component
     public function _sendEmail(string $email, string $subject, string $htmlBody, string $plaintextBody, int $siteId): bool
     {
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($siteId);
+        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail($siteId);
 
         // Create message using the mailer for verification emails
-        $mailer = Campaign::$plugin->settings->getMailerForVerificationEmails();
+        $mailer = Campaign::$plugin->settingsService->getMailerForVerificationEmails();
         $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($email)

@@ -212,7 +212,7 @@ class CampaignVariable
     public function getRecaptcha(): Markup
     {
         $output = '';
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         if ($settings->reCaptcha) {
             $id = 'campaign-recaptcha-' . StringHelper::randomString(6);
@@ -241,7 +241,7 @@ class CampaignVariable
      */
     public function getRecaptchaSiteKey(): string
     {
-        return App::parseEnv(Campaign::$plugin->getSettings()->reCaptchaSiteKey);
+        return App::parseEnv(Campaign::$plugin->settings->reCaptchaSiteKey);
     }
 
     /**
@@ -249,6 +249,6 @@ class CampaignVariable
      */
     public function getSettings(): SettingsModel
     {
-        return Campaign::$plugin->getSettings();
+        return Campaign::$plugin->settings;
     }
 }

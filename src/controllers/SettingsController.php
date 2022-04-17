@@ -47,14 +47,14 @@ class SettingsController extends Controller
     public function actionEditGeneral(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'phpBinPath' => '/usr/bin/php',
-            'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed(),
+            'isDynamicWebAliasUsed' => Campaign::$plugin->settingsService->isDynamicWebAliasUsed(),
         ]);
     }
 
@@ -67,7 +67,7 @@ class SettingsController extends Controller
     public function actionEditEmail(SettingsModel $settings = null, TransportAdapterInterface $adapter = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         if ($adapter === null) {
@@ -111,7 +111,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/email', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
+            'siteOptions' => Campaign::$plugin->settingsService->getSiteOptions(),
             'adapter' => $adapter,
             'allTransportAdapters' => $allTransportAdapters,
             'transportTypeOptions' => $transportTypeOptions,
@@ -120,10 +120,14 @@ class SettingsController extends Controller
 
     /**
      * Edit contact settings.
+     *
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
-    public function actionEditContact(): Response
+    public function actionEditContact(SettingsModel $settings = null): Response
     {
-        $settings = Campaign::$plugin->getSettings();
+        if ($settings === null) {
+            $settings = Campaign::$plugin->settings;
+        }
 
         return $this->renderTemplate('campaign/settings/contact', [
             'settings' => $settings,
@@ -140,7 +144,7 @@ class SettingsController extends Controller
     public function actionEditSendout(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/sendout', [
@@ -162,7 +166,7 @@ class SettingsController extends Controller
     public function actionEditGeoip(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/geoip', [
@@ -179,7 +183,7 @@ class SettingsController extends Controller
     public function actionEditRecaptcha(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/recaptcha', [
@@ -195,7 +199,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
         $settings->testMode = $this->request->getBodyParam('testMode', $settings->testMode);
@@ -203,7 +207,7 @@ class SettingsController extends Controller
         $settings->mailgunWebhookSigningKey = $this->request->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save general settings.'), 'settings');
         }
 
@@ -227,7 +231,7 @@ class SettingsController extends Controller
         $adapter->validate();
 
         // Save it
-        if ($adapter->hasErrors() || !Campaign::$plugin->settings->saveSettings($settings)) {
+        if ($adapter->hasErrors() || !Campaign::$plugin->settingsService->saveSettings($settings)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save email settings.'), 'settings', [], [
                 'adapter' => $adapter,
             ]);
@@ -252,8 +256,8 @@ class SettingsController extends Controller
         $fieldLayout->type = ContactElement::class;
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)
-            || !Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)
+        if (!Campaign::$plugin->settingsService->saveSettings($settings)
+            || !Campaign::$plugin->settingsService->saveContactFieldLayout($fieldLayout)
         ) {
             return $this->asFailure(Craft::t('campaign', 'Couldn’t save contact settings.'));
         }
@@ -268,7 +272,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
         $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize);
@@ -276,7 +280,7 @@ class SettingsController extends Controller
         $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save sendout settings.'), 'settings');
         }
 
@@ -290,14 +294,14 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
         $settings->geoIp = $this->request->getBodyParam('geoIp', $settings->geoIp);
         $settings->ipstackApiKey = $this->request->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save GeoIP settings.'), 'settings');
         }
 
@@ -311,7 +315,7 @@ class SettingsController extends Controller
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
         $settings->reCaptcha = $this->request->getBodyParam('reCaptcha', $settings->reCaptcha);
@@ -320,7 +324,7 @@ class SettingsController extends Controller
         $settings->reCaptchaErrorMessage = $this->request->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
+        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save reCAPTCHA settings.'), 'settings');
         }
 
@@ -354,7 +358,7 @@ class SettingsController extends Controller
         $mailer = Campaign::$plugin->createMailer($settings);
 
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail();
+        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail();
 
         $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
         $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
@@ -397,7 +401,7 @@ class SettingsController extends Controller
      */
     private function _getEmailSettingsFromPost(): SettingsModel
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
         $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = $this->request->getBodyParam('transportType', $settings->transportType);
         $settings->transportSettings = $this->request->getBodyParam('transportTypes.' . $settings->transportType);

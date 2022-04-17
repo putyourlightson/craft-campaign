@@ -62,7 +62,7 @@ class PendingContactsService extends Component
     {
         $this->purgeExpiredPendingContacts();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         $condition = [
             'email' => $pendingContact->email,
@@ -146,7 +146,7 @@ class PendingContactsService extends Component
      */
     public function purgeExpiredPendingContacts(): void
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         if ($settings->purgePendingContactsDuration === 0) {
             return;

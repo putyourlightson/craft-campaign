@@ -239,7 +239,7 @@ class ContactElement extends Element
      */
     protected static function defineSortOptions(): array
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         return [
             'email' => $settings->getEmailFieldLabel(),
@@ -383,7 +383,7 @@ class ContactElement extends Element
         $labels = parent::attributeLabels();
 
         // Set the email field label
-        $labels['email'] = Campaign::$plugin->getSettings()->getEmailFieldLabel();
+        $labels['email'] = Campaign::$plugin->settings->getEmailFieldLabel();
 
         return $labels;
     }
@@ -422,7 +422,7 @@ class ContactElement extends Element
             return $this->_fieldLayout;
         }
 
-        $this->_fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->getSettings()->getContactFieldLayout();
+        $this->_fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->settings->getContactFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
             return $this->_fieldLayout;

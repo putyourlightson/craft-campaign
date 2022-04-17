@@ -295,11 +295,11 @@ class FormsController extends BaseMessageController
     private function _validateRecaptcha(): void
     {
         // Validate reCAPTCHA if enabled
-        if (Campaign::$plugin->getSettings()->reCaptcha) {
+        if (Campaign::$plugin->settings->reCaptcha) {
             $response = $this->request->getParam('g-recaptcha-response');
 
             if ($response === null) {
-                throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->getSettings()->reCaptchaErrorMessage));
+                throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->settings->reCaptchaErrorMessage));
             }
 
             RecaptchaHelper::validateRecaptcha($response, $this->request->getUserIP());

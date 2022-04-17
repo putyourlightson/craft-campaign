@@ -296,8 +296,8 @@ class ImportsController extends Controller
             'import' => $import,
             'mailingListElementType' => MailingListElement::class,
             'mailingLists' => [],
-            'emailFieldLabel' => Campaign::$plugin->getSettings()->getEmailFieldLabel(),
-            'fields' => Campaign::$plugin->getSettings()->getContactFields(),
+            'emailFieldLabel' => Campaign::$plugin->settings->getEmailFieldLabel(),
+            'fields' => Campaign::$plugin->settings->getContactFields(),
             'columns' => Campaign::$plugin->imports->getColumns($import),
         ];
 

@@ -49,7 +49,7 @@ class CampaignTypesController extends Controller
         $variables = [
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType,
-            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
+            'siteOptions' => Campaign::$plugin->settingsService->getSiteOptions(),
             'contactElementType' => ContactElement::class,
             'fullPageForm' => true,
         ];

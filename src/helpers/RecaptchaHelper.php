@@ -27,7 +27,7 @@ class RecaptchaHelper
      */
     public static function validateRecaptcha(string $recaptchaResponse, string $ip): void
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         $result = '';
 

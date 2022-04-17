@@ -63,7 +63,7 @@ class MailingListTypesController extends Controller
         }
 
         // Get the site options
-        $variables['siteOptions'] = Campaign::$plugin->settings->getSiteOptions();
+        $variables['siteOptions'] = Campaign::$plugin->settingsService->getSiteOptions();
 
         // Full page form variables
         $variables['fullPageForm'] = true;

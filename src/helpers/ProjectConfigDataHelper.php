@@ -28,7 +28,7 @@ class ProjectConfigDataHelper
             'mailingListTypes' => [],
         ];
 
-        $contactFieldLayout = Campaign::$plugin->getSettings()->getContactFieldLayout();
+        $contactFieldLayout = Campaign::$plugin->settings->getContactFieldLayout();
 
         $configData['contactFieldLayout'][$contactFieldLayout->uid] = $contactFieldLayout->getConfig();
 

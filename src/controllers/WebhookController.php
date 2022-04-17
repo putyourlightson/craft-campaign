@@ -41,7 +41,7 @@ class WebhookController extends Controller
     {
         // Verify API key
         $key = $this->request->getParam('key');
-        $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
+        $apiKey = App::parseEnv(Campaign::$plugin->settings->apiKey);
 
         if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
@@ -124,7 +124,7 @@ class WebhookController extends Controller
 
         // Validate the event signature if a signing key is set
         // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-        $signingKey = App::parseEnv(Campaign::$plugin->getSettings()->mailgunWebhookSigningKey);
+        $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
 
         if ($signingKey) {
             $eventSignature = $eventData['signature'] ?? '';
@@ -202,7 +202,7 @@ class WebhookController extends Controller
 
         // Ensure IP address is coming from Postmark if allowed IP addresses are set
         // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
-        $allowedIpAddresses = Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses;
+        $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
 
         if ($allowedIpAddresses && !in_array($this->request->getUserIP(), $allowedIpAddresses)) {
             return $this->asFailure(Craft::t('campaign', 'IP address not allowed.'));

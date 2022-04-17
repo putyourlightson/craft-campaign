@@ -44,7 +44,7 @@ class SendoutsController extends Controller
         else {
             // Verify API key
             $key = $this->request->getParam('key');
-            $apiKey = App::parseEnv(Campaign::$plugin->getSettings()->apiKey);
+            $apiKey = App::parseEnv(Campaign::$plugin->settings->apiKey);
 
             if ($key === null || empty($apiKey) || $key != $apiKey) {
                 throw new ForbiddenHttpException('Unauthorised access.');
@@ -195,7 +195,7 @@ class SendoutsController extends Controller
         $variables = [
             'sendout' => $sendout,
             'schedule' => $sendout->getSchedule(),
-            'settings' => Campaign::$plugin->getSettings(),
+            'settings' => Campaign::$plugin->settings,
             'contactElementType' => ContactElement::class,
             'contactElementCriteria' => [
                 'status' => ContactElement::STATUS_ACTIVE,
@@ -206,7 +206,7 @@ class SendoutsController extends Controller
                 'memoryLimit' => ini_get('memory_limit'),
                 'timeLimit' => ini_get('max_execution_time'),
             ],
-            'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed($sendout->siteId),
+            'isDynamicWebAliasUsed' => Campaign::$plugin->settingsService->isDynamicWebAliasUsed($sendout->siteId),
         ];
 
         if ($sendout->getIsPausable()) {

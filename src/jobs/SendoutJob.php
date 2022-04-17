@@ -39,7 +39,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function getTtr(): int
     {
-        return Campaign::$plugin->getSettings()->sendoutJobTtr;
+        return Campaign::$plugin->settings->sendoutJobTtr;
     }
 
     /**
@@ -47,7 +47,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function canRetry($attempt, $error): bool
     {
-        return $attempt < Campaign::$plugin->getSettings()->maxRetryAttempts;
+        return $attempt < Campaign::$plugin->settings->maxRetryAttempts;
     }
 
     /**
@@ -81,7 +81,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         Campaign::$plugin->maxPowerLieutenant();
 
         // Get settings
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Get memory limit or set to null if unlimited
         $memoryLimit = ini_get('memory_limit');

@@ -65,7 +65,7 @@ class SettingsService extends Component
     {
         // Get first from name and email
         $firstFromNameEmail = [];
-        $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
+        $fromNamesEmails = Campaign::$plugin->settings->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
             if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
@@ -99,7 +99,7 @@ class SettingsService extends Component
     public function getFromNameEmailOptions(int $siteId = null): array
     {
         $fromNameEmailOptions = [];
-        $fromNamesEmails = Campaign::$plugin->getSettings()->fromNamesEmails;
+        $fromNamesEmails = Campaign::$plugin->settings->fromNamesEmails;
 
         foreach ($fromNamesEmails as $fromNameEmail) {
             $fromSiteId = $fromNameEmail[3] ?? null;
@@ -130,7 +130,7 @@ class SettingsService extends Component
      */
     public function getMailerForVerificationEmails(): Mailer
     {
-        if (Campaign::$plugin->getSettings()->sendVerificationEmailsViaCraft) {
+        if (Campaign::$plugin->settings->sendVerificationEmailsViaCraft) {
             return Craft::$app->mailer;
         }
 

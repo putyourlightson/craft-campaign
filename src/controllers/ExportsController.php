@@ -48,8 +48,8 @@ class ExportsController extends Controller
         $variables = [
             'export' => $export,
             'mailingListElementType' => MailingListElement::class,
-            'emailFieldLabel' => Campaign::$plugin->getSettings()->getEmailFieldLabel(),
-            'fields' => Campaign::$plugin->getSettings()->getContactFields(),
+            'emailFieldLabel' => Campaign::$plugin->settings->getEmailFieldLabel(),
+            'fields' => Campaign::$plugin->settings->getContactFields(),
         ];
 
         // Render the template

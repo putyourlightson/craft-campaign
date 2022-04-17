@@ -41,7 +41,7 @@ class CampaignUtility extends Utility
     public static function contentHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('campaign/_utility', [
-            'settings' => Campaign::$plugin->getSettings(),
+            'settings' => Campaign::$plugin->settings,
         ]);
     }
 }

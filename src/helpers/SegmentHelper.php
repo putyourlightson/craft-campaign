@@ -88,7 +88,7 @@ class SegmentHelper
         ];
 
         // Add field operators from config settings
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         foreach ($settings->extraSegmentFieldOperators as $fieldtype => $operators) {
             $fieldOperators[$fieldtype] = $operators;
@@ -107,7 +107,7 @@ class SegmentHelper
      */
     public static function getAvailableFields(): array
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         $availableFields = [[
             'type' => Email::class,
@@ -117,7 +117,7 @@ class SegmentHelper
         ]];
 
         // Get contact fields
-        $fields = Campaign::$plugin->getSettings()->getContactFields();
+        $fields = Campaign::$plugin->settings->getContactFields();
 
         if (!empty($fields)) {
             $supportedFields = SegmentHelper::getFieldOperators();
@@ -165,7 +165,7 @@ class SegmentHelper
      */
     public static function isContactField(FieldInterface $field): bool
     {
-        $contactFields = Campaign::$plugin->getSettings()->getContactFields();
+        $contactFields = Campaign::$plugin->settings->getContactFields();
 
         foreach ($contactFields as $contactField) {
             if ($contactField->id == $field->id) {

@@ -107,7 +107,7 @@ class CampaignsService extends Component
         }
 
         // Only save if anonymous tracking is not enabled
-        if (!Campaign::$plugin->getSettings()->enableAnonymousTracking) {
+        if (!Campaign::$plugin->settings->enableAnonymousTracking) {
             $contactCampaignRecord->save();
         }
 
@@ -124,7 +124,7 @@ class CampaignsService extends Component
         $plaintextBody = $campaign->getPlaintextBody($contact);
 
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($campaign->siteId);
+        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail($campaign->siteId);
 
         // Compose message
         /** @var Message $message*/

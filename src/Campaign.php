@@ -76,28 +76,29 @@ use yii\base\Event;
 use yii\web\ForbiddenHttpException;
 
 /**
- * @property CampaignsService $campaigns
- * @property CampaignTypesService $campaignTypes
- * @property ContactsService $contacts
- * @property ExportsService $exports
- * @property FormsService $forms
- * @property ImportsService $imports
- * @property MailingListsService $mailingLists
- * @property MailingListTypesService $mailingListTypes
- * @property PendingContactsService $pendingContacts
- * @property ReportsService $reports
- * @property SegmentsService $segments
- * @property SendoutsService $sendouts
- * @property SettingsService $settings
- * @property SyncService $sync
- * @property TrackerService $tracker
- * @property WebhookService $webhook
- * @property Mailer $mailer
- * @property array|null $cpNavItem
- * @property array $cpRoutes
- * @property array $cpPermissions
- * @property bool $isPro
- * @property mixed $settingsResponse
+ * @property-read CampaignsService $campaigns
+ * @property-read CampaignTypesService $campaignTypes
+ * @property-read ContactsService $contacts
+ * @property-read ExportsService $exports
+ * @property-read FormsService $forms
+ * @property-read ImportsService $imports
+ * @property-read MailingListsService $mailingLists
+ * @property-read MailingListTypesService $mailingListTypes
+ * @property-read PendingContactsService $pendingContacts
+ * @property-read ReportsService $reports
+ * @property-read SegmentsService $segments
+ * @property-read SendoutsService $sendouts
+ * @property-read SettingsService $settingsService
+ * @property-read SyncService $sync
+ * @property-read TrackerService $tracker
+ * @property-read WebhookService $webhook
+ * @property-read Mailer $mailer
+ *
+ * @property-read array|null $cpNavItem
+ * @property-read array $cpRoutes
+ * @property-read bool $isPro
+ * @property-read SettingsModel $settings
+ * @property-read Response $settingsResponse
  *
  * @method SettingsModel getSettings()
  */
@@ -409,7 +410,7 @@ class Campaign extends Plugin
             'reports' => ReportsService::class,
             'segments' => SegmentsService::class,
             'sendouts' => SendoutsService::class,
-            'settings' => SettingsService::class,
+            'settingsService' => SettingsService::class,
             'sync' => SyncService::class,
             'tracker' => TrackerService::class,
             'webhook' => WebhookService::class,
@@ -465,7 +466,7 @@ class Campaign extends Plugin
 
                     // Create and save default settings
                     $settings = $this->createSettingsModel();
-                    $this->settings->saveSettings($settings);
+                    $this->settingsService->saveSettings($settings);
 
                     if (Craft::$app->getRequest()->getIsCpRequest()) {
                         // Redirect to welcome page
@@ -505,10 +506,10 @@ class Campaign extends Plugin
     {
         // Contact field layout
         Craft::$app->projectConfig
-            ->onAdd(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout'])
-            ->onUpdate(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout'])
-            ->onRemove(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settings, 'handleChangedContactFieldLayout']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->settings, 'pruneDeletedField']);
+            ->onAdd(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout'])
+            ->onUpdate(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout'])
+            ->onRemove(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->settingsService, 'pruneDeletedField']);
 
         // Campaign types
         Craft::$app->projectConfig
@@ -577,7 +578,7 @@ class Campaign extends Plugin
                         return;
                     }
 
-                    $allowedOrigins = Campaign::$plugin->getSettings()->allowedOrigins;
+                    $allowedOrigins = Campaign::$plugin->settings->allowedOrigins;
 
                     if (empty($allowedOrigins) || !is_array($allowedOrigins)) {
                         return;
