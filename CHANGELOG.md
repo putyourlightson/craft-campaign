@@ -5,6 +5,9 @@
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
 - Added the `enableAnonymousTracking` setting, which prevents tracking of contact interactions ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 
+### Changed
+- Removed the `SettingsService` class. Use the `SettingsHelper` class instead.
+
 ### Fixed
 - Fixed a bug in which the "New" button was not appearing in element type modal windows.
 

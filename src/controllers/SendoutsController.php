@@ -20,6 +20,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutField;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -206,7 +207,7 @@ class SendoutsController extends Controller
                 'memoryLimit' => ini_get('memory_limit'),
                 'timeLimit' => ini_get('max_execution_time'),
             ],
-            'isDynamicWebAliasUsed' => Campaign::$plugin->settingsService->isDynamicWebAliasUsed($sendout->siteId),
+            'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed($sendout->siteId),
         ];
 
         if ($sendout->getIsPausable()) {

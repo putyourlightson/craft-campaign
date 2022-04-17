@@ -12,6 +12,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -124,7 +125,7 @@ class CampaignsService extends Component
         $plaintextBody = $campaign->getPlaintextBody($contact);
 
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail($campaign->siteId);
+        $fromNameEmail = SettingsHelper::getFromNameEmail($campaign->siteId);
 
         // Compose message
         /** @var Message $message*/

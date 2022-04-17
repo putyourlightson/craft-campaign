@@ -15,6 +15,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
 
 /**
  * @since 2.0.0
@@ -49,7 +50,7 @@ class SendoutField extends BaseNativeField
             'editable' => !$static,
             'sendout' => $element,
             'schedule' => $element->getSchedule(),
-            'fromNameEmailOptions' => Campaign::$plugin->settingsService->getFromNameEmailOptions($siteId),
+            'fromNameEmailOptions' => SettingsHelper::getFromNameEmailOptions($siteId),
             'campaignElementType' => CampaignElement::class,
             'campaignElementCriteria' => [
                 'siteId' => $siteId,

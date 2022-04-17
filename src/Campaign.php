@@ -62,7 +62,6 @@ use putyourlightson\campaign\services\PendingContactsService;
 use putyourlightson\campaign\services\ReportsService;
 use putyourlightson\campaign\services\SegmentsService;
 use putyourlightson\campaign\services\SendoutsService;
-use putyourlightson\campaign\services\SettingsService;
 use putyourlightson\campaign\services\SyncService;
 use putyourlightson\campaign\services\TrackerService;
 use putyourlightson\campaign\services\WebhookService;
@@ -88,7 +87,6 @@ use yii\web\ForbiddenHttpException;
  * @property-read ReportsService $reports
  * @property-read SegmentsService $segments
  * @property-read SendoutsService $sendouts
- * @property-read SettingsService $settingsService
  * @property-read SyncService $sync
  * @property-read TrackerService $tracker
  * @property-read WebhookService $webhook
@@ -410,7 +408,6 @@ class Campaign extends Plugin
             'reports' => ReportsService::class,
             'segments' => SegmentsService::class,
             'sendouts' => SendoutsService::class,
-            'settingsService' => SettingsService::class,
             'sync' => SyncService::class,
             'tracker' => TrackerService::class,
             'webhook' => WebhookService::class,
@@ -466,7 +463,7 @@ class Campaign extends Plugin
 
                     // Create and save default settings
                     $settings = $this->createSettingsModel();
-                    $this->settingsService->saveSettings($settings);
+                    Craft::$app->getPlugins()->savePluginSettings($this, $settings->getAttributes());
 
                     if (Craft::$app->getRequest()->getIsCpRequest()) {
                         // Redirect to welcome page
@@ -506,10 +503,10 @@ class Campaign extends Plugin
     {
         // Contact field layout
         Craft::$app->projectConfig
-            ->onAdd(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout'])
-            ->onUpdate(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout'])
-            ->onRemove(SettingsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->settingsService, 'handleChangedContactFieldLayout']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->settingsService, 'pruneDeletedField']);
+            ->onAdd(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
+            ->onUpdate(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
+            ->onRemove(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout']);
+        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->contacts, 'pruneDeletedField']);
 
         // Campaign types
         Craft::$app->projectConfig

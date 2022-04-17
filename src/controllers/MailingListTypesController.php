@@ -10,6 +10,7 @@ use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -63,7 +64,7 @@ class MailingListTypesController extends Controller
         }
 
         // Get the site options
-        $variables['siteOptions'] = Campaign::$plugin->settingsService->getSiteOptions();
+        $variables['siteOptions'] = SettingsHelper::getSiteOptions();
 
         // Full page form variables
         $variables['fullPageForm'] = true;

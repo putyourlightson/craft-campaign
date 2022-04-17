@@ -5,12 +5,25 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
 use craft\base\Component;
-
+use craft\base\Field;
+use craft\db\Table;
+use craft\events\ConfigEvent;
+use craft\events\FieldEvent;
+use craft\helpers\Db;
+use craft\helpers\ProjectConfig;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
 use putyourlightson\campaign\elements\ContactElement;
 
 class ContactsService extends Component
 {
+    /**
+     * @since 2.0.0
+     */
+    public const CONFIG_CONTACTFIELDLAYOUT_KEY = 'campaign.contactFieldLayout';
+
     /**
      * Returns a contact by ID.
      */
@@ -90,5 +103,80 @@ class ContactsService extends Component
             ->status(null)
             ->trashed($trashed)
             ->one();
+    }
+
+    /**
+     * Saves the contact field layout.
+     *
+     * @since 2.0.0
+     */
+    public function saveContactFieldLayout(FieldLayout $fieldLayout): bool
+    {
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayoutConfig = $fieldLayout->getConfig();
+        $uid = StringHelper::UUID();
+
+        $projectConfig->set(self::CONFIG_CONTACTFIELDLAYOUT_KEY, [$uid => $fieldLayoutConfig], 'Save the contact field layout');
+
+        return true;
+    }
+
+    /**
+     * Handles a changed contact field layout.
+     *
+     * @since 2.0.0
+     */
+    public function handleChangedContactFieldLayout(ConfigEvent $event): void
+    {
+        $data = $event->newValue;
+
+        // Make sure all fields are processed
+        ProjectConfig::ensureAllFieldsProcessed();
+
+        $fieldsService = Craft::$app->getFields();
+
+        // Save the field layout
+        $layout = FieldLayout::createFromConfig(reset($data));
+        $layout->id = $fieldsService->getLayoutByType(ContactElement::class)->id;
+        $layout->type = ContactElement::class;
+        $layout->uid = key($data);
+        $fieldsService->saveLayout($layout);
+    }
+
+    /**
+     * Prunes a deleted field from the contact field layout.
+     *
+     * @since 2.0.0
+     */
+    public function pruneDeletedField(FieldEvent $event): void
+    {
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayouts = $projectConfig->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY);
+
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
+
+        // Prune the field layout
+        if (is_array($fieldLayouts)) {
+            foreach ($fieldLayouts as $layoutUid => $layout) {
+                if (!empty($layout['tabs'])) {
+                    foreach ($layout['tabs'] as $tabUid => $tab) {
+                        $projectConfig->remove(self::CONFIG_CONTACTFIELDLAYOUT_KEY . '.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
+                    }
+                }
+            }
+        }
+
+        // Nuke all the layout fields from the DB
+        Db::delete(Table::FIELDLAYOUTFIELDS, [
+            'fieldId' => $field->id,
+        ]);
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 }

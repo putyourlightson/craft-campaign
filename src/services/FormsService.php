@@ -18,6 +18,7 @@ use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
 
 use putyourlightson\campaign\helpers\ContactActivityHelper;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use Twig\Error\Error;
@@ -242,10 +243,10 @@ class FormsService extends Component
     public function _sendEmail(string $email, string $subject, string $htmlBody, string $plaintextBody, int $siteId): bool
     {
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail($siteId);
+        $fromNameEmail = SettingsHelper::getFromNameEmail($siteId);
 
         // Create message using the mailer for verification emails
-        $mailer = Campaign::$plugin->settingsService->getMailerForVerificationEmails();
+        $mailer = SettingsHelper::getMailerForVerificationEmails();
         $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($email)

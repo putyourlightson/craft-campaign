@@ -18,6 +18,7 @@ use craft\web\UrlManager;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\SendoutHelper;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -54,7 +55,7 @@ class SettingsController extends Controller
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'phpBinPath' => '/usr/bin/php',
-            'isDynamicWebAliasUsed' => Campaign::$plugin->settingsService->isDynamicWebAliasUsed(),
+            'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed(),
         ]);
     }
 
@@ -111,7 +112,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/email', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'siteOptions' => Campaign::$plugin->settingsService->getSiteOptions(),
+            'siteOptions' => SettingsHelper::getSiteOptions(),
             'adapter' => $adapter,
             'allTransportAdapters' => $allTransportAdapters,
             'transportTypeOptions' => $transportTypeOptions,
@@ -207,7 +208,7 @@ class SettingsController extends Controller
         $settings->mailgunWebhookSigningKey = $this->request->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
 
         // Save it
-        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save general settings.'), 'settings');
         }
 
@@ -231,7 +232,7 @@ class SettingsController extends Controller
         $adapter->validate();
 
         // Save it
-        if ($adapter->hasErrors() || !Campaign::$plugin->settingsService->saveSettings($settings)) {
+        if ($adapter->hasErrors() || !Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save email settings.'), 'settings', [], [
                 'adapter' => $adapter,
             ]);
@@ -256,8 +257,8 @@ class SettingsController extends Controller
         $fieldLayout->type = ContactElement::class;
 
         // Save it
-        if (!Campaign::$plugin->settingsService->saveSettings($settings)
-            || !Campaign::$plugin->settingsService->saveContactFieldLayout($fieldLayout)
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())
+            || !Campaign::$plugin->contacts->saveContactFieldLayout($fieldLayout)
         ) {
             return $this->asFailure(Craft::t('campaign', 'Couldn’t save contact settings.'));
         }
@@ -280,7 +281,7 @@ class SettingsController extends Controller
         $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit);
 
         // Save it
-        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save sendout settings.'), 'settings');
         }
 
@@ -301,7 +302,7 @@ class SettingsController extends Controller
         $settings->ipstackApiKey = $this->request->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
 
         // Save it
-        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save GeoIP settings.'), 'settings');
         }
 
@@ -324,7 +325,7 @@ class SettingsController extends Controller
         $settings->reCaptchaErrorMessage = $this->request->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
 
         // Save it
-        if (!Campaign::$plugin->settingsService->saveSettings($settings)) {
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save reCAPTCHA settings.'), 'settings');
         }
 
@@ -358,7 +359,7 @@ class SettingsController extends Controller
         $mailer = Campaign::$plugin->createMailer($settings);
 
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settingsService->getFromNameEmail();
+        $fromNameEmail = SettingsHelper::getFromNameEmail();
 
         $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
         $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');

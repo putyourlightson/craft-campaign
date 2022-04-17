@@ -11,6 +11,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -49,7 +50,7 @@ class CampaignTypesController extends Controller
         $variables = [
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType,
-            'siteOptions' => Campaign::$plugin->settingsService->getSiteOptions(),
+            'siteOptions' => SettingsHelper::getSiteOptions(),
             'contactElementType' => ContactElement::class,
             'fullPageForm' => true,
         ];
