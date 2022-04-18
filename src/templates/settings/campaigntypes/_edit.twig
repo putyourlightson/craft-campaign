@@ -59,6 +59,14 @@
         <input type="hidden" name="siteId" value="{{ currentSite.id }}" />
     {% endif %}
 
+    {{ forms.lightswitchField({
+        label: "Campaign status by default"|t('campaign'),
+        instructions: "Whether campaign is enabled by default."|t('campaign'),
+        name: 'defaultStatus',
+        on: campaignType.defaultStatus,
+        errors: campaignType.getErrors('defaultStatus'),
+    }) }}
+
     <hr>
 
     {{ forms.textField({

@@ -29,8 +29,12 @@ class CampaignsController extends Controller
      * @see CategoriesController::actionCreate()
      * @since 2.0.0
      */
-    public function actionCreate(string $campaignTypeHandle): Response
+    public function actionCreate(?string $campaignTypeHandle = null): Response
     {
+        if (!$campaignTypeHandle) {
+            $campaignTypeHandle = $this->request->getRequiredBodyParam('campaignTypeHandle');
+        }
+        
         $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
         if (!$campaignType) {
             throw new BadRequestHttpException("Invalid campaign type handle: $campaignTypeHandle");
@@ -46,6 +50,8 @@ class CampaignsController extends Controller
         $campaign = Craft::createObject(CampaignElement::class);
         $campaign->siteId = $site->id;
         $campaign->campaignTypeId = $campaignType->id;
+        $campaign->enabled = $campaignType->defaultStatus;
+        $campaign->setEnabledForSite(true);
 
         // Make sure the user is allowed to create this campaign
         $user = Craft::$app->getUser()->getIdentity();

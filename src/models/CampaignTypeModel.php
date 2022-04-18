@@ -57,6 +57,11 @@ class CampaignTypeModel extends Model
     public ?string $handle = null;
 
     /**
+     * @var bool Campaign status by default
+     */
+    public bool $defaultStatus = true;
+
+    /**
      * @var string|null URI format
      */
     public ?string $uriFormat = null;

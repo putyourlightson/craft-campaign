@@ -89,6 +89,7 @@ class CampaignTypesController extends Controller
         $campaignType->siteId = $this->request->getBodyParam('siteId', $campaignType->siteId);
         $campaignType->name = $this->request->getBodyParam('name', $campaignType->name);
         $campaignType->handle = $this->request->getBodyParam('handle', $campaignType->handle);
+        $campaignType->defaultStatus = $this->request->getBodyParam('defaultStatus', $campaignType->defaultStatus);
         $campaignType->uriFormat = $this->request->getBodyParam('uriFormat', $campaignType->uriFormat);
         $campaignType->htmlTemplate = $this->request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
         $campaignType->plaintextTemplate = $this->request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);

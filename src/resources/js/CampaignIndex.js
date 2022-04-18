@@ -76,7 +76,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                     .appendTo(this.$newCampaignBtnGroup);
 
                 this.addListener(this.$newCampaignBtn, 'click', () => {
-                    this._createCampaign(selectedCampaignType.id);
+                    this._createCampaign(selectedCampaignType.handle);
                 });
 
                 if (this.editableCampaignTypes.length > 1) {
@@ -122,7 +122,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                         }).appendTo($li);
                         this.addListener($a, 'click', () => {
                             $menuBtn.data('trigger').hide();
-                            this._createCampaign(campaignType.id);
+                            this._createCampaign(campaignType.handle);
                         });
                     }
                 }
@@ -146,35 +146,34 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         }
     },
 
-    _createCampaign: function(campaignTypeId) {
+    _createCampaign: function(campaignTypeHandle) {
         if (this.$newCampaignBtn.hasClass('loading')) {
             console.warn('New campaign creation already in progress.');
             return;
         }
 
         // Find the campaign type
-        const campaignType = this.editableCampaignTypes.find(s => s.id === campaignTypeId);
+        const campaignType = this.editableCampaignTypes.find(s => s.handle === campaignTypeHandle);
 
         if (!campaignType) {
-            throw `Invalid campaign type ID: ${campaignTypeId}`;
+            throw `Invalid campaign type handle: ${campaignTypeHandle}`;
         }
 
         this.$newCampaignBtn.addClass('loading');
 
-        Craft.sendActionRequest('POST', 'elements/create', {
+        Craft.sendActionRequest('POST', 'campaign/campaigns/create', {
             data: {
-                elementType: this.elementType,
                 siteId: this.siteId,
-                campaignTypeId: campaignTypeId,
+                campaignTypeHandle: campaignTypeHandle,
             },
-        }).then(ev => {
+        }).then(({data}) => {
             if (this.settings.context === 'index') {
-                document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
+                document.location.href = Craft.getUrl(data.cpEditUrl, {fresh: 1});
             } else {
                 const slideout = Craft.createElementEditor(this.elementType, {
                     siteId: this.siteId,
-                    elementId: ev.data.element.id,
-                    draftId: ev.data.element.draftId,
+                    elementId: data.campaign.id,
+                    draftId: data.campaign.draftId,
                     params: {
                         fresh: 1,
                     },
@@ -187,7 +186,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                         this.selectSourceByKey(campaignTypeSourceKey);
                     }
 
-                    this.selectElementAfterUpdate(ev.data.element.id);
+                    this.selectElementAfterUpdate(data.campaign.id);
                     this.updateElements();
                 });
             }

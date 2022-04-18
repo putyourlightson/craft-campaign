@@ -98,6 +98,7 @@ class Install extends Migration
                 'fieldLayoutId' => $this->integer(),
                 'name' => $this->string()->notNull(),
                 'handle' => $this->string()->notNull(),
+                'defaultStatus' => $this->boolean()->defaultValue(true)->notNull(),
                 'uriFormat' => $this->text(),
                 'htmlTemplate' => $this->string(500),
                 'plaintextTemplate' => $this->string(500),
