@@ -110,7 +110,8 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
 
                 for (const campaignType of this.editableCampaignTypes) {
                     if (
-                        (this.settings.context === 'index' || campaignType !== selectedCampaignType)
+                        (this.settings.context === 'index' && this.siteId == campaignType.siteId) ||
+                        (this.settings.context !== 'index' && campaignType != selectedCampaignType)
                     ) {
                         const $li = $('<li/>').appendTo($ul);
                         const $a = $('<a/>', {
