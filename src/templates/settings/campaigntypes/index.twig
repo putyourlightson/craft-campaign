@@ -1,11 +1,19 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% set title = 'Campaign Types'|t('campaign') %}
-
 {% set crumbs = [] %}
 
-{% set campaignTypes = craft.campaign.getAllCampaignTypes() %}
-{% set isMultiSite = craft.app.getIsMultiSite() %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') %}
+
+{% do view.registerTranslations('app', [
+    'Name',
+    'Handle',
+    'Site',
+]) %}
+{% do view.registerTranslations('campaign', [
+    'Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it. This action cannot be undone.',
+    'No campaign types exist.',
+]) %}
 
 
 {% block actionButton %}
@@ -14,42 +22,36 @@
 
 
 {% block content %}
-    <div id="nocampaigntypes"{% if campaignTypes|length %}class="hidden"{% endif %}>
-        <p>{{ "No campaign types exist."|t('campaign') }}</p>
-    </div>
-
-    {% if campaignTypes|length %}
-        <table id="campaigntypes" class="data fullwidth collapsible">
-            <thead>
-                <th scope="col">{{ "Name"|t('app') }}</th>
-                <th scope="col">{{ "Handle"|t('app') }}</th>
-                {% if isMultiSite %}
-                    <th scope="col">{{ "Site"|t('app') }}</th>
-                {% endif %}
-                <td class="thin"></td>
-                <td class="thin"></td>
-            </thead>
-            <tbody>
-            {% for campaignType in campaignTypes %}
-                <tr data-id="{{ campaignType.id }}" data-name="{{ campaignType.name }}">
-                    <th scope="row" data-title="{{ 'Name'|t('app') }}"><a href="{{ campaignType.cpEditUrl }}">{{ campaignType.name }}</a></th>
-                    <td data-title="{{ 'Handle'|t('app') }}"><code>{{ campaignType.handle }}</code></td>
-                    {% if isMultiSite %}
-                        <td data-title="{{ 'Site'|t('app') }}">{{ campaignType.getSite().name }}</td>
-                    {% endif %}
-                    <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+    <div id="campaigntypes-vue-admin-table"></div>
 {% endblock %}
 
 
+{% set tableData = [] %}
+{% for campaignType in craft.campaign.getAllCampaignTypes() %}
+    {% set tableData = tableData|merge([{
+        id: campaignType.id,
+        title: campaignType.name,
+        url: campaignType.cpEditUrl,
+        handle: campaignType.handle|e,
+        site: campaignType.site.name,
+    }]) %}
+{% endfor %}
+
 {% js %}
-new Craft.AdminTable({
-    tableSelector: '#campaigntypes',
-    deleteAction: 'campaign/campaign-types/delete',
-    confirmDeleteMessage: '{{ 'Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it. This action cannot be undone.'|t('campaign') }}',
-});
+    var columns = [
+        { name: '__slot:title', title: Craft.t('app', 'Name') },
+        { name: '__slot:handle', title: Craft.t('app', 'Handle') },
+    ];
+    {% if craft.app.getIsMultiSite() %}
+        columns.push({ name: 'site', title: Craft.t('app', 'Site') });
+    {% endif %}
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#campaigntypes-vue-admin-table',
+        deleteAction: 'campaign/campaign-types/delete',
+        deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it. This action cannot be undone.'),
+        emptyMessage: Craft.t('campaign', 'No campaign types exist.'),
+        tableData: {{ tableData|json_encode|raw }}
+    });
 {% endjs %}

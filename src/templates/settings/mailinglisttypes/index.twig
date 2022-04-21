@@ -1,11 +1,19 @@
 {% extends 'campaign/settings/_layout' %}
 
 {% set title = 'Mailing List Types'|t('campaign') %}
-
-{% set mailingListTypes = craft.campaign.getAllMailingListTypes() %}
-{% set isMultiSite = craft.app.getIsMultiSite() %}
-
 {% set crumbs = [] %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') %}
+
+{% do view.registerTranslations('app', [
+    'Name',
+    'Handle',
+    'Site',
+]) %}
+{% do view.registerTranslations('campaign', [
+    'Are you sure you want to delete “{name}”? This will also delete all of the mailing lists that use it. This action cannot be undone.',
+    'No mailing list types exist.',
+]) %}
 
 
 {% block actionButton %}
@@ -14,42 +22,35 @@
 
 
 {% block content %}
-    <div id="nomailinglisttypes"{% if mailingListTypes|length %}class="hidden"{% endif %}>
-        <p>{{ "No mailing list types exist."|t('campaign') }}</p>
-    </div>
-
-    {% if mailingListTypes|length %}
-        <table id="mailinglisttypes" class="data fullwidth collapsible">
-            <thead>
-                <th scope="col">{{ "Name"|t('app') }}</th>
-                <th scope="col">{{ "Handle"|t('app') }}</th>
-                {% if isMultiSite %}
-                    <th scope="col">{{ "Site"|t('app') }}</th>
-                {% endif %}
-                <td class="thin"></td>
-                <td class="thin"></td>
-            </thead>
-            <tbody>
-            {% for mailingListType in mailingListTypes %}
-                <tr data-id="{{ mailingListType.id }}" data-name="{{ mailingListType.name }}">
-                    <th scope="row" data-title="{{ 'Name'|t('app') }}"><a href="{{ mailingListType.cpEditUrl }}">{{ mailingListType.name }}</a></th>
-                    <td data-title="{{ 'Handle'|t('app') }}"><code>{{ mailingListType.handle }}</code></td>
-                    {% if isMultiSite %}
-                        <td data-title="{{ 'Site'|t('app') }}">{{ mailingListType.getSite().name }}</td>
-                    {% endif %}
-                    <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+    <div id="mailinglisttypes-vue-admin-table"></div>
 {% endblock %}
 
+{% set tableData = [] %}
+{% for mailingListType in craft.campaign.getAllMailingListTypes() %}
+    {% set tableData = tableData|merge([{
+        id: mailingListType.id,
+        title: mailingListType.name,
+        url: mailingListType.cpEditUrl,
+        handle: mailingListType.handle|e,
+        site: mailingListType.site.name,
+    }]) %}
+{% endfor %}
 
 {% js %}
-    new Craft.AdminTable({
-        tableSelector: '#mailinglisttypes',
+    var columns = [
+        { name: '__slot:title', title: Craft.t('app', 'Name') },
+        { name: '__slot:handle', title: Craft.t('app', 'Handle') },
+    ];
+    {% if craft.app.getIsMultiSite() %}
+        columns.push({ name: 'site', title: Craft.t('app', 'Site') });
+    {% endif %}
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#mailinglisttypes-vue-admin-table',
         deleteAction: 'campaign/mailing-list-types/delete',
-        confirmDeleteMessage: '{{ 'Are you sure you want to delete “{name}”? This will also delete all of the mailing lists that use it. This action cannot be undone.'|t('campaign') }}',
+        deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to delete “{name}”? This will also delete all of the mailing lists that use it. This action cannot be undone.'),
+        emptyMessage: Craft.t('campaign', 'No mailing list types exist.'),
+        tableData: {{ tableData|json_encode|raw }}
     });
 {% endjs %}
