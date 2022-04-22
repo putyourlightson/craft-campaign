@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.0-beta.3 - Unreleased
+### Added
+- Added a list of failed contacts to sendouts that have failed ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
+
 ## 2.0.0-beta.2 - 2022-04-17
 ### Added
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).

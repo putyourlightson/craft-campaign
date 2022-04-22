@@ -57,6 +57,7 @@ use yii\web\Response;
  * @property-read null|CampaignElement $campaign
  * @property-read string $progress
  * @property-read ContactElement[] $contacts
+ * @property-read ContactElement[] $failedContacts
  * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
@@ -435,6 +436,11 @@ class SendoutElement extends Element
     public ?array $contactIds = null;
 
     /**
+     * @var array|null Failed contact IDs
+     */
+    public ?array $failedContactIds = null;
+
+    /**
      * @var array|null Mailing list IDs
      */
     public ?array $mailingListIds = null;
@@ -498,6 +504,11 @@ class SendoutElement extends Element
      * @var ContactElement[]|null
      */
     private ?array $_contacts = null;
+
+    /**
+     * @var ContactElement[]|null
+     */
+    private ?array $_failedContacts = null;
 
     /**
      * @var MailingListElement[]|null
@@ -566,7 +577,7 @@ class SendoutElement extends Element
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         // Safe rules
-        $rules[] = [['campaignIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail', 'schedule'], 'safe'];
+        $rules[] = [['campaignIds', 'failedContactIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail', 'schedule'], 'safe'];
 
         return $rules;
     }
@@ -847,6 +858,22 @@ class SendoutElement extends Element
         $this->_contacts = Campaign::$plugin->contacts->getContactsByIds($this->contactIds);
 
         return $this->_contacts;
+    }
+
+    /**
+     * Returns the sendout's failed contacts.
+     *
+     * @return ContactElement[]
+     */
+    public function getFailedContacts(): array
+    {
+        if ($this->_failedContacts !== null) {
+            return $this->_failedContacts;
+        }
+
+        $this->_failedContacts = Campaign::$plugin->contacts->getContactsByIds($this->failedContactIds);
+
+        return $this->_failedContacts;
     }
 
     /**
@@ -1150,6 +1177,7 @@ class SendoutElement extends Element
             $this->sendStatus = self::STATUS_DRAFT;
             $this->recipients = 0;
             $this->fails = 0;
+            $this->failedContactIds = null;
             $this->sendDate = null;
             $this->lastSent = null;
         }

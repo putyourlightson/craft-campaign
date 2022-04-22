@@ -260,6 +260,7 @@ class Install extends Migration
                 'subject' => $this->text(),
                 'notificationEmailAddress' => $this->string(),
                 'contactIds' => $this->text(),
+                'failedContactIds' => $this->text(),
                 'mailingListIds' => $this->text(),
                 'excludedMailingListIds' => $this->text(),
                 'segmentIds' => $this->text(),

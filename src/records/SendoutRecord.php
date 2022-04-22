@@ -21,6 +21,7 @@ use DateTime;
  * @property string $subject Subject
  * @property string $notificationEmailAddress Notification email address
  * @property array $contactIds Contact IDs
+ * @property array $failedContactIds Failed contact IDs
  * @property array $mailingListIds Mailing list IDs
  * @property array $excludedMailingListIds Excluded mailing list IDs
  * @property array $segmentIds Segment IDs
