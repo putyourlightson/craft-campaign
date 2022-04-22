@@ -2,7 +2,7 @@
 
 ## 2.0.0-beta.3 - Unreleased
 ### Added
-- Added a list of failed contacts to sendouts that have failed ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
+- Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
 
 ### Changed
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
