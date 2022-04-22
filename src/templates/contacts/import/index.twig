@@ -12,7 +12,23 @@
 {% for field in craft.campaign.settings.getContactFields() %}
     {% set contactFieldNames = contactFieldNames|merge([field.name ~ (field.required ? ' [' ~ 'required'|t('campaign') ~ ']')]) %}
 {% endfor %}
-{% set imports = craft.campaign.getAllImports() %}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') %}
+
+{% do view.registerTranslations('campaign', [
+    'Import',
+    'Source',
+    'Mailing List',
+    'Force Subscribe',
+    'Added',
+    'Fails',
+    'Updated',
+    'Date Imported',
+    'Are you sure you want to delete this import? This will NOT delete the contacts that have already been imported.',
+    'Couldn’t delete import.',
+    'Import successfully deleted.',
+    'No imports exist.',
+]) %}
 
 
 {% block content %}
@@ -60,70 +76,75 @@
         </form>
     {% endif %}
 
-    {% if imports|length %}
-        <hr/>
-        <h1>Import History</h1>
-
-        <table id="imports" class="data fullwidth collapsible">
-            <thead>
-                <th scope="col">{{ "Import"|t('campaign') }}</th>
-                <th scope="col">{{ "Source"|t('campaign') }}</th>
-                <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
-                <th scope="col">{{ "Force Subscribe"|t('campaign') }}</th>
-                <th scope="col">{{ "Added"|t('campaign') }}</th>
-                <th scope="col">{{ "Fails"|t('campaign') }}</th>
-                <th scope="col">{{ "Updated"|t('campaign') }}</th>
-                <th scope="col">{{ "Date Imported"|t('campaign') }}</th>
-                <td class="thin"></td>
-            </thead>
-            <tbody>
-            {% for import in imports %}
-                {% set userGroup = import.getUserGroup() %}
-                <tr data-id="{{ import.id }}" data-name="{{ import.fileName }}">
-                    <th scope="row" data-title="{{ 'Source'|t('campaign') }}"><a href="{{ import.cpViewUrl }}">{{ import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign') }}</a></th>
-                    <td>
-                        {% if import.fileName %}
-                            <a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}" class="go" target="_blank">{{ import.fileName }}</a>
-                        {% elseif userGroup is not null %}
-                            <a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup.name }}</a>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% set mailingList = import.getMailingList() %}
-                        {% if mailingList %}
-                            <a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a></td>
-                        {% else %}
-                            -
-                        {% endif %}
-                    <td>
-                        {{ forms.lightswitch({
-                            name: 'forceSubscribe',
-                            on: import.forceSubscribe,
-                            disabled: true
-                        }) }}
-                    </td>
-                    <td>{{ import.added }}</td>
-                    <td>{{ import.fails }}</td>
-                    <td>{{ import.updated|datetime('short') }}</td>
-                    <td>{{ import.dateImported|datetime('short') }}</td>
-                    <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}" role="button"></a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+    <hr/>
+    <h1>{{ 'Import History'|t('campaign') }}</h1>
+    <div id="imports-vue-admin-table"></div>
 
 {% endblock %}
 
+{% set tableData = [] %}
+{% for import in craft.campaign.getAllImports() %}
+    {% set source = '' %}
+    {% if import.fileName %}
+        {% set source = tag('a', {
+            text: import.fileName|e,
+            href: actionUrl('campaign/imports/download-file', { importId: import.id }),
+            class: 'go',
+            target: '_blank',
+        }) %}
+    {% else %}
+        {% set userGroup = import.getUserGroup() %}
+        {% if userGroup %}
+            {% set source = tag('a', {
+                text: userGroup.name|e,
+                href: cpUrl('users'),
+                class: 'go',
+                target: '_blank',
+            }) %}
+        {% endif %}
+    {% endif %}
+    {% set mailingList = import.getMailingList() %}
+    {% set tableData = tableData|merge([{
+        id: import.id,
+        title: import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign'),
+        url: import.cpViewUrl,
+        source: source,
+        mailingList: tag('a', {
+            text: mailingList.title,
+            href: mailingList.cpEditUrl,
+            class: 'go',
+            target: '_blank',
+        }),
+        forceSubscribe: forms.lightswitch({
+            on: import.forceSubscribe,
+            disabled: true,
+        }),
+        added: import.added,
+        fails: import.fails,
+        updated: import.updated|datetime('short'),
+        dateImported: import.dateImported|datetime('short'),
+    }]) %}
+{% endfor %}
 
 {% js %}
-new Craft.AdminTable({
-    tableSelector: '#imports',
-    sortable: true,
-    deleteAction: 'campaign/imports/delete',
-    confirmDeleteMessage: '{{ 'Are you sure you want to delete this import? This will NOT delete the contacts that have already been imported.'|t('campaign') }}',
-    deleteSuccessMessage: '{{ 'Import successfully deleted.'|t('campaign') }}',
-});
+    new Craft.VueAdminTable({
+        fullPane: false,
+        columns: [
+            { name: '__slot:title', title: Craft.t('campaign', 'Import') },
+            { name: 'source', title: Craft.t('campaign', 'Source') },
+            { name: 'mailingList', title: Craft.t('campaign', 'Mailing List') },
+            { name: 'forceSubscribe', title: Craft.t('campaign', 'Force Subscribe') },
+            { name: 'added', title: Craft.t('campaign', 'Added') },
+            { name: 'fails', title: Craft.t('campaign', 'Fails') },
+            { name: 'updated', title: Craft.t('campaign', 'Updated') },
+            { name: 'dateImported', title: Craft.t('campaign', 'Date Imported') },
+        ],
+        container: '#imports-vue-admin-table',
+        deleteAction: 'campaign/imports/delete',
+        deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to delete this import? This will NOT delete the contacts that have already been imported.'),
+        deleteFailMessage: Craft.t('campaign', 'Couldn’t delete import.'),
+        deleteSuccessMessage: Craft.t('campaign', 'Import successfully deleted.'),
+        emptyMessage: Craft.t('campaign', 'No imports exist.'),
+        tableData: {{ tableData|json_encode|raw }}
+    });
 {% endjs %}

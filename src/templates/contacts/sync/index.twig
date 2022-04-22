@@ -10,8 +10,17 @@
 
 {% set title = 'Sync'|t('campaign') %}
 {% set crumbs = [] %}
-{% set syncedMailingLists = craft.campaign.getMailingLists().synced().all() %}
 
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') %}
+
+{% do view.registerTranslations('campaign', [
+    'Mailing List',
+    'User Group',
+    'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.',
+    'Couldn’t remove syncing.',
+    'Syncing successfully removed.',
+    'No synced mailing lists exist.',
+]) %}
 
 {% block content %}
 
@@ -56,38 +65,42 @@
         <p>{{ "No user groups exist."|t('campaign') }}</p>
     {% endif %}
 
-    {% if syncedMailingLists|length %}
-        <hr/>
-        <h1>{{ 'Synced Mailing Lists'|t('campaign') }}</h1>
-
-        <table id="syncedMailingLists" class="data fullwidth collapsible">
-            <thead>
-                <th scope="col">{{ "Mailing List"|t('campaign') }}</th>
-                <th scope="col">{{ "User Group"|t('campaign') }}</th>
-                <td class="thin"></td>
-            </thead>
-            <tbody>
-            {% for mailingList in syncedMailingLists %}
-                {% set userGroup = mailingList.getSyncedUserGroup() %}
-                <tr data-id="{{ mailingList.id }}" data-name="{{ mailingList.title }}">
-                    <td data-title="{{ 'Mailing List'|t('campaign') }}"><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a></td>
-                    <td data-title="{{ 'User Group'|t('campaign') }}"><a href="{{ url('users') }}" class="go" target="_blank">{{ userGroup.name }}</a></td>
-                    <td class="thin"><a class="delete icon" title="{{ 'Remove'|t('campaign') }}" role="button"></a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+    <hr/>
+    <h1>{{ 'Synced Mailing Lists'|t('campaign') }}</h1>
+    <div id="syncedMailingLists-vue-admin-table"></div>
 
 {% endblock %}
 
 
+{% set tableData = [] %}
+{% for mailingList in craft.campaign.getMailingLists().synced().all() %}
+    {% set userGroup = mailingList.getSyncedUserGroup() %}
+    {% set tableData = tableData|merge([{
+        id: mailingList.id,
+        title: mailingList.title,
+        url: mailingList.cpEditUrl,
+        userGroup: tag('a', {
+            text: userGroup.name|e,
+            href: cpUrl('users'),
+            class: 'go',
+            target: '_blank',
+        }),
+    }]) %}
+{% endfor %}
+
 {% js %}
-new Craft.AdminTable({
-    tableSelector: '#syncedMailingLists',
-    sortable: true,
-    deleteAction: 'campaign/sync/remove-synced-mailing-list',
-    confirmDeleteMessage: '{{ 'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.'|t('campaign') }}',
-    deleteSuccessMessage: '{{ 'Syncing successfully removed.'|t('campaign') }}',
-});
+    new Craft.VueAdminTable({
+        fullPane: false,
+        columns: [
+            { name: '__slot:title', title: Craft.t('campaign', 'Mailing List') },
+            { name: 'userGroup', title: Craft.t('campaign', 'User Group') },
+        ],
+        container: '#syncedMailingLists-vue-admin-table',
+        deleteAction: 'campaign/sync/remove-synced-mailing-list',
+        deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to remove syncing between this mailing list and user group? This will NOT delete any contacts that already exist.'),
+        deleteFailMessage: Craft.t('campaign', 'Couldn’t remove syncing.'),
+        deleteSuccessMessage: Craft.t('campaign', 'Syncing successfully removed.'),
+        emptyMessage: Craft.t('campaign', 'No synced mailing lists exist.'),
+        tableData: {{ tableData|json_encode|raw }}
+    });
 {% endjs %}

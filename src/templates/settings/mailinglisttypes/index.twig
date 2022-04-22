@@ -22,32 +22,31 @@
 
 
 {% block content %}
-    <div id="mailinglisttypes-vue-admin-table"></div>
+    <div id="mailingListTypes-vue-admin-table"></div>
 {% endblock %}
 
 {% set tableData = [] %}
 {% for mailingListType in craft.campaign.getAllMailingListTypes() %}
     {% set tableData = tableData|merge([{
         id: mailingListType.id,
+        name: mailingListType.name|e,
         title: mailingListType.name,
         url: mailingListType.cpEditUrl,
         handle: mailingListType.handle|e,
-        site: mailingListType.site.name,
+        site: mailingListType.site.name|e,
     }]) %}
 {% endfor %}
 
 {% js %}
-    var columns = [
-        { name: '__slot:title', title: Craft.t('app', 'Name') },
-        { name: '__slot:handle', title: Craft.t('app', 'Handle') },
-    ];
-    {% if craft.app.getIsMultiSite() %}
-        columns.push({ name: 'site', title: Craft.t('app', 'Site') });
-    {% endif %}
-
     new Craft.VueAdminTable({
-        columns: columns,
-        container: '#mailinglisttypes-vue-admin-table',
+        columns: [
+            { name: '__slot:title', title: Craft.t('app', 'Name') },
+            { name: '__slot:handle', title: Craft.t('app', 'Handle') },
+            {% if craft.app.getIsMultiSite() %}
+                { name: 'site', title: Craft.t('app', 'Site') },
+            {% endif %}
+        ],
+        container: '#mailingListTypes-vue-admin-table',
         deleteAction: 'campaign/mailing-list-types/delete',
         deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to delete “{name}”? This will also delete all of the mailing lists that use it. This action cannot be undone.'),
         emptyMessage: Craft.t('campaign', 'No mailing list types exist.'),

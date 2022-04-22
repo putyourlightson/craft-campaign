@@ -22,7 +22,7 @@
 
 
 {% block content %}
-    <div id="campaigntypes-vue-admin-table"></div>
+    <div id="campaignTypes-vue-admin-table"></div>
 {% endblock %}
 
 
@@ -30,25 +30,24 @@
 {% for campaignType in craft.campaign.getAllCampaignTypes() %}
     {% set tableData = tableData|merge([{
         id: campaignType.id,
+        name: campaignType.name|e,
         title: campaignType.name,
         url: campaignType.cpEditUrl,
         handle: campaignType.handle|e,
-        site: campaignType.site.name,
+        site: campaignType.site.name|e,
     }]) %}
 {% endfor %}
 
 {% js %}
-    var columns = [
-        { name: '__slot:title', title: Craft.t('app', 'Name') },
-        { name: '__slot:handle', title: Craft.t('app', 'Handle') },
-    ];
-    {% if craft.app.getIsMultiSite() %}
-        columns.push({ name: 'site', title: Craft.t('app', 'Site') });
-    {% endif %}
-
     new Craft.VueAdminTable({
-        columns: columns,
-        container: '#campaigntypes-vue-admin-table',
+        columns: [
+            { name: '__slot:title', title: Craft.t('app', 'Name') },
+            { name: '__slot:handle', title: Craft.t('app', 'Handle') },
+            {% if craft.app.getIsMultiSite() %}
+                { name: 'site', title: Craft.t('app', 'Site') },
+            {% endif %}
+        ],
+        container: '#campaignTypes-vue-admin-table',
         deleteAction: 'campaign/campaign-types/delete',
         deleteConfirmationMessage: Craft.t('campaign', 'Are you sure you want to delete “{name}”? This will also delete all of the campaigns that use it. This action cannot be undone.'),
         emptyMessage: Craft.t('campaign', 'No campaign types exist.'),
