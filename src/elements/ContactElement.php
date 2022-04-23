@@ -481,14 +481,6 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
-     */
-    public function getSupportedSites(): array
-    {
-        return Craft::$app->getSites()->getAllSiteIds();
-    }
-
-    /**
-     * @inheritdoc
      * @since 2.0.0
      */
     public function canView(User $user): bool
@@ -743,9 +735,6 @@ class ContactElement extends Element
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'contacts';
-
-        // Remove the context menu, which would otherwise display a site selector.
-        $response->contextMenu(null);
 
         $response->crumbs([
             [
