@@ -7,6 +7,10 @@
 ### Changed
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
 
+### Fixed
+- Fixed site switching issues with element types.
+- Fixed a bug in which contacts could not be sorted by email address.
+
 ## 2.0.0-beta.2 - 2022-04-17
 ### Added
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).

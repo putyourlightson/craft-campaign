@@ -242,7 +242,11 @@ class ContactElement extends Element
         $settings = Campaign::$plugin->settings;
 
         return [
-            'email' => $settings->getEmailFieldLabel(),
+            [
+                'label' => $settings->getEmailFieldLabel(),
+                'orderBy' => ContactRecord::tableName() . '.[[email]]',
+                'attribute' => 'title',
+            ],
             'cid' => Craft::t('campaign', 'Contact ID'),
             'subscriptionStatus' => Craft::t('campaign', 'Subscription Status'),
             'country' => Craft::t('campaign', 'Country'),
@@ -281,7 +285,7 @@ class ContactElement extends Element
      */
     protected static function defineDefaultTableAttributes(string $source): array
     {
-        $attributes = ['email'];
+        $attributes = [];
 
         if ($source !== '*') {
             $attributes[] = 'subscriptionStatus';
