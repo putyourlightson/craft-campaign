@@ -69,7 +69,7 @@ class ExportsController extends Controller
         ]);
 
         // Get storage directory path
-        $path = Craft::$app->path->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';
+        $path = Craft::$app->getPath()->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';
 
         // Create directory
         FileHelper::createDirectory($path);

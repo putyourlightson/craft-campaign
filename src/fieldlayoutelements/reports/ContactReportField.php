@@ -20,7 +20,7 @@ class ContactReportField extends BaseReportField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/reports/contacts/_includes/report',
             [
                 'contact' => $element->getCanonical(),

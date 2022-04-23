@@ -20,7 +20,7 @@ class CampaignReportField extends BaseReportField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/reports/campaigns/_includes/report',
             [
                 'campaign' => $element->getCanonical(),

@@ -45,7 +45,7 @@ class MailingListContactField extends BaseNativeField
         $contacts = $contactsQuery->all();
         $total = $contactsQuery->count();
 
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/mailinglists/_includes/contacts',
             [
                 'mailingList' => $element->getCanonical(),

@@ -40,7 +40,7 @@ class Install extends Migration
             $this->addForeignKeys();
 
             // Refresh the db schema caches
-            Craft::$app->db->schema->refresh();
+            Craft::$app->getDb()->schema->refresh();
         }
 
         return true;
@@ -382,9 +382,9 @@ class Install extends Migration
      */
     protected function deleteFieldLayouts(): void
     {
-        Craft::$app->fields->deleteLayoutsByType(CampaignElement::class);
-        Craft::$app->fields->deleteLayoutsByType(MailingListElement::class);
-        Craft::$app->fields->deleteLayoutsByType(ContactElement::class);
+        Craft::$app->getFields()->deleteLayoutsByType(CampaignElement::class);
+        Craft::$app->getFields()->deleteLayoutsByType(MailingListElement::class);
+        Craft::$app->getFields()->deleteLayoutsByType(ContactElement::class);
     }
 
     /**

@@ -77,7 +77,7 @@ class SendoutField extends BaseNativeField
             ];
         }
 
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/sendouts/_includes/fields',
             $variables,
         );

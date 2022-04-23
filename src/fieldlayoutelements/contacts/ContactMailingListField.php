@@ -38,7 +38,7 @@ class ContactMailingListField extends BaseNativeField
     {
         Craft::$app->getView()->registerAssetBundle(ContactEditAsset::class);
 
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/contacts/_includes/mailinglists',
             [
                 'contact' => $element->getCanonical(),

@@ -104,7 +104,7 @@ class SettingsHelper
     public static function getMailerForVerificationEmails(): Mailer
     {
         if (Campaign::$plugin->settings->sendVerificationEmailsViaCraft) {
-            return Craft::$app->mailer;
+            return Craft::$app->getMailer();
         }
 
         return Campaign::$plugin->mailer;

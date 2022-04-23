@@ -180,7 +180,7 @@ class CampaignTypeModel extends Model
 
         if (empty($testContacts)) {
             /** @var User|null $currentUser */
-            $currentUser = Craft::$app->user->getIdentity();
+            $currentUser = Craft::$app->getUser()->getIdentity();
 
             if ($currentUser !== null) {
                 $contact = Campaign::$plugin->contacts->getContactByEmail(
@@ -207,7 +207,7 @@ class CampaignTypeModel extends Model
 
         // Return whether both templates exist.
         return $this->htmlTemplate !== null && $this->plaintextTemplate !== null
-            && Craft::$app->view->doesTemplateExist($this->htmlTemplate, View::TEMPLATE_MODE_SITE)
-            && Craft::$app->view->doesTemplateExist($this->plaintextTemplate, View::TEMPLATE_MODE_SITE);
+            && Craft::$app->getView()->doesTemplateExist($this->htmlTemplate, View::TEMPLATE_MODE_SITE)
+            && Craft::$app->getView()->doesTemplateExist($this->plaintextTemplate, View::TEMPLATE_MODE_SITE);
     }
 }

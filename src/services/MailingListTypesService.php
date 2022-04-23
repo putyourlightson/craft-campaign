@@ -188,7 +188,7 @@ class MailingListTypesService extends Component
 
         // Save it to project config
         $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
-        Craft::$app->projectConfig->set($path, $configData);
+        Craft::$app->getProjectConfig()->set($path, $configData);
 
         // Set the ID on the mailing list type
         if ($isNew) {
@@ -319,7 +319,7 @@ class MailingListTypesService extends Component
 
         // Remove it from project config
         $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
-        Craft::$app->projectConfig->remove($path);
+        Craft::$app->getProjectConfig()->remove($path);
 
         return true;
     }

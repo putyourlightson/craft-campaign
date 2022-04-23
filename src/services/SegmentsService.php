@@ -174,7 +174,7 @@ class SegmentsService extends Component
             }
 
             if ($modified) {
-                Craft::$app->elements->saveElement($segment);
+                Craft::$app->getElements()->saveElement($segment);
             }
         }
     }
@@ -208,7 +208,7 @@ class SegmentsService extends Component
             }
 
             if ($modified) {
-                Craft::$app->elements->saveElement($segment);
+                Craft::$app->getElements()->saveElement($segment);
             }
         }
     }

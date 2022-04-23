@@ -457,7 +457,7 @@ class Campaign extends Plugin
                 if ($event->plugin === $this) {
                     // Don't proceed if plugin exists in incoming project config, otherwise updates won't be applied
                     // https://github.com/putyourlightson/craft-campaign/issues/191
-                    if (Craft::$app->projectConfig->get('plugins.campaign', true) !== null) {
+                    if (Craft::$app->getProjectConfig()->get('plugins.campaign', true) !== null) {
                         return;
                     }
 
@@ -502,14 +502,14 @@ class Campaign extends Plugin
     private function _registerProjectConfigListeners(): void
     {
         // Contact field layout
-        Craft::$app->projectConfig
+        Craft::$app->getProjectConfig()
             ->onAdd(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
             ->onUpdate(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
             ->onRemove(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout']);
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->contacts, 'pruneDeletedField']);
 
         // Campaign types
-        Craft::$app->projectConfig
+        Craft::$app->getProjectConfig()
             ->onAdd(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
@@ -517,7 +517,7 @@ class Campaign extends Plugin
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->campaignTypes, 'pruneDeletedField']);
 
         // Mailing list types types
-        Craft::$app->projectConfig
+        Craft::$app->getProjectConfig()
             ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
@@ -605,7 +605,7 @@ class Campaign extends Plugin
      */
     private function _registerTwigExtensions(): void
     {
-        Craft::$app->view->registerTwigExtension(new CampaignTwigExtension());
+        Craft::$app->getView()->registerTwigExtension(new CampaignTwigExtension());
     }
 
     /**
@@ -654,10 +654,10 @@ class Campaign extends Plugin
      */
     private function _registerAssetBundles(): void
     {
-        Craft::$app->view->registerAssetBundle(CpAsset::class);
+        Craft::$app->getView()->registerAssetBundle(CpAsset::class);
 
-        if (Craft::$app->request->getSegment(1) == 'campaign') {
-            Craft::$app->view->registerAssetBundle(CampaignAsset::class);
+        if (Craft::$app->getRequest()->getSegment(1) == 'campaign') {
+            Craft::$app->getView()->registerAssetBundle(CampaignAsset::class);
         }
     }
 

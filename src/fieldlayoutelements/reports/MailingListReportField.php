@@ -20,7 +20,7 @@ class MailingListReportField extends BaseReportField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/reports/mailinglists/_includes/report',
             [
                 'mailingList' => $element->getCanonical(),

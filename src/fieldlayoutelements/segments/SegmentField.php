@@ -36,9 +36,9 @@ class SegmentField extends BaseNativeField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        Craft::$app->view->registerAssetBundle(SegmentEditAsset::class);
+        Craft::$app->getView()->registerAssetBundle(SegmentEditAsset::class);
 
-        return Craft::$app->view->renderTemplate(
+        return Craft::$app->getView()->renderTemplate(
             'campaign/segments/_includes/segmentTypes/' . $element->segmentType,
             [
                 'segment' => $element,

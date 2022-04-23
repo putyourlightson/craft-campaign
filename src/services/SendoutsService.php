@@ -183,7 +183,7 @@ class SendoutsService extends Component
         }
 
         // Set the current site from the sendout's site ID
-        Craft::$app->sites->setCurrentSite($sendout->siteId);
+        Craft::$app->getSites()->setCurrentSite($sendout->siteId);
 
         // Get subject
         $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);

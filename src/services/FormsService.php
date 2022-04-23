@@ -64,7 +64,7 @@ class FormsService extends Component
     public function sendVerifySubscribeEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
     {
         // Set the current site from the mailing list's site ID
-        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+        Craft::$app->getSites()->setCurrentSite($mailingList->siteId);
 
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-subscribe';
         $url = UrlHelper::siteUrl($path, [
@@ -108,7 +108,7 @@ class FormsService extends Component
     public function sendVerifyUnsubscribeEmail(ContactElement $contact, MailingListElement $mailingList): bool
     {
         // Set the current site from the mailing list's site ID
-        Craft::$app->sites->setCurrentSite($mailingList->siteId);
+        Craft::$app->getSites()->setCurrentSite($mailingList->siteId);
 
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-unsubscribe';
         $url = UrlHelper::siteUrl($path, [

@@ -172,7 +172,7 @@ class CampaignTypesService extends Component
 
         // Save it to project config
         $path = self::CONFIG_CAMPAIGNTYPES_KEY . '.' . $campaignType->uid;
-        Craft::$app->projectConfig->set($path, $configData);
+        Craft::$app->getProjectConfig()->set($path, $configData);
 
         // Set the ID on the campaign type
         if ($isNew) {
@@ -303,7 +303,7 @@ class CampaignTypesService extends Component
 
         // Remove it from project config
         $path = self::CONFIG_CAMPAIGNTYPES_KEY . '.' . $campaignType->uid;
-        Craft::$app->projectConfig->remove($path);
+        Craft::$app->getProjectConfig()->remove($path);
 
         return true;
     }
