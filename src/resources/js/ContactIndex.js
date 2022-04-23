@@ -7,18 +7,13 @@
 Campaign.ContactIndex = Craft.BaseElementIndex.extend({
     $newContactBtn: null,
 
-    init: function(elementType, $container, settings) {
-        this.on('selectSource', this.updateButton.bind(this));
-        this.on('selectSite', this.updateButton.bind(this));
-        this.base(elementType, $container, settings);
+    afterInit: function() {
+        this.addNewButton();
+
+        this.base();
     },
 
-    updateButton: function() {
-        // Remove the old button, if there is one
-        if (this.$newContactBtn) {
-            this.$newContactBtn.remove();
-        }
-
+    addNewButton: function() {
         this.$newContactBtn = Craft.ui.createButton({
                 label: Craft.t('campaign', 'New contact'),
                 spinner: true,
@@ -43,14 +38,13 @@ Campaign.ContactIndex = Craft.BaseElementIndex.extend({
         Craft.sendActionRequest('POST', 'elements/create', {
             data: {
                 elementType: this.elementType,
-                siteId: this.siteId,
             },
         }).then(ev => {
             if (this.settings.context === 'index') {
                 document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
-            } else {
+            }
+            else {
                 const slideout = Craft.createElementEditor(this.elementType, {
-                    siteId: this.siteId,
                     elementId: ev.data.element.id,
                     draftId: ev.data.element.draftId,
                     params: {

@@ -9,23 +9,22 @@
 {% if tabs is not defined and (currentUser.can('campaign:importContacts') or currentUser.can('campaign:exportContacts')) %}
 
     {% set selectedTab = selectedTab ?? craft.app.request.getSegment(3) %}
-    {% set siteHandle = craft.app.request.getSegment(4) ? '/' ~ craft.app.request.getSegment(4) : '' %}
 
-    {% set tabs = {'view': {'label': 'View'|t('campaign'), 'url': url('campaign/contacts/view' ~ siteHandle)}} %}
+    {% set tabs = {'view': {'label': 'View'|t('campaign'), 'url': url('campaign/contacts/view')}} %}
 
     {% if currentUser.can('campaign:importContacts') %}
         {% set tabs = tabs|merge({
-            'import': {'label': 'Import'|t('campaign'), 'url': url('campaign/contacts/import' ~ siteHandle)}
+            'import': {'label': 'Import'|t('campaign'), 'url': url('campaign/contacts/import')}
         }) %}
     {% endif %}
     {% if currentUser.can('campaign:exportContacts') %}
         {% set tabs = tabs|merge({
-            'export': {'label': 'Export'|t('campaign'), 'url': url('campaign/contacts/export' ~ siteHandle)}
+            'export': {'label': 'Export'|t('campaign'), 'url': url('campaign/contacts/export')}
         }) %}
     {% endif %}
     {% if craft.campaign.getIsPro() and currentUser.can('campaign:syncContacts') %}
         {% set tabs = tabs|merge({
-            'sync': {'label': 'Sync'|t('campaign'), 'url': url('campaign/contacts/sync' ~ siteHandle)},
+            'sync': {'label': 'Sync'|t('campaign'), 'url': url('campaign/contacts/sync')},
         }) %}
     {% endif %}
 
@@ -35,10 +34,8 @@
 {% block contextMenu %}
 
     {% if craft.app.getIsMultiSite() %}
-        {% set segment3 = craft.app.request.getSegment(3) ? craft.app.request.getSegment(3) ~ '/' : '' %}
         {% include '_elements/sitemenu' with {
-            selectedSiteId: currentSite.id,
-            urlFormat: url('campaign/contacts/' ~ segment3 ~ '{handle}'),
+            urlFormat: cpUrl(craft.app.request.url, {site: '{handle}'}),
         } only %}
     {% endif %}
 

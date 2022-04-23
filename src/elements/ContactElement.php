@@ -740,6 +740,9 @@ class ContactElement extends Element
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'contacts';
 
+        // Remove the context menu, which would otherwise display a site selector.
+        $response->contextMenu(null);
+
         $response->crumbs([
             [
                 'label' => Craft::t('campaign', 'Contacts'),

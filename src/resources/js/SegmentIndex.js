@@ -18,7 +18,9 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible segment types the user has permission to create new segments in
-        this.editableSegmentTypes = Craft.editableSegmentTypes.filter(g => !!this.getSourceByKey(`segmentType:${g.handle}`));
+        this.editableSegmentTypes = Craft.editableSegmentTypes.filter(
+            segmentType => !!this.getSourceByKey(`segmentType:${segmentType.handle}`)
+        );
 
         this.base();
     },
@@ -48,14 +50,16 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
         // Update the New segment button
         // ---------------------------------------------------------------------
 
-        if (this.editableSegmentTypes.length) {
-            // Remove the old button, if there is one
-            if (this.$newSegmentBtnGroup) {
-                this.$newSegmentBtnGroup.remove();
-            }
+        // Remove the old button, if there is one
+        if (this.$newSegmentBtnGroup) {
+            this.$newSegmentBtnGroup.remove();
+        }
 
+        if (this.editableSegmentTypes.length) {
             // Determine if they are viewing a segment type that they have permission to create segments in
-            const selectedSegmentType = this.editableSegmentTypes.find(g => g.handle === selectedSourceHandle);
+            const selectedSegmentType = this.editableSegmentTypes.find(
+                segmentType => segmentType.handle === selectedSourceHandle
+            );
 
             this.$newSegmentBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
             let $menuBtn;
@@ -109,9 +113,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
                 const $ul = $('<ul/>').appendTo($menuContainer);
 
                 for (const segmentType of this.editableSegmentTypes) {
-                    if (
-                        (this.settings.context === 'index' || segmentType !== selectedSegmentType)
-                    ) {
+                    if (this.settings.context === 'index' || segmentType !== selectedSegmentType) {
                         const $li = $('<li/>').appendTo($ul);
                         const $a = $('<a/>', {
                             role: 'button',
@@ -153,7 +155,9 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
         }
 
         // Find the segmentType
-        const segmentType = this.editableSegmentTypes.find(s => s.handle === segmentTypeHandle);
+        const segmentType = this.editableSegmentTypes.find(
+            segmentType => segmentType.handle === segmentTypeHandle
+        );
 
         if (!segmentType) {
             throw `Invalid segment type: ${segmentTypeHandle}`;
@@ -170,7 +174,8 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
         }).then(ev => {
             if (this.settings.context === 'index') {
                 document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
-            } else {
+            }
+            else {
                 const slideout = Craft.createElementEditor(this.elementType, {
                     siteId: this.siteId,
                     elementId: ev.data.element.id,

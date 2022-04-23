@@ -18,7 +18,9 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible campaign types the user has permission to create new campaigns in
-        this.editableCampaignTypes = Craft.editableCampaignTypes.filter(g => !!this.getSourceByKey(`campaignType:${g.uid}`));
+        this.editableCampaignTypes = Craft.editableCampaignTypes.filter(
+            campaignType => !!this.getSourceByKey(`campaignType:${campaignType.uid}`)
+        );
 
         this.base();
     },
@@ -48,14 +50,21 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         // Update the New campaign button
         // ---------------------------------------------------------------------
 
-        if (this.editableCampaignTypes.length) {
-            // Remove the old button, if there is one
-            if (this.$newCampaignBtnGroup) {
-                this.$newCampaignBtnGroup.remove();
-            }
+        // Remove the old button, if there is one
+        if (this.$newCampaignBtnGroup) {
+            this.$newCampaignBtnGroup.remove();
+        }
 
+        // Get the editable campaign types for the current site
+        const editableCampaignTypesForSite = this.editableCampaignTypes.filter(
+            campaignType => campaignType.siteId === this.siteId
+        );
+
+        if (editableCampaignTypesForSite.length) {
             // Determine if they are viewing a campaign type that they have permission to create campaigns in
-            const selectedCampaignType = this.editableCampaignTypes.find(g => g.handle === selectedSourceHandle);
+            const selectedCampaignType = editableCampaignTypesForSite.find(
+                campaignType => campaignType.handle === selectedSourceHandle
+            );
 
             this.$newCampaignBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
             let $menuBtn;
@@ -79,7 +88,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                     this._createCampaign(selectedCampaignType.id);
                 });
 
-                if (this.editableCampaignTypes.length > 1) {
+                if (editableCampaignTypesForSite.length > 1) {
                     $menuBtn = $('<button/>', {
                         type: 'button',
                         class: 'btn submit menubtn btngroup-btn-last',
@@ -108,10 +117,8 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
                 }).appendTo(this.$newCampaignBtnGroup);
                 const $ul = $('<ul/>').appendTo($menuContainer);
 
-                for (const campaignType of this.editableCampaignTypes) {
-                    if (
-                        (this.settings.context === 'index' || campaignType !== selectedCampaignType)
-                    ) {
+                for (const campaignType of editableCampaignTypesForSite) {
+                    if (this.settings.context === 'index' || campaignType !== selectedCampaignType) {
                         const $li = $('<li/>').appendTo($ul);
                         const $a = $('<a/>', {
                             role: 'button',
@@ -153,7 +160,9 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         }
 
         // Find the campaign type
-        const campaignType = this.editableCampaignTypes.find(s => s.id === campaignTypeId);
+        const campaignType = this.editableCampaignTypes.find(
+            campaignType => campaignType.id === campaignTypeId
+        );
 
         if (!campaignType) {
             throw `Invalid campaign type ID: ${campaignTypeId}`;
@@ -170,7 +179,8 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         }).then(ev => {
             if (this.settings.context === 'index') {
                 document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
-            } else {
+            }
+            else {
                 const slideout = Craft.createElementEditor(this.elementType, {
                     siteId: this.siteId,
                     elementId: ev.data.element.id,

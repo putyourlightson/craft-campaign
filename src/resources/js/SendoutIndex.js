@@ -18,7 +18,9 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible sendout types the user has permission to create new sendouts in
-        this.editableSendoutTypes = Craft.editableSendoutTypes.filter(g => !!this.getSourceByKey(`sendoutType:${g.handle}`));
+        this.editableSendoutTypes = Craft.editableSendoutTypes.filter(
+            sendoutType => !!this.getSourceByKey(`sendoutType:${sendoutType.handle}`)
+        );
 
         this.base();
     },
@@ -48,14 +50,16 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
         // Update the New sendout button
         // ---------------------------------------------------------------------
 
-        if (this.editableSendoutTypes.length) {
-            // Remove the old button, if there is one
-            if (this.$newSendoutBtnGroup) {
-                this.$newSendoutBtnGroup.remove();
-            }
+        // Remove the old button, if there is one
+        if (this.$newSendoutBtnGroup) {
+            this.$newSendoutBtnGroup.remove();
+        }
 
+        if (this.editableSendoutTypes.length) {
             // Determine if they are viewing a sendout type that they have permission to create sendouts in
-            const selectedSendoutType = this.editableSendoutTypes.find(g => g.handle === selectedSourceHandle);
+            const selectedSendoutType = this.editableSendoutTypes.find(
+                sendoutType => sendoutType.handle === selectedSourceHandle
+            );
 
             this.$newSendoutBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
             let $menuBtn;
@@ -109,9 +113,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
                 const $ul = $('<ul/>').appendTo($menuContainer);
 
                 for (const sendoutType of this.editableSendoutTypes) {
-                    if (
-                        (this.settings.context === 'index' || sendoutType !== selectedSendoutType)
-                    ) {
+                    if (this.settings.context === 'index' || sendoutType !== selectedSendoutType) {
                         const $li = $('<li/>').appendTo($ul);
                         const $a = $('<a/>', {
                             role: 'button',
@@ -153,7 +155,9 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
         }
 
         // Find the sendout type
-        const sendoutType = this.editableSendoutTypes.find(s => s.handle === sendoutTypeHandle);
+        const sendoutType = this.editableSendoutTypes.find(
+            sendoutType => sendoutType.handle === sendoutTypeHandle
+        );
 
         if (!sendoutType) {
             throw `Invalid sendout type: ${sendoutTypeHandle}`;
@@ -170,7 +174,8 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
         }).then(ev => {
             if (this.settings.context === 'index') {
                 document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
-            } else {
+            }
+            else {
                 const slideout = Craft.createElementEditor(this.elementType, {
                     siteId: this.siteId,
                     elementId: ev.data.element.id,

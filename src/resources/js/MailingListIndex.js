@@ -18,7 +18,9 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
 
     afterInit: function() {
         // Find which of the visible mailing list types the user has permission to create new mailing lists in
-        this.editableMailingListTypes = Craft.editableMailingListTypes.filter(g => !!this.getSourceByKey(`mailingListType:${g.uid}`));
+        this.editableMailingListTypes = Craft.editableMailingListTypes.filter(
+            mailingListType => !!this.getSourceByKey(`mailingListType:${mailingListType.uid}`)
+        );
 
         this.base();
     },
@@ -48,14 +50,21 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
         // Update the New mailing list button
         // ---------------------------------------------------------------------
 
-        if (this.editableMailingListTypes.length) {
-            // Remove the old button, if there is one
-            if (this.$newMailingListBtnGroup) {
-                this.$newMailingListBtnGroup.remove();
-            }
+        // Remove the old button, if there is one
+        if (this.$newMailingListBtnGroup) {
+            this.$newMailingListBtnGroup.remove();
+        }
 
+        // Get the editable mailing list types for the current site
+        const editableMailingListTypesForSite = this.editableMailingListTypes.filter(
+            mailingListType => mailingListType.siteId === this.siteId
+        );
+
+        if (editableMailingListTypesForSite.length) {
             // Determine if they are viewing a mailing list type that they have permission to create mailing lists in
-            const selectedMailingListType = this.editableMailingListTypes.find(g => g.handle === selectedSourceHandle);
+            const selectedMailingListType = editableMailingListTypesForSite.find(
+                mailingListType => mailingListType.handle === selectedSourceHandle
+            );
 
             this.$newMailingListBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
             let $menuBtn;
@@ -79,7 +88,7 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
                     this._createMailingList(selectedMailingListType.id);
                 });
 
-                if (this.editableMailingListTypes.length > 1) {
+                if (editableMailingListTypesForSite.length > 1) {
                     $menuBtn = $('<button/>', {
                         type: 'button',
                         class: 'btn submit menubtn btngroup-btn-last',
@@ -108,10 +117,8 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
                 }).appendTo(this.$newMailingListBtnGroup);
                 const $ul = $('<ul/>').appendTo($menuContainer);
 
-                for (const mailingListType of this.editableMailingListTypes) {
-                    if (
-                        (this.settings.context === 'index' || mailingListType !== selectedMailingListType)
-                    ) {
+                for (const mailingListType of editableMailingListTypesForSite) {
+                    if (this.settings.context === 'index' || mailingListType !== selectedMailingListType) {
                         const $li = $('<li/>').appendTo($ul);
                         const $a = $('<a/>', {
                             role: 'button',
@@ -153,7 +160,9 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
         }
 
         // Find the mailingListType
-        const mailingListType = this.editableMailingListTypes.find(s => s.id === mailingListTypeId);
+        const mailingListType = this.editableMailingListTypes.find(
+            mailingListType => mailingListType.id === mailingListTypeId
+        );
 
         if (!mailingListType) {
             throw `Invalid mailing list type ID: ${mailingListTypeId}`;
@@ -170,7 +179,8 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
         }).then(ev => {
             if (this.settings.context === 'index') {
                 document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
-            } else {
+            }
+            else {
                 const slideout = Craft.createElementEditor(this.elementType, {
                     siteId: this.siteId,
                     elementId: ev.data.element.id,
