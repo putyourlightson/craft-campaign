@@ -13,12 +13,14 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use LitEmoji\LitEmoji;
+use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
@@ -31,7 +33,8 @@ use putyourlightson\campaign\records\SendoutRecord;
 use yii\web\Response;
 
 /**
- *
+ * @property ScheduleModel|array|string|null $schedule
+ * @property-write array $campaignIds
  * @property-read null|string $cpPreviewUrl
  * @property-read bool $isResumable
  * @property-read array $pendingRecipients
@@ -375,14 +378,9 @@ class SendoutElement extends Element
 
     /**
      * @var int|null Campaign ID
+     * @see setCampaignIds()
      */
     public ?int $campaignId = null;
-
-    /**
-     * @var array|null Campaign IDs, used for posted params
-     * @see SendoutElement::beforeSave()
-     */
-    public ?array $campaignIds = null;
 
     /**
      * @var int|null Sender ID
@@ -466,11 +464,6 @@ class SendoutElement extends Element
     public int $fails = 0;
 
     /**
-     * @var array|null Schedule
-     */
-    public ?array $schedule = null;
-
-    /**
      * @var string|null HTML body
      */
     public ?string $htmlBody = null;
@@ -531,6 +524,13 @@ class SendoutElement extends Element
     private ?array $_pendingRecipients = null;
 
     /**
+     * @var ScheduleModel|null Schedule
+     * @see getSchedule()
+     * @see setSchedule()
+     */
+    private ?ScheduleModel $_schedule = null;
+
+    /**
      * @inheritdoc
      */
     public function init(): void
@@ -573,7 +573,7 @@ class SendoutElement extends Element
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
-        $rules[] = [['notificationEmailAddress'], 'email'];
+        $rules[] = [['notificationEmailAddress'], 'email', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         // Safe rules
@@ -955,24 +955,22 @@ class SendoutElement extends Element
     /**
      * Returns the sendout's schedule.
      *
-     * @return AutomatedScheduleModel|RecurringScheduleModel|null
+     * @return ScheduleModel|null
      */
-    public function getSchedule(): AutomatedScheduleModel|RecurringScheduleModel|null
+    public function getSchedule(): ScheduleModel|null
     {
-        $schedule = null;
-
-        if ($this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
-            $config = $this->schedule ?: [];
-
-            if ($this->sendoutType == 'automated') {
-                $schedule = new AutomatedScheduleModel($config);
-            }
-            else {
-                $schedule = new RecurringScheduleModel($config);
-            }
+        if ($this->_schedule !== null) {
+            return $this->_schedule;
         }
 
-        return $schedule;
+        if ($this->sendoutType == 'automated') {
+            $this->_schedule = new AutomatedScheduleModel();
+        }
+        elseif ($this->sendoutType == 'recurring') {
+            $this->_schedule = new RecurringScheduleModel();
+        }
+
+        return $this->_schedule;
     }
 
     /**
@@ -1116,6 +1114,36 @@ class SendoutElement extends Element
     }
 
     /**
+     * Sets the campaign IDs.
+     */
+    public function setCampaignIds(array|string $campaignIds): void
+    {
+        $this->campaignId = $campaignIds[0] ?? null;
+    }
+
+    /**
+     * Sets the sendout's schedule.
+     */
+    public function setSchedule(ScheduleModel|array|string|null $schedule): void
+    {
+        if ($this->sendoutType != 'automated' && $this->sendoutType != 'recurring') {
+            return;
+        }
+
+        if (is_string($schedule)) {
+            $schedule = Json::decodeIfJson($schedule);
+        }
+
+        if ($schedule instanceof ScheduleModel) {
+            $this->_schedule = $schedule;
+        }
+        else {
+            $this->_schedule = $this->getSchedule();
+            $this->_schedule->setAttributes($schedule ?: []);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function htmlAttributes(string $context): array
@@ -1195,9 +1223,6 @@ class SendoutElement extends Element
             $this->replyToEmail = $fromNameEmail[2] ?? '';
         }
 
-        // Get the selected campaign ID
-        $this->campaignId = $this->campaignIds[0] ?? $this->campaignId;
-
         // Convert send date
         $this->sendDate = DateTimeHelper::toDateTime($this->sendDate) ?: new DateTime();
 
@@ -1228,6 +1253,7 @@ class SendoutElement extends Element
             }
 
             $sendoutRecord->setAttributes($this->getAttributes(), false);
+            $sendoutRecord->schedule = $this->getSchedule()->getAttributes();
             $sendoutRecord->save(false);
         }
 

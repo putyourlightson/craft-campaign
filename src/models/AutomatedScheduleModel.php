@@ -44,11 +44,11 @@ class AutomatedScheduleModel extends ScheduleModel
      */
     protected function defineRules(): array
     {
-        return [
+        return array_merge(parent::defineRules(), [
             [['timeDelay', 'timeDelayInterval', 'daysOfWeek'], 'required'],
             [['timeDelay'], 'integer', 'min' => 0],
             ['timeDelayInterval', 'in', 'range' => array_keys($this->getIntervalOptions())],
-        ];
+        ]);
     }
 
     /**

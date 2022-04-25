@@ -1,11 +1,11 @@
 {% import '_includes/forms' as forms %}
 
-{% set contactConditionInput %}
+{% set input %}
     {{ segment.contactCondition.getBuilderHtml()|raw }}
 {% endset %}
 
 {{ forms.field({
     label: 'Contact Condition'|t('campaign'),
-    instructions: 'Create one or more condition rules to apply to this segment.'|t('campaign'),
+    instructions: 'One or more condition rules to apply to this segment.'|t('campaign'),
     errors: segment.getErrors('contactCondition')
-}, contactConditionInput) }}
+}, input) }}

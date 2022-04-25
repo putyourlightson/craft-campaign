@@ -2,11 +2,13 @@
 
 ## 2.0.0-beta.3 - Unreleased
 ### Added
-- Added a contact condition builder to regular segment types.
+- Added a condition builder field to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
+- Added a contact condition builder to regular segment types, that should be used going forward since `legacy` and `template` segment types will be removed in Campaign 3.
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
 
 ### Changed
-- Renamed `regular` segment types to `legacy` segment types.
+- Renamed `regular` segment types to `legacy` segment types, which are being maintained because they provide functionality that the contact condition builder does not yet provide, but which will be removed in Campaign 3.
+- Replaced the "Template Condition" field with a condition builder field in sendout schedules.
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
 
 ### Fixed

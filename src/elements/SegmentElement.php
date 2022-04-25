@@ -26,7 +26,7 @@ use putyourlightson\campaign\records\SegmentRecord;
 use yii\web\Response;
 
 /**
- * @property ElementConditionInterface|array|string $contactCondition
+ * @property ElementConditionInterface|array|string|null $contactCondition
  * @property-read int $contactCount
  * @property-read bool $isEditable
  * @property-read string $segmentTypeLabel
@@ -475,7 +475,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the contact conditions.
+     * Returns the contact condition.
      */
     public function getContactCondition(): ElementConditionInterface
     {
@@ -487,7 +487,7 @@ class SegmentElement extends Element
     }
 
     /**
-     * Sets the contact conditions.
+     * Sets the contact condition.
      */
     public function setContactCondition(ElementConditionInterface|array|string|null $condition): void
     {
@@ -504,6 +504,7 @@ class SegmentElement extends Element
         /** @var ContactCondition $condition */
         $this->_contactCondition = $condition;
     }
+
     /**
      * Returns the number of conditions.
      */

@@ -7,13 +7,15 @@ namespace putyourlightson\campaign\base;
 
 use Craft;
 use craft\base\Model;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use DateTime;
+use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\SendoutElement;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 /**
+ * @property ElementConditionInterface|array|string|null $condition
  * @property-read array $intervalOptions
  */
 abstract class ScheduleModel extends Model implements ScheduleInterface
@@ -39,9 +41,22 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
     public ?DateTime $timeOfDay = null;
 
     /**
-     * @var string|null Condition
+     * @var ElementConditionInterface|null
+     * @see getCondition()
+     * @see setCondition()
      */
-    public ?string $condition = null;
+    private ?ElementConditionInterface $_condition = null;
+
+    /**
+     * @inheritdoc
+     */
+    public function getAttributes($names = null, $except = []): array
+    {
+        $attributes = parent::getAttributes($names, $except);
+        $attributes['condition'] = $this->getCondition()->getConfig();
+
+        return $attributes;
+    }
 
     /**
      * Returns the schedule's interval options.
@@ -52,21 +67,34 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
     }
 
     /**
-     * Returns whether the condition is valid.
+     * Returns the sendout condition.
      */
-    public function validateCondition(): bool
+    public function getCondition(): ElementConditionInterface
     {
-        if (empty($this->condition)) {
-            return true;
+        $condition = $this->_condition ?? Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
+        $condition->mainTag = 'div';
+        $condition->name = 'condition';
+
+        return $condition;
+    }
+
+    /**
+     * Sets the sendout condition.
+     */
+    public function setCondition(ElementConditionInterface|array|string|null $condition): void
+    {
+        if (is_string($condition)) {
+            $condition = Json::decodeIfJson($condition);
         }
 
-        try {
-            return (bool)trim(Craft::$app->getView()->renderString($this->condition));
+        if (!$condition instanceof ElementConditionInterface) {
+            $condition['class'] = SendoutScheduleCondition::class;
+            $condition = Craft::$app->getConditions()->createCondition($condition);
         }
-        catch (LoaderError|SyntaxError) {
-        }
+        $condition->forProjectConfig = false;
 
-        return false;
+        /** @var SendoutScheduleCondition $condition */
+        $this->_condition = $condition;
     }
 
     /**
@@ -94,7 +122,8 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
             }
         }
 
-        if (!$this->validateCondition()) {
+        // Ensure sendout passes condition rule
+        if (!$this->getCondition()->matchElement($sendout)) {
             return false;
         }
 
@@ -108,6 +137,7 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
     {
         return [
             [['canSendToContactsMultipleTimes'], 'boolean'],
+            [['endDate', 'daysOfWeek', 'timeOfDay', 'condition'], 'safe'],
         ];
     }
 }

@@ -6,10 +6,12 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\elements\conditions\TitleConditionRule;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -137,11 +139,17 @@ class SendoutsServiceTest extends BaseUnitTest
         $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
         $this->assertEquals(1, $pendingRecipients);
 
-        $sendout->schedule['condition'] = '{{ 0 }}';
-        $this->assertFalse($sendout->getCanSendNow());
-
-        $sendout->schedule['condition'] = '{{ 1 }}';
         $this->assertTrue($sendout->getCanSendNow());
+
+        $condition = Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
+        $condition->setConditionRules([
+            new TitleConditionRule([
+                'value' => 'xyz123',
+            ]),
+        ]);
+        $sendout->getSchedule()->setCondition($condition);
+
+        $this->assertFalse($sendout->getCanSendNow());
     }
 
     public function testQueuePendingSendouts(): void

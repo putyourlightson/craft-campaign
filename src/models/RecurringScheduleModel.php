@@ -47,11 +47,11 @@ class RecurringScheduleModel extends ScheduleModel
      */
     protected function defineRules(): array
     {
-        return [
+        return array_merge(parent::defineRules(), [
             [['frequency'], 'required'],
             [['frequency'], 'integer', 'min' => 1],
             ['frequencyInterval', 'in', 'range' => array_keys($this->getIntervalOptions())],
-        ];
+        ]);
     }
 
     /**
