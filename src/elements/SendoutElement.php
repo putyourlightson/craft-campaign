@@ -1253,7 +1253,10 @@ class SendoutElement extends Element
             }
 
             $sendoutRecord->setAttributes($this->getAttributes(), false);
-            $sendoutRecord->schedule = $this->getSchedule()->getAttributes();
+
+            $schedule = $this->getSchedule();
+            $sendoutRecord->schedule = $schedule ? $schedule->getAttributes() : null;
+
             $sendoutRecord->save(false);
         }
 
