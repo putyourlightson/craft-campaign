@@ -51,6 +51,7 @@ class RecurringScheduleModel extends ScheduleModel
             [['frequency'], 'required'],
             [['frequency'], 'integer', 'min' => 1],
             ['frequencyInterval', 'in', 'range' => array_keys($this->getIntervalOptions())],
+            [['daysOfMonth'], 'safe'],
         ]);
     }
 
