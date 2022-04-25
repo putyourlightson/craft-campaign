@@ -10,6 +10,7 @@ use craft\db\ActiveRecord;
 /**
  * @property int $id
  * @property string $segmentType
+ * @property array|null $contactCondition
  * @property array|null $conditions
  * @property string|null $template
  */

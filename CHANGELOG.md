@@ -2,9 +2,11 @@
 
 ## 2.0.0-beta.3 - Unreleased
 ### Added
+- Added a contact condition builder to regular segment types.
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
 
 ### Changed
+- Renamed `regular` segment types to `legacy` segment types.
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
 
 ### Fixed

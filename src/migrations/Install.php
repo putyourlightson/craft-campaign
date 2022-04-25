@@ -238,6 +238,7 @@ class Install extends Migration
             $this->createTable(SegmentRecord::tableName(), [
                 'id' => $this->primaryKey(),
                 'segmentType' => $this->string()->notNull(),
+                'contactCondition' => $this->text(),
                 'conditions' => $this->text(),
                 'template' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),

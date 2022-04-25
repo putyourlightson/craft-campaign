@@ -87,6 +87,10 @@ class SegmentsService extends Component
         $contactElementQuery = $this->_getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
+            $segment->getContactCondition()->modifyQuery($contactElementQuery);
+            $filteredContacts = $contactElementQuery->all();
+        }
+        elseif ($segment->segmentType == 'legacy') {
             $filteredContacts = $contactElementQuery
                 ->andWhere($this->_getConditions($segment))
                 ->all();
@@ -123,6 +127,10 @@ class SegmentsService extends Component
         $contactElementQuery = $this->_getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
+            $segment->getContactCondition()->modifyQuery($contactElementQuery);
+            $filteredContactIds = $contactElementQuery->ids();
+        }
+        elseif ($segment->segmentType == 'legacy') {
             $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
         }
         elseif ($segment->segmentType == 'template') {
@@ -227,11 +235,6 @@ class SegmentsService extends Component
             $condition = ['or'];
 
             foreach ($andCondition as $orCondition) {
-                // Exclude template conditions
-                if ($orCondition[1] == 'template') {
-                    continue;
-                }
-
                 $operator = $orCondition[0];
 
                 // If operator contains %v

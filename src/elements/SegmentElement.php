@@ -11,18 +11,22 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
 use craft\helpers\ElementHelper;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\web\CpScreenResponseBehavior;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\conditions\contacts\ContactCondition;
 use putyourlightson\campaign\elements\db\SegmentElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\segments\SegmentFieldLayoutTab;
 use putyourlightson\campaign\records\SegmentRecord;
 use yii\web\Response;
 
 /**
+ * @property ElementConditionInterface|array|string $contactCondition
  * @property-read int $contactCount
  * @property-read bool $isEditable
  * @property-read string $segmentTypeLabel
@@ -41,6 +45,7 @@ class SegmentElement extends Element
     {
         return [
             'regular' => Craft::t('campaign', 'Regular'),
+            'legacy' => Craft::t('campaign', 'Legacy'),
             'template' => Craft::t('campaign', 'Template'),
         ];
     }
@@ -214,6 +219,7 @@ class SegmentElement extends Element
     {
         return [
             'title' => Craft::t('app', 'Title'),
+            'segmentType' => Craft::t('campaign', 'Segment Type'),
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
@@ -253,7 +259,7 @@ class SegmentElement extends Element
 
         $segmentType = str_replace('segmentType:', '', $source);
 
-        if ($segmentType == 'regular') {
+        if ($segmentType == 'regular' || $segmentType == 'legacy') {
             return ['conditions', 'contacts'];
         }
 
@@ -289,6 +295,13 @@ class SegmentElement extends Element
     public ?string $template = '';
 
     /**
+     * @var ElementConditionInterface|null
+     * @see getContactCondition()
+     * @see setContactCondition()
+     */
+    private ?ElementConditionInterface $_contactCondition = null;
+
+    /**
      * @var ContactElement[]|null
      */
     private ?array $_contacts = null;
@@ -305,9 +318,9 @@ class SegmentElement extends Element
     {
         $rules = parent::defineRules();
         $rules[] = [['segmentType'], 'required'];
-        $rules[] = [['segmentType'], 'string'];
-        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'regular'];
-        $rules[] = [['template'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'template'];
+        $rules[] = [['segmentType', 'template'], 'string'];
+        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'legacy'];
+        $rules[] = [['contactCondition'], 'safe'];
 
         return $rules;
     }
@@ -462,11 +475,44 @@ class SegmentElement extends Element
     }
 
     /**
+     * Returns the contact conditions.
+     */
+    public function getContactCondition(): ElementConditionInterface
+    {
+        $condition = $this->_contactCondition ?? ContactElement::createCondition();
+        $condition->mainTag = 'div';
+        $condition->name = 'contactCondition';
+
+        return $condition;
+    }
+
+    /**
+     * Sets the contact conditions.
+     */
+    public function setContactCondition(ElementConditionInterface|array|string|null $condition): void
+    {
+        if (is_string($condition)) {
+            $condition = Json::decodeIfJson($condition);
+        }
+
+        if (!$condition instanceof ElementConditionInterface) {
+            $condition['class'] = ContactCondition::class;
+            $condition = Craft::$app->getConditions()->createCondition($condition);
+        }
+        $condition->forProjectConfig = false;
+
+        /** @var ContactCondition $condition */
+        $this->_contactCondition = $condition;
+    }
+    /**
      * Returns the number of conditions.
      */
     public function getConditionCount(): int
     {
-        if ($this->segmentType == 'template') {
+        if ($this->segmentType == 'regular') {
+            return count($this->getContactCondition()->getConditionRules());
+        }
+        elseif ($this->segmentType == 'template') {
             return 1;
         }
 
@@ -528,7 +574,7 @@ class SegmentElement extends Element
         // which prevents us from depending on the SlugValidator class.
         ElementHelper::setUniqueUri($this);
 
-        if ($this->segmentType == 'regular') {
+        if ($this->segmentType == 'legacy') {
             // Sort OR conditions by keys, since they'll come in unordered.
             foreach ($this->conditions as &$andCondition) {
                 foreach ($andCondition as &$orCondition) {
@@ -555,6 +601,7 @@ class SegmentElement extends Element
             }
 
             $segmentRecord->segmentType = $this->segmentType;
+            $segmentRecord->contactCondition = $this->getContactCondition()->getConfig();
             $segmentRecord->conditions = $this->conditions;
             $segmentRecord->template = $this->template;
 

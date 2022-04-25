@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Html;
@@ -21,6 +22,7 @@ use craft\validators\UniqueValidator;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\conditions\contacts\ContactCondition;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactMailingListFieldLayoutTab;
 use putyourlightson\campaign\fieldlayoutelements\reports\ContactReportFieldLayoutTab;
@@ -145,6 +147,15 @@ class ContactElement extends Element
     public static function find(): ContactElementQuery
     {
         return new ContactElementQuery(static::class);
+    }
+
+    /**
+     * @inheritdoc
+     * @return ContactCondition
+     */
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(ContactCondition::class, [static::class]);
     }
 
     /**
