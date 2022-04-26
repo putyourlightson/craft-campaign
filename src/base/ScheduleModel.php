@@ -122,7 +122,7 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
             }
         }
 
-        // Ensure sendout passes condition rule
+        // Ensure sendout passes condition rules
         if (!$this->getCondition()->matchElement($sendout)) {
             return false;
         }

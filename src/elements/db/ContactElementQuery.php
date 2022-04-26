@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\elements\db;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use putyourlightson\campaign\Campaign;
-
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use yii\db\Connection;
@@ -44,6 +43,11 @@ class ContactElementQuery extends ElementQuery
      * @var int|null The segment ID that the resulting contacts must be in.
      */
     public ?int $segmentId = null;
+
+    /**
+     * @var mixed When the resulting contacts were last active.
+     */
+    public mixed $lastActivity = null;
 
     /**
      * Sets the [[userId]] property.
@@ -91,6 +95,16 @@ class ContactElementQuery extends ElementQuery
     public function segmentId(int $value): static
     {
         $this->segmentId = $value;
+
+        return $this;
+    }
+
+    /**
+     * Sets the [[lastActivity]] property.
+     */
+    public function lastActivity(mixed $value): static
+    {
+        $this->lastActivity = $value;
 
         return $this;
     }

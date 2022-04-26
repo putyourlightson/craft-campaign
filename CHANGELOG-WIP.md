@@ -13,6 +13,7 @@
 - Added user group permissions for campaign types and mailing list types.
 - Added the ability to view disabled campaigns using a token URL.
 - Added a contact condition builder to regular segment types, that should be used going forward since `legacy` and `template` segment types will be removed in Campaign 3.
+- Added a "Campaign Activity" condition rule for segmenting by contacts who have opened or clicked a link in any or a specific campaign ([#244](https://github.com/putyourlightson/craft-campaign/issues/244)).
 - Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
 - Added the `enableAnonymousTracking` setting, which prevents tracking of contact interactions ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).

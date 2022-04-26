@@ -1,4 +1,5 @@
 {% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
 
 {% set input %}
     {{ segment.contactCondition.getBuilderHtml()|raw }}
@@ -6,6 +7,6 @@
 
 {{ forms.field({
     label: 'Contact Condition'|t('campaign'),
-    instructions: 'One or more condition rules to apply to this segment.'|t('campaign'),
+    instructions: 'One or more condition rules to apply to this segment.'|t('campaign') ~ macros.info('Condition rules can be created via a custom plugin/module.'),
     errors: segment.getErrors('contactCondition')
 }, input) }}

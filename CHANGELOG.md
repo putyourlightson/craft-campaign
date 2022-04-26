@@ -4,6 +4,7 @@
 ### Added
 - Added a condition builder field to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
 - Added a contact condition builder to regular segment types, that should be used going forward since `legacy` and `template` segment types will be removed in Campaign 3.
+- Added a "Campaign Activity" condition rule for segmenting by contacts who have opened or clicked a link in any or a specific campaign ([#244](https://github.com/putyourlightson/craft-campaign/issues/244)).
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
 
 ### Changed

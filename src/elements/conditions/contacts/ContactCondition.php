@@ -19,6 +19,8 @@ class ContactCondition extends ElementCondition
     {
         return array_merge(parent::conditionRuleTypes(), [
             EmailConditionRule::class,
+            LastActivityConditionRule::class,
+            CampaignActivityConditionRule::class,
         ]);
     }
 }
