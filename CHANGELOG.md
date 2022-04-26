@@ -9,6 +9,7 @@
 ### Changed
 - Renamed `regular` segment types to `legacy` segment types, which are being maintained because they provide functionality that the contact condition builder does not yet provide, but which will be removed in Campaign 3.
 - Replaced the "Template Condition" field with a condition builder field in sendout schedules.
+- Replaced the `Log To File` helper package with a custom Monolog log target.
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
 
 ### Fixed

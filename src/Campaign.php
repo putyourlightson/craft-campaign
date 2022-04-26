@@ -22,6 +22,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\log\MonologTarget;
 use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
@@ -36,6 +37,8 @@ use craft\services\Utilities;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use Monolog\Formatter\LineFormatter;
+use Psr\Log\LogLevel;
 use putyourlightson\campaign\assets\CampaignAsset;
 use putyourlightson\campaign\assets\CpAsset;
 use putyourlightson\campaign\controllers\TrackerController;
@@ -68,7 +71,6 @@ use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
-use putyourlightson\logtofile\LogToFile;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
@@ -158,6 +160,8 @@ class Campaign extends Plugin
         $this->name = Craft::t('campaign', 'Plugin Name');
 
         $this->_registerComponents();
+        $this->_registerVariables();
+        $this->_registerLogTarget();
         $this->_registerElementTypes();
         $this->_registerFieldTypes();
         $this->_registerAfterInstallEvent();
@@ -166,7 +170,6 @@ class Campaign extends Plugin
         $this->_registerTemplateHooks();
         $this->_registerAllowedOrigins();
         $this->_registerTwigExtensions();
-        $this->_registerVariables();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -292,9 +295,9 @@ class Campaign extends Plugin
     }
 
     /**
-     * Logs an action.
+     * Logs a message.
      */
-    public function log(string $message, array $params = []): void
+    public function log(string $message, array $params = [], string $type = LogLevel::INFO): void
     {
         /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();
@@ -305,7 +308,7 @@ class Campaign extends Plugin
 
         $message = Craft::t('campaign', $message, $params);
 
-        LogToFile::info($message, 'campaign');
+        Craft::getLogger()->log($message, $type, 'campaign');
     }
 
     /**
@@ -417,6 +420,40 @@ class Campaign extends Plugin
         $this->set('mailer', function() {
             return $this->createMailer();
         });
+    }
+
+    /**
+     * Registers variables.
+     *
+     * @since 2.0.0
+     */
+    private function _registerVariables(): void
+    {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
+            function(Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('campaign', CampaignVariable::class);
+            }
+        );
+    }
+
+    /**
+     * Registers a custom log target, keeping the format as simple as possible.
+     *
+     * @see LineFormatter::SIMPLE_FORMAT
+     */
+    private function _registerLogTarget(): void
+    {
+        Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
+            'name' => 'blitz',
+            'categories' => ['blitz'],
+            'level' => LogLevel::INFO,
+            'formatter' => new LineFormatter(
+                format: "[%datetime%] %message%\n",
+                dateFormat: 'Y-m-d H:i:s',
+            ),
+        ]);
     }
 
     /**
@@ -606,22 +643,6 @@ class Campaign extends Plugin
     private function _registerTwigExtensions(): void
     {
         Craft::$app->getView()->registerTwigExtension(new CampaignTwigExtension());
-    }
-
-    /**
-     * Registers variables.
-     *
-     * @since 2.0.0
-     */
-    private function _registerVariables(): void
-    {
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
-            function(Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('campaign', CampaignVariable::class);
-            }
-        );
     }
 
     /**

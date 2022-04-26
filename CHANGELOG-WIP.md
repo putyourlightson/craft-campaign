@@ -22,6 +22,7 @@
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
 - Verification emails are now sent in HTML and plaintext format ([#303](https://github.com/putyourlightson/craft-campaign/issues/303)).
 - Renamed `regular` segment types to `legacy` segment types, which are being maintained because they provide functionality that the contact condition builder does not yet provide, but which will be removed in Campaign 3.
+- Replaced the `Log To File` helper package with a custom Monolog log target.
 - Replaced all instances of `AdminTable` with `VueAdminTable`.
 - Removed the `SettingsService` class. Use the `SettingsHelper` class instead.
 
