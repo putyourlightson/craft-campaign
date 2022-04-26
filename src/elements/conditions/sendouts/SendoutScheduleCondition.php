@@ -13,6 +13,11 @@ use craft\elements\conditions\ElementCondition;
 class SendoutScheduleCondition extends ElementCondition
 {
     /**
+     * @inerhitdoc
+     */
+    public bool $sortable = true;
+
+    /**
      * @inheritdoc
      */
     protected function conditionRuleTypes(): array
