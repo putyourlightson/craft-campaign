@@ -60,11 +60,6 @@ class ContactCampaignModel extends Model
     public ?DateTime $sent;
 
     /**
-     * @var DateTime|null Failed
-     */
-    public ?DateTime $failed;
-
-    /**
      * @var DateTime|null Opened
      */
     public ?DateTime $opened;

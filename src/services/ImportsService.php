@@ -292,7 +292,7 @@ class ImportsService extends Component
 
         // Save contact
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            $import->fails++;
+            $import->failures++;
 
             Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
 

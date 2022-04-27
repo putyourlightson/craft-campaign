@@ -84,9 +84,9 @@ class ImportModel extends Model
     public int $updated = 0;
 
     /**
-     * @var int Fails
+     * @var int Failures
      */
-    public int $fails = 0;
+    public int $failures = 0;
 
     /**
      * @var DateTime|null Date imported

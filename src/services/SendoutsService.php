@@ -127,7 +127,7 @@ class SendoutsService extends Component
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
-        return count($this->getPendingRecipients($sendout)) - $sendout->fails;
+        return count($this->getPendingRecipients($sendout)) - $sendout->failures;
     }
 
     /**
@@ -361,14 +361,14 @@ class SendoutsService extends Component
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         }
         else {
-            // Update fails and send status
-            $sendout->fails++;
+            // Update failures and send status
+            $sendout->failures++;
 
-            if ($sendout->fails >= Campaign::$plugin->settings->maxSendFailsAllowed) {
+            if ($sendout->failures >= Campaign::$plugin->settings->maxSendFailuresAllowed) {
                 $sendout->sendStatus = SendoutElement::STATUS_FAILED;
             }
 
-            $this->_updateSendoutRecord($sendout, ['fails', 'sendStatus']);
+            $this->_updateSendoutRecord($sendout, ['failures', 'sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout "{title}" to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
                 'title' => $sendout->title,

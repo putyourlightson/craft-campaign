@@ -46,8 +46,8 @@
     {{ forms.field({label: "Force Subscribe"|t('campaign')}, input) }}
 
     {% set input %}
-        {{ import.fails }}
-        {% if import.fails > 0 %}
+        {{ import.failures }}
+        {% if import.failures > 0 %}
             <span class="info">
                 {{ "View `storage/logs/campaign.log` file for errors."|t('campaign')|markdown }}
             </span>
@@ -76,8 +76,8 @@
             <div class="value">{{ import.updated }}</div>
         </div>
         <div class="data">
-            <h5 class="heading">{{ "Fails"|t('campaign') }}</h5>
-            <div class="value">{{ import.fails }}</div>
+            <h5 class="heading">{{ "Failures"|t('campaign') }}</h5>
+            <div class="value">{{ import.failures }}</div>
         </div>
         <div class="data">
             <h5 class="heading">{{ "Date Imported"|t('campaign') }}</h5>

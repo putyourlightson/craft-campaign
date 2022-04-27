@@ -137,9 +137,9 @@
                     </div>
                 </div>
                 <div class="data">
-                    <h5 class="heading">{{ "Fails"|t('campaign') }}</h5>
+                    <h5 class="heading">{{ "Failures"|t('campaign') }}</h5>
                     <div class="value">
-                        {{ sendout.fails }}
+                        {{ sendout.failures }}
                         {% if sendout.failedContacts %}
                             <span class="info">
                                 {% for contact in sendout.failedContacts %}

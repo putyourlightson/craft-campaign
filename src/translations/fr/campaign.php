@@ -270,7 +270,7 @@ return [
     'Export' => 'Exporter',
     'Failed Imports' => 'Importations échouées',
     'Failed' => 'Échouer',
-    'Fails' => 'Échoué(s)',
+    'Failures' => 'Échoué(s)',
     'Filter by interaction' => 'Filtrer par intéraction',
     'Filter by sendout' => 'Filtrer par campagne',
     'Finalising setup' => 'Finaliser réglage',

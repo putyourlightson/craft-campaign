@@ -204,7 +204,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         // Set send attempts and fails to 1
         Campaign::$plugin->getSettings()->maxSendAttempts = 1;
-        Campaign::$plugin->getSettings()->maxSendFailsAllowed = 1;
+        Campaign::$plugin->getSettings()->maxSendFailuresAllowed = 1;
 
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
@@ -212,7 +212,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNull($this->message);
 
         // Assert that the number of fails is 1
-        $this->assertEquals(1, $this->sendout->fails);
+        $this->assertEquals(1, $this->sendout->failures);
 
         // Assert that the send status is failed
         $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);

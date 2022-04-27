@@ -327,7 +327,7 @@ class SendoutElement extends Element
             'subject' => ['label' => Craft::t('campaign', 'Subject')],
             'campaignId' => ['label' => Craft::t('campaign', 'Campaign')],
             'recipients' => ['label' => Craft::t('campaign', 'Recipients')],
-            'fails' => ['label' => Craft::t('campaign', 'Fails')],
+            'failures' => ['label' => Craft::t('campaign', 'Failures')],
             'progress' => ['label' => Craft::t('campaign', 'Progress')],
             'sender' => ['label' => Craft::t('campaign', 'Sent By')],
             'mailingListIds' => ['label' => Craft::t('campaign', 'Mailing Lists')],
@@ -459,9 +459,9 @@ class SendoutElement extends Element
     public int $recipients = 0;
 
     /**
-     * @var int Fails
+     * @var int Failures
      */
-    public int $fails = 0;
+    public int $failures = 0;
 
     /**
      * @var string|null HTML body
@@ -1204,7 +1204,7 @@ class SendoutElement extends Element
             $this->senderId = null;
             $this->sendStatus = self::STATUS_DRAFT;
             $this->recipients = 0;
-            $this->fails = 0;
+            $this->failures = 0;
             $this->failedContactIds = null;
             $this->sendDate = null;
             $this->lastSent = null;

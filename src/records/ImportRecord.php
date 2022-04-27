@@ -21,7 +21,7 @@ use DateTime;
  * @property mixed $fieldIndexesField
  * @property int $added Added
  * @property int $updated Updated
- * @property int $fails Fails
+ * @property int $failures Failures
  * @property DateTime $dateImportedDate imported
  */
 class ImportRecord extends ActiveRecord

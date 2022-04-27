@@ -269,7 +269,7 @@ return [
     'Export' => '',
     'Failed Imports' => '',
     'Failed' => '',
-    'Fails' => '',
+    'Failures' => '',
     'Filter by interaction' => '',
     'Filter by sendout' => '',
     'Finalising setup' => '',

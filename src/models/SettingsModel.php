@@ -118,7 +118,7 @@ class SettingsModel extends Model
      * @var int The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
      * @since 1.15.4
      */
-    public int $maxSendFailsAllowed = 1;
+    public int $maxSendFailuresAllowed = 1;
 
     /**
      * @var int The maximum number of times to attempt retrying a failed sendout job

@@ -1,5 +1,8 @@
 # Release Notes for Campaign
 
+## 2.0.0-beta.4 - Unreleased
+- Renamed the `maxSendFailsAllowed` config setting to `maxSendFailuresAllowed`.
+
 ## 2.0.0-beta.3 - 2022-04-26
 ### Added
 - Added a condition builder field to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).

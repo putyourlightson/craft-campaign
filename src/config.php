@@ -81,7 +81,7 @@ return [
         //'maxSendAttempts' => 3,
 
         // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
-        //'maxSendFailsAllowed' => 1,
+        //'maxSendFailuresAllowed' => 1,
 
         // The maximum number of times to attempt retrying a failed sendout job
         //'maxRetryAttempts' => 10,
