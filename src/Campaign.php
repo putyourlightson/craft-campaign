@@ -74,6 +74,7 @@ use putyourlightson\campaign\variables\CampaignVariable;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
+use yii\log\Logger;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -297,7 +298,7 @@ class Campaign extends Plugin
     /**
      * Logs a message.
      */
-    public function log(string $message, array $params = [], string $type = LogLevel::INFO): void
+    public function log(string $message, array $params = [], int $type = Logger::LEVEL_INFO): void
     {
         /** @var User|null $user */
         $user = Craft::$app->getUser()->getIdentity();

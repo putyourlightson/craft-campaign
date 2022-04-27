@@ -59,6 +59,8 @@ use yii\web\Response;
  * @property-read bool $isCancellable
  * @property-read null|CampaignElement $campaign
  * @property-read string $progress
+ * @property-read string[] $notificationEmailAddresses
+ * @property-read ContactElement[] $notificationContacts
  * @property-read ContactElement[] $contacts
  * @property-read ContactElement[] $failedContacts
  * @property-read MailingListElement[] $mailingLists
@@ -424,9 +426,9 @@ class SendoutElement extends Element
     public ?string $subject = null;
 
     /**
-     * @var string|null Notification email address
+     * @var array|null Notification contact IDs
      */
-    public ?string $notificationEmailAddress = null;
+    public ?array $notificationContactIds = null;
 
     /**
      * @var array|null Contact IDs
@@ -572,12 +574,11 @@ class SendoutElement extends Element
         $rules[] = [['mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
-        $rules[] = [['fromName', 'fromEmail', 'subject', 'notificationEmailAddress'], 'string', 'max' => 255];
-        $rules[] = [['notificationEmailAddress'], 'email', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['fromName', 'fromEmail', 'subject'], 'string', 'max' => 255];
         $rules[] = [['sendDate'], DateTimeValidator::class];
 
         // Safe rules
-        $rules[] = [['campaignIds', 'failedContactIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail', 'schedule'], 'safe'];
+        $rules[] = [['notificationContactIds', 'campaignIds', 'failedContactIds', 'excludedMailingListIds', 'segmentIds', 'fromNameEmail', 'schedule'], 'safe'];
 
         return $rules;
     }
@@ -834,6 +835,42 @@ class SendoutElement extends Element
         $this->_sender = Craft::$app->getUsers()->getUserById($this->senderId);
 
         return $this->_sender;
+    }
+
+    /**
+     * Returns the sendout's notification email addresses.
+     *
+     * @return string[]
+     */
+    public function getNotificationEmailAddresses(): array
+    {
+        if (empty($this->notificationContactIds)) {
+            return [];
+        }
+
+        return ContactElement::find()
+            ->select('email')
+            ->id($this->notificationContactIds)
+            ->column();
+    }
+
+    /**
+     * Returns the sendout's notification contacts, or the default notification
+     * contacts if this is a fresh sendout.
+     *
+     * @return ContactElement[]
+     */
+    public function getNotificationContacts(): array
+    {
+        if ($this->getIsFresh()) {
+            return Campaign::$plugin->settings->getDefaultNotificationContacts();
+        }
+
+        if (empty($this->notificationContactIds)) {
+            return [];
+        }
+
+        return Campaign::$plugin->contacts->getContactsByIds($this->notificationContactIds);
     }
 
     /**

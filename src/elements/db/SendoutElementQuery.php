@@ -111,7 +111,7 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.fromEmail',
             'campaign_sendouts.replyToEmail',
             'campaign_sendouts.subject',
-            'campaign_sendouts.notificationEmailAddress',
+            'campaign_sendouts.notificationContactIds',
             'campaign_sendouts.contactIds',
             'campaign_sendouts.failedContactIds',
             'campaign_sendouts.mailingListIds',

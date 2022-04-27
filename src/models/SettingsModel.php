@@ -11,6 +11,7 @@ use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactFieldLayoutTab;
 use yii\validators\EmailValidator;
@@ -82,6 +83,11 @@ class SettingsModel extends Model
      * @var array|null The transport type’s settings
      */
     public ?array $transportSettings = null;
+
+    /**
+     * @var array|null Default notification contact IDs
+     */
+    public ?array $defaultNotificationContactIds = null;
 
     /**
      * @var int The maximum size of sendout batches
@@ -294,5 +300,19 @@ class SettingsModel extends Model
                 return;
             }
         }
+    }
+
+    /**
+     * Returns the default notification contacts.
+     *
+     * @return ContactElement[]
+     */
+    public function getDefaultNotificationContacts(): array
+    {
+        if (empty($this->defaultNotificationContactIds)) {
+            return [];
+        }
+
+        return Campaign::$plugin->contacts->getContactsByIds($this->defaultNotificationContactIds);
     }
 }

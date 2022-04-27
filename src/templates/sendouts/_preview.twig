@@ -194,7 +194,7 @@
                     elementType: contactElementType,
                     selectionLabel: "Add a contact"|t('campaign'),
                     criteria: contactElementCriteria,
-                    elements: testContacts
+                    elements: testContacts,
                 }) }}
                 {% set button %}
                     {{ tag('button', {
@@ -203,7 +203,7 @@
                         data: {
                             action: 'campaign/sendouts/send-test',
                             sendout: sendout.id,
-                        }
+                        },
                     }) }}
                 {% endset %}
                 {{ forms.field({}, button) }}

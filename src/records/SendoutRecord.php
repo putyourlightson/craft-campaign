@@ -19,7 +19,7 @@ use DateTime;
  * @property string $fromEmail From email
  * @property string $replyToEmail Reply to email
  * @property string $subject Subject
- * @property string $notificationEmailAddress Notification email address
+ * @property array $notificationContactIds Notification contact IDs
  * @property array $contactIds Contact IDs
  * @property array $failedContactIds Failed contact IDs
  * @property array $mailingListIds Mailing list IDs

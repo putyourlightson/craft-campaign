@@ -114,7 +114,7 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
             ])
             ->andWhere(['not', [
                 $this->_operatorColumn($this->operator) => null,
-            ]
+            ],
         ]);
 
         $elementId = $this->getElementId();
@@ -131,8 +131,8 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
     private function _operatorColumn(string $operator): string
     {
         return match ($operator) {
-            'opened', 'openedCampaign' => 'opened',
             'clicked', 'clickedCampaign' => 'clicked',
+            default => 'opened',
         };
     }
 }

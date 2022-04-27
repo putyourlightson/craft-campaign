@@ -151,6 +151,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/sendout', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+            'contactElementType' => ContactElement::class,
             'system' => [
                 'memoryLimit' => ini_get('memory_limit'),
                 'memoryLimitExceeded' => (SendoutHelper::memoryInBytes($settings->memoryLimit) > SendoutHelper::memoryInBytes(ini_get('memory_limit'))),
@@ -276,6 +277,7 @@ class SettingsController extends Controller
         $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
+        $settings->defaultNotificationContactIds = $this->request->getBodyParam('defaultNotificationContactIds', $settings->defaultNotificationContactIds);
         $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize);
         $settings->memoryLimit = $this->request->getBodyParam('memoryLimit', $settings->memoryLimit);
         $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit);

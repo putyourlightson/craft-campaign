@@ -20,6 +20,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
 use putyourlightson\campaign\jobs\SendoutJob;
+use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -393,13 +394,15 @@ class SendoutsService extends Component
      */
     public function sendNotification(SendoutElement $sendout): void
     {
-        if (!$sendout->notificationEmailAddress) {
-            return;
-        }
-
         if ($sendout->sendStatus != SendoutElement::STATUS_SENT &&
             $sendout->sendStatus != SendoutElement::STATUS_FAILED
         ) {
+            return;
+        }
+
+        $notificationEmailAddresses = $sendout->getNotificationEmailAddresses();
+
+        if (empty($notificationEmailAddresses)) {
             return;
         }
 
@@ -424,7 +427,7 @@ class SendoutsService extends Component
         // Compose message
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
-            ->setTo($sendout->notificationEmailAddress)
+            ->setTo($notificationEmailAddresses)
             ->setSubject($subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
@@ -648,6 +651,8 @@ class SendoutsService extends Component
     private function _getPendingRecipientsAutomated(SendoutElement $sendout): array
     {
         $recipients = $this->_getPendingRecipientsStandard($sendout);
+
+        /** @var AutomatedScheduleModel $schedule */
         $schedule = $sendout->getSchedule();
 
         // Remove any contacts that do not meet the conditions

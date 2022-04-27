@@ -59,6 +59,9 @@ return [
         // The transport type’s settings
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
+        // Default notification contact IDs
+        //'defaultNotificationContactIds' = [1],
+
         // The maximum size of sendout batches
         //'maxBatchSize' => 10000,
 

@@ -75,8 +75,7 @@
                 elementType: contactElementType,
                 selectionLabel: "Add a contact"|t('campaign'),
                 criteria: contactElementCriteria,
-                limit: 100,
-                elements: sendout.contactIds ? sendout.contacts,
+                elements: sendout.contacts,
             }) }}
         {% else %}
             {% for contact in sendout.contacts %}
@@ -100,8 +99,7 @@
                 elementType: mailingListElementType,
                 selectionLabel: "Add a mailing list"|t('campaign'),
                 criteria: mailingListElementCriteria,
-                limit: 100,
-                elements: sendout.mailingListIds ? sendout.mailingLists,
+                elements: sendout.mailingLists,
             }) }}
         {% else %}
             {% for mailingList in sendout.mailingLists %}
@@ -125,8 +123,7 @@
                 elementType: mailingListElementType,
                 selectionLabel: "Add a mailing list"|t('campaign'),
                 criteria: mailingListElementCriteria,
-                limit: 100,
-                elements: sendout.excludedMailingListIds ? sendout.excludedMailingLists,
+                elements: sendout.excludedMailingLists,
             }) }}
         {% else %}
             {% for excludedMailingList in sendout.excludedMailingLists %}
@@ -153,8 +150,7 @@
                     elementType: segmentElementType,
                     selectionLabel: "Add a segment"|t('campaign'),
                     criteria: segmentElementCriteria,
-                    limit: 100,
-                    elements: sendout.segmentIds ? sendout.segments,
+                    elements: sendout.segments,
                 }) }}
             {% else %}
                 {% for segment in sendout.segments %}
@@ -197,18 +193,26 @@
 
 {% set input %}
     {% if editable %}
-        {{ forms.text({
-            id: 'notificationEmailAddress',
-            name: 'notificationEmailAddress',
-            value: (sendout.notificationEmailAddress ? sendout.notificationEmailAddress : (not sendout.id ? currentUser.email)),
-            autocomplete: true,
+        {{ forms.elementSelectField({
+            id: 'notificationContactIds',
+            name: 'notificationContactIds',
+            elementType: contactElementType,
+            selectionLabel: "Add a contact"|t('campaign'),
+            elements: sendout.getNotificationContacts(),
         }) }}
     {% else %}
-        <p>{{ sendout.notificationEmailAddress }}</p>
+        {% set notificationContacts = sendout.getNotificationContacts() %}
+        {% for contact in notificationContacts %}
+            <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+            <br/>
+        {% endfor %}
+        {% if notificationContacts is empty %}
+            <p>-</p>
+        {% endif %}
     {% endif %}
 {% endset %}
 {{ forms.field({
-    label: "Notification Email Address"|t('campaign'),
-    instructions: "An email address to notify when sending this sendout is complete or fails."|t('campaign'),
-    errors: sendout.getErrors('notificationEmailAddress'),
+    label: "Notification Contacts"|t('campaign'),
+    instructions: "The contacts to notify when sending of sendouts is complete or fails."|t('campaign'),
+    errors: sendout.getErrors('notificationContactIds'),
 }, input) }}

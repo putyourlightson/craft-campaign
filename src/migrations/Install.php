@@ -259,7 +259,7 @@ class Install extends Migration
                 'fromEmail' => $this->string(),
                 'replyToEmail' => $this->string(),
                 'subject' => $this->text(),
-                'notificationEmailAddress' => $this->string(),
+                'notificationContactIds' => $this->text(),
                 'contactIds' => $this->text(),
                 'failedContactIds' => $this->text(),
                 'mailingListIds' => $this->text(),
