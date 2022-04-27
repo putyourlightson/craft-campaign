@@ -65,7 +65,6 @@ class SendoutField extends BaseNativeField
             'contactElementCriteria' => [
                 'status' => Element::STATUS_ENABLED,
             ],
-            'segmentElementType' => SegmentElement::class,
         ];
 
         if (Campaign::$plugin->getIsPro()) {

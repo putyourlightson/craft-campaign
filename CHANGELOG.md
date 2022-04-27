@@ -1,6 +1,8 @@
 # Release Notes for Campaign
 
 ## 2.0.0-beta.4 - Unreleased
+### Changed
+- Removed segments from "Singular" sendout types.
 - Renamed the `maxSendFailsAllowed` config setting to `maxSendFailuresAllowed`.
 
 ## 2.0.0-beta.3 - 2022-04-26

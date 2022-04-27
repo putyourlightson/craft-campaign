@@ -143,35 +143,35 @@
         instructions: "The mailing list(s) to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
         errors: sendout.getErrors('excludedMailingListIds'),
     }, input) }}
-{% endif %}
 
-{% if craft.campaign.getIsPro() %}
-    {% set input %}
-        {% if editable %}
-            {{ forms.elementSelectField({
-                id: 'segmentIds',
-                name: 'segmentIds',
-                elementType: segmentElementType,
-                selectionLabel: "Add a segment"|t('campaign'),
-                criteria: segmentElementCriteria,
-                limit: 100,
-                elements: sendout.segmentIds ? sendout.segments,
-            }) }}
-        {% else %}
-            {% for segment in sendout.segments %}
-                <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
-                <br/>
-            {% endfor %}
-            {% if sendout.segments|length == 0 %}
-                <p>-</p>
+    {% if craft.campaign.getIsPro() %}
+        {% set input %}
+            {% if editable %}
+                {{ forms.elementSelectField({
+                    id: 'segmentIds',
+                    name: 'segmentIds',
+                    elementType: segmentElementType,
+                    selectionLabel: "Add a segment"|t('campaign'),
+                    criteria: segmentElementCriteria,
+                    limit: 100,
+                    elements: sendout.segmentIds ? sendout.segments,
+                }) }}
+            {% else %}
+                {% for segment in sendout.segments %}
+                    <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
+                    <br/>
+                {% endfor %}
+                {% if sendout.segments|length == 0 %}
+                    <p>-</p>
+                {% endif %}
             {% endif %}
-        {% endif %}
-    {% endset %}
-    {{ forms.field({
-        label: "Segments"|t('campaign'),
-        instructions: "The segment(s) to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
-        errors: sendout.getErrors('segmentIds'),
-    }, input) }}
+        {% endset %}
+        {{ forms.field({
+            label: "Segments"|t('campaign'),
+            instructions: "The segment(s) to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+            errors: sendout.getErrors('segmentIds'),
+        }, input) }}
+    {% endif %}
 {% endif %}
 
 <hr/>
