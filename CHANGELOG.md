@@ -1,5 +1,8 @@
 # Release Notes for Campaign
 
+TODO:
+- Bust the element index cache after programmatically updating sendouts.
+
 ## 2.0.0-beta.4 - Unreleased
 ### Added
 - Added a "Default Notification Contacts" field to sendout settings. 
@@ -8,6 +11,7 @@
 - Replaced the "Notification Email Address" field with a "Notification Contacts" field in sendouts. 
 - Removed segments from "Singular" sendout types.
 - Renamed the `maxSendFailsAllowed` config setting to `maxSendFailuresAllowed`.
+- Sendout caches are invalidated when updates are made programmatically.
 
 ## 2.0.0-beta.3 - 2022-04-26
 ### Added

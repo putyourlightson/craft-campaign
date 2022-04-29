@@ -711,7 +711,15 @@ class SendoutsService extends Component
         // Set attributes from sendout's fields
         $sendoutRecord->setAttributes($sendout->toArray($fields), false);
 
-        return $sendoutRecord->save();
+        if (!$sendoutRecord->save()) {
+            return false;
+        }
+
+        // Invalidate caches for the sendout, since the update may have been
+        // made programmatically.
+        Craft::$app->getElements()->invalidateCachesForElement($sendout);
+
+        return true;
     }
 
     /**
