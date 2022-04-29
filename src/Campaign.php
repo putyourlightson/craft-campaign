@@ -47,7 +47,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailField;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailFieldLayoutElement;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
@@ -123,6 +123,33 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
+    public static function config(): array
+    {
+        return [
+            'components' => [
+                'campaigns' => ['class' => CampaignsService::class],
+                'campaignTypes' => ['class' => CampaignTypesService::class],
+                'contacts' => ['class' => ContactsService::class],
+                'exports' => ['class' => ExportsService::class],
+                'forms' => ['class' => FormsService::class],
+                'imports' => ['class' => ImportsService::class],
+                'mailer' => fn() => $this->createMailer(),
+                'mailingLists' => ['class' => MailingListsService::class],
+                'mailingListTypes' => ['class' => MailingListTypesService::class],
+                'pendingContacts' => ['class' => PendingContactsService::class],
+                'reports' => ['class' => ReportsService::class],
+                'segments' => ['class' => SegmentsService::class],
+                'sendouts' => ['class' => SendoutsService::class],
+                'sync' => ['class' => SyncService::class],
+                'tracker' => ['class' => TrackerService::class],
+                'webhook' => ['class' => WebhookService::class],
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function editions(): array
     {
         return [
@@ -160,7 +187,6 @@ class Campaign extends Plugin
         self::$plugin = $this;
         $this->name = Craft::t('campaign', 'Plugin Name');
 
-        $this->_registerComponents();
         $this->_registerVariables();
         $this->_registerLogTarget();
         $this->_registerElementTypes();
@@ -391,36 +417,6 @@ class Campaign extends Plugin
             'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit',
             'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit',
         ];
-    }
-
-    /**
-     * Registers components.
-     */
-    private function _registerComponents(): void
-    {
-        // Register services as components
-        $this->setComponents([
-            'campaigns' => CampaignsService::class,
-            'campaignTypes' => CampaignTypesService::class,
-            'contacts' => ContactsService::class,
-            'exports' => ExportsService::class,
-            'forms' => FormsService::class,
-            'imports' => ImportsService::class,
-            'mailingLists' => MailingListsService::class,
-            'mailingListTypes' => MailingListTypesService::class,
-            'pendingContacts' => PendingContactsService::class,
-            'reports' => ReportsService::class,
-            'segments' => SegmentsService::class,
-            'sendouts' => SendoutsService::class,
-            'sync' => SyncService::class,
-            'tracker' => TrackerService::class,
-            'webhook' => WebhookService::class,
-        ]);
-
-        // Register mailer component
-        $this->set('mailer', function() {
-            return $this->createMailer();
-        });
     }
 
     /**
@@ -663,7 +659,7 @@ class Campaign extends Plugin
                 }
 
                 if ($layout->type === ContactElement::class) {
-                    $event->fields[] = ContactEmailField::class;
+                    $event->fields[] = ContactEmailFieldLayoutElement::class;
                 }
             }
         );
