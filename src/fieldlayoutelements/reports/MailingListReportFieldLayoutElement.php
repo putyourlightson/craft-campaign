@@ -7,23 +7,23 @@ namespace putyourlightson\campaign\fieldlayoutelements\reports;
 
 use Craft;
 use craft\base\ElementInterface;
-use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
  * @since 2.0.0
  */
-class ContactReportField extends BaseReportField
+class MailingListReportFieldLayoutElement extends BaseReportFieldLayoutElement
 {
     /**
      * @inheritdoc
-     * @param ContactElement $element
+     * @param MailingListElement $element
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
         return Craft::$app->getView()->renderTemplate(
-            'campaign/reports/contacts/_includes/report',
+            'campaign/reports/mailinglists/_includes/report',
             [
-                'contact' => $element->getCanonical(),
+                'mailingList' => $element->getCanonical(),
             ],
         );
     }

@@ -16,7 +16,7 @@ class ContactReportFieldLayoutTab extends BaseReportFieldLayoutTab
     public function getElements(): array
     {
         return [
-            new ContactReportField(),
+            new ContactReportFieldLayoutElement(),
         ];
     }
 }

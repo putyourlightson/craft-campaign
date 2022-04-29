@@ -31,7 +31,7 @@ class SegmentFieldLayoutTab extends FieldLayoutTab
     {
         return [
             new TitleField(),
-            new SegmentField(),
+            new SegmentFieldLayoutElement(),
         ];
     }
 }

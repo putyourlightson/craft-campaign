@@ -15,7 +15,7 @@ use putyourlightson\campaign\helpers\SegmentHelper;
 /**
  * @since 2.0.0
  */
-class SegmentField extends BaseNativeField
+class SegmentFieldLayoutElement extends BaseNativeField
 {
     /**
      * @inheritdoc

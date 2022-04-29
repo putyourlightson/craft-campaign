@@ -31,7 +31,7 @@ class SendoutFieldLayoutTab extends FieldLayoutTab
     {
         return [
             new TitleField(),
-            new SendoutField(),
+            new SendoutFieldLayoutElement(),
         ];
     }
 }

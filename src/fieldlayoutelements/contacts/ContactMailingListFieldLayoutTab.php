@@ -38,7 +38,7 @@ class ContactMailingListFieldLayoutTab extends FieldLayoutTab
     public function getElements(): array
     {
         return [
-            new ContactMailingListField(),
+            new ContactMailingListFieldLayoutElement(),
         ];
     }
 }

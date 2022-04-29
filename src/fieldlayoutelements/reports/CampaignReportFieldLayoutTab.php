@@ -16,7 +16,7 @@ class CampaignReportFieldLayoutTab extends BaseReportFieldLayoutTab
     public function getElements(): array
     {
         return [
-            new CampaignReportField(),
+            new CampaignReportFieldLayoutElement(),
         ];
     }
 }

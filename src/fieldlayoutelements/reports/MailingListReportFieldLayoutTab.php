@@ -16,7 +16,7 @@ class MailingListReportFieldLayoutTab extends BaseReportFieldLayoutTab
     public function getElements(): array
     {
         return [
-            new MailingListReportField(),
+            new MailingListReportFieldLayoutElement(),
         ];
     }
 }

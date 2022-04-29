@@ -13,7 +13,7 @@ use putyourlightson\campaign\assets\ReportsAsset;
 /**
  * @since 2.0.0
  */
-abstract class BaseReportField extends BaseNativeField
+abstract class BaseReportFieldLayoutElement extends BaseNativeField
 {
     /**
      * @inheritdoc

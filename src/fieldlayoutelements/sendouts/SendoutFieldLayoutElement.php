@@ -20,7 +20,7 @@ use putyourlightson\campaign\helpers\SettingsHelper;
 /**
  * @since 2.0.0
  */
-class SendoutField extends BaseNativeField
+class SendoutFieldLayoutElement extends BaseNativeField
 {
     /**
      * @inheritdoc

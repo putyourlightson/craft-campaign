@@ -19,7 +19,7 @@ use putyourlightson\campaign\assets\SendTestAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutField;
+use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutElement;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -232,7 +232,7 @@ class SendoutsController extends Controller
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
-        $sendoutField = new SendoutField();
+        $sendoutField = new SendoutFieldLayoutElement();
         $sendoutField->formHtml($sendout);
 
         return $this->renderTemplate('campaign/sendouts/_preview', $variables);

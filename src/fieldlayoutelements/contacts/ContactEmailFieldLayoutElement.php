@@ -12,7 +12,7 @@ use craft\fieldlayoutelements\TextField;
 /**
  * @since 2.0.0
  */
-class ContactEmailField extends TextField
+class ContactEmailFieldLayoutElement extends TextField
 {
     /**
      * @inheritdoc

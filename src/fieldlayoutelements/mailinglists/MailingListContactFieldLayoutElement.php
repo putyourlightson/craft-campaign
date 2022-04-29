@@ -15,7 +15,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 /**
  * @since 2.0.0
  */
-class MailingListContactField extends BaseNativeField
+class MailingListContactFieldLayoutElement extends BaseNativeField
 {
     /**
      * @inheritdoc
