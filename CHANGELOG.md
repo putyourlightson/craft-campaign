@@ -1,8 +1,5 @@
 # Release Notes for Campaign
 
-TODO:
-- Bust the element index cache after programmatically updating sendouts.
-
 ## 2.0.0-beta.4 - Unreleased
 ### Added
 - Added a "Default Notification Contacts" field to sendout settings. 
