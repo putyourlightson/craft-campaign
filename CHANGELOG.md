@@ -3,6 +3,7 @@
 ## 2.0.0-beta.4 - Unreleased
 ### Added
 - Added a "Default Notification Contacts" field to sendout settings. 
+- Added a link to view all contacts from the mailing list edit page.
 
 ### Changed
 - Replaced the "Notification Email Address" field with a "Notification Contacts" field in sendouts. 

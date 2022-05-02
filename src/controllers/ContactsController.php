@@ -31,24 +31,6 @@ class ContactsController extends Controller
     }
 
     /**
-     * Main contacts page.
-     */
-    public function actionIndex(string $siteHandle = null): Response
-    {
-        // Set the current site to the site handle if set
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
-
-            if ($site !== null) {
-                Craft::$app->getSites()->setCurrentSite($site);
-            }
-        }
-
-        // Render the template
-        return $this->renderTemplate('campaign/contacts/view');
-    }
-
-    /**
      * Creates a new unpublished draft and redirects to its edit page.
      *
      * @since 2.0.0

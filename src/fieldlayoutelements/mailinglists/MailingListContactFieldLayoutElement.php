@@ -38,7 +38,7 @@ class MailingListContactFieldLayoutElement extends BaseNativeField
     {
         Craft::$app->getView()->registerAssetBundle(ContactEditAsset::class);
 
-        $limit = 100;
+        $limit = 50;
         $contactsQuery = ContactElement::find()
             ->mailingListId($element->getCanonicalId())
             ->limit($limit);

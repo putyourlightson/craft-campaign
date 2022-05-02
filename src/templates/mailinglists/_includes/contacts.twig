@@ -17,7 +17,10 @@
     {% else %}
         <p>{{ "No contacts have been assigned to this mailing list."|t('campaign') }}</p>
     {% endif %}
-    {% if total > contacts|length %}
-        <p>{{ "Showing the first {limit} of {total} contacts."|t('campaign', {limit: limit, total: total}) }}</p>
-    {% endif %}
+    <p>
+        {% if total > contacts|length %}
+            {{ "Showing the first {limit} of {total} contacts."|t('campaign', {limit: limit, total: total}) }}
+        {% endif %}
+        <a href="{{ cpUrl('campaign/contacts/view/' ~ mailingList.id) }}" class="go" target="_blank">{{ "View all"|t('campaign') }}</a>
+    </p>
 </div>
