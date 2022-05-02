@@ -188,17 +188,21 @@ class ContactElement extends Element
         }
 
         if (Campaign::$plugin->getIsPro()) {
-            $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
-            $segments = SegmentElement::findAll();
+            $segments = Campaign::$plugin->segments->getAllSegments();
 
-            foreach ($segments as $segment) {
-                $sources[] = [
-                    'key' => 'segment:' . $segment->uid,
-                    'label' => $segment->title,
-                    'data' => ['id' => $segment->id],
-                    'criteria' => ['segmentId' => $segment->id],
-                    'hasThumbs' => true,
-                ];
+            if (!empty($segments)) {
+                $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
+
+                foreach ($segments as $segment) {
+                    $sources[] = [
+                        'key' => 'segment:' . $segment->uid,
+                        'label' => $segment->title,
+                        'sites' => [$segment->siteId],
+                        'data' => ['id' => $segment->id],
+                        'criteria' => ['segmentId' => $segment->id],
+                        'hasThumbs' => true,
+                    ];
+                }
             }
         }
 

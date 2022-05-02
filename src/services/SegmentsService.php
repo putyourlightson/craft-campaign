@@ -19,6 +19,8 @@ use Twig\Error\SyntaxError;
 
 /**
  * @since 1.9.0
+ *
+ * @property-read SegmentElement[] $allSegments
  */
 class SegmentsService extends Component
 {
@@ -53,6 +55,19 @@ class SegmentsService extends Component
             ->site('*')
             ->status(null)
             ->fixedOrder()
+            ->all();
+    }
+
+    /**
+     * Returns all segments.
+     *
+     * @return SegmentElement[]
+     */
+    public function getAllSegments(): array
+    {
+        /** @var SegmentElement[]] */
+        return SegmentElement::find()
+            ->site('*')
             ->all();
     }
 
