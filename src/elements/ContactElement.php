@@ -383,6 +383,7 @@ class ContactElement extends Element
 
     /**
      * @var null|FieldLayout Field layout
+     * @see getFieldLayout()
      */
     private ?FieldLayout $_fieldLayout = null;
 

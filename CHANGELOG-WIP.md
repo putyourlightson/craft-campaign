@@ -19,6 +19,7 @@
 - Added the `enableAnonymousTracking` setting, which prevents tracking of contact interactions ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 - Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
+- Added a link to view all contacts from the mailing list edit page ([#282](https://github.com/putyourlightson/craft-campaign/issues/282)).
 
 ### Changed
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
