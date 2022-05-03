@@ -23,7 +23,7 @@
     </table>
 
     {% if reportUrl is defined %}
-        <p><a href="{{ reportUrl }}">{{ "View details"|t('campaign') }} &raquo;</a></p>
+        <p><a href="{{ reportUrl }}" class="go">{{ "View details"|t('campaign') }}</a></p>
     {% else %}
         {{ include('campaign/reports/_includes/datatable', {
             id: 'devices',

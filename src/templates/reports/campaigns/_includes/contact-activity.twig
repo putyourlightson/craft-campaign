@@ -41,7 +41,7 @@
                                 {% set info %}
                                     <p>
                                         {% for link in activity.links %}
-                                            <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
+                                            <a href="{{ link }}" class="go" target="_blank" rel="noopener">{{ link }}</a>
                                             {{ not loop.last ? '<br>'|raw }}
                                         {% endfor %}
                                     </p>
@@ -59,7 +59,7 @@
 
     {% if limit is defined %}
         {% if limit == contactActivity|length and reportUrl is defined %}
-            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
         {% endif %}
     {% else %}
         {{ include('campaign/reports/_includes/datatable', {

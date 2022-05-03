@@ -34,7 +34,7 @@
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
         instructions: "Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
-        warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string. <a href="{url}" class="go" target="_blank">Learn more</a>'|t('campaign', {url: 'https://craftcampaign.com/docs/sendouts#how-sendouts-are-sent'}),
+        warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', {url: 'https://putyourlightson.com/plugins/campaign#how-sendouts-are-sent'}),
     }, code) }}
 
     {{ forms.autosuggestField({
@@ -72,7 +72,7 @@
                         Amazon SES
                         <span class="info">
                             "Include original headers" must be enabled for each notification type. <br/>
-                            See this <a href="https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/" target="_blank">article</a> for details on where and how to enable this.
+                            See this <a href="https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/" target="_blank" rel="noopener">article</a> for details on where and how to enable this.
                         </span>
                     </th>
                     <td class="textual code">

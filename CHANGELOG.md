@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.0-beta.4 - Unreleased
+### Changed
+- Improved the UI and security of links to external sites. 
+
 ## 2.0.0-beta.4 - 2022-05-03
 ### Added
 - Added a "Default Notification Contacts" field to sendout settings. 

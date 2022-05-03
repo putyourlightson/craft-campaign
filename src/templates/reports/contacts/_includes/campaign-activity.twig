@@ -17,7 +17,7 @@
                             <span class="info">
                                 <p>
                                     {% for link in activity.links %}
-                                        <a href="{{ link }}" class="go" target="_blank">{{ link }}</a>
+                                        <a href="{{ link }}" class="go" target="_blank" rel="noopener">{{ link }}</a>
                                         {{ not loop.last ? '<br>'|raw }}
                                     {% endfor %}
                                 </p>
@@ -32,7 +32,7 @@
     </table>
 
     {% if limit is defined and limit == campaignActivity|length %}
-        <p><a href="{{ url('campaign/reports/contacts/' ~ contactId ~ '/campaign-activity') }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+        <p><a href="{{ url('campaign/reports/contacts/' ~ contactId ~ '/campaign-activity') }}" class="go">{{ "View all"|t('campaign') }}</a></p>
     {% endif %}
 
 {% else %}

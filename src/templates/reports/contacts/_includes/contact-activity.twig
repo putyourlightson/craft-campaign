@@ -24,7 +24,7 @@
 
     {% if limit is defined %}
         {% if limit == contactActivity|length and reportUrl is defined %}
-            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
         {% endif %}
     {% else %}
         {{ include('campaign/reports/_includes/datatable', {

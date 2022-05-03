@@ -15,7 +15,7 @@
                         <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
                         <td data-title="{{ 'Source'|t('campaign') }}">
                             {% if activity.model.sourceType %}
-                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
                             {% endif %}
                         </td>
                         <td data-order="{{ activity.date|datetime('U') }}" data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
@@ -27,7 +27,7 @@
 
     {% if limit is defined %}
         {% if limit == contactActivity|length and reportUrl is defined %}
-            <p><a href="{{ reportUrl }}">{{ "View all"|t('campaign') }} &raquo;</a></p>
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
         {% endif %}
     {% else %}
         {{ include('campaign/reports/_includes/datatable', {
