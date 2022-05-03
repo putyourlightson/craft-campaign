@@ -1,6 +1,8 @@
 # Release Notes for Campaign
 
 ## 2.0.0 - Unreleased
+> {warning} Support for reCAPTCHA version 2 has been removed, use version 3 instead. The `subscribeVerificationSuccessTemplate` setting has been removed, use the `subscribeSuccessTemplate` setting instead.
+
 ### Added
 - Added compatibility with Craft 4.
 - Added a new "Singular" sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
