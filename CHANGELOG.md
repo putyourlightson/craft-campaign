@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.0.0-beta.4 - Unreleased
+## 2.0.0-beta.4 - 2022-05-03
 ### Added
 - Added a "Default Notification Contacts" field to sendout settings. 
 - Added a link to view all contacts from the mailing list edit page.
