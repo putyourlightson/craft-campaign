@@ -455,8 +455,8 @@ class Campaign extends Plugin
     private function _registerLogTarget(): void
     {
         Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
-            'name' => 'blitz',
-            'categories' => ['blitz'],
+            'name' => 'campaign',
+            'categories' => ['campaign'],
             'level' => LogLevel::INFO,
             'formatter' => new LineFormatter(
                 format: "[%datetime%] %message%\n",
