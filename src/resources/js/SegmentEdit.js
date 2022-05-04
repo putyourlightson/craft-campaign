@@ -61,7 +61,7 @@ Campaign.SegmentEdit = Garnish.Base.extend({
             $(this).find('.orCondition').each(function(orIndex) {
                 $(this).find('select, input').each(function() {
                     const name = $(this).attr('name').replace(
-                        /conditions(\]?)\[(.*?)]\[(.*?)]/,
+                        /conditions(]?)\[(.*?)]\[(.*?)]/,
                         'conditions$1[' + andIndex + '][' + orIndex + ']'
                     );
                     $(this).attr('name', name);

@@ -961,6 +961,7 @@ class CampaignElement extends Element
         Craft::$app->getSites()->setCurrentSite($this->siteId);
 
         // Set the language to the campaign's language as this does not automatically happen for CP requests
+        /** @noinspection PhpUndefinedFieldInspection */
         Craft::$app->language = $this->_getLanguage();
 
         try {
