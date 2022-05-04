@@ -1,8 +1,8 @@
 # Release Notes for Campaign
 
-## 1.23.1 - Unreleased
+## 1.23.1 - 2022-05-04
 ### Changed
-- Mailing list slugs now must be unique and are updated automatically when a mailing list is duplicated.
+- Mailing list slugs must now be unique and are updated automatically when a mailing list is duplicated.
 
 ## 1.23.0 - 2022-02-28
 ### Added
