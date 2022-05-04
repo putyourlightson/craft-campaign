@@ -133,7 +133,6 @@ class Campaign extends Plugin
                 'exports' => ['class' => ExportsService::class],
                 'forms' => ['class' => FormsService::class],
                 'imports' => ['class' => ImportsService::class],
-                'mailer' => fn() => $this->createMailer(),
                 'mailingLists' => ['class' => MailingListsService::class],
                 'mailingListTypes' => ['class' => MailingListTypesService::class],
                 'pendingContacts' => ['class' => PendingContactsService::class],
@@ -171,7 +170,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.0.0-beta.4';
+    public string $schemaVersion = '2.0.0';
 
     /**
      * @inheritdoc
@@ -187,6 +186,7 @@ class Campaign extends Plugin
         self::$plugin = $this;
         $this->name = Craft::t('campaign', 'Plugin Name');
 
+        $this->_registerComponents();
         $this->_registerVariables();
         $this->_registerLogTarget();
         $this->_registerElementTypes();
@@ -416,6 +416,19 @@ class Campaign extends Plugin
             'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit',
             'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit',
         ];
+    }
+
+    /**
+     * Registers the components that should be defined via settings, providing
+     * they have not already been set in `$pluginConfigs`.
+     *
+     * @see Plugins::$pluginConfigs
+     */
+    private function _registerComponents(): void
+    {
+        if (!$this->has('mailer')) {
+            $this->set('mailer', fn() => $this->createMailer());
+        }
     }
 
     /**
