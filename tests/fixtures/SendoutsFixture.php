@@ -20,5 +20,10 @@ class SendoutsFixture extends SendoutElementFixture
     /**
      * @inheritdoc
      */
-    public $depends = [CampaignsFixture::class, MailingListsFixture::class, SegmentsFixture::class];
+    public $depends = [
+        CampaignsFixture::class,
+        MailingListsFixture::class,
+        SegmentsFixture::class,
+        ContactsFixture::class,
+    ];
 }

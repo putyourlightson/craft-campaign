@@ -19,7 +19,7 @@ return [
         'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
-        'notificationEmailAddress' => 'notify@email.com',
+        'notificationContactIds' => $this->notificationContactIds,
     ],
     [
         'title' => 'Sendout 2',
@@ -33,7 +33,7 @@ return [
         'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
-        'notificationEmailAddress' => 'notify@email.com',
+        'notificationContactIds' => $this->notificationContactIds,
     ],
     [
         'title' => 'Sendout 3',
@@ -52,6 +52,6 @@ return [
         'segmentIds' => $this->segmentIds,
         'fromName' => 'From Name',
         'fromEmail' => 'from@email.com',
-        'notificationEmailAddress' => 'notify@email.com',
+        'notificationContactIds' => $this->notificationContactIds,
     ],
 ];

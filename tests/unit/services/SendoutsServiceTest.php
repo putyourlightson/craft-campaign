@@ -6,7 +6,9 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\base\conditions\BaseCondition;
 use craft\elements\conditions\TitleConditionRule;
+use craft\events\RegisterConditionRuleTypesEvent;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\queue\Queue;
@@ -21,6 +23,7 @@ use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
 use putyourlightson\campaigntests\unit\BaseUnitTest;
+use yii\base\Event;
 
 /**
  * @since 1.10.0
@@ -141,10 +144,17 @@ class SendoutsServiceTest extends BaseUnitTest
 
         $this->assertTrue($sendout->getCanSendNow());
 
+        Event::on(
+            SendoutScheduleCondition::class,
+            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
+            function (RegisterConditionRuleTypesEvent $event) {
+                $event->conditionRuleTypes[] = TitleConditionRule::class;
+            }
+        );
         $condition = Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
         $condition->setConditionRules([
             new TitleConditionRule([
-                'value' => 'xyz123',
+                'value' => 'Not a real title',
             ]),
         ]);
         $sendout->getSchedule()->setCondition($condition);
@@ -250,6 +260,7 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_SENT;
+        $this->sendout->notificationContactIds = [$this->contact->id];
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
@@ -257,7 +268,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNotNull($this->message);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsString('completed', $this->message->getSubject());
@@ -267,6 +278,7 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_FAILED;
+        $this->sendout->notificationContactIds = [$this->contact->id];
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
@@ -274,7 +286,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNotNull($this->message);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsStringIgnoringCase('failed', $this->message->getSubject());

@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\test\fixtures\elements;
 use craft\base\ElementInterface;
 use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -38,6 +39,11 @@ abstract class SendoutElementFixture extends BaseElementFixture
     public ?array $segmentIds = null;
 
     /**
+     * @var array|null
+     */
+    public ?array $notificationContactIds = null;
+
+    /**
      * @inheritdoc
      */
     public function load(): void
@@ -49,6 +55,7 @@ abstract class SendoutElementFixture extends BaseElementFixture
 
         $this->mailingListIds = MailingListElement::find()->ids();
         $this->segmentIds = SegmentElement::find()->ids();
+        $this->notificationContactIds = ContactElement::find()->email('contact@contacts.com')->ids();
 
         parent::load();
     }
