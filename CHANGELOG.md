@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.1 - Unreleased
+### Changed
+- Improved the UI of sendout previews.
+
 ## 2.0.0 - 2022-05-04
 > {warning} Support for reCAPTCHA version 2 has been removed, use version 3 instead. The `subscribeVerificationSuccessTemplate` setting has been removed, use the `subscribeSuccessTemplate` setting instead.
 

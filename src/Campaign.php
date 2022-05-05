@@ -94,7 +94,6 @@ use yii\web\ForbiddenHttpException;
  * @property-read TrackerService $tracker
  * @property-read WebhookService $webhook
  * @property-read Mailer $mailer
- *
  * @property-read array|null $cpNavItem
  * @property-read array $cpRoutes
  * @property-read bool $isPro
