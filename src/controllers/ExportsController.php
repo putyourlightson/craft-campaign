@@ -5,31 +5,17 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\models\ExportModel;
-
 use Craft;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
-use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
+
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\models\ExportModel;
 use yii\web\Response;
 
-/**
- * ExportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ExportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,9 +28,7 @@ class ExportsController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     * @param ExportModel|null $export The export, if there were any validation errors.
-     * @return Response
+     * Main export page.
      */
     public function actionIndex(string $siteHandle = null, ExportModel $export = null): Response
     {
@@ -64,7 +48,8 @@ class ExportsController extends Controller
         $variables = [
             'export' => $export,
             'mailingListElementType' => MailingListElement::class,
-            'fields' => Campaign::$plugin->getSettings()->getContactFields(),
+            'emailFieldLabel' => Campaign::$plugin->settings->getEmailFieldLabel(),
+            'fields' => Campaign::$plugin->settings->getContactFields(),
         ];
 
         // Render the template
@@ -72,70 +57,34 @@ class ExportsController extends Controller
     }
 
     /**
-     * Exports a file
-     *
-     * @return Response|null
-     * @throws Exception
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Exports a file.
      */
-    public function actionExportFile()
+    public function actionExportFile(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $export = new ExportModel();
-        $export->mailingListIds = $request->getBodyParam('mailingListIds');
-        $export->subscribedDate = $request->getBodyParam('subscribedDate');
-
-        // Get fields to export
-        $export->fields = [];
-        $fields = $request->getBodyParam('fields');
-        if (is_array($fields)) {
-            foreach ($fields as $field => $value) {
-                if ($value) {
-                    $export->fields[] = $field;
-                }
-            }
-        }
+        $export = new ExportModel([
+            'mailingListIds' => $this->request->getBodyParam('mailingListIds'),
+            'fields' => $this->request->getBodyParam('fields'),
+        ]);
 
         // Get storage directory path
-        $path = Craft::$app->path->getStoragePath().'/campaign/exports/'.gmdate('YmdHis').'/';
+        $path = Craft::$app->getPath()->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';
 
         // Create directory
         FileHelper::createDirectory($path);
 
         // Set file path
-        $export->filePath = $path.'export.csv';
-
-        // Validate it
-        if ($export->validate() === false) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t export file.'));
-
-            // Send the export back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export
-            ]);
-
-            return null;
-        }
+        $export->filePath = $path . 'export.csv';
 
         // Export it
         if (!Campaign::$plugin->exports->exportFile($export)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t export file.'));
-
-            // Send the export back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'export' => $export
-            ]);
-
-            return null;
+            return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
         }
 
         // Log it
         Campaign::$plugin->log('File exported by "{username}".');
 
-        return Craft::$app->getResponse()->sendFile($export->filePath);
+        return $this->response->sendFile($export->filePath);
     }
 }

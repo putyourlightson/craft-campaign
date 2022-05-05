@@ -8,16 +8,10 @@ namespace putyourlightson\campaigntests\fixtures;
 use putyourlightson\campaign\test\fixtures\elements\SegmentElementFixture;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.13.0
+ * @since 1.13.0
  */
-
 class SegmentsFixture extends SegmentElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

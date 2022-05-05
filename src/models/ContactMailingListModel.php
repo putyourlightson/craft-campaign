@@ -5,121 +5,102 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\base\Model;
 use DateTime;
-use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 
 /**
- * ContactMailingListModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property ContactElement     $contact
- * @property string             $interaction
- * @property array              $location
- * @property MailingListElement $mailingList
+ * @property-read null|ContactElement $contact
+ * @property-read string $interaction
+ * @property-read null|MailingListElement $mailingList
  */
-class ContactMailingListModel extends BaseModel
+class ContactMailingListModel extends Model
 {
-    // Constants
-    // =========================================================================
-
-    const INTERACTIONS = ['subscribed', 'unsubscribed', 'complained', 'bounced'];
-
-    // Properties
-    // =========================================================================
+    /**
+     * @const array
+     */
+    public const INTERACTIONS = ['subscribed', 'unsubscribed', 'complained', 'bounced'];
 
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id;
 
     /**
-     * @var int Contact ID
+     * @var int|null Contact ID
      */
-    public $contactId;
+    public ?int $contactId;
 
     /**
-     * @var int Mailing list ID
+     * @var int|null Mailing list ID
      */
-    public $mailingListId;
+    public ?int $mailingListId;
 
     /**
      * @var string Subscription status
      */
-    public $subscriptionStatus;
+    public string $subscriptionStatus;
 
     /**
      * @var DateTime|null Subscribed
      */
-    public $subscribed;
+    public ?DateTime $subscribed;
 
     /**
      * @var DateTime|null Unsubscribed
      */
-    public $unsubscribed;
+    public ?DateTime $unsubscribed;
 
     /**
      * @var DateTime|null Complained
      */
-    public $complained;
+    public ?DateTime $complained;
 
     /**
      * @var DateTime|null Bounced
      */
-    public $bounced;
+    public ?DateTime $bounced;
 
     /**
      * @var DateTime|null Verified
      */
-    public $verified;
+    public ?DateTime $verified;
 
     /**
      * @var string Source type
      */
-    public $sourceType = '';
+    public string $sourceType = '';
 
     /**
      * @var string Source
      */
-    public $source = '';
+    public string $source = '';
 
     /**
      * @var DateTime
      */
-    public $dateUpdated;
-
-    // Public Methods
-    // =========================================================================
+    public DateTime $dateUpdated;
 
     /**
-     * Returns the contact
-     *
-     * @return ContactElement|null
+     * Returns the contact.
      */
-    public function getContact()
+    public function getContact(): ?ContactElement
     {
         return Campaign::$plugin->contacts->getContactById($this->contactId);
     }
 
     /**
-     * Returns the mailing list
-     *
-     * @return MailingListElement|null
+     * Returns the mailing list.
      */
-    public function getMailingList()
+    public function getMailingList(): ?MailingListElement
     {
         return Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
     }
 
     /**
-     * Returns the most significant interaction
-     *
-     * @return string
+     * Returns the most significant interaction.
      */
     public function getInteraction(): string
     {

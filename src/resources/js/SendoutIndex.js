@@ -4,214 +4,203 @@
 /**
  * SendoutIndex class
  */
-Campaign.SendoutIndex = Craft.BaseElementIndex.extend(
-    {
-        publishableSendoutTypes: null,
-        $newSendoutBtnGroup: null,
-        $newSendoutBtn: null,
+Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
+    editableSendoutTypes: null,
+    $newSendoutBtnGroup: null,
+    $newSendoutBtn: null,
 
-        init: function(elementType, $container, settings) {
-            this.on('selectSource', $.proxy(this, 'updateButton'));
-            this.on('selectSite', $.proxy(this, 'updateButton'));
-            this.base(elementType, $container, settings);
-        },
+    init: function(elementType, $container, settings) {
+        this.editableSendoutTypes = [];
+        this.on('selectSource', this.updateButton.bind(this));
+        this.on('selectSite', this.updateButton.bind(this));
+        this.base(elementType, $container, settings);
+    },
 
-        afterInit: function() {
-            // Get publishable sendout types
-            this.publishableSendoutTypes = [];
+    afterInit: function() {
+        // Find which of the visible sendout types the user has permission to create new sendouts in
+        this.editableSendoutTypes = Craft.editableSendoutTypes.filter(
+            sendoutType => !!this.getSourceByKey(`sendoutType:${sendoutType.handle}`)
+        );
 
-            for (var i = 0; i < Craft.publishableSendoutTypes.length; i++) {
-                var sendoutType = Craft.publishableSendoutTypes[i];
+        this.base();
+    },
 
-                if (this.getSourceByKey('sendoutTypeId:' + sendoutType.id)) {
-                    this.publishableSendoutTypes.push(sendoutType);
+    getDefaultSourceKey: function() {
+        // Did they request a specific sendout type in the URL?
+        if (this.settings.context === 'index' && typeof defaultSendoutTypeHandle !== 'undefined') {
+            for (let i = 0; i < this.$sources.length; i++) {
+                const $source = $(this.$sources[i]);
+                if ($source.data('handle') === defaultSendoutTypeHandle) {
+                    return $source.data('key');
                 }
             }
+        }
 
-            this.base();
-        },
+        return this.base();
+    },
 
-        getDefaultSourceKey: function() {
-            // Did they request a specific sendout type in the URL?
-            if (this.settings.context == 'index' && typeof defaultSendoutTypeHandle !== 'undefined') {
-                for (var i = 0; i < this.$sources.length; i++) {
-                    var $source = $(this.$sources[i]);
+    updateButton: function() {
+        if (!this.$source) {
+            return;
+        }
 
-                    if ($source.data('handle') == defaultSendoutTypeHandle) {
-                        return $source.data('key');
-                    }
+        // Get the handle of the selected source
+        const selectedSourceHandle = this.$source.data('handle');
+
+        // Update the New sendout button
+        // ---------------------------------------------------------------------
+
+        // Remove the old button, if there is one
+        if (this.$newSendoutBtnGroup) {
+            this.$newSendoutBtnGroup.remove();
+        }
+
+        if (this.editableSendoutTypes.length) {
+            // Determine if they are viewing a sendout type that they have permission to create sendouts in
+            const selectedSendoutType = this.editableSendoutTypes.find(
+                sendoutType => sendoutType.handle === selectedSourceHandle
+            );
+
+            this.$newSendoutBtnGroup = $('<div class="btngroup submit" data-wrapper/>');
+            let $menuBtn;
+            const menuId = 'new-campaign-menu-' + Craft.randomString(10);
+
+            // If they are, show a primary "New sendout" button, and a dropdown of the other sendout types (if any).
+            // Otherwise only show a menu button
+            if (selectedSendoutType) {
+                this.$newSendoutBtn = Craft.ui.createButton({
+                        label: this.settings.context === 'index'
+                            ? Craft.t('campaign', 'New sendout')
+                            : Craft.t('campaign', 'New {sendoutType} sendout', {
+                                sendoutType: selectedSendoutType.name,
+                            }),
+                        spinner: true,
+                    })
+                    .addClass('submit add icon')
+                    .appendTo(this.$newSendoutBtnGroup);
+
+                this.addListener(this.$newSendoutBtn, 'click', () => {
+                    this._createSendout(selectedSendoutType.handle);
+                });
+
+                if (this.editableSendoutTypes.length > 1) {
+                    $menuBtn = $('<button/>', {
+                        type: 'button',
+                        class: 'btn submit menubtn btngroup-btn-last',
+                        'aria-controls': menuId,
+                        'data-disclosure-trigger': '',
+                    }).appendTo(this.$newSendoutBtnGroup);
                 }
-            }
-
-            return this.base();
-        },
-
-        updateButton: function() {
-            if (!this.$source) {
-                return;
-            }
-
-            var handle;
-
-            // Get the handle of the selected source
-            handle = this.$source.data('handle');
-
-            // Update the New sendout button
-            // ---------------------------------------------------------------------
-
-            if (this.publishableSendoutTypes.length) {
-                // Remove the old button, if there is one
-                if (this.$newSendoutBtnGroup) {
-                    this.$newSendoutBtnGroup.remove();
-                }
-
-                // Determine if they are viewing a sendout type
-                var selectedSendoutType;
-
-                if (handle) {
-                    for (var i = 0; i < this.publishableSendoutTypes.length; i++) {
-                        if (this.publishableSendoutTypes[i].handle == handle) {
-                            selectedSendoutType = this.publishableSendoutTypes[i];
-                            break;
-                        }
-                    }
-                }
-
-                this.$newSendoutBtnGroup = $('<div class="btngroup submit"/>');
-                var $menuBtn;
-
-                // If they are, show a primary "New sendout" button, and a dropdown of the other sendout types (if any).
-                // Otherwise only show a menu button
-                if (selectedSendoutType) {
-                    var href = this._getSendoutTypeTriggerHref(selectedSendoutType),
-                        label = (this.settings.context == 'index' ? Craft.t('campaign', 'New sendout') : Craft.t('campaign', 'New {sendoutType} sendout', {sendoutType: selectedSendoutType.name}));
-                    this.$newSendoutBtn = $('<a class="btn submit add icon" ' + href + '>' + Craft.escapeHtml(label) + '</a>').appendTo(this.$newSendoutBtnGroup);
-
-                    if (this.settings.context != 'index') {
-                        this.addListener(this.$newSendoutBtn, 'click', function(ev) {
-                            this._openCreateSendoutModal(ev.currentTarget.getAttribute('data-id'));
-                        });
-                    }
-
-                    if (this.publishableSendoutTypes.length > 1) {
-                        $menuBtn = $('<div class="btn submit menubtn"></div>').appendTo(this.$newSendoutBtnGroup);
-                    }
-                }
-                else {
-                    this.$newSendoutBtn = $menuBtn = $('<div class="btn submit add icon menubtn">' + Craft.t('campaign', 'New sendout') + '</div>').appendTo(this.$newSendoutBtnGroup);
-                }
-
-                if ($menuBtn) {
-                    var menuHtml = '<div class="menu"><ul>';
-
-                    for (var i = 0; i < this.publishableSendoutTypes.length; i++) {
-                        var sendoutType = this.publishableSendoutTypes[i];
-
-                        if (this.settings.context == 'index' || sendoutType != selectedSendoutType) {
-                            var href = this._getSendoutTypeTriggerHref(sendoutType),
-                                label = (this.settings.context == 'index' ? sendoutType.name : Craft.t('campaign', 'New {sendoutType} sendout', {sendoutType: sendoutType.name}));
-                            menuHtml += '<li><a ' + href + '">' + Craft.escapeHtml(label) + '</a></li>';
-                        }
-                    }
-
-                    menuHtml += '</ul></div>';
-
-                    var $menu = $(menuHtml).appendTo(this.$newSendoutBtnGroup),
-                        menuBtn = new Garnish.MenuBtn($menuBtn);
-
-                    if (this.settings.context != 'index') {
-                        menuBtn.on('optionSelect', $.proxy(function(ev) {
-                            this._openCreateSendoutModal(ev.option.getAttribute('data-id'));
-                        }, this));
-                    }
-                }
-
-                this.addButton(this.$newSendoutBtnGroup);
-            }
-
-            // Update the URL if we're on the Sendouts index
-            // ---------------------------------------------------------------------
-
-            if (this.settings.context == 'index' && typeof history !== 'undefined') {
-                var uri = 'campaign/sendouts';
-
-                if (handle) {
-                    uri += '/' + handle;
-                }
-
-                history.replaceState({}, '', Craft.getUrl(uri));
-            }
-        },
-
-        _getSendoutTypeTriggerHref: function(sendoutType) {
-            if (this.settings.context == 'index') {
-                var uri = 'campaign/sendouts/' + sendoutType.handle + '/new';
-                if (this.siteId && this.siteId != Craft.siteId) {
-                    for (var i = 0; i < Craft.sites.length; i++) {
-                        if (Craft.sites[i].id == this.siteId) {
-                            uri += '/' + Craft.sites[i].handle;
-                        }
-                    }
-                }
-                return 'href="' + Craft.getUrl(uri) + '"';
             }
             else {
-                return 'data-id="' + sendoutType.id + '"';
+                this.$newSendoutBtn = $menuBtn = Craft.ui.createButton({
+                        label: Craft.t('campaign', 'New sendout'),
+                        spinner: true,
+                    })
+                    .addClass('submit add icon menubtn btngroup-btn-last')
+                    .attr('aria-controls', menuId)
+                    .attr('data-disclosure-trigger', '')
+                    .appendTo(this.$newSendoutBtnGroup);
             }
-        },
 
-        _openCreateSendoutModal: function(sendoutTypeId) {
-            if (this.$newSendoutBtn.hasClass('loading')) {
-                return;
-            }
+            this.addButton(this.$newSendoutBtnGroup);
 
-            // Find the sendout type
-            var sendoutType;
+            if ($menuBtn) {
+                const $menuContainer = $('<div/>', {
+                    id: menuId,
+                    class: 'menu menu--disclosure',
+                }).appendTo(this.$newSendoutBtnGroup);
+                const $ul = $('<ul/>').appendTo($menuContainer);
 
-            for (var i = 0; i < this.publishableSendoutTypes.length; i++) {
-                if (this.publishableSendoutTypes[i].id == sendoutTypeId) {
-                    sendoutType = this.publishableSendoutTypes[i];
-                    break;
+                for (const sendoutType of this.editableSendoutTypes) {
+                    if (this.settings.context === 'index' || sendoutType !== selectedSendoutType) {
+                        const $li = $('<li/>').appendTo($ul);
+                        const $a = $('<a/>', {
+                            role: 'button',
+                            tabindex: '0',
+                            text: Craft.t('campaign', 'New {sendoutType} sendout', {
+                                sendoutType: sendoutType.name,
+                            }),
+                        }).appendTo($li);
+                        this.addListener($a, 'click', () => {
+                            $menuBtn.data('trigger').hide();
+                            this._createSendout(sendoutType.handle);
+                        });
+                    }
                 }
+
+                new Garnish.DisclosureMenu($menuBtn);
+            }
+        }
+
+        // Update the URL if we're on the Sendouts index
+        // ---------------------------------------------------------------------
+
+        if (this.settings.context == 'index' && typeof history !== 'undefined') {
+            let uri = 'campaign/sendouts';
+
+            if (selectedSourceHandle) {
+                uri += '/' + selectedSourceHandle;
             }
 
-            if (!sendoutType) {
-                return;
+            const url = Craft.getUrl(uri, document.location.search + document.location.hash);
+            history.replaceState({}, '', url);
+        }
+    },
+
+    _createSendout: function(sendoutTypeHandle) {
+        if (this.$newSendoutBtn.hasClass('loading')) {
+            console.warn('New sendout creation already in progress.');
+            return;
+        }
+
+        // Find the sendout type
+        const sendoutType = this.editableSendoutTypes.find(
+            sendoutType => sendoutType.handle === sendoutTypeHandle
+        );
+
+        if (!sendoutType) {
+            throw `Invalid sendout type: ${sendoutTypeHandle}`;
+        }
+
+        this.$newSendoutBtn.addClass('loading');
+
+        Craft.sendActionRequest('POST', 'elements/create', {
+            data: {
+                elementType: this.elementType,
+                siteId: this.siteId,
+                sendoutType: sendoutTypeHandle,
+            },
+        }).then(ev => {
+            if (this.settings.context === 'index') {
+                document.location.href = Craft.getUrl(ev.data.cpEditUrl, {fresh: 1});
             }
+            else {
+                const slideout = Craft.createElementEditor(this.elementType, {
+                    siteId: this.siteId,
+                    elementId: ev.data.element.id,
+                    draftId: ev.data.element.draftId,
+                    params: {
+                        fresh: 1,
+                    },
+                });
+                slideout.on('submit', () => {
+                    // Make sure the right sendoutType is selected
+                    const sendoutTypeSourceKey = `sendoutType:${sendoutType.handle}`;
 
-            this.$newSendoutBtn.addClass('inactive');
-            var newSendoutBtnText = this.$newSendoutBtn.text();
-            this.$newSendoutBtn.text(Craft.t('campaign', 'New {sendoutType} sendout', {sendoutType: sendoutType.name}));
-
-            Craft.createElementEditor(this.elementType, {
-                hudTrigger: this.$newSendoutBtnGroup,
-                elementType: 'campaign\\elements\\SendoutElement',
-                attributes: {
-                    sendoutTypeId: sendoutTypeId
-                },
-                onBeginLoading: $.proxy(function() {
-                    this.$newSendoutBtn.addClass('loading');
-                }, this),
-                onEndLoading: $.proxy(function() {
-                    this.$newSendoutBtn.removeClass('loading');
-                }, this),
-                onHideHud: $.proxy(function() {
-                    this.$newSendoutBtn.removeClass('inactive').text(newSendoutBtnText);
-                }, this),
-                onSaveElement: $.proxy(function(response) {
-                    // Make sure the right sendout type is selected
-                    var sendoutTypeSourceKey = 'sendoutType:' + sendoutTypeId;
-
-                    if (this.sourceKey != sendoutTypeSourceKey) {
+                    if (this.sourceKey !== sendoutTypeSourceKey) {
                         this.selectSourceByKey(sendoutTypeSourceKey);
                     }
 
-                    this.selectElementAfterUpdate(response.id);
+                    this.selectElementAfterUpdate(ev.data.element.id);
                     this.updateElements();
-                }, this)
-            });
-        }
-    });
+                });
+            }
+        }).finally(() => {
+            this.$newSendoutBtn.removeClass('loading');
+        });
+    },
+});
 
 // Register it!
 Craft.registerElementIndexClass('putyourlightson\\campaign\\elements\\SendoutElement', Campaign.SendoutIndex);

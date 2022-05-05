@@ -5,6 +5,9 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
+use craft\elements\User;
 use craft\events\ElementEvent;
 use craft\events\UserEvent;
 use craft\events\UserGroupsAssignEvent;
@@ -15,41 +18,31 @@ use craft\services\Users;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\jobs\SyncJob;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-
-use Craft;
-use craft\base\Component;
-use craft\elements\User;
 use yii\base\Event;
 
 /**
- * SyncService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class SyncService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event SyncEvent
+     */
+    public const EVENT_BEFORE_SYNC = 'beforeSync';
 
     /**
      * @event SyncEvent
      */
-    const EVENT_BEFORE_SYNC = 'beforeSync';
+    public const EVENT_AFTER_SYNC = 'afterSync';
 
     /**
-     * @event SyncEvent
+     * Registers user events.
      */
-    const EVENT_AFTER_SYNC = 'afterSync';
-
-    // Public Methods
-    // =========================================================================
-
-    public function registerUserEvents()
+    public function registerUserEvents(): void
     {
         $events = [
             [Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT],
@@ -67,11 +60,9 @@ class SyncService extends Component
     }
 
     /**
-     * Handles a user event
-     *
-     * @param Event $event
+     * Handles a user event.
      */
-    public function handleUserEvent(Event $event)
+    public function handleUserEvent(Event $event): void
     {
         // Ensure pro version
         if (!Campaign::$plugin->getIsPro()) {
@@ -100,11 +91,9 @@ class SyncService extends Component
     }
 
     /**
-     * Queues a sync
-     *
-     * @param MailingListElement $mailingList
+     * Queues a sync.
      */
-    public function queueSync(MailingListElement $mailingList)
+    public function queueSync(MailingListElement $mailingList): void
     {
         /** @var Queue $queue */
         $queue = Craft::$app->getQueue();
@@ -114,16 +103,15 @@ class SyncService extends Component
     }
 
     /**
-     * Syncs a user
-     *
-     * @param User $user
+     * Syncs a user.
      */
-    public function syncUser(User $user)
+    public function syncUser(User $user): void
     {
         // Get user's user group IDs
         $userGroups = $user->getGroups();
         $userGroupIds = ArrayHelper::getColumn($userGroups, 'id');
 
+        /** @var MailingListElement[] $mailingLists */
         $mailingLists = MailingListElement::find()
             ->synced(true)
             ->site('*')
@@ -141,11 +129,9 @@ class SyncService extends Component
     }
 
     /**
-     * Deletes a user
-     *
-     * @param User $user
+     * Deletes a user.
      */
-    public function deleteUser(User $user)
+    public function deleteUser(User $user): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
@@ -155,12 +141,9 @@ class SyncService extends Component
     }
 
     /**
-     * Syncs a user to a contact in a mailing list
-     *
-     * @param User $user
-     * @param MailingListElement $mailingList
+     * Syncs a user to a contact in a mailing list.
      */
-    public function syncUserMailingList(User $user, MailingListElement $mailingList)
+    public function syncUserMailingList(User $user, MailingListElement $mailingList): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 
@@ -217,12 +200,9 @@ class SyncService extends Component
     }
 
     /**
-     * Removes a user synced contact from a mailing list
-     *
-     * @param User $user
-     * @param MailingListElement $mailingList
+     * Removes a user synced contact from a mailing list.
      */
-    public function removeUserMailingList(User $user, MailingListElement $mailingList)
+    public function removeUserMailingList(User $user, MailingListElement $mailingList): void
     {
         $contact = Campaign::$plugin->contacts->getContactByUserId($user->id);
 

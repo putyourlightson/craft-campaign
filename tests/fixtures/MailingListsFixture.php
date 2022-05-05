@@ -8,16 +8,10 @@ namespace putyourlightson\campaigntests\fixtures;
 use putyourlightson\campaign\test\fixtures\elements\MailingListElementFixture;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class MailingListsFixture extends MailingListElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -31,5 +25,5 @@ class MailingListsFixture extends MailingListElementFixture
     /**
      * @var int[]
      */
-    public $mailingListTypeIds = [];
+    public array $mailingListTypeIds = [];
 }

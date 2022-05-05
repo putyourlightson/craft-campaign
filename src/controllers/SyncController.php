@@ -5,27 +5,19 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-
 use Craft;
+
 use craft\web\Controller;
+use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
- * SyncController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
+ * @since 1.2.0
  */
 class SyncController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,9 +33,7 @@ class SyncController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     * @param array|null $errors
-     * @return Response
+     * Main sync page.
      */
     public function actionIndex(string $siteHandle = null, array $errors = []): Response
     {
@@ -66,31 +56,17 @@ class SyncController extends Controller
     }
 
     /**
-     * Adds a synced user group
-     *
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
+     * Adds a synced user group.
      */
-    public function actionAddSyncedMailingList()
+    public function actionAddSyncedMailingList(): ?Response
     {
-        $this->requirePermission('campaign:sync');
-
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListId = $request->getRequiredBodyParam('mailingListId');
-        $mailingListId = (is_array($mailingListId) && isset($mailingListId[0])) ? $mailingListId[0] : null;
+        $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
+        $mailingListId = $mailingListId[0] ?? null;
 
         if ($mailingListId === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t sync mailing list.'));
-
-            // Send the errors back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'errors' => ['mailingListId' => [Craft::t('campaign', 'Mailing list is required.')]]
-            ]);
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Mailing list is required.'));
         }
 
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
@@ -99,7 +75,7 @@ class SyncController extends Controller
             throw new BadRequestHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
-        $userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         if ($userGroupId === null) {
             throw new BadRequestHttpException('User group is required.');
@@ -112,35 +88,20 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = $userGroup->id;
-
         Craft::$app->getElements()->saveElement($mailingList);
-
         Campaign::$plugin->sync->queueSync($mailingList);
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
     }
 
     /**
-     * Removes a synced user group
-     *
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
+     * Removes a synced user group.
      */
     public function actionRemoveSyncedMailingList(): Response
     {
-        $this->requirePermission('campaign:sync');
-
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListId = $request->getRequiredBodyParam('id');
+        $mailingListId = $this->request->getRequiredBodyParam('id');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
         if ($mailingList === null) {
@@ -148,15 +109,8 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = null;
-
         Craft::$app->getElements()->saveElement($mailingList);
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Syncing successfully removed.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Syncing successfully removed.'));
     }
 }

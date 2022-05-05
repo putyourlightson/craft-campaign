@@ -1,0 +1,85 @@
+{% set params = {
+    recipients: '{recipients}',
+    mailingLists: sendout.mailingLists|length,
+    sendDate: sendout.sendDate|datetime,
+} %}
+
+{% set prepLabel = 'Prepare to Send Now'|t('campaign') %}
+{% set saveLabel = 'Send Now'|t('campaign') %}
+{% set confirmMessage = 'This sendout will be sent to {recipients} contact(s) in {mailingLists} mailing list(s).'|t('campaign', params) %}
+{% set launchedMessage = 'Sendout Queued for Sending!'|t('campaign') %}
+{% if sendout.sendoutType == 'scheduled' %}
+    {% set prepLabel = 'Prepare to Schedule Sending'|t('campaign') %}
+    {% set saveLabel = 'Schedule Sending'|t('campaign') %}
+    {% set confirmMessage = 'This sendout will be scheduled to send on {sendDate} to {recipients} contact(s) in {mailingLists} mailing list(s).'|t('campaign', params) %}
+    {% set launchedMessage = 'Sendout Scheduled!'|t('campaign') %}
+{% elseif sendout.sendoutType == 'automated' %}
+    {% set prepLabel = 'Prepare to Activate Sending'|t('campaign') %}
+    {% set saveLabel = 'Activate Sending'|t('campaign') %}
+    {% set confirmMessage = 'This sendout will be activated for automated sending to {mailingLists} mailing list(s).'|t('campaign', params) %}
+    {% set launchedMessage = 'Sendout Activated!'|t('campaign') %}
+{% elseif sendout.sendoutType == 'singular' %}
+    {% set confirmMessage = 'This sendout will be sent to {recipients} contact(s).'|t('campaign', params) %}
+{% elseif sendout.sendoutType == 'recurring' %}
+    {% set prepLabel = 'Prepare to Activate Sending'|t('campaign') %}
+    {% set saveLabel = 'Activate Sending'|t('campaign') %}
+    {% set confirmMessage = 'This sendout will be activated for recurring sending to {mailingLists} mailing list(s).'|t('campaign', params) %}
+    {% set launchedMessage = 'Sendout Activated!'|t('campaign') %}
+{% elseif sendout.isResumable %}
+    {% set prepLabel = 'Prepare to Resume Sending'|t('campaign') %}
+    {% set saveLabel = 'Resume Sending'|t('campaign') %}
+    {% set confirmMessage = 'This sendout will resume sending to {recipients} contact(s) in {mailingLists} mailing list(s).'|t('campaign', params) %}
+    {% set launchedMessage = 'Sendout Resumed!'|t('campaign') %}
+{% endif %}
+
+<input type="button" class="btn submit prepare" value="{{ prepLabel }}">
+
+<div class="modal preflight" style="display: none;">
+    <div class="confirm">
+        {% if settings.testMode %}
+            <div class="testmode" title="Campaign is running in Test Mode."></div>
+        {% endif %}
+        <div class="body">
+            <h1>{{ saveLabel }}</h1>
+            <p class="message">{{ confirmMessage }}</p>
+            <p>
+                {% if isDynamicWebAliasUsed %}
+                    <span class="warning">
+                        {{ 'System issues found!'|t('campaign') }}
+                    </span>
+                {% else %}
+                    {{ 'All systems are GO!'|t('campaign') }}
+                {% endif %}
+                <span class="info">
+                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
+                    {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
+                    {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
+                    {% if isDynamicWebAliasUsed %}
+                        <span class="warning">
+                            {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown(inlineOnly=true) }}
+                        </span>
+                    {% endif %}
+                </span>
+            </p>
+            <p><input type="submit" class="btn submit launch" value="{{ saveLabel }}"></p>
+            <div class="rocketeer"></div>
+            <p class="spinner big hidden"></p>
+            <p class="error hidden"></p>
+        </div>
+        <div class="footer">
+            <div class="buttons right">
+                <div class="btn cancel">{{ 'Cancel'|t('campaign') }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="launched" style="display: none;">
+        <div class="body">
+            <h1>{{ launchedMessage }}</h1>
+        </div>
+        <div class="footer">
+            <div class="buttons right">
+                <a href="{{ url('campaign/sendouts') }}" class="btn submit">{{ 'Continue'|t('campaign') }}</a>
+            </div>
+        </div>
+    </div>
+</div>

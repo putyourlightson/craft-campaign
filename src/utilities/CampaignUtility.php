@@ -11,9 +11,6 @@ use putyourlightson\campaign\Campaign;
 
 class CampaignUtility extends Utility
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -33,7 +30,7 @@ class CampaignUtility extends Utility
     /**
      * @inheritdoc
      */
-    public static function iconPath()
+    public static function iconPath(): ?string
     {
         return Craft::getAlias('@vendor/putyourlightson/craft-campaign/src/icon-mask.svg');
     }
@@ -44,7 +41,7 @@ class CampaignUtility extends Utility
     public static function contentHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('campaign/_utility', [
-            'settings' => Campaign::$plugin->getSettings(),
+            'settings' => Campaign::$plugin->settings,
         ]);
     }
 }

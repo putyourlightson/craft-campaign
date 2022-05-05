@@ -1,0 +1,88 @@
+{% extends 'campaign/contacts/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set import = craft.campaign.getImportById(importId) %}
+{% set title = import.fileName ? "CSV File"|t('campaign') : "User Group"|t('campaign') %}
+{% set crumbs = [
+    { label: 'Import'|t('campaign'), url: url('campaign/contacts/import') },
+] %}
+{% set tabs = [] %}
+
+
+{% block content %}
+
+    {% if import.fileName %}
+        {% set input %}
+            <p><a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}">{{ import.fileName }}</a></p>
+        {% endset %}
+        {{ forms.field({label: "CSV File"|t('campaign')}, input) }}
+    {% else %}
+        {% set userGroup = import.getUserGroup() %}
+        {% set input %}
+            <p><a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup is not null ? userGroup.name }}</a></p>
+        {% endset %}
+        {{ forms.field({label: "User Group"|t('campaign')}, input) }}
+    {% endif %}
+
+    {% set mailingList = import.getMailingList() %}
+    {% set input %}
+        {% if mailingList %}
+            <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+        {% else %}
+            -
+        {% endif %}
+        <br/>
+    {% endset %}
+    {{ forms.field({label: "Mailing List"|t('campaign')}, input) }}
+
+    {% set input %}
+        {{ forms.lightswitch({
+            name: 'forceSubscribe',
+            on: import.forceSubscribe,
+            disabled: true
+        }) }}
+    {% endset %}
+    {{ forms.field({label: "Force Subscribe"|t('campaign')}, input) }}
+
+    {% set input %}
+        {{ import.failures }}
+        {% if import.failures > 0 %}
+            <span class="info">
+                {{ "View `storage/logs/campaign.log` file for errors."|t('campaign')|markdown }}
+            </span>
+        {% endif %}
+    {% endset %}
+    {{ forms.field({label: "Failed Imports"|t('campaign')}, input) }}
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div class="meta read-only">
+        <div class="elementThumb data first">
+            <h5 class="heading">{{ "Imported By"|t('campaign') }}</h5>
+            <div class="value">
+                {% include '_elements/element' with {element: import.getUser()} %}
+            </div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Added"|t('campaign') }}</h5>
+            <div class="value">{{ import.added }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Updated"|t('campaign') }}</h5>
+            <div class="value">{{ import.updated }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Failures"|t('campaign') }}</h5>
+            <div class="value">{{ import.failures }}</div>
+        </div>
+        <div class="data">
+            <h5 class="heading">{{ "Date Imported"|t('campaign') }}</h5>
+            <div class="value">{{ import.dateImported|datetime }}</div>
+        </div>
+    </div>
+
+{% endblock %}

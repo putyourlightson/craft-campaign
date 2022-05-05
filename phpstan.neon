@@ -1,9 +1,6 @@
+includes:
+    - %currentWorkingDirectory%/vendor/craftcms/phpstan/phpstan.neon
 parameters:
-	autoload_files:
-		- %currentWorkingDirectory%/vendor/yiisoft/yii2/Yii.php
-		- %currentWorkingDirectory%/vendor/craftcms/cms/src/Craft.php
-	ignoreErrors:
-		- '#Call to an undefined method yii\\db\\ActiveQueryInterface::(.*)#'
-		- '#Call to an undefined method craft\\queue\\QueueInterface::(.*)#'
-		- '#Call to an undefined method craft\\elements\\db\\ElementQueryInterface::(.*)#'
-		- '#Call to an undefined method yii\\web\\UrlManager::setRouteParams\(\)#'
+    level: 5
+    paths:
+        - src

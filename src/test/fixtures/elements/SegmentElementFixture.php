@@ -10,11 +10,8 @@ use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\SegmentElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.13.0
+ * @since 1.13.0
  */
-
 abstract class SegmentElementFixture extends BaseElementFixture
 {
     /**

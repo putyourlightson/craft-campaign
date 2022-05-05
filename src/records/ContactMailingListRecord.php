@@ -5,14 +5,12 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\db\Table;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
- * ContactMailingListRecord
- *
  * @property int $id
  * @property int $contactId
  * @property int $mailingListId
@@ -24,18 +22,12 @@ use yii\db\ActiveQuery;
  * @property DateTime|null $verified
  * @property string $sourceType
  * @property string|int|null $source
- * @property ActiveQuery $contact
- * @property ActiveQuery $mailingList
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read ContactRecord|null $contact
+ * @property-read MailingListRecord|null $mailingList
  */
-class ContactMailingListRecord extends BaseActiveRecord
+class ContactMailingListRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -49,10 +41,10 @@ class ContactMailingListRecord extends BaseActiveRecord
      */
     public static function find(): ActiveQuery
     {
-        // Create subquery to ensure only contacts and mailing lists that are not deleted are returned
+        // Create a subquery to ensure only contacts and mailing lists that are not deleted are returned
         $subquery = parent::find()
-            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->innerJoin(Table::ELEMENTS.' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
+            ->innerJoin(Table::ELEMENTS . ' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS . ' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
             ->where([
                 'contactElement.dateDeleted' => null,
                 'mailingListElement.dateDeleted' => null,
@@ -61,13 +53,8 @@ class ContactMailingListRecord extends BaseActiveRecord
         return parent::find()->from(['subquery' => $subquery]);
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the related contact record.
-     *
-     * @return ActiveQuery
      */
     public function getContact(): ActiveQuery
     {
@@ -76,8 +63,6 @@ class ContactMailingListRecord extends BaseActiveRecord
 
     /**
      * Returns the related mailing list record.
-     *
-     * @return ActiveQuery
      */
     public function getMailingList(): ActiveQuery
     {

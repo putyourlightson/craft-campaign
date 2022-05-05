@@ -5,7 +5,11 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\db\ActiveRecord;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use DateTime;
@@ -16,61 +20,37 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\models\ContactActivityModel;
-use putyourlightson\campaign\models\LinkModel;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\models\ContactMailingListModel;
-use putyourlightson\campaign\records\ContactRecord;
-use putyourlightson\campaign\records\LinkRecord;
+use putyourlightson\campaign\models\LinkModel;
+
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-
-use Craft;
-use craft\base\Component;
-use craft\helpers\DateTimeHelper;
-use craft\helpers\Db;
+use putyourlightson\campaign\records\ContactRecord;
+use putyourlightson\campaign\records\LinkRecord;
 
 /**
- * ReportsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property array $mailingListsChartData
- * @property array $contactsReportData
- * @property array $campaignsReportData
- * @property array $campaignsChartData
- * @property array $mailingListsReportData
+ * @property-read array $contactsReportData
  */
 class ReportsService extends Component
 {
-    // Constants
-    // =========================================================================
-
-    const MIN_INTERVALS = 5;
-
-    // Public Methods
-    // =========================================================================
+    /**
+     * @const int
+     */
+    public const MIN_INTERVALS = 5;
 
     /**
-     * Returns max intervals
-     *
-     * @param string $interval
-     * @return int
+     * Returns max intervals.
      */
     public function getMaxIntervals(string $interval): int
     {
-        $maxIntervals = ['minutes' => 60, 'hours' => 24, 'days' => 14, 'months'=> 12, 'years' => 10];
+        $maxIntervals = ['minutes' => 60, 'hours' => 24, 'days' => 14, 'months' => 12, 'years' => 10];
 
         return $maxIntervals[$interval] ?? 12;
     }
 
     /**
-     * Returns campaigns report data
-     *
-     * @param int|null $siteId
-     *
-     * @return array
+     * Returns campaigns report data.
      */
     public function getCampaignsReportData(int $siteId = null): array
     {
@@ -104,11 +84,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns campaign report data
-     *
-     * @param int $campaignId
-     *
-     * @return array
+     * Returns campaign report data.
      */
     public function getCampaignReportData(int $campaignId): array
     {
@@ -138,12 +114,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns campaign chart data
-     *
-     * @param int $campaignId
-     * @param string|null $interval
-     *
-     * @return array
+     * Returns campaign chart data.
      */
     public function getCampaignChartData(int $campaignId, string $interval = null): array
     {
@@ -158,15 +129,11 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns campaign recipients
-     *
-     * @param int $campaignId
-     * @param int|null $sendoutId
-     * @param int|null $limit
+     * Returns campaign recipients.
      *
      * @return ContactCampaignModel[]
      */
-    public function getCampaignRecipients(int $campaignId, int $sendoutId = null, int $limit = null): array
+    public function getCampaignRecipients(int $campaignId, int $sendoutId = null): array
     {
         $contactCampaignQuery = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
@@ -177,50 +144,59 @@ class ReportsService extends Component
         }
 
         $contactCampaignRecords = $contactCampaignQuery->all();
+        $contactCampaigns = [];
 
-        return ContactCampaignModel::populateModels($contactCampaignRecords, false);
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            $contactCampaign = new ContactCampaignModel();
+            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaigns[] = $contactCampaign;
+        }
+
+        return $contactCampaigns;
     }
 
     /**
-     * Returns campaign contact activity
-     *
-     * @param int $campaignId
-     * @param string|null $interaction
-     * @param int|null $limit
+     * Returns campaign contact activity.
      *
      * @return ContactActivityModel[]
      */
     public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
-        $interactionCondition = $interaction ? [$interaction => null] : [
-            'or',
-            [
-                'opened' => null,
-                'clicked' => null,
-                'unsubscribed' => null,
-                'complained' => null,
-                'bounced' => null,
-            ]
+        $interactionCondition = [
+            'not',
+            $interaction ? [$interaction => null] : [
+                'or',
+                [
+                    'opened' => null,
+                    'clicked' => null,
+                    'unsubscribed' => null,
+                    'complained' => null,
+                    'bounced' => null,
+                ],
+            ],
         ];
 
         $contactCampaignRecords = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
-            ->andWhere(['not', $interactionCondition])
+            ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
-        $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
+        $contactCampaigns = [];
+
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            $contactCampaign = new ContactCampaignModel();
+            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaigns[] = $contactCampaign;
+        }
 
         // Return contact activity
-        return $this->_getActivity($contactCampaignModels, $interaction, $limit);
+        return $this->_getActivity($contactCampaigns, $interaction, $limit);
     }
 
     /**
-     * Returns campaign links
-     *
-     * @param int $campaignId
-     * @param int|null $limit
+     * Returns campaign links.
      *
      * @return LinkModel[]
      */
@@ -233,16 +209,19 @@ class ReportsService extends Component
             ->limit($limit)
             ->all();
 
-        return LinkModel::populateModels($linkRecords, false);
+        $links = [];
+
+        foreach ($linkRecords as $linkRecord) {
+            $link = new LinkModel();
+            $link->setAttributes($linkRecord->getAttributes(), false);
+            $links[] = $link;
+        }
+
+        return $links;
     }
 
     /**
-     * Returns campaign locations
-     *
-     * @param int $campaignId
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns campaign locations.
      */
     public function getCampaignLocations(int $campaignId, int $limit = null): array
     {
@@ -258,13 +237,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns campaign devices
-     *
-     * @param int $campaignId
-     * @param bool $detailed
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns campaign devices.
      */
     public function getCampaignDevices(int $campaignId, bool $detailed = false, int $limit = null): array
     {
@@ -280,9 +253,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contacts report data
-     *
-     * @return array
+     * Returns contacts report data.
      */
     public function getContactsReportData(): array
     {
@@ -305,11 +276,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contacts activity
-     *
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns contacts activity.
      */
     public function getContactsActivity(int $limit = null): array
     {
@@ -321,11 +288,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contacts locations
-     *
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns contacts locations.
      */
     public function getContactsLocations(int $limit = null): array
     {
@@ -339,12 +302,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contacts devices
-     *
-     * @param bool $detailed
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns contacts devices.
      */
     public function getContactsDevices(bool $detailed = false, int $limit = null): array
     {
@@ -358,15 +316,11 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns contact campaigns
-     *
-     * @param int $contactId
-     * @param int|null $limit
-     * @param int|int[]|null $campaignId
+     * Returns contact campaigns.
      *
      * @return ContactActivityModel[]
      */
-    public function getContactCampaignActivity(int $contactId, int $limit = null, $campaignId = null): array
+    public function getContactCampaignActivity(int $contactId, int $limit = null, array|int $campaignId = null): array
     {
         $conditions = ['contactId' => $contactId];
 
@@ -380,22 +334,24 @@ class ReportsService extends Component
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
-        $contactCampaignModels = ContactCampaignModel::populateModels($contactCampaignRecords, false);
+        $contactCampaigns = [];
+
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            $contactCampaign = new ContactCampaignModel();
+            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaigns[] = $contactCampaign;
+        }
 
         // Return contact activity
-        return $this->_getActivity($contactCampaignModels, null, $limit);
+        return $this->_getActivity($contactCampaigns, null, $limit);
     }
 
     /**
-     * Returns contact mailing list activity
-     *
-     * @param int $contactId
-     * @param int|null $limit
-     * @param int|int[]|null $mailingListId
+     * Returns contact mailing list activity.
      *
      * @return ContactActivityModel[]
      */
-    public function getContactMailingListActivity(int $contactId, int $limit = null, $mailingListId = null): array
+    public function getContactMailingListActivity(int $contactId, int $limit = null, array|int $mailingListId = null): array
     {
         $conditions = ['contactId' => $contactId];
 
@@ -409,18 +365,20 @@ class ReportsService extends Component
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
-        $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
+        $contactMailingLists = [];
+
+        foreach ($contactMailingListRecords as $contactMailingListRecord) {
+            $contactMailingList = new ContactMailingListModel();
+            $contactMailingList->setAttributes($contactMailingListRecord->getAttributes(), false);
+            $contactMailingLists[] = $contactMailingList;
+        }
 
         // Return contact activity
-        return $this->_getActivity($contactMailingListModels, null, $limit);
+        return $this->_getActivity($contactMailingLists, null, $limit);
     }
 
     /**
-     * Returns mailing lists report data
-     *
-     * @param int|null $siteId
-     *
-     * @return array
+     * Returns mailing lists report data.
      */
     public function getMailingListsReportData(int $siteId = null): array
     {
@@ -447,11 +405,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns mailing list report data
-     *
-     * @param int $mailingListId
-     *
-     * @return array
+     * Returns mailing list report data.
      */
     public function getMailingListReportData(int $mailingListId): array
     {
@@ -477,12 +431,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns mailing list chart data
-     *
-     * @param int $mailingListId
-     * @param string $interval
-     *
-     * @return array
+     * Returns mailing list chart data.
      */
     public function getMailingListChartData(int $mailingListId, string $interval = 'days'): array
     {
@@ -495,46 +444,46 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns mailing list contact activity
-     *
-     * @param int $mailingListId
-     * @param string|null $interaction
-     * @param int|null $limit
+     * Returns mailing list contact activity.
      *
      * @return ContactActivityModel[]
      */
     public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = null): array
     {
         // If no interaction was specified then set check for any interaction that is not null
-        $interactionCondition = $interaction ? [$interaction => null] : [
-            'or',
-            [
-                'subscribed' => null,
-                'unsubscribed' => null,
-                'complained' => null,
-                'bounced' => null,
-            ]
+        $interactionCondition = [
+            'not',
+            $interaction ? [$interaction => null] : [
+                'or',
+                [
+                    'subscribed' => null,
+                    'unsubscribed' => null,
+                    'complained' => null,
+                    'bounced' => null,
+                ],
+            ],
         ];
 
         $contactMailingListRecords = ContactMailingListRecord::find()
             ->where(['mailingListId' => $mailingListId])
-            ->andWhere(['not', $interactionCondition])
+            ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
-        $contactMailingListModels = ContactMailingListModel::populateModels($contactMailingListRecords, false);
+        $contactMailingLists = [];
+
+        foreach ($contactMailingListRecords as $contactMailingListRecord) {
+            $contactMailingList = new ContactMailingListModel();
+            $contactMailingList->setAttributes($contactMailingListRecord->getAttributes(), false);
+            $contactMailingLists[] = $contactMailingList;
+        }
 
         // Return contact activity
-        return $this->_getActivity($contactMailingListModels, $interaction, $limit);
+        return $this->_getActivity($contactMailingLists, $interaction, $limit);
     }
 
     /**
-     * Returns mailing list locations
-     *
-     * @param int $mailingListId
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns mailing list locations.
      */
     public function getMailingListLocations(int $mailingListId, int $limit = null): array
     {
@@ -550,13 +499,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns mailing list devices
-     *
-     * @param int $mailingListId
-     * @param bool $detailed
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns mailing list devices.
      */
     public function getMailingListDevices(int $mailingListId, bool $detailed = false, int $limit = null): array
     {
@@ -571,18 +514,8 @@ class ReportsService extends Component
         return $this->_getDevices(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns chart data
-     *
-     * @param string $recordClass
-     * @param array $condition
-     * @param array $interactions
-     * @param string $interval
-     *
-     * @return array
+     * Returns chart data.
      */
     private function _getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
     {
@@ -597,6 +530,7 @@ class ReportsService extends Component
 
         // Get first record
         /** @var ActiveRecord $recordClass */
+        /** @var ActiveRecord|null $record */
         $record = $recordClass::find()
             ->where($condition)
             ->orderBy(['dateCreated' => SORT_ASC])
@@ -606,17 +540,15 @@ class ReportsService extends Component
             return [];
         }
 
-        /** @var ActiveRecord $record */
         // Get start and end date times
-        $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 '.$interval);
+        $startDateTime = DateTimeHelper::toDateTime($record->dateCreated)->modify('-1 ' . $interval);
         $endDateTime = clone $startDateTime;
-        $endDateTime->modify('+'.$this->getMaxIntervals($interval).' '.$interval);
+        $endDateTime->modify('+' . $this->getMaxIntervals($interval) . ' ' . $interval);
 
         $fields = [];
 
-        /** @var ActiveRecord $recordClass */
         foreach ($record->fields() as $field) {
-            $fields[] = 'MIN([['.$field.']]) AS '.$field;
+            $fields[] = 'MIN([[' . $field . ']]) AS ' . $field;
         }
 
         // Get records within date range
@@ -669,11 +601,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns activity
-     *
-     * @param ContactCampaignModel[]|ContactMailingListModel[] $models
-     * @param string|null $interaction
-     * @param int|null $limit
+     * Returns activity.
      *
      * @return ContactActivityModel[]
      */
@@ -705,10 +633,10 @@ class ReportsService extends Component
                     if (!empty($model->sourceType)) {
                         switch ($model->sourceType) {
                             case 'import':
-                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/'.$model->source);
+                                $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/' . $model->source);
                                 break;
                             case 'user':
-                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/'.$model->source : 'myaccount';
+                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/' . $model->source : 'myaccount';
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
                                 break;
                             default:
@@ -716,7 +644,7 @@ class ReportsService extends Component
                         }
                     }
 
-                    $activity[$contactActivityModel->date->getTimestamp().'-'.$key.'-'.$interactionType.'-'.$model->contactId] = $contactActivityModel;
+                    $activity[$contactActivityModel->date->getTimestamp() . '-' . $key . '-' . $interactionType . '-' . $model->contactId] = $contactActivityModel;
                 }
             }
         }
@@ -733,14 +661,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns locations
-     *
-     * @param string $recordClass
-     * @param array $conditions
-     * @param int $total
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns locations.
      */
     private function _getLocations(string $recordClass, array $conditions, int $total, int $limit = null): array
     {
@@ -759,9 +680,10 @@ class ReportsService extends Component
                 ->groupBy('contactId')
                 ->column();
 
-            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
+            $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
         }
 
+        /** @var ContactRecord[]|ContactCampaignRecord[]|ContactMailingListRecord[] $records */
         $records = $query->all();
 
         // Set default unknown count
@@ -807,15 +729,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns devices
-     *
-     * @param string $recordClass
-     * @param array $conditions
-     * @param bool $detailed
-     * @param int $total
-     * @param int|null $limit
-     *
-     * @return array
+     * Returns devices.
      */
     private function _getDevices(string $recordClass, array $conditions, bool $detailed, int $total, int $limit = null): array
     {
@@ -835,9 +749,10 @@ class ReportsService extends Component
                 ->groupBy('contactId')
                 ->column();
 
-            $query->andWhere([ContactRecord::tableName().'.id' => $contactIds]);
+            $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
         }
 
+        /** @var ContactRecord[]|ContactCampaignRecord[]|ContactMailingListRecord[] $records */
         $records = $query->all();
 
         foreach ($records as $record) {
@@ -859,13 +774,9 @@ class ReportsService extends Component
     }
 
     /**
-     * Returns date time format
-     *
-     * @param string $interval
-     *
-     * @return string|null
+     * Returns date time format.
      */
-    private function _getDateTimeFormat(string $interval)
+    private function _getDateTimeFormat(string $interval): ?string
     {
         /**
          * @see DATE_ATOM
@@ -882,11 +793,7 @@ class ReportsService extends Component
     }
 
     /**
-     * Compares two count values by count descending
-     *
-     * @param array $a
-     * @param array $b
-     * @return int
+     * Compares two count values by count descending.
      */
     private function _compareCount(array $a, array $b): int
     {

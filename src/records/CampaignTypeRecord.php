@@ -5,17 +5,14 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveRecord;
 use craft\records\Site;
-use putyourlightson\campaign\base\BaseActiveRecord;
 use yii\db\ActiveQuery;
 
-
 /**
- * CampaignTypeRecord
- *
  * @property int $id
  * @property int $siteId
- * @property int $fieldLayoutId
+ * @property int|null $fieldLayoutId
  * @property string $name
  * @property string $handle
  * @property string $uriFormat
@@ -24,17 +21,11 @@ use yii\db\ActiveQuery;
  * @property string $queryStringParameters
  * @property string|null $testContactIds
  * @property string $uid
- * @property Site|null $site
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read Site|null $site
  */
-class CampaignTypeRecord extends BaseActiveRecord
+class CampaignTypeRecord extends ActiveRecord
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -45,8 +36,6 @@ class CampaignTypeRecord extends BaseActiveRecord
 
     /**
      * Returns the associated site.
-     *
-     * @return ActiveQuery
      */
     public function getSite(): ActiveQuery
     {

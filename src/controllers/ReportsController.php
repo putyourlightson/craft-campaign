@@ -5,28 +5,17 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\helpers\DateTimeHelper;
+use craft\web\Controller;
+
 use DateTime;
 use putyourlightson\campaign\Campaign;
-
-use Craft;
-use craft\web\Controller;
 use putyourlightson\campaign\services\ReportsService;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
-/**
- * ReportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ReportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -39,57 +28,41 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns campaign chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Returns campaign chart data.
      */
-    public function actionGetCampaignChartData()
+    public function actionGetCampaignChartData(): ?Response
     {
         $this->requireAcceptsJson();
 
-        $campaignId = Craft::$app->getRequest()->getRequiredParam('campaignId');
-        $interval = Craft::$app->getRequest()->getParam('interval');
+        $campaignId = $this->request->getRequiredParam('campaignId');
+        $interval = $this->request->getParam('interval');
 
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
-
         $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
 
     /**
-     * Returns mailing list chart data
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Returns mailing list chart data.
      */
-    public function actionGetMailingListChartData()
+    public function actionGetMailingListChartData(): ?Response
     {
         $this->requireAcceptsJson();
 
-        $mailingListId = Craft::$app->getRequest()->getRequiredParam('mailingListId');
-        $interval = Craft::$app->getRequest()->getParam('interval');
+        $mailingListId = $this->request->getRequiredParam('mailingListId');
+        $interval = $this->request->getParam('interval');
 
         // Get chart data
         $data = Campaign::$plugin->reports->getMailingListChartData($mailingListId, $interval);
-
         $chart = $this->_getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns chart data
-     *
-     * @param array $data
-     * @param string $interval
-     *
-     * @return array
+     * Returns chart data.
      */
     private function _getChartData(array $data, string $interval): array
     {
@@ -112,7 +85,7 @@ class ReportsController extends Controller
                 break;
             }
 
-            $dateTime->modify('+1 '.$data['interval']);
+            $dateTime->modify('+1 ' . $data['interval']);
         }
 
         $chart['series'] = [];
@@ -127,7 +100,7 @@ class ReportsController extends Controller
                 // Convert timestamp to milliseconds
                 $values[] = [$timestamp * 1000, $value];
 
-                $chart['maxValue'] = $value > $chart['maxValue'] ? $value : $chart['maxValue'];
+                $chart['maxValue'] = max($value, $chart['maxValue']);
             }
 
             $chart['series'][] = [
@@ -147,11 +120,7 @@ class ReportsController extends Controller
     }
 
     /**
-     * Returns colors
-     *
-     * @param array $interactions
-     *
-     * @return array
+     * Returns colors.
      */
     private function _getColors(array $interactions): array
     {

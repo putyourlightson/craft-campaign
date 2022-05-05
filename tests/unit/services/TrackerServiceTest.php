@@ -11,66 +11,51 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\LinksFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.12.2
+ * @since 1.12.2
  */
-
 class TrackerServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'campaigns' => [
-                'class' => CampaignsFixture::class
+                'class' => CampaignsFixture::class,
             ],
             'sendouts' => [
-                'class' => SendoutsFixture::class
+                'class' => SendoutsFixture::class,
             ],
             'links' => [
-                'class' => LinksFixture::class
+                'class' => LinksFixture::class,
             ],
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
-    protected $contact;
+    protected ContactElement $contact;
 
     /**
      * @var SendoutElement
      */
-    protected $sendout;
+    protected SendoutElement $sendout;
 
     /**
      * @var MailingListElement
      */
-    protected $mailingList;
+    protected MailingListElement $mailingList;
 
-    // Protected methods
-    // =========================================================================
-
-    protected function _before()
+    protected function _before(): void
     {
         $this->contact = ContactElement::find()->one();
         $this->sendout = SendoutElement::find()->one();
@@ -88,10 +73,7 @@ class TrackerServiceTest extends BaseUnitTest
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'subscribed');
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testOpen()
+    public function testOpen(): void
     {
         Campaign::$plugin->tracker->open($this->contact, $this->sendout);
 
@@ -101,7 +83,7 @@ class TrackerServiceTest extends BaseUnitTest
         $this->assertEquals(1, $campaign->opens);
     }
 
-    public function testClick()
+    public function testClick(): void
     {
         $link = LinkRecord::find()->one();
 
@@ -117,7 +99,7 @@ class TrackerServiceTest extends BaseUnitTest
         $this->assertEquals(1, $link->clicks);
     }
 
-    public function testUnsubscribe()
+    public function testUnsubscribe(): void
     {
         $status = $this->contact->getMailingListSubscriptionStatus($this->mailingList->id);
 

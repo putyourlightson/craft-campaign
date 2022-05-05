@@ -8,36 +8,27 @@ namespace putyourlightson\campaigntests\unit;
 use Codeception\Test\Unit;
 use putyourlightson\campaign\Campaign;
 use UnitTester;
-use yii\swiftmailer\Message;
+use yii\mail\MessageInterface;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class BaseUnitTest extends Unit
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var UnitTester
      */
-    protected $tester;
+    protected UnitTester $tester;
 
     /**
-     * @var Message
+     * @var MessageInterface|null
      */
-    protected $message;
-
-    // Protected methods
-    // =========================================================================
+    protected ?MessageInterface $message = null;
 
     /**
      * Set up the class properties before running all tests
      */
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
@@ -46,7 +37,7 @@ class BaseUnitTest extends Unit
             Campaign::$plugin,
             'mailer',
             [
-                'send' => function (Message $message) {
+                'send' => function(MessageInterface $message) {
                     if ($message->getSubject() == 'Fail') {
                         return false;
                     }
@@ -54,7 +45,7 @@ class BaseUnitTest extends Unit
                     $this->message = $message;
 
                     return true;
-                }
+                },
             ]
         );
     }

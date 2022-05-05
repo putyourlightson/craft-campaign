@@ -33,9 +33,9 @@ $more = 0;
 
 for ($i = 0; $i < $more; $i++) {
     $contacts[] = [
-        'email' => 'contact'.$i.'@contacts.com',
-        'cid' => 'cid'.$i,
-        'uid' => 'uid'.$i,
+        'email' => 'contact' . $i . '@contacts.com',
+        'cid' => 'cid' . $i,
+        'uid' => 'uid' . $i,
     ];
 }
 

@@ -10,11 +10,8 @@ use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\ContactElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
  * @since     1.10.0
  */
-
 abstract class ContactElementFixture extends BaseElementFixture
 {
     /**

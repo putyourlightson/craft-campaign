@@ -1,0 +1,26 @@
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% namespace 'schedule' %}
+
+    {% set input %}
+        {% if editable %}
+            {{ schedule.condition.getBuilderHtml()|raw }}
+        {% else %}
+            {% set conditionRules = schedule.condition.getConditionRules() %}
+            {% for rule in conditionRules %}
+                {# @var rule \craft\base\conditions\BaseConditionRule #}
+                {{ rule.label }} {{ rule.operator }} {{ rule.value }}
+                <br>
+            {% endfor %}
+            {{ conditionRules is empty ? '-' }}
+        {% endif %}
+
+    {% endset %}
+    {{ forms.field({
+        label: 'Condition'|t('campaign'),
+        instructions: 'One or more condition rules to apply to this sendout.'|t('campaign') ~ ' ' ~ macros.info('Condition rules can be created via a custom plugin/module.'),
+        errors: schedule.getErrors('condition')
+    }, input) }}
+
+{% endnamespace %}

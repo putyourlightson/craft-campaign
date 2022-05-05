@@ -14,38 +14,26 @@ use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
 use yii\web\NotFoundHttpException;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class FormsControllerTest extends BaseControllerTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testSubscribeSuccess()
+    public function testSubscribeSuccess(): void
     {
         $mailingList = MailingListElement::find()->mailingListType('mailingListType1')->one();
 
@@ -58,7 +46,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNull($this->message);
     }
 
-    public function testSubscribeVerify()
+    public function testSubscribeVerify(): void
     {
         $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
 
@@ -71,10 +59,10 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertEquals($mailingList->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
-        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
+        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->toString());
     }
 
-    public function testUpdateContactSuccess()
+    public function testUpdateContactSuccess(): void
     {
         $contact = ContactElement::find()->one();
 
@@ -87,7 +75,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNotNull($response);
     }
 
-    public function testUpdateContactFail()
+    public function testUpdateContactFail(): void
     {
         // Expect an exception
         $this->tester->expectThrowable(NotFoundHttpException::class, function() {
@@ -100,7 +88,7 @@ class FormsControllerTest extends BaseControllerTest
         });
     }
 
-    public function testVerifySubscribeSuccess()
+    public function testVerifySubscribeSuccess(): void
     {
         $pendingContact = PendingContactRecord::find()
             ->where(['email' => 'pending1@contacts.com'])
@@ -114,7 +102,7 @@ class FormsControllerTest extends BaseControllerTest
         $this->assertNotNull($response);
     }
 
-    public function testVerifySubscribeFail()
+    public function testVerifySubscribeFail(): void
     {
         // Expect an exception
         $this->tester->expectThrowable(NotFoundHttpException::class, function() {

@@ -11,23 +11,12 @@ use craft\web\View;
 use yii\web\Response;
 
 /**
- * BaseMessageController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
 */
 abstract class BaseMessageController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Renders a message template.
-     *
-     * @param string|null $template
-     * @param array|null $variables
-     * @return Response
      */
     public function renderMessageTemplate(string $template = null, array $variables = []): Response
     {
@@ -36,8 +25,7 @@ abstract class BaseMessageController extends Controller
             // Use message template
             $template = 'campaign/message';
 
-            // Set template mode to CP
-            Craft::$app->getView()->setTemplateMode(View::TEMPLATE_MODE_CP);
+            return parent::renderTemplate($template, $variables, View::TEMPLATE_MODE_CP);
         }
 
         return parent::renderTemplate($template, $variables);

@@ -7,36 +7,24 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class PendingContactsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testVerifyPendingContact()
+    public function testVerifyPendingContact(): void
     {
         $pendingContact = PendingContactRecord::find()->one();
 
@@ -51,7 +39,7 @@ class PendingContactsServiceTest extends BaseUnitTest
         $this->assertNull($pendingContact);
     }
 
-    public function testVerifyTrashedPendingContact()
+    public function testVerifyTrashedPendingContact(): void
     {
         $pendingContact = PendingContactRecord::find()->one();
         $pendingContact->softDelete();
@@ -60,7 +48,7 @@ class PendingContactsServiceTest extends BaseUnitTest
         $this->assertTrue(Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pendingContact->pid));
     }
 
-    public function testVerifyDeletedPendingContact()
+    public function testVerifyDeletedPendingContact(): void
     {
         $pendingContact = PendingContactRecord::find()->one();
         $pendingContact->delete();
@@ -69,7 +57,7 @@ class PendingContactsServiceTest extends BaseUnitTest
         $this->assertFalse(Campaign::$plugin->pendingContacts->getIsPendingContactTrashed($pendingContact->pid));
     }
 
-    public function testPurgeExpiredPendingContacts()
+    public function testPurgeExpiredPendingContacts(): void
     {
         // Set duration to 1 second
         Campaign::$plugin->getSettings()->purgePendingContactsDuration = 1;

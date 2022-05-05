@@ -7,53 +7,39 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\services\SendoutsService;
-use Throwable;
 use yii\queue\RetryableJobInterface;
 
 /**
- * SendoutJob
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $ttr
+ * @property-read int $ttr
  */
 class SendoutJob extends BaseJob implements RetryableJobInterface
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int
      */
-    public $sendoutId;
+    public int $sendoutId;
 
     /**
      * @var string|null
      */
-    public $title;
+    public ?string $title;
 
     /**
      * @var int
      */
-    public $batch = 1;
-
-    // Public Methods
-    // =========================================================================
+    public int $batch = 1;
 
     /**
      * @inheritdoc
      */
-    public function getTtr()
+    public function getTtr(): int
     {
-        return Campaign::$plugin->getSettings()->sendoutJobTtr;
+        return Campaign::$plugin->settings->sendoutJobTtr;
     }
 
     /**
@@ -61,16 +47,13 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function canRetry($attempt, $error): bool
     {
-        return $attempt < Campaign::$plugin->getSettings()->maxRetryAttempts;
+        return $attempt < Campaign::$plugin->settings->maxRetryAttempts;
     }
 
     /**
      * @inheritdoc
-     * @return void
-     * @throws Exception
-     * @throws Throwable
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         // Get sendout
         $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
@@ -98,7 +81,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         Campaign::$plugin->maxPowerLieutenant();
 
         // Get settings
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Get memory limit or set to null if unlimited
         $memoryLimit = ini_get('memory_limit');
@@ -118,8 +101,8 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $batchSize = min(count($pendingRecipients) + 1, $settings->maxBatchSize);
 
         foreach ($pendingRecipients as $pendingRecipient) {
-            $count++;
             $this->setProgress($queue, $count / $batchSize);
+            $count++;
 
             $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
 
@@ -163,9 +146,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             ]));
         }
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

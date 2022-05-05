@@ -1,0 +1,18 @@
+{% extends '_layouts/elementindex' %}
+
+{% set elementType = 'putyourlightson\\campaign\\elements\\CampaignElement' %}
+{% set canHaveDrafts = true %}
+{% set title = 'Campaigns'|t('campaign') %}
+{% set selectedSubnavItem = 'campaigns' %}
+
+{% do view.registerTranslations('campaign', [
+    'New campaign',
+    'New {campaignType} campaign',
+]) %}
+
+
+{% if campaignTypeHandle is defined %}
+    {% js %}
+        window.defaultCampaignTypeHandle = '{{ campaignTypeHandle|e('js') }}';
+    {% endjs %}
+{% endif %}

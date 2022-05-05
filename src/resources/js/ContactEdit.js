@@ -4,58 +4,58 @@
 /**
  * ContactEdit class
  */
-Campaign.ContactEdit = Garnish.Base.extend(
-    {
-        init: function() {
-            this.initElementThumbs();
-            this.addListener($.find('.update-subscription'), 'click', 'updateSubscription');
-        },
+Campaign.ContactEdit = Garnish.Base.extend({
+    init: function() {
+        this.initElementThumbs();
+        this.addListener($('.update-subscription'), 'click', 'updateSubscription');
+    },
 
-        initElementThumbs: function() {
-            var elements = $('.meta .element');
+    initElementThumbs: function() {
+        const elements = $('.meta .element');
 
-            if (elements.length) {
-                var thumbLoader = new Craft.ElementThumbLoader();
-                thumbLoader.load(elements);
-            }
-        },
+        if (elements.length) {
+            const thumbLoader = new Craft.ElementThumbLoader();
+            thumbLoader.load(elements);
+        }
+    },
 
-        updateSubscription: function(event) {
-            var $this = $(event.target);
-            var $row = $this.closest('tr');
+    updateSubscription: function(event) {
+        const $this = $(event.target);
+        const $row = $this.closest('tr');
 
-            if (confirm($this.attr('data-confirm'))) {
-                var data = {
-                    contactId: $row.attr('data-contact-id'),
-                    mailingListId: $row.attr('data-mailing-list-id'),
-                };
+        if (confirm($this.attr('data-confirm'))) {
+            const data = {
+                contactId: $row.attr('data-contact-id'),
+                mailingListId: $row.attr('data-mailing-list-id'),
+            };
 
-                Craft.postActionRequest($this.attr('data-action'), data, $.proxy(function(response, textStatus) {
-                    if (textStatus === 'success') {
-                        $row.find('.subscriptionStatus').attr('class', 'subscriptionStatus ' + response.subscriptionStatus).text(response.subscriptionStatusLabel);
+            Craft.sendActionRequest('POST', $this.attr('data-action'), {data})
+                .then((response) => {
+                    $row.find('.subscriptionStatus').attr('class', 'subscriptionStatus ' + response.data.subscriptionStatus).text(response.data.subscriptionStatusLabel);
 
-                        $row.find('input, .remove').addClass('hidden');
+                    $row.find('input, .remove').addClass('hidden');
 
-                        if (response.subscriptionStatus == 'subscribed') {
-                            $row.find('input.unsubscribe').removeClass('hidden');
-                        }
-                        else {
-                            $row.find('input.subscribe').removeClass('hidden');
-                        }
-
-                        if (response.subscriptionStatus) {
-                            $row.find('.remove').removeClass('hidden');
-                        }
-
-                        Craft.cp.displayNotice(Craft.t('campaign', 'Subscription successfully updated.'));
+                    if (response.data.subscriptionStatus == 'subscribed') {
+                        $row.find('input.unsubscribe').removeClass('hidden');
                     }
                     else {
-                        Craft.cp.displayError(Craft.t('campaign', 'Couldn’t update subscription.'));
+                        $row.find('input.subscribe').removeClass('hidden');
                     }
-                }, this));
-            }
-        },
-    }
-);
 
-new Campaign.ContactEdit();
+                    if (response.data.subscriptionStatus) {
+                        $row.find('.remove').removeClass('hidden');
+                    }
+
+                    Craft.cp.displayNotice(response.data.message);
+                })
+                .catch(({response}) => {
+                    if (response.data.message) {
+                        Craft.cp.displayError(response.data.message);
+                    }
+                    else {
+                        Craft.cp.displayError();
+                    }
+                });
+        }
+    },
+});

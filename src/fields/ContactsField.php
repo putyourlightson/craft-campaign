@@ -5,23 +5,13 @@
 
 namespace putyourlightson\campaign\fields;
 
+use Craft;
+use craft\elements\conditions\ElementConditionInterface;
+use craft\fields\BaseRelationField;
 use putyourlightson\campaign\elements\ContactElement;
 
-use Craft;
-use craft\fields\BaseRelationField;
-
-/**
- * ContactsField
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ContactsField extends BaseRelationField
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -33,7 +23,7 @@ class ContactsField extends BaseRelationField
     /**
      * @inheritdoc
      */
-    protected static function elementType(): string
+    public static function elementType(): string
     {
         return ContactElement::class;
     }
@@ -44,5 +34,13 @@ class ContactsField extends BaseRelationField
     public static function defaultSelectionLabel(): string
     {
         return Craft::t('campaign', 'Add a contact');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSelectionCondition(): ?ElementConditionInterface
+    {
+        return ContactElement::createCondition();
     }
 }

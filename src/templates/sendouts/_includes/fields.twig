@@ -1,0 +1,218 @@
+{% import '_includes/forms' as forms %}
+
+{% set editable = editable ?? false %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.elementSelect({
+            id: 'campaignIds',
+            name: 'campaignIds',
+            elementType: campaignElementType,
+            selectionLabel: "Choose a campaign"|t('campaign'),
+            criteria: campaignElementCriteria,
+            limit: 1,
+            elements: sendout.campaignId ? [sendout.campaign],
+        }) }}
+    {% else %}
+        <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Campaign"|t('campaign'),
+    instructions: "The campaign to send."|t('campaign'),
+    errors: sendout.getErrors('campaignId'),
+    required: true,
+}, input) }}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.text({
+            id: 'subject',
+            name: 'subject',
+            value: sendout.subject,
+            autocomplete: true,
+        }) }}
+    {% else %}
+        <p>{{ sendout.subject }}</p>
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Subject"|t('campaign'),
+    instructions: "The email subject (emojis allowed 🎉)."|t('campaign'),
+    errors: sendout.getErrors('subject'),
+    required: true,
+}, input) }}
+
+{% if editable %}
+    {{ forms.selectField({
+        label: "From"|t('campaign'),
+        instructions: "The name and email to send from."|t('campaign'),
+        id: 'fromNameEmail',
+        name: 'fromNameEmail',
+        options: fromNameEmailOptions,
+        value: sendout.getFromNameEmail(),
+        warning: fromNameEmailOptions|length == 0 ? "No from name and email exists for this site."|t('campaign'),
+        errors: sendout.getErrors('fromName'),
+        required: true,
+    }) }}
+{% else %}
+    {% set input %}
+        <p>{{ sendout.getFromNameEmailLabel() }}</p>
+    {% endset %}
+    {{ forms.field({
+        label: "From"|t('campaign'),
+        instructions: "The name and email address to send from."|t('campaign'),
+        required: true,
+    }, input) }}
+{% endif %}
+
+{% if sendout.sendoutType == 'singular' %}
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'contactIds',
+                name: 'contactIds',
+                elementType: contactElementType,
+                selectionLabel: "Add a contact"|t('campaign'),
+                criteria: contactElementCriteria,
+                elements: sendout.contacts,
+            }) }}
+        {% else %}
+            {% for contact in sendout.contacts %}
+                <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+                <br/>
+            {% endfor %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "To"|t('campaign'),
+        instructions: "The contact(s) to send the campaign to."|t('campaign'),
+        errors: sendout.getErrors('contactIds'),
+        required: true,
+    }, input) }}
+{% else %}
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'mailingListIds',
+                name: 'mailingListIds',
+                elementType: mailingListElementType,
+                selectionLabel: "Add a mailing list"|t('campaign'),
+                criteria: mailingListElementCriteria,
+                elements: sendout.mailingLists,
+            }) }}
+        {% else %}
+            {% for mailingList in sendout.mailingLists %}
+                <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+                <br/>
+            {% endfor %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "To"|t('campaign'),
+        instructions: "The mailing list(s) to send the campaign to."|t('campaign'),
+        errors: sendout.getErrors('mailingListIds'),
+        required: true,
+    }, input) }}
+
+    {% set input %}
+        {% if editable %}
+            {{ forms.elementSelect({
+                id: 'excludedMailingListIds',
+                name: 'excludedMailingListIds',
+                elementType: mailingListElementType,
+                selectionLabel: "Add a mailing list"|t('campaign'),
+                criteria: mailingListElementCriteria,
+                elements: sendout.excludedMailingLists,
+            }) }}
+        {% else %}
+            {% for excludedMailingList in sendout.excludedMailingLists %}
+                <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
+                <br/>
+            {% endfor %}
+            {% if sendout.excludedMailingLists|length == 0 %}
+                <p>-</p>
+            {% endif %}
+        {% endif %}
+    {% endset %}
+    {{ forms.field({
+        label: "Exclude"|t('campaign'),
+        instructions: "The mailing list(s) to exclude from this sendout. Contacts in these mailing lists will be excluded even if they are subscribed to one of the mailing lists above."|t('campaign'),
+        errors: sendout.getErrors('excludedMailingListIds'),
+    }, input) }}
+
+    {% if craft.campaign.getIsPro() %}
+        {% set input %}
+            {% if editable %}
+                {{ forms.elementSelectField({
+                    id: 'segmentIds',
+                    name: 'segmentIds',
+                    elementType: segmentElementType,
+                    selectionLabel: "Add a segment"|t('campaign'),
+                    criteria: segmentElementCriteria,
+                    elements: sendout.segments,
+                }) }}
+            {% else %}
+                {% for segment in sendout.segments %}
+                    <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
+                    <br/>
+                {% endfor %}
+                {% if sendout.segments|length == 0 %}
+                    <p>-</p>
+                {% endif %}
+            {% endif %}
+        {% endset %}
+        {{ forms.field({
+            label: "Segments"|t('campaign'),
+            instructions: "The segment(s) to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+            errors: sendout.getErrors('segmentIds'),
+        }, input) }}
+    {% endif %}
+{% endif %}
+
+<hr/>
+
+{% if sendout.sendoutType == 'scheduled' %}
+
+    {% include 'campaign/sendouts/_includes/schedule/dates' %}
+    <hr/>
+
+{% endif %}
+
+{% if sendout.sendoutType == 'automated' %}
+
+    {% include 'campaign/sendouts/_includes/schedule/automated' %}
+    <hr/>
+
+{% elseif sendout.sendoutType == 'recurring' %}
+
+    {% include 'campaign/sendouts/_includes/schedule/recurring' %}
+    <hr/>
+
+{% endif %}
+
+{% set input %}
+    {% if editable %}
+        {{ forms.elementSelectField({
+            id: 'notificationContactIds',
+            name: 'notificationContactIds',
+            elementType: contactElementType,
+            selectionLabel: "Add a contact"|t('campaign'),
+            elements: sendout.getNotificationContacts(),
+        }) }}
+    {% else %}
+        {% set notificationContacts = sendout.getNotificationContacts() %}
+        {% for contact in notificationContacts %}
+            <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+            <br/>
+        {% endfor %}
+        {% if notificationContacts is empty %}
+            <p>-</p>
+        {% endif %}
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Notification Contacts"|t('campaign'),
+    instructions: "The contacts to notify when sending of sendouts is complete or fails."|t('campaign'),
+    errors: sendout.getErrors('notificationContactIds'),
+}, input) }}

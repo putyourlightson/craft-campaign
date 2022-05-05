@@ -6,65 +6,48 @@
 namespace putyourlightson\campaign\elements\db;
 
 use Craft;
-use putyourlightson\campaign\elements\SendoutElement;
-
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use putyourlightson\campaign\elements\SendoutElement;
 use yii\db\Connection;
 use yii\db\Expression;
 
 /**
- * SendoutElementQuery
- *
  * @method SendoutElement[]|array all($db = null)
  * @method SendoutElement|array|null one($db = null)
  * @method SendoutElement|array|null nth(int $n, Connection $db = null)
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
 class SendoutElementQuery extends ElementQuery
 {
-    // Properties
-    // =========================================================================
-
     /**
-     * @var string SID
+     * @var string|null SID
      */
-    public $sid;
+    public ?string $sid = null;
 
     /**
      * @var array|string|null The sendout type(s) that the resulting sendouts must have.
      */
-    public $sendoutType;
+    public string|array|null $sendoutType = null;
 
     /**
-     * @var int The campaign ID that the resulting sendouts must be to.
+     * @var int|null The campaign ID that the resulting sendouts must be to.
      */
-    public $campaignId;
+    public ?int $campaignId = null;
 
     /**
-     * @var int The mailing list ID that the resulting sendouts must contain.
+     * @var int|null The mailing list ID that the resulting sendouts must contain.
      */
-    public $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
-     * @var int The segment ID that the resulting sendouts must contain.
+     * @var int|null The segment ID that the resulting sendouts must contain.
      */
-    public $segmentId;
-
-    // Public Methods
-    // =========================================================================
+    public ?int $segmentId = null;
 
     /**
      * Sets the [[sid]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function sid(string $value)
+    public function sid(string $value): static
     {
         $this->sid = $value;
 
@@ -73,12 +56,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[sendoutType]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function sendoutType(string $value)
+    public function sendoutType(string $value): static
     {
         $this->sendoutType = $value;
 
@@ -87,12 +66,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[campaignId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function campaignId(int $value)
+    public function campaignId(int $value): static
     {
         $this->campaignId = $value;
 
@@ -101,12 +76,8 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[mailingListId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function mailingListId(int $value)
+    public function mailingListId(int $value): static
     {
         $this->mailingListId = $value;
 
@@ -115,20 +86,13 @@ class SendoutElementQuery extends ElementQuery
 
     /**
      * Sets the [[segmentId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function segmentId(int $value)
+    public function segmentId(int $value): static
     {
         $this->segmentId = $value;
 
         return $this;
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -147,12 +111,14 @@ class SendoutElementQuery extends ElementQuery
             'campaign_sendouts.fromEmail',
             'campaign_sendouts.replyToEmail',
             'campaign_sendouts.subject',
-            'campaign_sendouts.notificationEmailAddress',
+            'campaign_sendouts.notificationContactIds',
+            'campaign_sendouts.contactIds',
+            'campaign_sendouts.failedContactIds',
             'campaign_sendouts.mailingListIds',
             'campaign_sendouts.excludedMailingListIds',
             'campaign_sendouts.segmentIds',
             'campaign_sendouts.recipients',
-            'campaign_sendouts.fails',
+            'campaign_sendouts.failures',
             'campaign_sendouts.schedule',
             'campaign_sendouts.htmlBody',
             'campaign_sendouts.plaintextBody',
@@ -210,7 +176,7 @@ class SendoutElementQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
         $statuses = SendoutElement::statuses();
 

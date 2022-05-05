@@ -5,19 +5,17 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\db\Table;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
- * ContactCampaignRecord
- *
  * @property int $id ID
  * @property int $contactId Contact ID
  * @property int $campaignId Campaign ID
  * @property int $sendoutId Sendout ID
- * @property int $mailingListId Mailing List ID
+ * @property int|null $mailingListId Mailing List ID
  * @property DateTime|null $sent Sent
  * @property DateTime|null $opened Opened
  * @property DateTime|null $clicked Clicked
@@ -27,18 +25,12 @@ use yii\db\ActiveQuery;
  * @property int $opens Opens
  * @property int $clicks Clicks
  * @property string|null $links Links
- * @property ActiveQuery $contact
- * @property ActiveQuery $campaign
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read ContactRecord $contact
+ * @property-read CampaignRecord $campaign
  */
-class ContactCampaignRecord extends BaseActiveRecord
+class ContactCampaignRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -52,10 +44,10 @@ class ContactCampaignRecord extends BaseActiveRecord
      */
     public static function find(): ActiveQuery
     {
-        // Create subquery to ensure only contacts and campaigns that are not deleted are returned
+        // Create a subquery to ensure only contacts and campaigns that are not deleted are returned
         $subquery = parent::find()
-            ->innerJoin(Table::ELEMENTS.' contactElement', '[[contactElement.id]] = [[contactId]]')
-            ->innerJoin(Table::ELEMENTS.' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
+            ->innerJoin(Table::ELEMENTS . ' contactElement', '[[contactElement.id]] = [[contactId]]')
+            ->innerJoin(Table::ELEMENTS . ' campaignElement', '[[campaignElement.id]] = [[campaignId]]')
             ->where([
                 'contactElement.dateDeleted' => null,
                 'campaignElement.dateDeleted' => null,
@@ -64,13 +56,8 @@ class ContactCampaignRecord extends BaseActiveRecord
         return parent::find()->from(['subquery' => $subquery]);
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the related contact record.
-     *
-     * @return ActiveQuery
      */
     public function getContact(): ActiveQuery
     {
@@ -79,8 +66,6 @@ class ContactCampaignRecord extends BaseActiveRecord
 
     /**
      * Returns the related campaign record.
-     *
-     * @return ActiveQuery
      */
     public function getCampaign(): ActiveQuery
     {

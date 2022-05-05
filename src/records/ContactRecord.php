@@ -5,21 +5,19 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveQuery;
+use craft\db\ActiveRecord;
 use craft\records\Element;
 use craft\records\User;
 use DateTime;
-use putyourlightson\campaign\base\BaseActiveRecord;
-use yii\db\ActiveQuery;
 
 /**
- * ContactRecord
- *
  * @property int $id ID
  * @property int|null $userId User ID
  * @property string $cid Contact ID
  * @property string $email Email
  * @property string $country Country
- * @property string $geoIp GeoIP
+ * @property array|string $geoIp GeoIP
  * @property string $device Device
  * @property string $os OS
  * @property string $client Client
@@ -28,24 +26,19 @@ use yii\db\ActiveQuery;
  * @property DateTime|null $complained Complained
  * @property DateTime|null $bounced Bounced
  * @property DateTime|null $blocked Blocked
- * @property ActiveQuery $element
- * @property ActiveQuery $user
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property-read Element $element
+ * @property-read User $user
  */
-class ContactRecord extends BaseActiveRecord
+class ContactRecord extends ActiveRecord
 {
-    public $count = null;
-
-    // Public Static Methods
-    // =========================================================================
+    /**
+     * @var null|int
+     */
+    public ?int $count = null;
 
     /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {
@@ -53,22 +46,17 @@ class ContactRecord extends BaseActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @inheritdoc
      */
-    public static function find()
+    public static function find(): ActiveQuery
     {
         return parent::find()
             ->innerJoinWith(['element element'])
             ->where(['element.dateDeleted' => null]);
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the related element.
-     *
-     * @return ActiveQuery
      */
     public function getElement(): ActiveQuery
     {
@@ -77,8 +65,6 @@ class ContactRecord extends BaseActiveRecord
 
     /**
      * Returns the related user record.
-     *
-     * @return ActiveQuery
      */
     public function getUser(): ActiveQuery
     {

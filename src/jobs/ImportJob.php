@@ -8,38 +8,21 @@ namespace putyourlightson\campaign\jobs;
 use Craft;
 use craft\queue\BaseJob;
 use DateTime;
-use Exception;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ImportEvent;
 use putyourlightson\campaign\services\ImportsService;
-use Throwable;
 
-/**
- * ImportJob
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ImportJob extends BaseJob
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int
      */
-    public $importId;
-
-    // Public Methods
-    // =========================================================================
+    public int $importId;
 
     /**
      * @inheritdoc
-     * @throws Exception
-     * @throws Throwable
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         $import = Campaign::$plugin->imports->getImportById($this->importId);
 
@@ -83,9 +66,6 @@ class ImportJob extends BaseJob
             Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, $event);
         }
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

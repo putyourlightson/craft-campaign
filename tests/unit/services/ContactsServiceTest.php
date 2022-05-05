@@ -7,54 +7,36 @@ namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.14.0
+ * @since 1.14.0
  */
-
 class ContactsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var ContactElement
      */
-    protected $contact;
+    protected ContactElement $contact;
 
-    // Protected methods
-    // =========================================================================
-
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
         $this->contact = ContactElement::find()->one();
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testSaveContactWithSameEmail()
+    public function testSaveContactWithSameEmail(): void
     {
         $newContact = new ContactElement(['email' => $this->contact->email]);
 
@@ -63,7 +45,7 @@ class ContactsServiceTest extends BaseUnitTest
         // Assert that a contact with the same email cannot be saved
         $this->assertFalse($elementsService->saveElement($newContact));
 
-        $elementsService->deleteElement($this->contact, false);
+        $elementsService->deleteElement($this->contact);
 
         // Assert that a contact with the same email can be saved if the other contact was soft-deleted
         $this->assertTrue($elementsService->saveElement($newContact));

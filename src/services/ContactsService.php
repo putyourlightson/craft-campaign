@@ -5,36 +5,31 @@
 
 namespace putyourlightson\campaign\services;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\models\PendingContactModel;
-
 use Craft;
 use craft\base\Component;
-use yii\base\Exception;
+use craft\base\Field;
+use craft\db\Table;
+use craft\events\ConfigEvent;
+use craft\events\FieldEvent;
+use craft\helpers\Db;
+use craft\helpers\ProjectConfig;
+use craft\helpers\StringHelper;
+use craft\models\FieldLayout;
+use putyourlightson\campaign\elements\ContactElement;
 
-/**
- * ContactsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ContactsService extends Component
 {
-    // Public Methods
-    // =========================================================================
+    /**
+     * @since 2.0.0
+     */
+    public const CONFIG_CONTACTFIELDLAYOUT_KEY = 'campaign.contactFieldLayout';
 
     /**
-     * Returns a contact by ID
-     *
-     * @param int $contactId
-     *
-     * @return ContactElement|null
+     * Returns a contact by ID.
      */
-    public function getContactById(int $contactId)
+    public function getContactById(int $contactId): ?ContactElement
     {
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->id($contactId)
             ->status(null)
@@ -45,34 +40,32 @@ class ContactsService extends Component
      * Returns an array of contacts by IDs
      *
      * @param int[] $contactIds
-     *
      * @return ContactElement[]
      */
-    public function getContactsByIds(array $contactIds): array
+    public function getContactsByIds(?array $contactIds): array
     {
         if (empty($contactIds)) {
             return [];
         }
 
+        /** @var ContactElement[] */
         return ContactElement::find()
             ->id($contactIds)
             ->status(null)
+            ->fixedOrder()
             ->all();
     }
 
     /**
-     * Returns contact by user ID
-     *
-     * @param int $userId
-     *
-     * @return ContactElement|null
+     * Returns contact by user ID.
      */
-    public function getContactByUserId(int $userId)
+    public function getContactByUserId(int $userId): ?ContactElement
     {
         if (!$userId) {
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->userId($userId)
             ->status(null)
@@ -80,18 +73,15 @@ class ContactsService extends Component
     }
 
     /**
-     * Returns contact by CID
-     *
-     * @param string $cid
-     *
-     * @return ContactElement|null
+     * Returns a contact by CID.
      */
-    public function getContactByCid(string $cid)
+    public function getContactByCid(string $cid): ?ContactElement
     {
         if (!$cid) {
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->cid($cid)
             ->status(null)
@@ -99,19 +89,15 @@ class ContactsService extends Component
     }
 
     /**
-     * Returns contact by email
-     *
-     * @param string $email
-     * @param bool|null $trashed
-     *
-     * @return ContactElement|null
+     * Returns a contact by email.
      */
-    public function getContactByEmail(string $email, bool $trashed = false)
+    public function getContactByEmail(string $email, bool $trashed = false): ?ContactElement
     {
         if (!$email) {
             return null;
         }
 
+        /** @var ContactElement|null */
         return ContactElement::find()
             ->email($email)
             ->status(null)
@@ -120,64 +106,77 @@ class ContactsService extends Component
     }
 
     /**
-     * Saves a pending contact
+     * Saves the contact field layout.
      *
-     * @param PendingContactModel $pendingContact
-     *
-     * @return bool
-     *
-     * @deprecated in 1.10.0. Use [[PendingContactsService::savePendingContact()]] instead.
+     * @since 2.0.0
      */
-    public function savePendingContact(PendingContactModel $pendingContact): bool
+    public function saveContactFieldLayout(FieldLayout $fieldLayout): bool
     {
-        Craft::$app->getDeprecator()->log('ContactsService::savePendingContact()', 'The “ContactsService::savePendingContact()” method has been deprecated. Use “PendingContactsService::savePendingContact()” instead.');
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayoutConfig = $fieldLayout->getConfig();
+        $uid = StringHelper::UUID();
 
-        return Campaign::$plugin->pendingContacts->savePendingContact($pendingContact);
+        $projectConfig->set(self::CONFIG_CONTACTFIELDLAYOUT_KEY, [$uid => $fieldLayoutConfig], 'Save the contact field layout');
+
+        return true;
     }
 
     /**
-     * Sends a verification email
+     * Handles a changed contact field layout.
      *
-     * @param PendingContactModel $pendingContact
-     * @param MailingListElement $mailingList
-     *
-     * @return bool
-     * @throws Exception
-     *
-     * @deprecated in 1.10.0. Use [[PendingContactsService::sendVerifySubscribeEmail()]] instead.
+     * @since 2.0.0
      */
-    public function sendVerificationEmail(PendingContactModel $pendingContact, MailingListElement $mailingList): bool
+    public function handleChangedContactFieldLayout(ConfigEvent $event): void
     {
-        Craft::$app->getDeprecator()->log('ContactsService::sendVerificationEmail()', 'The “ContactsService::sendVerificationEmail()” method has been deprecated. Use “PendingContactsService::sendVerifySubscribeEmail()” instead.');
+        $data = $event->newValue;
 
-        return Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
+        // Make sure all fields are processed
+        ProjectConfig::ensureAllFieldsProcessed();
+
+        $fieldsService = Craft::$app->getFields();
+
+        // Save the field layout
+        $layout = FieldLayout::createFromConfig(reset($data));
+        $layout->id = $fieldsService->getLayoutByType(ContactElement::class)->id;
+        $layout->type = ContactElement::class;
+        $layout->uid = key($data);
+        $fieldsService->saveLayout($layout);
     }
 
     /**
-     * Verifies a pending contact
+     * Prunes a deleted field from the contact field layout.
      *
-     * @param string $pid
-     *
-     * @return PendingContactModel|null
-     *
-     * @deprecated in 1.10.0. Use [[PendingContactsService::verifyPendingContact()]] instead.
+     * @since 2.0.0
      */
-    public function verifyPendingContact(string $pid)
+    public function pruneDeletedField(FieldEvent $event): void
     {
-        Craft::$app->getDeprecator()->log('ContactsService::verifyPendingContact()', 'The “ContactsService::verifyPendingContact()” method has been deprecated. Use “PendingContactsService::verifyPendingContact()” instead.');
+        /** @var Field $field */
+        $field = $event->field;
+        $fieldUid = $field->uid;
 
-        return Campaign::$plugin->pendingContacts->verifyPendingContact($pid);
-    }
+        $projectConfig = Craft::$app->getProjectConfig();
+        $fieldLayouts = $projectConfig->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY);
 
-    /**
-     * Deletes expired pending contacts
-     *
-     * @deprecated in 1.10.0. Use [[PendingContactsService::purgeExpiredPendingContacts()]] instead.
-     */
-    public function purgeExpiredPendingContacts()
-    {
-        Craft::$app->getDeprecator()->log('ContactsService::purgeExpiredPendingContacts()', 'The “ContactsService::purgeExpiredPendingContacts()” method has been deprecated. Use “PendingContactsService::purgeExpiredPendingContacts()” instead.');
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
 
-        Campaign::$plugin->pendingContacts->purgeExpiredPendingContacts();
+        // Prune the field layout
+        if (is_array($fieldLayouts)) {
+            foreach ($fieldLayouts as $layoutUid => $layout) {
+                if (!empty($layout['tabs'])) {
+                    foreach ($layout['tabs'] as $tabUid => $tab) {
+                        $projectConfig->remove(self::CONFIG_CONTACTFIELDLAYOUT_KEY . '.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
+                    }
+                }
+            }
+        }
+
+        // Nuke all the layout fields from the DB
+        Db::delete(Table::FIELDLAYOUTFIELDS, [
+            'fieldId' => $field->id,
+        ]);
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
     }
 }

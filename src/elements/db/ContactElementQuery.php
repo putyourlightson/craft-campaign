@@ -5,69 +5,54 @@
 
 namespace putyourlightson\campaign\elements\db;
 
+use craft\elements\db\ElementQuery;
+use craft\helpers\Db;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactMailingListRecord;
-
-use craft\elements\db\ElementQuery;
-use craft\helpers\Db;
 use yii\db\Connection;
 
 /**
- * ContactElementQuery
- *
  * @method ContactElement[]|array all($db = null)
  * @method ContactElement|array|null one($db = null)
  * @method ContactElement|array|null nth(int $n, Connection $db = null)
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
 class ContactElementQuery extends ElementQuery
 {
-    // Properties
-    // =========================================================================
-
-    // General parameters
-    // -------------------------------------------------------------------------
+    /**
+     * @var int|null
+     */
+    public ?int $userId = null;
 
     /**
-     * @var int
+     * @var string|null
      */
-    public $userId;
+    public ?string $cid = null;
 
     /**
-     * @var string
+     * @var string|null The email address that the resulting contact must have.
      */
-    public $cid;
+    public ?string $email = null;
 
     /**
-     * @var string The email address that the resulting contact must have.
+     * @var int|null The mailing list ID that the resulting contacts must be in.
      */
-    public $email;
+    public ?int $mailingListId = null;
 
     /**
-     * @var int The mailing list ID that the resulting contacts must be in.
+     * @var int|null The segment ID that the resulting contacts must be in.
      */
-    public $mailingListId;
+    public ?int $segmentId = null;
 
     /**
-     * @var int The segment ID that the resulting contacts must be in.
+     * @var mixed When the resulting contacts were last active.
      */
-    public $segmentId;
-
-    // Public Methods
-    // =========================================================================
+    public mixed $lastActivity = null;
 
     /**
      * Sets the [[userId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function userId(int $value)
+    public function userId(int $value): static
     {
         $this->userId = $value;
 
@@ -76,12 +61,8 @@ class ContactElementQuery extends ElementQuery
 
     /**
      * Sets the [[cid]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function cid(string $value)
+    public function cid(string $value): static
     {
         $this->cid = $value;
 
@@ -90,12 +71,8 @@ class ContactElementQuery extends ElementQuery
 
     /**
      * Sets the [[email]] property.
-     *
-     * @param string $value The property value
-     *
-     * @return static self reference
      */
-    public function email(string $value)
+    public function email(string $value): static
     {
         $this->email = $value;
 
@@ -104,12 +81,8 @@ class ContactElementQuery extends ElementQuery
 
     /**
      * Sets the [[mailingListId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function mailingListId(int $value)
+    public function mailingListId(int $value): static
     {
         $this->mailingListId = $value;
 
@@ -118,20 +91,23 @@ class ContactElementQuery extends ElementQuery
 
     /**
      * Sets the [[segmentId]] property.
-     *
-     * @param int $value The property value
-     *
-     * @return static self reference
      */
-    public function segmentId(int $value)
+    public function segmentId(int $value): static
     {
         $this->segmentId = $value;
 
         return $this;
     }
 
-    // Protected Methods
-    // =========================================================================
+    /**
+     * Sets the [[lastActivity]] property.
+     */
+    public function lastActivity(mixed $value): static
+    {
+        $this->lastActivity = $value;
+
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -170,7 +146,7 @@ class ContactElementQuery extends ElementQuery
 
         if ($this->mailingListId) {
             $this->query->addSelect('subscriptionStatus');
-            $this->subQuery->innerJoin(ContactMailingListRecord::tableName().' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
+            $this->subQuery->innerJoin(ContactMailingListRecord::tableName() . ' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
             $this->subQuery->select('campaign_contacts_mailinglists.subscriptionStatus AS subscriptionStatus');
             $this->subQuery->andWhere(Db::parseParam('campaign_contacts_mailinglists.mailingListId', $this->mailingListId));
         }
@@ -189,29 +165,24 @@ class ContactElementQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
-        switch ($status) {
-            case ContactElement::STATUS_ACTIVE:
-                return [
-                    'campaign_contacts.complained' => null,
-                    'campaign_contacts.bounced' => null,
-                    'campaign_contacts.blocked' => null,
-                ];
-            case ContactElement::STATUS_COMPLAINED:
-                return [
-                    'not', ['campaign_contacts.complained' => null],
-                ];
-            case ContactElement::STATUS_BOUNCED:
-                return [
-                    'not', ['campaign_contacts.bounced' => null],
-                ];
-            case ContactElement::STATUS_BLOCKED:
-                return [
-                    'not', ['campaign_contacts.blocked' => null],
-                ];
-            default:
-                return parent::statusCondition($status);
-        }
+        return match ($status) {
+            ContactElement::STATUS_ACTIVE => [
+                'campaign_contacts.complained' => null,
+                'campaign_contacts.bounced' => null,
+                'campaign_contacts.blocked' => null,
+            ],
+            ContactElement::STATUS_COMPLAINED => [
+                'not', ['campaign_contacts.complained' => null],
+            ],
+            ContactElement::STATUS_BOUNCED => [
+                'not', ['campaign_contacts.bounced' => null],
+            ],
+            ContactElement::STATUS_BLOCKED => [
+                'not', ['campaign_contacts.blocked' => null],
+            ],
+            default => parent::statusCondition($status),
+        };
     }
 }

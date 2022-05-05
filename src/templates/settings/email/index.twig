@@ -1,0 +1,93 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% set title = 'Email Settings'|t('campaign') %}
+{% set crumbs = [] %}
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-email">
+
+    {% set cols = [
+        {
+            type: 'singleline',
+            heading: 'Name'|t('campaign'),
+        },
+        {
+            type: 'singleline',
+            heading: 'From Email'|t('campaign'),
+        },
+        {
+            type: 'singleline',
+            heading: 'Reply To Email (optional)'|t('campaign'),
+        },
+    ] %}
+    {% if craft.app.getIsMultiSite() %}
+        {% set cols = cols|merge([
+            {
+                type: 'select',
+                heading: 'Site'|t('app'),
+                options: siteOptions,
+            },
+        ]) %}
+    {% endif %}
+
+    {{ forms.editableTableField({
+        label: "From Names and Emails"|t('campaign'),
+        instructions: "The names and email addresses that sendouts can be sent from."|t('campaign'),
+        warning: (config.fromNamesEmails is defined ? macros.configWarning('fromNamesEmails')),
+        name: 'fromNamesEmails',
+        id: 'fromNamesEmails',
+        cols: cols,
+        rows: settings.fromNamesEmails,
+        minRows: 1,
+        addRowLabel: "Add a name and email"|t('campaign'),
+        allowAdd: true,
+        allowDelete: true,
+        allowReorder: true,
+        errors: settings.getErrors('fromNamesEmails'),
+        required: true,
+        first: true,
+    }) }}
+
+    {{ forms.selectField({
+        label: "Transport Type"|t('campaign'),
+        instructions: "The email sending service to use for sending."|t('campaign'),
+        id: 'transportType',
+        name: 'transportType',
+        options: transportTypeOptions,
+        value: className(adapter),
+        errors: adapter.getErrors('type'),
+        required: true,
+        toggle: true
+    }) }}
+
+    {% for _adapter in allTransportAdapters %}
+        {% set isCurrent = (className(_adapter) == className(adapter)) %}
+        <div id="{{ className(_adapter)|id }}"{% if not isCurrent %} class="hidden"{% endif %}>
+            {% namespace 'transportTypes[' ~ className(_adapter) ~ ']' %}
+                {{ (isCurrent ? adapter : _adapter).getSettingsHtml()|raw }}
+            {% endnamespace %}
+        </div>
+    {% endfor %}
+
+    <hr>
+
+    <div class="buttons">
+        {% if settings.fromNamesEmails|length %}
+                <div class="btn formsubmit" data-action="campaign/settings/send-test-email">{{ "Send Test Email"|t('campaign') }}</div>
+        {% else %}
+            {% set input %}
+                <div class="btn disabled">{{ "Send Test Email"|t('campaign') }}</div>
+            {% endset %}
+            {{ forms.field({
+                warning: "You must add at least one from name and email before you can send a test email."|t('campaign')
+            }, input) }}
+        {% endif %}
+    </div>
+
+{% endblock %}

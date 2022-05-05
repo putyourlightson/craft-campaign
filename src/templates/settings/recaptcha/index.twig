@@ -1,0 +1,79 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% set title = 'reCAPTCHA Settings'|t('campaign') %}
+
+{% set crumbs = [] %}
+
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-recaptcha">
+
+    {{ forms.lightswitchField({
+        first: true,
+        label: "reCAPTCHA"|t('campaign'),
+        instructions: 'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', { url: 'https://developers.google.com/recaptcha/docs/v3' }),
+        warning: (config.reCaptcha is defined ? macros.configWarning('reCaptcha')),
+        id: 'reCaptcha',
+        name: 'reCaptcha',
+        on: settings.reCaptcha,
+        errors: settings.getErrors('reCaptcha')
+    }) }}
+
+    {% set code %}
+        <code>{{ '{{ craft.campaign.recaptcha }}' }}</code>
+    {% endset %}
+    {{ forms.field({
+        instructions: "Add the following tag to all Campaign forms (not doing so will prevent forms from submitting)."|t('campaign'),
+    }, code) }}
+
+    {{ forms.autosuggestField({
+        label: "reCAPTCHA Site Key"|t('campaign'),
+        instructions: "The reCAPTCHA site key for this domain."|t('campaign'),
+        warning: (config.reCaptchaSiteKey is defined ? macros.configWarning('reCaptchaSiteKey')),
+        id: 'reCaptchaSiteKey',
+        name: 'reCaptchaSiteKey',
+        suggestEnvVars: true,
+        value: settings.reCaptchaSiteKey,
+        errors: settings.getErrors('reCaptchaSiteKey')
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "reCAPTCHA Secret Key"|t('campaign'),
+        instructions: "The reCAPTCHA secret key for this domain."|t('campaign'),
+        warning: (config.reCaptchaSecretKey is defined ? macros.configWarning('reCaptchaSecretKey')),
+        id: 'reCaptchaSecretKey',
+        name: 'reCaptchaSecretKey',
+        suggestEnvVars: true,
+        value: settings.reCaptchaSecretKey,
+        errors: settings.getErrors('reCaptchaSecretKey')
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "reCAPTCHA Error Message"|t('campaign'),
+        instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
+        warning: (config.reCaptchaErrorMessage is defined ? macros.configWarning('reCaptchaErrorMessage')),
+        id: 'reCaptchaErrorMessage',
+        name: 'reCaptchaErrorMessage',
+        suggestEnvVars: true,
+        value: settings.reCaptchaErrorMessage,
+        errors: settings.getErrors('reCaptchaErrorMessage')
+    }) }}
+
+    <p>
+        <em>
+            {{ 'Create and view your reCAPTCHA keys at {link}'|t('campaign', { link: '
+                <a href="https://www.google.com/recaptcha/admin" class="go" target="_blank" rel="noopener">
+                    www.google.com/recaptcha/admin
+                </a>'
+            })|raw }}
+        </em>
+    </p>
+
+
+{% endblock %}

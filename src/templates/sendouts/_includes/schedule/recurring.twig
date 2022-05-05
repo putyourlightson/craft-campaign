@@ -1,0 +1,78 @@
+{% import '_includes/forms' as forms %}
+
+{% include 'campaign/sendouts/_includes/schedule/dates' %}
+
+{% set input %}
+    {{ "Every"|t('campaign') }}
+    {% if editable %}
+        {{ forms.text({
+            name: 'schedule[frequency]',
+            type: 'number',
+            value: schedule.frequency,
+            size: '10',
+        }) }}
+        {{ forms.select({
+            name: 'schedule[frequencyInterval]',
+            options: schedule.getIntervalOptions(),
+            value: schedule.frequencyInterval,
+            toggle: true,
+            targetPrefix: 'frequency-',
+        }) }}
+    {% else %}
+        {{ schedule.frequency }} {{ intervalOptions[schedule.frequencyInterval] }}
+    {% endif %}
+{% endset %}
+{{ forms.field({
+    label: "Frequency"|t('campaign'),
+    instructions: "The frequency at which recurring sendouts should be sent."|t('campaign'),
+    errors: schedule.getErrors('frequency'),
+    required: true,
+}, input) }}
+
+<div id="frequency-weeks" {{ schedule.frequencyInterval != 'weeks' ? 'class="hidden"' }}>
+
+    {% include 'campaign/sendouts/_includes/schedule/daysOfWeek' %}
+
+</div>
+
+<div id="frequency-months" {{ schedule.frequencyInterval != 'months' ? 'class="hidden"' }}>
+
+    {% set input %}
+        {% set days = [] %}
+        {% for day in 1..31 %}
+            {% set day = (day == 29 ? day ~ ' (may not exist in all months)' : day) %}
+            {% set day = (day > 29 ? day ~ ' (does not exist in all months)' : day) %}
+            {% if editable %}
+                {% set days = days|merge([forms.checkbox({
+                    label: day|t('campaign'),
+                    name: 'schedule[daysOfMonth][' ~ loop.index ~ ']',
+                    value: 1,
+                    checked: (schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index]),
+                })]) %}
+            {% elseif schedule.daysOfMonth[loop.index] is defined and schedule.daysOfMonth[loop.index] %}
+                {% set days = days|merge([day]) %}
+            {% endif %}
+        {% endfor %}
+        {{ editable ? days|join('<br>')|raw : days|join(', ') }}
+    {% endset %}
+    {{ forms.field({
+        label: "Days of Month"|t('campaign'),
+        instructions: "The days of the month on which to send."|t('campaign'),
+        errors: schedule.getErrors('daysOfMonth'),
+        required: true
+    }, input) }}
+
+</div>
+
+{% include 'campaign/sendouts/_includes/schedule/timeOfDay' %}
+
+{{ forms.lightswitchField({
+    label: "Can Send To Contacts Multiple Times"|t('campaign'),
+    instructions: "Whether the sendout can be sent to contacts multiple times."|t('campaign'),
+    name: 'schedule[canSendToContactsMultipleTimes]',
+    on: schedule.canSendToContactsMultipleTimes,
+    errors: schedule.getErrors('canSendToContactsMultipleTimes'),
+    disabled: not editable,
+}) }}
+
+{% include 'campaign/sendouts/_includes/schedule/condition' %}

@@ -11,22 +11,19 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 abstract class CampaignElementFixture extends BaseElementFixture
 {
     /**
      * @var array
      */
-    public $campaignTypeIds = [];
+    public array $campaignTypeIds = [];
 
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
         foreach (Campaign::$plugin->campaignTypes->getAllCampaignTypes() as $campaignType) {
             $this->campaignTypeIds[$campaignType->handle] = $campaignType->id;

@@ -5,36 +5,21 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
 use craft\elements\Asset;
-use craft\errors\MissingComponentException;
 use craft\helpers\Assets;
+use craft\helpers\FileHelper;
+use craft\web\Controller;
+
+use craft\web\UploadedFile;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\ImportModel;
-
-use Craft;
-use craft\web\Controller;
-use craft\helpers\FileHelper;
-use craft\web\UploadedFile;
-use Throwable;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * ImportsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class ImportsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -47,11 +32,9 @@ class ImportsController extends Controller
     }
 
     /**
-     * @param string|null $siteHandle
-     *
-     * @return Response
+     * Default action.
      */
-    public function actionIndex(string $siteHandle = null): Response
+    public function actionIndex(string $siteHandle = null): ?Response
     {
         // Set the current site to the site handle if set
         if ($siteHandle !== null) {
@@ -67,17 +50,11 @@ class ImportsController extends Controller
     }
 
     /**
-     * Uploads a file
+     * Uploads a file.
      *
      * @param ImportModel|null $import The import, if there were any validation errors.
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws MissingComponentException
      */
-    public function actionUploadFile(ImportModel $import = null)
+    public function actionUploadFile(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
 
@@ -85,9 +62,7 @@ class ImportsController extends Controller
         $file = UploadedFile::getInstanceByName('file');
 
         if ($file === null) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'A CSV file must be selected to upload.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'A CSV file must be selected to upload.'));
         }
 
         $tempFilePath = $file->saveAsTempFile();
@@ -96,9 +71,7 @@ class ImportsController extends Controller
         $mimeType = FileHelper::getMimeType($tempFilePath);
 
         if ($mimeType != 'text/plain' && $mimeType != 'text/csv' && $mimeType != 'application/csv') {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'The file you selected to upload must be a CSV file.'));
         }
 
         // Copy to user temporary folder
@@ -120,9 +93,7 @@ class ImportsController extends Controller
         $asset->setScenario(Asset::SCENARIO_CREATE);
 
         if (!Craft::$app->getElements()->saveElement($asset)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Unable to upload CSV file.'));
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Unable to upload CSV file.'));
         }
 
         if ($import === null) {
@@ -136,28 +107,24 @@ class ImportsController extends Controller
     }
 
     /**
-     * Imports a file
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Imports a file.
      */
-    public function actionImportFile()
+    public function actionImportFile(): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         $import = new ImportModel();
-        $import->assetId = $request->getRequiredBodyParam('assetId');
-        $import->fileName = $request->getRequiredBodyParam('fileName');
+        $import->assetId = $this->request->getRequiredBodyParam('assetId');
+        $import->fileName = $this->request->getRequiredBodyParam('fileName');
 
-        $mailingListIds = $request->getBodyParam('mailingListIds');
-        $import->mailingListId = $mailingListIds[0] ?? '';
+        $mailingListIds = $this->request->getBodyParam('mailingListIds');
+        $import->mailingListId = $mailingListIds[0] ?? null;
 
-        $import->forceSubscribe = (bool)$request->getBodyParam('forceSubscribe');
+        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 
         // Get email and custom field indexes
-        $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $request->getBodyParam('fieldIndexes');
+        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
+        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
 
         // Validate it
         if (!$import->validate()) {
@@ -182,27 +149,20 @@ class ImportsController extends Controller
 
         Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'CSV file successfully queued for importing.'));
-
-        return $this->redirectToPostedUrl($import);
+        return $this->asModelSuccess($import, Craft::t('campaign', 'CSV file successfully queued for importing.'), 'import');
     }
 
     /**
-     * Select user group
+     * Selects a user group.
      *
      * @param ImportModel|null $import The import, if there were any validation errors.
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
      */
-    public function actionSelectUserGroup(ImportModel $import = null)
+    public function actionSelectUserGroup(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         // Get the user group ID
-        $userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         if ($userGroupId === null) {
             throw new BadRequestHttpException('User group is required.');
@@ -225,32 +185,28 @@ class ImportsController extends Controller
     }
 
     /**
-     * Imports a user group
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Imports a user group.
      */
-    public function actionImportUserGroup()
+    public function actionImportUserGroup(): ?Response
     {
         $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
 
         $import = new ImportModel();
-        $import->userGroupId = $request->getRequiredBodyParam('userGroupId');
+        $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
-        $mailingListIds = $request->getBodyParam('mailingListIds');
-        $import->mailingListId = $mailingListIds[0] ?? '';
+        $mailingListIds = $this->request->getBodyParam('mailingListIds');
+        $import->mailingListId = $mailingListIds[0] ?? null;
 
-        $import->forceSubscribe = (bool)$request->getBodyParam('forceSubscribe');
+        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 
         // Get core fields and custom field indexes
-        $import->emailFieldIndex = $request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $request->getBodyParam('fieldIndexes', []);
+        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
+        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes', []);
 
         // Prepend `field_` to each custom field index
         foreach ($import->fieldIndexes as $key => $fieldIndex) {
             if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
-                $import->fieldIndexes[$key] = 'field_'.$fieldIndex;
+                $import->fieldIndexes[$key] = 'field_' . $fieldIndex;
             }
         }
 
@@ -278,20 +234,15 @@ class ImportsController extends Controller
         // Log it
         Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name]);
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'User group successfully queued for importing.'));
-
-        return $this->redirectToPostedUrl($import);
+        return $this->asModelSuccess($import, Craft::t('campaign', 'User group successfully queued for importing.'), 'import');
     }
 
     /**
-     * Downloads a file
-     *
-     * @return Response
-     * @throws BadRequestHttpException
+     * Downloads a file.
      */
-    public function actionDownloadFile(): Response
+    public function actionDownloadFile(): ?Response
     {
-        $importId = Craft::$app->getRequest()->getRequiredParam('importId');
+        $importId = $this->request->getRequiredParam('importId');
 
         $import = Campaign::$plugin->imports->getImportById($importId);
 
@@ -308,46 +259,30 @@ class ImportsController extends Controller
             throw new BadRequestHttpException('Imported file not found.');
         }
 
-        return Craft::$app->getResponse()->sendStreamAsFile($handle, $import->fileName);
+        return $this->response->sendStreamAsFile($handle, $import->fileName);
     }
 
     /**
-     * Deletes an import
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes an import.
      */
-    public function actionDeleteImport(): Response
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $importId = Craft::$app->getRequest()->getRequiredBodyParam('id');
-
+        $importId = $this->request->getRequiredBodyParam('id');
         Campaign::$plugin->imports->deleteImportById($importId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the fields template
-     *
-     * @param ImportModel $import
-     * @param array|string|null $mailingListIds
-     *
-     * @return Response
+     * Returns the `fields` template.
      */
-    private function _returnFieldsTemplate(ImportModel $import, $mailingListIds = []): Response
+    private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): Response
     {
-        $variables = [];
-        $variables['import'] = $import;
-
         // Set the current site to the site handle if set
-        $siteHandle = Craft::$app->getRequest()->getSegment(4);
+        $siteHandle = $this->request->getSegment(4);
 
         if ($siteHandle !== null) {
             $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
@@ -357,11 +292,14 @@ class ImportsController extends Controller
             }
         }
 
-        // Mailing list element selector variables
-        $variables['mailingListElementType'] = MailingListElement::class;
-
-        // Get mailing lists
-        $variables['mailingLists'] = [];
+        $variables = [
+            'import' => $import,
+            'mailingListElementType' => MailingListElement::class,
+            'mailingLists' => [],
+            'emailFieldLabel' => Campaign::$plugin->settings->getEmailFieldLabel(),
+            'fields' => Campaign::$plugin->settings->getContactFields(),
+            'columns' => Campaign::$plugin->imports->getColumns($import),
+        ];
 
         if (is_array($mailingListIds)) {
             foreach ($mailingListIds as $mailingListId) {
@@ -372,12 +310,6 @@ class ImportsController extends Controller
                 }
             }
         }
-
-        // Get contact fields
-        $variables['fields'] = Campaign::$plugin->getSettings()->getContactFields();
-
-        // Get columns
-        $variables['columns'] = Campaign::$plugin->imports->getColumns($import);
 
         return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
     }

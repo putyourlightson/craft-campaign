@@ -11,31 +11,19 @@ use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * AutomatedScheduleModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
- *
- * @property array $intervalOptions
+ * @since 1.2.0
  */
 class AutomatedScheduleModel extends ScheduleModel
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int Time delay
      */
-    public $timeDelay = 0;
+    public int $timeDelay = 0;
 
     /**
      * @var string Time interval
      */
-    public $timeDelayInterval = '';
-
-    // Public Methods
-    // =========================================================================
+    public string $timeDelayInterval = '';
 
     /**
      * @inheritdoc
@@ -54,15 +42,13 @@ class AutomatedScheduleModel extends ScheduleModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-
-        $rules[] = [['timeDelay', 'timeDelayInterval', 'daysOfWeek'], 'required'];
-        $rules[] = [['timeDelay'], 'integer', 'min' => 0];
-        $rules[] = ['timeDelayInterval', 'in', 'range' => array_keys($this->getIntervalOptions())];
-
-        return $rules;
+        return array_merge(parent::defineRules(), [
+            [['timeDelay', 'timeDelayInterval', 'daysOfWeek'], 'required'],
+            [['timeDelay'], 'integer', 'min' => 0],
+            ['timeDelayInterval', 'in', 'range' => array_keys($this->getIntervalOptions())],
+        ]);
     }
 
     /**

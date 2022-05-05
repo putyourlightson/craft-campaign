@@ -13,7 +13,7 @@ define('CRAFT_TRANSLATIONS_PATH', __DIR__ . '/_craft/translations');
 //define('CRAFT_VENDOR_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor');
 
 // Use absolute path if the plugin directory is a symlink
-define('CRAFT_VENDOR_PATH', '/app/vendor');
+define('CRAFT_VENDOR_PATH', '/var/www/project/cms_v4/vendor');
 
 $devMode = true;
 

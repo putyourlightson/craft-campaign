@@ -1,0 +1,45 @@
+{% if contactActivity|length %}
+    <table id="contact-activity" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
+        <thead>
+            <th scope="col">{{ "Contact"|t('campaign') }}</th>
+            <th scope="col">{{ "Interaction"|t('campaign') }}</th>
+            <th scope="col">{{ "Source"|t('campaign') }}</th>
+            <th scope="col">{{ "First Interaction"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+            {% for activity in contactActivity %}
+                {% set contact = activity.model.contact %}
+                {% if contact %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                        <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
+                        <td data-title="{{ 'Source'|t('campaign') }}">
+                            {% if activity.model.sourceType %}
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
+                            {% endif %}
+                        </td>
+                        <td data-order="{{ activity.date|datetime('U') }}" data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if limit is defined %}
+        {% if limit == contactActivity|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
+        {% endif %}
+    {% else %}
+        {{ include('campaign/reports/_includes/datatable', {
+            id: 'contact-activity',
+            itemName: 'interactions'|t('campaign'),
+        }) }}
+    {% endif %}
+
+{% else %}
+
+    <p>{{ "No contact activity for this mailing list."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

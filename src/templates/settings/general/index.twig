@@ -1,0 +1,130 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% set title = 'General Settings'|t('campaign') %}
+
+{% set crumbs = [] %}
+
+{% set fullPageForm = true %}
+
+{% set apiKey = settings.apiKey|replace('$', '') %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-general">
+
+    {{ forms.lightswitchField({
+        first: true,
+        label: "Test Mode"|t('campaign'),
+        instructions: "Sendout emails will be saved into local files (in {path}) rather that actually being sent."|t('campaign', { path: '<code>storage/runtime/debug/mail</code>' }),
+        warning: (config.testMode is defined ? macros.configWarning('testMode')),
+        name: 'testMode',
+        on: settings.testMode,
+        errors: settings.getErrors('testMode')
+    }) }}
+
+    <hr/>
+
+    {% set code %}
+        <code>*/10 * * * * {{ phpBinPath }} {{ alias('@root/craft') }} campaign/sendouts/run</code>
+    {% endset %}
+    {{ forms.field({
+        label: "Cron Job"|t('campaign'),
+        instructions: "Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
+        warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', {url: 'https://putyourlightson.com/plugins/campaign#how-sendouts-are-sent'}),
+    }, code) }}
+
+    {{ forms.autosuggestField({
+        label: "API Key"|t('campaign'),
+        instructions: "An API key to use for triggering tasks and notifications through a URL (min. 16 characters)."|t('campaign'),
+        warning: (config.apiKey is defined ? macros.configWarning('apiKey')),
+        id: 'apiKey',
+        name: 'apiKey',
+        suggestEnvVars: true,
+        value: settings.apiKey,
+        errors: settings.getErrors('apiKey'),
+        required: true,
+    }) }}
+
+    {% if settings.apiKey and not settings.getErrors('apiKey') %}
+        {% set code %}
+            <code>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/sendouts/queue-pending-sendouts', { key: apiKey, run: 1 }) }}</code>
+        {% endset %}
+        {{ forms.field({
+            instructions: "You can use the following URL to queue pending sendouts. Including the optional `run` parameter will  immediately run any queued jobs."|t('campaign'),
+        }, code) }}
+    {% endif %}
+
+    {% set table %}
+        <table class="editable fullwidth">
+            <thead>
+                <tr>
+                    <th class="thin">{{ "Service"|t('campaign') }}</th>
+                    <th>{{ "Webhook URL"|t('campaign') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="thin">
+                        Amazon SES
+                        <span class="info">
+                            "Include original headers" must be enabled for each notification type. <br/>
+                            See this <a href="https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/" target="_blank" rel="noopener">article</a> for details on where and how to enable this.
+                        </span>
+                    </th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">
+                        Mailgun
+                        <span class="info">
+                            Use the "Permanent Failure" event type to catch bounces and the "Spam Complaints" event type to catch complaints.
+                        </span>
+                    </th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">Mandrill</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mandrill', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">Postmark</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/postmark', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">Sendgrid</th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/sendgrid', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endset %}
+    {{ forms.field({
+        label: "Webhooks"|t('campaign'),
+        instructions: "Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only)."|t('campaign'),
+    }, table) }}
+
+    {{ forms.autosuggestField({
+        label: "Mailgun Webhook Signing Key"|t('campaign'),
+        instructions: "A webhook signing key provided by Mailgun to validate incoming webhook requests."|t('campaign'),
+        warning: (config.mailgunWebhookSigningKey is defined ? macros.configWarning('mailgunWebhookSigningKey')),
+        id: 'mailgunWebhookSigningKey',
+        name: 'mailgunWebhookSigningKey',
+        suggestEnvVars: true,
+        value: settings.mailgunWebhookSigningKey,
+        errors: settings.getErrors('mailgunWebhookSigningKey'),
+    }) }}
+
+{% endblock %}

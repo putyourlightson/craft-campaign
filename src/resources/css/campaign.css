@@ -1,0 +1,333 @@
+/*
+* Colour Palette: 600 colours from https://material.io/guidelines/style/color.html#color-color-palette
+*/
+
+table th.thin, table td.thin {
+    white-space: nowrap;
+}
+
+.info-hud {
+    max-width: 600px;
+}
+
+.welcome {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 700px;
+    background: url('../images/welcome.jpg') center;
+    background-size: cover;
+    color: #fff;
+    text-shadow: 0 0 8px #000;
+    font-size: 20px;
+    text-align: center;
+    opacity: 0;
+    animation: 1s fadeIn 1s forwards;
+}
+
+.welcome-oil {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('../images/welcome-oil.jpg') center;
+    background-size: cover;
+    filter: grayscale(100%);
+    animation: 8s saturate-fadeOut 4s forwards;
+}
+
+.welcome a, .welcome a:after {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.welcome h1 {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.welcome .step {
+    opacity: 0;
+}
+
+.welcome .step-1 {
+    padding-top: 150px;
+    animation: 2s fadeIn 2s;
+}
+
+.welcome .step-2 {
+    animation: 2s fadeIn 4s;
+}
+
+.welcome .step-3 {
+    animation: 2s fadeIn 6s forwards;
+}
+
+.preflight {
+    max-width: 920px;
+    max-height: 490px;
+}
+
+.preflight > div, .preflight .body {
+    height: 100%;
+    text-align: center;
+}
+
+.preflight .photo {
+    margin-top: 69px;
+    width: 100px;
+    border: 2px solid #949599;
+    border-radius: 50%;
+}
+
+.preflight .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.preflight h1 {
+    font-size: 36px;
+    line-height: 60px;
+}
+
+.preflight p {
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.preflight .info {
+    height: 22px;
+    vertical-align: top;
+}
+
+.preflight .testmode {
+    margin-top: 0;
+}
+
+.launch {
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 12px 15px;
+    font-weight: bold;
+    font-size: 19px;
+    height: 42px;
+    line-height: 18px;
+}
+
+.rocketeer {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 0 0 50px #000;
+    background: url('../images/launch.jpg') no-repeat;
+    background-size: contain;
+}
+
+.launched {
+    color: #fff;
+    height: 100%;
+    background: url('../images/launched.jpg') #8AB59F center 30px no-repeat;
+    background-size: cover;
+}
+
+@keyframes saturate-fadeOut {
+    50% {
+        filter: grayscale(0);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@-webkit-keyframes saturate-fadeOut {
+    50% {
+        filter: grayscale(0);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    100% {
+        opacity: 0;
+    }
+}
+@-webkit-keyframes fadeOut {
+    100% {
+        opacity: 0;
+    }
+}
+
+.relative {
+    position: relative;
+}
+
+.testmode {
+    position: absolute;
+    height: 5px;
+    margin-top: -5px;
+    width: 100%;
+    z-index: 10;
+    background: #000 url('../images/dev-mode.svg');
+    cursor: help;
+}
+
+.status.sent {
+    background: #27AE60;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.status.sending {
+    background: rgba(39, 174, 96, 0.2);
+    border-color: #27AE60 !important;
+}
+
+.status.queued {
+    background: rgba(242, 132, 45, 0.2);
+    border-color: #F2842D !important;
+}
+
+.status.paused {
+    background: rgba(208, 2, 27, 0.2);
+    border-color: #D6301A !important;
+}
+
+.status.closed, .status.cancelled {
+    background: #D6301A;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.status.complained {
+    background: #6D4C41;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.status.failed, .status.bounced {
+    background: #263238;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+.status.blocked {
+    background: #CF1124;
+    border-color: rgba(0, 0, 0, 0) !important;
+}
+
+label.subscriptionStatus {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 7px !important;
+    font-size: 11px;
+    line-height: 22px;
+    height: 22px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+    background: #b9bfc6;
+}
+
+label.subscriptionStatus.subscribed {
+    background: #43A047;
+}
+
+label.subscriptionStatus.unsubscribed {
+    background: #E53935;
+}
+
+label.subscriptionStatus.pending {
+    background: #FB8C00;
+}
+
+label.subscriptionStatus.complained {
+    background: #6D4C41;
+}
+
+label.subscriptionStatus.bounced {
+    background: #263238;
+}
+
+.email-body {
+    width: 100%;
+    height: 350px;
+    resize: vertical;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px #cdd8e4,0 2px 12px rgba(205,216,228,.5);
+}
+
+textarea.email-body {
+    padding: 10px;
+}
+
+.meta .info:before {
+    color: #7a7f86;
+}
+
+.meta .data .value .element {
+    margin-left: -7px;
+}
+
+.details .meta.test-email > .field {
+    border: none !important;
+}
+
+.details .meta.test-email > .field:first-of-type {
+    padding-top: 10px !important;
+}
+
+.details .meta.test-email > .field:last-of-type {
+    padding-bottom: 10px !important;
+}
+
+.device {
+    background: no-repeat 50%;
+    background-size: contain;
+    position: relative;
+    display: inline-block;
+    width: 1.33333333em;
+    line-height: 1em;
+}
+
+.device:before {
+    content: "\00a0";
+}
+
+.device.desktop {
+    background-image: url(../icons/desktop.svg);
+}
+
+.device.tablet, .device.phablet {
+    background-image: url(../icons/tablet.svg);
+}
+
+.device.smartphone {
+    background-image: url(../icons/mobile.svg);
+}
+
+.cols.padded-right {
+    padding-right: 6%;
+}
+
+.cols .half h2 {
+    margin-top: 14px !important;
+}
+
+@media only screen and (min-width: 600px) {
+    .cols .half {
+        float: left;
+        width: 47%;
+    }
+    .cols .half:first-child {
+        padding-right: 6%;
+    }
+}

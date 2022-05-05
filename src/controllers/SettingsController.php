@@ -5,38 +5,26 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\elements\User;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\helpers\SendoutHelper;
-use putyourlightson\campaign\models\SettingsModel;
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
-use craft\web\Controller;
+use craft\elements\User;
+use craft\errors\MissingComponentException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
-use craft\errors\MissingComponentException;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
-use Throwable;
-use yii\base\Exception;
-use yii\web\BadRequestHttpException;
+use craft\web\Controller;
+use craft\web\UrlManager;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\helpers\SendoutHelper;
+use putyourlightson\campaign\helpers\SettingsHelper;
+use putyourlightson\campaign\models\SettingsModel;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-/**
- * SettingsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SettingsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -53,35 +41,34 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit general settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditGeneral(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'phpBinPath' => PHP_BINARY ?: '/usr/bin/php',
-            'isDynamicWebAliasUsed' => Campaign::$plugin->settings->isDynamicWebAliasUsed(),
+            'phpBinPath' => '/usr/bin/php',
+            'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed(),
         ]);
     }
 
     /**
-     * @param SettingsModel|null             $settings The settings being edited, if there were any validation errors.
-     * @param TransportAdapterInterface|null $adapter  The transport adapter, if there were any validation errors.
+     * Edit email settings.
      *
-     * @return Response
-     * @throws MissingComponentException
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
+     * @param TransportAdapterInterface|null $adapter  The transport adapter, if there were any validation errors.
      */
     public function actionEditEmail(SettingsModel $settings = null, TransportAdapterInterface $adapter = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         if ($adapter === null) {
@@ -89,10 +76,10 @@ class SettingsController extends Controller
             try {
                 $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
             }
-            catch (MissingComponentException $e) {
+            catch (MissingComponentException) {
                 $adapter = new Sendmail();
                 $adapter->addError('type', Craft::t('app', 'The transport type “{type}” could not be found.', [
-                    'type' => $settings->transportType
+                    'type' => $settings->transportType,
                 ]));
             }
         }
@@ -114,7 +101,7 @@ class SettingsController extends Controller
                 $allTransportAdapters[] = MailerHelper::createTransportAdapter($transportAdapterType);
                 $transportTypeOptions[] = [
                     'value' => $transportAdapterType,
-                    'label' => $transportAdapterType::displayName()
+                    'label' => $transportAdapterType::displayName(),
                 ];
             }
         }
@@ -125,7 +112,7 @@ class SettingsController extends Controller
         return $this->renderTemplate('campaign/settings/email', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
-            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
+            'siteOptions' => SettingsHelper::getSiteOptions(),
             'adapter' => $adapter,
             'allTransportAdapters' => $allTransportAdapters,
             'transportTypeOptions' => $transportTypeOptions,
@@ -133,36 +120,38 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit contact settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditContact(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/contact', [
             'settings' => $settings,
+            'fieldLayout' => $settings->getContactFieldLayout(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit sendout settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditSendout(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/sendout', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+            'contactElementType' => ContactElement::class,
             'system' => [
                 'memoryLimit' => ini_get('memory_limit'),
                 'memoryLimitExceeded' => (SendoutHelper::memoryInBytes($settings->memoryLimit) > SendoutHelper::memoryInBytes(ini_get('memory_limit'))),
@@ -172,14 +161,14 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit GeoIP settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditGeoip(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/geoip', [
@@ -189,14 +178,14 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param SettingsModel $settings The settings being edited, if there were any validation errors.
+     * Edit Recaptcha settings.
      *
-     * @return Response
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
      */
     public function actionEditRecaptcha(SettingsModel $settings = null): Response
     {
         if ($settings === null) {
-            $settings = Campaign::$plugin->getSettings();
+            $settings = Campaign::$plugin->settings;
         }
 
         return $this->renderTemplate('campaign/settings/recaptcha', [
@@ -206,231 +195,153 @@ class SettingsController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves general settings.
      */
-    public function actionSaveGeneral()
+    public function actionSaveGeneral(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
-        $settings->testMode = Craft::$app->getRequest()->getBodyParam('testMode', $settings->testMode);
-        $settings->apiKey = Craft::$app->getRequest()->getBodyParam('apiKey', $settings->apiKey);
-        $settings->mailgunWebhookSigningKey = Craft::$app->getRequest()->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
+        $settings->testMode = $this->request->getBodyParam('testMode', $settings->testMode);
+        $settings->apiKey = $this->request->getBodyParam('apiKey', $settings->apiKey);
+        $settings->mailgunWebhookSigningKey = $this->request->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save general settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
-            return null;
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save general settings.'), 'settings');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'General settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'General settings saved.'));
     }
 
     /**
-     * @return Response|null
-     * @throws MissingComponentException
-     * @throws BadRequestHttpException
+     * Saves email settings.
      */
-    public function actionSaveEmail()
+    public function actionSaveEmail(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
-
-        // Set the simple stuff
-        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
-        $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
+        $settings = $this->_getEmailSettingsFromPost();
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
-        // Validate settings and transport adapter
-        $settings->validate();
+        // Validate transport adapter
         $adapter->validate();
 
-        if ($settings->hasErrors() || $adapter->hasErrors()) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save email settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings,
-                'adapter' => $adapter
+        // Save it
+        if ($adapter->hasErrors() || !Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save email settings.'), 'settings', [], [
+                'adapter' => $adapter,
             ]);
-
-            return null;
         }
 
-        // Save it
-        Campaign::$plugin->settings->saveSettings($settings);
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Email settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Email settings saved.'));
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws Exception
+     * Saves contact settings.
      */
-    public function actionSaveContact()
+    public function actionSaveContact(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = $this->_getEmailSettingsFromPost();
 
-        // Set the simple stuff
-        $settings->emailFieldLabel = Craft::$app->getRequest()->getBodyParam('emailFieldLabel', $settings->emailFieldLabel);
+        $settings->enableAnonymousTracking = Craft::$app->getRequest()->getBodyParam('enableAnonymousTracking', $settings->enableAnonymousTracking);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = ContactElement::class;
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)
-            || !Campaign::$plugin->settings->saveContactFieldLayout($fieldLayout)
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())
+            || !Campaign::$plugin->contacts->saveContactFieldLayout($fieldLayout)
         ) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save contact settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
-            return null;
+            return $this->asFailure(Craft::t('campaign', 'Couldn’t save contact settings.'));
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Contact settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Contact settings saved.'));
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves sendout settings.
      */
-    public function actionSaveSendout()
+    public function actionSaveSendout(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
-        $settings->maxBatchSize = Craft::$app->getRequest()->getBodyParam('maxBatchSize', $settings->maxBatchSize);
-        $settings->memoryLimit = Craft::$app->getRequest()->getBodyParam('memoryLimit', $settings->memoryLimit);
-        $settings->timeLimit = Craft::$app->getRequest()->getBodyParam('timeLimit', $settings->timeLimit);
+        $settings->defaultNotificationContactIds = $this->request->getBodyParam('defaultNotificationContactIds', $settings->defaultNotificationContactIds);
+        $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize);
+        $settings->memoryLimit = $this->request->getBodyParam('memoryLimit', $settings->memoryLimit);
+        $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save sendout settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
-            return null;
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save sendout settings.'), 'settings');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Sendout settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'Sendout settings saved.'));
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves GeoIP settings.
      */
-    public function actionSaveGeoip()
+    public function actionSaveGeoip(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
-        $settings->geoIp = Craft::$app->getRequest()->getBodyParam('geoIp', $settings->geoIp);
-        $settings->ipstackApiKey = Craft::$app->getRequest()->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
+        $settings->geoIp = $this->request->getBodyParam('geoIp', $settings->geoIp);
+        $settings->ipstackApiKey = $this->request->getBodyParam('ipstackApiKey', $settings->ipstackApiKey);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save GeoIP settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
-            return null;
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save GeoIP settings.'), 'settings');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'GeoIP settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'GeoIP settings saved.'));
     }
 
     /**
-     * @return Response|null
-     * @throws BadRequestHttpException
+     * Saves Recaptcha settings.
      */
-    public function actionSaveRecaptcha()
+    public function actionSaveRecaptcha(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         // Set the simple stuff
-        $settings->reCaptcha = Craft::$app->getRequest()->getBodyParam('reCaptcha', $settings->reCaptcha);
-        $settings->reCaptchaVersion = Craft::$app->getRequest()->getBodyParam('reCaptchaVersion', $settings->reCaptchaVersion);
-        $settings->reCaptchaSiteKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSiteKey', $settings->reCaptchaSiteKey);
-        $settings->reCaptchaSecretKey = Craft::$app->getRequest()->getBodyParam('reCaptchaSecretKey', $settings->reCaptchaSecretKey);
-        $settings->reCaptchaErrorMessage = Craft::$app->getRequest()->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
-        $settings->reCaptchaSize = Craft::$app->getRequest()->getBodyParam('reCaptchaSize', $settings->reCaptchaSize);
-        $settings->reCaptchaTheme = Craft::$app->getRequest()->getBodyParam('reCaptchaTheme', $settings->reCaptchaTheme);
-        $settings->reCaptchaBadge = Craft::$app->getRequest()->getBodyParam('reCaptchaBadge', $settings->reCaptchaBadge);
+        $settings->reCaptcha = $this->request->getBodyParam('reCaptcha', $settings->reCaptcha);
+        $settings->reCaptchaSiteKey = $this->request->getBodyParam('reCaptchaSiteKey', $settings->reCaptchaSiteKey);
+        $settings->reCaptchaSecretKey = $this->request->getBodyParam('reCaptchaSecretKey', $settings->reCaptchaSecretKey);
+        $settings->reCaptchaErrorMessage = $this->request->getBodyParam('reCaptchaErrorMessage', $settings->reCaptchaErrorMessage);
 
         // Save it
-        if (!Campaign::$plugin->settings->saveSettings($settings)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save reCAPTCHA settings.'));
-
-            // Send the settings back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'settings' => $settings
-            ]);
-
-            return null;
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save reCAPTCHA settings.'), 'settings');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'reCAPTCHA settings saved.'));
-
-        return $this->redirectToPostedUrl();
+        return $this->asSuccess(Craft::t('campaign', 'reCAPTCHA settings saved.'));
     }
 
     /**
-     * @throws MissingComponentException
-     * @throws BadRequestHttpException
+     * Sends a test email.
      */
-    public function actionSendTestEmail()
+    public function actionSendTestEmail(): ?Response
     {
         $this->requirePostRequest();
 
-        $settings = Campaign::$plugin->getSettings();
-
-        // Set the simple stuff
-        $settings->fromNamesEmails = Craft::$app->getRequest()->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
-        $settings->transportType = Craft::$app->getRequest()->getBodyParam('transportType', $settings->transportType);
-        $settings->transportSettings = Craft::$app->getRequest()->getBodyParam('transportTypes.'.$settings->transportType);
+        $settings = $this->_getEmailSettingsFromPost();
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -441,54 +352,63 @@ class SettingsController extends Controller
         $adapter->validate();
 
         if ($settings->hasErrors() || $adapter->hasErrors()) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t send test email.'));
-        }
-        else {
-            // Create mailer with settings
-            $mailer = Campaign::$plugin->createMailer($settings);
-
-            // Get from name and email
-            $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail();
-
-            $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
-            $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
-
-            /** @var User $user */
-            $user = Craft::$app->getUser()->getIdentity();
-
-            $message = $mailer->compose()
-                ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
-                ->setTo($user->email)
-                ->setSubject($subject)
-                ->setHtmlBody($body)
-                ->setTextBody($body);
-
-            if ($fromNameEmail['replyTo']) {
-                $message->setReplyTo($fromNameEmail['replyTo']);
-            }
-
-            // Send message
-            try {
-                $response = $message->send();
-            }
-            catch (Throwable $e) {
-                Craft::error($e);
-                Craft::$app->getErrorHandler()->logException($e);
-                $response = false;
-            }
-
-            if ($response) {
-                Craft::$app->getSession()->setNotice(Craft::t('app', 'Email sent successfully! Check your inbox.'));
-            }
-            else {
-                Craft::$app->getSession()->setError(Craft::t('app', 'There was an error testing your email settings.'));
-            }
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], [
+                'adapter' => $adapter,
+            ]);
         }
 
-        // Send the settings back to the template
-        Craft::$app->getUrlManager()->setRouteParams([
+        // Create mailer with settings
+        $mailer = Campaign::$plugin->createMailer($settings);
+
+        // Get from name and email
+        $fromNameEmail = SettingsHelper::getFromNameEmail();
+
+        $subject = Craft::t('campaign', 'This is a test email from Craft Campaign');
+        $body = Craft::t('campaign', 'Congratulations! Craft Campaign was successfully able to send an email.');
+
+        /** @var User $user */
+        $user = Craft::$app->getUser()->getIdentity();
+
+        $message = $mailer->compose()
+            ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
+            ->setTo($user->email)
+            ->setSubject($subject)
+            ->setHtmlBody($body)
+            ->setTextBody($body);
+
+        if ($fromNameEmail['replyTo']) {
+            $message->setReplyTo($fromNameEmail['replyTo']);
+        }
+
+        if (!$message->send()) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], [
+                'adapter' => $adapter,
+            ]);
+        }
+
+        $this->setSuccessFlash(Craft::t('app', 'Email sent successfully! Check your inbox.'));
+
+        // Send the settings and adapter back to the template
+        /** @phpstan-var UrlManager $urlManager */
+        $urlManager = Craft::$app->getUrlManager();
+        $urlManager->setRouteParams([
             'settings' => $settings,
-            'adapter' => $adapter
+            'adapter' => $adapter,
         ]);
+
+        return null;
+    }
+
+    /**
+     * Returns email settings populated with post data.
+     */
+    private function _getEmailSettingsFromPost(): SettingsModel
+    {
+        $settings = Campaign::$plugin->settings;
+        $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
+        $settings->transportType = $this->request->getBodyParam('transportType', $settings->transportType);
+        $settings->transportSettings = $this->request->getBodyParam('transportTypes.' . $settings->transportType);
+
+        return $settings;
     }
 }

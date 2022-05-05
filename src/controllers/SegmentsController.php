@@ -5,34 +5,20 @@
 
 namespace putyourlightson\campaign\controllers;
 
+use Craft;
+use craft\base\Element;
+use craft\helpers\Cp;
+use craft\helpers\ElementHelper;
+use craft\helpers\UrlHelper;
+use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
-
-use Craft;
-use craft\errors\ElementNotFoundException;
-use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
-use putyourlightson\campaign\helpers\SegmentHelper;
-use Throwable;
-use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
-/**
- * SegmentsController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class SegmentsController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,231 +27,70 @@ class SegmentsController extends Controller
         // Require pro
         Campaign::$plugin->requirePro();
 
-        // Require permission
-        $this->requirePermission('campaign:segments');
-
         return parent::beforeAction($action);
     }
 
     /**
-     * @param string $segmentType The segment type
-     * @param int|null $segmentId The segment’s ID, if editing an existing segment.
-     * @param string|null $siteHandle
-     * @param SegmentElement|null $segment The segment being edited, if there were any validation errors.
+     * Creates a new unpublished draft and redirects to its edit page.
      *
-     * @return Response
-     * @throws NotFoundHttpException if the requested segment is not found
+     * @see CategoriesController::actionCreate()
+     * @since 2.0.0
      */
-    public function actionEditSegment(string $segmentType, int $segmentId = null, string $siteHandle = null, SegmentElement $segment = null): Response
+    public function actionCreate(string $segmentType): Response
     {
-        // Check that the segment type exists
-        // ---------------------------------------------------------------------
-
-        $segmentTypes = SegmentElement::segmentTypes();
-
-        if (empty($segmentTypes[$segmentType])) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Segment type not found.'));
+        if (!isset(SegmentElement::segmentTypes()[$segmentType])) {
+            throw new BadRequestHttpException("Invalid segment type: $segmentType");
         }
 
-        // Get the segment
-        // ---------------------------------------------------------------------
+        $site = Cp::requestedSite();
 
-        if ($segment === null) {
-            if ($segmentId !== null) {
-                $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
-
-                if ($segment === null) {
-                    throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
-                }
-            }
-            else {
-                $segment = new SegmentElement();
-                $segment->segmentType = $segmentType;
-                $segment->enabled = true;
-            }
+        if (!$site) {
+            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
         }
 
-        // Get the site if site handle is set
-        if ($siteHandle !== null) {
-            $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+        // Create & populate the draft
+        $segment = Craft::createObject(SegmentElement::class);
+        $segment->siteId = $site->id;
+        $segment->segmentType = $segmentType;
 
-            $segment->siteId = $site->id;
+        // Make sure the user is allowed to create this segment
+        $user = Craft::$app->getUser()->getIdentity();
+        if (!$segment->canSave($user)) {
+            throw new ForbiddenHttpException('User not authorized to save this segment.');
         }
 
-        // Set the variables
-        // ---------------------------------------------------------------------
-
-        $variables = [
-            'segmentType' => $segmentType,
-            'segmentId' => $segmentId,
-            'segment' => $segment,
-        ];
-
-        // Set the title and slug
-        // ---------------------------------------------------------------------
-
-        if ($segmentId === null) {
-            $variables['title'] = Craft::t('campaign', 'Create a new segment');
+        // Title & slug
+        $segment->title = $this->request->getQueryParam('title');
+        $segment->slug = $this->request->getQueryParam('slug');
+        if ($segment->title && !$segment->slug) {
+            $segment->slug = ElementHelper::generateSlug($segment->title, null, $site->language);
         }
-        else {
-            $variables['title'] = $segment->title;
-            $variables['slug'] = $segment->slug;
-        }
-
-        // Get the settings
-        $variables['settings'] = Campaign::$plugin->getSettings();
-
-        // Get available fields and operators
-        $variables['availableFields'] = SegmentHelper::getAvailableFields();
-        $variables['fieldOperators'] = SegmentHelper::getFieldOperators();
-
-        // Full page form variables
-        $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'campaign/segments/'.$segmentType.'/{id}';
-        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
-
-        // Render the template
-        return $this->renderTemplate('campaign/segments/_edit', $variables);
-    }
-
-    /**
-     * @return Response|null
-     * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException if reasons
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws BadRequestHttpException
-     */
-    public function actionSaveSegment()
-    {
-        $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
-
-        $segmentId = $request->getBodyParam('segmentId');
-
-        if ($segmentId) {
-            $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
-
-            if ($segment === null) {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
-            }
-        }
-        else {
-            $segment = new SegmentElement();
-        }
-
-        // If this segment should be duplicated then swap it for a duplicate
-        if ((bool)$request->getBodyParam('duplicate')) {
-            try {
-                /** @var SegmentElement $segment */
-                $segment = Craft::$app->getElements()->duplicateElement($segment);
-            }
-            catch (Throwable $e) {
-                throw new ServerErrorHttpException(Craft::t('campaign', 'An error occurred when duplicating the segment.'), 0, $e);
-            }
-        }
-
-        $segment->siteId = $request->getBodyParam('siteId', $segment->siteId);
-        $segment->segmentType = $request->getBodyParam('segmentType', $segment->segmentType);
-        $segment->enabled = (bool)$request->getBodyParam('enabled', $segment->enabled);
-        $segment->title = $request->getBodyParam('title', $segment->title);
-        $segment->slug = $request->getBodyParam('slug', $segment->slug);
-
-        // Get the conditions
-        $segment->conditions = Craft::$app->getRequest()->getBodyParam('conditions', $segment->conditions);
-
-        if (is_array($segment->conditions)) {
-            /** @var array $andCondition */
-            foreach ($segment->conditions as &$andCondition) {
-                foreach ($andCondition as &$orCondition) {
-                    // Sort or conditions by keys
-                    ksort($orCondition);
-                }
-            }
+        if (!$segment->slug) {
+            $segment->slug = ElementHelper::tempSlug();
         }
 
         // Save it
-        if (!Craft::$app->getElements()->saveElement($segment)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'errors' => $segment->getErrors(),
-                ]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save segment.'));
-
-            // Send the segment back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'segment' => $segment
-            ]);
-
-            return null;
+        $segment->setScenario(Element::SCENARIO_ESSENTIALS);
+        if (!Craft::$app->getDrafts()->saveElementAsDraft($segment, Craft::$app->getUser()->getId(), null, null, false)) {
+            return $this->asModelFailure($segment, Craft::t('app', 'Couldn’t create {type}.', [
+                'type' => SegmentElement::lowerDisplayName(),
+            ]), 'segment');
         }
 
-        if ($request->getAcceptsJson()) {
-            $return = [];
+        $editUrl = $segment->getCpEditUrl();
 
-            $return['success'] = true;
-            $return['id'] = $segment->id;
-            $return['title'] = $segment->title;
+        $response = $this->asModelSuccess($segment, Craft::t('app', '{type} created.', [
+            'type' => SegmentElement::displayName(),
+        ]), 'segment', array_filter([
+            'cpEditUrl' => $this->request->isCpRequest ? $editUrl : null,
+        ]));
 
-            if (!$request->getIsConsoleRequest() && $request->getIsCpRequest()) {
-                $return['cpEditUrl'] = $segment->getCpEditUrl();
-            }
-
-            $return['dateCreated'] = DateTimeHelper::toIso8601($segment->dateCreated);
-            $return['dateUpdated'] = DateTimeHelper::toIso8601($segment->dateUpdated);
-
-            return $this->asJson($return);
+        if (!$this->request->getAcceptsJson()) {
+            $response->redirect(UrlHelper::urlWithParams($editUrl, [
+                'fresh' => 1,
+            ]));
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Segment saved.'));
-
-        return $this->redirectToPostedUrl($segment);
-    }
-
-    /**
-     * Deletes a segment
-     *
-     * @return Response|null
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     */
-    public function actionDeleteSegment()
-    {
-        $this->requirePostRequest();
-
-        $segmentId = Craft::$app->getRequest()->getRequiredBodyParam('segmentId');
-        $segment = Campaign::$plugin->segments->getSegmentById($segmentId);
-
-        if ($segment === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Segment not found.'));
-        }
-
-        if (!Craft::$app->getElements()->deleteElement($segment)) {
-            if (Craft::$app->getRequest()->getAcceptsJson()) {
-                return $this->asJson(['success' => false]);
-            }
-
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t delete segment.'));
-
-            // Send the segment back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'segment' => $segment
-            ]);
-
-            return null;
-        }
-
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Segment deleted.'));
-
-        return $this->redirectToPostedUrl($segment);
+        return $response;
     }
 }

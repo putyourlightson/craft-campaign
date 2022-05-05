@@ -5,48 +5,32 @@
 
 namespace putyourlightson\campaign\models;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
 use craft\base\Model;
 
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
+
 /**
- * ExportModel
  *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property MailingListElement[] $mailingLists
+ * @property-read MailingListElement[] $mailingLists
  */
 class ExportModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string File path
      */
-    public $filePath;
+    public string $filePath = '';
 
     /**
-     * @var array|null Mailing list IDs
+     * @var array Mailing list IDs
      */
-    public $mailingListIds;
+    public array $mailingListIds = [];
 
     /**
-     * @var array|null Fields
+     * @var array Fields
      */
-    public $fields;
-
-    /**
-     * @var bool|null
-     */
-    public $subscribedDate;
-
-    // Public Methods
-    // =========================================================================
+    public array $fields = [];
 
     /**
      * @inheritdoc
@@ -64,7 +48,7 @@ class ExportModel extends Model
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['filePath', 'mailingListIds'], 'required'],
@@ -73,16 +57,12 @@ class ExportModel extends Model
     }
 
     /**
-     * Returns the mailing lists
+     * Returns the mailing lists.
      *
      * @return MailingListElement[]
      */
     public function getMailingLists(): array
     {
-        if ($this->mailingListIds === null) {
-            return [];
-        }
-
         $mailingLists = [];
 
         foreach ($this->mailingListIds as $mailingListId) {

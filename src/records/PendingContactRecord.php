@@ -5,34 +5,26 @@
 
 namespace putyourlightson\campaign\records;
 
+use craft\db\ActiveRecord;
 use craft\db\SoftDeleteTrait;
-use putyourlightson\campaign\base\BaseActiveRecord;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 
 /**
- * PendingContactRecord
+ * @mixin SoftDeleteBehavior
  *
- * @property int         $id                         ID
- * @property string      $pid                        Pending ID
- * @property string      $email                      Email
- * @property int         $mailingListId              Mailing List ID
- * @property string      $source                     Source
- * @property mixed       $fieldData                  Field data
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property int $id ID
+ * @property string $pid Pending ID
+ * @property string $email Email
+ * @property int $mailingListId Mailing List ID
+ * @property string $source Source
+ * @property mixed $fieldData Field data
  */
-class PendingContactRecord extends BaseActiveRecord
+class PendingContactRecord extends ActiveRecord
 {
     use SoftDeleteTrait;
 
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {

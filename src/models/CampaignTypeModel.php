@@ -6,106 +6,88 @@
 namespace putyourlightson\campaign\models;
 
 use Craft;
+use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
-use craft\helpers\Json;
 use craft\helpers\UrlHelper;
-use craft\models\FieldLayout;
-use craft\validators\HandleValidator;
-use craft\validators\UniqueValidator;
 use craft\models\Site;
+use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
+use craft\validators\UniqueValidator;
 use craft\validators\UriFormatValidator;
-use putyourlightson\campaign\base\BaseModel;
+use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 
 /**
- * CampaignTypeModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
  * @mixin FieldLayoutBehavior
  *
- * @property Site|null $site
- * @property ContactElement[] $testContacts
- * @property FieldLayout $fieldLayout
- * @property string $cpEditUrl
- *
- * @method FieldLayout getFieldLayout()
- * @method setFieldLayout(FieldLayout $fieldLayout)
+ * @property-read null|Site $site
+ * @property-read string $cpEditUrl
+ * @property-read ContactElement[] $testContacts
+ * @property-read ContactElement[] $testContactsWithDefault
  */
-class CampaignTypeModel extends BaseModel
+class CampaignTypeModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Site ID
      */
-    public $siteId;
+    public ?int $siteId = null;
 
     /**
      * @var int|null Field layout ID
      */
-    public $fieldLayoutId;
+    public ?int $fieldLayoutId = null;
 
     /**
      * @var string|null Name
      */
-    public $name;
+    public ?string $name = null;
 
     /**
      * @var string|null Handle
      */
-    public $handle;
+    public ?string $handle = null;
 
     /**
      * @var string|null URI format
      */
-    public $uriFormat;
+    public ?string $uriFormat = null;
 
     /**
      * @var string|null HTML template
      */
-    public $htmlTemplate;
+    public ?string $htmlTemplate = null;
 
     /**
      * @var string|null Plaintext template
      */
-    public $plaintextTemplate;
+    public ?string $plaintextTemplate = null;
 
     /**
      * @var string|null Query string parameters
      */
-    public $queryStringParameters;
+    public ?string $queryStringParameters = null;
 
     /**
      * @var int[]|string|null
      */
-    public $testContactIds;
+    public string|array|null $testContactIds = null;
 
     /**
      * @var string|null UID
      */
-    public $uid;
-
-    // Public Methods
-    // =========================================================================
+    public ?string $uid = null;
 
     /**
-     * Use the handle as the string representation.
-     *
-     * @return string
+     * Returns the handle as the string representation.
      */
     public function __toString(): string
     {
@@ -115,12 +97,12 @@ class CampaignTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function behaviors(): array
+    protected function defineBehaviors(): array
     {
         return [
             'fieldLayout' => [
                 'class' => FieldLayoutBehavior::class,
-                'elementType' => CampaignElement::class
+                'elementType' => CampaignElement::class,
             ],
         ];
     }
@@ -128,7 +110,7 @@ class CampaignTypeModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['id', 'siteId', 'fieldLayoutId'], 'integer'],
@@ -143,20 +125,16 @@ class CampaignTypeModel extends BaseModel
 
     /**
      * Returns the CP edit URL.
-     *
-     * @return string
      */
     public function getCpEditUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/settings/campaigntypes/'.$this->id);
+        return UrlHelper::cpUrl('campaign/settings/campaigntypes/' . $this->id);
     }
 
     /**
      * Returns the site.
-     *
-     * @return Site|null
      */
-    public function getSite()
+    public function getSite(): ?Site
     {
         if ($this->siteId === null) {
             return Craft::$app->getSites()->getPrimarySite();
@@ -202,7 +180,7 @@ class CampaignTypeModel extends BaseModel
 
         if (empty($testContacts)) {
             /** @var User|null $currentUser */
-            $currentUser = Craft::$app->user->getIdentity();
+            $currentUser = Craft::$app->getUser()->getIdentity();
 
             if ($currentUser !== null) {
                 $contact = Campaign::$plugin->contacts->getContactByEmail(
@@ -220,8 +198,6 @@ class CampaignTypeModel extends BaseModel
 
     /**
      * Returns whether the URI format is set and if the template paths are valid.
-     *
-     * @return bool
      */
     public function hasValidTemplates(): bool
     {
@@ -229,17 +205,9 @@ class CampaignTypeModel extends BaseModel
             return false;
         }
 
-        // Set Craft to the site template mode
-        $view = Craft::$app->getView();
-        $oldTemplateMode = $view->getTemplateMode();
-        $view->setTemplateMode($view::TEMPLATE_MODE_SITE);
-
-        // Do the templates exist?
-        $templatesExist = $this->htmlTemplate !== null && $view->doesTemplateExist((string)$this->htmlTemplate) && $this->plaintextTemplate !== null && $view->doesTemplateExist((string)$this->plaintextTemplate);
-
-        // Restore the original template mode
-        $view->setTemplateMode($oldTemplateMode);
-
-        return $templatesExist;
+        // Return whether both templates exist.
+        return $this->htmlTemplate !== null && $this->plaintextTemplate !== null
+            && Craft::$app->getView()->doesTemplateExist($this->htmlTemplate, View::TEMPLATE_MODE_SITE)
+            && Craft::$app->getView()->doesTemplateExist($this->plaintextTemplate, View::TEMPLATE_MODE_SITE);
     }
 }

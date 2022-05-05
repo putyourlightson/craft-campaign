@@ -5,39 +5,28 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\helpers\ConfigHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use DateTime;
 use putyourlightson\campaign\Campaign;
+
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\models\PendingContactModel;
-
-use Craft;
-use craft\base\Component;
 use putyourlightson\campaign\records\PendingContactRecord;
 use yii\helpers\Json;
 
 /**
- * PendingContactsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
 class PendingContactsService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns pending contact by PID
-     *
-     * @param string $pid
-     *
-     * @return PendingContactModel|null
+     * Returns a pending contact by PID.
      */
-    public function getPendingContactByPid(string $pid)
+    public function getPendingContactByPid(string $pid): ?PendingContactModel
     {
         // Get pending contact
         $pendingContactRecord = PendingContactRecord::find()
@@ -48,18 +37,14 @@ class PendingContactsService extends Component
             return null;
         }
 
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
+        $pendingContact = new PendingContactModel();
+        $pendingContact->setAttributes($pendingContactRecord->getAttributes(), false);
 
         return $pendingContact;
     }
 
     /**
-     * Returns whether a pending contact has been trashed
-     *
-     * @param string $pid
-     *
-     * @return bool
+     * Returns whether a pending contact has been trashed.
      */
     public function getIsPendingContactTrashed(string $pid): bool
     {
@@ -71,17 +56,13 @@ class PendingContactsService extends Component
     }
 
     /**
-     * Saves a pending contact
-     *
-     * @param PendingContactModel $pendingContact
-     *
-     * @return bool
+     * Saves a pending contact.
      */
     public function savePendingContact(PendingContactModel $pendingContact): bool
     {
         $this->purgeExpiredPendingContacts();
 
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         $condition = [
             'email' => $pendingContact->email,
@@ -113,13 +94,9 @@ class PendingContactsService extends Component
     }
 
     /**
-     * Verifies a pending contact
-     *
-     * @param string $pid
-     *
-     * @return PendingContactModel|null
+     * Verifies a pending contact.
      */
-    public function verifyPendingContact(string $pid)
+    public function verifyPendingContact(string $pid): ?PendingContactModel
     {
         $pendingContact = $this->getPendingContactByPid($pid);
 
@@ -167,9 +144,9 @@ class PendingContactsService extends Component
     /**
      * Deletes expired pending contacts
      */
-    public function purgeExpiredPendingContacts()
+    public function purgeExpiredPendingContacts(): void
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         if ($settings->purgePendingContactsDuration === 0) {
             return;

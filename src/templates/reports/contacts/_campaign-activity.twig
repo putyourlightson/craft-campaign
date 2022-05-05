@@ -1,0 +1,15 @@
+{% extends 'campaign/reports/_layout' %}
+
+{% set contact = craft.campaign.getContactById(contactId) %}
+{% set title = 'Campaign Activity'|t('campaign') %}
+{% set crumbs = [
+    { label: 'Contacts'|t('campaign'), url: url('campaign/reports/contacts') },
+    { label: contact.email, url: contact.reportUrl }
+] %}
+
+
+{% block content %}
+
+    {% include 'campaign/reports/contacts/_includes/campaign-activity' with { campaignActivity: craft.campaign.reports.getContactCampaignActivity(contactId) } %}
+
+{% endblock %}

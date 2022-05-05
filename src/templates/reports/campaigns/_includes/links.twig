@@ -1,0 +1,41 @@
+{% if links|length %}
+    <table id="links" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
+        <thead>
+            <th scope="col">{{ "URL"|t('campaign') }}</th>
+            <th scope="col">{{ "Title"|t('campaign') }}</th>
+            <th scope="col">{{ "Clicked"|t('campaign') }}</th>
+            <th scope="col">{{ "Clicks"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+            {% for link in links %}
+                <tr>
+                    <td data-title="{{ 'URL'|t('campaign') }}">
+                        <a href="{{ link.url }}" class="go" target="_blank" rel="noopener">{{ link.url }}</a>
+                    </td>
+                    <td data-title="{{ 'Title'|t('campaign') }}">{{ link.title }}</td>
+                    <td data-title="{{ 'Clicked'|t('campaign') }}">{{ link.clicked }}</td>
+                    <td data-title="{{ 'Clicks'|t('campaign') }}">{{ link.clicks }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if limit is defined %}
+        {% if limit == links|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
+        {% endif %}
+    {% else %}
+        {{ include('campaign/reports/_includes/datatable', {
+            id: 'links',
+            itemName: 'links'|t('campaign'),
+            order: 2,
+        }) }}
+    {% endif %}
+
+{% else %}
+
+        <p>{{ "No links found for this campaign."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

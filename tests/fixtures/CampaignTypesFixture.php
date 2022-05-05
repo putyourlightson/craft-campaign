@@ -9,16 +9,10 @@ use craft\test\ActiveFixture;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class CampaignTypesFixture extends ActiveFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

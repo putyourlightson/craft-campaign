@@ -5,53 +5,40 @@
 
 namespace putyourlightson\campaign\models;
 
-use putyourlightson\campaign\base\BaseModel;
+use craft\base\Model;
 use putyourlightson\campaign\helpers\StringHelper;
 
-/**
- * PendingContactModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
-class PendingContactModel extends BaseModel
+class PendingContactModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
-     * @var string Pending ID
+     * @var null|string Pending ID
      */
-    public $pid;
+    public ?string $pid = null;
 
     /**
      * @var string Email
      */
-    public $email;
+    public string $email;
 
     /**
      * @var int Mailing list ID
      */
-    public $mailingListId;
+    public int $mailingListId;
 
     /**
      * @var string Source
      */
-    public $source;
+    public string $source;
 
     /**
      * @var mixed Field data
      */
-    public $fieldData;
-
-    // Public Methods
-    // =========================================================================
+    public mixed $fieldData;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -63,7 +50,7 @@ class PendingContactModel extends BaseModel
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
         return [
             [['pid', 'email'], 'required'],

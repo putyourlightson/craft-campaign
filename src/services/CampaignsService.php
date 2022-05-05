@@ -5,42 +5,27 @@
 
 namespace putyourlightson\campaign\services;
 
+use craft\base\Component;
+use craft\mail\Message;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
 
-use craft\base\Component;
-use craft\mail\Message;
-use Throwable;
-use yii\base\Exception;
-
-/**
- * CampaignsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignsService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns a campaign by ID
-     *
-     * @param int $campaignId
-     *
-     * @return CampaignElement|null
+     * Returns a campaign by ID.
      */
-    public function getCampaignById(int $campaignId)
+    public function getCampaignById(int $campaignId): ?CampaignElement
     {
+        /** @var CampaignElement|null */
         return CampaignElement::find()
             ->id($campaignId)
             ->site('*')
@@ -49,16 +34,9 @@ class CampaignsService extends Component
     }
 
     /**
-     * Adds a contact interaction
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @param string         $interaction
-     * @param LinkRecord     $linkRecord
-     *
-     * @throws Throwable
+     * Adds a contact interaction.
      */
-    public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null)
+    public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null): void
     {
         // Ensure that interaction exists
         if (!in_array($interaction, ContactCampaignModel::INTERACTIONS)) {
@@ -66,7 +44,10 @@ class CampaignsService extends Component
         }
 
         /** @var CampaignRecord|null $campaignRecord */
-        $campaignRecord = CampaignRecord::findOne($sendout->campaignId);
+        $campaignRecord = CampaignRecord::find()
+            ->where(['id' => $sendout->campaignId])
+            ->with('campaignType')
+            ->one();
 
         if ($campaignRecord === null) {
             return;
@@ -120,25 +101,22 @@ class CampaignsService extends Component
                 }
 
                 // Append link ID
-                $contactCampaignRecord->links = $contactCampaignRecord->links ? $contactCampaignRecord->links.','.$linkRecord->id : $linkRecord->id;
+                $contactCampaignRecord->links = $contactCampaignRecord->links ? $contactCampaignRecord->links . ',' . $linkRecord->id : $linkRecord->id;
 
                 $linkRecord->save();
             }
         }
 
-        $contactCampaignRecord->save();
+        // Only save if anonymous tracking is not enabled
+        if (!Campaign::$plugin->settings->enableAnonymousTracking) {
+            $contactCampaignRecord->save();
+        }
 
         $campaignRecord->save();
     }
 
     /**
-     * Sends a test
-     *
-     * @param CampaignElement $campaign
-     * @param ContactElement $contact
-     *
-     * @return bool Whether the test was sent successfully
-     * @throws Exception
+     * Sends a test.
      */
     public function sendTest(CampaignElement $campaign, ContactElement $contact): bool
     {
@@ -147,14 +125,14 @@ class CampaignsService extends Component
         $plaintextBody = $campaign->getPlaintextBody($contact);
 
         // Get from name and email
-        $fromNameEmail = Campaign::$plugin->settings->getFromNameEmail($campaign->siteId);
+        $fromNameEmail = SettingsHelper::getFromNameEmail($campaign->siteId);
 
         // Compose message
         /** @var Message $message*/
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($contact->email)
-            ->setSubject('[Test] '.$campaign->title)
+            ->setSubject('[Test] ' . $campaign->title)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 

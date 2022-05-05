@@ -5,44 +5,27 @@
 
 namespace putyourlightson\campaign\records;
 
-use putyourlightson\campaign\base\BaseActiveRecord;
+use craft\db\ActiveRecord;
 use putyourlightson\campaign\helpers\StringHelper;
-use yii\db\ActiveQuery;
 
 /**
- * LinkRecord
- *
- * @property int         $id                         ID
- * @property string      $lid                        Link ID
- * @property int         $campaignId                 Campaign ID
- * @property string      $url                        URL
- * @property string      $title                      Title
- * @property int         $clicked                    Clicked
- * @property int         $clicks                     Clicks
- *
- * @method static ActiveQuery find()
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
+ * @property int $id ID
+ * @property string $lid Link ID
+ * @property int $campaignId Campaign ID
+ * @property string $url URL
+ * @property string $title Title
+ * @property int $clicked Clicked
+ * @property int $clicks Clicks
  */
-class LinkRecord extends BaseActiveRecord
+class LinkRecord extends ActiveRecord
 {
-    // Public Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
-     *
-     * @return string the table name
      */
     public static function tableName(): string
     {
         return '{{%campaign_links}}';
     }
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

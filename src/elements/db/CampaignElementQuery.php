@@ -6,43 +6,30 @@
 namespace putyourlightson\campaign\elements\db;
 
 use craft\db\Table;
+use craft\elements\db\ElementQuery;
+use craft\helpers\Db;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignTypeRecord;
-
-use craft\elements\db\ElementQuery;
-use craft\helpers\Db;
 use putyourlightson\campaign\records\SendoutRecord;
 use yii\db\Connection;
 
 /**
- * CampaignElementQuery
- *
  * @method CampaignElement[]|array all($db = null)
  * @method CampaignElement|array|null one($db = null)
  * @method CampaignElement|array|null nth(int $n, Connection $db = null)
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
  */
 class CampaignElementQuery extends ElementQuery
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|int[]|null The campaign type ID(s) that the resulting campaigns must have.
      */
-    public $campaignTypeId;
-
-    // Public Methods
-    // =========================================================================
+    public array|int|null $campaignTypeId = null;
 
     /**
      * @inheritdoc
      */
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         switch ($name) {
             case 'campaignType':
@@ -55,12 +42,8 @@ class CampaignElementQuery extends ElementQuery
 
     /**
      * Sets the [[campaignType]] property.
-     *
-     * @param string|string[]|CampaignTypeModel|null $value The property value
-     *
-     * @return static self reference
      */
-    public function campaignType($value)
+    public function campaignType(array|CampaignTypeModel|string|null $value): static
     {
         if ($value instanceof CampaignTypeModel) {
             $this->campaignTypeId = $value->id;
@@ -80,20 +63,13 @@ class CampaignElementQuery extends ElementQuery
 
     /**
      * Sets the [[campaignTypeId]] property.
-     *
-     * @param int|int[]|null $value The property value
-     *
-     * @return static self reference
      */
-    public function campaignTypeId($value)
+    public function campaignTypeId(array|int|null $value): static
     {
         $this->campaignTypeId = $value;
 
         return $this;
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -129,8 +105,8 @@ class CampaignElementQuery extends ElementQuery
         $this->subQuery->select('campaign_sendouts.lastSent AS lastSent');
 
         // Filter by campaign types in sites that have not been deleted
-        $this->subQuery->innerJoin(CampaignTypeRecord::tableName().' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
-        $this->subQuery->innerJoin(Table::SITES.' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
+        $this->subQuery->innerJoin(CampaignTypeRecord::tableName() . ' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');
+        $this->subQuery->innerJoin(Table::SITES . ' sites', '[[sites.id]] = [[campaign_campaigntypes.siteId]]');
         $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);
 
         return parent::beforePrepare();
@@ -139,35 +115,31 @@ class CampaignElementQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
-        switch ($status) {
-            case CampaignElement::STATUS_SENT:
-                return [
-                    'and',
-                    [
-                        'elements.enabled' => 1,
-                        'campaign_campaigns.dateClosed' => null,
-                    ],
-                    ['>', 'campaign_campaigns.recipients', 0]
-                ];
-            case CampaignElement::STATUS_PENDING:
-                return [
-                    'and',
-                    [
-                        'elements.enabled' => 1,
-                        'campaign_campaigns.dateClosed' => null,
-                        'campaign_campaigns.recipients' => 0,
-                    ]
-                ];
-            case CampaignElement::STATUS_CLOSED:
-                return [
-                    'and',
-                    ['elements.enabled' => 1],
-                    ['not', ['campaign_campaigns.dateClosed' => null]],
-                ];
-            default:
-                return parent::statusCondition($status);
-        }
+        return match ($status) {
+            CampaignElement::STATUS_SENT => [
+                'and',
+                [
+                    'elements.enabled' => 1,
+                    'campaign_campaigns.dateClosed' => null,
+                ],
+                ['>', 'campaign_campaigns.recipients', 0],
+            ],
+            CampaignElement::STATUS_PENDING => [
+                'and',
+                [
+                    'elements.enabled' => 1,
+                    'campaign_campaigns.dateClosed' => null,
+                    'campaign_campaigns.recipients' => 0,
+                ],
+            ],
+            CampaignElement::STATUS_CLOSED => [
+                'and',
+                ['elements.enabled' => 1],
+                ['not', ['campaign_campaigns.dateClosed' => null]],
+            ],
+            default => parent::statusCondition($status),
+        };
     }
 }

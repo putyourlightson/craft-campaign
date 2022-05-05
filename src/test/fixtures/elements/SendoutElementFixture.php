@@ -8,46 +8,54 @@ namespace putyourlightson\campaign\test\fixtures\elements;
 use craft\base\ElementInterface;
 use craft\test\fixtures\elements\BaseElementFixture;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 abstract class SendoutElementFixture extends BaseElementFixture
 {
     /**
      * @var int|null
      */
-    public $campaignId;
+    public ?int $senderId;
 
     /**
-     * @var string|null
+     * @var int|null
      */
-    public $mailingListIds;
+    public ?int $campaignId;
 
     /**
-     * @var string|null
+     * @var array|null
      */
-    public $segmentIds;
+    public ?array $mailingListIds = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $segmentIds = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $notificationContactIds = null;
 
     /**
      * @inheritdoc
      */
-    public function load()
+    public function load(): void
     {
-        $campaign = CampaignElement::find()->one();
+        $this->senderId = 1;
+
+        $campaign = CampaignElement::find()->title('Campaign 1')->one();
         $this->campaignId = $campaign ? $campaign->id : null;
 
-        $mailingListIds = MailingListElement::find()->ids();
-        $this->mailingListIds = implode(',', $mailingListIds);
-
-        $segmentIds = SegmentElement::find()->ids();
-        $this->segmentIds = implode(',', $segmentIds);
+        $this->mailingListIds = MailingListElement::find()->ids();
+        $this->segmentIds = SegmentElement::find()->ids();
+        $this->notificationContactIds = ContactElement::find()->email('contact@contacts.com')->ids();
 
         parent::load();
     }

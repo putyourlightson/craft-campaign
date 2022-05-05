@@ -1,0 +1,214 @@
+{% extends 'campaign/sendouts/_layout' %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = sendout.title %}
+{% set crumbs = [
+    { label: sendout.sendoutTypeLabel, url: url('campaign/sendouts/' ~ sendout.sendoutType) }
+] %}
+{% set tabs = {
+    'sendout': {'label': 'Sendout'|t('campaign'), 'url': '#sendout'},
+    'preview': {'label': 'Preview'|t('app'), 'url': '#preview'},
+} %}
+{% set fullPageForm = true %}
+
+
+{% block pageTitle %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block contextMenu %}
+
+    {% if sendout.isModifiable %}
+        <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block actionButton %}
+
+    {% if sendout.isModifiable or sendout.isResumable %}
+        {% include 'campaign/sendouts/_includes/preflight' %}
+    {% endif %}
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% if settings.testMode %}
+        <div class="relative">
+            <div class="testmode" title="Campaign is running in Test Mode."></div>
+        </div>
+    {% endif %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+
+{% block content %}
+
+    {{ actionInput('campaign/sendouts/send') }}
+    {{ hiddenInput('sendoutId', sendout.id) }}
+    {{ redirectInput('campaign/sendouts') }}
+
+    <div id="fields">
+
+        <div id="sendout">
+            {% include 'campaign/sendouts/_includes/fields' %}
+        </div>
+
+        <div id="preview" class="hidden">
+            {% set input %}
+                <iframe class="email-body" src="{{ actionUrl('/campaign/sendouts/get-html-body', { sendoutId: sendout.id }) }}"></iframe>
+            {% endset %}
+            {{ forms.field({
+                label: "HTML Body"|t('campaign'),
+                instructions: "A preview of the HTML version of the email body."|t('campaign'),
+            }, input) }}
+
+            {% set input %}
+                <textarea class="email-body" disabled>{{ sendout.getPlaintextBody() }}</textarea>
+            {% endset %}
+            {{ forms.field({
+                label: "Plaintext Body"|t('campaign'),
+                instructions: "A preview of the plaintext version of the email body."|t('campaign'),
+            }, input) }}
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block details %}
+
+    <div class="meta read-only">
+        <div class="data first">
+            <h5 class="heading">{{ 'Status'|t('app') }}</h5>
+            <div class="value flex">
+                <div class="flex-grow">
+                    <span class="status {{ sendout.status }}"></span> {{ sendout.statuses[sendout.status] }}
+                </div>
+                {% include 'campaign/_includes/actions' %}
+            </div>
+        </div>
+
+        {% if sendout.status == 'draft' and sendout.sendoutType != 'automated' %}
+
+            <div class="data">
+                <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
+                <div class="value">
+                    <div class="pendingRecipientCount spinner"></div>
+                </div>
+            </div>
+
+        {% else %}
+
+            {% if sendout.status == 'failed' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Message"|t('campaign') }}</h5>
+                    <div class="value">
+                        {{ "Sending failed. Please check your email settings and the error in the logs."|t('campaign') }}
+                    </div>
+                </div>
+            {% endif %}
+            {% set sender = sendout.sender %}
+            {% if sender %}
+                <div class="elementThumb data">
+                    <h5 class="heading">{{ "Sent By"|t('campaign') }}</h5>
+                    <div class="value">
+                        {% include '_elements/element' with {element: sender} %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if sendout.status == 'sent' or sendout.recipients > 0 %}
+                <div class="data">
+                    <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
+                    <div class="value">
+                        <a href="{{ sendout.campaign.getReportUrl('recipients', { sendout: sendout.id }) }}">
+                            {{ sendout.recipients }}
+                        </a>
+                    </div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Failures"|t('campaign') }}</h5>
+                    <div class="value">
+                        {{ sendout.failures }}
+                        {% if sendout.failedContacts %}
+                            <span class="info">
+                                {% for contact in sendout.failedContacts %}
+                                    <a href="{{ contact.cpEditUrl }}" class="go" target="_blank">
+                                        {{ contact.email }}
+                                    </a>
+                                    <br>
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if sendout.status != 'sent' and sendout.sendoutType != 'automated' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>
+                    <div class="value">
+                        <div class="pendingRecipientCount spinner"></div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="data">
+                <h5 class="heading">{{ "SID"|t('campaign') }}</h5>
+                <div class="value"><code>{{ sendout.sid }}</code></div>
+            </div>
+            {% if sendout.lastSent %}
+                <div class="data">
+                    <h5 class="heading">{{ "Last Sent"|t('campaign') }}</h5>
+                    <div class="value">{{ sendout.lastSent|datetime }}</div>
+                </div>
+            {% endif %}
+            <div class="data">
+                <h5 class="heading">{{ "Created at"|t('app') }}</h5>
+                <div class="value">{{ sendout.dateCreated|datetime }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
+                <div class="value">{{ sendout.dateUpdated|datetime }}</div>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    {% if sendout.sendStatus != 'sent' %}
+        <fieldset>
+            <legend class="h6">Test Email</legend>
+            <div class="meta test-email">
+                {{ forms.elementSelectField({
+                    id: 'testContacts',
+                    name: 'testContacts',
+                    elementType: contactElementType,
+                    selectionLabel: "Add a contact"|t('campaign'),
+                    criteria: contactElementCriteria,
+                    elements: testContacts,
+                }) }}
+                {% set button %}
+                    {{ tag('button', {
+                        text: 'Send Test'|t('campaign'),
+                        class: 'send-test btn',
+                        data: {
+                            action: 'campaign/sendouts/send-test',
+                            sendout: sendout.id,
+                        },
+                    }) }}
+                {% endset %}
+                {{ forms.field({}, button) }}
+            </div>
+        </fieldset>
+    {% endif %}
+
+{% endblock %}

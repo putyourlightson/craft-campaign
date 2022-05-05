@@ -5,30 +5,18 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\models\MailingListTypeModel;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
 use craft\web\Controller;
-use Throwable;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
+use putyourlightson\campaign\Campaign;
+
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
+use putyourlightson\campaign\models\MailingListTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * MailingListTypesController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class MailingListTypesController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,13 +29,12 @@ class MailingListTypesController extends Controller
     }
 
     /**
+     * Main edit page.
+     *
      * @param int|null $mailingListTypeId The mailing list type’s ID, if editing an existing mailing list type.
      * @param MailingListTypeModel|null $mailingListType The mailing list type being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException if the requested mailing list type is not found
      */
-    public function actionEditMailingListType(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
+    public function actionEdit(int $mailingListTypeId = null, MailingListTypeModel $mailingListType = null): Response
     {
         // Get the mailing list type
         if ($mailingListType === null) {
@@ -65,7 +52,7 @@ class MailingListTypesController extends Controller
 
         $variables = [
             'mailingListTypeId' => $mailingListTypeId,
-            'mailingListType' => $mailingListType
+            'mailingListType' => $mailingListType,
         ];
 
         // Set the title
@@ -77,7 +64,7 @@ class MailingListTypesController extends Controller
         }
 
         // Get the site options
-        $variables['siteOptions'] = Campaign::$plugin->settings->getSiteOptions();
+        $variables['siteOptions'] = SettingsHelper::getSiteOptions();
 
         // Full page form variables
         $variables['fullPageForm'] = true;
@@ -87,17 +74,13 @@ class MailingListTypesController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws Throwable
-     * @throws BadRequestHttpException
+     * Saves a mailing list type.
      */
-    public function actionSaveMailingListType()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $mailingListTypeId = $request->getBodyParam('mailingListTypeId');
+        $mailingListTypeId = $this->request->getBodyParam('mailingListTypeId');
 
         if ($mailingListTypeId) {
             $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
@@ -111,18 +94,17 @@ class MailingListTypesController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $mailingListType->siteId = $request->getBodyParam('siteId', $mailingListType->siteId);
-        $mailingListType->name = $request->getBodyParam('name', $mailingListType->name);
-        $mailingListType->handle = $request->getBodyParam('handle', $mailingListType->handle);
-        $mailingListType->subscribeVerificationRequired = (bool)$request->getBodyParam('subscribeVerificationRequired', $mailingListType->subscribeVerificationRequired);
-        $mailingListType->subscribeVerificationEmailSubject = $request->getBodyParam('subscribeVerificationEmailSubject', $mailingListType->subscribeVerificationEmailSubject);
-        $mailingListType->subscribeVerificationEmailTemplate = $request->getBodyParam('subscribeVerificationEmailTemplate', $mailingListType->subscribeVerificationEmailTemplate);
-        $mailingListType->subscribeVerificationSuccessTemplate = $request->getBodyParam('subscribeVerificationSuccessTemplate', $mailingListType->subscribeVerificationSuccessTemplate);
-        $mailingListType->subscribeSuccessTemplate = $request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
-        $mailingListType->unsubscribeFormAllowed = (bool)$request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
-        $mailingListType->unsubscribeVerificationEmailSubject = $request->getBodyParam('unsubscribeVerificationEmailSubject', $mailingListType->unsubscribeVerificationEmailSubject);
-        $mailingListType->unsubscribeVerificationEmailTemplate = $request->getBodyParam('unsubscribeVerificationEmailTemplate', $mailingListType->unsubscribeVerificationEmailTemplate);
-        $mailingListType->unsubscribeSuccessTemplate = $request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
+        $mailingListType->siteId = $this->request->getBodyParam('siteId', $mailingListType->siteId);
+        $mailingListType->name = $this->request->getBodyParam('name', $mailingListType->name);
+        $mailingListType->handle = $this->request->getBodyParam('handle', $mailingListType->handle);
+        $mailingListType->subscribeVerificationRequired = (bool)$this->request->getBodyParam('subscribeVerificationRequired', $mailingListType->subscribeVerificationRequired);
+        $mailingListType->subscribeVerificationEmailSubject = $this->request->getBodyParam('subscribeVerificationEmailSubject', $mailingListType->subscribeVerificationEmailSubject);
+        $mailingListType->subscribeVerificationEmailTemplate = $this->request->getBodyParam('subscribeVerificationEmailTemplate', $mailingListType->subscribeVerificationEmailTemplate);
+        $mailingListType->subscribeSuccessTemplate = $this->request->getBodyParam('subscribeSuccessTemplate', $mailingListType->subscribeSuccessTemplate);
+        $mailingListType->unsubscribeFormAllowed = (bool)$this->request->getBodyParam('unsubscribeFormAllowed', $mailingListType->unsubscribeFormAllowed);
+        $mailingListType->unsubscribeVerificationEmailSubject = $this->request->getBodyParam('unsubscribeVerificationEmailSubject', $mailingListType->unsubscribeVerificationEmailSubject);
+        $mailingListType->unsubscribeVerificationEmailTemplate = $this->request->getBodyParam('unsubscribeVerificationEmailTemplate', $mailingListType->unsubscribeVerificationEmailTemplate);
+        $mailingListType->unsubscribeSuccessTemplate = $this->request->getBodyParam('unsubscribeSuccessTemplate', $mailingListType->unsubscribeSuccessTemplate);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
@@ -131,37 +113,23 @@ class MailingListTypesController extends Controller
 
         // Save it
         if (!Campaign::$plugin->mailingListTypes->saveMailingListType($mailingListType)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save mailing list type.'));
-
-            // Send the mailing list type back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'mailingListType' => $mailingListType
-            ]);
-
-            return null;
+            return $this->asModelFailure($mailingListType, Craft::t('campaign', 'Couldn’t save mailing list type.'), 'mailingListType');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Mailing list type saved.'));
-
-        return $this->redirectToPostedUrl($mailingListType);
+        return $this->asModelSuccess($mailingListType, Craft::t('campaign', 'Mailing list type saved.'), 'mailingListType');
     }
 
     /**
-     * Deletes a mailing list type
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes a mailing list type.
      */
-    public function actionDeleteMailingListType(): Response
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $mailingListTypeId = Craft::$app->getRequest()->getRequiredBodyParam('id');
-
+        $mailingListTypeId = $this->request->getRequiredBodyParam('id');
         Campaign::$plugin->mailingListTypes->deleteMailingListTypeById($mailingListTypeId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 }

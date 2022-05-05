@@ -5,47 +5,26 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use craft\errors\DeprecationException;
+use Craft;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
-
-use Craft;
-use Throwable;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * TrackerController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class TrackerController extends BaseMessageController
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    protected $allowAnonymous = true;
-
-    // Public Methods
-    // =========================================================================
+    protected int|bool|array $allowAnonymous = true;
 
     /**
-     * Open
-     *
-     * @return Response|null
-     * @throws Throwable
+     * Tracks an open.
      */
-    public function actionOpen(): Response
+    public function actionOpen(): ?Response
     {
         // Get contact and sendout
         $contact = $this->_getContact();
@@ -59,18 +38,13 @@ class TrackerController extends BaseMessageController
         // Return tracking image
         $filePath = Craft::getAlias('@putyourlightson/campaign/resources/images/t.gif');
 
-        return Craft::$app->getResponse()->sendFile($filePath);
+        return $this->response->sendFile($filePath);
     }
 
     /**
-     * Click
-     *
-     * @return Response
-     * @throws Exception
-     * @throws NotFoundHttpException
-     * @throws Throwable
+     * Tracks a click.
      */
-    public function actionClick(): Response
+    public function actionClick(): ?Response
     {
         // Get contact, sendout and link
         $contact = $this->_getContact();
@@ -97,7 +71,7 @@ class TrackerController extends BaseMessageController
                     'campaign' => $sendout->getCampaign(),
                 ]);
 
-                $url .= strpos($url, '?') === false ? '?' : '&';
+                $url .= str_contains($url, '?') ? '&' : '?';
                 $url .= trim($queryStringParameters, '?&');
             }
         }
@@ -107,16 +81,11 @@ class TrackerController extends BaseMessageController
     }
 
     /**
-     * Unsubscribe
-     *
-     * @return Response|null
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws Throwable
+     * Tracks an unsubscribe.
      */
-    public function actionUnsubscribe(): Response
+    public function actionUnsubscribe(): ?Response
     {
-        if (Craft::$app->getRequest()->getParam('sid') === null) {
+        if ($this->request->getParam('sid') === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
         }
 
@@ -135,7 +104,7 @@ class TrackerController extends BaseMessageController
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
         }
 
-        if (Craft::$app->getRequest()->getAcceptsJson()) {
+        if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
@@ -147,53 +116,11 @@ class TrackerController extends BaseMessageController
     }
 
     /**
-     * Subscribe
-     *
-     * @throws DeprecationException
-     * @deprecated in 1.10.0. Use [[FormsController::actionSubscribe()]] instead.
+     * Gets a contact by CID in param.
      */
-    public function actionSubscribe()
+    private function _getContact(): ?ContactElement
     {
-        Craft::$app->getDeprecator()->log('TrackerController::actionSubscribe()', 'The “campaign/tracker/subscribe” controller action has been deprecated. Use “campaign/forms/subscribe” instead.');
-
-        return Campaign::$plugin->runAction('forms/subscribe');
-    }
-
-    /**
-     * Updates a contact
-     *
-     * @deprecated in 1.10.0. Use [[FormsController::actionUpdateContact()]] instead.
-     */
-    public function actionUpdateContact()
-    {
-        Craft::$app->getDeprecator()->log('TrackerController::actionUpdateContact()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/update-contact” instead.');
-
-        return Campaign::$plugin->runAction('forms/update-contact');
-    }
-
-    /**
-     * Verifies a contact's email
-     *
-     * @deprecated in 1.10.0. Use [[FormsController::actionVerifySubscribe()]] instead.
-     */
-    public function actionVerifyEmail()
-    {
-        Craft::$app->getDeprecator()->log('TrackerController::actionVerifyEmail()', 'The “campaign/tracker/update-contact” controller action has been deprecated. Use “campaign/forms/verify-subscribe” instead.');
-
-        return Campaign::$plugin->runAction('forms/verify-subscribe');
-    }
-
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * Gets contact by CID in param
-     *
-     * @return ContactElement|null
-     */
-    private function _getContact()
-    {
-        $cid = Craft::$app->getRequest()->getParam('cid');
+        $cid = $this->request->getParam('cid');
 
         if ($cid === null) {
             return null;
@@ -203,13 +130,11 @@ class TrackerController extends BaseMessageController
     }
 
     /**
-     * Gets sendout by SID in param
-     *
-     * @return SendoutElement|null
+     * Gets a sendout by SID in param.
      */
-    private function _getSendout()
+    private function _getSendout(): ?SendoutElement
     {
-        $sid = Craft::$app->getRequest()->getParam('sid');
+        $sid = $this->request->getParam('sid');
 
         if ($sid === null) {
             return null;
@@ -219,13 +144,11 @@ class TrackerController extends BaseMessageController
     }
 
     /**
-     * Gets link by LID in param
-     *
-     * @return LinkRecord|null
+     * Gets a link by LID in param.
      */
-    private function _getLink()
+    private function _getLink(): ?LinkRecord
     {
-        $lid = Craft::$app->getRequest()->getParam('lid');
+        $lid = $this->request->getParam('lid');
 
         if ($lid === null) {
             return null;

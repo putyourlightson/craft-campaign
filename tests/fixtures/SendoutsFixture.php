@@ -8,16 +8,10 @@ namespace putyourlightson\campaigntests\fixtures;
 use putyourlightson\campaign\test\fixtures\elements\SendoutElementFixture;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class SendoutsFixture extends SendoutElementFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -26,5 +20,10 @@ class SendoutsFixture extends SendoutElementFixture
     /**
      * @inheritdoc
      */
-    public $depends = [CampaignsFixture::class, MailingListsFixture::class, SegmentsFixture::class];
+    public $depends = [
+        CampaignsFixture::class,
+        MailingListsFixture::class,
+        SegmentsFixture::class,
+        ContactsFixture::class,
+    ];
 }

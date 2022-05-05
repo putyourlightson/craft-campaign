@@ -5,31 +5,19 @@
 
 namespace putyourlightson\campaign\controllers;
 
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\models\CampaignTypeModel;
-use putyourlightson\campaign\elements\CampaignElement;
-
 use Craft;
 use craft\web\Controller;
-use Throwable;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\CampaignElement;
+
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\helpers\SettingsHelper;
+use putyourlightson\campaign\models\CampaignTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-/**
- * CampaignTypesController
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignTypesController extends Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,13 +30,9 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * @param int|null $campaignTypeId The campaign type’s ID, if editing an existing campaign type.
-     * @param CampaignTypeModel|null $campaignType The campaign type being edited, if there were any validation errors.
-     *
-     * @return Response
-     * @throws NotFoundHttpException
+     * Main edit page.
      */
-    public function actionEditCampaignType(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
+    public function actionEdit(int $campaignTypeId = null, CampaignTypeModel $campaignType = null): Response
     {
         if ($campaignType === null) {
             if ($campaignTypeId !== null) {
@@ -66,7 +50,7 @@ class CampaignTypesController extends Controller
         $variables = [
             'campaignTypeId' => $campaignTypeId,
             'campaignType' => $campaignType,
-            'siteOptions' => Campaign::$plugin->settings->getSiteOptions(),
+            'siteOptions' => SettingsHelper::getSiteOptions(),
             'contactElementType' => ContactElement::class,
             'fullPageForm' => true,
         ];
@@ -82,18 +66,13 @@ class CampaignTypesController extends Controller
     }
 
     /**
-     * @return Response|null
-     * @throws Throwable
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * Saves the campaign type.
      */
-    public function actionSaveCampaignType()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
-
-        $campaignTypeId = $request->getBodyParam('campaignTypeId');
+        $campaignTypeId = $this->request->getBodyParam('campaignTypeId');
 
         if ($campaignTypeId) {
             $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
@@ -107,14 +86,14 @@ class CampaignTypesController extends Controller
         }
 
         // Set the attributes, defaulting to the existing values for whatever is missing from the post data
-        $campaignType->siteId = $request->getBodyParam('siteId', $campaignType->siteId);
-        $campaignType->name = $request->getBodyParam('name', $campaignType->name);
-        $campaignType->handle = $request->getBodyParam('handle', $campaignType->handle);
-        $campaignType->uriFormat = $request->getBodyParam('uriFormat', $campaignType->uriFormat);
-        $campaignType->htmlTemplate = $request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
-        $campaignType->plaintextTemplate = $request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
-        $campaignType->queryStringParameters = $request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
-        $campaignType->testContactIds = $request->getBodyParam('testContactIds', $campaignType->testContactIds);
+        $campaignType->siteId = $this->request->getBodyParam('siteId', $campaignType->siteId);
+        $campaignType->name = $this->request->getBodyParam('name', $campaignType->name);
+        $campaignType->handle = $this->request->getBodyParam('handle', $campaignType->handle);
+        $campaignType->uriFormat = $this->request->getBodyParam('uriFormat', $campaignType->uriFormat);
+        $campaignType->htmlTemplate = $this->request->getBodyParam('htmlTemplate', $campaignType->htmlTemplate);
+        $campaignType->plaintextTemplate = $this->request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
+        $campaignType->queryStringParameters = $this->request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
+        $campaignType->testContactIds = $this->request->getBodyParam('testContactIds', $campaignType->testContactIds);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
@@ -123,37 +102,23 @@ class CampaignTypesController extends Controller
 
         // Save it
         if (!Campaign::$plugin->campaignTypes->saveCampaignType($campaignType)) {
-            Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t save campaign type.'));
-
-            // Send the campaign type back to the template
-            Craft::$app->getUrlManager()->setRouteParams([
-                'campaignType' => $campaignType
-            ]);
-
-            return null;
+            return $this->asModelFailure($campaignType, Craft::t('campaign', 'Couldn’t save campaign type.'), 'campaignType');
         }
 
-        Craft::$app->getSession()->setNotice(Craft::t('campaign', 'Campaign type saved.'));
-
-        return $this->redirectToPostedUrl($campaignType);
+        return $this->asModelSuccess($campaignType, Craft::t('campaign', 'Campaign type saved.'), 'campaignType');
     }
 
     /**
-     * Deletes a campaign type
-     *
-     * @return Response
-     * @throws BadRequestHttpException
-     * @throws Throwable
+     * Deletes a campaign type.
      */
-    public function actionDeleteCampaignType(): Response
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $campaignTypeId = Craft::$app->getRequest()->getRequiredBodyParam('id');
-
+        $campaignTypeId = $this->request->getRequiredBodyParam('id');
         Campaign::$plugin->campaignTypes->deleteCampaignTypeById($campaignTypeId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asSuccess();
     }
 }

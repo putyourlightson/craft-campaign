@@ -5,24 +5,14 @@
 
 namespace putyourlightson\campaign\events;
 
-use putyourlightson\campaign\elements\SendoutElement;
-
 use craft\events\CancelableEvent;
 
-/**
- * SendoutEvent
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
+use putyourlightson\campaign\elements\SendoutElement;
+
 class SendoutEvent extends CancelableEvent
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var SendoutElement|null
      */
-    public $sendout;
+    public ?SendoutElement $sendout;
 }

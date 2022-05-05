@@ -5,140 +5,145 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
+use craft\base\Component;
 use craft\base\Field;
+use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
 use craft\events\FieldEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
 use craft\helpers\StringHelper;
 use craft\models\FieldLayout;
 use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\MailingListTypeEvent;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\jobs\ResaveElementsJob;
 use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\records\MailingListTypeRecord;
-use putyourlightson\campaign\elements\MailingListElement;
-
-use Craft;
-use craft\base\Component;
 use Throwable;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
 /**
- * MailingListTypesService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property MailingListTypeModel[] $allMailingListTypes
+ * @property-read MailingListTypeModel[] $editableMailingListTypes
+ * @property-read MailingListTypeModel[] $allMailingListTypes
  */
 class MailingListTypesService extends Component
 {
     /**
      * @event MailingListTypeEvent
      */
-    const EVENT_BEFORE_SAVE_MAILINGLIST_TYPE = 'beforeSaveMailingListType';
+    public const EVENT_BEFORE_SAVE_MAILINGLIST_TYPE = 'beforeSaveMailingListType';
 
     /**
      * @event MailingListTypeEvent
      */
-    const EVENT_AFTER_SAVE_MAILINGLIST_TYPE = 'afterSaveMailingListType';
+    public const EVENT_AFTER_SAVE_MAILINGLIST_TYPE = 'afterSaveMailingListType';
 
     /**
      * @event MailingListTypeEvent
      */
-    const EVENT_BEFORE_DELETE_MAILINGLIST_TYPE = 'beforeDeleteMailingListType';
+    public const EVENT_BEFORE_DELETE_MAILINGLIST_TYPE = 'beforeDeleteMailingListType';
 
     /**
      * @event MailingListTypeEvent
      */
-    const EVENT_AFTER_DELETE_MAILINGLIST_TYPE = 'afterDeleteMailingListType';
+    public const EVENT_AFTER_DELETE_MAILINGLIST_TYPE = 'afterDeleteMailingListType';
 
     /**
      * @since 1.12.0
      */
-    const CONFIG_MAILINGLISTTYPES_KEY = 'campaign.mailingListTypes';
-
-    // Public Methods
-    // =========================================================================
+    public const CONFIG_MAILINGLISTTYPES_KEY = 'campaign.mailingListTypes';
 
     /**
-     * Returns all mailing list types
+     * @var MemoizableArray<MailingListTypeModel>|null
+     * @see _mailingListTypes()
+     */
+    private ?MemoizableArray $_mailingListTypes = null;
+
+    /**
+     * Returns all mailing list types.
      *
      * @return MailingListTypeModel[]
      */
     public function getAllMailingListTypes(): array
     {
-        $mailingListTypeRecords = MailingListTypeRecord::find()
-            ->innerJoinWith('site')
-            ->orderBy(['name' => SORT_ASC])
-            ->all();
-
-        return MailingListTypeModel::populateModels($mailingListTypeRecords, false);
+        return $this->_mailingListTypes()->all();
     }
 
     /**
-     * Returns mailing list type by ID
+     * Returns all editable mailing list types.
      *
-     * @param int $mailingListTypeId
-     *
-     * @return MailingListTypeModel|null
+     * @return MailingListTypeModel[]
      */
-    public function getMailingListTypeById(int $mailingListTypeId)
+    public function getEditableMailingListTypes(): array
+    {
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return $this->getAllMailingListTypes();
+        }
+
+        $user = Craft::$app->getUser()->getIdentity();
+
+        if (!$user) {
+            return [];
+        }
+
+        return ArrayHelper::where($this->getAllMailingListTypes(),
+            function(MailingListTypeModel $mailingListType) use ($user) {
+                return $user->can('campaign:mailingLists:' . $mailingListType->uid);
+            },
+            true, true, false
+        );
+    }
+
+    /**
+     * Returns mailing list type by ID.
+     */
+    public function getMailingListTypeById(int $mailingListTypeId): ?MailingListTypeModel
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([MailingListTypeRecord::tableName().'.id' => $mailingListTypeId])
+            ->where([MailingListTypeRecord::tableName() . '.id' => $mailingListTypeId])
             ->one();
 
         if ($mailingListTypeRecord === null) {
             return null;
         }
 
-        /** @var MailingListTypeModel $mailingListType */
-        $mailingListType = MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+        $mailingListType = new MailingListTypeModel();
+        $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
 
         return $mailingListType;
     }
 
     /**
-     * Returns mailing list type by handle
-     *
-     * @param string $mailingListTypeHandle
-     *
-     * @return MailingListTypeModel|null
+     * Returns mailing list type by handle.
      */
-    public function getMailingListTypeByHandle(string $mailingListTypeHandle)
+    public function getMailingListTypeByHandle(string $mailingListTypeHandle): ?MailingListTypeModel
     {
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
-            ->where([MailingListTypeRecord::tableName().'.handle' => $mailingListTypeHandle])
+            ->where([MailingListTypeRecord::tableName() . '.handle' => $mailingListTypeHandle])
             ->one();
 
         if ($mailingListTypeRecord === null) {
             return null;
         }
 
-        /** @var MailingListTypeModel $mailingListType */
-        $mailingListType = MailingListTypeModel::populateModel($mailingListTypeRecord, false);
+        $mailingListType = new MailingListTypeModel();
+        $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
 
         return $mailingListType;
     }
 
     /**
      * Saves a mailing list type.
-     *
-     * @param MailingListTypeModel $mailingListType  The mailing list type to be saved
-     * @param bool $runValidation Whether the mailing list type should be validated
-     *
-     * @return bool Whether the mailing list type was saved successfully
-     * @throws Throwable if reasons
      */
     public function saveMailingListType(MailingListTypeModel $mailingListType, bool $runValidation = true): bool
     {
@@ -166,13 +171,13 @@ class MailingListTypesService extends Component
             $mailingListType->uid = StringHelper::UUID();
         }
         elseif (!$mailingListType->uid) {
-            /** @var MailingListTypeRecord $mailingListTypeRecord */
+            /** @var MailingListTypeRecord|null $mailingListTypeRecord */
             $mailingListTypeRecord = MailingListTypeRecord::find()
-                ->andWhere([MailingListTypeRecord::tableName().'.id' => $mailingListType->id])
+                ->andWhere([MailingListTypeRecord::tableName() . '.id' => $mailingListType->id])
                 ->one();
 
             if ($mailingListTypeRecord === null) {
-                throw new NotFoundHttpException('No mailing list type exists with the ID '.$mailingListType->id);
+                throw new NotFoundHttpException('No mailing list type exists with the ID ' . $mailingListType->id);
             }
 
             $mailingListType->uid = $mailingListTypeRecord->uid;
@@ -182,8 +187,8 @@ class MailingListTypesService extends Component
         $configData = ProjectConfigDataHelper::getMailingListTypeData($mailingListType);
 
         // Save it to project config
-        $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
-        Craft::$app->projectConfig->set($path, $configData);
+        $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
+        Craft::$app->getProjectConfig()->set($path, $configData);
 
         // Set the ID on the mailing list type
         if ($isNew) {
@@ -195,42 +200,38 @@ class MailingListTypesService extends Component
 
     /**
      * Handles a changed mailing list type.
-     *
-     * @param ConfigEvent $event
      */
-    public function handleChangedMailingListType(ConfigEvent $event)
+    public function handleChangedMailingListType(ConfigEvent $event): void
     {
-        // Make sure all sites and fields are processed
-        ProjectConfigHelper::ensureAllSitesProcessed();
-        ProjectConfigHelper::ensureAllFieldsProcessed();
-
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
         $data = $event->newValue;
 
-        $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
-
-        $isNew = $mailingListTypeRecord === null;
-
-        if ($isNew) {
-            $mailingListTypeRecord = new MailingListTypeRecord();
-        }
-
-        // Save old site ID for resaving elements later
-        $oldSiteId = $mailingListTypeRecord->siteId;
+        // Make sure all sites and fields are processed
+        ProjectConfigHelper::ensureAllSitesProcessed();
+        ProjectConfigHelper::ensureAllFieldsProcessed();
 
         $transaction = Craft::$app->getDb()->beginTransaction();
-
         try {
+            $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
+            $isNew = $mailingListTypeRecord === null;
+
+            if ($isNew) {
+                $mailingListTypeRecord = new MailingListTypeRecord();
+            }
+
+            // Save old site ID for resaving elements later
+            $oldSiteId = $mailingListTypeRecord->siteId;
+
             $mailingListTypeRecord->setAttributes($data, false);
             $mailingListTypeRecord->siteId = Db::idByUid(Table::SITES, $data['siteUid']);
             $mailingListTypeRecord->uid = $uid;
 
             $fieldsService = Craft::$app->getFields();
 
-            if (!empty($data['fieldLayouts']) && !empty($config = reset($data['fieldLayouts']))) {
+            if (!empty($data['fieldLayouts'])) {
                 // Save the field layout
-                $layout = FieldLayout::createFromConfig($config);
+                $layout = FieldLayout::createFromConfig(reset($data['fieldLayouts']));
                 $layout->id = $mailingListTypeRecord->fieldLayoutId;
                 $layout->type = MailingListElement::class;
                 $layout->uid = key($data['fieldLayouts']);
@@ -249,7 +250,8 @@ class MailingListTypesService extends Component
             }
 
             $transaction->commit();
-        } catch (Throwable $e) {
+        }
+        catch (Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -271,7 +273,7 @@ class MailingListTypesService extends Component
 
             // Re-save the mailing lists in this mailing list type
             $queue->push(new ResaveElementsJob([
-                'description' => Craft::t('app', 'Resaving {type} mailing lists ({site})', [
+                'description' => Craft::t('campaign', 'Resaving {type} mailing lists', [
                     'type' => $mailingListType->name,
                     'site' => $mailingListType->getSite()->name,
                 ]),
@@ -287,12 +289,7 @@ class MailingListTypesService extends Component
     }
 
     /**
-     * Deletes a mailing list type by its ID
-     *
-     * @param int $mailingListTypeId
-     *
-     * @return bool Whether the mailing list type was deleted successfully
-     * @throws Throwable if reasons
+     * Deletes a mailing list type by its ID.
      */
     public function deleteMailingListTypeById(int $mailingListTypeId): bool
     {
@@ -306,12 +303,7 @@ class MailingListTypesService extends Component
     }
 
     /**
-     * Deletes a mailing list type
-     *
-     * @param MailingListTypeModel $mailingListType
-     *
-     * @return bool Whether the mailing list type was deleted successfully
-     * @throws Throwable if reasons
+     * Deletes a mailing list type.
      */
     public function deleteMailingListType(MailingListTypeModel $mailingListType): bool
     {
@@ -326,18 +318,16 @@ class MailingListTypesService extends Component
         }
 
         // Remove it from project config
-        $path = self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListType->uid;
-        Craft::$app->projectConfig->remove($path);
+        $path = self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListType->uid;
+        Craft::$app->getProjectConfig()->remove($path);
 
         return true;
     }
 
     /**
      * Handles a deleted mailing list type.
-     *
-     * @param ConfigEvent $event
      */
-    public function handleDeletedMailingListType(ConfigEvent $event)
+    public function handleDeletedMailingListType(ConfigEvent $event): void
     {
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
@@ -369,7 +359,8 @@ class MailingListTypesService extends Component
             $mailingListTypeRecord->delete();
 
             $transaction->commit();
-        } catch (Throwable $e) {
+        }
+        catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;
@@ -388,10 +379,8 @@ class MailingListTypesService extends Component
 
     /**
      * Handles a deleted site.
-     *
-     * @param DeleteSiteEvent $event
      */
-    public function handleDeletedSite(DeleteSiteEvent $event)
+    public function handleDeletedSite(DeleteSiteEvent $event): void
     {
         $siteUid = $event->site->uid;
 
@@ -409,10 +398,8 @@ class MailingListTypesService extends Component
 
     /**
      * Prunes a deleted field from the field layouts.
-     *
-     * @param FieldEvent $event
      */
-    public function pruneDeletedField(FieldEvent $event)
+    public function pruneDeletedField(FieldEvent $event): void
     {
         /** @var Field $field */
         $field = $event->field;
@@ -421,6 +408,9 @@ class MailingListTypesService extends Component
         $projectConfig = Craft::$app->getProjectConfig();
         $mailingListTypes = $projectConfig->get(self::CONFIG_MAILINGLISTTYPES_KEY);
 
+        // Engage stealth mode
+        $projectConfig->muteEvents = true;
+
         // Loop through the types and prune the UID from field layouts.
         if (is_array($mailingListTypes)) {
             foreach ($mailingListTypes as $mailingListTypeUid => $mailingListType) {
@@ -428,12 +418,46 @@ class MailingListTypesService extends Component
                     foreach ($mailingListType['fieldLayouts'] as $layoutUid => $layout) {
                         if (!empty($layout['tabs'])) {
                             foreach ($layout['tabs'] as $tabUid => $tab) {
-                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY.'.'.$mailingListTypeUid.'.fieldLayouts.'.$layoutUid.'.tabs.'.$tabUid.'.fields.'.$fieldUid);
+                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
                             }
                         }
                     }
                 }
             }
         }
+
+        // Nuke all the layout fields from the DB
+        Db::delete(Table::FIELDLAYOUTFIELDS, [
+            'fieldId' => $field->id,
+        ]);
+
+        // Allow events again
+        $projectConfig->muteEvents = false;
+    }
+
+    /**
+     * Returns a memoizable array of all mailing list types.
+     *
+     * @return MemoizableArray<MailingListTypeModel>
+     */
+    private function _mailingListTypes(): MemoizableArray
+    {
+        if (!isset($this->_mailingListTypes)) {
+            $mailingListTypes = [];
+            $mailingListTypeRecords = MailingListTypeRecord::find()
+                ->innerJoinWith('site')
+                ->orderBy(['name' => SORT_ASC])
+                ->all();
+
+            foreach ($mailingListTypeRecords as $mailingListTypeRecord) {
+                $mailingListType = new MailingListTypeModel();
+                $mailingListType->setAttributes($mailingListTypeRecord->getAttributes(), false);
+                $mailingListTypes[] = $mailingListType;
+            }
+
+            $this->_mailingListTypes = new MemoizableArray($mailingListTypes);
+        }
+
+        return $this->_mailingListTypes;
     }
 }

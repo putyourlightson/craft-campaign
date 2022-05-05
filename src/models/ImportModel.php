@@ -5,126 +5,100 @@
 
 namespace putyourlightson\campaign\models;
 
-use craft\helpers\Json;
-use DateTime;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\base\BaseModel;
-use putyourlightson\campaign\elements\MailingListElement;
-
 use Craft;
+use craft\base\Model;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
+
 use craft\models\UserGroup;
+use DateTime;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
- * ImportModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property string                       $cpViewUrl
- * @property User|null                    $user
- * @property null|UserGroup               $userGroup
- * @property null|MailingListElement      $mailingList
+ * @property-read string $cpViewUrl
+ * @property-read User|null $user
+ * @property-read null|UserGroup $userGroup
+ * @property-read null|MailingListElement $mailingList
  */
-class ImportModel extends BaseModel
+class ImportModel extends Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Asset ID
      */
-    public $assetId;
+    public ?int $assetId = null;
 
     /**
-     * @var string|null File name
+     * @var string File name
      */
-    public $fileName;
+    public string $fileName = '';
 
     /**
-     * @var string|null File path
+     * @var string File path
      */
-    public $filePath;
+    public string $filePath = '';
 
     /**
      * @var int|null User group ID
      */
-    public $userGroupId;
+    public ?int $userGroupId = null;
 
     /**
      * @var int|null User ID
      */
-    public $userId;
+    public ?int $userId = null;
 
     /**
      * @var string Email field index
      */
-    public $emailFieldIndex;
+    public string $emailFieldIndex = '';
 
     /**
-     * @var mixed Field indexes
+     * @var array|null Field indexes
      */
-    public $fieldIndexes;
+    public ?array $fieldIndexes = null;
 
     /**
      * @var int|null Mailing list ID
      */
-    public $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @var bool Force subscribe
      */
-    public $forceSubscribe = false;
+    public bool $forceSubscribe = false;
 
     /**
      * @var int Added
      */
-    public $added = 0;
+    public int $added = 0;
 
     /**
      * @var int Updated
      */
-    public $updated = 0;
+    public int $updated = 0;
 
     /**
-     * @var int Fails
+     * @var int Failures
      */
-    public $fails = 0;
+    public int $failures = 0;
 
     /**
      * @var DateTime|null Date imported
      */
-    public $dateImported;
-
-    // Public Methods
-    // =========================================================================
+    public ?DateTime $dateImported = null;
 
     /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        // Decode JSON properties
-        $this->fieldIndexes = empty($this->fieldIndexes) ? [] : Json::decode($this->fieldIndexes);
-    }
-
-    /**
-     * Use the handle as the string representation.
-     *
-     * @return string
+     * Returns the file name as the string representation.
      */
     public function __toString(): string
     {
-        return (string)$this->fileName;
+        return $this->fileName;
     }
 
     /**
@@ -142,33 +116,17 @@ class ImportModel extends BaseModel
     }
 
     /**
-     * @inheritdoc
-     */
-    public function rules(): array
-    {
-        return [
-            [['id', 'assetId', 'userId', 'mailingListId'], 'integer'],
-            [['mailingListId', 'emailFieldIndex'], 'required'],
-            [['fileName', 'filePath'], 'string', 'max' => 255],
-        ];
-    }
-
-    /**
-     * Returns the CP view URL
-     *
-     * @return string
+     * Returns the CP view URL.
      */
     public function getCpViewUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/contacts/import/'.$this->id);
+        return UrlHelper::cpUrl('campaign/contacts/import/' . $this->id);
     }
 
     /**
-     * Returns the user group
-     *
-     * @return UserGroup|null
+     * Returns the user group.
      */
-    public function getUserGroup()
+    public function getUserGroup(): ?UserGroup
     {
         if ($this->userGroupId === null) {
             return null;
@@ -178,35 +136,41 @@ class ImportModel extends BaseModel
     }
 
     /**
-     * Returns the user
-     *
-     * @return User|null
+     * Returns the user.
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         if ($this->userId === null) {
             return null;
         }
 
-        /** @var User|null $user */
-        $user = User::find()->id($this->userId)->one();
-
-        return $user;
+        /** @var User|null */
+        return User::find()
+            ->id($this->userId)
+            ->one();
     }
 
     /**
-     * Returns the mailing list
-     *
-     * @return MailingListElement|null
+     * Returns the mailing list.
      */
-    public function getMailingList()
+    public function getMailingList(): ?MailingListElement
     {
         if ($this->mailingListId === null) {
             return null;
         }
 
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
+        return Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
+    }
 
-        return $mailingList;
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['id', 'assetId', 'userId', 'mailingListId'], 'integer'],
+            [['mailingListId', 'emailFieldIndex'], 'required'],
+            [['fileName', 'filePath'], 'string', 'max' => 255],
+        ];
     }
 }

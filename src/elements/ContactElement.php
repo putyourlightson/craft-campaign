@@ -5,63 +5,73 @@
 
 namespace putyourlightson\campaign\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\actions\Delete;
+use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
+use craft\helpers\Cp;
+use craft\helpers\Html;
+use craft\helpers\Template;
+use craft\helpers\UrlHelper;
+use craft\models\FieldLayout;
+use craft\validators\DateTimeValidator;
+use craft\validators\UniqueValidator;
+use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\actions\HardDeleteContacts;
+use putyourlightson\campaign\elements\conditions\contacts\ContactCondition;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactMailingListFieldLayoutTab;
+use putyourlightson\campaign\fieldlayoutelements\reports\ContactReportFieldLayoutTab;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\elements\actions\Edit;
-use craft\elements\actions\Delete;
-use craft\helpers\Json;
-use craft\helpers\Template;
-use craft\helpers\UrlHelper;
-use craft\validators\DateTimeValidator;
-use craft\validators\UniqueValidator;
-use yii\base\Exception;
+use yii\i18n\Formatter;
+use yii\web\Response;
 
 /**
- * ContactElement
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property int $unsubscribedCount
- * @property int $complainedCount
- * @property MailingListElement[] $complainedMailingLists
- * @property int $bouncedCount
- * @property string $reportUrl
- * @property MailingListElement[] $unsubscribedMailingLists
- * @property MailingListElement[] $subscribedMailingLists
- * @property MailingListElement[] $bouncedMailingLists
- * @property int $pendingCount
- * @property string $countryCode
- * @property MailingListElement[] $mailingLists
- * @property bool $isSubscribed
- * @property User|null $user
- * @property bool $hasRoundedThumb
- * @property int $subscribedCount
+ * @property-read int $complainedCount
+ * @property-read int $unsubscribedCount
+ * @property-read MailingListElement[] $complainedMailingLists
+ * @property-read int $bouncedCount
+ * @property-read string $reportUrl
+ * @property-read MailingListElement[] $unsubscribedMailingLists
+ * @property-read MailingListElement[] $subscribedMailingLists
+ * @property-read bool $hasRoundedThumb
+ * @property-read bool $isSubscribed
+ * @property-read MailingListElement[] $bouncedMailingLists
+ * @property-read bool $isEditable
+ * @property-read string $countryCode
+ * @property-read int $subscribedCount
+ * @property-read User|null $user
+ * @property-read array[] $crumbs
+ * @property-read null|string $postEditUrl
+ * @property-read MailingListElement[] $mailingLists
  */
 class ContactElement extends Element
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_ACTIVE = 'active';
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_COMPLAINED = 'complained';
-    const STATUS_BOUNCED = 'bounced';
-    const STATUS_BLOCKED = 'blocked';
+    /**
+     * @const string
+     */
+    public const STATUS_COMPLAINED = 'complained';
 
-    // Static Methods
-    // =========================================================================
+    /**
+     * @const string
+     */
+    public const STATUS_BOUNCED = 'bounced';
+
+    /**
+     * @const string
+     */
+    public const STATUS_BLOCKED = 'blocked';
 
     /**
      * @inheritdoc
@@ -97,7 +107,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'contact';
     }
@@ -132,11 +142,20 @@ class ContactElement extends Element
     }
 
     /**
-     * @return ContactElementQuery
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    public static function find(): ContactElementQuery
     {
         return new ContactElementQuery(static::class);
+    }
+
+    /**
+     * @inheritdoc
+     * @return ContactCondition
+     */
+    public static function createCondition(): ElementConditionInterface
+    {
+        return Craft::createObject(ContactCondition::class, [static::class]);
     }
 
     /**
@@ -149,46 +168,41 @@ class ContactElement extends Element
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All contacts'),
                 'criteria' => [],
-                'hasThumbs' => true
-            ]
+                'hasThumbs' => true,
+            ],
+            [
+                'heading' => Craft::t('campaign', 'Mailing Lists'),
+            ],
         ];
-
-        $sources[] = ['heading' => Craft::t('campaign', 'Mailing Lists')];
-
         $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
 
         foreach ($mailingLists as $mailingList) {
             $sources[] = [
-                'key' => 'mailingList:'.$mailingList->id,
+                'key' => 'mailingList:' . $mailingList->uid,
                 'label' => $mailingList->title,
                 'sites' => [$mailingList->siteId],
-                'data' => [
-                    'id' => $mailingList->id
-                ],
-                'criteria' => [
-                    'mailingListId' => $mailingList->id
-                ],
-                'hasThumbs' => true
+                'data' => ['id' => $mailingList->id],
+                'criteria' => ['mailingListId' => $mailingList->id],
+                'hasThumbs' => true,
             ];
         }
 
         if (Campaign::$plugin->getIsPro()) {
-            $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
+            $segments = Campaign::$plugin->segments->getAllSegments();
 
-            $segments = SegmentElement::findAll();
+            if (!empty($segments)) {
+                $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
 
-            foreach ($segments as $segment) {
-                $sources[] = [
-                    'key' => 'segment:'.$segment->id,
-                    'label' => $segment->title,
-                    'data' => [
-                        'id' => $segment->id
-                    ],
-                    'criteria' => [
-                        'segmentId' => $segment->id
-                    ],
-                    'hasThumbs' => true
-                ];
+                foreach ($segments as $segment) {
+                    $sources[] = [
+                        'key' => 'segment:' . $segment->uid,
+                        'label' => $segment->title,
+                        'sites' => [$segment->siteId],
+                        'data' => ['id' => $segment->id],
+                        'criteria' => ['segmentId' => $segment->id],
+                        'hasThumbs' => true,
+                    ];
+                }
             }
         }
 
@@ -201,7 +215,6 @@ class ContactElement extends Element
     protected static function defineActions(string $source = null): array
     {
         $actions = [];
-
         $elementsService = Craft::$app->getElements();
 
         // Edit
@@ -218,7 +231,12 @@ class ContactElement extends Element
         ]);
 
         // Hard delete
-        $actions[] = HardDeleteContacts::class;
+        $actions[] = $elementsService->createAction([
+            'type' => Delete::class,
+            'hard' => true,
+            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to permanently delete the selected contacts? This action cannot be undone.'),
+            'successMessage' => Craft::t('campaign', 'Contacts permanently deleted.'),
+        ]);
 
         // Restore
         $actions[] = $elementsService->createAction([
@@ -236,10 +254,14 @@ class ContactElement extends Element
      */
     protected static function defineSortOptions(): array
     {
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         return [
-            'email' => $settings->emailFieldLabel,
+            [
+                'label' => $settings->getEmailFieldLabel(),
+                'orderBy' => ContactRecord::tableName() . '.[[email]]',
+                'attribute' => 'title',
+            ],
             'cid' => Craft::t('campaign', 'Contact ID'),
             'subscriptionStatus' => Craft::t('campaign', 'Subscription Status'),
             'country' => Craft::t('campaign', 'Country'),
@@ -248,12 +270,12 @@ class ContactElement extends Element
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
-                'attribute' => 'dateCreated'
+                'attribute' => 'dateCreated',
             ],
             [
                 'label' => Craft::t('app', 'Date Updated'),
                 'orderBy' => 'elements.dateUpdated',
-                'attribute' => 'dateUpdated'
+                'attribute' => 'dateUpdated',
             ],
         ];
     }
@@ -263,10 +285,7 @@ class ContactElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $settings = Campaign::$plugin->getSettings();
-
-        $attributes = [
-            'email' => ['label' => $settings->emailFieldLabel],
+        return [
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],
@@ -274,8 +293,6 @@ class ContactElement extends Element
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
-
-        return $attributes;
     }
 
     /**
@@ -283,7 +300,7 @@ class ContactElement extends Element
      */
     protected static function defineDefaultTableAttributes(string $source): array
     {
-        $attributes = ['email'];
+        $attributes = [];
 
         if ($source !== '*') {
             $attributes[] = 'subscriptionStatus';
@@ -294,142 +311,88 @@ class ContactElement extends Element
         return $attributes;
     }
 
-    // Public Properties
-    // =========================================================================
+    /**
+     * @var int|null User ID
+     */
+    public ?int $userId = null;
 
     /**
-     * User ID
-     *
-     * @var int|null
+     * @var null|string Contact ID
      */
-    public $userId;
+    public ?string $cid = null;
 
     /**
-     * Contact ID
-     *
-     * @var string
+     * @var string|null Email
      */
-    public $cid;
+    public ?string $email = null;
 
     /**
-     * Email
-     *
-     * @var string
+     * @var string|null Country name
      */
-    public $email;
+    public ?string $country = null;
 
     /**
-     * Country name
-     *
-     * @var string|null
+     * @var array|null GeoIP
      */
-    public $country;
+    public ?array $geoIp = null;
 
     /**
-     * GeoIP
-     *
-     * @var mixed
+     * @var string|null Device
      */
-    public $geoIp;
+    public ?string $device = null;
 
     /**
-     * Device
-     *
-     * @var string|null
+     * @var string|null OS
      */
-    public $device;
+    public ?string $os = null;
 
     /**
-     * OS
-     *
-     * @var string|null
+     * @var string|null Client
      */
-    public $os;
+    public ?string $client = null;
 
     /**
-     * Client
-     *
-     * @var string|null
+     * @var DateTime|null Last activity
      */
-    public $client;
+    public ?DateTime $lastActivity = null;
 
     /**
-     * Last activity
-     *
-     * @var DateTime|null
+     * @var DateTime|null Verified
      */
-    public $lastActivity;
+    public ?DateTime $verified = null;
 
     /**
-     * Verified
-     *
-     * @var DateTime|null
+     * @var DateTime|null Complained
      */
-    public $verified;
+    public ?DateTime $complained = null;
 
     /**
-     * Complained
-     *
-     * @var DateTime|null
+     * @var DateTime|null Bounced
      */
-    public $complained;
+    public ?DateTime $bounced = null;
 
     /**
-     * Bounced
-     *
-     * @var DateTime|null
+     * @var DateTime|null Blocked
      */
-    public $bounced;
+    public ?DateTime $blocked = null;
 
     /**
-     * Blocked
-     *
-     * @var DateTime|null
+     * @var string|null Subscription status, only used when a mailing list is selected in element index
      */
-    public $blocked;
+    public ?string $subscriptionStatus = null;
 
     /**
-     * Subscription status, only used when a mailing list is selected in element index
-     *
-     * @var string
+     * @var null|FieldLayout Field layout
+     * @see getFieldLayout()
      */
-    public $subscriptionStatus;
-
-    // Public Methods
-    // =========================================================================
+    private ?FieldLayout $_fieldLayout = null;
 
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->email;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        // Decode geoIp if not empty
-        $this->geoIp = !empty($this->geoIp) ? Json::decode($this->geoIp) : null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function datetimeAttributes(): array
-    {
-        $names = parent::datetimeAttributes();
-        $names[] = 'lastActivity';
-        $names[] = 'verified';
-        $names[] = 'complained';
-        $names[] = 'bounced';
-        $names[] = 'blocked';
-
-        return $names;
     }
 
     /**
@@ -440,7 +403,7 @@ class ContactElement extends Element
         $labels = parent::attributeLabels();
 
         // Set the email field label
-        $labels['email'] = Campaign::$plugin->getSettings()->emailFieldLabel;
+        $labels['email'] = Campaign::$plugin->settings->getEmailFieldLabel();
 
         return $labels;
     }
@@ -448,14 +411,13 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
-
-        $rules[] = [['cid', 'email'], 'required'];
+        $rules = parent::defineRules();
+        $rules[] = [['cid', 'email'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['cid'], 'string', 'max' => 17];
         $rules[] = [['email'], 'email'];
-        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true];
+        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
 
         return $rules;
@@ -464,39 +426,153 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getFieldLayout()
+    public function getPostEditUrl(): ?string
     {
-        return Craft::$app->getFields()->getLayoutByType(self::class);
+        return UrlHelper::cpUrl("campaign/contacts");
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function getFieldLayout(): ?FieldLayout
+    {
+        // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
+        if ($this->_fieldLayout !== null) {
+            return $this->_fieldLayout;
+        }
+
+        $this->_fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->settings->getContactFieldLayout();
+
+        if (!Craft::$app->getRequest()->getIsCpRequest()) {
+            return $this->_fieldLayout;
+        }
+
+        if (!$this->getIsFresh()) {
+            $this->_fieldLayout->setTabs(array_merge(
+                $this->_fieldLayout->getTabs(),
+                [
+                    new ContactMailingListFieldLayoutTab(),
+                    new ContactReportFieldLayoutTab(),
+                ],
+            ));
+        }
+
+        return $this->_fieldLayout;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    protected function metadata(): array
+    {
+        $formatter = Craft::$app->getFormatter();
+        $metadata = parent::metadata();
+
+        if ($syncedUser = $this->getUser()) {
+            $metadata[Craft::t('campaign', 'Synced')] = Cp::elementHtml($syncedUser);
+        }
+
+        $metadata[Craft::t('campaign', 'CID')] = Html::tag('code', $this->cid);
+
+        if ($this->lastActivity) {
+            $metadata[Craft::t('campaign', 'Last activity')] = $formatter->asDatetime($this->lastActivity, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        if ($this->verified) {
+            $metadata[Craft::t('campaign', 'Verified')] = $formatter->asDatetime($this->verified, Formatter::FORMAT_WIDTH_SHORT);
+        }
+
+        return $metadata;
     }
 
     /**
      * @inheritdoc
      */
-    public function getSupportedSites(): array
+    protected function statusFieldHtml(): string
     {
-        return Craft::$app->getSites()->getAllSiteIds();
+        return '';
     }
 
     /**
-     * Returns the user that this contact is associated with
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canView(User $user): bool
+    {
+        if (parent::canView($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canSave(User $user): bool
+    {
+        if (parent::canSave($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDuplicate(User $user): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canDelete(User $user): bool
+    {
+        if (parent::canDelete($user)) {
+            return true;
+        }
+
+        return $user->can('campaign:contacts');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.0
+     */
+    public function canCreateDrafts(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns the user that this contact is associated with.
      *
-     * @return User|null
      * @since 1.15.1
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         // Try synced user first
         if ($this->userId !== null) {
             return Craft::$app->getUsers()->getUserById($this->userId);
         }
 
-        return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->email);
+        if ($this->email !== null) {
+            return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->email);
+        }
+
+        return null;
     }
 
     /**
-     * Checks whether the contact is subscribed to at least one mailing list
-     *
-     * @return bool
+     * Checks whether the contact is subscribed to at least one mailing list.
      */
     public function getIsSubscribed(): bool
     {
@@ -512,12 +588,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the unsubscribe URL
-     *
-     * @param SendoutElement|null $sendout
-     *
-     * @return string
-     * @throws Exception
+     * Returns the unsubscribe URL.
      */
     public function getUnsubscribeUrl(SendoutElement $sendout = null): string
     {
@@ -531,17 +602,13 @@ class ContactElement extends Element
             $params['sid'] = $sendout->sid;
         }
 
-        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger.'/campaign/t/unsubscribe';
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/unsubscribe';
 
         return UrlHelper::siteUrl($path, $params);
     }
 
     /**
-     * Returns the mailing list subscription status
-     *
-     * @param int $mailingListId
-     *
-     * @return string
+     * Returns the mailing list subscription status.
      */
     public function getMailingListSubscriptionStatus(int $mailingListId): string
     {
@@ -558,9 +625,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of subscribed mailing lists
-     *
-     * @return int
+     * Returns the number of subscribed mailing lists.
      */
     public function getSubscribedCount(): int
     {
@@ -568,9 +633,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of unsubscribed mailing lists
-     *
-     * @return int
+     * Returns the number of unsubscribed mailing lists.
      */
     public function getUnsubscribedCount(): int
     {
@@ -578,9 +641,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of complained mailing lists
-     *
-     * @return int
+     * Returns the number of complained mailing lists.
      */
     public function getComplainedCount(): int
     {
@@ -588,9 +649,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the number of bounced mailing lists
-     *
-     * @return int
+     * Returns the number of bounced mailing lists.
      */
     public function getBouncedCount(): int
     {
@@ -598,9 +657,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the subscribed mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the subscribed mailing lists.
      */
     public function getSubscribedMailingLists(): array
     {
@@ -608,9 +665,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the subscribed mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the subscribed mailing lists.
      */
     public function getUnsubscribedMailingLists(): array
     {
@@ -618,9 +673,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the complained mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the complained mailing lists.
      */
     public function getComplainedMailingLists(): array
     {
@@ -628,9 +681,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the bounced mailing lists
-     *
-     * @return MailingListElement[]
+     * Returns the bounced mailing lists.
      */
     public function getBouncedMailingLists(): array
     {
@@ -638,9 +689,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns all mailing lists that this contact is in
-     *
-     * @return MailingListElement[]
+     * Returns all mailing lists that this contact is in.
      */
     public function getMailingLists(): array
     {
@@ -648,9 +697,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the country code
-     *
-     * @return string
+     * Returns the country code.
      */
     public function getCountryCode(): string
     {
@@ -660,7 +707,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         if ($this->complained) {
             return self::STATUS_COMPLAINED;
@@ -680,12 +727,10 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getThumbUrl(int $size)
+    public function getThumbUrl(int $size): ?string
     {
         // Get image from Gravatar, defaulting to a blank image
-        $photo = 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=blank&s='.$size;
-
-        return $photo;
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=blank&s=' . $size;
     }
 
     /**
@@ -698,34 +743,106 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
-    public function getIsEditable(): bool
+    public function prepareEditScreen(Response $response, string $containerId): void
     {
-        return true;
+        Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
+
+        /** @var Response|CpScreenResponseBehavior $response */
+        $response->selectedSubnavItem = 'contacts';
+
+        $response->crumbs([
+            [
+                'label' => Craft::t('campaign', 'Contacts'),
+                'url' => UrlHelper::url('campaign/contacts'),
+            ],
+        ]);
+
+        if ($this->complained === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/mark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as complained'),
+                [
+                    'action' => 'campaign/contacts/unmark-complained',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
+                ],
+            );
+        }
+
+        if ($this->bounced === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/mark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as bounced'),
+                [
+                    'action' => 'campaign/contacts/unmark-bounced',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
+                ],
+            );
+        }
+
+        if ($this->blocked === null) {
+            $response->addAltAction(
+                Craft::t('campaign', 'Mark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/mark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
+                ],
+            );
+        }
+        else {
+            $response->addAltAction(
+                Craft::t('campaign', 'Unmark contact as blocked'),
+                [
+                    'action' => 'campaign/contacts/unmark-blocked',
+                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
+                ],
+            );
+        }
     }
 
     /**
      * @inheritdoc
+     * @since 2.0.0
      */
-    public function getCpEditUrl()
+    protected function cpEditUrl(): ?string
     {
-        return UrlHelper::cpUrl('campaign/contacts/'.$this->id);
+        $path = sprintf('campaign/contacts/%s', $this->getCanonicalId());
+
+        // Ignore homepage/temp slugs
+        if ($this->slug && !str_starts_with($this->slug, '__')) {
+            $path .= "-$this->slug";
+        }
+
+        return UrlHelper::cpUrl($path);
     }
 
     /**
-     * Returns the contact's report URL
-     *
-     * @return string
+     * Returns the contact's report URL.
      */
     public function getReportUrl(): string
     {
-        return UrlHelper::cpUrl('campaign/reports/contacts/'.$this->id);
+        return UrlHelper::cpUrl('campaign/reports/contacts/' . $this->id);
     }
 
     /**
-     * Returns whether the contact can receive email
-     *
-     * @return bool
+     * Returns whether the contact can receive email.
      */
     public function canReceiveEmail(): bool
     {
@@ -740,41 +857,19 @@ class ContactElement extends Element
         return ['email', 'cid'];
     }
 
-    // Indexes, etc.
-    // -------------------------------------------------------------------------
-
     /**
      * @inheritdoc
      */
     protected function tableAttributeHtml(string $attribute): string
     {
-        switch ($attribute) {
-            case 'subscriptionStatus':
-                if ($this->subscriptionStatus) {
-                    return Template::raw('<label class="subscriptionStatus '.$this->subscriptionStatus.'">'.$this->subscriptionStatus.'</label>');
-                }
+        if ($attribute == 'subscriptionStatus') {
+            if ($this->subscriptionStatus) {
+                return Template::raw('<label class="subscriptionStatus ' . $this->subscriptionStatus . '">' . $this->subscriptionStatus . '</label>');
+            }
         }
 
         return parent::tableAttributeHtml($attribute);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEditorHtml(): string
-    {
-        $html = Craft::$app->getView()->renderTemplate('campaign/contacts/_includes/titlefield', [
-            'contact' => $this,
-            'settings' => Campaign::$plugin->getSettings(),
-        ]);
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
-    }
-
-    // Events
-    // -------------------------------------------------------------------------
 
     /**
      * @inheritdoc
@@ -786,29 +881,24 @@ class ContactElement extends Element
             $this->cid = StringHelper::uniqueId('c');
         }
 
-        // Set the live scenario
-        $this->setScenario(Element::SCENARIO_LIVE);
-
         return parent::beforeSave($isNew);
     }
 
     /**
      * @inheritdoc
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
-        if ($isNew) {
-            $contactRecord = new ContactRecord();
-            $contactRecord->id = $this->id;
-            $contactRecord->userId = $this->userId;
-            $contactRecord->cid = $this->cid;
-        }
-        else {
-            $contactRecord = ContactRecord::findOne($this->id);
-        }
+        if (!$this->propagating) {
+            if ($isNew) {
+                $contactRecord = new ContactRecord();
+                $contactRecord->id = $this->id;
+                $contactRecord->cid = $this->cid;
+            }
+            else {
+                $contactRecord = ContactRecord::findOne($this->id);
+            }
 
-        if ($contactRecord) {
-            // Set attributes
             $contactRecord->userId = $this->userId;
             $contactRecord->email = $this->email;
             $contactRecord->country = $this->country;
@@ -828,15 +918,8 @@ class ContactElement extends Element
         parent::afterSave($isNew);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Returns the number of mailing lists that this contact is in
-     *
-     * @param string|null $subscriptionStatus
-     *
-     * @return int
+     * Returns the number of mailing lists that this contact is in.
      */
     private function _getMailingListCount(string $subscriptionStatus = null): int
     {
@@ -848,17 +931,13 @@ class ContactElement extends Element
             $condition['subscriptionStatus'] = $subscriptionStatus;
         }
 
-        $count = ContactMailingListRecord::find()
+        return ContactMailingListRecord::find()
             ->where($condition)
             ->count();
-
-        return $count;
     }
 
     /**
-     * Returns the mailing lists that this contact is in
-     *
-     * @param string|null $subscriptionStatus
+     * Returns the mailing lists that this contact is in.
      *
      * @return MailingListElement[]
      */

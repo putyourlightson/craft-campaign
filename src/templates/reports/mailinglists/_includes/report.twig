@@ -1,0 +1,104 @@
+{% set data = craft.campaign.reports.getMailingListReportData(mailingList.id) %}
+
+<div>
+
+    <p class="light">{{ 'Mailing list created on {date}.'|t('campaign', {date: data.mailingList.dateCreated|datetime('long')}) }}</p>
+
+    {% if data.hasChart %}
+        <div class="report-chart">
+            <div class="select">
+                <select data-id="interval">
+                    <option value="minutes">{{ 'Minutes'|t('campaign') }}</option>
+                    <option value="hours" selected>{{ 'Hours'|t('campaign') }}</option>
+                    <option value="days">{{ 'Days'|t('campaign') }}</option>
+                    <option value="months" selected>{{ 'Months'|t('campaign') }}</option>
+                    <option value="years">{{ 'Years'|t('campaign') }}</option>
+                </select>
+            </div>
+            <div class="spinner big"></div>
+            <div data-id="chart"></div>
+        </div>
+
+        {% js %}
+            new Campaign.Chart({
+                action: 'campaign/reports/get-mailing-list-chart-data',
+                mailingListId: '{{ mailingList.id }}'
+            });
+        {% endjs %}
+    {% endif %}
+
+    <br/>
+
+    <h2>{{ "Mailing List Details"|t('campaign') }}</h2>
+
+    <table class="data fullwidth collapsible">
+        <tbody>
+            <tr>
+                <th class="light">{{ 'Subscribed'|t('campaign') }}</th>
+                <td>{{ data.mailingList.subscribedCount }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Unsubscribed'|t('campaign') }}</th>
+                <td>{{ data.mailingList.unsubscribedCount }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Complained'|t('campaign') }}</th>
+                <td>{{ data.mailingList.complainedCount }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ 'Bounced'|t('campaign') }}</th>
+                <td>{{ data.mailingList.bouncedCount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br/><br/>
+
+    {% set limit = 5 %}
+
+    <h2>{{ "Contact Activity"|t('campaign') }}</h2>
+    {% include 'campaign/reports/mailinglists/_includes/contact-activity' with { contactActivity: craft.campaign.reports.getMailingListContactActivity(mailingList.id, null, limit), reportUrl: url('campaign/reports/mailinglists/' ~ mailingList.id ~ '/contact-activity') } %}
+
+    <div class="cols">
+        <div class="half">
+            <h2>{{ "Locations"|t('campaign') }}</h2>
+            {% include 'campaign/reports/_includes/locations' with { locations: craft.campaign.reports.getMailingListLocations(mailingList.id, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/' ~ mailingList.id ~ '/locations') } %}
+        </div>
+
+        <div class="half">
+            <h2>{{ "Devices"|t('campaign') }}</h2>
+            {% include 'campaign/reports/_includes/devices' with { devices: craft.campaign.reports.getMailingListDevices(mailingList.id, false, limit), countLabel: 'Subscribed', reportUrl: url('campaign/reports/mailinglists/' ~ mailingList.id ~ '/devices') } %}
+        </div>
+    </div>
+    <div class="clear"></div>
+
+    <h2>{{ "Sendouts"|t('campaign') }}</h2>
+
+    <div {% if data.sendouts|length %}class="hidden"{% endif %}>
+        <p>{{ "No sendouts have been sent to this mailing list."|t('campaign') }}</p>
+    </div>
+
+    {% if data.sendouts|length %}
+        <table id="sendouts" class="data fullwidth collapsible">
+            <thead>
+                <th scope="col">{{ "Title"|t('app') }}</th>
+                <th scope="col">{{ "Sendout Type"|t('campaign') }}</th>
+                <th scope="col">{{ "Recipients"|t('campaign') }}</th>
+                <th scope="col">{{ "Send Date"|t('campaign') }}</th>
+                <th scope="col">{{ "Last Sent"|t('campaign') }}</th>
+            </thead>
+            <tbody>
+                {% for sendout in data.sendouts %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a></th>
+                        <td data-title="{{ 'Sendout Type'|t('campaign') }}">{{ sendout.sendoutType|ucfirst }}</td>
+                        <td data-title="{{ 'Recipients'|t('campaign') }}">{{ sendout.recipients }}</td>
+                        <td data-title="{{ 'Send Date'|t('campaign') }}">{{ sendout.sendDate ? sendout.sendDate|datetime }}</td>
+                        <td data-title="{{ 'Last Sent'|t('campaign') }}">{{ sendout.lastSent ? sendout.lastSent|datetime }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</div>

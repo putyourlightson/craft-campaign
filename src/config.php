@@ -19,6 +19,9 @@
 
 return [
     '*' => [
+        // Whether to enable anonymous tracking
+        //'enableAnonymousTracking' => false,
+
         // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
         //'testMode' => false,
 
@@ -56,8 +59,8 @@ return [
         // The transport type’s settings
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
-        // A label to use for the email field
-        //'emailFieldLabel' => 'Email',
+        // Default notification contact IDs
+        //'defaultNotificationContactIds' = [1],
 
         // The maximum size of sendout batches
         //'maxBatchSize' => 10000,
@@ -81,7 +84,7 @@ return [
         //'maxSendAttempts' => 3,
 
         // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
-        //'maxSendFailsAllowed' => 1,
+        //'maxSendFailuresAllowed' => 1,
 
         // The maximum number of times to attempt retrying a failed sendout job
         //'maxRetryAttempts' => 10,
@@ -98,9 +101,6 @@ return [
         // Enable reCAPTCHA to protect mailing list subscription forms from bots
         //'reCaptcha' => false,
 
-        // The reCAPTCHA version
-        //'reCaptchaVersion' => 2,
-
         // The reCAPTCHA site key
         //'reCaptchaSiteKey' => 'aBcDeFgHiJkLmNoP',
 
@@ -109,15 +109,6 @@ return [
 
         // The reCAPTCHA error message
         //'reCaptchaErrorMessage' => 'Your form submission was blocked. Please go back and verify that you are human.',
-
-        // The size of the reCAPTCHA widget
-        // 'reCaptchaSize' => 'normal',
-
-        // The color theme of the reCAPTCHA widget
-        // 'reCaptchaTheme' => 'light',
-
-        // The position of the reCAPTCHA badge (when invisible)
-        // 'reCaptchaBadge' => 'bottomright',
 
         // The maximum number of pending contacts to store per email address and mailing list
         //'maxPendingContacts' => 5,
@@ -138,5 +129,5 @@ return [
         //        'not like %v' => 'does not end with',
         //    ]
         //],
-    ]
+    ],
 ];

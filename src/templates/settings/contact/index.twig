@@ -1,0 +1,34 @@
+{% extends 'campaign/settings/_layout' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% set title = 'Contact Settings'|t('campaign') %}
+
+{% set crumbs = [] %}
+
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-contact">
+
+    {{ forms.lightswitchField({
+        first: true,
+        label: "Enable Anonymous Tracking"|t('campaign'),
+        instructions: "Whether to enable anonymous tracking of contact interactions."|t('campaign'),
+        warning: (config.enableAnonymousTracking is defined ? macros.configWarning('enableAnonymousTracking')),
+        name: 'enableAnonymousTracking',
+        on: settings.enableAnonymousTracking,
+        errors: settings.getErrors('enableAnonymousTracking'),
+    }) }}
+
+    <hr>
+
+    {{ forms.fieldLayoutDesignerField({
+        fieldLayout: fieldLayout,
+        first: true,
+    }) }}
+
+{% endblock %}

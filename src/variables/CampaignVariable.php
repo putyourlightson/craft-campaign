@@ -5,6 +5,8 @@
 
 namespace putyourlightson\campaign\variables;
 
+use craft\helpers\App;
+use craft\helpers\Template;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -21,30 +23,15 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
+
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\ReportsService;
-
-use Craft;
-use craft\helpers\Template;
 use Twig\Markup;
-use yii\web\ForbiddenHttpException;
 
-/**
- * CampaignVariable
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class CampaignVariable
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Returns true if pro version
-     *
-     * @return bool
+     * Returns true if pro version.
      */
     public function getIsPro(): bool
     {
@@ -52,19 +39,15 @@ class CampaignVariable
     }
 
     /**
-     * Throws an exception if the plugin edition is not pro
-     *
-     * @throws ForbiddenHttpException
+     * Throws an exception if the plugin edition is not pro.
      */
-    public function requirePro()
+    public function requirePro(): void
     {
         Campaign::$plugin->requirePro();
     }
 
     /**
-     * Returns campaign element query
-     *
-     * @return CampaignElementQuery
+     * Returns a campaign element query.
      */
     public function getCampaigns(): CampaignElementQuery
     {
@@ -72,9 +55,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns contact element query
-     *
-     * @return ContactElementQuery
+     * Returns a contact element query.
      */
     public function getContacts(): ContactElementQuery
     {
@@ -82,9 +63,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns mailing list element query
-     *
-     * @return MailingListElementQuery
+     * Returns a mailing list element query.
      */
     public function getMailingLists(): MailingListElementQuery
     {
@@ -92,9 +71,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns segment element query
-     *
-     * @return SegmentElementQuery
+     * Returns a segment element query.
      */
     public function getSegments(): SegmentElementQuery
     {
@@ -102,9 +79,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns sendout element query
-     *
-     * @return SendoutElementQuery
+     * Returns a sendout element query.
      */
     public function getSendouts(): SendoutElementQuery
     {
@@ -112,9 +87,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns reports service
-     *
-     * @return ReportsService
+     * Returns the reports service.
      */
     public function getReports(): ReportsService
     {
@@ -122,21 +95,15 @@ class CampaignVariable
     }
 
     /**
-     * Returns campaign by ID
-     *
-     * @param int $campaignId
-     *
-     * @return CampaignElement|null
+     * Returns a campaign by ID.
      */
-    public function getCampaignById(int $campaignId)
+    public function getCampaignById(int $campaignId): ?CampaignElement
     {
         return Campaign::$plugin->campaigns->getCampaignById($campaignId);
     }
 
     /**
-     * Returns all campaign types
-     *
-     * @return array
+     * Returns all campaign types.
      */
     public function getAllCampaignTypes(): array
     {
@@ -144,45 +111,31 @@ class CampaignVariable
     }
 
     /**
-     * Returns campaign type by ID
-     *
-     * @param int $campaignTypeId
-     *
-     * @return CampaignTypeModel|null
+     * Returns a campaign type by ID.
      */
-    public function getCampaignTypeById(int $campaignTypeId)
+    public function getCampaignTypeById(int $campaignTypeId): ?CampaignTypeModel
     {
         return Campaign::$plugin->campaignTypes->getCampaignTypeById($campaignTypeId);
     }
 
     /**
-     * Returns contact by ID
-     *
-     * @param int $contactId
-     *
-     * @return ContactElement|null
+     * Returns a contact by ID.
      */
-    public function getContactById(int $contactId)
+    public function getContactById(int $contactId): ?ContactElement
     {
         return Campaign::$plugin->contacts->getContactById($contactId);
     }
 
     /**
-     * Returns mailing list by ID
-     *
-     * @param int $mailingListId
-     *
-     * @return MailingListElement|null
+     * Returns a mailing list by ID.
      */
-    public function getMailingListById(int $mailingListId)
+    public function getMailingListById(int $mailingListId): ?MailingListElement
     {
         return Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
     }
 
     /**
-     * Returns all mailing lists across all sites
-     *
-     * @return MailingListElement[]
+     * Returns all mailing lists across all sites.
      */
     public function getAllMailingLists(): array
     {
@@ -190,9 +143,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns all mailing list types
-     *
-     * @return array
+     * Returns all mailing list types.
      */
     public function getAllMailingListTypes(): array
     {
@@ -200,33 +151,23 @@ class CampaignVariable
     }
 
     /**
-     * Returns mailing list type by ID
-     *
-     * @param int $mailingListTypeId
-     *
-     * @return MailingListTypeModel|null
+     * Returns a mailing list type by ID.
      */
-    public function getMailingListTypeById(int $mailingListTypeId)
+    public function getMailingListTypeById(int $mailingListTypeId): ?MailingListTypeModel
     {
         return Campaign::$plugin->mailingListTypes->getMailingListTypeById($mailingListTypeId);
     }
 
     /**
-     * Returns segment by ID
-     *
-     * @param int $segmentId
-     *
-     * @return SegmentElement|null
+     * Returns a segment by ID.
      */
-    public function getSegmentById(int $segmentId)
+    public function getSegmentById(int $segmentId): ?SegmentElement
     {
         return Campaign::$plugin->segments->getSegmentById($segmentId);
     }
 
     /**
-     * Returns all segment types
-     *
-     * @return array
+     * Returns all segment types.
      */
     public function getAllSegmentTypes(): array
     {
@@ -234,21 +175,15 @@ class CampaignVariable
     }
 
     /**
-     * Returns sendout by ID
-     *
-     * @param int $sendoutId
-     *
-     * @return SendoutElement|null
+     * Returns a sendout by ID.
      */
-    public function getSendoutById(int $sendoutId)
+    public function getSendoutById(int $sendoutId): ?SendoutElement
     {
         return Campaign::$plugin->sendouts->getSendoutById($sendoutId);
     }
 
     /**
-     * Returns all sendout types
-     *
-     * @return array
+     * Returns all sendout types.
      */
     public function getAllSendoutTypes(): array
     {
@@ -256,9 +191,7 @@ class CampaignVariable
     }
 
     /**
-     * Returns all imports
-     *
-     * @return array
+     * Returns all imports.
      */
     public function getAllImports(): array
     {
@@ -266,86 +199,56 @@ class CampaignVariable
     }
 
     /**
-     * Returns import by ID
-     *
-     * @param int $importId
-     *
-     * @return ImportModel|null
+     * Returns an import by ID.
      */
-    public function getImportById(int $importId)
+    public function getImportById(int $importId): ?ImportModel
     {
         return Campaign::$plugin->imports->getImportById($importId);
     }
 
     /**
-     * Returns reCAPTCHA markup
-     *
-     * @return Markup
+     * Returns reCAPTCHA markup.
      */
     public function getRecaptcha(): Markup
     {
         $output = '';
-        $settings = Campaign::$plugin->getSettings();
+        $settings = Campaign::$plugin->settings;
 
         if ($settings->reCaptcha) {
-            $id = 'campaign-recaptcha-'.StringHelper::randomString(6);
-            $reCaptchaSiteKey = Craft::parseEnv($settings->reCaptchaSiteKey);
+            $id = 'campaign-recaptcha-' . StringHelper::randomString(6);
+            $reCaptchaSiteKey = App::parseEnv($settings->reCaptchaSiteKey);
 
-            // TODO: only allow reCAPTCHA v3 in 2.0.0
-            if ($settings->reCaptchaVersion == 3) {
-                $output = '
-                    <input id="'.$id.'" type="hidden" name="g-recaptcha-response" value="">
-                    <script src="https://www.google.com/recaptcha/api.js?render='.$reCaptchaSiteKey.'"></script>
-                    <script>
-                        grecaptcha.ready(function() {
-                            grecaptcha.execute("'.$reCaptchaSiteKey.'", {
-                                action: "'.RecaptchaHelper::RECAPTCHA_ACTION.'"
-                            }).then(function(token) {
-                                document.getElementById("'.$id.'").value = token;
-                            });
+            $output = '
+                <input id="' . $id . '" type="hidden" name="g-recaptcha-response" value="">
+                <script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSiteKey . '"></script>
+                <script>
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute("' . $reCaptchaSiteKey . '", {
+                            action: "' . RecaptchaHelper::RECAPTCHA_ACTION . '"
+                        }).then(function(token) {
+                            document.getElementById("' . $id . '").value = token;
                         });
-                    </script>
-                ';
-            }
-            else {
-                $output = '
-                    <div id="'.$id.'"></div>
-                    <script type="text/javascript">
-                        var onloadCampaignRecaptchaCallback = function() {
-                            var widgetId = grecaptcha.render("'.$id.'", {
-                                sitekey : "'.$reCaptchaSiteKey.'",
-                                size : "'.$settings->reCaptchaSize.'",
-                                theme : "'.$settings->reCaptchaTheme.'",
-                                badge : "'.$settings->reCaptchaBadge.'",
-                            });
-                            '.($settings->reCaptchaSize == 'invisible' ? 'grecaptcha.execute(widgetId);' : '').'
-                        };
-                    </script>
-                    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCampaignRecaptchaCallback&render=explicit&hl='.Craft::$app->getSites()->getCurrentSite()->language.'" async defer></script>
-                ';
-            }
+                    });
+                </script>
+            ';
         }
 
         return Template::raw($output);
     }
 
     /**
-     * Returns reCAPTCHA site key
-     *
-     * @return string
+     * Returns reCAPTCHA site key.
      */
     public function getRecaptchaSiteKey(): string
     {
-        return Craft::parseEnv(Campaign::$plugin->getSettings()->reCaptchaSiteKey);
+        return App::parseEnv(Campaign::$plugin->settings->reCaptchaSiteKey);
     }
 
     /**
-     * Returns plugin settings
-     *
-     * @return SettingsModel
+     * Returns plugin settings.
      */
     public function getSettings(): SettingsModel
     {
-        return Campaign::$plugin->getSettings();
+        return Campaign::$plugin->settings;
     }
 }

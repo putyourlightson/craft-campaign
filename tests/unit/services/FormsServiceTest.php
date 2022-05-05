@@ -10,51 +10,39 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\PendingContactRecord;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\PendingContactsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class FormsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'pendingContacts' => [
-                'class' => PendingContactsFixture::class
+                'class' => PendingContactsFixture::class,
             ],
         ];
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testSendVerifySubscribeEmail()
+    public function testSendVerifySubscribeEmail(): void
     {
         $pendingContactRecord = PendingContactRecord::find()
             ->where(['email' => 'pending1@contacts.com'])
             ->one();
 
-        /** @var PendingContactModel $pendingContact */
-        $pendingContact = PendingContactModel::populateModel($pendingContactRecord, false);
+        $pendingContact = new PendingContactModel();
+        $pendingContact->setAttributes($pendingContactRecord->getAttributes(), false);
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($pendingContact->mailingListId);
 
         Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
@@ -66,10 +54,10 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertEquals($mailingList->mailingListType->subscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
-        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->getSwiftMessage()->toString());
+        $this->assertStringContainsString('campaign/forms/verify-subscribe', $this->message->toString());
     }
 
-    public function testSendVerifyUnsubscribeEmail()
+    public function testSendVerifyUnsubscribeEmail(): void
     {
         $contact = ContactElement::find()->one();
         $mailingList = MailingListElement::find()->mailingListType('mailingListType2')->one();
@@ -83,10 +71,10 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertEquals($mailingList->mailingListType->unsubscribeVerificationEmailSubject, $this->message->getSubject());
 
         // Assert that the message body contains the correct controller action ID
-        $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->getSwiftMessage()->toString());
+        $this->assertStringContainsString('campaign/forms/verify-unsubscribe', $this->message->toString());
     }
 
-    public function testSubscribeUnsubscribeContact()
+    public function testSubscribeUnsubscribeContact(): void
     {
         $contact = ContactElement::find()->one();
         $mailingList = MailingListElement::find()->one();
@@ -107,7 +95,7 @@ class FormsServiceTest extends BaseUnitTest
         $this->assertEquals(0, $contact->getSubscribedCount());
     }
 
-    public function testUpdateContact()
+    public function testUpdateContact(): void
     {
         $contact = ContactElement::find()->one();
 

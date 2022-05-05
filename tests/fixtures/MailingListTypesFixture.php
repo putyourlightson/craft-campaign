@@ -9,16 +9,10 @@ use craft\test\ActiveFixture;
 use putyourlightson\campaign\records\MailingListTypeRecord;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class MailingListTypesFixture extends ActiveFixture
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

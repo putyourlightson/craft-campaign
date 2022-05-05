@@ -1,0 +1,43 @@
+{% if contactActivity|length %}
+    <table id="contacts" class="display nowrap {{ limit is defined ? 'data fullwidth collapsible' : 'hidden' }}">
+        <thead>
+            <th scope="col">{{ "Contact"|t('campaign') }}</th>
+            <th scope="col">{{ "Subscribed"|t('campaign') }}</th>
+            <th scope="col">{{ "Unsubscribed"|t('campaign') }}</th>
+            <th scope="col">{{ "Complained"|t('campaign') }}</th>
+            <th scope="col">{{ "Bounced"|t('campaign') }}</th>
+            <th scope="col">{{ "Last Activity"|t('campaign') }}</th>
+        </thead>
+        <tbody>
+        {% for contact in contactActivity %}
+            <tr>
+                <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                <td data-title="{{ 'Subscribed'|t('campaign') }}">{{ contact.subscribedCount }}</td>
+                <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ contact.unsubscribedCount }}</td>
+                <td data-title="{{ 'Complained'|t('campaign') }}">{{ contact.complainedCount }}</td>
+                <td data-title="{{ 'Bounced'|t('campaign') }}">{{ contact.bouncedCount }}</td>
+                <td data-order="{{ contact.lastActivity|datetime('U') }}" data-title="{{ 'Last Activity'|t('campaign') }}">{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if limit is defined %}
+        {% if limit == contactActivity|length and reportUrl is defined %}
+            <p><a href="{{ reportUrl }}" class="go">{{ "View all"|t('campaign') }}</a></p>
+        {% endif %}
+    {% else %}
+        {{ include('campaign/reports/_includes/datatable', {
+            id: 'contacts',
+            itemName: 'contacts'|t('campaign'),
+            order: 5,
+        }) }}
+    {% endif %}
+
+{% else %}
+
+    <p>{{ "No contact activity."|t('campaign') }}</p>
+
+{% endif %}
+
+<br/><br/>

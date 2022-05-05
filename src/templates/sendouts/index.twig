@@ -1,0 +1,17 @@
+{% extends 'campaign/sendouts/_layout' %}
+
+{% set elementType = 'putyourlightson\\campaign\\elements\\SendoutElement' %}
+{% set title = 'Sendouts'|t('campaign') %}
+{% set canHaveDrafts = true %}
+
+{% do view.registerTranslations('campaign', [
+    'New sendout',
+    'New {sendoutType} sendout',
+]) %}
+
+
+{% if sendoutType is defined %}
+    {% js %}
+        window.defaultSendoutTypeHandle = '{{ sendoutType|e('js') }}';
+    {% endjs %}
+{% endif %}

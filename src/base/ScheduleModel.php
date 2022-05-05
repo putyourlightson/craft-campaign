@@ -5,63 +5,61 @@
 
 namespace putyourlightson\campaign\base;
 
+use Craft;
+use craft\base\Model;
+use craft\elements\conditions\ElementConditionInterface;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use DateTime;
+use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * ScheduleModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.2.0
- *
- * @property array $intervalOptions
+ * @property ElementConditionInterface|array|string|null $condition
+ * @property-read array $intervalOptions
  */
-abstract class ScheduleModel extends BaseModel implements ScheduleInterface
+abstract class ScheduleModel extends Model implements ScheduleInterface
 {
-    // Properties
-    // =========================================================================
-
     /**
-     * @var bool Can send to contacts multiple times
+     * @var bool Whether contacts can be sent to multiple times
      */
-    public $canSendToContactsMultipleTimes = false;
+    public bool $canSendToContactsMultipleTimes = false;
 
     /**
      * @var DateTime|null End date
      */
-    public $endDate;
+    public ?DateTime $endDate = null;
 
     /**
      * @var array|null Days of the week
      */
-    public $daysOfWeek;
+    public ?array $daysOfWeek = null;
 
     /**
      * @var DateTime|null Time of day
      */
-    public $timeOfDay;
+    public ?DateTime $timeOfDay = null;
 
-    // Public Methods
-    // =========================================================================
+    /**
+     * @var ElementConditionInterface|null
+     * @see getCondition()
+     * @see setCondition()
+     */
+    private ?ElementConditionInterface $_condition = null;
 
     /**
      * @inheritdoc
      */
-    public function datetimeAttributes(): array
+    public function getAttributes($names = null, $except = []): array
     {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'endDate';
-        $attributes[] = 'timeOfDay';
+        $attributes = parent::getAttributes($names, $except);
+        $attributes['condition'] = $this->getCondition()->getConfig();
 
         return $attributes;
     }
 
     /**
-     * Returns the schedule's interval options
-     *
-     * @return array
+     * Returns the schedule's interval options.
      */
     public function getIntervalOptions(): array
     {
@@ -69,13 +67,34 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
     }
 
     /**
-     * @inheritdoc
+     * Returns the sendout condition.
      */
-    public function rules(): array
+    public function getCondition(): ElementConditionInterface
     {
-        return [
-            [['canSendToContactsMultipleTimes'], 'boolean'],
-        ];
+        $condition = $this->_condition ?? Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
+        $condition->mainTag = 'div';
+        $condition->name = 'condition';
+
+        return $condition;
+    }
+
+    /**
+     * Sets the sendout condition.
+     */
+    public function setCondition(ElementConditionInterface|array|string|null $condition): void
+    {
+        if (is_string($condition)) {
+            $condition = Json::decodeIfJson($condition);
+        }
+
+        if (!$condition instanceof ElementConditionInterface) {
+            $condition['class'] = SendoutScheduleCondition::class;
+            $condition = Craft::$app->getConditions()->createCondition($condition);
+        }
+        $condition->forProjectConfig = false;
+
+        /** @var SendoutScheduleCondition $condition */
+        $this->_condition = $condition;
     }
 
     /**
@@ -103,6 +122,22 @@ abstract class ScheduleModel extends BaseModel implements ScheduleInterface
             }
         }
 
+        // Ensure sendout passes condition rules
+        if (!$this->getCondition()->matchElement($sendout)) {
+            return false;
+        }
+
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defineRules(): array
+    {
+        return [
+            [['canSendToContactsMultipleTimes'], 'boolean'],
+            [['endDate', 'daysOfWeek', 'timeOfDay', 'condition'], 'safe'],
+        ];
     }
 }

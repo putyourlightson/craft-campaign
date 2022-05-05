@@ -21,16 +21,10 @@ use putyourlightson\campaign\records\MailingListTypeRecord;
 use yii\swiftmailer\Message;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class BaseFunctionalCest
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var FunctionalTester
      */
@@ -75,9 +69,6 @@ class BaseFunctionalCest
      * @var Message
      */
     protected $message;
-
-    // Protected methods
-    // =========================================================================
 
     /**
      * Set up the class properties before running all tests
@@ -152,7 +143,7 @@ class BaseFunctionalCest
             Campaign::$plugin,
             'mailer',
             [
-                'send' => function (Message $message) {
+                'send' => function(Message $message) {
                     if ($message->getSubject() == 'Fail') {
                         return false;
                     }
@@ -160,7 +151,7 @@ class BaseFunctionalCest
                     $this->message = $message;
 
                     return true;
-                }
+                },
             ]
         );
     }

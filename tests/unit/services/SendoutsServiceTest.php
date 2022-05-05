@@ -6,70 +6,64 @@
 namespace putyourlightson\campaigntests\unit\services;
 
 use Craft;
+use craft\base\conditions\BaseCondition;
+use craft\elements\conditions\TitleConditionRule;
+use craft\events\RegisterConditionRuleTypesEvent;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
+use craft\queue\Queue;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaigntests\unit\BaseUnitTest;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaigntests\fixtures\CampaignsFixture;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
 use putyourlightson\campaigntests\fixtures\MailingListsFixture;
 use putyourlightson\campaigntests\fixtures\SendoutsFixture;
+use putyourlightson\campaigntests\unit\BaseUnitTest;
+use yii\base\Event;
 
 /**
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.10.0
+ * @since 1.10.0
  */
-
 class SendoutsServiceTest extends BaseUnitTest
 {
-    // Fixtures
-    // =========================================================================
-
-    /**
-     * @return array
-     */
     public function _fixtures(): array
     {
         return [
             'mailingLists' => [
-                'class' => MailingListsFixture::class
+                'class' => MailingListsFixture::class,
             ],
             'contacts' => [
-                'class' => ContactsFixture::class
+                'class' => ContactsFixture::class,
             ],
             'campaigns' => [
-                'class' => CampaignsFixture::class
+                'class' => CampaignsFixture::class,
             ],
             'sendouts' => [
-                'class' => SendoutsFixture::class
+                'class' => SendoutsFixture::class,
             ],
         ];
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var SendoutElement
      */
-    protected $sendout;
+    protected SendoutElement $sendout;
 
     /**
      * @var ContactElement
      */
-    protected $contact;
+    protected ContactElement $contact;
 
     /**
      * @var MailingListElement
      */
-    protected $mailingList;
+    protected MailingListElement $mailingList;
 
-    // Protected methods
-    // =========================================================================
-
-    protected function _before()
+    protected function _before(): void
     {
         parent::_before();
 
@@ -80,7 +74,7 @@ class SendoutsServiceTest extends BaseUnitTest
         Campaign::$plugin->edition = Campaign::EDITION_PRO;
 
         // Set sendout's mailing list
-        $this->sendout->mailingListIds = $this->mailingList->id;
+        $this->sendout->mailingListIds = [$this->mailingList->id];
 
         // Subscribe contacts (including trashed) to all mailing lists
         $mailingLists = MailingListElement::find()->all();
@@ -92,82 +86,98 @@ class SendoutsServiceTest extends BaseUnitTest
         }
     }
 
-    // Public methods
-    // =========================================================================
-
-    public function testGetPendingRecipients()
+    public function testGetPendingRecipients(): void
     {
+        $this->contact->bounced = null;
+        $this->contact->complained = null;
+        Craft::$app->elements->saveElement($this->contact);
         $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
-
-        // Assert that the number of pending recipients is correct
         $this->assertEquals(1, $count);
     }
 
-    public function testGetPendingRecipientsRemoved()
+    public function testGetPendingRecipientsRemoved(): void
     {
         Campaign::$plugin->mailingLists->deleteContactSubscription($this->contact, $this->mailingList);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
-    public function testGetPendingRecipientsUnsubscribed()
+    public function testGetPendingRecipientsUnsubscribed(): void
     {
         Campaign::$plugin->mailingLists->addContactInteraction($this->contact, $this->mailingList, 'unsubscribed');
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
-    public function testGetPendingRecipientsSoftDeleted()
+    public function testGetPendingRecipientsSoftDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
-    public function testGetPendingRecipientsHardDeleted()
+    public function testGetPendingRecipientsHardDeleted(): void
     {
         Craft::$app->getElements()->deleteElement($this->contact, true);
-
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this->sendout);
-
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $pendingRecipients);
     }
 
-    public function testGetPendingRecipientsAutomated()
+    public function testGetPendingRecipientsAutomated(): void
     {
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
-        // Expect this to return 0 since the contact subscribed less than the delay
-        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($sendout);
+        // Modify creation date and send date to 3 minutes ago so we can test
+        $dateTime = DateTimeHelper::toDateTime(strtotime('-3 minutes'));
+        $sendout->sendDate = $dateTime;
+        $sendout->dateCreated = $dateTime;
 
-        // Assert that the number of pending recipients is correct
-        $this->assertEmpty($pendingRecipients);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(0, $pendingRecipients);
+
+        // Modify subscription dates to 2 minutes ago
+        ContactMailingListRecord::updateAll([
+            'subscribed' => Db::prepareDateForDb(strtotime('-2 minutes')),
+        ]);
+        $pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
+        $this->assertEquals(1, $pendingRecipients);
+
+        $this->assertTrue($sendout->getCanSendNow());
+
+        Event::on(
+            SendoutScheduleCondition::class,
+            BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
+            function (RegisterConditionRuleTypesEvent $event) {
+                $event->conditionRuleTypes[] = TitleConditionRule::class;
+            }
+        );
+        $condition = Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
+        $condition->setConditionRules([
+            new TitleConditionRule([
+                'value' => 'Not a real title',
+            ]),
+        ]);
+        $sendout->getSchedule()->setCondition($condition);
+
+        $this->assertFalse($sendout->getCanSendNow());
     }
 
-    public function testQueuePendingSendouts()
+    public function testQueuePendingSendouts(): void
     {
         $sendoutCount = SendoutElement::find()->sendoutType('regular')->count();
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
-
-        // Assert that the number of queued sendouts is correct
         $this->assertEquals($sendoutCount, $count);
 
         $queuedSendouts = SendoutElement::find()->status(SendoutElement::STATUS_QUEUED)->count();
-
-        // Assert that the sendout status is correct
         $this->assertEquals($sendoutCount, $queuedSendouts);
 
         // Assert that the job was pushed onto the queue
-        $this->assertTrue(Craft::$app->getQueue()->getHasWaitingJobs());
+        /** @var Queue $queue */
+        $queue = Craft::$app->getQueue();
+        $this->assertTrue($queue->getHasWaitingJobs());
     }
 
-    public function testSendEmailSent()
+    public function testSendEmailSent(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -183,19 +193,19 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals($this->sendout->subject, $this->message->getSubject());
 
         // Get the message body, removing email body nastiness
-        $body = $this->message->getSwiftMessage()->toString();
+        $body = $this->message->toString();
         $body = str_replace(['3D', "=\r\n"], '', $body);
 
         // Assert that the message body contains a link with the correct IDs
-        $this->assertStringContainsStringIgnoringCase('&amp;cid='.$this->contact->cid, $body);
-        $this->assertStringContainsStringIgnoringCase('&amp;sid='.$this->sendout->sid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;cid=' . $this->contact->cid, $body);
+        $this->assertStringContainsStringIgnoringCase('&amp;sid=' . $this->sendout->sid, $body);
         $this->assertStringContainsStringIgnoringCase('&amp;lid=', $body);
 
         // Assert that the message body contains the tracking image
         $this->assertStringContainsStringIgnoringCase('campaign/t/open', $body);
     }
 
-    public function testSendEmailFailed()
+    public function testSendEmailFailed(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -204,7 +214,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         // Set send attempts and fails to 1
         Campaign::$plugin->getSettings()->maxSendAttempts = 1;
-        Campaign::$plugin->getSettings()->maxSendFailsAllowed = 1;
+        Campaign::$plugin->getSettings()->maxSendFailuresAllowed = 1;
 
         Campaign::$plugin->sendouts->sendEmail($this->sendout, $this->contact, $this->mailingList->id);
 
@@ -212,13 +222,13 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNull($this->message);
 
         // Assert that the number of fails is 1
-        $this->assertEquals(1, $this->sendout->fails);
+        $this->assertEquals(1, $this->sendout->failures);
 
         // Assert that the send status is failed
         $this->assertEquals(SendoutElement::STATUS_FAILED, $this->sendout->sendStatus);
     }
 
-    public function testSendEmailTemplateError()
+    public function testSendEmailTemplateError(): void
     {
         $sendout2 = SendoutElement::find()->title('Sendout 2')->one();
         $sendout2->sendStatus = SendoutElement::STATUS_SENDING;
@@ -229,7 +239,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertEquals(SendoutElement::STATUS_FAILED, $sendout2->sendStatus);
     }
 
-    public function testSendEmailDuplicate()
+    public function testSendEmailDuplicate(): void
     {
         $this->sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
@@ -246,10 +256,11 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNull($this->message);
     }
 
-    public function testSendNotificationSent()
+    public function testSendNotificationSent(): void
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_SENT;
+        $this->sendout->notificationContactIds = [$this->contact->id];
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
@@ -257,16 +268,17 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNotNull($this->message);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsString('completed', $this->message->getSubject());
     }
 
-    public function testSendNotificationFailed()
+    public function testSendNotificationFailed(): void
     {
         $this->sendout = SendoutElement::find()->one();
         $this->sendout->sendStatus = SendoutElement::STATUS_FAILED;
+        $this->sendout->notificationContactIds = [$this->contact->id];
 
         Campaign::$plugin->sendouts->sendNotification($this->sendout);
 
@@ -274,7 +286,7 @@ class SendoutsServiceTest extends BaseUnitTest
         $this->assertNotNull($this->message);
 
         // Assert that the message recipient is correct
-        $this->assertArrayHasKey($this->sendout->notificationEmailAddress, $this->message->getTo());
+        $this->assertArrayHasKey($this->contact->email, $this->message->getTo());
 
         // Assert that the message subject is correct
         $this->assertStringContainsStringIgnoringCase('failed', $this->message->getSubject());

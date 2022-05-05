@@ -1,0 +1,20 @@
+<div>
+    {% if mailingLists|length %}
+        <table id="mailinglists" class="data fullwidth collapsible">
+            <thead>
+                <th scope="col">{{ 'Title'|t('app') }}</th>
+                <th scope="col">{{ 'Subscription Status'|t('campaign') }}</th>
+                <td class="thin"></td>
+                <td class="thin"></td>
+            </thead>
+            <tbody>
+                {% for mailingList in mailingLists %}
+                    {% set primaryElementType = 'mailingList' %}
+                    {% include 'campaign/_includes/contact-mailing-list-subscribe-row' %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "No mailing lists exist."|t('campaign') }}</p>
+    {% endif %}
+</div>

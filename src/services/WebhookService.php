@@ -5,39 +5,20 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\errors\ElementNotFoundException;
-use DateTime;
-use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
-
 use Craft;
 use craft\base\Component;
-use putyourlightson\campaign\records\ContactCampaignRecord;
-use Throwable;
-use yii\base\Exception;
+use DateTime;
 
-/**
- * WebhookService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\records\ContactCampaignRecord;
+
 class WebhookService extends Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Complain
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as complained.
      */
-    public function complain(ContactElement $contact)
+    public function complain(ContactElement $contact): void
     {
         Campaign::$plugin->log('Contact {email} marked as "complained".', ['email' => $contact->email]);
 
@@ -45,15 +26,9 @@ class WebhookService extends Component
     }
 
     /**
-     * Bounce
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as bounced.
      */
-    public function bounce(ContactElement $contact)
+    public function bounce(ContactElement $contact): void
     {
         Campaign::$plugin->log('Contact {email} marked as "bounced".', ['email' => $contact->email]);
 
@@ -61,35 +36,19 @@ class WebhookService extends Component
     }
 
     /**
-     * Unsubscribe
-     *
-     * @param ContactElement $contact
-     *
-     * @throws ElementNotFoundException
-     * @throws Exception
-     * @throws Throwable
+     * Marks a contact as unsubscribed.
      */
-    public function unsubscribe(ContactElement $contact)
+    public function unsubscribe(ContactElement $contact): void
     {
         Campaign::$plugin->log('Contact {email} marked as "unsubscribed".', ['email' => $contact->email]);
 
         $this->_addInteraction($contact, 'unsubscribed');
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Add interaction
-     *
-     * @param ContactElement $contact
-     * @param string $interaction
-     *
-     * @throws Throwable
-     * @throws ElementNotFoundException
-     * @throws Exception
+     * Adds an interaction.
      */
-    private function _addInteraction(ContactElement $contact, string $interaction)
+    private function _addInteraction(ContactElement $contact, string $interaction): void
     {
         // Get all contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()
@@ -114,7 +73,7 @@ class WebhookService extends Component
         }
 
         // Update contact
-        if (isset($contact->{$interaction}) && $contact->{$interaction} === null) {
+        if (empty($contact->{$interaction})) {
             $contact->{$interaction} = new DateTime();
 
             Craft::$app->getElements()->saveElement($contact);

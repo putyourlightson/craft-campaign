@@ -5,7 +5,7 @@
 
 namespace putyourlightson\campaign\services;
 
-use craft\errors\DeprecationException;
+use craft\base\Component;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -13,70 +13,25 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\helpers\ContactActivityHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
-use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
+use putyourlightson\campaign\records\LinkRecord;
 
-use Craft;
-use craft\base\Component;
-use Throwable;
-
-/**
- * TrackerService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- */
 class TrackerService extends Component
 {
-    // Constants
-    // =========================================================================
-
     /**
-     * @event SubscribeContactEvent
-     * @deprecated in 1.10.0
+     * @event UnsubscribeContactEvent
      */
-    const EVENT_BEFORE_SUBSCRIBE_CONTACT = 'beforeSubscribeContact';
-
-    /**
-     * @event SubscribeContactEvent
-     * @deprecated in 1.10.0
-     */
-    const EVENT_AFTER_SUBSCRIBE_CONTACT = 'afterSubscribeContact';
+    public const EVENT_BEFORE_UNSUBSCRIBE_CONTACT = 'beforeUnsubscribeContact';
 
     /**
      * @event UnsubscribeContactEvent
      */
-    const EVENT_BEFORE_UNSUBSCRIBE_CONTACT = 'beforeUnsubscribeContact';
+    public const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
 
     /**
-     * @event UnsubscribeContactEvent
+     * Tracks an open.
      */
-    const EVENT_AFTER_UNSUBSCRIBE_CONTACT = 'afterUnsubscribeContact';
-
-    /**
-     * @event UpdateContactEvent
-     * @deprecated in 1.10.0
-     */
-    const EVENT_BEFORE_UPDATE_CONTACT = 'beforeUpdateContact';
-
-    /**
-     * @event UpdateContactEvent
-     * @deprecated in 1.10.0
-     */
-    const EVENT_AFTER_UPDATE_CONTACT = 'afterUpdateContact';
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Open
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @throws Throwable
-     */
-    public function open(ContactElement $contact, SendoutElement $sendout)
+    public function open(ContactElement $contact, SendoutElement $sendout): void
     {
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'opened');
@@ -86,14 +41,9 @@ class TrackerService extends Component
     }
 
     /**
-     * Click
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @param LinkRecord $linkRecord
-     * @throws Throwable
+     * Tracks a click.
      */
-    public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord)
+    public function click(ContactElement $contact, SendoutElement $sendout, LinkRecord $linkRecord): void
     {
         // Add contact interaction to campaign
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'clicked', $linkRecord);
@@ -103,14 +53,9 @@ class TrackerService extends Component
     }
 
     /**
-     * Unsubscribe
-     *
-     * @param ContactElement $contact
-     * @param SendoutElement $sendout
-     * @return MailingListElement|null
-     * @throws Throwable
+     * Tracks an unsubscribe.
      */
-    public function unsubscribe(ContactElement $contact, SendoutElement $sendout)
+    public function unsubscribe(ContactElement $contact, SendoutElement $sendout): ?MailingListElement
     {
         $contactCampaignRecord = ContactCampaignRecord::find()
             ->where([
@@ -123,8 +68,8 @@ class TrackerService extends Component
             return null;
         }
 
-        /** @var ContactCampaignModel $contactCampaign */
-        $contactCampaign = ContactCampaignModel::populateModel($contactCampaignRecord, false);
+        $contactCampaign = new ContactCampaignModel();
+        $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
 
         $mailingList = $contactCampaign->getMailingList();
 
@@ -154,40 +99,5 @@ class TrackerService extends Component
         }
 
         return $mailingList;
-    }
-
-    /**
-     * Subscribe
-     *
-     * @param ContactElement $contact
-     * @param MailingListElement $mailingList
-     * @param string|null $sourceType
-     * @param string|null $source
-     * @param bool|null $verify
-     *
-     * @throws DeprecationException
-     * @deprecated in 1.10.0. Use [[FormsService::subscribeContact()]] instead.
-     */
-    public function subscribe(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null)
-    {
-        Craft::$app->getDeprecator()->log('TrackerService::subscribe()', 'The “TrackerService::subscribe()” method has been deprecated. Use “FormsService::subscribeContact()” instead.');
-
-        Campaign::$plugin->forms->subscribeContact($contact, $mailingList, $sourceType, $source, $verify);
-    }
-
-    /**
-     * Updates a contact
-     *
-     * @param ContactElement $contact
-     *
-     * @return bool
-     * @throws DeprecationException
-     * @deprecated in 1.10.0. Use [[FormsService::updateContact()]] instead.
-     */
-    public function updateContact(ContactElement $contact): bool
-    {
-        Craft::$app->getDeprecator()->log('TrackerService::updateContact()', 'The “TrackerService::updateContact()” method has been deprecated. Use “FormsService::updateContact()” instead.');
-
-        return Campaign::$plugin->forms->updateContact($contact);
     }
 }

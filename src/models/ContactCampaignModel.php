@@ -5,9 +5,9 @@
 
 namespace putyourlightson\campaign\models;
 
+use craft\base\Model;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\base\BaseModel;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -15,171 +15,130 @@ use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
 
 /**
- * ContactCampaignModel
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property ContactElement $contact
- * @property string $interaction
- * @property CampaignElement $campaign
- * @property string $interactions
- * @property MailingListElement|null $mailingList
- * @property SendoutElement|null $sendout
- * @property array $location
+ * @property-read SendoutElement|null $sendout
+ * @property-read null|ContactElement $contact
+ * @property-read string $interaction
+ * @property-read null|CampaignElement $campaign
+ * @property-read null|MailingListElement $mailingList
+ * @property-read array $interactions
  */
-class ContactCampaignModel extends BaseModel
+class ContactCampaignModel extends Model
 {
-    // Constants
-    // =========================================================================
-
-    const INTERACTIONS = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced'];
-
-    // Properties
-    // =========================================================================
+    /**
+     * @const array
+     */
+    public const INTERACTIONS = ['opened', 'clicked', 'unsubscribed', 'complained', 'bounced'];
 
     /**
      * @var int|null ID
      */
-    public $id;
+    public ?int $id;
 
     /**
-     * @var int Contact ID
+     * @var int|null Contact ID
      */
-    public $contactId;
+    public ?int $contactId;
 
     /**
-     * @var int Campaign ID
+     * @var int|null Campaign ID
      */
-    public $campaignId;
+    public ?int $campaignId;
 
     /**
-     * @var int Sendout ID
+     * @var int|null Sendout ID
      */
-    public $sendoutId;
+    public ?int $sendoutId = null;
 
     /**
-     * @var int Mailing List ID
+     * @var int|null Mailing List ID
      */
-    public $mailingListId;
+    public ?int $mailingListId;
 
     /**
      * @var DateTime|null Sent
      */
-    public $sent;
-
-    /**
-     * @var DateTime|null Failed
-     */
-    public $failed;
+    public ?DateTime $sent;
 
     /**
      * @var DateTime|null Opened
      */
-    public $opened;
+    public ?DateTime $opened;
 
     /**
      * @var DateTime|null Clicked
      */
-    public $clicked;
+    public ?DateTime $clicked;
 
     /**
      * @var DateTime|null Unsubscribed
      */
-    public $unsubscribed;
+    public ?DateTime $unsubscribed;
 
     /**
      * @var DateTime|null Complained
      */
-    public $complained;
+    public ?DateTime $complained;
 
     /**
      * @var DateTime|null Bounced
      */
-    public $bounced;
+    public ?DateTime $bounced;
 
     /**
      * @var int Opens
      */
-    public $opens = 0;
+    public int $opens = 0;
 
     /**
      * @var int Clicks
      */
-    public $clicks = 0;
+    public int $clicks = 0;
 
     /**
      * @var string|null Links
      */
-    public $links;
+    public ?string $links;
 
     /**
      * @var string|null Device
      */
-    public $device;
+    public ?string $device;
 
     /**
      * @var string|null OS
      */
-    public $os;
+    public ?string $os;
 
     /**
      * @var string|null Client
      */
-    public $client;
+    public ?string $client;
 
     /**
      * @var DateTime
      */
-    public $dateUpdated;
-
-    // Public Methods
-    // =========================================================================
+    public DateTime $dateUpdated;
 
     /**
-     * @inheritdoc
+     * Returns the contact.
      */
-    public function datetimeAttributes(): array
-    {
-        $attributes = parent::datetimeAttributes();
-        $attributes[] = 'sent';
-        $attributes[] = 'failed';
-        $attributes[] = 'opened';
-        $attributes[] = 'clicked';
-        $attributes[] = 'unsubscribed';
-        $attributes[] = 'complained';
-        $attributes[] = 'bounced';
-
-        return $attributes;
-    }
-
-    /**
-     * Returns the contact
-     *
-     * @return ContactElement|null
-     */
-    public function getContact()
+    public function getContact(): ?ContactElement
     {
         return Campaign::$plugin->contacts->getContactById($this->contactId);
     }
 
     /**
-     * Returns the campaign
-     *
-     * @return CampaignElement|null
+     * Returns the campaign.
      */
-    public function getCampaign()
+    public function getCampaign(): ?CampaignElement
     {
         return Campaign::$plugin->campaigns->getCampaignById($this->campaignId);
     }
 
     /**
-     * Returns the sendout
-     *
-     * @return SendoutElement|null
+     * Returns the sendout.
      */
-    public function getSendout()
+    public function getSendout(): ?SendoutElement
     {
         if ($this->sendoutId === null) {
             return null;
@@ -189,11 +148,9 @@ class ContactCampaignModel extends BaseModel
     }
 
     /**
-     * Returns the mailing list
-     *
-     * @return MailingListElement|null
+     * Returns the mailing list.
      */
-    public function getMailingList()
+    public function getMailingList(): ?MailingListElement
     {
         if ($this->mailingListId === null) {
             return null;
@@ -203,9 +160,7 @@ class ContactCampaignModel extends BaseModel
     }
 
     /**
-     * Returns the links as an array
-     *
-     * @return array
+     * Returns the links as an array.
      */
     public function getLinks(): array
     {
@@ -227,9 +182,7 @@ class ContactCampaignModel extends BaseModel
     }
 
     /**
-     * Returns the most significant interaction
-     *
-     * @return string
+     * Returns the most significant interaction.
      */
     public function getInteraction(): string
     {
@@ -247,9 +200,7 @@ class ContactCampaignModel extends BaseModel
     }
 
     /**
-     * Returns all interactions
-     *
-     * @return array
+     * Returns all interactions.
      */
     public function getInteractions(): array
     {

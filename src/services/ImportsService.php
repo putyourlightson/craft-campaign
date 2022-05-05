@@ -5,76 +5,59 @@
 
 namespace putyourlightson\campaign\services;
 
-use Exception;
+use Craft;
+use craft\base\Component;
+use craft\elements\User;
 use putyourlightson\campaign\Campaign;
+
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\jobs\ImportJob;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\records\ImportRecord;
 
-use Craft;
-use craft\base\Component;
-use craft\base\Field;
-use craft\base\FieldInterface;
-use craft\elements\User;
-use Throwable;
-
 /**
- * ImportsService
- *
- * @author    PutYourLightsOn
- * @package   Campaign
- * @since     1.0.0
- *
- * @property FieldInterface[] $contactFields
- * @property ImportModel[] $allImports
+ * @property-read ImportModel[] $allImports
  */
 class ImportsService extends Component
 {
-    // Constants
-    // =========================================================================
+    /**
+     * @event ImportEvent
+     */
+    public const EVENT_BEFORE_IMPORT = 'beforeImport';
 
     /**
      * @event ImportEvent
      */
-    const EVENT_BEFORE_IMPORT = 'beforeImport';
-
-    /**
-     * @event ImportEvent
-     */
-    const EVENT_AFTER_IMPORT = 'afterImport';
-
-    // Properties
-    // =========================================================================
+    public const EVENT_AFTER_IMPORT = 'afterImport';
 
     /**
      * @var array
      */
-    private $_mailingLists = [];
-
-    // Public Methods
-    // =========================================================================
+    private array $_mailingLists = [];
 
     /**
-     * Returns all imports
+     * Returns all imports.
      *
      * @return ImportModel[]
      */
     public function getAllImports(): array
     {
+        $imports = [];
         $importRecords = ImportRecord::find()->all();
 
-        return ImportModel::populateModels($importRecords, false);
+        foreach ($importRecords as $importRecord) {
+            $import = new ImportModel();
+            $import->setAttributes($importRecord->getAttributes(), false);
+            $imports[] = $import;
+        }
+
+        return $imports;
     }
 
     /**
-     * Returns import by ID
-     *
-     * @param int $importId
-     *
-     * @return ImportModel|null
+     * Returns an import by ID.
      */
-    public function getImportById(int $importId)
+    public function getImportById(int $importId): ?ImportModel
     {
         if (!$importId) {
             return null;
@@ -86,8 +69,8 @@ class ImportsService extends Component
             return null;
         }
 
-        /** @var ImportModel $import */
-        $import = ImportModel::populateModel($importRecord, false);
+        $import = new ImportModel();
+        $import->setAttributes($importRecord->getAttributes(), false);
 
         return $import;
     }
@@ -95,16 +78,14 @@ class ImportsService extends Component
     /**
      * Returns an import's resource handle.
      *
-     * @param ImportModel $import
-     *
      * @return resource|null
      */
     public function getHandle(ImportModel $import)
     {
         $handle = null;
 
-        // Set run-time configuration to true to ensure line endings are recognised when delimited with "\r"
-        ini_set('auto_detect_line_endings', true);
+        // Set run-time configuration to `1` to ensure line endings are recognised when delimited with "\r"
+        ini_set('auto_detect_line_endings', '1');
 
         if ($import->filePath) {
             // Open file for reading
@@ -129,11 +110,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Returns columns
-     *
-     * @param ImportModel $import
-     *
-     * @return array
+     * Returns columns.
      */
     public function getColumns(ImportModel $import): array
     {
@@ -157,8 +134,8 @@ class ImportsService extends Component
                 'lastName' => Craft::t('campaign', 'Last Name'),
             ];
 
-            /** @var Field[] $fields */
-            $fields = Craft::$app->fields->getFieldsByElementType(User::class);
+            $fieldLayout = Craft::$app->getFields()->getLayoutByType(User::class);
+            $fields = $fieldLayout->getCustomFields();
 
             foreach ($fields as $field) {
                 $columns[$field->handle] = $field->name;
@@ -169,13 +146,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Returns rows
-     *
-     * @param ImportModel $import
-     * @param int|null $offset
-     * @param int|null $length
-     *
-     * @return array
+     * Returns rows.
      */
     public function getRows(ImportModel $import, int $offset = null, int $length = null): array
     {
@@ -225,11 +196,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Saves an import
-     *
-     * @param ImportModel $import
-     *
-     * @return bool Whether the import was saved successfully
+     * Saves an import.
      */
     public function saveImport(ImportModel $import): bool
     {
@@ -265,25 +232,16 @@ class ImportsService extends Component
     }
 
     /**
-     * Queues an import
-     *
-     * @param ImportModel $import
+     * Queues an import.
      */
-    public function queueImport(ImportModel $import)
+    public function queueImport(ImportModel $import): void
     {
         // Add import job to queue
         Craft::$app->getQueue()->push(new ImportJob(['importId' => $import->id]));
     }
 
     /**
-     * Imports a row into a contact
-     *
-     * @param ImportModel $import
-     * @param array $row
-     * @param int $lineNumber
-     *
-     * @return ImportModel
-     * @throws Throwable if reasons
+     * Imports a row into a contact.
      */
     public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
     {
@@ -334,9 +292,9 @@ class ImportsService extends Component
 
         // Save contact
         if (!Craft::$app->getElements()->saveElement($contact)) {
-            $import->fails++;
+            $import->failures++;
 
-            Campaign::$plugin->log('Line '.$lineNumber.': '.implode('. ', $contact->getErrorSummary(true)));
+            Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
 
             Campaign::$plugin->imports->saveImport($import);
 
@@ -361,12 +319,7 @@ class ImportsService extends Component
     }
 
     /**
-     * Deletes an import
-     *
-     * @param int $importId
-     *
-     * @return bool Whether the action was successful
-     * @throws Exception|Throwable in case delete failed.
+     * Deletes an import.
      */
     public function deleteImportById(int $importId): bool
     {

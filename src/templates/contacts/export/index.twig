@@ -1,0 +1,51 @@
+{% extends 'campaign/contacts/_layout' %}
+
+{% if not currentUser.can('campaign:exportContacts') %}
+    {% redirect 'campaign' %}
+{% endif %}
+
+{% import '_includes/forms' as forms %}
+
+{% set title = 'Export'|t('campaign') %}
+{% set crumbs = [] %}
+
+
+{% block content %}
+
+    <p>{{ 'Select one or more mailing lists and the fields that should be exported to a CSV file.'|t('campaign') }}</p>
+
+    <form action="" method="post" accept-charset="UTF-8" data-confirm-unload>
+        {{ csrfInput() }}
+        <input type="hidden" name="action" value="campaign/exports/export-file" />
+
+        {{ forms.elementSelectField({
+            label: "Mailing Lists"|t('campaign'),
+            instructions: "Select the mailing lists to export."|t('campaign'),
+            id: 'mailingListIds',
+            name: 'mailingListIds',
+            elementType: mailingListElementType,
+            selectionLabel: "Add a mailing list"|t('campaign'),
+            limit: 100,
+            elements: export.mailingListIds ? export.mailingLists,
+            errors: export.getErrors('mailingListIds'),
+            required: true
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: emailFieldLabel,
+            name: 'fields[email]',
+            on: export.fields['email'] is defined ? export.fields['email'] : 1,
+        }) }}
+
+        {% for field in fields %}
+            {{ forms.lightswitchField({
+                label: field.name,
+                name: 'fields[' ~ field.handle ?? field.attribute ~ ']',
+                on: export.fields[field.handle] is defined ? export.fields[field.handle] : 1,
+            }) }}
+        {% endfor %}
+
+        <input type="submit" class="btn submit" value="{{ 'Export'|t('campaign') }}" />
+    </form>
+
+{% endblock %}

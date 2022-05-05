@@ -1,0 +1,22 @@
+{{ campaign.title }}
+
+{% if contact.firstName %}
+Hello {{ contact.firstName }},
+{% endif %}
+
+{{ campaign.intro }}
+
+{% for entry in craft.entries.limit(3).all() %}
+{{ entry.title }}
+{{ entry.summary }}
+{{ entry.url }}
+---
+{% endfor %}
+
+{% if browserVersionUrl -%}
+    View this email in your browser: {{ browserVersionUrl }}
+{%- endif %}
+
+{% if unsubscribeUrl -%}
+    Unsubscribe from this mailing list: {{ unsubscribeUrl }}
+{%- endif %}
