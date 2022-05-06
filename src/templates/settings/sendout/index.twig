@@ -14,8 +14,22 @@
 
     <input type="hidden" name="action" value="campaign/settings/save-sendout">
 
-    {{ forms.textField({
+    {{ forms.elementSelectField({
         first: true,
+        label: "Default Notification Contacts"|t('campaign'),
+        instructions: "The default contacts to notify when sending of sendouts is complete or fails."|t('campaign'),
+        warning: (config.notificationContactIds is defined ? macros.configWarning('notificationContactIds')),
+        id: 'defaultNotificationContactIds',
+        name: 'defaultNotificationContactIds',
+        elementType: contactElementType,
+        selectionLabel: "Add a contact"|t('campaign'),
+        elements: settings.defaultNotificationContacts,
+        errors: settings.getErrors('defaultNotificationContactIds'),
+    }) }}
+
+    <hr>
+
+    {{ forms.textField({
         type: 'number',
         label: "Max Batch Size"|t('campaign'),
         instructions: "The maximum size of sendout batches."|t('campaign'),
@@ -83,20 +97,6 @@
         value: settings.timeLimit,
         errors: settings.getErrors('timeLimit'),
         required: true,
-    }) }}
-
-    <hr>
-
-    {{ forms.elementSelectField({
-        label: "Default Notification Contacts"|t('campaign'),
-        instructions: "The default contacts to notify when sending of sendouts is complete or fails."|t('campaign'),
-        warning: (config.notificationContactIds is defined ? macros.configWarning('notificationContactIds')),
-        id: 'defaultNotificationContactIds',
-        name: 'defaultNotificationContactIds',
-        elementType: contactElementType,
-        selectionLabel: "Add a contact"|t('campaign'),
-        elements: settings.defaultNotificationContacts,
-        errors: settings.getErrors('defaultNotificationContactIds'),
     }) }}
 
 {% endblock %}
