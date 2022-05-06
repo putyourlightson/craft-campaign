@@ -11,7 +11,7 @@ Campaign is an email marketing plugin built specifically for Craft. It aims to b
 - Integrates seamlessly with Amazon SES, Mailgun, Mandrill, Sendgrid, etc.
 - Unlimited campaigns, subscribers, mailing lists and sendouts.
  
-![Campaign plugin](https://putyourlightson.com/assets/images/plugins/campaign/campaign-integration.png)
+![Campaign plugin](https://putyourlightson.com/assets/images/plugins/campaign/campaign-edit-slideout.png)
 
 ## Documentation
 
