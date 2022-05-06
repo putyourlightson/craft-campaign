@@ -17,7 +17,7 @@ Campaign is an email marketing plugin built specifically for Craft. It aims to b
 
 Learn more and read the documentation at [putyourlightson.com/plugins/campaign »](https://putyourlightson.com/plugins/campaign)
   
-Read more about the pro version at [putyourlightson.com/plugins/campaign#pro-version »](https://putyourlightson.com/plugins/campaign#pro-version)
+Read more about the pro version at [putyourlightson.com/plugins/campaign#pro-edition »](https://putyourlightson.com/plugins/campaign#pro-edition)
 
 ## License
 
