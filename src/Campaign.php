@@ -457,6 +457,8 @@ class Campaign extends Plugin
             'name' => 'campaign',
             'categories' => ['campaign'],
             'level' => LogLevel::INFO,
+            'logContext' => false,
+            'allowLineBreaks' => false,
             'formatter' => new LineFormatter(
                 format: "[%datetime%] %message%\n",
                 dateFormat: 'Y-m-d H:i:s',
