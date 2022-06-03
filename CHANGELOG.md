@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 2.0.1 - Unreleased
+## 2.0.1 - 2022-06-03
 ### Changed
 - Improved the UI of sendout previews.
+- Made the `matomo/device-detector` package requirement more flexible.
 
 ## 2.0.0 - 2022-05-04
 > {warning} Support for reCAPTCHA version 2 has been removed, use version 3 instead. The `subscribeVerificationSuccessTemplate` setting has been removed, use the `subscribeSuccessTemplate` setting instead.
