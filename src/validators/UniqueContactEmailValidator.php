@@ -24,7 +24,7 @@ class UniqueContactEmailValidator extends UniqueValidator
         // Check if email exists for an element that is neither a draft nor a revision,
         // and that is not the canonical element.
         $exists = ContactRecord::find()
-            ->where([
+            ->andWhere([
                 'email' => $model->email,
                 'element.draftId' => null,
                 'element.revisionId' => null,
