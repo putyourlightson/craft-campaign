@@ -259,7 +259,7 @@ class ContactElement extends Element
         return [
             [
                 'label' => $settings->getEmailFieldLabel(),
-                'orderBy' => ContactRecord::tableName() . '.[[email]]',
+                'orderBy' => 'campaign_contacts.email',
                 'attribute' => 'title',
             ],
             'cid' => Craft::t('campaign', 'Contact ID'),

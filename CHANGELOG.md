@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.3 - 2022-06-21
+### Fixed
+- Fixed an issue with the contact index page when database tables contained a prefix.
+
 ## 2.0.2 - 2022-06-21
 ### Fixed
 - Fixed the unique email validation when saving contacts.
