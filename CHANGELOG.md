@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.2 - 2022-06-21
+### Fixed
+- Fixed the unique email validation when saving contacts.
+
 ## 2.0.1 - 2022-06-03
 ### Changed
 - Improved the UI of sendout previews.

@@ -29,6 +29,7 @@ use putyourlightson\campaign\fieldlayoutelements\reports\ContactReportFieldLayou
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
+use putyourlightson\campaign\validators\UniqueContactEmailValidator;
 use yii\i18n\Formatter;
 use yii\web\Response;
 
@@ -417,7 +418,7 @@ class ContactElement extends Element
         $rules[] = [['cid', 'email'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['cid'], 'string', 'max' => 17];
         $rules[] = [['email'], 'email'];
-        $rules[] = [['email'], UniqueValidator::class, 'targetClass' => ContactRecord::class, 'caseInsensitive' => true, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['email'], UniqueContactEmailValidator::class, 'targetClass' => ContactRecord::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['lastActivity', 'verified', 'complained', 'bounced', 'blocked'], DateTimeValidator::class];
 
         return $rules;
