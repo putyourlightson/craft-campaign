@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.4 - Unreleased
+### Changed
+- Removed the pruning of deleted fields according to the precedent set in [craftcms/cms#11054](https://github.com/craftcms/cms/discussions/11054#discussioncomment-2881106).
+
 ## 2.0.3 - 2022-06-21
 ### Fixed
 - Fixed an issue with the contact index page when database tables contained a prefix.

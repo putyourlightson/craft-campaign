@@ -142,41 +142,4 @@ class ContactsService extends Component
         $layout->uid = key($data);
         $fieldsService->saveLayout($layout);
     }
-
-    /**
-     * Prunes a deleted field from the contact field layout.
-     *
-     * @since 2.0.0
-     */
-    public function pruneDeletedField(FieldEvent $event): void
-    {
-        /** @var Field $field */
-        $field = $event->field;
-        $fieldUid = $field->uid;
-
-        $projectConfig = Craft::$app->getProjectConfig();
-        $fieldLayouts = $projectConfig->get(self::CONFIG_CONTACTFIELDLAYOUT_KEY);
-
-        // Engage stealth mode
-        $projectConfig->muteEvents = true;
-
-        // Prune the field layout
-        if (is_array($fieldLayouts)) {
-            foreach ($fieldLayouts as $layoutUid => $layout) {
-                if (!empty($layout['tabs'])) {
-                    foreach ($layout['tabs'] as $tabUid => $tab) {
-                        $projectConfig->remove(self::CONFIG_CONTACTFIELDLAYOUT_KEY . '.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
-                    }
-                }
-            }
-        }
-
-        // Nuke all the layout fields from the DB
-        Db::delete(Table::FIELDLAYOUTFIELDS, [
-            'fieldId' => $field->id,
-        ]);
-
-        // Allow events again
-        $projectConfig->muteEvents = false;
-    }
 }

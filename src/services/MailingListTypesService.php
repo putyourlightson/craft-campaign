@@ -397,45 +397,6 @@ class MailingListTypesService extends Component
     }
 
     /**
-     * Prunes a deleted field from the field layouts.
-     */
-    public function pruneDeletedField(FieldEvent $event): void
-    {
-        /** @var Field $field */
-        $field = $event->field;
-        $fieldUid = $field->uid;
-
-        $projectConfig = Craft::$app->getProjectConfig();
-        $mailingListTypes = $projectConfig->get(self::CONFIG_MAILINGLISTTYPES_KEY);
-
-        // Engage stealth mode
-        $projectConfig->muteEvents = true;
-
-        // Loop through the types and prune the UID from field layouts.
-        if (is_array($mailingListTypes)) {
-            foreach ($mailingListTypes as $mailingListTypeUid => $mailingListType) {
-                if (!empty($mailingListType['fieldLayouts'])) {
-                    foreach ($mailingListType['fieldLayouts'] as $layoutUid => $layout) {
-                        if (!empty($layout['tabs'])) {
-                            foreach ($layout['tabs'] as $tabUid => $tab) {
-                                $projectConfig->remove(self::CONFIG_MAILINGLISTTYPES_KEY . '.' . $mailingListTypeUid . '.fieldLayouts.' . $layoutUid . '.tabs.' . $tabUid . '.fields.' . $fieldUid, 'Prune deleted field');
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Nuke all the layout fields from the DB
-        Db::delete(Table::FIELDLAYOUTFIELDS, [
-            'fieldId' => $field->id,
-        ]);
-
-        // Allow events again
-        $projectConfig->muteEvents = false;
-    }
-
-    /**
      * Returns a memoizable array of all mailing list types.
      *
      * @return MemoizableArray<MailingListTypeModel>

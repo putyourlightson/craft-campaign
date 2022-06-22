@@ -553,7 +553,6 @@ class Campaign extends Plugin
             ->onAdd(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
             ->onUpdate(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout'])
             ->onRemove(ContactsService::CONFIG_CONTACTFIELDLAYOUT_KEY, [$this->contacts, 'handleChangedContactFieldLayout']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->contacts, 'pruneDeletedField']);
 
         // Campaign types
         Craft::$app->getProjectConfig()
@@ -561,7 +560,6 @@ class Campaign extends Plugin
             ->onUpdate(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleChangedCampaignType'])
             ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->campaignTypes, 'handleDeletedSite']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->campaignTypes, 'pruneDeletedField']);
 
         // Mailing list types types
         Craft::$app->getProjectConfig()
@@ -569,7 +567,6 @@ class Campaign extends Plugin
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onRemove(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleDeletedMailingListType']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->mailingListTypes, 'handleDeletedSite']);
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD, [$this->mailingListTypes, 'pruneDeletedField']);
 
         // Rebuild project config data
         Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
