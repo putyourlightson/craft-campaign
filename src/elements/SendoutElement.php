@@ -599,7 +599,11 @@ class SendoutElement extends Element
     {
         /** @var Response|CpScreenResponseBehavior $response */
         if (!$this->getIsModifiable()) {
-            $response->redirect($this->getCpPreviewUrl());
+            // Only redirect if we're not already redirecting, to prevent an endless loop in Craft 4.0.4 and above.
+            // https://github.com/putyourlightson/craft-campaign/issues/316
+            if (!$response->getIsRedirection()) {
+                $response->redirect($this->getCpPreviewUrl());
+            }
         }
 
         $response->selectedSubnavItem = 'sendouts';

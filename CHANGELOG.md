@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 2.0.4 - Unreleased
+## 2.0.4 - 2022-06-24
 ### Changed
 - Removed the pruning of deleted fields according to the precedent set in [craftcms/cms#11054](https://github.com/craftcms/cms/discussions/11054#discussioncomment-2881106).
+
+### Fixed
+- Fixed an issue with viewing sendouts that have been sent in Craft 4.0.4 and above ([#316](https://github.com/putyourlightson/craft-campaign/issues/316)).
 
 ## 2.0.3 - 2022-06-21
 ### Fixed
