@@ -11,7 +11,7 @@
     </th>
     <td>
         <label class="subscriptionStatus {{ subscriptionStatus }}">
-            {{ subscriptionStatus ? subscriptionStatus|t('campaign') : 'none'|t('campaign') }}
+            {{ subscriptionStatus ? subscriptionStatus|ucfirst|t('campaign') : 'None'|t('campaign') }}
         </label>
     </td>
     <td class="thin">

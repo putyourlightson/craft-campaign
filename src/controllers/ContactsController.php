@@ -180,7 +180,7 @@ class ContactsController extends Controller
 
         return $this->asSuccess(Craft::t('campaign', 'Subscription successfully updated.'), [
             'subscriptionStatus' => $subscriptionStatus,
-            'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
+            'subscriptionStatusLabel' => Craft::t('campaign', ucfirst($subscriptionStatus) ?: 'None'),
         ]);
     }
 

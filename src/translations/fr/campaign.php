@@ -402,7 +402,7 @@ return [
     'No sendouts have been sent to this mailing list.' => 'Aucune campagne n’a été envoyée à cette liste de diffusion.',
     'No synced mailing lists exist.' => '',
     'No user groups exist.' => 'Aucun groupe d’utilisateurs existant.',
-    'none' => 'auncun',
+    'None' => 'Auncun',
     'Normal' => 'Normal',
     'Notification Email Address' => 'Email de notification',
     'One or more condition rules to apply to this segment.' => 'Une ou plusieurs conditions pour ce segment.',

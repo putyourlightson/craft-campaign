@@ -401,7 +401,7 @@ return [
     'No sendouts have been sent to this mailing list.' => '',
     'No synced mailing lists exist.' => '',
     'No user groups exist.' => '',
-    'none' => '',
+    'None' => '',
     'Normal' => '',
     'Notification Email Address' => '',
     'One or more condition rules to apply to this segment.' => '',

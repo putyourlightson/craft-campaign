@@ -5,7 +5,7 @@
 - Tweaked plugin icon to fit better in control panel.
 
 ### Fixed
-- Fixed missing translations.
+- Fixed subscription status translations.
 
 ## 2.0.4 - 2022-06-24
 ### Changed
