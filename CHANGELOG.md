@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.5 - Unreleased
+### Changed
+- Tweaked plugin icon to fit better in control panel.
+
 ## 2.0.4 - 2022-06-24
 ### Changed
 - Removed the pruning of deleted fields according to the precedent set in [craftcms/cms#11054](https://github.com/craftcms/cms/discussions/11054#discussioncomment-2881106).
