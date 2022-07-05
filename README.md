@@ -1,7 +1,7 @@
 [![Stable Version](https://img.shields.io/packagist/v/putyourlightson/craft-campaign?label=stable)]((https://packagist.org/packages/putyourlightson/craft-campaign))
 [![Total Downloads](https://img.shields.io/packagist/dt/putyourlightson/craft-campaign)](https://packagist.org/packages/putyourlightson/craft-campaign)
 
-<p align="center"><img width="180" src="https://putyourlightson.com/assets/logos/campaign.svg"></p>
+<p align="center"><img width="180" src="https://putyourlightson.com/assets/logos/campaign-v2.svg"></p>
 
 # Campaign Plugin for Craft CMS
 
