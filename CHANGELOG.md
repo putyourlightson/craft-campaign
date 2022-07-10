@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.23.2 - 2022-07-10
+### Changed
+- Tweaked plugin icon to fit better in control panel.
+
+### Fixed
+- Fixed subscription status translations.
+
 ## 1.23.1 - 2022-05-04
 ### Changed
 - Mailing list slugs must now be unique and are updated automatically when a mailing list is duplicated.

@@ -497,7 +497,7 @@ class ContactsController extends Controller
             return $this->asJson([
                 'success' => true,
                 'subscriptionStatus' => $subscriptionStatus,
-                'subscriptionStatusLabel' => Craft::t('campaign', $subscriptionStatus ?: 'none'),
+                'subscriptionStatusLabel' => Craft::t('campaign', ucfirst($subscriptionStatus) ?: 'None'),
             ]);
         }
 

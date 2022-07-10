@@ -395,7 +395,7 @@ return [
     'No sendouts for this campaign.' => 'Keine Sendungen für diese Kampagne.',
     'No sendouts have been sent to this mailing list.' => 'Es wurden keine Sendungen an diese Mailing-Liste verschickt.',
     'No user groups exist.' => 'Es existiert keine Benutzergruppe.',
-    'none' => 'keine',
+    'None' => 'Keine',
     'Normal' => 'Normal',
     'Notification Email Address' => 'Benachrichtigungs-E-Mail-Adresse',
     'Opened' => 'Geöffnet',

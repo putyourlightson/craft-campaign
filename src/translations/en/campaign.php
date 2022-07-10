@@ -394,7 +394,7 @@ return [
     'No sendouts for this campaign.' => '',
     'No sendouts have been sent to this mailing list.' => '',
     'No user groups exist.' => '',
-    'none' => '',
+    'None' => '',
     'Normal' => '',
     'Notification Email Address' => '',
     'Opened' => '',

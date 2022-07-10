@@ -395,7 +395,7 @@ return [
     'No sendouts for this campaign.' => 'Aucune campagnes pour cette newsletter',
     'No sendouts have been sent to this mailing list.' => 'Aucune campagne n’a été envoyée à cette liste de diffusion.',
     'No user groups exist.' => 'Aucun groupe d’utilisateurs existant.',
-    'none' => 'auncun',
+    'None' => 'Auncun',
     'Normal' => 'Normal',
     'Notification Email Address' => 'Email de notification',
     'Opened' => 'Lus',
