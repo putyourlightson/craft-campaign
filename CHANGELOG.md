@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.23.3 - 2022-07-17
+### Changed
+- Made the `matomo/device-detector` package requirement more flexible.
+
 ## 1.23.2 - 2022-07-10
 ### Changed
 - Tweaked plugin icon to fit better in control panel.
