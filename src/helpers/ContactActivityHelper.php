@@ -128,7 +128,9 @@ class ContactActivityHelper
             return null;
         }
 
-        $deviceDetector = new DeviceDetector(Craft::$app->getRequest()->getUserAgent());
+        // Must be a string.
+        $userAgent = Craft::$app->getRequest()->getUserAgent() ?? '';
+        $deviceDetector = new DeviceDetector($userAgent);
 
         $deviceDetector->parse();
 

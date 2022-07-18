@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.0.6 - 2022-07-18
+### Fixed
+- Fixed a bug in which an exception could be thrown if the user agent was unavailable when detecting device type.
+
 ## 2.0.5 - 2022-07-05
 ### Changed
 - Tweaked plugin icon to fit better in control panel.
