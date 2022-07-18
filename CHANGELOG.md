@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.23.4 - 2022-07-18
+### Fixed
+- Fixed a bug in which an exception could be thrown if the user agent was unavailable when detecting device type.
+
 ## 1.23.3 - 2022-07-17
 ### Changed
 - Made the `matomo/device-detector` package requirement more flexible.
