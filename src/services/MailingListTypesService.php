@@ -12,7 +12,6 @@ use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;
 use craft\events\DeleteSiteEvent;
-use craft\events\FieldEvent;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Db;
 use craft\helpers\ProjectConfig as ProjectConfigHelper;
