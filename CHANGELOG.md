@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.1 - 2022-07-22
+### Added
+- Added a `fieldValues` parameter to the `FormsService::createAndSubscribeContact` method.
+
 ## 2.1.0 - 2022-07-22
 ### Added
 - Added a `createAndSubscribeContact` method to `FormsService` for easier integration from other plugins and modules.

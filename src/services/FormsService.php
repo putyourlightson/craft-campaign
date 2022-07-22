@@ -152,7 +152,7 @@ class FormsService extends Component
      *
      * @since 2.1.0
      */
-    public function createAndSubscribeContact(string $email, MailingListElement $mailingList, string $sourceType = null, string $source = null): ContactElement|PendingContactModel
+    public function createAndSubscribeContact(string $email, array|null $fieldValues, MailingListElement $mailingList, string $sourceType = null, string $source = null): ContactElement|PendingContactModel
     {
         // Get contact if it exists
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
@@ -167,8 +167,13 @@ class FormsService extends Component
             throw new MethodNotAllowedHttpException(Craft::t('campaign', 'This email address is blocked from subscribing.'));
         }
 
-        // Set field values
-        $contact->setFieldValuesFromRequest('fields');
+        // Set field values if provided, falling back to request parameters
+        if ($fieldValues === null) {
+            $contact->setFieldValuesFromRequest('fields');
+        }
+        else {
+            $contact->setFieldValues($fieldValues);
+        }
 
         // If subscribe verification required
         if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
