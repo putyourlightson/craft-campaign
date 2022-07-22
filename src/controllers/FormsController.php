@@ -11,10 +11,7 @@ use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
-
-use putyourlightson\campaign\models\PendingContactModel;
 use yii\web\ForbiddenHttpException;
-use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -44,61 +41,14 @@ class FormsController extends BaseMessageController
         $email = $this->request->getRequiredParam('email');
         $referrer = $this->request->getReferrer() ?: '';
 
-        // Get contact if it exists
-        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+        $contact = Campaign::$plugin->forms->createAndSubscribeContact($email, $mailingList, 'web', $referrer);
 
-        if ($contact === null) {
-            $contact = new ContactElement();
-            $contact->email = $email;
-        }
+        if ($contact->hasErrors()) {
+            $modelName = $contact instanceof ContactElement ? 'contact' : 'pendingContact';
 
-        // Disallow if blocked
-        if ($contact->blocked !== null) {
-            throw new MethodNotAllowedHttpException(Craft::t('campaign', 'This email address is blocked from subscribing.'));
-        }
-
-        // Set field values
-        $contact->setFieldValuesFromRequest('fields');
-
-        // If subscribe verification required
-        if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
-            // Mock before save so we can validate the contact
-            $contact->beforeSave(true);
-
-            // Validate the contact
-            if (!$contact->validate()) {
-                return $this->asModelFailure($contact, '', 'contact', [
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            // Create pending contact
-            $pendingContact = new PendingContactModel();
-            $pendingContact->email = $email;
-            $pendingContact->mailingListId = $mailingList->id;
-            $pendingContact->source = $referrer;
-            $pendingContact->fieldData = $contact->getSerializedFieldValues();
-
-            // Save pending contact
-            if (!Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
-                return $this->asModelFailure($pendingContact, '', 'pendingContact', [
-                    'contact' => $contact,
-                    'errors' => $pendingContact->getErrors(),
-                ]);
-            }
-
-            // Send verification email
-            Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
-        }
-        else {
-            // Save contact
-            if (!Craft::$app->getElements()->saveElement($contact)) {
-                return $this->asModelFailure($contact, '', 'contact', [
-                    'errors' => $contact->getErrors(),
-                ]);
-            }
-
-            Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $referrer);
+            return $this->asModelFailure($contact, '', $modelName, [
+                'errors' => $contact->getErrors(),
+            ]);
         }
 
         if ($this->request->getAcceptsJson()) {

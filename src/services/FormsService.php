@@ -22,6 +22,7 @@ use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use Twig\Error\Error;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * @since 1.10.0
@@ -144,6 +145,66 @@ class FormsService extends Component
         }
 
         return $this->_sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
+    }
+
+    /**
+     * Creates and subscribes a contact, with verification if enabled on the mailing list.
+     *
+     * @since 2.1.0
+     */
+    public function createAndSubscribeContact(string $email, MailingListElement $mailingList, string $sourceType = null, string $source = null): ContactElement|PendingContactModel
+    {
+        // Get contact if it exists
+        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+
+        if ($contact === null) {
+            $contact = new ContactElement();
+            $contact->email = $email;
+        }
+
+        // Disallow if blocked
+        if ($contact->blocked !== null) {
+            throw new MethodNotAllowedHttpException(Craft::t('campaign', 'This email address is blocked from subscribing.'));
+        }
+
+        // Set field values
+        $contact->setFieldValuesFromRequest('fields');
+
+        // If subscribe verification required
+        if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
+            // Mock before save so we can validate the contact
+            $contact->beforeSave(true);
+
+            // Validate the contact
+            if (!$contact->validate()) {
+                return $contact;
+            }
+
+            // Create pending contact
+            $pendingContact = new PendingContactModel();
+            $pendingContact->email = $email;
+            $pendingContact->mailingListId = $mailingList->id;
+            $pendingContact->source = $source;
+            $pendingContact->fieldData = $contact->getSerializedFieldValues();
+
+            // Save pending contact
+            if (!Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
+                return $pendingContact;
+            }
+
+            // Send verification email
+            Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
+        }
+        else {
+            // Save contact
+            if (!Craft::$app->getElements()->saveElement($contact)) {
+                return $contact;
+            }
+
+            $this->subscribeContact($contact, $mailingList, $sourceType, $source);
+        }
+
+        return $contact;
     }
 
     /**

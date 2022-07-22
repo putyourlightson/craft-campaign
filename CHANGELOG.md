@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.0 - 2022-07-22
+### Added
+- Added a `createAndSubscribeContact` method to `FormsService` for easier integration from other plugins and modules.
+
 ## 2.0.6 - 2022-07-18
 ### Fixed
 - Fixed a bug in which an exception could be thrown if the user agent was unavailable when detecting device type.
