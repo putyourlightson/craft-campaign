@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.2 - 2022-07-25
+### Fixed
+- Fixed a bug when subscribing users via front-end forms.
+
 ## 2.1.1 - 2022-07-22
 ### Added
 - Added a `fieldValues` parameter to the `FormsService::createAndSubscribeContact` method.

@@ -41,7 +41,7 @@ class FormsController extends BaseMessageController
         $email = $this->request->getRequiredParam('email');
         $referrer = $this->request->getReferrer() ?: '';
 
-        $contact = Campaign::$plugin->forms->createAndSubscribeContact($email, $mailingList, 'web', $referrer);
+        $contact = Campaign::$plugin->forms->createAndSubscribeContact($email, null, $mailingList, 'web', $referrer);
 
         if ($contact->hasErrors()) {
             $modelName = $contact instanceof ContactElement ? 'contact' : 'pendingContact';
