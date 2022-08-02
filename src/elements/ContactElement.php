@@ -392,7 +392,7 @@ class ContactElement extends Element
      */
     public function __toString(): string
     {
-        return $this->email;
+        return $this->email ?? '';
     }
 
     /**
@@ -747,7 +747,9 @@ class ContactElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
+        if (!$this->getIsFresh()) {
+            Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
+        }
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'contacts';

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.3 - 2022-08-02
+### Fixed
+- Fixed an error that occurred when creating contacts in the control panel.
+
 ## 2.1.2 - 2022-07-25
 ### Fixed
 - Fixed a bug when subscribing users via front-end forms.
