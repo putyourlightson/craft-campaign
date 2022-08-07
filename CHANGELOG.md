@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.4 - 2022-08-07
+### Fixed
+- Fixed a bug that prevented the mailer transport defined in the Campaign email settings from overriding the Craft email settings ([#319](https://github.com/putyourlightson/craft-campaign/issues/319)).
+
 ## 2.1.3 - 2022-08-02
 ### Fixed
 - Fixed an error that occurred when creating contacts in the control panel.

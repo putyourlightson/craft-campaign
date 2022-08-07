@@ -425,9 +425,7 @@ class Campaign extends Plugin
      */
     private function _registerComponents(): void
     {
-        if (!$this->has('mailer')) {
-            $this->set('mailer', fn() => $this->createMailer());
-        }
+        $this->set('mailer', fn() => $this->createMailer());
     }
 
     /**
