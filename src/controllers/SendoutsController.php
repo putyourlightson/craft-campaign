@@ -229,9 +229,6 @@ class SendoutsController extends Controller
             ];
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
         $sendoutField = new SendoutFieldLayoutElement();
         $sendoutField->formHtml($sendout);
 
