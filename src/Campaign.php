@@ -316,8 +316,10 @@ class Campaign extends Plugin
         // Set memory limit
         @ini_set('memory_limit', $settings->memoryLimit);
 
-        // Set time limit
-        @set_time_limit($settings->timeLimit);
+        // Try to reset time limit
+        if (!function_exists('set_time_limit') || !@set_time_limit($settings->timeLimit)) {
+            $this->log('set_time_limit() is not available');
+        }
     }
 
     /**
