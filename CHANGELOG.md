@@ -2,7 +2,7 @@
 
 ## 2.1.5 - 2022-08-28
 ### Fixed
-- Fixed a bug that was throwing errors if the `set_time_limit()` function was undefined ([#322](https://github.com/putyourlightson/craft-campaign/issues/322)).
+- Fixed an error that could be thrown if the `set_time_limit()` function was undefined ([#322](https://github.com/putyourlightson/craft-campaign/issues/322)).
 
 ## 2.1.4 - 2022-08-07
 ### Fixed
