@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\base\Element;
 use craft\controllers\CategoriesController;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
@@ -97,10 +98,16 @@ class CampaignsController extends Controller
         $this->requireAcceptsJson();
 
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
+        $siteHandle = $this->request->getQueryParam('site');
+
+        $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+        if (!$site) {
+            throw new SiteNotFoundException();
+        }
 
         // Use the elements service since it might be a draft.
         /** @var CampaignElement|null $campaign */
-        $campaign = Craft::$app->getElements()->getElementById($campaignId);
+        $campaign = Craft::$app->getElements()->getElementById($campaignId, null, $site->id);
 
         if ($campaign === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
