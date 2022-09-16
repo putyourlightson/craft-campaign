@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## Unreleased
+### Fixed
+- Fixed a bug where sending test sendouts of campaigns only works for campaigns of the default site.
+
 ## 2.1.5 - 2022-08-28
 ### Fixed
 - Fixed an error that could be thrown if the `set_time_limit()` function was undefined ([#322](https://github.com/putyourlightson/craft-campaign/issues/322)).
