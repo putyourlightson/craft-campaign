@@ -31,7 +31,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
         }
     },
 
-    preflight: function(event) {
+    preflight: function() {
         if (this.modal === null) {
             this.modal = new Garnish.Modal($('.preflight'), {
                 hideOnEsc: false,
@@ -43,7 +43,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
         }
     },
 
-    cancel: function(event) {
+    cancel: function() {
         if (!$('.preflight .cancel').hasClass('disabled')) {
             this.modal.hide();
         }
@@ -58,6 +58,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
 
         $('.preflight .launch').disable();
         $('.preflight .cancel').disable();
+        $('.preflight .error').addClass('hidden');
         $('.preflight .spinner').removeClass('hidden');
 
         const data = {
@@ -65,7 +66,7 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
         };
 
         Craft.sendActionRequest('POST', 'campaign/sendouts/send', {data})
-            .then((response) => {
+            .then(() => {
                 if (Craft.runQueueAutomatically) {
                     Craft.sendActionRequest('POST', 'queue/run');
                 }
@@ -81,6 +82,9 @@ Campaign.SendoutPreflight = Garnish.Base.extend({
                 else {
                     Craft.cp.displayError();
                 }
+
+                $('.preflight .launch').enable();
+                $('.preflight .cancel').enable();
             })
             .finally(() => {
                 $('.preflight .spinner').addClass('hidden');
