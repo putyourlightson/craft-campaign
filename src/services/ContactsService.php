@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Field;
 use craft\events\ConfigEvent;
 use craft\helpers\ProjectConfig;
 use craft\helpers\StringHelper;

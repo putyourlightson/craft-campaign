@@ -6,7 +6,6 @@ namespace putyourlightson\campaign\elements\actions;
 
 use Craft;
 use craft\elements\actions\Edit;
-use craft\helpers\Json;
 
 /**
  * @property-read null $triggerHtml

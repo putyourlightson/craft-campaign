@@ -71,7 +71,7 @@ Campaign.MailingListIndex = Craft.BaseElementIndex.extend({
             const menuId = 'new-campaign-menu-' + Craft.randomString(10);
 
             // If they are, show a primary "New mailing list" button, and a dropdown of the other mailing list types (if any).
-            // Otherwise only show a menu button
+            // Otherwise, only show a menu button.
             if (selectedMailingListType) {
                 this.$newMailingListBtn = Craft.ui.createButton({
                         label: this.settings.context === 'index'

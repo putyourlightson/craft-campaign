@@ -14,7 +14,7 @@ class StringHelper extends \craft\helpers\StringHelper
      */
     public static function uniqueId(string $prefix = ''): string
     {
-        $uniqueId = uniqid($prefix, false) . self::randomString(4);
+        $uniqueId = uniqid($prefix) . self::randomString(4);
 
         return substr($uniqueId, 0, 17);
     }

@@ -66,7 +66,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
             const menuId = 'new-campaign-menu-' + Craft.randomString(10);
 
             // If they are, show a primary "New sendout" button, and a dropdown of the other sendout types (if any).
-            // Otherwise only show a menu button
+            // Otherwise, only show a menu button.
             if (selectedSendoutType) {
                 this.$newSendoutBtn = Craft.ui.createButton({
                         label: this.settings.context === 'index'

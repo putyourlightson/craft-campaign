@@ -561,7 +561,7 @@ class Campaign extends Plugin
             ->onRemove(CampaignTypesService::CONFIG_CAMPAIGNTYPES_KEY . '.{uid}', [$this->campaignTypes, 'handleDeletedCampaignType']);
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->campaignTypes, 'handleDeletedSite']);
 
-        // Mailing list types types
+        // Mailing list types
         Craft::$app->getProjectConfig()
             ->onAdd(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])
             ->onUpdate(MailingListTypesService::CONFIG_MAILINGLISTTYPES_KEY . '.{uid}', [$this->mailingListTypes, 'handleChangedMailingListType'])

@@ -45,8 +45,7 @@ Campaign.Chart = Garnish.Base.extend({
                 $('[data-id=chart]').show();
                 $('.report-chart .spinner').hide();
 
-                // Draw the percentage charts here so we can be absolutely sure
-                // that ApexCharts has loaded!
+                // Draw the percentage charts here, so we can be absolutely sure that ApexCharts has loaded!
                 this.drawPercentageCharts();
 
                 this.drawChart(data);

@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Field;
 use craft\base\MemoizableArray;
 use craft\db\Table;
 use craft\events\ConfigEvent;

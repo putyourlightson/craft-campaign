@@ -71,7 +71,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
             const menuId = 'new-campaign-menu-' + Craft.randomString(10);
 
             // If they are, show a primary "New campaign" button, and a dropdown of the other campaign types (if any).
-            // Otherwise only show a menu button
+            // Otherwise, only show a menu button.
             if (selectedCampaignType) {
                 this.$newCampaignBtn = Craft.ui.createButton({
                         label: this.settings.context === 'index'

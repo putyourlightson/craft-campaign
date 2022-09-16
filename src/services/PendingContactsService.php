@@ -153,6 +153,8 @@ class PendingContactsService extends Component
         }
 
         $purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
+        // TODO: switch to using `DateTimeHelper::toDateInterval` in Campaign 3.
+        /** @noinspection PhpDeprecationInspection */
         $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
         $expire = DateTimeHelper::currentUTCDateTime();
         $pastTime = $expire->sub($interval);

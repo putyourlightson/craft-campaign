@@ -47,7 +47,7 @@ return [
         // Whether verification emails should be sent via the Craft mailer, instead of the Campaign mailer
         //'sendVerificationEmailsViaCraft' => false,
 
-        // The from names and emails that sendouts can be sent from
+        // The names and emails that sendouts can be sent from
         //'fromNamesEmails' => [
         //    ['Zorro','legend@zorro.com','legend@zorro.com',1],
         //    ['Don Diego','dondiego@zorro.com','',1],

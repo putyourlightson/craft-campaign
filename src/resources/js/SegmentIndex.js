@@ -66,7 +66,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
             const menuId = 'new-campaign-menu-' + Craft.randomString(10);
 
             // If they are, show a primary "New segment" button, and a dropdown of the other segment types (if any).
-            // Otherwise only show a menu button
+            // Otherwise, only show a menu button.
             if (selectedSegmentType) {
                 this.$newSegmentBtn = Craft.ui.createButton({
                         label: this.settings.context === 'index'
