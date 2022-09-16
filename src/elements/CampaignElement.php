@@ -36,7 +36,6 @@ use yii\web\Response;
 
 /**
  * @property-read CampaignTypeModel $campaignType
- * @property-read bool $isEditable
  * @property-read int $clickThroughRate
  * @property-read string[] $cacheTags
  * @property-read null|string $postEditUrl

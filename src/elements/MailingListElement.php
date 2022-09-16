@@ -35,7 +35,6 @@ use yii\web\Response;
  * @property-read int $bouncedCount
  * @property-read string $reportUrl
  * @property-read null|UserGroup $syncedUserGroup
- * @property-read bool $isEditable
  * @property-read int $subscribedCount
  * @property-read MailingListTypeModel $mailingListType
  * @property-read ContactElement[] $complainedContacts

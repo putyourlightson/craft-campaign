@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.7 - Unreleased
+### Fixed
+- Fixed a bug in which the edit action was available for sendouts that were no longer modifiable ([#328](https://github.com/putyourlightson/craft-campaign/issues/328)).
+
 ## 2.1.6 - 2022-09-16
 ### Fixed
 - Fixed a bug in which sending test emails of campaigns only worked for campaigns in the default site ([#327](https://github.com/putyourlightson/craft-campaign/issues/327)).

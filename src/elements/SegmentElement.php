@@ -28,7 +28,6 @@ use yii\web\Response;
 /**
  * @property ElementConditionInterface|array|string|null $contactCondition
  * @property-read int $contactCount
- * @property-read bool $isEditable
  * @property-read string $segmentTypeLabel
  * @property-read int $conditionCount
  * @property-read ContactElement[] $contacts

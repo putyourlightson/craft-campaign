@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Element;
 use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
-use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
@@ -23,6 +22,7 @@ use LitEmoji\LitEmoji;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
+use putyourlightson\campaign\elements\actions\EditSendout;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutTab;
@@ -262,8 +262,7 @@ class SendoutElement extends Element
 
         // Edit
         $actions[] = $elementsService->createAction([
-            'type' => Edit::class,
-            'label' => Craft::t('campaign', 'Edit sendout'),
+            'type' => EditSendout::class,
         ]);
 
         // Duplicate
@@ -1190,6 +1189,10 @@ class SendoutElement extends Element
     protected function htmlAttributes(string $context): array
     {
         $htmlAttributes = [];
+
+        if ($this->getIsModifiable()) {
+            $htmlAttributes['data-modifiable'] = true;
+        }
 
         if ($this->getIsPausable()) {
             $htmlAttributes['data-pausable'] = true;

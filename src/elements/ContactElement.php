@@ -43,7 +43,6 @@ use yii\web\Response;
  * @property-read bool $hasRoundedThumb
  * @property-read bool $isSubscribed
  * @property-read MailingListElement[] $bouncedMailingLists
- * @property-read bool $isEditable
  * @property-read string $countryCode
  * @property-read int $subscribedCount
  * @property-read User|null $user
