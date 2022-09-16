@@ -131,9 +131,13 @@
                 <div class="data">
                     <h5 class="heading">{{ "Recipients"|t('campaign') }}</h5>
                     <div class="value">
-                        <a href="{{ sendout.campaign.getReportUrl('recipients', { sendout: sendout.id }) }}">
+                        {% if sendout.campaign %}
+                            <a href="{{ sendout.campaign.getReportUrl('recipients', { sendout: sendout.id }) }}">
+                                {{ sendout.recipients }}
+                            </a>
+                        {% else %}
                             {{ sendout.recipients }}
-                        </a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="data">

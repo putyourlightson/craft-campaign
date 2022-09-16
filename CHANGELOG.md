@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 2.1.7 - Unreleased
+## 2.1.7 - 2022-09-16
 ### Fixed
 - Fixed a bug in which the edit action was available for sendouts that were no longer modifiable ([#328](https://github.com/putyourlightson/craft-campaign/issues/328)).
+- Fixed a bug in which an exception was thrown when previewing a sendout in which the campaign no longer exists ([#329](https://github.com/putyourlightson/craft-campaign/issues/329)).
 
 ## 2.1.6 - 2022-09-16
 ### Fixed

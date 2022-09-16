@@ -191,7 +191,7 @@ class SendoutsController extends Controller
         $this->view->registerAssetBundle(SendTestAsset::class);
 
         $campaign = $sendout->getCampaign();
-        $campaignType = $campaign->getCampaignType();
+        $campaignType = $campaign ? $campaign->getCampaignType() : null;
 
         $variables = [
             'sendout' => $sendout,
@@ -201,7 +201,7 @@ class SendoutsController extends Controller
             'contactElementCriteria' => [
                 'status' => ContactElement::STATUS_ACTIVE,
             ],
-            'testContacts' => $campaignType->getTestContactsWithDefault(),
+            'testContacts' => $campaignType ? $campaignType->getTestContactsWithDefault() : [],
             'actions' => [],
             'system' => [
                 'memoryLimit' => ini_get('memory_limit'),

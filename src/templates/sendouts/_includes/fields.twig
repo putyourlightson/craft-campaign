@@ -14,7 +14,11 @@
             elements: sendout.campaignId ? [sendout.campaign],
         }) }}
     {% else %}
-        <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
+        {% if sendout.campaign %}
+            <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
+        {% else %}
+            {{ 'Campaign not found.'|t('campaign') }}
+        {% endif %}
     {% endif %}
 {% endset %}
 {{ forms.field({
