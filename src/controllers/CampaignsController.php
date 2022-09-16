@@ -38,9 +38,8 @@ class CampaignsController extends Controller
         }
 
         $site = Cp::requestedSite();
-
         if (!$site) {
-            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+            throw new SiteNotFoundException();
         }
 
         // Create & populate the draft
@@ -98,9 +97,8 @@ class CampaignsController extends Controller
         $this->requireAcceptsJson();
 
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
-        $siteHandle = $this->request->getQueryParam('site');
 
-        $site = Craft::$app->getSites()->getSiteByHandle($siteHandle);
+        $site = Cp::requestedSite();
         if (!$site) {
             throw new SiteNotFoundException();
         }

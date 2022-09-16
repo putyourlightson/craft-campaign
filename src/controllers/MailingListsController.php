@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\base\Element;
 use craft\controllers\CategoriesController;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
@@ -34,9 +35,8 @@ class MailingListsController extends Controller
         }
 
         $site = Cp::requestedSite();
-
         if (!$site) {
-            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+            throw new SiteNotFoundException();
         }
 
         // Create & populate the draft

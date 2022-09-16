@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\controllers;
 
 use Craft;
 use craft\base\Element;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
@@ -115,9 +116,8 @@ class SendoutsController extends Controller
         }
 
         $site = Cp::requestedSite();
-
         if (!$site) {
-            throw new ForbiddenHttpException('User not authorized to edit content in any sites.');
+            throw new SiteNotFoundException();
         }
 
         // Create & populate the draft
