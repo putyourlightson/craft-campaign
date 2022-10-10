@@ -238,6 +238,9 @@ class CampaignTypesService extends Component
             throw $exception;
         }
 
+        // Clear caches
+        $this->_campaignTypes = null;
+
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
 
