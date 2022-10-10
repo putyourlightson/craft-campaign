@@ -244,14 +244,6 @@ class CampaignTypesService extends Component
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
 
-        // Fire an after event
-        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
-            $this->trigger(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
-                'campaignType' => $campaignType,
-                'isNew' => $isNew,
-            ]));
-        }
-
         if (!$isNew) {
             /** @var Queue $queue */
             $queue = Craft::$app->getQueue();
@@ -271,6 +263,17 @@ class CampaignTypesService extends Component
                 'siteId' => $campaignType->siteId,
             ]));
         }
+
+        // Fire an after event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE)) {
+            $this->trigger(self::EVENT_AFTER_SAVE_CAMPAIGN_TYPE, new CampaignTypeEvent([
+                'campaignType' => $campaignType,
+                'isNew' => $isNew,
+            ]));
+        }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(CampaignElement::class);
     }
 
     /**
@@ -351,6 +354,9 @@ class CampaignTypesService extends Component
             throw $exception;
         }
 
+        // Clear caches
+        $this->_campaignTypes = null;
+
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
 
@@ -360,6 +366,9 @@ class CampaignTypesService extends Component
                 'campaignType' => $campaignType,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(CampaignElement::class);
     }
 
     /**

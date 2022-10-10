@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.8 - 2022-10-10
+### Fixed
+- Fixed a caching issue when applying project config changes to campaign types and mailing list types ([#332](https://github.com/putyourlightson/craft-campaign/issues/332)).
+
 ## 2.1.7 - 2022-09-16
 ### Fixed
 - Fixed a bug in which the edit action was available for sendouts that were no longer modifiable ([#328](https://github.com/putyourlightson/craft-campaign/issues/328)).

@@ -210,6 +210,7 @@ class MailingListTypesService extends Component
         ProjectConfigHelper::ensureAllFieldsProcessed();
 
         $transaction = Craft::$app->getDb()->beginTransaction();
+
         try {
             $mailingListTypeRecord = MailingListTypeRecord::findOne(['uid' => $uid]);
             $isNew = $mailingListTypeRecord === null;
@@ -254,16 +255,11 @@ class MailingListTypesService extends Component
             throw $e;
         }
 
+        // Clear caches
+        $this->_mailingListTypes = null;
+
         // Get mailing list type model
         $mailingListType = $this->getMailingListTypeById($mailingListTypeRecord->id);
-
-        // Fire an after event
-        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_MAILINGLIST_TYPE)) {
-            $this->trigger(self::EVENT_AFTER_SAVE_MAILINGLIST_TYPE, new MailingListTypeEvent([
-                'mailingListType' => $mailingListType,
-                'isNew' => $isNew,
-            ]));
-        }
 
         if (!$isNew) {
             /** @var Queue $queue */
@@ -284,6 +280,17 @@ class MailingListTypesService extends Component
                 'siteId' => $mailingListType->siteId,
             ]));
         }
+
+        // Fire an after event
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE_MAILINGLIST_TYPE)) {
+            $this->trigger(self::EVENT_AFTER_SAVE_MAILINGLIST_TYPE, new MailingListTypeEvent([
+                'mailingListType' => $mailingListType,
+                'isNew' => $isNew,
+            ]));
+        }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(MailingListElement::class);
     }
 
     /**
@@ -364,6 +371,9 @@ class MailingListTypesService extends Component
             throw $e;
         }
 
+        // Clear caches
+        $this->_mailingListTypes = null;
+
         // Get mailing list type model
         $mailingListType = $this->getMailingListTypeById($mailingListTypeRecord->id);
 
@@ -373,6 +383,9 @@ class MailingListTypesService extends Component
                 'mailingListType' => $mailingListType,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(MailingListElement::class);
     }
 
     /**

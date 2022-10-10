@@ -284,6 +284,7 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
+     * TODO: replace with cacheTags() in version 3.0.0
      */
     public function getCacheTags(): array
     {
