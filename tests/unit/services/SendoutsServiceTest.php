@@ -12,6 +12,7 @@ use craft\events\RegisterConditionRuleTypesEvent;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\queue\Queue;
+use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\ContactElement;
@@ -88,11 +89,36 @@ class SendoutsServiceTest extends BaseUnitTest
 
     public function testGetPendingRecipients(): void
     {
-        $this->contact->bounced = null;
         $this->contact->complained = null;
+        $this->contact->bounced = null;
+        $this->contact->blocked = null;
         Craft::$app->elements->saveElement($this->contact);
         $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
         $this->assertEquals(1, $count);
+    }
+
+    public function testGetPendingRecipientsComplained(): void
+    {
+        $this->contact->complained = new DateTime();
+        Craft::$app->elements->saveElement($this->contact);
+        $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $count);
+    }
+
+    public function testGetPendingRecipientsBounced(): void
+    {
+        $this->contact->bounced = new DateTime();
+        Craft::$app->elements->saveElement($this->contact);
+        $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $count);
+    }
+
+    public function testGetPendingRecipientsBlocked(): void
+    {
+        $this->contact->blocked = new DateTime();
+        Craft::$app->elements->saveElement($this->contact);
+        $count = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
+        $this->assertEquals(0, $count);
     }
 
     public function testGetPendingRecipientsRemoved(): void
