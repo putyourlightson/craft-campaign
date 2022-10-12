@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.23.5 - 2022-10-12
+### Fixed
+- Fixed a bug in which blocked contacts were being considered as pending contacts, meaning that sendouts could hang during sending ([#324](https://github.com/putyourlightson/craft-campaign/issues/324)).
+
 ## 1.23.4 - 2022-07-18
 ### Fixed
 - Fixed a bug in which an exception could be thrown if the user agent was unavailable when detecting device type.

@@ -166,11 +166,12 @@ class SendoutsService extends Component
             ->groupBy('contactId')
             ->where($baseCondition);
 
-        // Ensure contacts have not complained or bounced (in contact record)
+        // Ensure contacts have not complained, bounced, or been blocked (in contact record)
         $query->innerJoin(ContactRecord::tableName().' contact', '[[contact.id]] = [[contactId]]')
             ->andWhere([
                 'contact.complained' => null,
                 'contact.bounced' => null,
+                'contact.blocked' => null,
             ]);
 
         // Exclude contacts subscribed to sendout's excluded mailing lists
