@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.10 - 2022-10-17
+### Fixed
+- Fixed a bug in which saving sendout settings was throwing an exception when one or more of the fields were left blank ([#334](https://github.com/putyourlightson/craft-campaign/issues/334)).
+
 ## 2.1.9 - 2022-10-12
 ### Fixed
 - Fixed a bug in which blocked contacts were being considered as pending contacts, meaning that sendouts could hang during sending ([#324](https://github.com/putyourlightson/craft-campaign/issues/324)).

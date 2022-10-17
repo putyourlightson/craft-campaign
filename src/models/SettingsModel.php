@@ -91,19 +91,19 @@ class SettingsModel extends Model
     public ?array $defaultNotificationContactIds = null;
 
     /**
-     * @var int The maximum size of sendout batches
+     * @var int|null The maximum size of sendout batches
      */
-    public int $maxBatchSize = 10000;
+    public ?int $maxBatchSize = 10000;
 
     /**
-     * @var mixed The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+     * @var string|null The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
      */
-    public mixed $memoryLimit = '1024M';
+    public ?string $memoryLimit = '1024M';
 
     /**
-     * @var int The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+     * @var int|null The execution time limit per sendout batch in seconds (set to 0 for unlimited)
      */
-    public int $timeLimit = 3600;
+    public ?int $timeLimit = 3600;
 
     /**
      * @var float The threshold for memory usage per sendout batch as a fraction
