@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.11 - Unreleased
+### Fixed
+- Fixed an issue in which inconsistencies could occur in campaign reports ([#232](https://github.com/putyourlightson/craft-campaign/issues/232), [#285](https://github.com/putyourlightson/craft-campaign/issues/285)).
+
 ## 2.1.10 - 2022-10-17
 ### Fixed
 - Fixed a bug in which saving sendout settings was throwing an exception when one or more of the fields were left blank ([#334](https://github.com/putyourlightson/craft-campaign/issues/334)).

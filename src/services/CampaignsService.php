@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\services;
 
 use craft\base\Component;
+use craft\db\ActiveRecord;
 use craft\mail\Message;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -68,42 +69,38 @@ class CampaignsService extends Component
         // If first time for this interaction
         if ($contactCampaignRecord->{$interaction} === null) {
             $contactCampaignRecord->{$interaction} = new DateTime();
-            $campaignRecord->{$interaction}++;
+            $this->_incrementRecordColumn($campaignRecord, $interaction);
         }
 
-        // If opened
         if ($interaction == 'opened') {
-            $contactCampaignRecord->opens = $contactCampaignRecord->opens ? $contactCampaignRecord->opens + 1 : 1;
-            $campaignRecord->opens++;
+            $this->_incrementRecordColumn($contactCampaignRecord, 'opens');
+            $this->_incrementRecordColumn($campaignRecord, 'opens');
         }
-        // If clicked
         elseif ($interaction == 'clicked') {
             // If not yet opened
             if ($contactCampaignRecord->opened === null) {
                 $contactCampaignRecord->opened = new DateTime();
                 $contactCampaignRecord->opens = 1;
-                $campaignRecord->opened++;
-                $campaignRecord->opens++;
+                $this->_incrementRecordColumn($campaignRecord, 'opened');
+                $this->_incrementRecordColumn($campaignRecord, 'opens');
             }
 
             // Increment clicks
-            $contactCampaignRecord->clicks = $contactCampaignRecord->clicks ? $contactCampaignRecord->clicks + 1 : 1;
-            $campaignRecord->clicks++;
+            $this->_incrementRecordColumn($contactCampaignRecord, 'clicks');
+            $this->_incrementRecordColumn($campaignRecord, 'clicks');
 
             // If link record exists
             if ($linkRecord !== null) {
                 // Increment clicks
-                $linkRecord->clicks = $linkRecord->clicks ? $linkRecord->clicks + 1 : 1;
+                $this->_incrementRecordColumn($linkRecord, 'clicks');
 
                 // Increment clicked if first link click for this contact
                 if (!in_array($linkRecord->id, explode(',', $contactCampaignRecord->links))) {
-                    $linkRecord->clicked = $linkRecord->clicked ? $linkRecord->clicked + 1 : 1;
+                    $this->_incrementRecordColumn($linkRecord, 'clicked');
                 }
 
                 // Append link ID
                 $contactCampaignRecord->links = $contactCampaignRecord->links ? $contactCampaignRecord->links . ',' . $linkRecord->id : $linkRecord->id;
-
-                $linkRecord->save();
             }
         }
 
@@ -111,8 +108,6 @@ class CampaignsService extends Component
         if (!Campaign::$plugin->settings->enableAnonymousTracking) {
             $contactCampaignRecord->save();
         }
-
-        $campaignRecord->save();
     }
 
     /**
@@ -141,5 +136,22 @@ class CampaignsService extends Component
         }
 
         return $message->send();
+    }
+
+    /**
+     * Increments a record's column value by one. This method updates counters
+     * rather than saving records, to ensure that reports remain accurate.
+     * https://github.com/putyourlightson/craft-campaign/issues/232
+     * https://github.com/putyourlightson/craft-campaign/issues/285
+     */
+    private function _incrementRecordColumn(ActiveRecord $record, string $column): void
+    {
+        // Respect anonymous tracking for contact campaign records.
+        if (Campaign::$plugin->settings->enableAnonymousTracking && $record instanceof ContactCampaignRecord) {
+            return;
+        }
+
+        // https://www.yiiframework.com/doc/guide/2.0/en/db-active-record#updating-counters
+        $record->updateCounters([$column => 1]);
     }
 }

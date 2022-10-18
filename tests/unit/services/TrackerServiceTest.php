@@ -75,28 +75,33 @@ class TrackerServiceTest extends BaseUnitTest
 
     public function testOpen(): void
     {
+        // Test multiple events simultaneously
+        Campaign::$plugin->tracker->open($this->contact, $this->sendout);
+        Campaign::$plugin->tracker->open($this->contact, $this->sendout);
         Campaign::$plugin->tracker->open($this->contact, $this->sendout);
 
         $campaign = Campaign::$plugin->campaigns->getCampaignById($this->sendout->campaignId);
 
-        // Assert that the campaign has an open
-        $this->assertEquals(1, $campaign->opens);
+        $this->assertEquals(1, $campaign->opened);
+        $this->assertEquals(3, $campaign->opens);
     }
 
     public function testClick(): void
     {
         $link = LinkRecord::find()->one();
 
+        // Test multiple events simultaneously
+        Campaign::$plugin->tracker->click($this->contact, $this->sendout, $link);
+        Campaign::$plugin->tracker->click($this->contact, $this->sendout, $link);
         Campaign::$plugin->tracker->click($this->contact, $this->sendout, $link);
 
         $campaign = Campaign::$plugin->campaigns->getCampaignById($this->sendout->campaignId);
         $link = LinkRecord::findOne(['id' => $link->id]);
 
-        // Assert that the campaign has a click
-        $this->assertEquals(1, $campaign->clicks);
-
-        // Assert that the link has a click
-        $this->assertEquals(1, $link->clicks);
+        $this->assertEquals(1, $campaign->clicked);
+        $this->assertEquals(3, $campaign->clicks);
+        $this->assertEquals(1, $link->clicked);
+        $this->assertEquals(3, $link->clicks);
     }
 
     public function testUnsubscribe(): void
