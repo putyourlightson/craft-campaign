@@ -1,8 +1,8 @@
 # Release Notes for Campaign
 
-## 2.1.11 - Unreleased
+## 2.1.11 - 2022-10-18
 ### Fixed
-- Fixed an issue in which inconsistencies could occur in campaign reports ([#232](https://github.com/putyourlightson/craft-campaign/issues/232), [#285](https://github.com/putyourlightson/craft-campaign/issues/285)).
+- Fixed a bug in which inconsistencies could occur in campaign reports and added a migration to sync campaign reports ([#232](https://github.com/putyourlightson/craft-campaign/issues/232), [#285](https://github.com/putyourlightson/craft-campaign/issues/285)).
 
 ## 2.1.10 - 2022-10-17
 ### Fixed

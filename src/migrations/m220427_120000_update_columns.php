@@ -42,7 +42,6 @@ class m220427_120000_update_columns extends Migration
             $this->dropColumn(SendoutRecord::tableName(), 'notificationEmailAddress');
         }
 
-
         return true;
     }
 
