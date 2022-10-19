@@ -965,7 +965,8 @@ class CampaignElement extends Element
         Craft::$app->language = $this->_getLanguage();
 
         try {
-            $body = Craft::$app->getView()->renderTemplate(
+            // Render the page template to prevent Yii block tags being left behind
+            $body = Craft::$app->getView()->renderPageTemplate(
                 $template,
                 [
                     'campaign' => $this,
