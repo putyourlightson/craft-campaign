@@ -19,7 +19,7 @@
             targetPrefix: 'frequency-',
         }) }}
     {% else %}
-        {{ schedule.frequency }} {{ intervalOptions[schedule.frequencyInterval] }}
+        {{ schedule.frequency }} {{ schedule.getIntervalOptions()[schedule.frequencyInterval] }}
     {% endif %}
 {% endset %}
 {{ forms.field({

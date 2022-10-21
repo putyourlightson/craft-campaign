@@ -373,7 +373,8 @@ class Install extends Migration
             $elements = $elementType::findAll();
 
             foreach ($elements as $element) {
-                $elementsService->deleteElement($element);
+                // Hard delete elements
+                $elementsService->deleteElement($element, true);
             }
         }
     }

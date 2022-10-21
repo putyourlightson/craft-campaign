@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.12 - 2022-10-21
+### Fixed
+- Fixed a bug in which an exception was thrown when viewing recurring sendouts ([#336](https://github.com/putyourlightson/craft-campaign/issues/336)).
+
 ## 2.1.11 - 2022-10-18
 ### Fixed
 - Fixed a bug in which inconsistencies could occur in campaign reports and added a migration to sync campaign report data ([#232](https://github.com/putyourlightson/craft-campaign/issues/232), [#285](https://github.com/putyourlightson/craft-campaign/issues/285)).

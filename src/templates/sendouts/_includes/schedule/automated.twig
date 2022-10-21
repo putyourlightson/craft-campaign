@@ -3,7 +3,6 @@
 {% include 'campaign/sendouts/_includes/schedule/dates' %}
 
 {% set input %}
-    {% set intervalOptions = schedule.getIntervalOptions() %}
     {% if editable %}
         {{ forms.text({
             name: 'schedule[timeDelay]',
@@ -13,11 +12,11 @@
         }) }}
         {{ forms.select({
             name: 'schedule[timeDelayInterval]',
-            options: intervalOptions,
+            options: schedule.getIntervalOptions(),
             value: schedule.timeDelayInterval,
         }) }}
     {% else %}
-        <p>{{ schedule.timeDelay }} {{ intervalOptions[schedule.timeDelayInterval] }}</p>
+        <p>{{ schedule.timeDelay }} {{ schedule.getIntervalOptions()[schedule.timeDelayInterval] }}</p>
     {% endif %}
 {% endset %}
 {{ forms.field({
