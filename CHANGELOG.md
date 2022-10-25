@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.13 - 2022-10-25
+### Fixed
+- Fixed a bug in which typed properties were being accessed before initialization.
+
 ## 2.1.12 - 2022-10-21
 ### Fixed
 - Fixed a bug in which an exception was thrown when viewing recurring sendouts ([#336](https://github.com/putyourlightson/craft-campaign/issues/336)).

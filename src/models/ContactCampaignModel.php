@@ -52,37 +52,37 @@ class ContactCampaignModel extends Model
     /**
      * @var int|null Mailing List ID
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @var DateTime|null Sent
      */
-    public ?DateTime $sent;
+    public ?DateTime $sent = null;
 
     /**
      * @var DateTime|null Opened
      */
-    public ?DateTime $opened;
+    public ?DateTime $opened = null;
 
     /**
      * @var DateTime|null Clicked
      */
-    public ?DateTime $clicked;
+    public ?DateTime $clicked = null;
 
     /**
      * @var DateTime|null Unsubscribed
      */
-    public ?DateTime $unsubscribed;
+    public ?DateTime $unsubscribed = null;
 
     /**
      * @var DateTime|null Complained
      */
-    public ?DateTime $complained;
+    public ?DateTime $complained = null;
 
     /**
      * @var DateTime|null Bounced
      */
-    public ?DateTime $bounced;
+    public ?DateTime $bounced = null;
 
     /**
      * @var int Opens

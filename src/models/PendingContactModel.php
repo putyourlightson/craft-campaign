@@ -11,14 +11,14 @@ use putyourlightson\campaign\helpers\StringHelper;
 class PendingContactModel extends Model
 {
     /**
-     * @var null|string Pending ID
+     * @var string|null Pending ID
      */
     public ?string $pid = null;
 
     /**
-     * @var string Email
+     * @var string|null Email
      */
-    public string $email;
+    public ?string $email = null;
 
     /**
      * @var int Mailing list ID
