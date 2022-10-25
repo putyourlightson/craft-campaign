@@ -32,17 +32,17 @@ class ContactCampaignModel extends Model
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Contact ID
      */
-    public ?int $contactId;
+    public ?int $contactId = null;
 
     /**
      * @var int|null Campaign ID
      */
-    public ?int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @var int|null Sendout ID
