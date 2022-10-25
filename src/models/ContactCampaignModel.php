@@ -97,22 +97,22 @@ class ContactCampaignModel extends Model
     /**
      * @var string|null Links
      */
-    public ?string $links;
+    public ?string $links = null;
 
     /**
      * @var string|null Device
      */
-    public ?string $device;
+    public ?string $device = null;
 
     /**
      * @var string|null OS
      */
-    public ?string $os;
+    public ?string $os = null;
 
     /**
      * @var string|null Client
      */
-    public ?string $client;
+    public ?string $client = null;
 
     /**
      * @var DateTime
