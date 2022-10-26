@@ -2,7 +2,7 @@
 
 ## 2.1.14 - 2022-10-25
 ### Fixed
-- Fully fixed the bug in which typed properties were being accessed before initialization.
+- Fixed a bug in which typed properties were being accessed before initialization, caused by a [breaking change](https://github.com/yiisoft/yii2/issues/19546#issuecomment-1291280606) in Yii 2.0.46.
 
 ## 2.1.13 - 2022-10-25
 ### Fixed
