@@ -21,19 +21,19 @@ class PendingContactModel extends Model
     public ?string $email = null;
 
     /**
-     * @var int Mailing list ID
+     * @var int|null Mailing list ID
      */
-    public int $mailingListId;
+    public ?int $mailingListId;
 
     /**
-     * @var string Source
+     * @var string|null Source
      */
-    public string $source;
+    public ?string $source = null;
 
     /**
      * @var mixed Field data
      */
-    public mixed $fieldData;
+    public mixed $fieldData = null;
 
     /**
      * @inheritdoc

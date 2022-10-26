@@ -16,24 +16,24 @@ class ContactActivityModel extends Model
     public ContactCampaignModel|ContactMailingListModel $model;
 
     /**
-     * @var string Title
+     * @var string|null Title
      */
-    public string $title;
+    public ?string $title = null;
 
     /**
-     * @var string Email
+     * @var string|null Email
      */
-    public string $email;
+    public ?string $email = null;
 
     /**
-     * @var string Interaction
+     * @var string|null Interaction
      */
-    public string $interaction;
+    public ?string $interaction = null;
 
     /**
      * @var int Count
      */
-    public int $count;
+    public int $count = 0;
 
     /**
      * @var DateTime

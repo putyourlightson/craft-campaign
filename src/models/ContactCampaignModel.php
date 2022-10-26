@@ -115,9 +115,9 @@ class ContactCampaignModel extends Model
     public ?string $client = null;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
-    public DateTime $dateUpdated;
+    public ?DateTime $dateUpdated = null;
 
     /**
      * Returns the contact.

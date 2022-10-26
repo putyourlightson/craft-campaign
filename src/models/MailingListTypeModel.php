@@ -10,7 +10,6 @@ use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
-
 use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
 use craft\validators\UniqueValidator;
