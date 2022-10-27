@@ -32,17 +32,17 @@ class ContactCampaignModel extends Model
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Contact ID
      */
-    public ?int $contactId;
+    public ?int $contactId = null;
 
     /**
      * @var int|null Campaign ID
      */
-    public ?int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @var int|null Sendout ID
@@ -52,37 +52,37 @@ class ContactCampaignModel extends Model
     /**
      * @var int|null Mailing List ID
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @var DateTime|null Sent
      */
-    public ?DateTime $sent;
+    public ?DateTime $sent = null;
 
     /**
      * @var DateTime|null Opened
      */
-    public ?DateTime $opened;
+    public ?DateTime $opened = null;
 
     /**
      * @var DateTime|null Clicked
      */
-    public ?DateTime $clicked;
+    public ?DateTime $clicked = null;
 
     /**
      * @var DateTime|null Unsubscribed
      */
-    public ?DateTime $unsubscribed;
+    public ?DateTime $unsubscribed = null;
 
     /**
      * @var DateTime|null Complained
      */
-    public ?DateTime $complained;
+    public ?DateTime $complained = null;
 
     /**
      * @var DateTime|null Bounced
      */
-    public ?DateTime $bounced;
+    public ?DateTime $bounced = null;
 
     /**
      * @var int Opens
@@ -97,27 +97,27 @@ class ContactCampaignModel extends Model
     /**
      * @var string|null Links
      */
-    public ?string $links;
+    public ?string $links = null;
 
     /**
      * @var string|null Device
      */
-    public ?string $device;
+    public ?string $device = null;
 
     /**
      * @var string|null OS
      */
-    public ?string $os;
+    public ?string $os = null;
 
     /**
      * @var string|null Client
      */
-    public ?string $client;
+    public ?string $client = null;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
-    public DateTime $dateUpdated;
+    public ?DateTime $dateUpdated = null;
 
     /**
      * Returns the contact.

@@ -26,47 +26,47 @@ class ContactMailingListModel extends Model
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var int|null Contact ID
      */
-    public ?int $contactId;
+    public ?int $contactId = null;
 
     /**
      * @var int|null Mailing list ID
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
-     * @var string Subscription status
+     * @var string|null Subscription status
      */
-    public string $subscriptionStatus;
+    public ?string $subscriptionStatus = null;
 
     /**
      * @var DateTime|null Subscribed
      */
-    public ?DateTime $subscribed;
+    public ?DateTime $subscribed = null;
 
     /**
      * @var DateTime|null Unsubscribed
      */
-    public ?DateTime $unsubscribed;
+    public ?DateTime $unsubscribed = null;
 
     /**
      * @var DateTime|null Complained
      */
-    public ?DateTime $complained;
+    public ?DateTime $complained = null;
 
     /**
      * @var DateTime|null Bounced
      */
-    public ?DateTime $bounced;
+    public ?DateTime $bounced = null;
 
     /**
      * @var DateTime|null Verified
      */
-    public ?DateTime $verified;
+    public ?DateTime $verified = null;
 
     /**
      * @var string Source type
@@ -79,9 +79,9 @@ class ContactMailingListModel extends Model
     public string $source = '';
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
-    public DateTime $dateUpdated;
+    public ?DateTime $dateUpdated = null;
 
     /**
      * Returns the contact.

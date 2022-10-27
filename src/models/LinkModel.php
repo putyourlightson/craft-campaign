@@ -12,27 +12,27 @@ class LinkModel extends Model
     /**
      * @var int|null ID
      */
-    public ?int $id;
+    public ?int $id = null;
 
     /**
      * @var string|null Link ID
      */
-    public ?string $lid;
+    public ?string $lid = null;
 
     /**
-     * @var int Campaign ID
+     * @var int|null Campaign ID
      */
-    public int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @var string|null URL
      */
-    public ?string $url;
+    public ?string $url = null;
 
     /**
      * @var string|null Title
      */
-    public ?string $title;
+    public ?string $title = null;
 
     /**
      * @var int Clicked
