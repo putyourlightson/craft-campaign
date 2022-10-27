@@ -16,5 +16,5 @@ class ExportEvent extends CancelableEvent
     /**
      * @var ExportModel|null
      */
-    public ?ExportModel $export;
+    public ?ExportModel $export = null;
 }

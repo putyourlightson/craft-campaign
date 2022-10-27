@@ -14,5 +14,5 @@ class SendoutEvent extends CancelableEvent
     /**
      * @var SendoutElement|null
      */
-    public ?SendoutElement $sendout;
+    public ?SendoutElement $sendout = null;
 }

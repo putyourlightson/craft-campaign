@@ -19,7 +19,7 @@ class ResaveElementsJob extends ResaveElements
     /**
      * @var int|null
      */
-    public ?int $siteId;
+    public ?int $siteId = null;
 
     /**
      * @inheritdoc
