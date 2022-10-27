@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.16 - 2022-10-27
+### Fixed
+- Fixed all remaining uninitialized typed properties, as a precaution.
+
 ## 2.1.15 - 2022-10-27
 ### Fixed
 - Fixed a missed uninitialized typed property that was causing verification links to fail ([#338](https://github.com/putyourlightson/craft-campaign/issues/338)).
