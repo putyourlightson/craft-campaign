@@ -16,5 +16,5 @@ class ImportEvent extends CancelableEvent
     /**
      * @var ImportModel|null
      */
-    public ?ImportModel $import;
+    public ?ImportModel $import = null;
 }

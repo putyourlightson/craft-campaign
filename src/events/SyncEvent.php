@@ -17,5 +17,5 @@ class SyncEvent extends CancelableEvent
     /**
      * @var MailingListElement|null
      */
-    public ?MailingListElement $mailingList;
+    public ?MailingListElement $mailingList = null;
 }

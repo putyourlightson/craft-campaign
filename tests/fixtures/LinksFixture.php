@@ -32,7 +32,7 @@ class LinksFixture extends ActiveFixture
     /**
      * @var int|null
      */
-    public ?int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @inheritdoc

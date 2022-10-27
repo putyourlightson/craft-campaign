@@ -27,7 +27,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
     /**
      * @var string|null
      */
-    public ?string $title;
+    public ?string $title = null;
 
     /**
      * @var int

@@ -32,7 +32,7 @@ class PendingContactsFixture extends ActiveFixture
     /**
      * @var int|null
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @inheritdoc

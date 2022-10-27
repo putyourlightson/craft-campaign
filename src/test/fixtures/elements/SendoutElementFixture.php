@@ -21,12 +21,12 @@ abstract class SendoutElementFixture extends BaseElementFixture
     /**
      * @var int|null
      */
-    public ?int $senderId;
+    public ?int $senderId = null;
 
     /**
      * @var int|null
      */
-    public ?int $campaignId;
+    public ?int $campaignId = null;
 
     /**
      * @var array|null

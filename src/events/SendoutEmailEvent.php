@@ -15,20 +15,20 @@ class SendoutEmailEvent extends CancelableEvent
     /**
      * @var SendoutElement|null
      */
-    public ?SendoutElement $sendout;
+    public ?SendoutElement $sendout = null;
 
     /**
      * @var ContactElement|null
      */
-    public ?ContactElement $contact;
+    public ?ContactElement $contact = null;
 
     /**
      * @var Message|null
      */
-    public ?Message $message;
+    public ?Message $message = null;
 
     /**
      * @var bool|null
      */
-    public ?bool $success;
+    public ?bool $success = null;
 }

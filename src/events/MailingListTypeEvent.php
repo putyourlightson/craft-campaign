@@ -13,7 +13,7 @@ class MailingListTypeEvent extends CancelableEvent
     /**
      * @var MailingListTypeModel|null
      */
-    public ?MailingListTypeModel $mailingListType;
+    public ?MailingListTypeModel $mailingListType = null;
 
     /**
      * @var bool

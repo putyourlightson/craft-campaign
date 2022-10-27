@@ -13,7 +13,7 @@ class CampaignTypeEvent extends CancelableEvent
     /**
      * @var CampaignTypeModel|null
      */
-    public ?CampaignTypeModel $campaignType;
+    public ?CampaignTypeModel $campaignType = null;
 
     /**
      * @var bool
