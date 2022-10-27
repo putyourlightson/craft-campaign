@@ -23,7 +23,7 @@ class PendingContactModel extends Model
     /**
      * @var int|null Mailing list ID
      */
-    public ?int $mailingListId;
+    public ?int $mailingListId = null;
 
     /**
      * @var string|null Source

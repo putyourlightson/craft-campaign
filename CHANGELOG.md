@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.15 - 2022-10-27
+### Fixed
+- Fixed a missed uninitialized typed property.
+
 ## 2.1.14 - 2022-10-25
 ### Fixed
 - Fixed a bug in which typed properties were being accessed before initialization, caused by a [breaking change](https://github.com/yiisoft/yii2/issues/19546#issuecomment-1291280606) in Yii 2.0.46.
