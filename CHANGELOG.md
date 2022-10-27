@@ -2,7 +2,7 @@
 
 ## 2.1.15 - 2022-10-27
 ### Fixed
-- Fixed a missed uninitialized typed property.
+- Fixed a missed uninitialized typed property that was causing verification links to fail ([#338](https://github.com/putyourlightson/craft-campaign/issues/338)).
 
 ## 2.1.14 - 2022-10-25
 ### Fixed
