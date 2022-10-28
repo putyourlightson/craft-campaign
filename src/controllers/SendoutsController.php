@@ -90,15 +90,19 @@ class SendoutsController extends Controller
      */
     public function actionGetHtmlBody(): Response
     {
-        $sendoutId = $this->request->getRequiredParam('sendoutId');
-        $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
-
-        if ($sendout === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
-        }
-
-        // Prep the response
+        $sendout = $this->_getSendoutFromParamId();
         $this->response->content = $sendout->getHtmlBody();
+
+        return $this->response;
+    }
+
+    /**
+     * Returns the plaintext body.
+     */
+    public function actionGetPlaintextBody(): Response
+    {
+        $sendout = $this->_getSendoutFromParamId();
+        $this->response->content = $sendout->getPlaintextBody();
 
         return $this->response;
     }

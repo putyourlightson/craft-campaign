@@ -956,6 +956,16 @@ class CampaignElement extends Element
 
         // Get body from rendered template with variables
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
+        $variables = [
+            'campaign' => $this,
+            'browserVersionUrl' => $this->url,
+            'contact' => $contact,
+            'sendout' => $sendout,
+            'mailingList' => $mailingList,
+            'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
+            'isWebRequest' => false,
+        ];
+        $templateMode = View::TEMPLATE_MODE_SITE;
 
         // Set the current site from the campaign's site ID
         Craft::$app->getSites()->setCurrentSite($this->siteId);
@@ -965,20 +975,13 @@ class CampaignElement extends Element
         Craft::$app->language = $this->_getLanguage();
 
         try {
-            // Render the page template to prevent Yii block tags being left behind
-            $body = Craft::$app->getView()->renderPageTemplate(
-                $template,
-                [
-                    'campaign' => $this,
-                    'browserVersionUrl' => $this->url,
-                    'contact' => $contact,
-                    'sendout' => $sendout,
-                    'mailingList' => $mailingList,
-                    'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
-                    'isWebRequest' => false,
-                ],
-                View::TEMPLATE_MODE_SITE,
-            );
+            // Render the page template only for HTML, to prevent Yii block tags being left behind
+            if ($templateType == 'html') {
+                $body = Craft::$app->getView()->renderPageTemplate($template, $variables, $templateMode);
+            }
+            else {
+                $body = Craft::$app->getView()->renderTemplate($template, $variables, $templateMode);
+            }
         }
         catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
