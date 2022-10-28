@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.1.17 - 2022-10-28
+### Fixed
+- Fixed a bug in which the unsubscribe webhook action could throw an exception ([#339](https://github.com/putyourlightson/craft-campaign/issues/339)).
+
 ## 2.1.16 - 2022-10-27
 ### Fixed
 - Fixed all remaining uninitialized typed properties, as a precaution.
