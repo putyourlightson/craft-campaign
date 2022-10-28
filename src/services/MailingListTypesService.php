@@ -234,7 +234,7 @@ class MailingListTypesService extends Component
                 $layout->id = $mailingListTypeRecord->fieldLayoutId;
                 $layout->type = MailingListElement::class;
                 $layout->uid = key($data['fieldLayouts']);
-                $fieldsService->saveLayout($layout);
+                $fieldsService->saveLayout($layout, false);
                 $mailingListTypeRecord->fieldLayoutId = $layout->id;
             }
             elseif ($mailingListTypeRecord->fieldLayoutId) {

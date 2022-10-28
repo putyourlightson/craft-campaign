@@ -136,6 +136,6 @@ class ContactsService extends Component
         $layout->id = $fieldsService->getLayoutByType(ContactElement::class)->id;
         $layout->type = ContactElement::class;
         $layout->uid = key($data);
-        $fieldsService->saveLayout($layout);
+        $fieldsService->saveLayout($layout, false);
     }
 }

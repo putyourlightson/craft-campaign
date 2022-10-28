@@ -217,7 +217,7 @@ class CampaignTypesService extends Component
                 $layout->id = $campaignTypeRecord->fieldLayoutId;
                 $layout->type = CampaignElement::class;
                 $layout->uid = key($data['fieldLayouts']);
-                $fieldsService->saveLayout($layout);
+                $fieldsService->saveLayout($layout, false);
                 $campaignTypeRecord->fieldLayoutId = $layout->id;
             }
             elseif ($campaignTypeRecord->fieldLayoutId) {
