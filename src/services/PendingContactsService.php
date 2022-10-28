@@ -30,7 +30,7 @@ class PendingContactsService extends Component
     {
         // Get pending contact
         $pendingContactRecord = PendingContactRecord::find()
-            ->where(['pid' => $pid])
+            ->andWhere(['pid' => $pid])
             ->one();
 
         if ($pendingContactRecord === null) {
