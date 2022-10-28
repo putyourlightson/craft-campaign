@@ -35,6 +35,18 @@ class SendoutsController extends Controller
     protected int|bool|array $allowAnonymous = ['queue-pending-sendouts'];
 
     /**
+     * @inheritdoc
+     */
+    public function beforeAction($action): bool
+    {
+        if ($action->id != 'queue-pending-sendouts') {
+            $this->requirePermission('campaign:sendouts');
+        }
+
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Queues pending sendouts.
      */
     public function actionQueuePendingSendouts(): Response
@@ -78,8 +90,6 @@ class SendoutsController extends Controller
     public function actionGetPendingRecipientCount(): Response
     {
         $sendout = $this->_getSendoutFromParamId();
-
-        // Prep the response
         $this->response->content = (string)$sendout->getPendingRecipientCount();
 
         return $this->response;
@@ -90,15 +100,19 @@ class SendoutsController extends Controller
      */
     public function actionGetHtmlBody(): Response
     {
-        $sendoutId = $this->request->getRequiredParam('sendoutId');
-        $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
-
-        if ($sendout === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Sendout not found.'));
-        }
-
-        // Prep the response
+        $sendout = $this->_getSendoutFromParamId();
         $this->response->content = $sendout->getHtmlBody();
+
+        return $this->response;
+    }
+
+    /**
+     * Returns the plaintext body.
+     */
+    public function actionGetPlaintextBody(): Response
+    {
+        $sendout = $this->_getSendoutFromParamId();
+        $this->response->content = $sendout->getPlaintextBody();
 
         return $this->response;
     }
