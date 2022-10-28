@@ -35,6 +35,18 @@ class SendoutsController extends Controller
     protected int|bool|array $allowAnonymous = ['queue-pending-sendouts'];
 
     /**
+     * @inheritdoc
+     */
+    public function beforeAction($action): bool
+    {
+        if ($action->id != 'queue-pending-sendouts') {
+            $this->requirePermission('campaign:sendouts');
+        }
+
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Queues pending sendouts.
      */
     public function actionQueuePendingSendouts(): Response
@@ -78,8 +90,6 @@ class SendoutsController extends Controller
     public function actionGetPendingRecipientCount(): Response
     {
         $sendout = $this->_getSendoutFromParamId();
-
-        // Prep the response
         $this->response->content = (string)$sendout->getPendingRecipientCount();
 
         return $this->response;
