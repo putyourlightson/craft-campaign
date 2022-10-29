@@ -3,7 +3,6 @@
 namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
-use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
@@ -14,6 +13,7 @@ class m221017_120000_sync_campaign_reports extends Migration
      */
     public function safeUp(): bool
     {
+        /** @var CampaignRecord[] $campaignRecords */
         $campaignRecords = CampaignRecord::find()
             ->where(['>', 'recipients', '0'])
             ->all();

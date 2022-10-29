@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 2.2.0 - 2022-10-28
+### Added
+- Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.
+
+### Fixed
+- Fixed a bug in which Yii block comments could be unintentionaly left over in rendered campaign templates ([#337](https://github.com/putyourlightson/craft-campaign/issues/337)).
+
 ## 2.1.17 - 2022-10-28
 ### Fixed
 - Fixed a bug in which the unsubscribe webhook action could throw an exception ([#339](https://github.com/putyourlightson/craft-campaign/issues/339)).
