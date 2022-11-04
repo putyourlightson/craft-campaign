@@ -31,10 +31,12 @@
         </thead>
         <tbody>
             {% for activity in contactActivity %}
-                {% set contact = activity.model.contact %}
-                {% if contact %}
+                {% set model = activity.model %}
+                {% if model.contactId %}
                     <tr>
-                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}">
+                            <a href="{{ model.contactReportUrl }}">{{ model.contactEmail }}</a>
+                        </th>
                         <td data-title="{{ 'Interaction'|t('campaign') }}">
                             {{ activity.interaction|ucfirst|t('campaign') }}
                             {% if activity.links|length %}

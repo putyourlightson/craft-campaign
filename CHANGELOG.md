@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.2.1 - Unreleased
+### Changed
+- Improved the performance of report pages by optimising queries ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
+
 ## 2.2.0 - 2022-10-28
 ### Added
 - Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.

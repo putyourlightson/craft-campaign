@@ -23,7 +23,6 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
-
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\ReportsService;
 use Twig\Markup;

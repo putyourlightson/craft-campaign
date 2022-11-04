@@ -8,6 +8,8 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\db\ActiveRecord;
+use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\Json;
@@ -23,11 +25,11 @@ use putyourlightson\campaign\models\ContactActivityModel;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\models\ContactMailingListModel;
 use putyourlightson\campaign\models\LinkModel;
-
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\LinkRecord;
+use putyourlightson\campaign\records\SendoutRecord;
 
 /**
  * @property-read array $contactsReportData
@@ -135,20 +137,31 @@ class ReportsService extends Component
      */
     public function getCampaignRecipients(int $campaignId, int $sendoutId = null): array
     {
-        $contactCampaignQuery = ContactCampaignRecord::find()
-            ->where(['campaignId' => $campaignId])
-            ->orderBy(['sent' => SORT_DESC]);
+        $condition = ['contactCampaign.campaignId' => $campaignId];
 
         if ($sendoutId !== null) {
-            $contactCampaignQuery->andWhere(['sendoutId' => $sendoutId]);
+            $condition['sendoutId'] = $sendoutId;
         }
 
-        $contactCampaignRecords = $contactCampaignQuery->all();
+        $results = (new Query())
+            ->select(['contactCampaign.*', 'contact.email', 'sendout.sendoutType', 'content.title'])
+            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
+            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->innerJoin(SendoutRecord::tableName() . ' sendout', 'sendout.id = sendoutId')
+            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = sendoutId')
+            ->where($condition)
+            ->orderBy(['sent' => SORT_DESC])
+            ->all();
+
         $contactCampaigns = [];
 
-        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+        foreach ($results as $result) {
             $contactCampaign = new ContactCampaignModel();
-            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaign->setAttributes($result, false);
+            $contactCampaign->contactEmail = $result['email'];
+            $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
+            $contactCampaign->sendoutTitle = $result['title'];
+            $contactCampaign->sendoutEditUrl = UrlHelper::cpUrl('campaign/sendouts/' . $result['sendoutType'] . '/' . $result['sendoutId']);
             $contactCampaigns[] = $contactCampaign;
         }
 
@@ -162,32 +175,39 @@ class ReportsService extends Component
      */
     public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
+        $condition = ['contactCampaign.campaignId' => $campaignId];
+
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = [
             'not',
-            $interaction ? [$interaction => null] : [
+            $interaction ? ['contactCampaign.' . $interaction => null] : [
                 'or',
                 [
-                    'opened' => null,
-                    'clicked' => null,
-                    'unsubscribed' => null,
-                    'complained' => null,
-                    'bounced' => null,
+                    'contactCampaign.opened' => null,
+                    'contactCampaign.clicked' => null,
+                    'contactCampaign.unsubscribed' => null,
+                    'contactCampaign.complained' => null,
+                    'contactCampaign.bounced' => null,
                 ],
             ],
         ];
 
-        $contactCampaignRecords = ContactCampaignRecord::find()
-            ->where(['campaignId' => $campaignId])
+        $results = (new Query())
+            ->select(['contactCampaign.*', 'contact.email'])
+            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
+            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
         $contactCampaigns = [];
 
-        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+        foreach ($results as $result) {
             $contactCampaign = new ContactCampaignModel();
-            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaign->setAttributes($result, false);
+            $contactCampaign->contactEmail = $result['email'];
+            $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
             $contactCampaigns[] = $contactCampaign;
         }
 
@@ -322,23 +342,30 @@ class ReportsService extends Component
      */
     public function getContactCampaignActivity(int $contactId, int $limit = null, array|int $campaignId = null): array
     {
-        $conditions = ['contactId' => $contactId];
+        $condition = ['contactId' => $contactId];
 
         if ($campaignId !== null) {
-            $conditions['campaignId'] = $campaignId;
+            $condition['campaignId'] = $campaignId;
         }
 
-        // Get contact campaigns
-        $contactCampaignRecords = ContactCampaignRecord::find()
-            ->where($conditions)
+        $results = (new Query())
+            ->select(['contactCampaign.*', 'contact.email', 'content.title'])
+            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
+            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = campaignId')
+            ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
         $contactCampaigns = [];
 
-        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+        foreach ($results as $result) {
             $contactCampaign = new ContactCampaignModel();
-            $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
+            $contactCampaign->setAttributes($result, false);
+            $contactCampaign->contactEmail = $result['email'];
+            $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
+            $contactCampaign->campaignTitle = $result['title'];
+            $contactCampaign->campaignReportUrl = UrlHelper::cpUrl('campaign/reports/campaigns/' . $result['campaignId']);
             $contactCampaigns[] = $contactCampaign;
         }
 
@@ -353,23 +380,30 @@ class ReportsService extends Component
      */
     public function getContactMailingListActivity(int $contactId, int $limit = null, array|int $mailingListId = null): array
     {
-        $conditions = ['contactId' => $contactId];
+        $condition = ['contactId' => $contactId];
 
         if ($mailingListId !== null) {
-            $conditions['mailingListId'] = $mailingListId;
+            $condition['mailingListId'] = $mailingListId;
         }
 
-        // Get mailing lists
-        $contactMailingListRecords = ContactMailingListRecord::find()
-            ->where($conditions)
+        $results = (new Query())
+            ->select(['contactMailingList.*', 'contact.email', 'content.title'])
+            ->from(ContactMailingListRecord::tableName() . 'contactMailingList')
+            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = mailingListId')
+            ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
         $contactMailingLists = [];
 
-        foreach ($contactMailingListRecords as $contactMailingListRecord) {
+        foreach ($results as $result) {
             $contactMailingList = new ContactMailingListModel();
-            $contactMailingList->setAttributes($contactMailingListRecord->getAttributes(), false);
+            $contactMailingList->setAttributes($result, false);
+            $contactMailingList->contactEmail = $result['email'];
+            $contactMailingList->contactReportUrl = UrlHelper::cpUrl('mailinglists/reports/contacts/' . $result['contactId']);
+            $contactMailingList->mailingListTitle = $result['title'];
+            $contactMailingList->mailingListReportUrl = UrlHelper::cpUrl('campaign/reports/mailinglists/' . $result['mailingListId']);
             $contactMailingLists[] = $contactMailingList;
         }
 
@@ -450,31 +484,38 @@ class ReportsService extends Component
      */
     public function getMailingListContactActivity(int $mailingListId, string $interaction = null, int $limit = null): array
     {
+        $condition = ['mailingListId' => $mailingListId];
+
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = [
             'not',
-            $interaction ? [$interaction => null] : [
+            $interaction ? ['contactMailingList.' . $interaction => null] : [
                 'or',
                 [
-                    'subscribed' => null,
-                    'unsubscribed' => null,
-                    'complained' => null,
-                    'bounced' => null,
+                    'contactMailingList.subscribed' => null,
+                    'contactMailingList.unsubscribed' => null,
+                    'contactMailingList.complained' => null,
+                    'contactMailingList.bounced' => null,
                 ],
             ],
         ];
 
-        $contactMailingListRecords = ContactMailingListRecord::find()
-            ->where(['mailingListId' => $mailingListId])
+        $results = (new Query())
+            ->select(['contactMailingList.*', 'contact.email'])
+            ->from(ContactMailingListRecord::tableName() . 'contactMailingList')
+            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
 
         $contactMailingLists = [];
 
-        foreach ($contactMailingListRecords as $contactMailingListRecord) {
+        foreach ($results as $result) {
             $contactMailingList = new ContactMailingListModel();
-            $contactMailingList->setAttributes($contactMailingListRecord->getAttributes(), false);
+            $contactMailingList->setAttributes($result, false);
+            $contactMailingList->contactEmail = $result['email'];
+            $contactMailingList->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
             $contactMailingLists[] = $contactMailingList;
         }
 
@@ -663,7 +704,7 @@ class ReportsService extends Component
     /**
      * Returns locations.
      */
-    private function _getLocations(string $recordClass, array $conditions, int $total, int $limit = null): array
+    private function _getLocations(string $recordClass, array $condition, int $total, int $limit = null): array
     {
         $results = [];
         $fields = ['country', 'MAX([[geoIp]]) AS geoIp'];
@@ -676,7 +717,7 @@ class ReportsService extends Component
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
                 ->select('contactId')
-                ->where($conditions)
+                ->where($condition)
                 ->groupBy('contactId')
                 ->column();
 
@@ -731,7 +772,7 @@ class ReportsService extends Component
     /**
      * Returns devices.
      */
-    private function _getDevices(string $recordClass, array $conditions, bool $detailed, int $total, int $limit = null): array
+    private function _getDevices(string $recordClass, array $condition, bool $detailed, int $total, int $limit = null): array
     {
         $results = [];
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
@@ -745,7 +786,7 @@ class ReportsService extends Component
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
                 ->select('contactId')
-                ->where($conditions)
+                ->where($condition)
                 ->groupBy('contactId')
                 ->column();
 

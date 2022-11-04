@@ -8,9 +8,9 @@
         </thead>
         <tbody>
             {% for activity in campaignActivity %}
-                {% set campaign = activity.model.campaign %}
+                {% set model = activity.model %}
                 <tr>
-                    <th scope="row" data-title="{{ 'Campaign'|t('campaign') }}"><a href="{{ campaign.reportUrl }}">{{ campaign.title }}</a></th>
+                    <th scope="row" data-title="{{ 'Campaign'|t('campaign') }}"><a href="{{ model.campaignReportUrl }}">{{ model.campaignTitle }}</a></th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">
                         {{ activity.interaction|ucfirst|t('campaign') }}
                         {% if activity.links|length %}

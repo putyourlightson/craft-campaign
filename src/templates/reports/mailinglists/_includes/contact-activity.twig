@@ -8,14 +8,18 @@
         </thead>
         <tbody>
             {% for activity in contactActivity %}
-                {% set contact = activity.model.contact %}
-                {% if contact %}
+                {% set model = activity.model %}
+                {% if model.contactId %}
                     <tr>
-                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
-                        <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
+                        <th scope="row" data-title="{{ 'Email'|t('campaign') }}">
+                            <a href="{{ model.contactReportUrl }}">{{ model.contactEmail }}</a>
+                        </th>
+                        <td data-title="{{ 'Interaction'|t('campaign') }}">
+                            {{ activity.interaction|ucfirst|t('campaign') }}
+                        </td>
                         <td data-title="{{ 'Source'|t('campaign') }}">
-                            {% if activity.model.sourceType %}
-                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ activity.model.sourceType|ucfirst|t('campaign') }}</a>
+                            {% if model.sourceType %}
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ model.sourceType|ucfirst|t('campaign') }}</a>
                             {% endif %}
                         </td>
                         <td data-order="{{ activity.date|datetime('U') }}" data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>

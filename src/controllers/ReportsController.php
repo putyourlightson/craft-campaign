@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
-
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\services\ReportsService;

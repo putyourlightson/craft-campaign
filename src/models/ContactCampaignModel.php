@@ -120,6 +120,36 @@ class ContactCampaignModel extends Model
     public ?DateTime $dateUpdated = null;
 
     /**
+     * @var string|null
+     */
+    public ?string $contactEmail = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $contactReportUrl = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $campaignTitle = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $campaignReportUrl = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $sendoutTitle = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $sendoutEditUrl = null;
+
+    /**
      * Returns the contact.
      */
     public function getContact(): ?ContactElement

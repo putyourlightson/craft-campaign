@@ -84,6 +84,26 @@ class ContactMailingListModel extends Model
     public ?DateTime $dateUpdated = null;
 
     /**
+     * @var string|null
+     */
+    public ?string $contactEmail = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $contactReportUrl = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $mailingListTitle = null;
+
+    /**
+     * @var string|null
+     */
+    public ?string $mailingListReportUrl = null;
+
+    /**
      * Returns the contact.
      */
     public function getContact(): ?ContactElement

@@ -28,6 +28,7 @@ use DateTime;
  *
  * @property-read ContactRecord $contact
  * @property-read CampaignRecord $campaign
+ * @property-read SendoutRecord $sendout
  */
 class ContactCampaignRecord extends ActiveRecord
 {
@@ -70,5 +71,13 @@ class ContactCampaignRecord extends ActiveRecord
     public function getCampaign(): ActiveQuery
     {
         return $this->hasOne(CampaignRecord::class, ['id' => 'campaignId']);
+    }
+
+    /**
+     * Returns the related sendout record.
+     */
+    public function getSendout(): ActiveQuery
+    {
+        return $this->hasOne(SendoutRecord::class, ['id' => 'sendoutId']);
     }
 }

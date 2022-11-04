@@ -23,16 +23,14 @@
         </thead>
         <tbody>
             {% for recipient in recipients %}
-                {% set contact = recipient.contact %}
-                {% if contact %}
+                {% if recipient.contactId %}
                     <tr>
                         <th scope="row" data-title="{{ 'Email'|t('campaign') }}">
-                            <a href="{{ contact.reportUrl }}">{{ contact.email }}</a>
+                            <a href="{{ recipient.contactReportUrl }}">{{ recipient.contactEmail }}</a>
                         </th>
                         <td data-title="{{ 'Sendout'|t('campaign') }}">
-                            {% set sendout = recipient.sendout %}
-                            {% if sendout %}
-                                <a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a>
+                            {% if recipient.sendoutId %}
+                                <a href="{{ recipient.sendoutEditUrl }}">{{ recipient.sendoutTitle }}</a>
                             {% endif %}
                         </td>
                         <td data-order="{{ recipient.sent|datetime('U') }}" data-title="{{ 'Sent'|t('campaign') }}">
