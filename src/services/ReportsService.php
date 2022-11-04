@@ -144,11 +144,11 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactCampaign.*', 'contact.email', 'sendout.sendoutType', 'content.title'])
-            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
-            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
-            ->innerJoin(SendoutRecord::tableName() . ' sendout', 'sendout.id = sendoutId')
-            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = sendoutId')
+            ->select(['contactCampaigns.*', 'contacts.email', 'sendouts.sendoutType', 'content.title'])
+            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
+            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
+            ->innerJoin(SendoutRecord::tableName() . ' sendouts', '{{sendouts}}.[[id]] = [[sendoutId]]')
+            ->innerJoin(Table::CONTENT . ' content', '{{content}}.[[elementId]] = [[sendoutId]]')
             ->where($condition)
             ->orderBy(['sent' => SORT_DESC])
             ->all();
@@ -175,27 +175,27 @@ class ReportsService extends Component
      */
     public function getCampaignContactActivity(int $campaignId, string $interaction = null, int $limit = null): array
     {
-        $condition = ['contactCampaign.campaignId' => $campaignId];
+        $condition = ['contactCampaigns.campaignId' => $campaignId];
 
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = [
             'not',
-            $interaction ? ['contactCampaign.' . $interaction => null] : [
+            $interaction ? ['contactCampaigns.' . $interaction => null] : [
                 'or',
                 [
-                    'contactCampaign.opened' => null,
-                    'contactCampaign.clicked' => null,
-                    'contactCampaign.unsubscribed' => null,
-                    'contactCampaign.complained' => null,
-                    'contactCampaign.bounced' => null,
+                    'contactCampaigns.opened' => null,
+                    'contactCampaigns.clicked' => null,
+                    'contactCampaigns.unsubscribed' => null,
+                    'contactCampaigns.complained' => null,
+                    'contactCampaigns.bounced' => null,
                 ],
             ],
         ];
 
         $results = (new Query())
-            ->select(['contactCampaign.*', 'contact.email'])
-            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
-            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->select(['contactCampaigns.*', 'contacts.email'])
+            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
+            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
             ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
@@ -349,10 +349,10 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactCampaign.*', 'contact.email', 'content.title'])
-            ->from(ContactCampaignRecord::tableName() . 'contactCampaign')
-            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
-            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = campaignId')
+            ->select(['contactCampaigns.*', 'contacts.email', 'content.title'])
+            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
+            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
+            ->innerJoin(Table::CONTENT . ' content', '{{content}}.[[elementId]] = [[campaignId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -387,10 +387,10 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactMailingList.*', 'contact.email', 'content.title'])
-            ->from(ContactMailingListRecord::tableName() . 'contactMailingList')
-            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
-            ->innerJoin(Table::CONTENT . ' content', 'content.elementId = mailingListId')
+            ->select(['contactMailingLists.*', 'contacts.email', 'content.title'])
+            ->from(ContactMailingListRecord::tableName() . ' contactMailingLists')
+            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
+            ->innerJoin(Table::CONTENT . ' {{content}}', '{{content}}.[[elementId]] = [[mailingListId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -489,21 +489,21 @@ class ReportsService extends Component
         // If no interaction was specified then set check for any interaction that is not null
         $interactionCondition = [
             'not',
-            $interaction ? ['contactMailingList.' . $interaction => null] : [
+            $interaction ? ['contactMailingLists.' . $interaction => null] : [
                 'or',
                 [
-                    'contactMailingList.subscribed' => null,
-                    'contactMailingList.unsubscribed' => null,
-                    'contactMailingList.complained' => null,
-                    'contactMailingList.bounced' => null,
+                    'contactMailingLists.subscribed' => null,
+                    'contactMailingLists.unsubscribed' => null,
+                    'contactMailingLists.complained' => null,
+                    'contactMailingLists.bounced' => null,
                 ],
             ],
         ];
 
         $results = (new Query())
-            ->select(['contactMailingList.*', 'contact.email'])
-            ->from(ContactMailingListRecord::tableName() . 'contactMailingList')
-            ->innerJoin(ContactRecord::tableName() . ' contact', 'contact.id = contactId')
+            ->select(['contactMailingLists.*', 'contacts.email'])
+            ->from(ContactMailingListRecord::tableName() . ' contactMailingLists')
+            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
             ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
