@@ -5,12 +5,10 @@
 
 namespace putyourlightson\campaign\elements\db;
 
-use Craft;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use putyourlightson\campaign\elements\SendoutElement;
 use yii\db\Connection;
-use yii\db\Expression;
 
 /**
  * @method SendoutElement[]|array all($db = null)
