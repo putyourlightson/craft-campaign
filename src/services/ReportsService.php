@@ -137,7 +137,7 @@ class ReportsService extends Component
      */
     public function getCampaignRecipients(int $campaignId, int $sendoutId = null): array
     {
-        $condition = ['contactCampaign.campaignId' => $campaignId];
+        $condition = ['contactCampaigns.campaignId' => $campaignId];
 
         if ($sendoutId !== null) {
             $condition['sendoutId'] = $sendoutId;
@@ -145,10 +145,10 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(['contactCampaigns.*', 'contacts.email', 'sendouts.sendoutType', 'content.title'])
-            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
-            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
-            ->innerJoin(SendoutRecord::tableName() . ' sendouts', '{{sendouts}}.[[id]] = [[sendoutId]]')
-            ->innerJoin(Table::CONTENT . ' content', '{{content}}.[[elementId]] = [[sendoutId]]')
+            ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
+            ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['sendouts' => SendoutRecord::tableName()], '[[sendouts.id]] = [[sendoutId]]')
+            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[sendoutId]]')
             ->where($condition)
             ->orderBy(['sent' => SORT_DESC])
             ->all();
@@ -194,8 +194,8 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(['contactCampaigns.*', 'contacts.email'])
-            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
-            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
+            ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
+            ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
@@ -350,9 +350,9 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(['contactCampaigns.*', 'contacts.email', 'content.title'])
-            ->from(ContactCampaignRecord::tableName() . ' contactCampaigns')
-            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
-            ->innerJoin(Table::CONTENT . ' content', '{{content}}.[[elementId]] = [[campaignId]]')
+            ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
+            ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[campaignId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -388,9 +388,9 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(['contactMailingLists.*', 'contacts.email', 'content.title'])
-            ->from(ContactMailingListRecord::tableName() . ' contactMailingLists')
-            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
-            ->innerJoin(Table::CONTENT . ' {{content}}', '{{content}}.[[elementId]] = [[mailingListId]]')
+            ->from(['contactMailingLists' => ContactMailingListRecord::tableName()])
+            ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[mailingListId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -502,8 +502,8 @@ class ReportsService extends Component
 
         $results = (new Query())
             ->select(['contactMailingLists.*', 'contacts.email'])
-            ->from(ContactMailingListRecord::tableName() . ' contactMailingLists')
-            ->innerJoin(ContactRecord::tableName() . ' contacts', '{{contacts}}.[[id]] = [[contactId]]')
+            ->from(['contactMailingLists' => ContactMailingListRecord::tableName()])
+            ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
