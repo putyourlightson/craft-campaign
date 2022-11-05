@@ -30,15 +30,44 @@ class WebhookControllerTest extends BaseControllerTest
      */
     protected ContactElement $contact;
 
+    /**
+     * @var array
+     */
+    protected array $mailgunRequestBody;
+
+    /**
+     * @var array
+     */
+    protected array $postmarkRequestParams;
+
     protected function _before(): void
     {
         parent::_before();
 
-        Craft::$app->request->getHeaders()->set('Accept', 'application/json');
-
         $this->_getContact();
         $this->contact->bounced = null;
         Craft::$app->elements->saveElement($this->contact);
+
+        $this->mailgunRequestBody = [
+            'signature' => [
+                'timestamp' => time(),
+                'token' => 'abcdefg',
+                'signature' => 'fake',
+            ],
+            'event-data' => [
+                'event' => 'failed',
+                'severity' => 'permanent',
+                'reason' => 'bounce',
+                'recipient' => $this->contact->email,
+            ],
+        ];
+
+        $this->postmarkRequestParams = [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+            'RecordType' => 'Bounce',
+            'Type' => 'HardBounce',
+            'Email' => $this->contact->email,
+        ];
     }
 
     protected function _getContact(): void
@@ -49,49 +78,41 @@ class WebhookControllerTest extends BaseControllerTest
             ->one();
     }
 
-    public function testMailgunSignature(): void
+    public function testMailgunSignatureFail(): void
+    {
+        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
+
+        Craft::$app->getRequest()->setRawBody(json_encode($this->mailgunRequestBody));
+
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/mailgun', [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+        ]);
+
+        $this->assertEquals('Signature could not be authenticated.', $response->data);
+    }
+
+    public function testMailgunSignatureSuccess(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
-        $timestamp = time();
-        $token = 'abcdefg';
         $signingKey = 'key-aBcDeFgHiJkLmNoP';
-
         Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = $signingKey;
 
-        $eventData = [
-            'event-data' => [
-                'signature' => [
-                    'timestamp' => $timestamp,
-                    'token' => $token,
-                    'signature' => 'fake',
-                ],
-                'event' => 'failed',
-                'severity' => 'permanent',
-                'reason' => 'bounce',
-                'recipient' => $this->contact->email,
-            ],
-        ];
+        $this->mailgunRequestBody['signature']['signature'] = hash_hmac(
+            'sha256',
+            $this->mailgunRequestBody['signature']['timestamp'] . $this->mailgunRequestBody['signature']['token'],
+            $signingKey
+        );
 
-        Craft::$app->getRequest()->setRawBody(json_encode($eventData));
+        Craft::$app->getRequest()->setRawBody(json_encode($this->mailgunRequestBody));
 
         /** @var Response $response */
         $response = $this->runActionWithParams('webhook/mailgun', [
             'key' => Campaign::$plugin->getSettings()->apiKey,
         ]);
 
-        $this->assertEquals(['message' => 'Signature could not be authenticated.'], $response->data);
-
-        $eventData['event-data']['signature']['signature'] = hash_hmac('sha256', $timestamp . $token, $signingKey);
-
-        Craft::$app->getRequest()->setRawBody(json_encode($eventData));
-
-        /** @var Response $response */
-        $response = $this->runActionWithParams('webhook/mailgun', [
-            'key' => Campaign::$plugin->getSettings()->apiKey,
-        ]);
-
-        $this->assertEquals([], $response->data);
+        $this->assertEquals(200, $response->statusCode);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
@@ -109,33 +130,32 @@ class WebhookControllerTest extends BaseControllerTest
             'recipient' => $this->contact->email,
         ]);
 
-        $this->assertEquals([], $response->data);
+        $this->assertEquals(200, $response->statusCode);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testPostmarkIpAddresses(): void
+    public function testPostmarkIpAddressFail(): void
+    {
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/postmark', $this->postmarkRequestParams);
+
+        $this->assertEquals('IP address not allowed.', $response->data);
+    }
+
+    public function testPostmarkIpAddressSuccess(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
-        $params = [
-            'key' => Campaign::$plugin->getSettings()->apiKey,
-            'RecordType' => 'Bounce',
-            'Type' => 'HardBounce',
-            'Email' => $this->contact->email,
-        ];
+        $ip = '1.2.3.4';
+        $_SERVER['REMOTE_ADDR'] = $ip;
+        Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses = [$ip];
 
         /** @var Response $response */
-        $response = $this->runActionWithParams('webhook/postmark', $params);
+        $response = $this->runActionWithParams('webhook/postmark', $this->postmarkRequestParams);
 
-        $this->assertEquals(['message' => 'IP address not allowed.'], $response->data);
-
-        Campaign::$plugin->getSettings()->postmarkAllowedIpAddresses = [Craft::$app->getRequest()->getUserIP()];
-
-        $response = $this->runActionWithParams('webhook/postmark', $params);
-
-        $this->assertEquals([], $response->data);
+        $this->assertEquals(200, $response->statusCode);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
@@ -159,7 +179,7 @@ class WebhookControllerTest extends BaseControllerTest
             'key' => Campaign::$plugin->getSettings()->apiKey,
         ]);
 
-        $this->assertEquals([], $response->data);
+        $this->assertEquals(200, $response->statusCode);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
