@@ -3,6 +3,7 @@
 ## 2.2.1 - Unreleased
 ### Changed
 - Improved the performance of report pages ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
+- Changed the webhook controller action responses to ensure the correct status codes are sent (❤️@brandonkelly).
 
 ### Fixed
 - Fixed a bug in which some information was missing from reports.
