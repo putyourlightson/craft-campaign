@@ -48,10 +48,10 @@ class SettingsModel extends Model
     public ?string $mailgunWebhookSigningKey = null;
 
     /**
-     * @var array The allowed IP addresses for incoming webhook requests from Postmark
+     * @var array|null The allowed IP addresses for incoming webhook requests from Postmark
      * @since 1.19.0
      */
-    public array $postmarkAllowedIpAddresses = [
+    public ?array $postmarkAllowedIpAddresses = [
         '3.134.147.250',
         '50.31.156.6',
         '50.31.156.77',
