@@ -3,7 +3,8 @@
 ## 2.2.1 - Unreleased
 ### Changed
 - Improved the performance of report pages ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
-- Changed the webhook controller action responses to ensure the correct status codes are sent (❤️@brandonkelly).
+- Changed the webhook controller action responses to ensure that correct status codes are sent (❤️@brandonkelly).
+- Test requests from Mailgun now return a success response.
 
 ### Fixed
 - Fixed a bug in which the Mailgun webhook controller action was not processing requests correctly ([#341](https://github.com/putyourlightson/craft-campaign/issues/341)).
@@ -14,7 +15,7 @@
 - Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.
 
 ### Fixed
-- Fixed a bug in which Yii block comments could be unintentionaly left over in rendered campaign templates ([#337](https://github.com/putyourlightson/craft-campaign/issues/337)).
+- Fixed a bug in which Yii block comments could be unintentionally left over in rendered campaign templates ([#337](https://github.com/putyourlightson/craft-campaign/issues/337)).
 
 ## 2.1.17 - 2022-10-28
 ### Fixed
