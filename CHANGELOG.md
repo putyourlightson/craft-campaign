@@ -8,6 +8,7 @@
 
 ### Fixed
 - Fixed a bug in which the Mailgun webhook controller action was not processing requests correctly ([#341](https://github.com/putyourlightson/craft-campaign/issues/341)).
+- Fixed a bug in which the webhook controller actions could fail for singular sendouts.
 - Fixed a bug in which some information was missing from reports.
 
 ## 2.2.0 - 2022-10-28
