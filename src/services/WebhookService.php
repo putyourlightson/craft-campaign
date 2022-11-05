@@ -57,11 +57,14 @@ class WebhookService extends Component
 
         /** @var ContactCampaignRecord $contactCampaignRecord */
         foreach ($contactCampaignRecords as $contactCampaignRecord) {
-            $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
+            // The mailing list ID may be empty for singular sendouts
+            if ($contactCampaignRecord->mailingListId) {
+                $mailingList = Campaign::$plugin->mailingLists->getMailingListById($contactCampaignRecord->mailingListId);
 
-            if ($mailingList !== null) {
-                // Add contact interaction to mailing list
-                Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction);
+                if ($mailingList !== null) {
+                    // Add contact interaction to mailing list
+                    Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, $interaction);
+                }
             }
 
             $sendout = Campaign::$plugin->sendouts->getSendoutById($contactCampaignRecord->sendoutId);
