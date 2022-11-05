@@ -14,6 +14,7 @@ use craft\helpers\Json;
 use craft\web\Controller;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
+use yii\log\Logger;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -287,7 +288,7 @@ class WebhookController extends Controller
     private function _callWebhook(string $event, string $email = null): Response
     {
         // Log request
-        Craft::warning('Webhook request: ' . $this->request->getRawBody(), 'campaign');
+        Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);;
 
         if ($email === null) {
             return $this->_asFailure('Email not found.');
