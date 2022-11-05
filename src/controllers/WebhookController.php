@@ -55,7 +55,7 @@ class WebhookController extends Controller
      */
     public function actionTest(): ?Response
     {
-        return $this->asSuccess();
+        return $this->response;
     }
 
     /**
@@ -120,6 +120,7 @@ class WebhookController extends Controller
 
         // Get event data from raw body
         $body = Json::decodeIfJson($this->request->getRawBody());
+        $signatureGroup = $body['signature'] ?? null;
         $eventData = $body['event-data'] ?? null;
 
         // Validate the event signature if a signing key is set
@@ -127,10 +128,10 @@ class WebhookController extends Controller
         $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
 
         if ($signingKey) {
-            $eventSignature = $eventData['signature'] ?? '';
-            $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'] . $eventSignature['token'], $signingKey);
+            $signature = $signatureGroup['signature'] ?? '';
+            $hashedValue = hash_hmac('sha256', $signatureGroup['timestamp'] . $signatureGroup['token'], $signingKey);
 
-            if ($eventSignature['signature'] != $hashedValue) {
+            if ($signature != $hashedValue) {
                 return $this->_asFailure('Signature could not be authenticated.');
             }
         }
@@ -278,7 +279,7 @@ class WebhookController extends Controller
     /**
      * Calls a webhook.
      */
-    private function _callWebhook(string $event, string $email = null): ?Response
+    private function _callWebhook(string $event, string $email = null): Response
     {
         // Log request
         Craft::warning('Webhook request: ' . $this->request->getRawBody(), 'campaign');
