@@ -149,7 +149,7 @@ class WebhookController extends Controller
 
         // Check if this is a test webhook request from Mailgun
         if ($email == 'alice@example.com') {
-            return $this->request;
+            return $this->response;
         }
 
         if ($event == 'complained') {
