@@ -204,7 +204,7 @@ class WebhookController extends Controller
         // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
         $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
 
-        if ($allowedIpAddresses && !in_array($this->request->getUserIP(), $allowedIpAddresses)) {
+        if ($allowedIpAddresses && !in_array($this->request->getRemoteIP(), $allowedIpAddresses)) {
             return $this->asFailure(Craft::t('campaign', 'IP address not allowed.'));
         }
 

@@ -252,7 +252,7 @@ class FormsController extends BaseMessageController
                 throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->settings->reCaptchaErrorMessage));
             }
 
-            RecaptchaHelper::validateRecaptcha($response, $this->request->getUserIP());
+            RecaptchaHelper::validateRecaptcha($response, $this->request->getRemoteIP());
         }
     }
 

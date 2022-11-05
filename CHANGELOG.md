@@ -2,7 +2,7 @@
 
 ## 2.2.1 - Unreleased
 ### Changed
-- Improved the performance of report pages by optimising queries ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
+- Improved the performance of report pages ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
 
 ### Fixed
 - Fixed a bug in which some information was missing from reports.

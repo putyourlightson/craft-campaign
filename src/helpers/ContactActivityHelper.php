@@ -82,7 +82,7 @@ class ContactActivityHelper
         ]);
 
         try {
-            $ip = Craft::$app->getRequest()->getUserIP();
+            $ip = Craft::$app->getRequest()->getRemoteIP();
             $apiKey = App::parseEnv(Campaign::$plugin->settings->ipstackApiKey);
 
             /** @noinspection HttpUrlsUsage */
