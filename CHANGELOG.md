@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.2.1 - Unreleased
+## 2.2.1 - 2022-11-07
 ### Changed
 - Improved the performance of report pages ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).
 - Changed the webhook controller action responses to ensure that correct status codes are sent (❤️@brandonkelly).

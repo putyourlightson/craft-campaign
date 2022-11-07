@@ -56,7 +56,7 @@ class WebhookController extends Controller
      */
     public function actionTest(): ?Response
     {
-        return $this->response;
+        return $this->asSuccess('Success.');
     }
 
     /**
@@ -77,7 +77,7 @@ class WebhookController extends Controller
             $validator->validate($message);
         }
         catch (InvalidSnsMessageException) {
-            return $this->_asFailure('SNS message validation error.');
+            return $this->_asRawFailure('SNS message validation error.');
         }
 
         // Check the type of the message and handle the subscription.
@@ -109,7 +109,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->_asFailure('Event not found.');
+        return $this->_asRawFailure('Event not found.');
     }
 
     /**
@@ -133,7 +133,7 @@ class WebhookController extends Controller
             $hashedValue = hash_hmac('sha256', $signatureGroup['timestamp'] . $signatureGroup['token'], $signingKey);
 
             if ($signature != $hashedValue) {
-                return $this->_asFailure('Signature could not be authenticated.');
+                return $this->_asRawFailure('Signature could not be authenticated.');
             }
         }
 
@@ -150,7 +150,7 @@ class WebhookController extends Controller
 
         // Check if this is a test webhook request from Mailgun
         if ($email == 'alice@example.com') {
-            return $this->asRaw('Success.');
+            return $this->_asRawSuccess('Success.');
         }
 
         if ($event == 'complained') {
@@ -170,7 +170,7 @@ class WebhookController extends Controller
             return $this->_callWebhook('bounced', $email);
         }
 
-        return $this->_asFailure('Event not found.');
+        return $this->_asRawFailure('Event not found.');
     }
 
     /**
@@ -197,7 +197,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->_asFailure('Event not found.');
+        return $this->_asRawFailure('Event not found.');
     }
 
     /**
@@ -212,7 +212,7 @@ class WebhookController extends Controller
         $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
 
         if ($allowedIpAddresses && !in_array($this->request->getRemoteIP(), $allowedIpAddresses)) {
-            return $this->_asFailure('IP address not allowed.');
+            return $this->_asRawFailure('IP address not allowed.');
         }
 
         $eventType = $this->request->getBodyParam('RecordType');
@@ -249,7 +249,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->_asFailure('Event not found.');
+        return $this->_asRawFailure('Event not found.');
     }
 
     /**
@@ -279,7 +279,7 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->_asFailure('Event not found.');
+        return $this->_asRawFailure('Event not found.');
     }
 
     /**
@@ -288,16 +288,16 @@ class WebhookController extends Controller
     private function _callWebhook(string $event, string $email = null): Response
     {
         // Log request
-        Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);;
+        Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);
 
         if ($email === null) {
-            return $this->_asFailure('Email not found.');
+            return $this->_asRawFailure('Email not found.');
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
-            return $this->_asFailure('Contact not found.');
+            return $this->_asRawFailure('Contact not found.');
         }
 
         if ($event == 'complained') {
@@ -310,13 +310,21 @@ class WebhookController extends Controller
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 
-        return $this->response;
+        return $this->_asRawSuccess();
     }
 
     /**
-     * Returns a response failure.
+     * Returns a raw response success.
      */
-    private function _asFailure(string $message): Response
+    private function _asRawSuccess(string $message = ''): Response
+    {
+        return $this->asRaw(Craft::t('campaign', $message));
+    }
+
+    /**
+     * Returns a raw response failure.
+     */
+    private function _asRawFailure(string $message = ''): Response
     {
         return $this->asRaw(Craft::t('campaign', $message))
             ->setStatusCode(400);
