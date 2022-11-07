@@ -124,7 +124,6 @@ class WebhookController extends Controller
         $signatureGroup = $body['signature'] ?? null;
         $eventData = $body['event-data'] ?? null;
 
-        $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
         $signature = $signatureGroup['signature'] ?? '';
         $timestamp = $signatureGroup['timestamp'] ?? '';
         $token = $signatureGroup['token'] ?? '';
@@ -135,15 +134,17 @@ class WebhookController extends Controller
 
         // Legacy webhooks
         if ($eventData === null) {
-            $signature = $body['signature'] ?? '';
-            $timestamp = $body['timestamp'] ?? '';
-            $token = $body['token'] ?? '';
-            $event = $body['event'] ?? '';
-            $email = $body['recipient'] ?? '';
+            $signature = $this->request->getBodyParam('signature');
+            $timestamp = $this->request->getBodyParam('timestamp');
+            $token = $this->request->getBodyParam('token');
+            $event = $this->request->getBodyParam('event');
+            $email = $this->request->getBodyParam('recipient');
         }
 
         // Validate the event signature if a signing key is set
         // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+        $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
+
         if ($signingKey) {
             $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
