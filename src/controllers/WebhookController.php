@@ -10,7 +10,6 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
-
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\Json;
@@ -138,32 +137,42 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         // Get event data from raw body
-        $request = Craft::$app->getRequest();
-        $body = Json::decodeIfJson($request->getRawBody());
+        $body = Json::decodeIfJson($this->request->getRawBody());
+        $signatureGroup = $body['signature'] ?? null;
         $eventData = $body['event-data'] ?? null;
+
+        $signature = $signatureGroup['signature'] ?? '';
+        $timestamp = $signatureGroup['timestamp'] ?? '';
+        $token = $signatureGroup['token'] ?? '';
+        $event = $eventData['event'] ?? '';
+        $severity = $eventData['severity'] ?? '';
+        $reason = $eventData['reason'] ?? '';
+        $email = $eventData['recipient'] ?? '';
+
+        // Legacy webhooks
+        if ($eventData === null) {
+            $signature = $this->request->getBodyParam('signature');
+            $timestamp = $this->request->getBodyParam('timestamp');
+            $token = $this->request->getBodyParam('token');
+            $event = $this->request->getBodyParam('event');
+            $email = $this->request->getBodyParam('recipient');
+        }
 
         // Validate the event signature if a signing key is set
         // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
         $signingKey = Craft::parseEnv(Campaign::$plugin->getSettings()->mailgunWebhookSigningKey);
 
         if ($signingKey) {
-            $eventSignature = $eventData['signature'] ?? '';
-            $hashedValue = hash_hmac('sha256', $eventSignature['timestamp'].$eventSignature['token'], $signingKey);
+            $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
-            if (!$eventSignature || $eventSignature['signature'] != $hashedValue) {
+            if ($signature != $hashedValue) {
                 return $this->asJson(['success' => false, 'error' => Craft::t('campaign', 'Signature could not be authenticated.')]);
             }
         }
 
-        $event = $eventData['event'] ?? '';
-        $severity = $eventData['severity'] ?? '';
-        $reason = $eventData['reason'] ?? '';
-        $email = $eventData['recipient'] ?? '';
-
-        if ($eventData === null) {
-            // Get event data from body params (legacy webhooks)
-            $event = $request->getBodyParam('event');
-            $email = $request->getBodyParam('recipient');
+        // Check if this is a test webhook request from Mailgun
+        if ($email == 'alice@example.com') {
+            return $this->asJson(['success' => true]);
         }
 
         if ($event == 'complained') {
