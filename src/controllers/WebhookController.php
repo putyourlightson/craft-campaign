@@ -124,28 +124,32 @@ class WebhookController extends Controller
         $signatureGroup = $body['signature'] ?? null;
         $eventData = $body['event-data'] ?? null;
 
-        // Validate the event signature if a signing key is set
-        // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
         $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
-
-        if ($signingKey) {
-            $signature = $signatureGroup['signature'] ?? '';
-            $hashedValue = hash_hmac('sha256', $signatureGroup['timestamp'] . $signatureGroup['token'], $signingKey);
-
-            if ($signature != $hashedValue) {
-                return $this->_asRawFailure('Signature could not be authenticated.');
-            }
-        }
-
+        $signature = $signatureGroup['signature'] ?? '';
+        $timestamp = $signatureGroup['timestamp'] ?? '';
+        $token = $signatureGroup['token'] ?? '';
         $event = $eventData['event'] ?? '';
         $severity = $eventData['severity'] ?? '';
         $reason = $eventData['reason'] ?? '';
         $email = $eventData['recipient'] ?? '';
 
+        // Legacy webhooks
         if ($eventData === null) {
-            // Get event data from body params (legacy webhooks)
-            $event = $this->request->getBodyParam('event');
-            $email = $this->request->getBodyParam('recipient');
+            $signature = $body['signature'] ?? '';
+            $timestamp = $body['timestamp'] ?? '';
+            $token = $body['token'] ?? '';
+            $event = $body['event'] ?? '';
+            $email = $body['recipient'] ?? '';
+        }
+
+        // Validate the event signature if a signing key is set
+        // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+        if ($signingKey) {
+            $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
+
+            if ($signature != $hashedValue) {
+                return $this->_asRawFailure('Signature could not be authenticated.');
+            }
         }
 
         // Check if this is a test webhook request from Mailgun

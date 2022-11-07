@@ -123,11 +123,14 @@ class WebhookControllerTest extends BaseControllerTest
         Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = null;
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
+        Craft::$app->getRequest()->setRawBody(json_encode([
+            'event' => 'bounced',
+            'recipient' => $this->contact->email,
+        ]));
+
         /** @var Response $response */
         $response = $this->runActionWithParams('webhook/mailgun', [
             'key' => Campaign::$plugin->getSettings()->apiKey,
-            'event' => 'bounced',
-            'recipient' => $this->contact->email,
         ]);
 
         $this->assertEquals(200, $response->statusCode);
