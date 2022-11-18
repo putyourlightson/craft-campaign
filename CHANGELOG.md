@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.24.0 - Unreleased
+## 1.24.0 - 2022-11-18
 ### Added
 - Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.
 
