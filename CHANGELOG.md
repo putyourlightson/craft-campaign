@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 1.24.0 - Unreleased
+### Added
+- Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.
+
+### Fixed
+- Fixed a bug in which Yii block comments could be unintentionaly left over in rendered campaign templates ([#337](https://github.com/putyourlightson/craft-campaign/issues/337)).
+
 ## 1.23.6 - 2022-11-07
 ### Changed
 - Test requests from Mailgun now return a success response.

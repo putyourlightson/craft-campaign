@@ -18,7 +18,6 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
-
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
@@ -818,6 +817,18 @@ class SendoutElement extends Element
     public function getPendingRecipientCount(): int
     {
         return count($this->getPendingRecipients());
+    }
+
+    /**
+     * Returns an action URL to get the sendout's HTML body.
+     */
+    public function getHtmlBodyActionUrl(): string
+    {
+        // Construct a front-end action URL to avoid CP assets being included in the body
+        return UrlHelper::siteUrl(
+            Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/sendouts/get-html-body',
+            ['sendoutId' => $this->id]
+        );
     }
 
     /**

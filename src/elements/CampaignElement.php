@@ -670,6 +670,15 @@ class CampaignElement extends Element
 
         // Get body from rendered template with variables
         $template = $templateType == 'html' ? $this->getCampaignType()->htmlTemplate : $this->getCampaignType()->plaintextTemplate;
+        $variables = [
+            'campaign' => $this,
+            'browserVersionUrl' => $this->url,
+            'contact' => $contact,
+            'sendout' => $sendout,
+            'mailingList' => $mailingList,
+            'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
+            'isWebRequest' => false,
+        ];
 
         // Set the current site from the campaign's site ID
         Craft::$app->getSites()->setCurrentSite($this->siteId);
@@ -678,15 +687,13 @@ class CampaignElement extends Element
         Craft::$app->language = $this->_getLanguage();
 
         try {
-            $body = $view->renderTemplate($template, [
-                'campaign' => $this,
-                'browserVersionUrl' => $this->url,
-                'contact' => $contact,
-                'sendout' => $sendout,
-                'mailingList' => $mailingList,
-                'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
-                'isWebRequest' => false,
-            ]);
+            // Render the page template only for HTML, to prevent Yii block tags being left behind
+            if ($templateType == 'html') {
+                $body = Craft::$app->getView()->renderPageTemplate($template, $variables);
+            }
+            else {
+                $body = Craft::$app->getView()->renderTemplate($template, $variables);
+            }
         }
         catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
