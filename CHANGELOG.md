@@ -6,6 +6,7 @@
 
 ### Fixed
 - Fixed a bug in which Yii block comments could be unintentionaly left over in rendered campaign templates ([#337](https://github.com/putyourlightson/craft-campaign/issues/337)).
+- Fixed a bug in which the unsubscribe webhook action could throw an exception ([#339](https://github.com/putyourlightson/craft-campaign/issues/339)).
 
 ## 1.23.6 - 2022-11-07
 ### Changed
