@@ -225,6 +225,9 @@ class SendoutsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->sendouts->sendEmail($sendout2, $this->contact, $this->mailingList->id);
 
+        // Clean the output buffer, since we forced a template error
+        ob_end_clean();
+
         // Assert that the send status is failed
         $this->assertEquals(SendoutElement::STATUS_FAILED, $sendout2->sendStatus);
     }
