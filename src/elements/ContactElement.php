@@ -103,6 +103,7 @@ class ContactElement extends Element
     {
         return Craft::t('campaign', 'contacts');
     }
+
     /**
      * @inheritdoc
      */

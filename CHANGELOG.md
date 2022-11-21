@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.2.2 - Unreleased
+### Changed
+- The email field outputs a link to an existing contact if one already exists with the same email address during validation ([#343](https://github.com/putyourlightson/craft-campaign/issues/343)).
+
 ## 2.2.1 - 2022-11-07
 ### Changed
 - Improved the performance of report pages ([#340](https://github.com/putyourlightson/craft-campaign/issues/340)).

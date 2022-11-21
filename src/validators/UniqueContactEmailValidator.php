@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\validators;
 
+use Craft;
 use craft\validators\UniqueValidator;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactRecord;
@@ -21,9 +22,10 @@ class UniqueContactEmailValidator extends UniqueValidator
      */
     public function validateAttribute($model, $attribute): void
     {
-        // Check if email exists for an element that is neither a draft nor a revision,
+        // Check if a contact exists with the email that is neither a draft nor a revision,
         // and that is not the canonical element.
-        $exists = ContactRecord::find()
+        $contactId = ContactRecord::find()
+            ->select(ContactRecord::tableName() . '.id')
             ->andWhere([
                 'email' => $model->email,
                 'element.draftId' => null,
@@ -32,10 +34,15 @@ class UniqueContactEmailValidator extends UniqueValidator
             ->andWhere(['not', [
                 ContactRecord::tableName() . '.id' => $model->canonicalId,
             ]])
-            ->exists();
+            ->scalar();
 
-        if ($exists) {
-            $this->addError($model, $attribute, $this->message);
+        if ($contactId) {
+            $contact = ContactElement::findOne($contactId);
+            $message = Craft::t('campaign', 'A contact with the email "{email}" already exists. [View contact &raquo;]({url})', [
+                'email' => $model->email,
+                'url' => $contact->cpEditUrl,
+            ]);
+            $this->addError($model, $attribute, $message);
         }
     }
 }
