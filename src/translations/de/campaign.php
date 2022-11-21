@@ -17,6 +17,7 @@ return [
     '(reply to {email})' => '(an {email} antworten)',
     '{count} pending sendout(s) queued.' => '{count} Sendung(en) in Warteschlange',
     'A contact with that email address could not be found.' => 'Es wurde kein Kontakt mit dieser E-Mail-Adresse gefunden.',
+    'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => 'Es muss eine CSV-Datei zum Hochladen ausgewählt werden.',
     'A label to use for the email field.' => 'Ein Label für das E-Mail-Feld',
     'A preview of the HTML version of the email body.' => 'Eine Vorschau der HTML-Version des E-Mail-Textes',

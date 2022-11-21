@@ -16,6 +16,7 @@ return [
     '(reply to {email})' => '',
     '{count} pending sendout(s) queued.' => '',
     'A contact with that email address could not be found.' => '',
+    'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => '',
     'A label to use for the email field.' => '',
     'A preview of the HTML version of the email body.' => '',
