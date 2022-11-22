@@ -147,13 +147,16 @@ class ContactsController extends Controller
         // Accept either `elementId` or `contactId`
         $contactId = $this->request->getBodyParam('elementId');
         $contactId = $contactId ?? $this->request->getRequiredBodyParam('contactId');
+        $contact = Campaign::$plugin->contacts->getContactById($contactId);
 
-        // Get the contact, allowing drafts and any status
-        $contact = ContactElement::find()
-            ->id($contactId)
-            ->drafts()
-            ->status(null)
-            ->one();
+        if ($contact === null) {
+            // Try to get a contact draft
+            $contact = ContactElement::find()
+                ->id($contactId)
+                ->drafts()
+                ->status(null)
+                ->one();
+        }
 
         if ($contact === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
