@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.2.2 - Unreleased
+## 2.2.2 - 2022-11-22
 ### Changed
 - Contacts can now be subscribed to and unsubscribed from mailing lists when in a draft state ([#343](https://github.com/putyourlightson/craft-campaign/issues/343)).
 - The email field now outputs a link to a contact if one already exists with the same email address during validation ([#343](https://github.com/putyourlightson/craft-campaign/issues/343)).
