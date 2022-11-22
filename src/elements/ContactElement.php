@@ -448,15 +448,13 @@ class ContactElement extends Element
             return $this->_fieldLayout;
         }
 
-        if (!$this->getIsFresh()) {
-            $this->_fieldLayout->setTabs(array_merge(
-                $this->_fieldLayout->getTabs(),
-                [
-                    new ContactMailingListFieldLayoutTab(),
-                    new ContactReportFieldLayoutTab(),
-                ],
-            ));
-        }
+        $this->_fieldLayout->setTabs(array_merge(
+            $this->_fieldLayout->getTabs(),
+            [
+                new ContactMailingListFieldLayoutTab(),
+                new ContactReportFieldLayoutTab(),
+            ],
+        ));
 
         return $this->_fieldLayout;
     }
@@ -747,9 +745,7 @@ class ContactElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        if (!$this->getIsFresh()) {
-            Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
-        }
+        Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'contacts';

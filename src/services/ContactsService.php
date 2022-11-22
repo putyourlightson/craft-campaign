@@ -33,6 +33,19 @@ class ContactsService extends Component
     }
 
     /**
+     * Returns a contact draft by ID.
+     */
+    public function getContactDraftById(int $contactId): ?ContactElement
+    {
+        /** @var ContactElement|null */
+        return ContactElement::find()
+            ->id($contactId)
+            ->drafts()
+            ->status(null)
+            ->one();
+    }
+
+    /**
      * Returns an array of contacts by IDs
      *
      * @param int[] $contactIds
