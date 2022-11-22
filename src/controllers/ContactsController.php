@@ -151,7 +151,7 @@ class ContactsController extends Controller
 
         if ($contact === null) {
             // Attempt to get a contact draft
-            Campaign::$plugin->contacts->getContactDraftById($contactId);
+            $contact = Campaign::$plugin->contacts->getContactDraftById($contactId);
         }
 
         if ($contact === null) {
