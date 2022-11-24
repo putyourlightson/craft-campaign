@@ -8,6 +8,8 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
+use craft\fields\BaseRelationField;
+use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;
 
 use putyourlightson\campaign\elements\ContactElement;
@@ -280,9 +282,15 @@ class ImportsService extends Component
         if (is_array($import->fieldIndexes)) {
             $values = [];
 
-            foreach ($import->fieldIndexes as $field => $index) {
+            foreach ($import->fieldIndexes as $fieldHandle => $index) {
                 if ($index !== '' && isset($row[$index])) {
-                    $values[$field] = $row[$index];
+                    $values[$fieldHandle] = $row[$index];
+
+                    // Attempt to JSON decode the value if this is a relation field.
+                    $field = $contact->getFieldLayout()->getFieldByHandle($fieldHandle);
+                    if ($field instanceof BaseRelationField) {
+                        $values[$fieldHandle] = Json::decodeIfJson($row[$index]);
+                    }
                 }
             }
 

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.2.3 - Unreleased
+### Changed
+- Contact imports now attempt to JSON decode imported values for relation fields ([#345](https://github.com/putyourlightson/craft-campaign/issues/345)).
+
 ## 2.2.2 - 2022-11-22
 ### Changed
 - Contacts can now be subscribed to and unsubscribed from mailing lists when in a draft state ([#343](https://github.com/putyourlightson/craft-campaign/issues/343)).
