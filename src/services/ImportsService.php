@@ -282,7 +282,12 @@ class ImportsService extends Component
 
             foreach ($import->fieldIndexes as $field => $index) {
                 if ($index !== '' && isset($row[$index])) {
-                    $values[$field] = $row[$index];
+                    $value = $row[$index];
+                    // Test if array of numbers
+                    if (preg_match('/^\[(?:\d,? ?)+]$/', $value)) {
+                        $arrayValue = json_decode($value);
+                    }
+                    $values[$field] = $arrayValue ?? $value;
                 }
             }
 
