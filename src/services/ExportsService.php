@@ -13,7 +13,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\ExportEvent;
-
 use putyourlightson\campaign\models\ExportModel;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 

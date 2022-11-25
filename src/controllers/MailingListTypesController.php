@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\controllers;
 use Craft;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
-
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\MailingListTypeModel;

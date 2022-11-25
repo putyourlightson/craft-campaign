@@ -11,7 +11,6 @@ use craft\elements\User;
 use craft\fields\BaseRelationField;
 use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;
-
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\jobs\ImportJob;
 use putyourlightson\campaign\models\ImportModel;

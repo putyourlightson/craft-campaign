@@ -16,7 +16,6 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\SubscribeContactEvent;
 use putyourlightson\campaign\events\UnsubscribeContactEvent;
 use putyourlightson\campaign\events\UpdateContactEvent;
-
 use putyourlightson\campaign\helpers\ContactActivityHelper;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\helpers\StringHelper;

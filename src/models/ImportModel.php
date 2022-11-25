@@ -9,7 +9,6 @@ use Craft;
 use craft\base\Model;
 use craft\elements\User;
 use craft\helpers\UrlHelper;
-
 use craft\models\UserGroup;
 use DateTime;
 use putyourlightson\campaign\Campaign;

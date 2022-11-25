@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use DateTime;
-
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactCampaignRecord;

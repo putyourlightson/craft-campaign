@@ -6,7 +6,6 @@ namespace putyourlightson\campaign\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
-
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use putyourlightson\campaign\Campaign;

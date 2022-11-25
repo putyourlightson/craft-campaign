@@ -10,7 +10,6 @@ use craft\elements\Asset;
 use craft\helpers\Assets;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
-
 use craft\web\UploadedFile;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;

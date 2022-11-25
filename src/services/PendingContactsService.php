@@ -12,7 +12,6 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\models\PendingContactModel;
 use putyourlightson\campaign\records\PendingContactRecord;

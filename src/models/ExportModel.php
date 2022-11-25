@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\models;
 
 use Craft;
 use craft\base\Model;
-
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 

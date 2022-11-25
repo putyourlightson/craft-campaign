@@ -9,7 +9,6 @@ use Craft;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
-
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;

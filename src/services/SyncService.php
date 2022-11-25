@@ -18,7 +18,6 @@ use craft\services\Users;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\jobs\SyncJob;
 use putyourlightson\campaign\records\ContactMailingListRecord;

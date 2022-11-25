@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\events;
 
 use craft\events\CancelableEvent;
-
 use putyourlightson\campaign\elements\MailingListElement;
 
 /**

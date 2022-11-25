@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\elements\User;
-
 use craft\queue\BaseJob;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\SyncEvent;
