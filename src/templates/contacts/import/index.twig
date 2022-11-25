@@ -120,8 +120,8 @@
             disabled: true,
         }),
         added: import.added,
+        updated: import.updated,
         failures: import.failures,
-        updated: import.updated|datetime('short'),
         dateImported: import.dateImported|datetime('short'),
     }]) %}
 {% endfor %}
@@ -135,8 +135,8 @@
             { name: 'mailingList', title: Craft.t('campaign', 'Mailing List') },
             { name: 'forceSubscribe', title: Craft.t('campaign', 'Force Subscribe') },
             { name: 'added', title: Craft.t('campaign', 'Added') },
-            { name: 'failures', title: Craft.t('campaign', 'Failures') },
             { name: 'updated', title: Craft.t('campaign', 'Updated') },
+            { name: 'failures', title: Craft.t('campaign', 'Failures') },
             { name: 'dateImported', title: Craft.t('campaign', 'Date Imported') },
         ],
         container: '#imports-vue-admin-table',
