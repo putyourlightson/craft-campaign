@@ -3,6 +3,7 @@
 ## 2.2.3 - Unreleased
 ### Changed
 - Contact imports now attempt to JSON decode imported values for relation fields ([#345](https://github.com/putyourlightson/craft-campaign/issues/345)).
+- Search indexes are now updated only after contacts have finished being imported, rather that than once per contact ([#345](https://github.com/putyourlightson/craft-campaign/issues/345)).
 
 ## 2.2.2 - 2022-11-22
 ### Changed

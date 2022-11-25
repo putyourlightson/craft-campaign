@@ -10,6 +10,8 @@ use craft\base\Component;
 use craft\elements\User;
 use craft\fields\BaseRelationField;
 use craft\helpers\Json;
+use craft\helpers\Queue;
+use craft\queue\jobs\UpdateSearchIndex;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\jobs\ImportJob;
@@ -35,6 +37,11 @@ class ImportsService extends Component
      * @var array
      */
     private array $_mailingLists = [];
+
+    /**
+     * @var array
+     */
+    private array $_importedContactIds = [];
 
     /**
      * Returns all imports.
@@ -297,8 +304,10 @@ class ImportsService extends Component
             $contact->setFieldValues($values);
         }
 
-        // Save contact
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        // Save contact without updating the search index
+        $success = Craft::$app->getElements()->saveElement($contact, true, true, false);
+
+        if (!$success) {
             $import->failures++;
 
             Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
@@ -322,6 +331,8 @@ class ImportsService extends Component
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
         }
 
+        $this->_importedContactIds[] = $contact->id;
+
         return $import;
     }
 
@@ -344,5 +355,22 @@ class ImportsService extends Component
         }
 
         return true;
+    }
+
+    /**
+     * Updates the search indexes of imported contacts.
+     */
+    public function updateSearchIndexes()
+    {
+        $customFields = Campaign::$plugin->settings->getContactFields();
+        $fieldHandles = array_map(fn($field) => $field->handle, $customFields);
+        $fieldHandles[] = 'email';
+
+        Queue::push(new UpdateSearchIndex([
+            'elementType' => ContactElement::class,
+            'elementId' => $this->_importedContactIds,
+            'siteId' => '*',
+            'fieldHandles' => $fieldHandles,
+        ]), 2048);
     }
 }
