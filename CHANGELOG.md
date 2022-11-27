@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.2.4 - Unreleased
+### Added
+- Added the `ContactElement::getIsSubscribedTo()` method.
+
 ## 2.2.3 - 2022-11-25
 ### Changed
 - Contact imports now attempt to JSON decode imported values for relation fields ([#345](https://github.com/putyourlightson/craft-campaign/issues/345)).

@@ -574,15 +574,26 @@ class ContactElement extends Element
      */
     public function getIsSubscribed(): bool
     {
-        $count = ContactMailingListRecord::find()
-            ->where([
-                'contactId' => $this->id,
-                'subscriptionStatus' => 'subscribed',
-            ])
-            ->limit(1)
-            ->count();
+        return $this->getIsSubscribedTo();
+    }
 
-        return $count > 0;
+    /**
+     * Checks whether the contact is subscribed to at least one mailing list.
+     */
+    public function getIsSubscribedTo(MailingListElement $mailingList = null): bool
+    {
+        $condition = [
+            'contactId' => $this->id,
+            'subscriptionStatus' => 'subscribed',
+        ];
+
+        if ($mailingList !== null) {
+            $condition['mailingListId'] = $mailingList->id;
+        }
+
+        return ContactMailingListRecord::find()
+            ->where($condition)
+            ->exists();
     }
 
     /**
