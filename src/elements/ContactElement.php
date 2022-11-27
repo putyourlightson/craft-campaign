@@ -578,7 +578,8 @@ class ContactElement extends Element
     }
 
     /**
-     * Checks whether the contact is subscribed to at least one mailing list.
+     * Checks whether the contact is subscribed to a provided mailing list,
+     * or at least one mailing list if none is provided.
      */
     public function getIsSubscribedTo(MailingListElement $mailingList = null): bool
     {
@@ -597,7 +598,7 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the unsubscribe URL.
+     * Returns an unsubscribe URL.
      */
     public function getUnsubscribeUrl(SendoutElement $sendout = null): string
     {
