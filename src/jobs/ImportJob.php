@@ -6,12 +6,9 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
-use craft\helpers\Queue;
 use craft\queue\BaseJob;
-use craft\queue\jobs\UpdateSearchIndex;
 use DateTime;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\events\ImportEvent;
 use putyourlightson\campaign\services\ImportsService;
 
