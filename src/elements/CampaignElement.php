@@ -965,22 +965,20 @@ class CampaignElement extends Element
             'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
             'isWebRequest' => false,
         ];
-        $templateMode = View::TEMPLATE_MODE_SITE;
 
         // Set the current site from the campaign's site ID
         Craft::$app->getSites()->setCurrentSite($this->siteId);
 
         // Set the language to the campaign's language as this does not automatically happen for CP requests
-        /** @noinspection PhpUndefinedFieldInspection */
         Craft::$app->language = $this->_getLanguage();
 
         try {
             // Render the page template only for HTML, to prevent Yii block tags being left behind
             if ($templateType == 'html') {
-                $body = Craft::$app->getView()->renderPageTemplate($template, $variables, $templateMode);
+                $body = Craft::$app->getView()->renderPageTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
             }
             else {
-                $body = Craft::$app->getView()->renderTemplate($template, $variables, $templateMode);
+                $body = Craft::$app->getView()->renderTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
             }
         }
         catch (Error $exception) {
