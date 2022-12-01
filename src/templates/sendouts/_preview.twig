@@ -65,7 +65,7 @@
 
         <div id="preview" class="hidden">
             {% set input %}
-                <iframe class="email-body" src="{{ sendout.getHtmlBodyActionUrl() }}"></iframe>
+                <iframe class="email-body" src="{{ getHtmlBodyActionUrl }}"></iframe>
             {% endset %}
             {{ forms.field({
                 label: "HTML Body"|t('campaign'),

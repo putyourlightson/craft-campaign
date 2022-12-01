@@ -1037,18 +1037,6 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns an action URL to get the sendout's HTML body.
-     */
-    public function getHtmlBodyActionUrl(): ?string
-    {
-        // Construct a front-end action URL to avoid CP assets being included in the body
-        return UrlHelper::siteUrl(
-            Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/sendouts/get-html-body',
-            ['sendoutId' => $this->id]
-        );
-    }
-
-    /**
      * Returns the sendout's HTML body.
      */
     public function getHtmlBody(): ?string

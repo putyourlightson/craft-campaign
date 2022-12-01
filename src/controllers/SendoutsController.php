@@ -222,6 +222,10 @@ class SendoutsController extends Controller
                 'timeLimit' => ini_get('max_execution_time'),
             ],
             'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed($sendout->siteId),
+            'getHtmlBodyActionUrl' => UrlHelper::actionUrl(
+                'campaign/sendouts/get-html-body',
+                ['sendoutId' => $this->id]
+            ),
         ];
 
         if ($sendout->getIsPausable()) {

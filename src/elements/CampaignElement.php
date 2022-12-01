@@ -972,6 +972,10 @@ class CampaignElement extends Element
         // Set the language to the campaign's language as this does not automatically happen for CP requests
         Craft::$app->language = $this->_getLanguage();
 
+        // Force a front-end site request to ensure that CP assets are not loaded
+        // https://github.com/putyourlightson/craft-campaign/issues/347
+        Craft::$app->getRequest()->setIsCpRequest(false);
+
         try {
             // Render the page template only for HTML, to prevent Yii block tags being left behind
             if ($templateType == 'html') {
