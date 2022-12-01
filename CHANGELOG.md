@@ -2,12 +2,10 @@
 
 ## 2.3.0 - 2022-12-01
 ### Added
-- Added the `ContactElement::getIsSubscribedTo()` method.
 - Added a new `ContactElement::getIsSubscribedTo()` method.
-- Added a new  `UrlHelper::siteActionUrl()` method.
 
-### Fixed
-- Emails no longer include any control panel assets in the `head` ([#347](https://github.com/putyourlightson/craft-campaign/issues/347)).
+### Changed
+- Rendered HTML templates now explicitly exclude any control panel asset bundles ([#347](https://github.com/putyourlightson/craft-campaign/issues/347)).
 
 ## 2.2.3 - 2022-11-25
 ### Changed

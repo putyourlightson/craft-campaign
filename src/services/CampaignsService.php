@@ -5,9 +5,11 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
 use craft\base\Component;
 use craft\db\ActiveRecord;
 use craft\mail\Message;
+use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -18,9 +20,15 @@ use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
+use yii\base\Event;
 
 class CampaignsService extends Component
 {
+    /**
+     * @var bool|null
+     */
+    public ?bool $_requestPrepared = null;
+
     /**
      * Returns a campaign by ID.
      */
@@ -139,10 +147,38 @@ class CampaignsService extends Component
     }
 
     /**
+     * Prepares the request for getting a campaign's HTML body, ensuring that
+     * all assets and resources are removed before rendering the template.
+     * This is especially important since requests may be interpreted by Craft,
+     * plugins and modules as CP requests on init.
+     *
+     * @see https://github.com/putyourlightson/craft-campaign/issues/347
+     */
+    public function prepareRequestToGetHtmlBody(): void
+    {
+        if ($this->_requestPrepared === true) {
+            return;
+        }
+
+        // Force a site request
+        Craft::$app->getRequest()->setIsCpRequest(false);
+
+        // Clear up all registered files and asset bundles before rendering a template
+        Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE,
+            function () {
+                Craft::$app->getView()->clear();
+            }
+        );
+
+        $this->_requestPrepared = true;
+    }
+
+    /**
      * Increments a record's column value by one. This method updates counters
      * rather than saving records, to ensure that reports remain accurate.
-     * https://github.com/putyourlightson/craft-campaign/issues/232
-     * https://github.com/putyourlightson/craft-campaign/issues/285
+     *
+     * @see https://github.com/putyourlightson/craft-campaign/issues/232
+     * @see https://github.com/putyourlightson/craft-campaign/issues/285
      */
     private function _incrementRecordColumn(ActiveRecord $record, string $column): void
     {

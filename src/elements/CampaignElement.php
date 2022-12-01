@@ -16,6 +16,7 @@ use craft\elements\Entry;
 use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Html;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\CpScreenResponseBehavior;
@@ -26,7 +27,6 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\reports\CampaignReportFieldLayoutTab;
 use putyourlightson\campaign\helpers\NumberHelper;
-use putyourlightson\campaign\helpers\UrlHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
@@ -619,6 +619,8 @@ class CampaignElement extends Element
      */
     public function getHtmlBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
+        Campaign::$plugin->campaigns->prepareRequestToGetHtmlBody();
+
         return $this->_getBody('html', $contact, $sendout, $mailingList);
     }
 
@@ -839,7 +841,7 @@ class CampaignElement extends Element
         $sendTestButton = Cp::fieldHtml(
             Html::button(Craft::t('campaign', 'Send Test'), [
                 'data' => [
-                    'action' => UrlHelper::siteActionUrl('campaign/campaigns/send-test'),
+                    'action' => UrlHelper::actionUrl('campaign/campaigns/send-test'),
                     'campaign' => $this->id,
                 ],
                 'class' => 'send-test btn',
@@ -938,10 +940,8 @@ class CampaignElement extends Element
     /**
      * Returns the campaign's body
      */
-    private function _getBody(string $templateType = null, ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
+    private function _getBody(string $templateType = 'html', ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
-        $templateType = $templateType ?? 'html';
-
         if ($contact === null) {
             $contact = new ContactElement();
         }
@@ -976,6 +976,8 @@ class CampaignElement extends Element
             // Render the page template only for HTML, to prevent Yii block tags being left behind
             if ($templateType == 'html') {
                 $body = Craft::$app->getView()->renderPageTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
+
+                //die($body);
             }
             else {
                 $body = Craft::$app->getView()->renderTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
