@@ -65,7 +65,7 @@
 
         <div id="preview" class="hidden">
             {% set input %}
-                <iframe class="email-body" src="{{ getHtmlBodyActionUrl }}"></iframe>
+                <iframe class="email-body" src="{{ url(getHtmlBodyActionUrl, {sendoutId: sendout.id}) }}"></iframe>
             {% endset %}
             {{ forms.field({
                 label: "HTML Body"|t('campaign'),
@@ -205,7 +205,7 @@
                         text: 'Send Test'|t('campaign'),
                         class: 'send-test btn',
                         data: {
-                            action: 'campaign/sendouts/send-test',
+                            action: sendTestActionUrl,
                             sendout: sendout.id,
                         },
                     }) }}

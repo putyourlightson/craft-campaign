@@ -98,14 +98,9 @@ class CampaignsController extends Controller
 
         $campaignId = $this->request->getRequiredBodyParam('campaignId');
 
-        $site = Cp::requestedSite();
-        if (!$site) {
-            throw new SiteNotFoundException();
-        }
-
         // Use the elements service since it might be a draft.
         /** @var CampaignElement|null $campaign */
-        $campaign = Craft::$app->getElements()->getElementById($campaignId, null, $site->id);
+        $campaign = Craft::$app->getElements()->getElementById($campaignId, null, '*');
 
         if ($campaign === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));

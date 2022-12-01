@@ -11,7 +11,6 @@ use craft\errors\SiteNotFoundException;
 use craft\helpers\App;
 use craft\helpers\Cp;
 use craft\helpers\ElementHelper;
-use craft\helpers\UrlHelper;
 use craft\queue\Queue;
 use craft\web\Controller;
 use craft\web\View;
@@ -22,6 +21,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutElement;
 use putyourlightson\campaign\helpers\SettingsHelper;
+use putyourlightson\campaign\helpers\UrlHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -222,10 +222,8 @@ class SendoutsController extends Controller
                 'timeLimit' => ini_get('max_execution_time'),
             ],
             'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed($sendout->siteId),
-            'getHtmlBodyActionUrl' => UrlHelper::actionUrl(
-                'campaign/sendouts/get-html-body',
-                ['sendoutId' => $this->id]
-            ),
+            'getHtmlBodyActionUrl' => UrlHelper::siteActionUrl('campaign/sendouts/get-html-body'),
+            'sendTestActionUrl' => UrlHelper::siteActionUrl('campaign/sendouts/send-test'),
         ];
 
         if ($sendout->getIsPausable()) {

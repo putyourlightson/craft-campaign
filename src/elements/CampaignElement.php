@@ -16,7 +16,6 @@ use craft\elements\Entry;
 use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Html;
-use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\CpScreenResponseBehavior;
@@ -27,6 +26,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\reports\CampaignReportFieldLayoutTab;
 use putyourlightson\campaign\helpers\NumberHelper;
+use putyourlightson\campaign\helpers\UrlHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\records\CampaignRecord;
 use Twig\Error\Error;
@@ -839,7 +839,7 @@ class CampaignElement extends Element
         $sendTestButton = Cp::fieldHtml(
             Html::button(Craft::t('campaign', 'Send Test'), [
                 'data' => [
-                    'action' => 'campaign/campaigns/send-test',
+                    'action' => UrlHelper::siteActionUrl('campaign/campaigns/send-test'),
                     'campaign' => $this->id,
                 ],
                 'class' => 'send-test btn',
@@ -971,10 +971,6 @@ class CampaignElement extends Element
 
         // Set the language to the campaign's language as this does not automatically happen for CP requests
         Craft::$app->language = $this->_getLanguage();
-
-        // Force a front-end site request to ensure that CP assets are not loaded
-        // https://github.com/putyourlightson/craft-campaign/issues/347
-        Craft::$app->getRequest()->setIsCpRequest(false);
 
         try {
             // Render the page template only for HTML, to prevent Yii block tags being left behind

@@ -448,6 +448,10 @@ class SendoutsService extends Component
 
         // Set the current site from the sendout's site ID
         Craft::$app->getSites()->setCurrentSite($sendout->siteId);
+
+        // Force a front-end site request to ensure that CP assets are not rendered
+        // https://github.com/putyourlightson/craft-campaign/issues/347
+        Craft::$app->getRequest()->setIsCpRequest(false);
     }
 
     /**
