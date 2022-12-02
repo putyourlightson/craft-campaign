@@ -7,6 +7,9 @@
 ### Changed
 - Rendered HTML templates now explicitly exclude any control panel asset bundles ([#347](https://github.com/putyourlightson/craft-campaign/issues/347)).
 
+### Fixed
+- Fixed a bug in which draft contacts were counting as expected recipients.
+
 ## 2.2.3 - 2022-11-25
 ### Changed
 - Contact imports now attempt to JSON decode imported values for relation fields ([#345](https://github.com/putyourlightson/craft-campaign/issues/345)).

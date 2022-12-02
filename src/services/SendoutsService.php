@@ -606,7 +606,7 @@ class SendoutsService extends Component
         $query = ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
-            ->where($baseCondition);
+            ->andWhere($baseCondition);
 
         // Ensure contacts have not complained, bounced, or been blocked (in contact record)
         $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
