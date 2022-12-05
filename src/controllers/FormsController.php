@@ -46,9 +46,7 @@ class FormsController extends BaseMessageController
         if ($contact->hasErrors()) {
             $modelName = $contact instanceof ContactElement ? 'contact' : 'pendingContact';
 
-            return $this->asModelFailure($contact, '', $modelName, [
-                'errors' => $contact->getErrors(),
-            ]);
+            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), $modelName);
         }
 
         if ($this->request->getAcceptsJson()) {
@@ -123,9 +121,7 @@ class FormsController extends BaseMessageController
 
         // Save it
         if (!Campaign::$plugin->forms->updateContact($contact)) {
-            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), 'contact', [
-                'errors' => $contact->getErrors(),
-            ]);
+            return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), 'contact');
         }
 
         return $this->asModelSuccess($contact, '', 'contact');

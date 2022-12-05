@@ -169,6 +169,7 @@
 - Added a link to view all contacts from the mailing list edit page ([#282](https://github.com/putyourlightson/craft-campaign/issues/282)).
 
 ### Changed
+- All `forms` controller actions now return a `400` HTTP status for JSON responses when unsuccessful.
 - Improved the UI and security of links to external sites.
 - Exports now include all contacts in the selected mailing lists, as well as columns for mailing list, subscription status and subscribed date ([#302](https://github.com/putyourlightson/craft-campaign/issues/302)).
 - Verification emails are now sent in HTML and plaintext format ([#303](https://github.com/putyourlightson/craft-campaign/issues/303)).
