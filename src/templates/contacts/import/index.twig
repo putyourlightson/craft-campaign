@@ -109,12 +109,12 @@
         title: import.fileName ? 'CSV File'|t('campaign') : 'User Group'|t('campaign'),
         url: import.cpViewUrl,
         source: source,
-        mailingList: tag('a', {
+        mailingList: mailingList ? tag('a', {
             text: mailingList.title,
             href: mailingList.cpEditUrl,
             class: 'go',
             target: '_blank',
-        }),
+        }) : '-',
         forceSubscribe: forms.lightswitch({
             on: import.forceSubscribe,
             disabled: true,

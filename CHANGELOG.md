@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.3.1 - Unreleased
+### Fixed
+- Fixed a bug on the imports page that was throwing an error if imported mailing lists no longer existed.
+
 ## 2.3.0 - 2022-12-05
 ### Added
 - Added a new `ContactElement::getIsSubscribedTo()` method.
