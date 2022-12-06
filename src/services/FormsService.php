@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
+use craft\base\Element;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\web\View;
@@ -173,6 +174,8 @@ class FormsService extends Component
         else {
             $contact->setFieldValues($fieldValues);
         }
+
+        $contact->setScenario(Element::SCENARIO_LIVE);
 
         // If subscribe verification required
         if ($mailingList->getMailingListType()->subscribeVerificationRequired) {

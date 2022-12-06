@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.3.0 - 2022-12-01
+## 2.3.0 - 2022-12-05
 ### Added
 - Added a new `ContactElement::getIsSubscribedTo()` method.
 
@@ -9,6 +9,7 @@
 
 ### Fixed
 - Fixed a bug in which draft contacts were counting as expected recipients.
+- Fixed a bug in which custom fields were not being validated in front-end contact subscribe forms ([#348](https://github.com/putyourlightson/craft-campaign/issues/348)).
 
 ## 2.2.3 - 2022-11-25
 ### Changed
