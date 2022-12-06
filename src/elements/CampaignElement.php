@@ -976,8 +976,6 @@ class CampaignElement extends Element
             // Render the page template only for HTML, to prevent Yii block tags being left behind
             if ($templateType == 'html') {
                 $body = Craft::$app->getView()->renderPageTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
-
-                //die($body);
             }
             else {
                 $body = Craft::$app->getView()->renderTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
