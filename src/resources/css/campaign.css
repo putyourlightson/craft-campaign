@@ -6,6 +6,10 @@ table th.thin, table td.thin {
     white-space: nowrap;
 }
 
+.line-through {
+    text-decoration: line-through;
+}
+
 .info-hud {
     max-width: 600px;
 }

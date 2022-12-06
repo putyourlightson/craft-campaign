@@ -35,7 +35,11 @@
                 {% if model.contactId %}
                     <tr>
                         <th scope="row" data-title="{{ 'Email'|t('campaign') }}">
-                            <a href="{{ model.contactReportUrl }}">{{ model.contactEmail }}</a>
+                            {% if model.contactReportUrl %}
+                                <a href="{{ model.contactReportUrl }}">{{ model.contactEmail }}</a>
+                            {% else %}
+                                <span class="line-through">{{ model.contactEmail }}</span>
+                            {% endif %}
                         </th>
                         <td data-title="{{ 'Interaction'|t('campaign') }}">
                             {{ activity.interaction|ucfirst|t('campaign') }}

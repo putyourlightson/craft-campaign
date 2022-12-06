@@ -11,7 +11,9 @@
         <tbody>
         {% for contact in contactActivity %}
             <tr>
-                <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ contact.reportUrl }}">{{ contact.email }}</a></th>
+                <th scope="row" data-title="{{ 'Title'|t('app') }}">
+                    <a href="{{ contact.reportUrl }}">{{ contact.email }}</a>
+                </th>
                 <td data-title="{{ 'Subscribed'|t('campaign') }}">{{ contact.subscribedCount }}</td>
                 <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ contact.unsubscribedCount }}</td>
                 <td data-title="{{ 'Complained'|t('campaign') }}">{{ contact.complainedCount }}</td>

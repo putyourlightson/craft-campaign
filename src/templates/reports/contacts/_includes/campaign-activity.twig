@@ -10,7 +10,13 @@
             {% for activity in campaignActivity %}
                 {% set model = activity.model %}
                 <tr>
-                    <th scope="row" data-title="{{ 'Campaign'|t('campaign') }}"><a href="{{ model.campaignReportUrl }}">{{ model.campaignTitle }}</a></th>
+                    <th scope="row" data-title="{{ 'Campaign'|t('campaign') }}">
+                        {% if model.campaignReportUrl %}
+                            <a href="{{ model.campaignReportUrl }}">{{ model.campaignTitle }}</a>
+                        {% else %}
+                            <span class="line-through">{{ model.campaignTitle }}</span>
+                        {% endif %}
+                    </th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">
                         {{ activity.interaction|ucfirst|t('campaign') }}
                         {% if activity.links|length %}

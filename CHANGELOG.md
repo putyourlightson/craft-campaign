@@ -2,7 +2,8 @@
 
 ## 2.3.1 - Unreleased
 ### Fixed
-- Fixed a bug on the imports page that was throwing an error if imported mailing lists no longer existed.
+- Fixed a bug in which an error could be thrown on the imports page if imported mailing lists no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
+- Fixed a bug in which errors could be thrown on reports pages if elements no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
 
 ## 2.3.0 - 2022-12-05
 ### Added

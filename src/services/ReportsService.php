@@ -193,9 +193,10 @@ class ReportsService extends Component
         ];
 
         $results = (new Query())
-            ->select(['contactCampaigns.*', 'contacts.email'])
+            ->select(['contactCampaigns.*', 'contacts.email', 'elements.dateDeleted'])
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[contactId]]')
             ->where($condition)
             ->andWhere($interactionCondition)
             ->orderBy(['dateUpdated' => SORT_DESC])
@@ -207,7 +208,11 @@ class ReportsService extends Component
             $contactCampaign = new ContactCampaignModel();
             $contactCampaign->setAttributes($result, false);
             $contactCampaign->contactEmail = $result['email'];
-            $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
+
+            if ($result['dateDeleted'] === null) {
+                $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
+            }
+
             $contactCampaigns[] = $contactCampaign;
         }
 
@@ -349,9 +354,10 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactCampaigns.*', 'contacts.email', 'content.title'])
+            ->select(['contactCampaigns.*', 'contacts.email', 'elements.dateDeleted', 'content.title'])
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[campaignId]]')
             ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[campaignId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
@@ -365,7 +371,11 @@ class ReportsService extends Component
             $contactCampaign->contactEmail = $result['email'];
             $contactCampaign->contactReportUrl = UrlHelper::cpUrl('campaign/reports/contacts/' . $result['contactId']);
             $contactCampaign->campaignTitle = $result['title'];
-            $contactCampaign->campaignReportUrl = UrlHelper::cpUrl('campaign/reports/campaigns/' . $result['campaignId']);
+
+            if ($result['dateDeleted'] === null) {
+                $contactCampaign->campaignReportUrl = UrlHelper::cpUrl('campaign/reports/campaigns/' . $result['campaignId']);
+            }
+
             $contactCampaigns[] = $contactCampaign;
         }
 
@@ -387,9 +397,10 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactMailingLists.*', 'contacts.email', 'content.title'])
+            ->select(['contactMailingLists.*', 'contacts.email', 'elements.dateDeleted', 'content.title'])
             ->from(['contactMailingLists' => ContactMailingListRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
+            ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[mailingListId]]')
             ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[mailingListId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
@@ -403,7 +414,11 @@ class ReportsService extends Component
             $contactMailingList->contactEmail = $result['email'];
             $contactMailingList->contactReportUrl = UrlHelper::cpUrl('mailinglists/reports/contacts/' . $result['contactId']);
             $contactMailingList->mailingListTitle = $result['title'];
-            $contactMailingList->mailingListReportUrl = UrlHelper::cpUrl('campaign/reports/mailinglists/' . $result['mailingListId']);
+
+            if ($result['dateDeleted'] === null) {
+                $contactMailingList->mailingListReportUrl = UrlHelper::cpUrl('campaign/reports/mailinglists/' . $result['mailingListId']);
+            }
+
             $contactMailingLists[] = $contactMailingList;
         }
 

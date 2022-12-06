@@ -10,7 +10,13 @@
             {% for activity in mailingListActivity %}
                 {% set model = activity.model %}
                 <tr>
-                    <th scope="row" data-title="{{ 'Mailing List'|t('campaign') }}"><a href="{{ model.mailingListReportUrl }}">{{ model.mailingListTitle }}</a></th>
+                    <th scope="row" data-title="{{ 'Mailing List'|t('campaign') }}">
+                        {% if model.mailingListReportUrl %}
+                            <a href="{{ model.mailingListReportUrl }}">{{ model.mailingListTitle }}</a>
+                        {% else %}
+                            <span class="line-through">{{ model.mailingListTitle }}</span>
+                        {% endif %}
+                    </th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
                     <td data-title="{{ 'Source'|t('campaign') }}">
                         {% if model.sourceType %}
