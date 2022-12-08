@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 2.3.1 - Unreleased
+### Changed
+- The access utility permission was removed, in favour of Craft's own utility permission.
+
 ### Fixed
 - Fixed a bug in which an error could be thrown on the imports page if imported mailing lists no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
 - Fixed a bug in which errors could be thrown on reports pages if elements no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
@@ -13,7 +16,7 @@
 - Rendered HTML templates now explicitly exclude any control panel asset bundles ([#347](https://github.com/putyourlightson/craft-campaign/issues/347)).
 
 ### Fixed
-- Fixed a bug in which draft contacts were counting as expected recipients.
+- Fixed a bug in which draft contacts were incorrectly being counted as expected recipients.
 - Fixed a bug in which custom fields were not being validated in front-end contact subscribe forms ([#348](https://github.com/putyourlightson/craft-campaign/issues/348)).
 
 ## 2.2.3 - 2022-11-25

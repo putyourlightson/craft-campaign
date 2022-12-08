@@ -23,7 +23,6 @@ return [
     'A preview of the HTML version of the email body.' => 'Eine Vorschau der HTML-Version des E-Mail-Textes',
     'A preview of the plaintext version of the email body.' => 'Eine Vorschau der Text-Version des E-Mail-Textes',
     'A webhook signing key provided by Mailgun to validate incoming webhook requests.' => 'Ein Webhook-Schlüssel von Mailgun zum Validieren eingehender Webhook-Anfragen',
-    'Access utility' => 'Zugriffstool',
     'Activate Sending' => 'Senden aktivieren',
     'Active' => 'Aktiv',
     'Add a campaign' => 'Kampagne hinzufügen',

@@ -712,9 +712,7 @@ class Campaign extends Plugin
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
             function(RegisterComponentTypesEvent $event) {
-                if (Craft::$app->getUser()->checkPermission('campaign:utility')) {
-                    $event->types[] = CampaignUtility::class;
-                }
+                $event->types[] = CampaignUtility::class;
             }
         );
     }
@@ -773,7 +771,6 @@ class Campaign extends Plugin
                     ],
                 ];
                 $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
-                $permissions['campaign:utility'] = ['label' => Craft::t('campaign', 'Access utility')];
 
                 $event->permissions[] = [
                     'heading' => $this->name,

@@ -23,7 +23,6 @@ return [
     'A preview of the HTML version of the email body.' => 'Aperçu de la version HTML',
     'A preview of the plaintext version of the email body.' => 'Aperçu de la version texte',
     'A webhook signing key provided by Mailgun to validate incoming webhook requests.' => '',
-    'Access utility' => 'Utilitaire d’accès',
     'Activate Sending' => 'Activer l’envoi',
     'Active' => 'Actif',
     'Add a campaign' => 'Ajouter une newsletter',
