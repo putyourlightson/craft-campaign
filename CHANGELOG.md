@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.3.1 - Unreleased
+## 2.3.1 - 2022-12-10
 ### Changed
 - The access utility permission was removed, in favour of Craft's own utility permission.
 
