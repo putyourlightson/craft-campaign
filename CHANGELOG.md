@@ -7,6 +7,7 @@
 ### Fixed
 - Fixed a bug in which an error could be thrown on the imports page if imported mailing lists no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
 - Fixed a bug in which errors could be thrown on reports pages if elements no longer existed ([#349](https://github.com/putyourlightson/craft-campaign/issues/349)).
+- Fixed a bug in which sendout jobs could fail when run via console requests.
 
 ## 2.3.0 - 2022-12-05
 ### Added

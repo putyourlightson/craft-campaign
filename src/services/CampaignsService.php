@@ -160,8 +160,11 @@ class CampaignsService extends Component
             return;
         }
 
-        // Force a site request
-        Craft::$app->getRequest()->setIsCpRequest(false);
+        // Force a site request only if a CP request
+        $request = Craft::$app->getRequest();
+        if ($request->getIsCpRequest()) {
+            $request->setIsCpRequest(false);
+        }
 
         // Clear up all registered files and asset bundles before rendering a template
         Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE,
