@@ -38,7 +38,7 @@
     </table>
 
     {% if limit is defined and limit == campaignActivity|length %}
-        <p><a href="{{ url('campaign/reports/contacts/' ~ contactId ~ '/campaign-activity') }}" class="go">{{ "View all"|t('campaign') }}</a></p>
+        <p><a href="{{ url('campaign/reports/contacts/' ~ contact.id ~ '/campaign-activity') }}" class="go">{{ "View all"|t('campaign') }}</a></p>
     {% endif %}
 
 {% else %}
