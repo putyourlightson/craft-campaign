@@ -411,6 +411,7 @@ return [
     'OR' => '',
     'OS' => '',
     'Pause' => '',
+    'Pause and Edit' => '',
     'Paused' => '',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => '',
     'Pending' => '',

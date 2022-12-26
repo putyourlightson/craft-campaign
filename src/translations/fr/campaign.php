@@ -412,6 +412,7 @@ return [
     'OR' => 'OR',
     'OS' => 'OS',
     'Pause' => 'Pause',
+    'Pause and Edit' => 'Pause y éditer',
     'Paused' => 'Mis en pause',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => 'Les campagnes en attente sont généralement mis en file d’attente directement après avoir été activées sur une base planifiée avec un cron job. Cependant, vous pouvez forcer les campagnes en attente à être mise en file d’attente en cliquant ci-dessous.',
     'Pending' => 'En attente',

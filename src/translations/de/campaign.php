@@ -412,6 +412,7 @@ return [
     'OR' => 'OR',
     'OS' => 'OS',
     'Pause' => 'Pausieren',
+    'Pause and Edit' => 'Pausieren und bearbeiten',
     'Paused' => 'Pausiert',
     'Pending sendouts are generally queued directly after being activated and on a scheduled basis with a cron job. You can force pending sendouts to be queued now by clicking below.' => 'Anstehende Sendungen werden gewöhnlich direkt nach Aktivierung und nach einem geplanten Zeitraum über einen Cronjob in die Warteschlange gesetzt. Durch Klicken unten können Sie dies erzwingen.',
     'Pending' => 'Anstehend',

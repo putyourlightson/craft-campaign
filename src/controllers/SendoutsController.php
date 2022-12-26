@@ -229,7 +229,7 @@ class SendoutsController extends Controller
             $variables['actions'][0][] = [
                 'action' => 'campaign/sendouts/pause',
                 'redirect' => $sendout->getCpEditUrl(),
-                'label' => Craft::t('campaign', 'Pause'),
+                'label' => Craft::t('campaign', 'Pause and Edit'),
                 'confirm' => Craft::t('campaign', 'Are you sure you want to pause this sendout?'),
             ];
         }
