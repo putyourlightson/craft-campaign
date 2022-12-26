@@ -128,8 +128,7 @@ class SettingsHelper
             if ($site !== null) {
                 $sites[] = $site;
             }
-        }
-        else {
+        } else {
             $sites = Craft::$app->getSites()->getAllSites();
         }
 
@@ -138,8 +137,7 @@ class SettingsHelper
             // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
             if (version_compare(Craft::$app->getVersion(), '3.6.0', '>=')) {
                 $unparsedBaseUrl = $site->getBaseUrl(false);
-            }
-            else {
+            } else {
                 $unparsedBaseUrl = $site->baseUrl;
             }
 

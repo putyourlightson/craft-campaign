@@ -681,8 +681,7 @@ class ReportsService extends Component
 
                     if ($interactionType == 'opened') {
                         $contactActivityModel->count = $model->opens;
-                    }
-                    elseif ($interactionType == 'clicked') {
+                    } elseif ($interactionType == 'clicked') {
                         $contactActivityModel->count = $model->clicks;
                     }
 

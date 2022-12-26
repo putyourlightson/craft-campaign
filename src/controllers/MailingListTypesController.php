@@ -43,8 +43,7 @@ class MailingListTypesController extends Controller
                 if ($mailingListType === null) {
                     throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
                 }
-            }
-            else {
+            } else {
                 $mailingListType = new MailingListTypeModel();
             }
         }
@@ -57,8 +56,7 @@ class MailingListTypesController extends Controller
         // Set the title
         if ($mailingListTypeId === null) {
             $variables['title'] = Craft::t('campaign', 'Create a new mailing list');
-        }
-        else {
+        } else {
             $variables['title'] = $mailingListType->name;
         }
 
@@ -87,8 +85,7 @@ class MailingListTypesController extends Controller
             if ($mailingListType === null) {
                 throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list type not found.'));
             }
-        }
-        else {
+        } else {
             $mailingListType = new MailingListTypeModel();
         }
 

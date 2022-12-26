@@ -95,8 +95,7 @@ class FormsService extends Component
                     View::TEMPLATE_MODE_SITE,
                 );
                 $plaintextBody = StringHelper::htmlToPlaintext($htmlBody);
-            }
-            catch (Error) {
+            } catch (Error) {
             }
         }
 
@@ -139,8 +138,7 @@ class FormsService extends Component
                     ],
                     View::TEMPLATE_MODE_SITE,
                 );
-            }
-            catch (Error) {
+            } catch (Error) {
             }
         }
 
@@ -170,8 +168,7 @@ class FormsService extends Component
         // Set field values if provided, falling back to request parameters
         if ($fieldValues === null) {
             $contact->setFieldValuesFromRequest('fields');
-        }
-        else {
+        } else {
             $contact->setFieldValues($fieldValues);
         }
 
@@ -201,8 +198,7 @@ class FormsService extends Component
 
             // Send verification email
             Campaign::$plugin->forms->sendVerifySubscribeEmail($pendingContact, $mailingList);
-        }
-        else {
+        } else {
             // Save contact
             if (!Craft::$app->getElements()->saveElement($contact)) {
                 return $contact;

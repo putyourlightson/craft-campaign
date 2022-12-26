@@ -777,8 +777,7 @@ class ContactElement extends Element
                     'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
                 ],
             );
-        }
-        else {
+        } else {
             $response->addAltAction(
                 Craft::t('campaign', 'Unmark contact as complained'),
                 [
@@ -796,8 +795,7 @@ class ContactElement extends Element
                     'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
                 ],
             );
-        }
-        else {
+        } else {
             $response->addAltAction(
                 Craft::t('campaign', 'Unmark contact as bounced'),
                 [
@@ -815,8 +813,7 @@ class ContactElement extends Element
                     'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
                 ],
             );
-        }
-        else {
+        } else {
             $response->addAltAction(
                 Craft::t('campaign', 'Unmark contact as blocked'),
                 [
@@ -904,8 +901,7 @@ class ContactElement extends Element
                 $contactRecord = new ContactRecord();
                 $contactRecord->id = $this->id;
                 $contactRecord->cid = $this->cid;
-            }
-            else {
+            } else {
                 $contactRecord = ContactRecord::findOne($this->id);
             }
 

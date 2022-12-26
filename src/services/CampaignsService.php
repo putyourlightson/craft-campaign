@@ -83,8 +83,7 @@ class CampaignsService extends Component
         if ($interaction == 'opened') {
             $this->_incrementRecordColumn($contactCampaignRecord, 'opens');
             $this->_incrementRecordColumn($campaignRecord, 'opens');
-        }
-        elseif ($interaction == 'clicked') {
+        } elseif ($interaction == 'clicked') {
             // If not yet opened
             if ($contactCampaignRecord->opened === null) {
                 $contactCampaignRecord->opened = new DateTime();

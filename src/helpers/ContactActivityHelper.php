@@ -91,8 +91,7 @@ class ContactActivityHelper
             if ($response->getStatusCode() == 200) {
                 $geoIp = Json::decodeIfJson($response->getBody());
             }
-        }
-        catch (ConnectException) {
+        } catch (ConnectException) {
         }
 
         // If country is empty then return null

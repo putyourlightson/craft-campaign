@@ -253,8 +253,7 @@ class SendoutsService extends Component
             $contactCampaignRecord = new ContactCampaignRecord();
             $contactCampaignRecord->contactId = $contact->id;
             $contactCampaignRecord->sendoutId = $sendout->id;
-        }
-        elseif ($contactCampaignRecord->sent !== null) {
+        } elseif ($contactCampaignRecord->sent !== null) {
             // Ensure this is a recurring sendout that can be sent to contacts multiple times
             $schedule = $sendout->getSchedule();
 
@@ -360,8 +359,7 @@ class SendoutsService extends Component
             $sendout->lastSent = new DateTime();
 
             $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
-        }
-        else {
+        } else {
             // Update failures and send status
             $sendout->failures++;
 
@@ -417,8 +415,7 @@ class SendoutsService extends Component
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
-        }
-        else {
+        } else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);

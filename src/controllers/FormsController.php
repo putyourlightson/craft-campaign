@@ -165,8 +165,7 @@ class FormsController extends BaseMessageController
                     'mailingList' => $mailingList,
                     'contact' => null,
                 ]);
-            }
-            else {
+            } else {
                 return $this->renderMessageTemplate('', [
                     'title' => Craft::t('campaign', 'Verified'),
                     'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),

@@ -75,8 +75,7 @@ class WebhookController extends Controller
         // Validate the message
         try {
             $validator->validate($message);
-        }
-        catch (InvalidSnsMessageException) {
+        } catch (InvalidSnsMessageException) {
             return $this->_asRawFailure('SNS message validation error.');
         }
 
@@ -90,8 +89,7 @@ class WebhookController extends Controller
 
             try {
                 $client->get($message['SubscribeURL']);
-            }
-            catch (ConnectException) {
+            } catch (ConnectException) {
             }
         }
 
@@ -244,11 +242,9 @@ class WebhookController extends Controller
 
                 if ($reason == 'SpamComplaint') {
                     return $this->_callWebhook('complained', $email);
-                }
-                elseif ($reason == 'HardBounce') {
+                } elseif ($reason == 'HardBounce') {
                     return $this->_callWebhook('bounced', $email);
-                }
-                else {
+                } else {
                     return $this->_callWebhook('unsubscribed', $email);
                 }
             }
@@ -307,11 +303,9 @@ class WebhookController extends Controller
 
         if ($event == 'complained') {
             Campaign::$plugin->webhook->complain($contact);
-        }
-        elseif ($event == 'bounced') {
+        } elseif ($event == 'bounced') {
             Campaign::$plugin->webhook->bounce($contact);
-        }
-        elseif ($event == 'unsubscribed') {
+        } elseif ($event == 'unsubscribed') {
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 

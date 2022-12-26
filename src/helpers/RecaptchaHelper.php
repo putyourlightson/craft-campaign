@@ -48,8 +48,7 @@ class RecaptchaHelper
             if ($response->getStatusCode() == 200) {
                 $result = Json::decodeIfJson($response->getBody());
             }
-        }
-        catch (ConnectException) {
+        } catch (ConnectException) {
         }
 
         if (empty($result['success'])) {

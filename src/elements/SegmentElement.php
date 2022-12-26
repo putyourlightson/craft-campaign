@@ -511,8 +511,7 @@ class SegmentElement extends Element
     {
         if ($this->segmentType == 'regular') {
             return count($this->getContactCondition()->getConditionRules());
-        }
-        elseif ($this->segmentType == 'template') {
+        } elseif ($this->segmentType == 'template') {
             return 1;
         }
 
@@ -595,8 +594,7 @@ class SegmentElement extends Element
             if ($isNew) {
                 $segmentRecord = new SegmentRecord();
                 $segmentRecord->id = $this->id;
-            }
-            else {
+            } else {
                 $segmentRecord = SegmentRecord::findOne($this->id);
             }
 

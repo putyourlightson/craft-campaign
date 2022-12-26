@@ -66,8 +66,7 @@ class ProjectConfigDataHelper
             if (empty($fieldLayout->id)) {
                 $layoutUid = StringHelper::UUID();
                 $fieldLayout->uid = $layoutUid;
-            }
-            else {
+            } else {
                 $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
             }
 
@@ -96,8 +95,7 @@ class ProjectConfigDataHelper
             if (empty($fieldLayout->id)) {
                 $layoutUid = StringHelper::UUID();
                 $fieldLayout->uid = $layoutUid;
-            }
-            else {
+            } else {
                 $layoutUid = Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id);
             }
 

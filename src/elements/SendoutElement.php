@@ -1005,8 +1005,7 @@ class SendoutElement extends Element
 
         if ($this->sendoutType == 'automated') {
             $this->_schedule = new AutomatedScheduleModel();
-        }
-        elseif ($this->sendoutType == 'recurring') {
+        } elseif ($this->sendoutType == 'recurring') {
             $this->_schedule = new RecurringScheduleModel();
         }
 
@@ -1176,8 +1175,7 @@ class SendoutElement extends Element
 
         if ($schedule instanceof ScheduleModel) {
             $this->_schedule = $schedule;
-        }
-        else {
+        } else {
             $this->_schedule = $this->getSchedule();
             $this->_schedule->setAttributes($schedule ?: []);
         }
@@ -1291,8 +1289,7 @@ class SendoutElement extends Element
             if ($isNew) {
                 $sendoutRecord = new SendoutRecord();
                 $sendoutRecord->id = $this->id;
-            }
-            else {
+            } else {
                 $sendoutRecord = SendoutRecord::findOne($this->id);
             }
 

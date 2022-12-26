@@ -54,8 +54,7 @@ class SendoutsController extends Controller
         // Require permission if posted from utility
         if ($this->request->getIsPost() && $this->request->getParam('utility')) {
             $this->requirePermission('utility:campaign');
-        }
-        else {
+        } else {
             // Verify API key
             $key = $this->request->getParam('key');
             $apiKey = App::parseEnv(Campaign::$plugin->settings->apiKey);

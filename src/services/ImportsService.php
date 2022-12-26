@@ -103,8 +103,7 @@ class ImportsService extends Component
             if ($handle === false) {
                 $handle = null;
             }
-        }
-        elseif ($import->assetId !== null) {
+        } elseif ($import->assetId !== null) {
             $asset = Craft::$app->getAssets()->getAssetById($import->assetId);
 
             if ($asset === null) {
@@ -218,8 +217,7 @@ class ImportsService extends Component
             if ($importRecord === null) {
                 return false;
             }
-        }
-        else {
+        } else {
             $importRecord = new ImportRecord();
         }
 
@@ -319,8 +317,7 @@ class ImportsService extends Component
 
         if ($newContact) {
             $import->added++;
-        }
-        else {
+        } else {
             $import->updated++;
         }
 

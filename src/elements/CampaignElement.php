@@ -886,8 +886,7 @@ class CampaignElement extends Element
             if ($isNew) {
                 $campaignRecord = new CampaignRecord();
                 $campaignRecord->id = $this->id;
-            }
-            else {
+            } else {
                 $campaignRecord = CampaignRecord::findOne($this->id);
             }
 
@@ -976,12 +975,10 @@ class CampaignElement extends Element
             // Render the page template only for HTML, to prevent Yii block tags being left behind
             if ($templateType == 'html') {
                 $body = Craft::$app->getView()->renderPageTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
-            }
-            else {
+            } else {
                 $body = Craft::$app->getView()->renderTemplate($template, $variables, View::TEMPLATE_MODE_SITE);
             }
-        }
-        catch (Error $exception) {
+        } catch (Error $exception) {
             Campaign::$plugin->log($exception->getMessage());
 
             throw $exception;

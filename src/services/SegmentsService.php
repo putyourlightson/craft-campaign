@@ -104,13 +104,11 @@ class SegmentsService extends Component
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContacts = $contactElementQuery->all();
-        }
-        elseif ($segment->segmentType == 'legacy') {
+        } elseif ($segment->segmentType == 'legacy') {
             $filteredContacts = $contactElementQuery
                 ->andWhere($this->_getConditions($segment))
                 ->all();
-        }
-        elseif ($segment->segmentType == 'template') {
+        } elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
 
             foreach ($contacts as $contact) {
@@ -122,8 +120,7 @@ class SegmentsService extends Component
                     if (trim($rendered)) {
                         $filteredContacts[] = $contact;
                     }
-                }
-                catch (LoaderError|SyntaxError) {
+                } catch (LoaderError|SyntaxError) {
                 }
             }
         }
@@ -144,11 +141,9 @@ class SegmentsService extends Component
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContactIds = $contactElementQuery->ids();
-        }
-        elseif ($segment->segmentType == 'legacy') {
+        } elseif ($segment->segmentType == 'legacy') {
             $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
-        }
-        elseif ($segment->segmentType == 'template') {
+        } elseif ($segment->segmentType == 'template') {
             $contacts = $this->getFilteredContacts($segment, $contactIds);
 
             foreach ($contacts as $contact) {
