@@ -21,7 +21,7 @@
         "craftcms/cms": "^4.0.0",
         "matomo/device-detector": "^3.9.1|^4.0|^5.0|^6.0",
         "html2text/html2text": "^4.3.1",
-        "elvanto/litemoji": "^1.4.4|^2.0.4|^3.0.1|^4.0.0",
+        "elvanto/litemoji": "^3.0.1|^4.0.0",
         "aws/aws-php-sns-message-validator": "^1.5.0"
     },
     "require-dev": {
