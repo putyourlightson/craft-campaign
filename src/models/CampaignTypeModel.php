@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Model;
 use craft\behaviors\FieldLayoutBehavior;
 use craft\elements\User;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use craft\validators\HandleValidator;
@@ -79,7 +80,7 @@ class CampaignTypeModel extends Model
     /**
      * @var int[]|string|null
      */
-    public string|array|null $testContactIds = null;
+    public array|string|null $testContactIds = null;
 
     /**
      * @var string|null UID
@@ -154,7 +155,8 @@ class CampaignTypeModel extends Model
             return [];
         }
 
-        $testContactIds = json_decode($this->testContactIds);
+        /** @var int[] $testContactIds */
+        $testContactIds = Json::decodeIfJson($this->testContactIds);
         $testContacts = [];
 
         // Loop over test contact IDs to ensure their order is maintained
