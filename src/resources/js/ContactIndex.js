@@ -8,36 +8,12 @@ Campaign.ContactIndex = Craft.BaseElementIndex.extend({
     $newContactBtn: null,
 
     init: function(elementType, $container, settings) {
-        this.on('selectSource', this.updateSource.bind(this));
         this.base(elementType, $container, settings);
     },
 
     afterInit: function() {
         this.addNewButton();
         this.base();
-    },
-
-    updateSource: function() {
-        if (!this.$source) {
-            return;
-        }
-
-        // Get the ID of the selected source
-        const selectedSourceId = this.$source.data('id');
-
-        // Update the URL if we're on the Contacts index
-        // ---------------------------------------------------------------------
-
-        if (this.settings.context == 'index' && typeof history !== 'undefined') {
-            let uri = 'campaign/contacts/view';
-
-            if (selectedSourceId) {
-                uri += '/' + selectedSourceId;
-            }
-
-            const url = Craft.getUrl(uri, document.location.search + document.location.hash);
-            history.replaceState({}, '', url);
-        }
     },
 
     addNewButton: function() {

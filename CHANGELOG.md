@@ -4,6 +4,9 @@
 ### Changed
 - Changed the sendout “Pause” button to read “Pause and Edit” ([#352](https://github.com/putyourlightson/craft-campaign/issues/352)).
 
+### Fixed
+- Fixed the "View all" link in the contacts tab of the mailing list edit page for Craft 4.3.0 and above.  
+
 ## 2.3.1 - 2022-12-10
 ### Changed
 - The access utility permission was removed, in favour of Craft's own utility permission.

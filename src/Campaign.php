@@ -373,6 +373,7 @@ class Campaign extends Plugin
             'campaign/campaigns/<campaignTypeHandle:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
             'campaign/contacts/new' => 'campaign/contacts/create',
             'campaign/contacts/<elementId:\d+>' => 'elements/edit',
+            // TODO: remove in 3.0.0, when element index URLs include the source, added in Craft 4.3.0.
             'campaign/contacts/view/<sourceId:\d+>' => ['template' => 'campaign/contacts/view'],
             'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/import/_view'],
             'campaign/contacts/import' => 'campaign/imports/index',

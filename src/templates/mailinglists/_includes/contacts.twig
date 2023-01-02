@@ -21,6 +21,6 @@
         {% if total > contacts|length %}
             {{ "Showing the first {limit} of {total} contacts."|t('campaign', {limit: limit, total: total}) }}
         {% endif %}
-        <a href="{{ cpUrl('campaign/contacts/view/' ~ mailingList.id) }}" class="go" target="_blank">{{ "View all"|t('campaign') }}</a>
+        <a href="{{ viewAllUrl }}" class="go" target="_blank">{{ "View all"|t('campaign') }}</a>
     </p>
 </div>
