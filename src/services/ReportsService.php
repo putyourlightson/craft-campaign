@@ -75,7 +75,8 @@ class ReportsService extends Component
             $data['clicked'] += $campaign->clicked;
         }
 
-        $data['clickThroughRate'] = $data['opened'] ? NumberHelper::floorOrOne($data['clicked'] / $data['opened'] * 100) : 0;
+        $data['openRate'] = $data['recipients'] ? NumberHelper::floorOrOne($data['opened'] / $data['recipients'] * 100) : 0;
+        $data['clickRate'] = $data['opened'] ? NumberHelper::floorOrOne($data['clicked'] / $data['opened'] * 100) : 0;
 
         // Get sendouts count
         $data['sendouts'] = SendoutElement::find()

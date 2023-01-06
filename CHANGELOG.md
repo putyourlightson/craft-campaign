@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 2.4.0 - Unreleased
+### Added
+- Added “Open Rate” to campaign reports and as an available column in the campaign element index page ([#354](https://github.com/putyourlightson/craft-campaign/issues/354)).
+- Added “Click Rate” as an available column in the campaign element index page.
+
 ## 2.3.2 - 2023-01-02
 ### Changed
 - Changed the sendout “Pause” button to read “Pause and Edit” ([#352](https://github.com/putyourlightson/craft-campaign/issues/352)).

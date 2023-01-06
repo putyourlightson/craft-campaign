@@ -36,7 +36,8 @@ use yii\web\Response;
 
 /**
  * @property-read CampaignTypeModel $campaignType
- * @property-read int $clickThroughRate
+ * @property-read int $openRate
+ * @property-read int $clickRate
  * @property-read string[] $cacheTags
  * @property-read null|string $postEditUrl
  * @property-read array[] $crumbs
@@ -338,6 +339,8 @@ class CampaignElement extends Element
             'unsubscribed' => ['label' => Craft::t('campaign', 'Unsubscribed')],
             'complained' => ['label' => Craft::t('campaign', 'Complained')],
             'bounced' => ['label' => Craft::t('campaign', 'Bounced')],
+            'openRate' => ['label' => Craft::t('campaign', 'Open Rate')],
+            'clickRate' => ['label' => Craft::t('campaign', 'Click Rate')],
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
             'slug' => ['label' => Craft::t('app', 'Slug')],
             'uri' => ['label' => Craft::t('app', 'URI')],
@@ -454,7 +457,8 @@ class CampaignElement extends Element
     {
         return match ($attribute) {
             'campaignType' => $this->getCampaignType()->name,
-            'clickThroughRate' => $this->getClickThroughRate() . '%',
+            'openRate' => $this->getOpenRate() . '%',
+            'clickRate' => $this->getClickRate() . '%',
             default => parent::tableAttributeHtml($attribute),
         };
     }
@@ -641,9 +645,17 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's click-through rate.
+     * Returns the campaign's open rate.
      */
-    public function getClickThroughRate(): int
+    public function getOpenRate(): int
+    {
+        return $this->recipients > 0 ? NumberHelper::floorOrOne(($this->opened / $this->recipients) * 100) : 0;
+    }
+
+    /**
+     * Returns the campaign's click rate.
+     */
+    public function getClickRate(): int
     {
         return $this->opened > 0 ? NumberHelper::floorOrOne(($this->clicked / $this->opened) * 100) : 0;
     }
