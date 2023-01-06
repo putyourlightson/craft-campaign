@@ -27,6 +27,7 @@ use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
 use craft\models\FieldLayout;
+use craft\services\Dashboard;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
@@ -71,6 +72,7 @@ use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
+use putyourlightson\campaign\widgets\MailingListSubscribersWidget;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
@@ -207,6 +209,7 @@ class Campaign extends Plugin
             $this->_registerAssetBundles();
             $this->_registerCpUrlRules();
             $this->_registerUtilities();
+            $this->_registerWidgets();
         }
 
         // If Craft edition is pro
@@ -714,6 +717,20 @@ class Campaign extends Plugin
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
             function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CampaignUtility::class;
+            }
+        );
+    }
+
+    /**
+     * Registers widgets.
+     *
+     * @since 2.4.0
+     */
+    private function _registerWidgets(): void
+    {
+        Event::on(Dashboard::class, Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = MailingListSubscribersWidget::class;
             }
         );
     }

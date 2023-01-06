@@ -1,0 +1,31 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Previous Days"|t('app'),
+    id: 'previousDays',
+    name: 'previousDays',
+    value: widget.previousDays,
+    options: [
+        {
+            label: 'All time'|t('campaign'),
+            value: null,
+        },
+        {
+            label: 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: 7}),
+            value: '7'
+        },
+        {
+            label: 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: 30}),
+            value: '30'
+        },
+        {
+            label: 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: 60}),
+            value: '60'
+        },
+        {
+            label: 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: 90}),
+            value: '90'
+        },
+    ],
+    errors: widget.getErrors('dateRange')
+}) }}

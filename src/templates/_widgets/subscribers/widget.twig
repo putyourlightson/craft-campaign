@@ -1,0 +1,17 @@
+<div class="campaign-widget-numberstat">
+    <strong class="number">
+        {{ value }}
+    </strong>
+    <br>
+    <span>
+        {{ (previousDays ? 'new mailing list subscribers' : 'mailing list subscribers')|t('campaign') }}
+    </span>
+    <br>
+    <span class="extralight">
+        {% if previousDays %}
+            {{ 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: previousDays}) }}
+        {% else %}
+            {{ 'All time'|t('campaign') }}
+        {% endif %}
+    </span>
+</div>
