@@ -1,30 +1,28 @@
+{# @var widget \putyourlightson\campaign\widgets\MailingListSubscribersWidget #}
+
 <div class="campaign-widget">
     <strong class="number">
         {{ subscribers }}
     </strong>
     <br>
-    {% if dateRange %}
-        {% if selectedMailingLists|length %}
-            {{ 'new mailing list subscribers to:'|t('campaign') }}
+    {% set mailingListCount = widget.mailingListIds|length %}
+    {% if widget.dateRange %}
+        {% if mailingListCount > 0 %}
+            {{ 'new subscribers to {num, number} {num, plural, =1{mailing list} other{mailing lists}}'|t('campaign', { num: mailingListCount }) }}
         {% else %}
-            {{ 'new mailing list subscribers'|t('campaign') }}
+            {{ 'new subscribers'|t('campaign') }}
         {% endif %}
     {% else %}
-        {% if selectedMailingLists|length %}
-            {{ 'mailing list subscribers to:'|t('campaign') }}
+        {% if mailingListCount %}
+            {{ 'subscribers to {num, number} {num, plural, =1{mailing list} other{mailing lists}}'|t('campaign', { num: mailingListCount }) }}
         {% else %}
-            {{ 'mailing list subscribers'|t('campaign') }}
+            {{ 'subscribers'|t('campaign') }}
         {% endif %}
-    {% endif %}
-    {% if selectedMailingLists|length > 0 %}
-        <br>
-        {% set mailingListTitles = selectedMailingLists|map((mailingList) => mailingList.title) %}
-        {{ mailingListTitles|join(', ') }}
     {% endif %}
     <br>
     <span class="extralight">
-        {% if dateRange %}
-            {{ 'Last {num, number} {num, plural, =1{day} other{days}}'|t('app', {num: dateRange}) }}
+        {% if widget.dateRange %}
+            {{ widget.dateRangeOptions[widget.dateRange] }}
         {% else %}
             {{ 'All time'|t('campaign') }}
         {% endif %}
