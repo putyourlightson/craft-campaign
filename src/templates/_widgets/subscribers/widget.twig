@@ -10,13 +10,13 @@
         {% if mailingListCount > 0 %}
             {{ 'new subscribers to {num, number} {num, plural, =1{mailing list} other{mailing lists}}'|t('campaign', { num: mailingListCount }) }}
         {% else %}
-            {{ 'new subscribers'|t('campaign') }}
+            {{ 'new mailing list subscribers'|t('campaign') }}
         {% endif %}
     {% else %}
         {% if mailingListCount %}
             {{ 'subscribers to {num, number} {num, plural, =1{mailing list} other{mailing lists}}'|t('campaign', { num: mailingListCount }) }}
         {% else %}
-            {{ 'subscribers'|t('campaign') }}
+            {{ 'mailing list subscribers'|t('campaign') }}
         {% endif %}
     {% endif %}
     <br>
