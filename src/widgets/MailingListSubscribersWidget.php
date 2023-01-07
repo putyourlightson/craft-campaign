@@ -8,8 +8,11 @@ namespace putyourlightson\campaign\widgets;
 use Craft;
 use craft\base\Widget;
 use putyourlightson\campaign\assets\WidgetAsset;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 
 /**
+ * @property-read string|null $title
  * @property-read string|null $bodyHtml
  * @property-read string|null $settingsHtml
  */
@@ -34,7 +37,17 @@ class MailingListSubscribersWidget extends Widget
     /**
      * @var int|null
      */
-    public ?int $previousDays = null;
+    public ?int $dateRange = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $mailingListIds = null;
+
+    /**
+     * @var array|null
+     */
+    public ?array $mailingListId = null;
 
     /**
      * @inheritdoc
@@ -51,13 +64,24 @@ class MailingListSubscribersWidget extends Widget
     {
         Craft::$app->getView()->registerAssetBundle(WidgetAsset::class);
 
-        $value = 5;
-        $unit = $this->previousDays ? Craft::t('campaign', 'new subscribers') : Craft::t('campaign', 'subscribers');
+        $selectedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->mailingListIds);
+
+        $unit = $this->dateRange ? Craft::t('campaign', 'new subscribers') : Craft::t('campaign', 'subscribers');
+
+        $subscribers = 0;
+        $mailingLists = $selectedMailingLists;
+        if (empty($mailingLists)) {
+            $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
+        }
+        foreach ($mailingLists as $mailingList) {
+            $subscribers += $mailingList->getSubscribedCount();
+        }
 
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/subscribers/widget', [
-            'value' => $value,
+            'selectedMailingLists' => $selectedMailingLists,
+            'subscribers' => $subscribers,
             'unit' => $unit,
-            'previousDays' => $this->previousDays,
+            'dateRange' => $this->dateRange,
         ]);
     }
 
@@ -68,6 +92,8 @@ class MailingListSubscribersWidget extends Widget
     {
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/subscribers/settings', [
             'widget' => $this,
+            'mailingListElementType' => MailingListElement::class,
+            'mailingLists' => Campaign::$plugin->mailingLists->getMailingListsByIds($this->mailingListIds),
         ]);
     }
 }

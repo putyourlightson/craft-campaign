@@ -1,9 +1,9 @@
-.campaign-widget-numberstat {
+.campaign-widget {
     padding: 14px 0;
     text-align: center;
 }
 
-.campaign-widget-numberstat .number {
+.campaign-widget .number {
     font-size: 2.5rem;
     line-height: 2.5rem;
 }

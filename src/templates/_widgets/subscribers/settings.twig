@@ -1,10 +1,10 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
-    label: "Previous Days"|t('app'),
-    id: 'previousDays',
-    name: 'previousDays',
-    value: widget.previousDays,
+    label: "Date Range"|t('app'),
+    id: 'dateRange',
+    name: 'dateRange',
+    value: widget.dateRange,
     options: [
         {
             label: 'All time'|t('campaign'),
@@ -27,5 +27,15 @@
             value: '90'
         },
     ],
-    errors: widget.getErrors('dateRange')
+    errors: widget.getErrors('dateRange'),
+}) }}
+
+{{ forms.elementSelectField({
+    label: "Mailing List"|t('campaign'),
+    instructions: "Select one or more mailing lists to filter by, or leave blank for all mailing lists."|t('campaign'),
+    id: 'mailingListIds',
+    name: 'mailingListIds',
+    elementType: mailingListElementType,
+    selectionLabel: "Add a mailing list"|t('campaign'),
+    elements: mailingLists,
 }) }}
