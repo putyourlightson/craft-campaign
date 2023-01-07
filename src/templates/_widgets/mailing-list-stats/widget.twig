@@ -1,0 +1,29 @@
+<div class="campaign-widget">
+    {% if settings.showSubscribed %}
+        <div class="number">
+            {{ subscribed }}
+        </div>
+        {{ 'subscribed'|t('campaign') }}
+        <br><br>
+    {% endif %}
+    {% if settings.showUnsubscribed %}
+        <div class="number">
+            {{ unsubscribed }}
+        </div>
+        {{ 'unsubscribed'|t('campaign') }}
+        <br><br>
+    {% endif %}
+    {% if settings.showComplained %}
+        <div class="number">
+            {{ complained }}
+        </div>
+        {{ 'complained'|t('campaign') }}
+        <br><br>
+    {% endif %}
+    {% if settings.showBounced %}
+        <div class="number">
+            {{ bounced }}
+        </div>
+        {{ 'bounced'|t('campaign') }}
+    {% endif %}
+</div>

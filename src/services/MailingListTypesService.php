@@ -141,6 +141,14 @@ class MailingListTypesService extends Component
     }
 
     /**
+     * Returns mailing list type by UID.
+     */
+    public function getMailingListTypeByUid(string $uid): ?MailingListTypeModel
+    {
+        return $this->_mailingListTypes()->firstWhere('uid', $uid, true);
+    }
+
+    /**
      * Saves a mailing list type.
      */
     public function saveMailingListType(MailingListTypeModel $mailingListType, bool $runValidation = true): bool

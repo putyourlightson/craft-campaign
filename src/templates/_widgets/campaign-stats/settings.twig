@@ -1,0 +1,41 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: 'Date Range'|t('campaign'),
+    name: 'dateRange',
+    value: widget.dateRange,
+    options: dateRangeOptions,
+    errors: widget.getErrors('dateRange'),
+}) }}
+
+{{ forms.selectField({
+    label: 'Campaign Type'|t('campaign'),
+    name: 'campaignTypeId',
+    value: widget.campaignTypeId,
+    options: campaignTypeOptions,
+    errors: widget.getErrors('campaignTypeId'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Sendouts'|t('campaign'),
+    name: 'showSendouts',
+    on: widget.showSendouts,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Recipients'|t('campaign'),
+    name: 'showRecipients',
+    on: widget.showRecipients,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Open Rate'|t('campaign'),
+    name: 'showOpenRate',
+    on: widget.showOpenRate,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Click Rate'|t('campaign'),
+    name: 'showClickRate',
+    on: widget.showClickRate,
+}) }}

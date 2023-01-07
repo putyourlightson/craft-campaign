@@ -43,6 +43,27 @@ class CampaignsService extends Component
     }
 
     /**
+     * Returns an array of campaigns by IDs.
+     *
+     * @param int[]|null $campaignIds
+     * @return CampaignElement[]
+     */
+    public function getCampaignsByIds(?array $campaignIds): array
+    {
+        if (empty($campaignIds)) {
+            return [];
+        }
+
+        /** @var CampaignElement[] */
+        return CampaignElement::find()
+            ->id($campaignIds)
+            ->site('*')
+            ->status(null)
+            ->fixedOrder()
+            ->all();
+    }
+
+    /**
      * Adds a contact interaction.
      */
     public function addContactInteraction(ContactElement $contact, SendoutElement $sendout, string $interaction, LinkRecord $linkRecord = null): void

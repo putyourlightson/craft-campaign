@@ -72,7 +72,8 @@ use putyourlightson\campaign\services\WebhookService;
 use putyourlightson\campaign\twigextensions\CampaignTwigExtension;
 use putyourlightson\campaign\utilities\CampaignUtility;
 use putyourlightson\campaign\variables\CampaignVariable;
-use putyourlightson\campaign\widgets\MailingListSubscribersWidget;
+use putyourlightson\campaign\widgets\CampaignStatsWidget;
+use putyourlightson\campaign\widgets\MailingListStatsWidget;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
@@ -730,7 +731,8 @@ class Campaign extends Plugin
     {
         Event::on(Dashboard::class, Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function(RegisterComponentTypesEvent $event) {
-                $event->types[] = MailingListSubscribersWidget::class;
+                $event->types[] = CampaignStatsWidget::class;
+                $event->types[] = MailingListStatsWidget::class;
             }
         );
     }

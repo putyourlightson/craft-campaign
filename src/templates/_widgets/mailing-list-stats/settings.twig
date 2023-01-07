@@ -1,0 +1,41 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: 'Date Range'|t('campaign'),
+    name: 'dateRange',
+    value: widget.dateRange,
+    options: dateRangeOptions,
+    errors: widget.getErrors('dateRange'),
+}) }}
+
+{{ forms.selectField({
+    label: 'Mailing List Type'|t('campaign'),
+    name: 'mailingListTypeId',
+    value: widget.mailingListTypeId,
+    options: mailingListTypeOptions,
+    errors: widget.getErrors('mailingListTypeId'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Subscribed'|t('campaign'),
+    name: 'showSubscribed',
+    on: widget.showSubscribed,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Unsubscribed'|t('campaign'),
+    name: 'showUnsubscribed',
+    on: widget.showUnsubscribed,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Complained'|t('campaign'),
+    name: 'showComplained',
+    on: widget.showComplained,
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Show Bounced'|t('campaign'),
+    name: 'showBounced',
+    on: widget.showBounced,
+}) }}
