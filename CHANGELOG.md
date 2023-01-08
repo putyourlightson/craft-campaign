@@ -2,7 +2,8 @@
 
 ## 2.4.0 - Unreleased
 ### Added
-- Added the “Mailing List Subscribers” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
+- Added the “Campaign Stats” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
+- Added the “Mailing List Stats” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
 - Added “Click Rate” as an available column in the campaign element index page.
 - Added “Open Rate” to campaign reports and as an available column in the campaign element index page ([#354](https://github.com/putyourlightson/craft-campaign/issues/354)).
 - Added “Click Rate” as an available column in the campaign element index page.
