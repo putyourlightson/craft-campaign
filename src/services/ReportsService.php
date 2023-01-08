@@ -25,6 +25,7 @@ use putyourlightson\campaign\models\ContactActivityModel;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\models\ContactMailingListModel;
 use putyourlightson\campaign\models\LinkModel;
+use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
@@ -572,6 +573,25 @@ class ReportsService extends Component
     }
 
     /**
+     * Syncs campaign reports.
+     *
+     * @since 2.4.0
+     */
+    public function sync(): void
+    {
+        $campaignRecords = CampaignRecord::find()->all();
+
+        foreach ($campaignRecords as $campaignRecord) {
+            $campaignRecord->recipients = $this->_getCampaignColumnCount($campaignRecord->id, 'sent');
+            $campaignRecord->opened = $this->_getCampaignColumnCount($campaignRecord->id, 'opened');
+            $campaignRecord->clicked = $this->_getCampaignColumnCount($campaignRecord->id, 'clicked');
+            $campaignRecord->opens = $this->_getCampaignColumnSum($campaignRecord->id, 'opens');
+            $campaignRecord->clicks = $this->_getCampaignColumnSum($campaignRecord->id, 'clicks');
+            $campaignRecord->save();
+        }
+    }
+
+    /**
      * Returns chart data.
      */
     private function _getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
@@ -854,5 +874,24 @@ class ReportsService extends Component
     private function _compareCount(array $a, array $b): int
     {
         return (int)$a['count'] < (int)$b['count'] ? 1 : -1;
+    }
+
+    private function _getCampaignColumnCount(int $campaignId, string $column): int
+    {
+        $count = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaignId])
+            ->andWhere(['not', [$column => null]])
+            ->count();
+
+        return $count ?? 0;
+    }
+
+    private function _getCampaignColumnSum(int $campaignId, string $column): int
+    {
+        $sum = ContactCampaignRecord::find()
+            ->where(['campaignId' => $campaignId])
+            ->sum($column);
+
+        return $sum ?? 0;
     }
 }

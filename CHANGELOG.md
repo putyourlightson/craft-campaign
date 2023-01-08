@@ -7,6 +7,7 @@
 - Added “Click Rate” as an available column in the campaign element index page.
 - Added “Open Rate” to campaign reports and as an available column in the campaign element index page ([#354](https://github.com/putyourlightson/craft-campaign/issues/354)).
 - Added “Click Rate” as an available column in the campaign element index page.
+- Added the `campaign/reports/sync` console command that syncs campaign reports.
 
 ## 2.3.2 - 2023-01-02
 ### Changed
