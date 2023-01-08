@@ -1,19 +1,26 @@
 <div class="campaign-widget">
-    {% if settings.showSendouts %}
+    {% if visibility.campaigns %}
+        <div class="number">
+            {{ campaigns }}
+        </div>
+        {{ '{num, plural, =1{campaign} other{campaigns}}'|t('campaign', { num: campaigns }) }}
+        <br><br>
+    {% endif %}
+    {% if visibility.sendouts %}
         <div class="number">
             {{ sendouts }}
         </div>
-        {{ 'sendouts'|t('campaign') }}
+        {{ '{num, plural, =1{sendout} other{sendouts}}'|t('campaign', { num: sendouts }) }}
         <br><br>
     {% endif %}
-    {% if settings.showRecipients %}
+    {% if visibility.recipients %}
         <div class="number">
             {{ recipients }}
         </div>
-        {{ 'recipients'|t('campaign') }}
+        {{ '{num, plural, =1{recipient} other{recipients}}'|t('campaign', { num: recipients }) }}
         <br><br>
     {% endif %}
-    {% if settings.showOpenRate %}
+    {% if visibility.openRate %}
         <div class="number">
             {{ openRate }}%
         </div>
@@ -23,7 +30,7 @@
         </span>
         <br><br>
     {% endif %}
-    {% if settings.showClickRate %}
+    {% if visibility.clickRate %}
         <div class="number">
             {{ clickRate }}%
         </div>

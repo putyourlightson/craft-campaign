@@ -16,26 +16,34 @@
     errors: widget.getErrors('campaignTypeId'),
 }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Sendouts'|t('campaign'),
-    name: 'showSendouts',
-    on: widget.showSendouts,
-}) }}
+{% namespace 'visibility' %}
+    {{ forms.lightswitchField({
+        label: 'Show Campaigns'|t('campaign'),
+        name: 'campaigns',
+        on: widget.visibility.campaigns,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Recipients'|t('campaign'),
-    name: 'showRecipients',
-    on: widget.showRecipients,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Sendouts'|t('campaign'),
+        name: 'sendouts',
+        on: widget.visibility.sendouts,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Open Rate'|t('campaign'),
-    name: 'showOpenRate',
-    on: widget.showOpenRate,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Recipients'|t('campaign'),
+        name: 'recipients',
+        on: widget.visibility.recipients,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Click Rate'|t('campaign'),
-    name: 'showClickRate',
-    on: widget.showClickRate,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Open Rate'|t('campaign'),
+        name: 'openRate',
+        on: widget.visibility.openRate,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: 'Show Click Rate'|t('campaign'),
+        name: 'clickRate',
+        on: widget.visibility.clickRate,
+    }) }}
+{% endnamespace %}

@@ -1,26 +1,33 @@
 <div class="campaign-widget">
-    {% if settings.showSubscribed %}
+    {% if visibility.mailingLists %}
+        <div class="number">
+            {{ mailingLists }}
+        </div>
+        {{ '{num, plural, =1{mailing list} other{mailing lists}}'|t('campaign', { num: mailingLists }) }}
+        <br><br>
+    {% endif %}
+    {% if visibility.subscribed %}
         <div class="number">
             {{ subscribed }}
         </div>
         {{ 'subscribed'|t('campaign') }}
         <br><br>
     {% endif %}
-    {% if settings.showUnsubscribed %}
+    {% if visibility.unsubscribed %}
         <div class="number">
             {{ unsubscribed }}
         </div>
         {{ 'unsubscribed'|t('campaign') }}
         <br><br>
     {% endif %}
-    {% if settings.showComplained %}
+    {% if visibility.complained %}
         <div class="number">
             {{ complained }}
         </div>
         {{ 'complained'|t('campaign') }}
         <br><br>
     {% endif %}
-    {% if settings.showBounced %}
+    {% if visibility.bounced %}
         <div class="number">
             {{ bounced }}
         </div>

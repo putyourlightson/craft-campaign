@@ -16,26 +16,34 @@
     errors: widget.getErrors('mailingListTypeId'),
 }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Subscribed'|t('campaign'),
-    name: 'showSubscribed',
-    on: widget.showSubscribed,
-}) }}
+{% namespace 'visibility' %}
+    {{ forms.lightswitchField({
+        label: 'Show Mailing Lists'|t('campaign'),
+        name: 'mailingLists',
+        on: widget.visibility.mailingLists,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Unsubscribed'|t('campaign'),
-    name: 'showUnsubscribed',
-    on: widget.showUnsubscribed,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Subscribed'|t('campaign'),
+        name: 'subscribed',
+        on: widget.visibility.subscribed,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Complained'|t('campaign'),
-    name: 'showComplained',
-    on: widget.showComplained,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Unsubscribed'|t('campaign'),
+        name: 'unsubscribed',
+        on: widget.visibility.unsubscribed,
+    }) }}
 
-{{ forms.lightswitchField({
-    label: 'Show Bounced'|t('campaign'),
-    name: 'showBounced',
-    on: widget.showBounced,
-}) }}
+    {{ forms.lightswitchField({
+        label: 'Show Complained'|t('campaign'),
+        name: 'complained',
+        on: widget.visibility.complained,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: 'Show Bounced'|t('campaign'),
+        name: 'bounced',
+        on: widget.visibility.bounced,
+    }) }}
+{% endnamespace %}

@@ -11,6 +11,7 @@ use craft\helpers\DateRange;
 use craft\helpers\Db;
 use putyourlightson\campaign\assets\WidgetAsset;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 
 /**
@@ -37,24 +38,15 @@ class MailingListStatsWidget extends Widget
     public ?int $mailingListTypeId = null;
 
     /**
-     * @var bool
+     * @var array
      */
-    public bool $showSubscribed = true;
-
-    /**
-     * @var bool
-     */
-    public bool $showUnsubscribed = true;
-
-    /**
-     * @var bool
-     */
-    public bool $showComplained = true;
-
-    /**
-     * @var bool
-     */
-    public bool $showBounced = true;
+    public array $visibility = [
+        'mailingLists' => true,
+        'subscribed' => true,
+        'unsubscribed' => true,
+        'complained' => true,
+        'bounced' => true,
+    ];
 
     /**
      * @inheritdoc
@@ -89,10 +81,12 @@ class MailingListStatsWidget extends Widget
     {
         Craft::$app->getView()->registerAssetBundle(WidgetAsset::class);
 
-        $query = ContactMailingListRecord::find();
+        $mailingListQuery = MailingListElement::find();
+        $contactMailingListQuery = ContactMailingListRecord::find();
 
         if ($this->mailingListTypeId) {
-            $query->innerJoinWith('mailingList')
+            $mailingListQuery->mailingListTypeId($this->mailingListTypeId);
+            $contactMailingListQuery->innerJoinWith('mailingList')
                 ->andWhere(['mailingListTypeId' => $this->mailingListTypeId]);
         }
 
@@ -100,19 +94,26 @@ class MailingListStatsWidget extends Widget
             [$startDate, $endDate] = DateRange::dateRangeByType($this->dateRange);
             $startDate = Db::prepareDateForDb($startDate);
             $endDate = Db::prepareDateForDb($endDate);
-            $query->andWhere(['and',
+
+            $mailingListQuery->andWhere(['and',
+                ['>=', 'dateCreated', $startDate],
+                ['<', 'dateCreated', $endDate],
+            ]);
+            $contactMailingListQuery->andWhere(['and',
                 ['>=', 'subscribed', $startDate],
                 ['<', 'subscribed', $endDate],
             ]);
         }
 
-        $subscribed = $query->andWhere(['subscriptionStatus' => 'subscribed'])->count();
-        $unsubscribed = $query->andWhere(['subscriptionStatus' => 'unsubscribed'])->count();
-        $complained = $query->andWhere(['subscriptionStatus' => 'complained'])->count();
-        $bounced = $query->andWhere(['subscriptionStatus' => 'bounced'])->count();
+        $mailingLists = $mailingListQuery->count();
+        $subscribed = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'subscribed'])->count();
+        $unsubscribed = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'unsubscribed'])->count();
+        $complained = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'complained'])->count();
+        $bounced = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'bounced'])->count();
 
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/mailing-list-stats/widget', [
-            'settings' => $this->getSettings(),
+            'visibility' => $this->visibility,
+            'mailingLists' => $mailingLists,
             'subscribed' => $subscribed,
             'unsubscribed' => $unsubscribed,
             'complained' => $complained,
