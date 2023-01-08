@@ -14,8 +14,11 @@
 return [
     'Plugin Name' => 'Campaign',
     // -------------------------------------------------------------------------
+    '“{name}” Campaigns' => '',
+    '“{name}” Mailing Lists' => '',
     '(reply to {email})' => '(an {email} antworten)',
     '{count} pending sendout(s) queued.' => '{count} Sendung(en) in Warteschlange',
+    '{num, number} {num, plural, =1{mailing list} other{mailing lists}}' => '',
     'A contact with that email address could not be found.' => 'Es wurde kein Kontakt mit dieser E-Mail-Adresse gefunden.',
     'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => 'Es muss eine CSV-Datei zum Hochladen ausgewählt werden.',
@@ -98,6 +101,7 @@ return [
     'Campaign Pro is required to perform this action.' => 'Für diese Aktion wird Campaign Pro benötigt.',
     'Campaign Reports' => 'Kampagnen-Reporte',
     'Campaign saved.' => 'Kampagne gespeichert.',
+    'Campaign Stats' => '',
     'Campaign type not found.' => 'Kampagnen-Typ nicht gefunden.',
     'Campaign type saved.' => 'Kampagnen-Typ gespeichert.',
     'Campaign Type' => 'Kampagnen-Typ',
@@ -339,6 +343,7 @@ return [
     'Mailing list not found.' => 'Mailing-Liste nicht gefunden.',
     'Mailing List Reports' => 'Mailing-Liste-Reporte',
     'Mailing list saved.' => 'Mailing-Liste gespeichert.',
+    'Mailing List Stats' => '',
     'Mailing list successfully queued for syncing with user group.' => 'Mailing-Liste erfolgreich zur Synchronisation mit Benutzergruppe in Warteschlange platziert.',
     'Mailing list type not found.' => 'Mailing-Listen-Typ nicht gefunden',
     'Mailing list type saved.' => 'Mailing-Listen-Typ gespeichert.',

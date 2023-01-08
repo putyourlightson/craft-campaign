@@ -30,7 +30,6 @@ class m220427_120000_update_columns extends Migration
                 ->all();
 
             foreach ($sendoutRecords as $sendoutRecord) {
-                /** @noinspection PhpUndefinedFieldInspection */
                 $contact = Campaign::$plugin->contacts->getContactByEmail($sendoutRecord->getAttribute('notificationEmailAddress'));
 
                 if ($contact !== null) {

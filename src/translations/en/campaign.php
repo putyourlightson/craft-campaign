@@ -13,8 +13,11 @@
 return [
     'Plugin Name' => 'Campaign',
     // -------------------------------------------------------------------------
+    '“{name}” Campaigns' => '',
+    '“{name}” Mailing Lists' => '',
     '(reply to {email})' => '',
     '{count} pending sendout(s) queued.' => '',
+    '{num, number} {num, plural, =1{mailing list} other{mailing lists}}' => '',
     'A contact with that email address could not be found.' => '',
     'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => '',
@@ -97,6 +100,7 @@ return [
     'Campaign Pro is required to perform this action.' => '',
     'Campaign Reports' => '',
     'Campaign saved.' => '',
+    'Campaign Stats' => '',
     'Campaign type not found.' => '',
     'Campaign type saved.' => '',
     'Campaign Type' => '',
@@ -338,6 +342,7 @@ return [
     'Mailing list not found.' => '',
     'Mailing List Reports' => '',
     'Mailing list saved.' => '',
+    'Mailing List Stats' => '',
     'Mailing list successfully queued for syncing with user group.' => '',
     'Mailing list type not found.' => '',
     'Mailing list type saved.' => '',
