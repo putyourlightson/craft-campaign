@@ -7,11 +7,14 @@ namespace putyourlightson\campaign\widgets;
 
 use Craft;
 use craft\base\Widget;
+use craft\helpers\DateRange;
+use craft\helpers\Db;
 use putyourlightson\campaign\assets\WidgetAsset;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\NumberHelper;
+use putyourlightson\campaign\records\CampaignRecord;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 
 /**
  * @property-read string|null $title
@@ -90,32 +93,39 @@ class CampaignStatsWidget extends Widget
         Craft::$app->getView()->registerAssetBundle(WidgetAsset::class);
 
         $sendoutQuery = SendoutElement::find();
-        $campaignQuery = CampaignElement::find()
-            ->status(CampaignElement::STATUS_SENT);
+        $contactCampaignQuery = ContactCampaignRecord::find();
+        $campaignIdQuery = CampaignRecord::find()->select('id');
 
         if ($this->campaignTypeId) {
-            $campaignIds = CampaignElement::find()
-                ->campaignTypeId($this->campaignTypeId)
-                ->ids();
+            $campaignIdQuery->andWhere(['campaignTypeId' => $this->campaignTypeId]);
+            $campaignIds = $campaignIdQuery->column();
             $sendoutQuery->andWhere(['campaignId' => $campaignIds]);
-            $campaignQuery->campaignTypeId($this->campaignTypeId);
+            $contactCampaignQuery->andWhere(['campaignId' => $campaignIds]);
         }
 
-        $campaigns = $campaignQuery->all();
-        $recipients = 0;
-        $opened = 0;
-        $clicked = 0;
+        if ($this->dateRange) {
+            [$startDate, $endDate] = DateRange::dateRangeByType($this->dateRange);
+            $startDate = Db::prepareDateForDb($startDate);
+            $endDate = Db::prepareDateForDb($endDate);
 
-        /** @var CampaignElement $campaign */
-        foreach ($campaigns as $campaign) {
-            $recipients += $campaign->recipients;
-            $opened += $campaign->opened;
-            $clicked += $campaign->clicked;
+            $sendoutQuery->andWhere(['and',
+                ['>=', 'sendDate', $startDate],
+                ['<', 'sendDate', $endDate],
+            ]);
+            $contactCampaignQuery->andWhere(['and',
+                ['>=', 'sent', $startDate],
+                ['<', 'sent', $endDate],
+            ]);
         }
+
+        $sendouts = $sendoutQuery->count();
+        $recipients = $contactCampaignQuery->count();
+        $opened = $contactCampaignQuery->andWhere(['not', ['opened' => null]])->count();
+        $clicked = $contactCampaignQuery->andWhere(['not', ['clicked' => null]])->count();
 
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/campaign-stats/widget', [
             'settings' => $this->getSettings(),
-            'sendouts' => $sendoutQuery->count(),
+            'sendouts' => $sendouts,
             'recipients' => $recipients,
             'openRate' => $recipients ? NumberHelper::floorOrOne($opened / $recipients * 100) : 0,
             'clickRate' => $opened ? NumberHelper::floorOrOne($clicked / $opened * 100) : 0,
