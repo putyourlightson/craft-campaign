@@ -32,7 +32,7 @@ class CampaignUtility extends Utility
      */
     public static function iconPath(): ?string
     {
-        return Craft::getAlias('@vendor/putyourlightson/craft-campaign/src/icon-mask.svg');
+        return Craft::getAlias('@putyourlightson/blitz/icon-mask.svg');
     }
 
     /**

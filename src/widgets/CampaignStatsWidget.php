@@ -7,12 +7,12 @@ namespace putyourlightson\campaign\widgets;
 
 use Craft;
 use craft\base\Widget;
-use craft\helpers\DateRange;
 use craft\helpers\Db;
 use putyourlightson\campaign\assets\WidgetAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\helpers\DateRangeHelper;
 use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
@@ -21,10 +21,12 @@ use putyourlightson\campaign\records\ContactCampaignRecord;
  * @property-read string|null $subtitle
  * @property-read string|null $bodyHtml
  * @property-read string|null $settingsHtml
+ *
+ * @since 2.4.0
  */
 class CampaignStatsWidget extends Widget
 {
-    use WidgetTrait;
+    use DateRangeWidgetTrait;
 
     /**
      * @inheritdoc
@@ -32,6 +34,14 @@ class CampaignStatsWidget extends Widget
     public static function displayName(): string
     {
         return Craft::t('campaign', 'Campaign Stats');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function icon(): ?string
+    {
+        return Craft::getAlias('@putyourlightson/campaign/icon-mask.svg');
     }
 
     /**
@@ -95,7 +105,7 @@ class CampaignStatsWidget extends Widget
         }
 
         if ($this->dateRange) {
-            [$startDate, $endDate] = DateRange::dateRangeByType($this->dateRange);
+            [$startDate, $endDate] = DateRangeHelper::dateRangeByType($this->dateRange);
             $startDate = Db::prepareDateForDb($startDate);
             $endDate = Db::prepareDateForDb($endDate);
 
