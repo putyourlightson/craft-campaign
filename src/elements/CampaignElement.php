@@ -11,7 +11,6 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
-use craft\elements\actions\View as ViewAction;
 use craft\elements\Entry;
 use craft\elements\User;
 use craft\helpers\Cp;
@@ -24,6 +23,7 @@ use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\assets\SendTestAsset;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\actions\ViewCampaign;
 use putyourlightson\campaign\elements\db\CampaignElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\reports\CampaignReportFieldLayoutTab;
 use putyourlightson\campaign\helpers\NumberHelper;
@@ -266,8 +266,7 @@ class CampaignElement extends Element
 
         // View
         $actions[] = $elementsService->createAction([
-            'type' => ViewAction::class,
-            'label' => Craft::t('campaign', 'View campaign'),
+            'type' => ViewCampaign::class,
         ]);
 
         // Duplicate
@@ -679,7 +678,7 @@ class CampaignElement extends Element
      */
     public function getStatus(): ?string
     {
-        if (!$this->enabled) {
+        if (!$this->enabled || $this->getIsDraft()) {
             return self::STATUS_DISABLED;
         }
 

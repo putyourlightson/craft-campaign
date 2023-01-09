@@ -5,24 +5,25 @@
 namespace putyourlightson\campaign\elements\actions;
 
 use Craft;
-use craft\elements\actions\Edit;
+use craft\base\Element;
+use craft\elements\actions\View;
 
 /**
- * Allows only `modifiable` sendouts to be edited.
- * This class extends the `Edit` action so that it is not added twice.
+ * Allows only `pending` or `sent` campaigns to be viewed.
+ * This class extends the `View` action so that it is not added twice.
  * @see Element::actions()
  *
  * @property-read string $triggerLabel
  * @property-read null $triggerHtml
  */
-class EditSendout extends Edit
+class ViewCampaign extends View
 {
     /**
      * @inheritdoc
      */
     public function getTriggerLabel(): string
     {
-        return Craft::t('campaign', 'Edit sendout');
+        return Craft::t('campaign', 'View campaign');
     }
 
     /**
@@ -34,11 +35,16 @@ class EditSendout extends Edit
 (() => {
     new Craft.ElementActionTrigger({
         type: $type,
-        batch: false,
-        validateSelection: \$selectedItems => Garnish.hasAttr(\$selectedItems.find('.element'), 'data-savable') && Garnish.hasAttr(\$selectedItems.find('.element'), 'data-modifiable'),
+        bulk: false,
+        validateSelection: \$selectedItems => {
+            const \$element = \$selectedItems.find('.element');
+            return (
+                \$element.data('url') &&
+                (\$element.data('status') === 'pending' || \$element.data('status') === 'sent')
+            );
+        },
         activate: \$selectedItems => {
-            const \$element = \$selectedItems.find('.element:first');
-            Craft.createElementEditor(\$element.data('type'), \$element);
+            window.open(\$selectedItems.find('.element').data('url'));
         },
     });
 })();

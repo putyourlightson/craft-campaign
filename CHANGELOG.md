@@ -9,6 +9,9 @@
 - Added “Click Rate” as an available column in the campaign element index page.
 - Added the `campaign/reports/sync` console command that syncs campaign reports.
 
+### Fixed
+- Fixed when the view action is available on campaign index pages.
+
 ## 2.3.2 - 2023-01-02
 ### Changed
 - Changed the sendout “Pause” button to read “Pause and Edit” ([#352](https://github.com/putyourlightson/craft-campaign/issues/352)).

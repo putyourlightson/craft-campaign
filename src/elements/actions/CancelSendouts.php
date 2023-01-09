@@ -12,9 +12,9 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
- * @property-read null|string $triggerHtml
  * @property-read string $triggerLabel
- * @property-read null|string $confirmationMessage
+ * @property-read string|null $confirmationMessage
+ * @property-read string|null $triggerHtml
  */
 class CancelSendouts extends ElementAction
 {
