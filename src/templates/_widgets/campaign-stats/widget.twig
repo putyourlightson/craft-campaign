@@ -1,21 +1,21 @@
 <div class="campaign-widget">
     {% if visibility.campaigns %}
         <div class="number">
-            {{ campaigns }}
+            {{ campaigns|number }}
         </div>
         {{ '{num, plural, =1{campaign} other{campaigns}}'|t('campaign', { num: campaigns }) }}
         <br><br>
     {% endif %}
     {% if visibility.sendouts %}
         <div class="number">
-            {{ sendouts }}
+            {{ sendouts|number }}
         </div>
         {{ '{num, plural, =1{sendout} other{sendouts}}'|t('campaign', { num: sendouts }) }}
         <br><br>
     {% endif %}
     {% if visibility.recipients %}
         <div class="number">
-            {{ recipients }}
+            {{ recipients|number }}
         </div>
         {{ '{num, plural, =1{recipient} other{recipients}}'|t('campaign', { num: recipients }) }}
         <br><br>
