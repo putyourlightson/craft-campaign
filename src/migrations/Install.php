@@ -74,7 +74,7 @@ class Install extends Migration
     {
         if (!$this->db->tableExists(CampaignRecord::tableName())) {
             $this->createTable(CampaignRecord::tableName(), [
-                'id' => $this->primaryKey(),
+                'id' => $this->integer()->notNull(),
                 'campaignTypeId' => $this->integer()->notNull(),
                 'recipients' => $this->integer()->defaultValue(0)->notNull(),
                 'opened' => $this->integer()->defaultValue(0)->notNull(),
@@ -88,6 +88,7 @@ class Install extends Migration
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
             ]);
         }
 
@@ -126,7 +127,7 @@ class Install extends Migration
 
         if (!$this->db->tableExists(ContactRecord::tableName())) {
             $this->createTable(ContactRecord::tableName(), [
-                'id' => $this->primaryKey(),
+                'id' => $this->integer()->notNull(),
                 'userId' => $this->integer(),
                 'cid' => $this->shortUid(),
                 'email' => $this->string(),
@@ -143,6 +144,7 @@ class Install extends Migration
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
             ]);
         }
 
@@ -185,12 +187,13 @@ class Install extends Migration
 
         if (!$this->db->tableExists(MailingListRecord::tableName())) {
             $this->createTable(MailingListRecord::tableName(), [
-                'id' => $this->primaryKey(),
+                'id' => $this->integer()->notNull(),
                 'mailingListTypeId' => $this->integer()->notNull(),
                 'syncedUserGroupId' => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
             ]);
         }
 
@@ -236,7 +239,7 @@ class Install extends Migration
 
         if (!$this->db->tableExists(SegmentRecord::tableName())) {
             $this->createTable(SegmentRecord::tableName(), [
-                'id' => $this->primaryKey(),
+                'id' => $this->integer()->notNull(),
                 'segmentType' => $this->string()->notNull(),
                 'contactCondition' => $this->text(),
                 'conditions' => $this->text(),
@@ -244,12 +247,13 @@ class Install extends Migration
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
             ]);
         }
 
         if (!$this->db->tableExists(SendoutRecord::tableName())) {
             $this->createTable(SendoutRecord::tableName(), [
-                'id' => $this->primaryKey(),
+                'id' => $this->integer()->notNull(),
                 'sid' => $this->shortUid(),
                 'campaignId' => $this->integer(),
                 'senderId' => $this->integer(),
@@ -275,6 +279,7 @@ class Install extends Migration
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
             ]);
         }
 
