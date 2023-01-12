@@ -172,7 +172,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.1.11';
+    public string $schemaVersion = '2.4.0';
 
     /**
      * @inheritdoc
