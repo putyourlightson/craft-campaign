@@ -4,7 +4,6 @@ namespace putyourlightson\campaign\migrations;
 
 use craft\db\Migration;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\records\ContactCampaignRecord;
 
 class m221017_120000_sync_campaign_reports extends Migration
 {

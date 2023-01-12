@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.4.0 - Unreleased
+## 2.4.0 - 2023-01-12
 ### Added
 - Added the “Campaign Stats” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
 - Added the “Mailing List Stats” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
