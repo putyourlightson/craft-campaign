@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.4.1 - 2023-01-13
+### Fixed
+- Fixed a bug in which the utilities page was throwing an exception ([#357](https://github.com/putyourlightson/craft-campaign/issues/357)).
+
 ## 2.4.0 - 2023-01-12
 ### Added
 - Added the “Campaign Stats” dashboard widget ([#107](https://github.com/putyourlightson/craft-campaign/issues/107)).
