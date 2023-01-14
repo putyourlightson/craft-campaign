@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.5.0 - Unreleased
+### Added
+- Added the ability to hide the title field in campaign type settings and have campaign titles generated dynamically ([#355](https://github.com/putyourlightson/craft-campaign/issues/355)).
+
 ## 2.4.2 - 2023-01-13
 ### Fixed
 - Fixed a bug in which some stats in the mailing list dashboard widget were not being counted.

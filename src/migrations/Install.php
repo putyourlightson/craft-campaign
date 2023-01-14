@@ -104,6 +104,8 @@ class Install extends Migration
                 'plaintextTemplate' => $this->string(500),
                 'queryStringParameters' => $this->text(),
                 'testContactIds' => $this->text(),
+                'hasTitleField' => $this->boolean()->defaultValue(true)->notNull(),
+                'titleFormat' => $this->string(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

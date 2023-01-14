@@ -90,6 +90,8 @@ class CampaignTypesController extends Controller
         $campaignType->plaintextTemplate = $this->request->getBodyParam('plaintextTemplate', $campaignType->plaintextTemplate);
         $campaignType->queryStringParameters = $this->request->getBodyParam('queryStringParameters', $campaignType->queryStringParameters);
         $campaignType->testContactIds = $this->request->getBodyParam('testContactIds', $campaignType->testContactIds);
+        $campaignType->hasTitleField = $this->request->getBodyParam('hasTitleField', $campaignType->hasTitleField);
+        $campaignType->titleFormat = $this->request->getBodyParam('titleFormat', $campaignType->titleFormat);
 
         // Set the field layout
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

@@ -83,6 +83,18 @@ class CampaignTypeModel extends Model
     public array|string|null $testContactIds = null;
 
     /**
+     * @var bool Has title field
+     * @since 2.5.0
+     */
+    public bool $hasTitleField = true;
+
+    /**
+     * @var string|null Title format
+     * @since 2.5.0
+     */
+    public ?string $titleFormat = null;
+
+    /**
      * @var string|null UID
      */
     public ?string $uid = null;
@@ -113,15 +125,20 @@ class CampaignTypeModel extends Model
      */
     protected function defineRules(): array
     {
-        return [
-            [['id', 'siteId', 'fieldLayoutId'], 'integer'],
-            [['siteId'], SiteIdValidator::class],
-            [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'],
-            [['name', 'handle'], 'string', 'max' => 255],
-            [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignTypeRecord::class],
-            [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']],
-            [['uriFormat'], UriFormatValidator::class],
-        ];
+        $rules = parent::defineRules();
+        $rules[] = [['id', 'siteId', 'fieldLayoutId'], 'integer'];
+        $rules[] = [['siteId'], SiteIdValidator::class];
+        $rules[] = [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'];
+        $rules[] = [['name', 'handle'], 'string', 'max' => 255];
+        $rules[] = [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignTypeRecord::class];
+        $rules[] = [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']];
+        $rules[] = [['uriFormat'], UriFormatValidator::class];
+
+        if (!$this->hasTitleField) {
+            $rules[] = [['titleFormat'], 'required'];
+        }
+
+        return $rules;
     }
 
     /**

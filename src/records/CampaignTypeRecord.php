@@ -20,6 +20,8 @@ use yii\db\ActiveQuery;
  * @property string $plaintextTemplate
  * @property string $queryStringParameters
  * @property string|null $testContactIds
+ * @property bool $hasTitleField Has title field
+ * @property string|null $titleFormat Title format
  * @property string $uid
  *
  * @property-read Site|null $site

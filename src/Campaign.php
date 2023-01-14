@@ -48,6 +48,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\fieldlayoutelements\campaigns\CampaignTitleField;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailFieldLayoutElement;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
@@ -172,7 +173,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.4.0';
+    public string $schemaVersion = '2.5.0';
 
     /**
      * @inheritdoc
@@ -666,15 +667,19 @@ class Campaign extends Plugin
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             function(DefineFieldLayoutFieldsEvent $event) {
-                /** @var FieldLayout $layout */
-                $layout = $event->sender;
+                /** @var FieldLayout $fieldLayout */
+                $fieldLayout = $event->sender;
 
-                if ($layout->type === CampaignElement::class || $layout->type === MailingListElement::class) {
-                    $event->fields[] = TitleField::class;
-                }
-
-                if ($layout->type === ContactElement::class) {
-                    $event->fields[] = ContactEmailFieldLayoutElement::class;
+                switch ($fieldLayout->type) {
+                    case CampaignElement::class:
+                        $event->fields[] = CampaignTitleField::class;
+                        break;
+                    case MailingListElement::class:
+                        $event->fields[] = TitleField::class;
+                        break;
+                    case ContactElement::class:
+                        $event->fields[] = ContactEmailFieldLayoutElement::class;
+                        break;
                 }
             }
         );

@@ -885,6 +885,8 @@ class CampaignElement extends Element
             $this->dateClosed = null;
         }
 
+        $this->_updateTitle();
+
         return parent::beforeSave($isNew);
     }
 
@@ -945,6 +947,30 @@ class CampaignElement extends Element
             !$this->getIsDraft() &&
             !$this->getIsRevision()
         );
+    }
+
+    /**
+     * Updates the campaign’s title, if its campaign type has a dynamic title format.
+     *
+     * @since 2.5.0
+     * @see Entry::updateTitle()
+     */
+    private function _updateTitle(): void
+    {
+        $campaignType = $this->getCampaignType();
+
+        if ($campaignType->hasTitleField === false) {
+            // Make sure that the locale has been loaded in case the title format has any Date/Time fields
+            Craft::$app->getLocale();
+            // Set Craft to the campaign’s site’s language, in case the title format has any static translations
+            $language = Craft::$app->language;
+            Craft::$app->language = $this->getSite()->language;
+            $title = Craft::$app->getView()->renderObjectTemplate($campaignType->titleFormat, $this);
+            if ($title !== '') {
+                $this->title = $title;
+            }
+            Craft::$app->language = $language;
+        }
     }
 
     /**

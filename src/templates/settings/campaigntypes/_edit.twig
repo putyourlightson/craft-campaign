@@ -133,6 +133,29 @@
 
     <hr>
 
+    {{ forms.checkboxField({
+        label: "Show the Title field"|t('app'),
+        name: 'hasTitleField',
+        toggle: 'title-container',
+        reverseToggle: '#titleFormat-container, .fld-title-field-icon',
+        checked: campaignType.hasTitleField,
+    }) }}
+
+    <div id="titleFormat-container"{% if campaignType.hasTitleField %} class="hidden"{% endif %}>
+        {{ forms.textField({
+            label: "Title Format"|t('app'),
+            instructions: "What the auto-generated entry titles should look like. You can include tags that output entry properties, such as {ex}."|t('app', { ex: '<code>{myCustomField}</code>' }),
+            id: 'titleFormat',
+            name: 'titleFormat',
+            class: 'code',
+            value: campaignType.titleFormat,
+            errors: campaignType.getErrors('titleFormat'),
+            required: true,
+        }) }}
+    </div>
+
+    <hr>
+
     {{ forms.fieldLayoutDesignerField({
         fieldLayout: campaignType.getFieldLayout(),
     }) }}
