@@ -116,10 +116,10 @@ class MailingListStatsWidget extends Widget
         }
 
         $mailingLists = $mailingListQuery->count();
-        $subscribed = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'subscribed'])->count();
-        $unsubscribed = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'unsubscribed'])->count();
-        $complained = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'complained'])->count();
-        $bounced = $contactMailingListQuery->andWhere(['subscriptionStatus' => 'bounced'])->count();
+        $subscribed = (clone $contactMailingListQuery)->andWhere(['subscriptionStatus' => 'subscribed'])->count();
+        $unsubscribed = (clone $contactMailingListQuery)->andWhere(['subscriptionStatus' => 'unsubscribed'])->count();
+        $complained = (clone $contactMailingListQuery)->andWhere(['subscriptionStatus' => 'complained'])->count();
+        $bounced = (clone $contactMailingListQuery)->andWhere(['subscriptionStatus' => 'bounced'])->count();
 
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/mailing-list-stats/widget', [
             'visibility' => $this->visibility,

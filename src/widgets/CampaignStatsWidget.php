@@ -125,9 +125,9 @@ class CampaignStatsWidget extends Widget
 
         $campaigns = $campaignQuery->count();
         $sendouts = $sendoutQuery->count();
-        $recipients = $contactCampaignQuery->count();
-        $opened = $contactCampaignQuery->andWhere(['not', ['opened' => null]])->count();
-        $clicked = $contactCampaignQuery->andWhere(['not', ['clicked' => null]])->count();
+        $recipients = (clone $contactCampaignQuery)->count();
+        $opened = (clone $contactCampaignQuery)->andWhere(['not', ['opened' => null]])->count();
+        $clicked = (clone $contactCampaignQuery)->andWhere(['not', ['clicked' => null]])->count();
 
         return Craft::$app->getView()->renderTemplate('campaign/_widgets/campaign-stats/widget', [
             'visibility' => $this->visibility,

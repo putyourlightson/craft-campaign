@@ -30,9 +30,7 @@ class DateRangeHelper
      * Returns the start and end dates for a date range by its type.
      *
      * @param string $rangeType
-     * @phpstan-param self::TYPE_* $rangeType
      * @return DateTime[]
-     * @phpstan-return array{DateTime,DateTime}
      */
     public static function dateRangeByType(string $rangeType): array
     {
