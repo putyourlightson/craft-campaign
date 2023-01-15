@@ -249,7 +249,10 @@ class MailingListElement extends Element
             $attributes[] = 'mailingListType';
         }
 
-        array_push($attributes, 'subscribed', 'unsubscribed', 'complained', 'bounced');
+        $attributes[] = 'subscribed';
+        $attributes[] = 'unsubscribed';
+        $attributes[] = 'complained';
+        $attributes[] = 'bounced';
 
         return $attributes;
     }

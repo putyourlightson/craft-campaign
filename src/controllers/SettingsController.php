@@ -279,6 +279,7 @@ class SettingsController extends Controller
 
         // Set the simple stuff
         $settings->defaultNotificationContactIds = $this->request->getBodyParam('defaultNotificationContactIds', $settings->defaultNotificationContactIds) ?: null;
+        $settings->showSendoutTitleField = $this->request->getBodyParam('showSendoutTitleField', $settings->showSendoutTitleField) ?: false;
         $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize) ?: null;
         $settings->memoryLimit = $this->request->getBodyParam('memoryLimit', $settings->memoryLimit) ?: null;
         $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit) ?: null;

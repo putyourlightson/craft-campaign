@@ -23,16 +23,19 @@
 {% endset %}
 {{ forms.field({
     label: "Campaign"|t('campaign'),
-    instructions: "The campaign to send."|t('campaign'),
     errors: sendout.getErrors('campaignId'),
     required: true,
+    first: true,
 }, input) }}
+
+{{ titleFieldHtml }}
 
 {% set input %}
     {% if editable %}
         {{ forms.text({
             id: 'subject',
             name: 'subject',
+            class: 'title-field',
             value: sendout.subject,
             autocomplete: true,
         }) }}

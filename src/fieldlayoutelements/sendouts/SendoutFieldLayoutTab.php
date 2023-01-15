@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\fieldlayoutelements\sendouts;
 
 use Craft;
-use craft\fieldlayoutelements\TitleField;
 use craft\models\FieldLayoutTab;
 
 /**
@@ -30,7 +29,6 @@ class SendoutFieldLayoutTab extends FieldLayoutTab
     public function getElements(): array
     {
         return [
-            new TitleField(),
             new SendoutFieldLayoutElement(),
         ];
     }

@@ -62,6 +62,9 @@ return [
         // Default notification contact IDs
         //'defaultNotificationContactIds' = [1],
 
+        // Whether the title field should be shown for sendouts
+        //'showSendoutTitleField' = true,
+
         // The maximum size of sendout batches
         //'maxBatchSize' => 10000,
 

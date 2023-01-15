@@ -9,6 +9,8 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
+use craft\helpers\Template;
+use putyourlightson\campaign\assets\SendoutEditAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -45,11 +47,21 @@ class SendoutFieldLayoutElement extends BaseNativeField
             return '';
         }
 
+        Craft::$app->getView()->registerAssetBundle(SendoutEditAsset::class);
+
+        if (Campaign::$plugin->settings->showSendoutTitleField === true) {
+            $titleField = new SendoutTitleField();
+            $titleFieldHtml = Template::raw($titleField->formHtml($element));
+        } else {
+            $titleFieldHtml = '';
+        }
+
         $siteId = $element->siteId;
         $variables = [
             'editable' => !$static,
             'sendout' => $element,
             'schedule' => $element->getSchedule(),
+            'titleFieldHtml' => $titleFieldHtml,
             'fromNameEmailOptions' => SettingsHelper::getFromNameEmailOptions($siteId),
             'campaignElementType' => CampaignElement::class,
             'campaignElementCriteria' => [

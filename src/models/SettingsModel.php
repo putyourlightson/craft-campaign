@@ -91,6 +91,11 @@ class SettingsModel extends Model
     public ?array $defaultNotificationContactIds = null;
 
     /**
+     * @var bool Whether the title field should be shown for sendouts
+     */
+    public bool $showSendoutTitleField = true;
+
+    /**
      * @var int|null The maximum size of sendout batches
      */
     public ?int $maxBatchSize = 10000;

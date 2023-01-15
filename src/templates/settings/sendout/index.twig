@@ -29,6 +29,15 @@
 
     <hr>
 
+    {{ forms.checkboxField({
+        label: "Show the Title field"|t('app'),
+        instructions: "Whether the title field should be shown for sendouts. If unchecked, the subject field will be used as the title."|t('campaign'),
+        name: 'showSendoutTitleField',
+        checked: settings.showSendoutTitleField,
+    }) }}
+
+    <hr>
+
     {{ forms.textField({
         type: 'number',
         label: "Max Batch Size"|t('campaign'),

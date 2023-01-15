@@ -539,7 +539,8 @@ class SendoutElement extends Element
         parent::init();
 
         if (Craft::$app->getDb()->getIsMysql()) {
-            // Decode subject for emojis
+            // Decode emojis
+            $this->title = LitEmoji::shortcodeToUnicode($this->title);
             $this->subject = LitEmoji::shortcodeToUnicode($this->subject);
         }
     }
@@ -596,6 +597,8 @@ class SendoutElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
+        Craft::$app->getView()->registerJs('new Campaign.SendoutEdit(\'' . $containerId . '\');');
+
         /** @var Response|CpScreenResponseBehavior $response */
         if (!$this->getIsModifiable()) {
             // Only redirect if we're not already redirecting, to prevent an endless loop in Craft 4.0.4 and above.
@@ -1255,6 +1258,10 @@ class SendoutElement extends Element
         if (Craft::$app->getDb()->getIsMysql()) {
             // Encode subject for emojis
             $this->subject = LitEmoji::unicodeToShortcode($this->subject);
+        }
+
+        if (Campaign::$plugin->settings->showSendoutTitleField === false) {
+            $this->title = $this->subject;
         }
 
         // Get from name and email if submitted
