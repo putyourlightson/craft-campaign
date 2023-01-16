@@ -29,7 +29,7 @@
 
     <hr>
 
-    {% set output %}
+    {% set input %}
         {{ forms.checkbox({
             label: "Show the title field for sendouts."|t('campaign'),
             name: 'showSendoutTitleField',
@@ -39,7 +39,7 @@
     {{ forms.field({
         label: "Show Title Field"|t('campaign'),
         instructions: "If unchecked, the subject will be used as the title."|t('campaign'),
-    }, output) }}
+    }, input) }}
 
     <hr>
 
