@@ -1,12 +1,12 @@
 # Release Notes for Campaign
 
-## 2.5.0 - Unreleased
+## 2.5.0 - 2023-01-17
 ### Added
 - Added the ability to hide the title field in campaigns and have titles generated dynamically ([#355](https://github.com/putyourlightson/craft-campaign/issues/355)).
-- Added the ability to hide the title field in sendouts and have campaign titles generated from the subject ([#356](https://github.com/putyourlightson/craft-campaign/issues/356)).
+- Added the ability to hide the title field in sendouts and have titles generated from the subject ([#356](https://github.com/putyourlightson/craft-campaign/issues/356)).
 
 ### Changed
-- The sendout title and subject fields are now auto-populated from the campaign title if they are empty ([#356](https://github.com/putyourlightson/craft-campaign/issues/356)).
+- The sendout title and subject fields are now autopopulated from the campaign title if they are empty ([#356](https://github.com/putyourlightson/craft-campaign/issues/356)).
 
 ## 2.4.2 - 2023-01-13
 ### Fixed

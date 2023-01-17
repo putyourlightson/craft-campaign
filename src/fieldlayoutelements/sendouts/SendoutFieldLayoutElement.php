@@ -49,11 +49,10 @@ class SendoutFieldLayoutElement extends BaseNativeField
 
         Craft::$app->getView()->registerAssetBundle(SendoutEditAsset::class);
 
+        $titleFieldHtml = '';
         if (Campaign::$plugin->settings->showSendoutTitleField === true) {
             $titleField = new SendoutTitleField();
             $titleFieldHtml = Template::raw($titleField->formHtml($element));
-        } else {
-            $titleFieldHtml = '';
         }
 
         $siteId = $element->siteId;

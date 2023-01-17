@@ -28,7 +28,9 @@
     first: true,
 }, input) }}
 
-{{ titleFieldHtml }}
+{% if editable %}
+    {{ titleFieldHtml }}
+{% endif %}
 
 {% set input %}
     {% if editable %}

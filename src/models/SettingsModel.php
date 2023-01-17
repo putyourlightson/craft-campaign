@@ -93,7 +93,7 @@ class SettingsModel extends Model
     /**
      * @var bool Whether the title field should be shown for sendouts
      */
-    public bool $showSendoutTitleField = true;
+    public bool $showSendoutTitleField = false;
 
     /**
      * @var int|null The maximum size of sendout batches
