@@ -16,7 +16,6 @@ use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
@@ -50,6 +49,7 @@ use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\fieldlayoutelements\campaigns\CampaignTitleField;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailFieldLayoutElement;
+use putyourlightson\campaign\fieldlayoutelements\NonTranslatableTitleField;
 use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
@@ -173,7 +173,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.5.0';
+    public string $schemaVersion = '2.5.1';
 
     /**
      * @inheritdoc
@@ -675,7 +675,7 @@ class Campaign extends Plugin
                         $event->fields[] = CampaignTitleField::class;
                         break;
                     case MailingListElement::class:
-                        $event->fields[] = TitleField::class;
+                        $event->fields[] = NonTranslatableTitleField::class;
                         break;
                     case ContactElement::class:
                         $event->fields[] = ContactEmailFieldLayoutElement::class;

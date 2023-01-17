@@ -5,12 +5,12 @@
 
 namespace putyourlightson\campaign\fieldlayoutelements\sendouts;
 
-use craft\fieldlayoutelements\TitleField;
+use putyourlightson\campaign\fieldlayoutelements\NonTranslatableTitleField;
 
 /**
  * @since 2.5.0
  */
-class SendoutTitleField extends TitleField
+class SendoutTitleField extends NonTranslatableTitleField
 {
     /**
      * @inerhitdoc
@@ -21,9 +21,4 @@ class SendoutTitleField extends TitleField
      * @inerhitdoc
      */
     public bool $autofocus = false;
-
-    /**
-     * @inerhitdoc
-     */
-    public bool $translatable = false;
 }

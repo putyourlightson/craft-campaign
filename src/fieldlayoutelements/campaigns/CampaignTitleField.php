@@ -7,16 +7,16 @@ namespace putyourlightson\campaign\fieldlayoutelements\campaigns;
 
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\entries\EntryTitleField;
-use craft\fieldlayoutelements\TitleField;
 use craft\helpers\Html;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\fieldlayoutelements\NonTranslatableTitleField;
 use yii\base\InvalidArgumentException;
 
 /**
  * @since 2.5.0
  * @see EntryTitleField
  */
-class CampaignTitleField extends TitleField
+class CampaignTitleField extends NonTranslatableTitleField
 {
     /**
      * @inheritdoc

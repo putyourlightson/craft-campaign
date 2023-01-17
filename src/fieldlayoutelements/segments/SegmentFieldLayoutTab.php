@@ -6,8 +6,8 @@
 namespace putyourlightson\campaign\fieldlayoutelements\segments;
 
 use Craft;
-use craft\fieldlayoutelements\TitleField;
 use craft\models\FieldLayoutTab;
+use putyourlightson\campaign\fieldlayoutelements\NonTranslatableTitleField;
 
 /**
  * @since 2.0.0
@@ -30,7 +30,7 @@ class SegmentFieldLayoutTab extends FieldLayoutTab
     public function getElements(): array
     {
         return [
-            new TitleField(),
+            new NonTranslatableTitleField(),
             new SegmentFieldLayoutElement(),
         ];
     }
