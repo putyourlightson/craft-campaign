@@ -16,6 +16,11 @@ use yii\web\Response;
 
 class MailingListTypesController extends BaseSettingsController
 {
+    public function actionIndex(): Response
+    {
+        return $this->renderTemplate('campaign/_settings/mailinglisttypes/index');
+    }
+
     /**
      * Main edit page.
      *
@@ -56,7 +61,7 @@ class MailingListTypesController extends BaseSettingsController
         $variables['fullPageForm'] = true;
 
         // Render the template
-        return $this->renderTemplate('campaign/settings/mailinglisttypes/_edit', $variables);
+        return $this->renderTemplate('campaign/_settings/mailinglisttypes/edit', $variables);
     }
 
     /**

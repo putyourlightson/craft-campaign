@@ -35,7 +35,7 @@ class SettingsController extends BaseSettingsController
             $settings = Campaign::$plugin->settings;
         }
 
-        return $this->renderTemplate('campaign/settings/general', [
+        return $this->renderTemplate('campaign/_settings/general', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'phpBinPath' => '/usr/bin/php',
@@ -92,7 +92,7 @@ class SettingsController extends BaseSettingsController
         // Sort them by name
         ArrayHelper::multisort($transportTypeOptions, 'label');
 
-        return $this->renderTemplate('campaign/settings/email', [
+        return $this->renderTemplate('campaign/_settings/email', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'siteOptions' => SettingsHelper::getSiteOptions(),
@@ -113,7 +113,7 @@ class SettingsController extends BaseSettingsController
             $settings = Campaign::$plugin->settings;
         }
 
-        return $this->renderTemplate('campaign/settings/contact', [
+        return $this->renderTemplate('campaign/_settings/contact', [
             'settings' => $settings,
             'fieldLayout' => $settings->getContactFieldLayout(),
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
@@ -133,7 +133,7 @@ class SettingsController extends BaseSettingsController
 
         $memoryLimit = $settings->memoryLimit ? SendoutHelper::memoryInBytes($settings->memoryLimit) : 0;
 
-        return $this->renderTemplate('campaign/settings/sendout', [
+        return $this->renderTemplate('campaign/_settings/sendout', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'contactElementType' => ContactElement::class,
@@ -156,7 +156,7 @@ class SettingsController extends BaseSettingsController
             $settings = Campaign::$plugin->settings;
         }
 
-        return $this->renderTemplate('campaign/settings/geoip', [
+        return $this->renderTemplate('campaign/_settings/geoip', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);
@@ -173,7 +173,7 @@ class SettingsController extends BaseSettingsController
             $settings = Campaign::$plugin->settings;
         }
 
-        return $this->renderTemplate('campaign/settings/recaptcha', [
+        return $this->renderTemplate('campaign/_settings/recaptcha', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
         ]);

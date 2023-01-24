@@ -418,8 +418,10 @@ class Campaign extends Plugin
             'campaign/settings/contact' => 'campaign/settings/edit-contact',
             'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
             'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',
+            'campaign/settings/campaigntypes' => 'campaign/campaign-types/index',
             'campaign/settings/campaigntypes/new' => 'campaign/campaign-types/edit',
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit',
+            'campaign/settings/mailinglisttypes' => 'campaign/mailing-list-types/index',
             'campaign/settings/mailinglisttypes/new' => 'campaign/mailing-list-types/edit',
             'campaign/settings/mailinglisttypes/<mailingListTypeId:\d+>' => 'campaign/mailing-list-types/edit',
         ];

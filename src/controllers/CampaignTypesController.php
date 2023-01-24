@@ -17,6 +17,11 @@ use yii\web\Response;
 
 class CampaignTypesController extends BaseSettingsController
 {
+    public function actionIndex(): Response
+    {
+        return $this->renderTemplate('campaign/_settings/campaigntypes/index');
+    }
+
     /**
      * Main edit page.
      */
@@ -48,7 +53,7 @@ class CampaignTypesController extends BaseSettingsController
             $variables['title'] = $campaignType->name;
         }
 
-        return $this->renderTemplate('campaign/settings/campaigntypes/_edit', $variables);
+        return $this->renderTemplate('campaign/_settings/campaigntypes/edit', $variables);
     }
 
     /**
