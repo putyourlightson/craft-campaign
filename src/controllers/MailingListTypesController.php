@@ -6,7 +6,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\web\Controller;
+use putyourlightson\campaign\base\BaseSettingsController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\SettingsHelper;
@@ -14,19 +14,8 @@ use putyourlightson\campaign\models\MailingListTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class MailingListTypesController extends Controller
+class MailingListTypesController extends BaseSettingsController
 {
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action): bool
-    {
-        // Require permission
-        $this->requirePermission('campaign:settings');
-
-        return parent::beforeAction($action);
-    }
-
     /**
      * Main edit page.
      *

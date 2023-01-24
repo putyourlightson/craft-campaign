@@ -36,7 +36,6 @@ return [
     'Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only).' => 'Ajouter l’URL webhook appropriée pour recevoir les notifications de rejets et de plaintes (uniquement pour les services listés) ',
     'Add the following tag to all Campaign forms (not doing so will prevent forms from submitting).' => 'Ajouter ces balises à tous les formulaires de newsletters.',
     'Added' => 'Ajouté',
-    'Administrative changes are disallowed in this environment.' => 'Les changements administratifs sont interdits.',
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => '',
     'All campaigns' => 'Toutes les newsletter',
     'All contacts' => 'Tous les contacts',

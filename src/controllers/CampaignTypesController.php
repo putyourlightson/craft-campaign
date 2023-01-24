@@ -6,7 +6,7 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\web\Controller;
+use putyourlightson\campaign\base\BaseSettingsController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -15,19 +15,8 @@ use putyourlightson\campaign\models\CampaignTypeModel;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class CampaignTypesController extends Controller
+class CampaignTypesController extends BaseSettingsController
 {
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action): bool
-    {
-        // Require permission
-        $this->requirePermission('campaign:settings');
-
-        return parent::beforeAction($action);
-    }
-
     /**
      * Main edit page.
      */

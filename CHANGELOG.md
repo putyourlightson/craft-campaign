@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.5.2 - 2023-01-24
+### Fixed
+- Fixed unauthorised access to some settings pages in environments where administrative changes are disallowed. 
+
 ## 2.5.1 - 2023-01-17
 ### Changed
 - The translatable symbol no longer appears next to element title fields. 

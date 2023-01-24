@@ -35,7 +35,6 @@ return [
     'Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only).' => '',
     'Add the following tag to all Campaign forms (not doing so will prevent forms from submitting).' => '',
     'Added' => '',
-    'Administrative changes are disallowed in this environment.' => '',
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => '',
     'All campaigns' => '',
     'All contacts' => '',

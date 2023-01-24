@@ -13,33 +13,17 @@ use craft\helpers\MailerHelper;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\TransportAdapterInterface;
-use craft\web\Controller;
 use craft\web\UrlManager;
+use putyourlightson\campaign\base\BaseSettingsController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\SettingsModel;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class SettingsController extends Controller
+class SettingsController extends BaseSettingsController
 {
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action): bool
-    {
-        if (!Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
-            throw new ForbiddenHttpException(Craft::t('campaign', 'Administrative changes are disallowed in this environment.'));
-        }
-
-        // Require permission
-        $this->requirePermission('campaign:settings');
-
-        return parent::beforeAction($action);
-    }
-
     /**
      * Edit general settings.
      *

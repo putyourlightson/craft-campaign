@@ -36,7 +36,6 @@ return [
     'Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only).' => 'Füge die passende Webhook-URL hinzu, um Fehlermeldungen zu erhalten (funktioniert nur für die unten aufgeführten Dienste)',
     'Add the following tag to all Campaign forms (not doing so will prevent forms from submitting).' => 'Füge folgenden Tag zu allen Campaign-Formularen hinzu (ohne dieses Tag werden Formulare nicht verschickt)',
     'Added' => 'Hinzugefügt',
-    'Administrative changes are disallowed in this environment.' => 'Administrative Einstellungen sind in dieser Umgebung nicht erlaubt.',
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => 'Alias-Prüfung fehlgeschlagen – eine Ihrer Site- oder Datei-Volumen-URLs nutzt einen dynamischen `@web` Alias.',
     'All campaigns' => 'Alle Kampagnen',
     'All contacts' => 'Alle Kontakte',
