@@ -24,6 +24,11 @@ use yii\web\Response;
 
 class SettingsController extends BaseSettingsController
 {
+    public function actionIndex(): Response
+    {
+        return $this->redirect('campaign/settings/general');
+    }
+
     /**
      * Edit general settings.
      *

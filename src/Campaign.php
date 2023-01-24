@@ -412,6 +412,7 @@ class Campaign extends Plugin
             'campaign/reports/mailinglists/<mailingListId:\d+>/contact-activity' => ['template' => 'campaign/reports/mailinglists/_contact-activity'],
             'campaign/reports/mailinglists/<mailingListId:\d+>/locations' => ['template' => 'campaign/reports/mailinglists/_locations'],
             'campaign/reports/mailinglists/<mailingListId:\d+>/devices' => ['template' => 'campaign/reports/mailinglists/_devices'],
+            'campaign/settings' => 'campaign/settings/index',
             'campaign/settings/general' => 'campaign/settings/edit-general',
             'campaign/settings/email' => 'campaign/settings/edit-email',
             'campaign/settings/sendout' => 'campaign/settings/edit-sendout',
