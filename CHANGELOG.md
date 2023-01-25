@@ -1,8 +1,8 @@
 # Release Notes for Campaign
 
-## Unreleased
+## 1.24.1 - 2023-01-25
 ### Fixed
-- Fixed a bug where Date and Number fields could be misinterpreted in campaign Live Preview requests, if the site’s language used different date/number formats than the user’s formatting locale. (([#360](https://github.com/putyourlightson/craft-campaign/issues/360)).
+- Fixed a bug where Date and Number fields could be misinterpreted in campaign live preview requests, if the site’s language used different date/number formats than the user’s formatting locale ([#360](https://github.com/putyourlightson/craft-campaign/issues/360)).
 
 ## 1.24.0 - 2022-11-18
 ### Added
