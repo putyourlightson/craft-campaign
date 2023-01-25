@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## Unreleased
+### Fixed
+- Fixed a bug where Date and Number fields could be misinterpreted in campaign Live Preview requests, if the site’s language used different date/number formats than the user’s formatting locale. (([#360](https://github.com/putyourlightson/craft-campaign/issues/360)).
+
 ## 1.24.0 - 2022-11-18
 ### Added
 - Added the ability to use `{% html %}`, `{% css %}` and `{% js %}` tags in campaign templates.

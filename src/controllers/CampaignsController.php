@@ -476,6 +476,9 @@ class CampaignsController extends Controller
         // Set the field layout ID
         $campaign->fieldLayoutId = $campaign->getCampaignType()->fieldLayoutId;
 
+        // Update the target language
+        Craft::$app->updateTargetLanguage(true);
+
         // Set the field locations
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $campaign->setFieldValuesFromRequest($fieldsLocation);
