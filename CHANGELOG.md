@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.5.3 - 2023-02-03
+### Changed
+- The front-end subscribe and unsubscribe forms now accept an optional `siteId` parameter ([#355](https://github.com/putyourlightson/craft-campaign/issues/363)).
+
 ## 2.5.2 - 2023-01-24
 ### Fixed
 - Fixed unauthorised access to some settings pages in environments where administrative changes are disallowed. 

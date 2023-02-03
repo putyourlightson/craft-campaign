@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
 use craft\base\Component;
 use DateTime;
 use putyourlightson\campaign\elements\ContactElement;
@@ -52,13 +53,18 @@ class MailingListsService extends Component
     }
 
     /**
-     * Returns a mailing list by its slug, in the current site.
+     * Returns a mailing list by its slug, in the provided site or the current site.
      */
-    public function getMailingListBySlug(string $mailingListSlug): ?MailingListElement
+    public function getMailingListBySlug(string $mailingListSlug, ?int $siteId = null): ?MailingListElement
     {
+        if ($siteId === null) {
+            $siteId = Craft::$app->getSites()->getCurrentSite()->id;
+        }
+
         /** @var MailingListElement|null */
         return MailingListElement::find()
             ->slug($mailingListSlug)
+            ->siteId($siteId)
             ->one();
     }
 

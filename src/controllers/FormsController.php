@@ -10,6 +10,7 @@ use craft\helpers\App;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -30,10 +31,7 @@ class FormsController extends BaseMessageController
         $this->requirePostRequest();
         $this->_validateRecaptcha();
 
-        // Get mailing list by slug
-        $mailingListSlug = $this->request->getRequiredParam('mailingList');
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
-
+        $mailingList = $this->_getMailingListFromParams();
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
@@ -72,10 +70,7 @@ class FormsController extends BaseMessageController
         $this->requirePostRequest();
         $this->_validateRecaptcha();
 
-        // Get mailing list by slug
-        $mailingListSlug = $this->request->getRequiredParam('mailingList');
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug);
-
+        $mailingList = $this->_getMailingListFromParams();
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
@@ -232,6 +227,17 @@ class FormsController extends BaseMessageController
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ]);
+    }
+
+    /**
+     * Returns a mailing list from the posted parameters.
+     */
+    private function _getMailingListFromParams(): ?MailingListElement
+    {
+        $mailingListSlug = $this->request->getRequiredBodyParam('mailingList');
+        $siteId = $this->request->getBodyParam('siteId');
+
+        return Campaign::$plugin->mailingLists->getMailingListBySlug($mailingListSlug, $siteId);
     }
 
     /**
