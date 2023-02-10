@@ -114,7 +114,9 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
             Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $pendingRecipient['mailingListId']);
 
             // If we're beyond the memory limit or time limit or max batch size has been reached
-            if (($memoryLimit && memory_get_usage(true) > $memoryLimit)
+            $memoryUsage = memory_get_usage();
+
+            if (($memoryLimit && $memoryUsage > $memoryLimit)
                 || ($timeLimit && time() - $_SERVER['REQUEST_TIME'] > $timeLimit)
                 || $count >= $batchSize
             ) {

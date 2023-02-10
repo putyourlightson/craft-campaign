@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.5.4 - Unreleased
+### Fixed
+- Fixed the check for PHP memory usage in sendout jobs. 
+
 ## 2.5.3 - 2023-02-03
 ### Changed
 - The front-end subscribe and unsubscribe forms now accept an optional `siteId` parameter ([#355](https://github.com/putyourlightson/craft-campaign/issues/363)).
