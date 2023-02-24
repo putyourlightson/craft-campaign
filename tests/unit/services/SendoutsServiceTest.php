@@ -74,7 +74,7 @@ class SendoutsServiceTest extends BaseUnitTest
 
         Campaign::$plugin->edition = Campaign::EDITION_PRO;
 
-        // Set sendout's mailing list
+        // Set sendout’s mailing list
         $this->sendout->mailingListIds = [$this->mailingList->id];
 
         // Subscribe contacts (including trashed) to all mailing lists
@@ -153,7 +153,7 @@ class SendoutsServiceTest extends BaseUnitTest
     {
         $sendout = SendoutElement::find()->sendoutType('automated')->one();
 
-        // Modify creation date and send date to 3 minutes ago so we can test
+        // Modify creation date and send date to 3 minutes ago, so we can test
         $dateTime = DateTimeHelper::toDateTime(strtotime('-3 minutes'));
         $sendout->sendDate = $dateTime;
         $sendout->dateCreated = $dateTime;

@@ -9,7 +9,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 return [
     [
         'title' => 'Sendout 1',
-        'subject' => 'Subject 1',
+        'subject' => 'Sendout 1',
         'sendoutType' => 'regular',
         'sendStatus' => SendoutElement::STATUS_PENDING,
         'sendDate' => new DateTime(),
@@ -23,7 +23,7 @@ return [
     ],
     [
         'title' => 'Sendout 2',
-        'subject' => 'Subject 2',
+        'subject' => 'Sendout 2',
         'sendoutType' => 'regular',
         'sendStatus' => SendoutElement::STATUS_PENDING,
         'sendDate' => new DateTime(),
@@ -37,7 +37,7 @@ return [
     ],
     [
         'title' => 'Sendout 3',
-        'subject' => 'Subject 3',
+        'subject' => 'Sendout 3',
         'sendoutType' => 'automated',
         'schedule' => [
             'timeDelay' => 1,

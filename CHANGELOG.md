@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 2.5.4 - Unreleased
+## 2.5.4 - 2023-02-23
+### Added
+- Added compatibility with LitEmoji v4 which is required by Craft v4.4.
+
 ### Fixed
 - Fixed the check for PHP memory usage in sendout jobs. 
 

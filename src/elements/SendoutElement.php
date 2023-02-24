@@ -540,8 +540,8 @@ class SendoutElement extends Element
 
         if (Craft::$app->getDb()->getIsMysql()) {
             // Decode emojis
-            $this->title = LitEmoji::shortcodeToUnicode($this->title);
-            $this->subject = LitEmoji::shortcodeToUnicode($this->subject);
+            $this->title = $this->title ? LitEmoji::shortcodeToUnicode($this->title) : '';
+            $this->subject = $this->subject ? LitEmoji::shortcodeToUnicode($this->subject) : '';
         }
     }
 
