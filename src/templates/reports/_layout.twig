@@ -1,5 +1,7 @@
 {% extends '_layouts/cp' %}
 
+{% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
+
 {% set selectedSubnavItem = 'reports' %}
 {% set baseCrumbs = [
     { label: 'Reports'|t('campaign'), url: url('campaign/reports') }

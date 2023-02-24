@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.5.5 - 2023-02-24
+### Fixed
+- Fixed a bug that was preventing charts from appearing in report pages. 
+
 ## 2.5.4 - 2023-02-23
 ### Added
 - Added compatibility with LitEmoji v4 which is required by Craft 4.4.0.
