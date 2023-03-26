@@ -599,6 +599,7 @@ class ReportsService extends Component
      */
     public function sync(): void
     {
+        /** @var CampaignRecord[] $campaignRecords */
         $campaignRecords = CampaignRecord::find()->all();
 
         foreach ($campaignRecords as $campaignRecord) {
