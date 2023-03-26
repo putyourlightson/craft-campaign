@@ -500,6 +500,10 @@ class ContactElement extends Element
      */
     public function canView(User $user): bool
     {
+        if (!Campaign::$plugin->userCanEditContacts()) {
+            return false;
+        }
+
         if (parent::canView($user)) {
             return true;
         }

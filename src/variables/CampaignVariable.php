@@ -250,4 +250,12 @@ class CampaignVariable
     {
         return Campaign::$plugin->settings;
     }
+
+    /**
+     * Returns whether the current user can edit contacts.
+     */
+    public function userCanEditContacts(): bool
+    {
+        return Campaign::$plugin->userCanEditContacts();
+    }
 }

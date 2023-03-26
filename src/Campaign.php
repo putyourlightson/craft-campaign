@@ -345,6 +345,31 @@ class Campaign extends Plugin
     }
 
     /**
+     * Returns whether the current user can edit contacts.
+     */
+    public function userCanEditContacts(): bool
+    {
+        /** @var User|null $currentUser */
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        if ($currentUser === null) {
+            return false;
+        }
+
+        if (!$currentUser->can('campaign:contacts')) {
+            return false;
+        }
+
+        // Edit permission for the primary site is required to edit contacts
+        $primarySite = Craft::$app->getSites()->getPrimarySite();
+        if (!$currentUser->can('editSite:' . $primarySite->uid)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function createSettingsModel(): SettingsModel
@@ -769,13 +794,12 @@ class Campaign extends Plugin
                 }
 
                 $permissions = [
-                    'campaign:reports' => ['label' => Craft::t('campaign', 'Manage reports')],
                     'campaign:campaigns' => [
                         'label' => Craft::t('campaign', 'Manage campaigns'),
                         'nested' => $campaignTypePermissions,
                     ],
                     'campaign:contacts' => [
-                        'label' => Craft::t('campaign', 'Manage contacts'),
+                        'label' => Craft::t('campaign', 'Manage contacts (requires edit permission for the primary site)'),
                         'nested' => [
                             'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
                             'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
@@ -798,6 +822,7 @@ class Campaign extends Plugin
                         'campaign:sendSendouts' => ['label' => Craft::t('campaign', 'Send sendouts')],
                     ],
                 ];
+                $permissions['campaign:reports'] = ['label' => Craft::t('campaign', 'View reports')];
                 $permissions['campaign:settings'] = ['label' => Craft::t('campaign', 'Manage plugin settings')];
 
                 $event->permissions[] = [

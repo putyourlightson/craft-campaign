@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 2.5.6 - Unreleased
+### Changed
+- Renamed the “Manage Reports” permission to “View Reports”.
+- Users can now only edit contacts when they have edit permission for the primary site.
+
+### Fixed
+- Fixed a bug that was showing reports for the primary site even if the user did not have permission to access that site in the control panel ([#373](https://github.com/putyourlightson/craft-campaign/issues/373)).
+
 ## 2.5.5 - 2023-02-24
 ### Fixed
 - Fixed a bug that was preventing charts from appearing in report pages. 
@@ -13,7 +21,7 @@
 
 ## 2.5.3 - 2023-02-03
 ### Changed
-- The front-end subscribe and unsubscribe forms now accept an optional `siteId` parameter ([#355](https://github.com/putyourlightson/craft-campaign/issues/363)).
+- The front-end subscribe and unsubscribe forms now accept an optional `siteId` parameter ([#363](https://github.com/putyourlightson/craft-campaign/issues/363)).
 
 ## 2.5.2 - 2023-01-24
 ### Fixed

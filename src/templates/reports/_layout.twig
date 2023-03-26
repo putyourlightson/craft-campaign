@@ -2,13 +2,26 @@
 
 {% do view.registerAssetBundle('putyourlightson\\campaign\\assets\\ReportsAsset') %}
 
+{% if not currentUser.can('campaign:reports') %}
+    {% redirect 'campaign' %}
+{% endif %}
+
+{% set siteId = siteId ?? null %}
+{% set editableSiteIds = craft.app.sites.getEditableSiteIds() %}
+{% if siteId is not null and siteId not in editableSiteIds %}
+    {% set siteId = editableSiteIds[0] ?? null %}
+    {% if siteId %}
+        {% set segment3 = craft.app.request.getSegment(3) %}
+        {% redirect url('campaign/reports/' ~ segment3, { siteId: siteId }) %}
+    {% endif %}
+{% endif %}
+
 {% set selectedSubnavItem = 'reports' %}
 {% set baseCrumbs = [
     { label: 'Reports'|t('campaign'), url: url('campaign/reports') }
 ] %}
 {% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
 {% set showSiteMenu = showSiteMenu ?? false %}
-{% set siteId = siteId ?? null %}
 
 
 {% block contextMenu %}
@@ -16,8 +29,8 @@
     {% if showSiteMenu and craft.app.getIsMultiSite() %}
         {% set segment3 = craft.app.request.getSegment(3) %}
         {% include '_elements/sitemenu' with {
-            selectedSiteId: siteId ? siteId : currentSite.id,
-            urlFormat: url('campaign/reports/' ~ segment3 ~ '?siteId={id}'),
+            selectedSiteId: siteId,
+            urlFormat: url('campaign/reports/' ~ segment3 ~ '?siteId={id}&site={handle}'),
         } only %}
     {% endif %}
 

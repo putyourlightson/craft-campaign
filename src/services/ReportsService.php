@@ -58,19 +58,19 @@ class ReportsService extends Component
     public function getCampaignsReportData(int $siteId = null): array
     {
         // Get all sent campaigns
-        $data['campaigns'] = CampaignElement::find()
+        $campaigns = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
             ->orderBy('lastSent DESC')
             ->siteId($siteId)
             ->all();
 
         // Get data
+        $data['campaigns'] = $campaigns;
         $data['recipients'] = 0;
         $data['opened'] = 0;
         $data['clicked'] = 0;
 
-        /** @var CampaignElement $campaign */
-        foreach ($data['campaigns'] as $campaign) {
+        foreach ($campaigns as $campaign) {
             $data['recipients'] += $campaign->recipients;
             $data['opened'] += $campaign->opened;
             $data['clicked'] += $campaign->clicked;
@@ -93,7 +93,7 @@ class ReportsService extends Component
     public function getCampaignReportData(int $campaignId): array
     {
         // Get campaign
-        $data['campaign'] = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+        $data = ['campaign' => Campaign::$plugin->campaigns->getCampaignById($campaignId)];
 
         // Get sendouts
         $data['sendouts'] = SendoutElement::find()
@@ -434,18 +434,18 @@ class ReportsService extends Component
     public function getMailingListsReportData(int $siteId = null): array
     {
         // Get all mailing lists in all sites
-        $data['mailingLists'] = MailingListElement::find()
+        $mailingLists = MailingListElement::find()
             ->siteId($siteId)
             ->all();
 
         // Get data
+        $data['mailingLists'] = $mailingLists;
         $data['subscribed'] = 0;
         $data['unsubscribed'] = 0;
         $data['complained'] = 0;
         $data['bounced'] = 0;
 
-        /** @var MailingListElement $mailingList */
-        foreach ($data['mailingLists'] as $mailingList) {
+        foreach ($mailingLists as $mailingList) {
             $data['subscribed'] += $mailingList->getSubscribedCount();
             $data['unsubscribed'] += $mailingList->getUnsubscribedCount();
             $data['complained'] += $mailingList->getComplainedCount();
@@ -461,7 +461,7 @@ class ReportsService extends Component
     public function getMailingListReportData(int $mailingListId): array
     {
         // Get mailing list
-        $data['mailingList'] = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+        $data = ['mailingList' => Campaign::$plugin->mailingLists->getMailingListById($mailingListId)];
 
         // Get sendouts
         $data['sendouts'] = SendoutElement::find()
