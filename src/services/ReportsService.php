@@ -573,13 +573,32 @@ class ReportsService extends Component
     }
 
     /**
+     * Anonymizes campaign reports.
+     *
+     * @since 2.6.0
+     */
+    public function anonymize(): void
+    {
+        /** @var ContactCampaignRecord[] $contactCampaignRecords */
+        $contactCampaignRecords = ContactCampaignRecord::find()->all();
+
+        foreach ($contactCampaignRecords as $contactCampaignRecord) {
+            $contactCampaignRecord->opened = null;
+            $contactCampaignRecord->clicked = null;
+            $contactCampaignRecord->opens = 0;
+            $contactCampaignRecord->clicks = 0;
+            $contactCampaignRecord->links = null;
+            $contactCampaignRecord->save();
+        }
+    }
+
+    /**
      * Syncs campaign reports.
      *
      * @since 2.4.0
      */
     public function sync(): void
     {
-        /** @var CampaignRecord[] $campaignRecords */
         $campaignRecords = CampaignRecord::find()->all();
 
         foreach ($campaignRecords as $campaignRecord) {

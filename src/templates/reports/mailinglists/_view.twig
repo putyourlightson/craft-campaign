@@ -10,7 +10,7 @@
 
 {% block pageTitle %}
     {{ parent() }}
-    {% if currentUser.can('campaign:mailingLists') %}
+    {% if mailingList.canSave(currentUser) %}
         <a href="{{ mailingList.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
 {% endblock %}

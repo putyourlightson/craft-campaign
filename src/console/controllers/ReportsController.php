@@ -24,7 +24,7 @@ class ReportsController extends Controller
      */
     public function actionAnonymize(): int
     {
-        ContactCampaignRecord::deleteAll();
+        Campaign::$plugin->reports->anonymize();
 
         $this->stdout(Craft::t('campaign', 'Personal data successfully anonymized.') . PHP_EOL, BaseConsole::FG_GREEN);
 
@@ -38,6 +38,12 @@ class ReportsController extends Controller
      */
     public function actionSync(): int
     {
+        if (Campaign::$plugin->settings->enableAnonymousTracking) {
+            $this->stdout(Craft::t('campaign', 'Campaign reports cannot be synced when the `enableAnonymousTracking` setting is enabled.') . PHP_EOL, BaseConsole::FG_RED);
+
+            return ExitCode::OK;
+        }
+
         Campaign::$plugin->reports->sync();
 
         $this->stdout(Craft::t('campaign', 'Campaign reports successfully synced.') . PHP_EOL, BaseConsole::FG_GREEN);

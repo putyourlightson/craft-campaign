@@ -55,8 +55,10 @@
 
     {% set limit = 10 %}
 
-    <h2>{{ "Campaign Activity"|t('campaign') }}</h2>
-    {% include 'campaign/reports/contacts/_includes/campaign-activity' with { campaignActivity: craft.campaign.reports.getContactCampaignActivity(contact.id, limit) } %}
+    {% if not craft.campaign.settings.enableAnonymousTracking %}
+        <h2>{{ "Campaign Activity"|t('campaign') }}</h2>
+        {% include 'campaign/reports/contacts/_includes/campaign-activity' with { campaignActivity: craft.campaign.reports.getContactCampaignActivity(contact.id, limit) } %}
+    {% endif %}
 
     <h2>{{ "Mailing List Activity"|t('campaign') }}</h2>
     {% include 'campaign/reports/contacts/_includes/mailinglist-activity' with { mailingListActivity: craft.campaign.reports.getContactMailingListActivity(contact.id, limit) } %}

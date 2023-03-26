@@ -17,7 +17,7 @@
     {{ forms.lightswitchField({
         first: true,
         label: "Enable Anonymous Tracking"|t('campaign'),
-        instructions: "Whether to enable anonymous tracking of contact interactions."|t('campaign'),
+        instructions: "Whether to enable anonymous tracking of opens and clicks."|t('campaign') ~ ' ' ~ macros.info('If enabling this after campaigns have already been sent, the `campaign/reports/anonymize` console command should be run to anonymizes all previously collected personal data.'|t('campaign')),
         warning: (config.enableAnonymousTracking is defined ? macros.configWarning('enableAnonymousTracking')),
         name: 'enableAnonymousTracking',
         on: settings.enableAnonymousTracking,

@@ -12,7 +12,9 @@ class m221017_120000_sync_campaign_reports extends Migration
      */
     public function safeUp(): bool
     {
-        Campaign::$plugin->reports->sync();
+        if (!Campaign::$plugin->settings->enableAnonymousTracking) {
+            Campaign::$plugin->reports->sync();
+        }
 
         return true;
     }

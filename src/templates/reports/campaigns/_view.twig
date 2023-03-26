@@ -9,7 +9,7 @@
 
 {% block pageTitle %}
     {{ parent() }}
-    {% if currentUser.can('campaign:campaigns') %}
+    {% if campaign.canSave(currentUser) %}
         <a href="{{ campaign.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
 {% endblock %}

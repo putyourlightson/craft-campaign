@@ -132,7 +132,7 @@ class CampaignsService extends Component
             }
         }
 
-        // Only save if anonymous tracking is not enabled
+        // Only save if anonymous tracking is disabled
         if (!Campaign::$plugin->settings->enableAnonymousTracking) {
             $contactCampaignRecord->save();
         }
@@ -206,7 +206,7 @@ class CampaignsService extends Component
     private function _incrementRecordColumn(ActiveRecord $record, string $column): void
     {
         // Respect anonymous tracking for contact campaign records.
-        if (Campaign::$plugin->settings->enableAnonymousTracking && $record instanceof ContactCampaignRecord) {
+        if ($record instanceof ContactCampaignRecord && Campaign::$plugin->settings->enableAnonymousTracking) {
             return;
         }
 

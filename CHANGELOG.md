@@ -1,7 +1,12 @@
 # Release Notes for Campaign
 
-## 2.5.6 - Unreleased
+## 2.6.0 - Unreleased
+### Added
+- Added messaging that explains why charts are not appearing in reports.
+
 ### Changed
+- Campaign reports are no longer synced when the `enableAnonymousTracking` setting is enabled ([#371](https://github.com/putyourlightson/craft-campaign/issues/371)).
+- Contact activity is hidden when the `enableAnonymousTracking` setting is enabled ([#371](https://github.com/putyourlightson/craft-campaign/issues/371)).
 - Renamed the “Manage Reports” permission to “View Reports”.
 - Users can now only edit contacts when they have edit permission for the primary site.
 
@@ -239,7 +244,7 @@
 - Added a "Campaign Activity" condition rule for segmenting by contacts who have opened or clicked a link in any or a specific campaign ([#244](https://github.com/putyourlightson/craft-campaign/issues/244)).
 - Added a "Default Notification Contacts" field to sendout settings. 
 - Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
-- Added the `enableAnonymousTracking` setting, which prevents tracking of contact interactions ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
+- Added the `enableAnonymousTracking` setting, which prevents tracking of opens and clicks ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 - Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
 - Added a link to view all contacts from the mailing list edit page ([#282](https://github.com/putyourlightson/craft-campaign/issues/282)).

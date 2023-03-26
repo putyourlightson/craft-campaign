@@ -27,7 +27,7 @@ use yii\validators\EmailValidator;
 class SettingsModel extends Model
 {
     /**
-     * @var bool Whether to enable anonymous tracking
+     * @var bool Whether to enable anonymous tracking of opens and clicks
      */
     public bool $enableAnonymousTracking = false;
 

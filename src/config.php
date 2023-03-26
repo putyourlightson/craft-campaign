@@ -19,7 +19,7 @@
 
 return [
     '*' => [
-        // Whether to enable anonymous tracking
+        // Whether to enable anonymous tracking of opens and clicks
         //'enableAnonymousTracking' => false,
 
         // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them

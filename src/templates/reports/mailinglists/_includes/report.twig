@@ -19,15 +19,21 @@
             <div data-id="chart"></div>
         </div>
 
+        <br>
+
         {% js %}
             new Campaign.Chart({
                 action: 'campaign/reports/get-mailing-list-chart-data',
                 mailingListId: '{{ mailingList.id }}'
             });
         {% endjs %}
+    {% else %}
+        <div class="report-chart empty">
+            <p class="light">
+                {{ 'No data to display.'|t('campaign') }}
+            </p>
+        </div>
     {% endif %}
-
-    <br/>
 
     <h2>{{ "Mailing List Details"|t('campaign') }}</h2>
 

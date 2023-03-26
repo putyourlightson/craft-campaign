@@ -1,11 +1,17 @@
 .report-chart {
-    border-radius: 3px;
+    border-radius: var(--large-border-radius);
     border: 1px solid #e3e5e8;
     padding: 20px 10px;
     margin-top: 20px;
     margin-bottom: 10px;
     text-align: center;
     min-height: 100px;
+}
+
+.report-chart.empty {
+    font-style: italic;
+    margin-bottom: 40px;
+    min-height: 0;
 }
 
 .report-chart .select {
