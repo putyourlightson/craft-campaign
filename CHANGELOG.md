@@ -12,6 +12,7 @@
 
 ### Fixed
 - Fixed a bug that was showing reports for the primary site even if the user did not have permission to access that site in the control panel ([#373](https://github.com/putyourlightson/craft-campaign/issues/373)).
+- Fixed a bug that was throwing an exception when all contacts were being sorted by subscription status ([#374](https://github.com/putyourlightson/craft-campaign/issues/374)).
 
 ## 2.5.5 - 2023-02-24
 ### Fixed
