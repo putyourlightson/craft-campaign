@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.6.0 - Unreleased
+## 2.6.0 - 2023-04-04
 ### Added
 - Added messaging that explains why charts are not appearing in reports.
 
