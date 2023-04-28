@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
+use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
 use craft\helpers\Json;
 use craft\helpers\Queue;
@@ -32,6 +33,14 @@ class ImportsService extends Component
      * @event ImportEvent
      */
     public const EVENT_AFTER_IMPORT = 'afterImport';
+
+    /**
+     * @const string[]
+     */
+    public const JSON_DECODE_FIELDS = [
+        BaseOptionsField::class,
+        BaseRelationField::class,
+    ];
 
     /**
      * @var array
@@ -290,10 +299,13 @@ class ImportsService extends Component
                 if ($index !== '' && isset($row[$index])) {
                     $values[$fieldHandle] = $row[$index];
 
-                    // Attempt to JSON decode the value if this is a relation field.
                     $field = $contact->getFieldLayout()->getFieldByHandle($fieldHandle);
-                    if ($field instanceof BaseRelationField) {
-                        $values[$fieldHandle] = Json::decodeIfJson($row[$index]);
+
+                    // JSON decode if the field is an instance of specific base fields.
+                    foreach (self::JSON_DECODE_FIELDS as $class) {
+                        if ($field instanceof $class) {
+                            $values[$fieldHandle] = Json::decodeIfJson($row[$index]);
+                        }
                     }
                 }
             }
@@ -357,7 +369,7 @@ class ImportsService extends Component
     /**
      * Updates the search indexes of imported contacts.
      */
-    public function updateSearchIndexes()
+    public function updateSearchIndexes(): void
     {
         $customFields = Campaign::$plugin->settings->getContactFields();
         $fieldHandles = array_map(fn($field) => $field->handle, $customFields);

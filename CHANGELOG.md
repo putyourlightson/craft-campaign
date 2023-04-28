@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.6.1 - 2023-04-28
+### Added
+- Added the ability to import options fields (multi-select, checkboxes, etc.) into contact fields ([#380](https://github.com/putyourlightson/craft-campaign/issues/380)).
+
 ## 2.6.0 - 2023-04-04
 ### Added
 - Added messaging that explains why charts are not appearing in reports.
