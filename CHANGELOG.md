@@ -236,19 +236,19 @@
 
 ### Added
 - Added compatibility with Craft 4.
-- Added a new "Singular" sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
+- Added a new “Singular” sendout type to the Pro edition, for sending campaigns to individual contacts ([#263](https://github.com/putyourlightson/craft-campaign/issues/263)).
 - Added a condition builder field to the sendout schedule for automated and recurring sendout types ([#305](https://github.com/putyourlightson/craft-campaign/issues/305)).
 - Added the field layout designer to campaign types, mailing list types and contact layouts ([#163](https://github.com/putyourlightson/craft-campaign/issues/163), [#198](https://github.com/putyourlightson/craft-campaign/issues/198), [#269](https://github.com/putyourlightson/craft-campaign/issues/269)).
 - Added autosaving drafts to campaigns, contacts, mailing lists, segments and sendouts.
 - Added revisions to campaigns ([#301](https://github.com/putyourlightson/craft-campaign/issues/301)).
-- Added a "Duplicate" action to campaigns, mailing lists, segments and sendouts ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
+- Added a “Duplicate” action to campaigns, mailing lists, segments and sendouts ([#292](https://github.com/putyourlightson/craft-campaign/issues/292)).
 - Added condition settings to the campaigns, contacts and mailing lists relation fields.
 - Added user group permissions for campaign types and mailing list types.
 - Added the ability to view disabled campaigns using a token URL.
 - Added a contact condition builder to regular segment types, that should be used going forward since `legacy` and `template` segment types will be removed in Campaign 3.
-- Added a "Campaign Activity" condition rule for segmenting by contacts who have opened or clicked a link in any or a specific campaign ([#244](https://github.com/putyourlightson/craft-campaign/issues/244)).
-- Added a "Default Notification Contacts" field to sendout settings. 
-- Added an "Export to CSV" button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
+- Added a “Campaign Activity” condition rule for segmenting by contacts who have opened or clicked a link in any or a specific campaign ([#244](https://github.com/putyourlightson/craft-campaign/issues/244)).
+- Added a “Default Notification Contacts” field to sendout settings. 
+- Added an “Export to CSV” button to all datatables in reports ([#245](https://github.com/putyourlightson/craft-campaign/issues/245)).
 - Added the `enableAnonymousTracking` setting, which prevents tracking of opens and clicks ([#115](https://github.com/putyourlightson/craft-campaign/issues/115)).
 - Added the `campaign/reports/anonymize` console controller that anonymizes all previously collected personal data.
 - Added a list of failed contacts to sendouts that have failures ([#311](https://github.com/putyourlightson/craft-campaign/issues/311)).
