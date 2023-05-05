@@ -78,13 +78,19 @@ class RecurringScheduleModel extends ScheduleModel
             return true;
         }
 
-        // N: Numeric representation of the day of the week: 1 to 7
-        if ($this->frequencyInterval == 'weeks' && !empty($this->daysOfWeek[$now->format('N')]) && ($this->frequency == 1 || floor($diff->d / 7) % $this->frequency == 0)) {
+        // N: Numeric representation of the day of the week (1 to 7)
+        if ($this->frequencyInterval == 'weeks'
+            && !empty($this->daysOfWeek[$now->format('N')])
+            && ($this->frequency == 1 || floor($diff->d / 7) % $this->frequency == 0)
+        ) {
             return true;
         }
 
-        // j: Numeric representation of the day of the month: 1 to 31
-        if ($this->frequencyInterval == 'months' && !empty($this->daysOfMonth[$now->format('j')]) && ($this->frequency == 1 || $diff->m % $this->frequency == 0)) {
+        // j: Numeric representation of the day of the month (1 to 31)
+        if ($this->frequencyInterval == 'months'
+            && !empty($this->daysOfMonth[$now->format('j')])
+            && ($this->frequency == 1 || $diff->m % $this->frequency == 0)
+        ) {
             return true;
         }
 
