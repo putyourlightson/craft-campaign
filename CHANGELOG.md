@@ -2,7 +2,7 @@
 
 ## 2.6.2 - 2023-05-12
 ### Fixed
-- Fixed a bug in which non-admin users were not alloyed to edit contacts even with the correct permissions granted ([#378](https://github.com/putyourlightson/craft-campaign/issues/378)).
+- Fixed a bug in which non-admin users were not allowed to edit contacts even with the correct permissions granted ([#378](https://github.com/putyourlightson/craft-campaign/issues/378)).
 
 ## 2.6.1 - 2023-04-28
 ### Added
