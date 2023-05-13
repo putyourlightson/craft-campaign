@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.7.0 - Unreleased
+### Changed
+- Changed the user permission for managing contacts to only show a note about the primary site if multiple sites exist.
+
 ## 2.6.2 - 2023-05-12
 ### Fixed
 - Fixed a bug in which non-admin users were not allowed to edit contacts even with the correct permissions granted ([#378](https://github.com/putyourlightson/craft-campaign/issues/378)).

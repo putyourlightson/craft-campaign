@@ -795,13 +795,18 @@ class Campaign extends Plugin
                     ];
                 }
 
+                $manageContactsLabel = Craft::t('campaign', 'Manage contacts');
+                if (Craft::$app->getIsMultiSite()) {
+                    $manageContactsLabel .= ' (' . Craft::t('campaign', 'requires edit permission for the primary site') . ')';
+                }
+
                 $permissions = [
                     'campaign:campaigns' => [
                         'label' => Craft::t('campaign', 'Manage campaigns'),
                         'nested' => $campaignTypePermissions,
                     ],
                     'campaign:contacts' => [
-                        'label' => Craft::t('campaign', 'Manage contacts (requires edit permission for the primary site)'),
+                        'label' => $manageContactsLabel,
                         'nested' => [
                             'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
                             'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],
