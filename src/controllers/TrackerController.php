@@ -71,8 +71,15 @@ class TrackerController extends BaseMessageController
                     'campaign' => $sendout->getCampaign(),
                 ]);
 
+                // Split the URL on the anchor hashtag, so we can add it at the end.
+                // https://github.com/putyourlightson/craft-campaign/issues/383
+                $urlParts = explode( "#", $url);
+                $url = $urlParts[0];
+                $hashtag = !empty($urlParts[1]) ? '#' . $urlParts[1] :  '';
+
                 $url .= str_contains($url, '?') ? '&' : '?';
                 $url .= trim($queryStringParameters, '?&');
+                $url .= $hashtag;
             }
         }
 

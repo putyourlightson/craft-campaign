@@ -2,6 +2,7 @@
 
 ## 2.7.0 - Unreleased
 ### Changed
+- Anchor hashtags are now forced to the end of URLs when appending query string parameters ([#383](https://github.com/putyourlightson/craft-campaign/issues/383)).
 - Changed the user permission for managing contacts to only show a note about the primary site if multiple sites exist.
 
 ## 2.6.2 - 2023-05-12
