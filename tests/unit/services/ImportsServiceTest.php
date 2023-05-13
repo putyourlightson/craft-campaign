@@ -55,5 +55,12 @@ class ImportsServiceTest extends BaseUnitTest
 
         // Assert that contact is subscribed to the mailing list
         $this->assertEquals('subscribed', $contact->getMailingListSubscriptionStatus($mailingList->id));
+
+        $import->unsubscribe = true;
+        $import->forceSubscribe = false;
+        Campaign::$plugin->imports->importRow($import, $row, 1);
+
+        // Assert that contact is unsubscribed from the mailing list
+        $this->assertEquals('unsubscribed', $contact->getMailingListSubscriptionStatus($mailingList->id));
     }
 }

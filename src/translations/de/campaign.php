@@ -673,6 +673,7 @@ return [
     'What this campaign type will be called in the CP.' => 'Wie dieser Kampagnen-Typ im Control Panel genannt wird.',
     'What this mailing list type will be called in the CP.' => 'Wie dieser Mailing-Listen-Typ im Control Panel genannt wird.',
     'Whether contacts are allowed to unsubscribe themselves through an unsubscribe form.' => 'Ob es Kontakten erlaubt ist, sich selbst über ein Abmeldeformular abzumelden.',
+    'Whether contacts should be imported to the mailing list with a status of unsubscribed.' => '',
     'Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed.' => 'Ob Kontakte zur Mailing-Liste hinzugefügt werden sollen, auch wenn sie vorher schon einmal ausgetragen wurden.',
     'Whether the contact needs to verify their email address by clicking on a link in a verification email that will be sent to them after submitting a subscribe form (highly recommended).' => 'Ob der Kontakt seine E-Mail-Adresse durch Klick auf einen Link in einer Verifizierungs-E-Mail bestätigen muss, die ihm geschickt wird, nachdem er ein Anmeldeformular abgeschickt hat (dringend empfohlen).',
     'Whether the sendout can be sent to contacts multiple times.' => 'Ob die Sendung mehrmals an Kontakte verschickt werden kann.',

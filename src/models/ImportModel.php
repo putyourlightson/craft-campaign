@@ -68,6 +68,11 @@ class ImportModel extends Model
     public ?int $mailingListId = null;
 
     /**
+     * @var bool Unsubscribe
+     */
+    public bool $unsubscribe = false;
+
+    /**
      * @var bool Force subscribe
      */
     public bool $forceSubscribe = false;

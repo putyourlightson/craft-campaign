@@ -673,6 +673,7 @@ return [
     'What this campaign type will be called in the CP.' => 'Comment ce type de newsletter sera appelé dans le CP.',
     'What this mailing list type will be called in the CP.' => 'Comment ce type de liste de diffusion sera appelé dans le CP.',
     'Whether contacts are allowed to unsubscribe themselves through an unsubscribe form.' => 'Si les contacts sont autorisés à se désabonner eux-mêmes par le biais d’un formulaire de désabonnement.',
+    'Whether contacts should be imported to the mailing list with a status of unsubscribed.' => '',
     'Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed.' => 'Précisez si les contacts doivent être inscrits à la liste de diffusion même s’ils ont été précédemment désabonnés.',
     'Whether the contact needs to verify their email address by clicking on a link in a verification email that will be sent to them after submitting a subscribe form (highly recommended).' => 'Précisez si le contact doit vérifier son adresse mail en cliquant sur un lien dans un mail de vérification qui lui sera envoyé après avoir soumis un formulaire d‘inscription (fortement recommandé).',
     'Whether the sendout can be sent to contacts multiple times.' => 'Précisez si la campagne peut être envoyée plusieurs fois aux contacts.',

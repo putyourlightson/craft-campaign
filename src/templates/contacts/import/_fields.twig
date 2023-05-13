@@ -33,13 +33,27 @@
             required: true
         }) }}
 
-        {{ forms.lightswitchField({
-            label: "Force Subscribe"|t('campaign'),
-            instructions: "Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed."|t('campaign'),
-            name: 'forceSubscribe',
-            on: import.forceSubscribe,
-            errors: import.getErrors('forceSubscribe')
-        }) }}
+        <div id="unsubscribeField" class="field">
+            {{ forms.lightswitchField({
+                label: "Unsubscribe"|t('campaign'),
+                instructions: "Whether contacts should be imported to the mailing list with a status of unsubscribed."|t('campaign'),
+                name: 'unsubscribe',
+                on: import.unsubscribe,
+                errors: import.getErrors('unsubscribe'),
+                reverseToggle: 'forceSubscribeField',
+            }) }}
+        </div>
+
+        <div id="forceSubscribeField" class="field">
+            {{ forms.lightswitchField({
+                label: "Force Subscribe"|t('campaign'),
+                instructions: "Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed."|t('campaign'),
+                name: 'forceSubscribe',
+                on: import.forceSubscribe,
+                errors: import.getErrors('forceSubscribe'),
+                reverseToggle: 'unsubscribeField',
+            }) }}
+        </div>
 
         {% set input %}
             <div class="select">

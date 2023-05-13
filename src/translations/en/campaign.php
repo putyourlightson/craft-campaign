@@ -672,6 +672,7 @@ return [
     'What this campaign type will be called in the CP.' => '',
     'What this mailing list type will be called in the CP.' => '',
     'Whether contacts are allowed to unsubscribe themselves through an unsubscribe form.' => '',
+    'Whether contacts should be imported to the mailing list with a status of unsubscribed.' => '',
     'Whether contacts should be subscribed to the mailing list even if they were previously unsubscribed.' => '',
     'Whether the contact needs to verify their email address by clicking on a link in a verification email that will be sent to them after submitting a subscribe form (highly recommended).' => '',
     'Whether the sendout can be sent to contacts multiple times.' => '',

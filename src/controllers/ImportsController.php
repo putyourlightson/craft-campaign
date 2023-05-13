@@ -112,20 +112,11 @@ class ImportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $import = new ImportModel();
-        $import->assetId = $this->request->getRequiredBodyParam('assetId');
-        $import->fileName = $this->request->getRequiredBodyParam('fileName');
-
+        $import = $this->_getImportModelFromParams();
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? null;
 
-        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
 
-        // Get email and custom field indexes
-        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
-
-        // Validate it
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
             Campaign::$plugin->log('Couldn’t import file. {errors}', ['errors' => $errors]);
@@ -190,26 +181,10 @@ class ImportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $import = new ImportModel();
+        $import = $this->_getImportModelFromParams();
         $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
-
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
-        $import->mailingListId = $mailingListIds[0] ?? null;
 
-        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
-
-        // Get core fields and custom field indexes
-        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
-        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes', []);
-
-        // Prepend `field_` to each custom field index
-        foreach ($import->fieldIndexes as $key => $fieldIndex) {
-            if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
-                $import->fieldIndexes[$key] = 'field_' . $fieldIndex;
-            }
-        }
-
-        // Validate it
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
             Campaign::$plugin->log('Couldn’t import user group. {errors}', ['errors' => $errors]);
@@ -311,5 +286,24 @@ class ImportsController extends Controller
         }
 
         return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
+    }
+
+    private function _getImportModelFromParams(): ImportModel
+    {
+        $import = new ImportModel();
+        $import->assetId = $this->request->getRequiredBodyParam('assetId');
+        $import->fileName = $this->request->getRequiredBodyParam('fileName');
+        $import->unsubscribe = (bool)$this->request->getBodyParam('unsubscribe');
+        $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
+        $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
+        $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
+
+        foreach ($import->fieldIndexes as $key => $fieldIndex) {
+            if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
+                $import->fieldIndexes[$key] = 'field_' . $fieldIndex;
+            }
+        }
+
+        return $import;
     }
 }

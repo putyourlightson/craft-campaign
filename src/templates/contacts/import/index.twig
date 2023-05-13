@@ -115,9 +115,11 @@
             class: 'go',
             target: '_blank',
         }) : '-',
-        forceSubscribe: forms.lightswitch({
-            on: import.forceSubscribe,
-            disabled: true,
+        unsubscribe: tag('span', {
+            class: 'status ' ~ (import.unsubscribe ? 'enabled'),
+        }),
+        forceSubscribe: tag('span', {
+            class: 'status ' ~ (import.forceSubscribe ? 'enabled'),
         }),
         added: import.added,
         updated: import.updated,
@@ -133,6 +135,7 @@
             { name: '__slot:title', title: Craft.t('campaign', 'Import') },
             { name: 'source', title: Craft.t('campaign', 'Source') },
             { name: 'mailingList', title: Craft.t('campaign', 'Mailing List') },
+            { name: 'unsubscribe', title: Craft.t('campaign', 'Unsubscribe') },
             { name: 'forceSubscribe', title: Craft.t('campaign', 'Force Subscribe') },
             { name: 'added', title: Craft.t('campaign', 'Added') },
             { name: 'updated', title: Craft.t('campaign', 'Updated') },

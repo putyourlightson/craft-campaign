@@ -16,7 +16,8 @@ use DateTime;
  * @property int $userGroupId User group ID
  * @property int $userId User ID
  * @property int $mailingListId Mailing list ID
- * @property bool $forceSubscribeForce
+ * @property bool $unsubscribe
+ * @property bool $forceSubscribe
  * @property string $emailFieldIndex Email field index
  * @property mixed $fieldIndexesField
  * @property int $added Added

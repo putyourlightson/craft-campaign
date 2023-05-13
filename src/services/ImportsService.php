@@ -335,8 +335,9 @@ class ImportsService extends Component
 
         Campaign::$plugin->imports->saveImport($import);
 
-        // Subscribe contact only if contact's mailing list subscription status is empty or forcing is enabled
-        if ($contact->getMailingListSubscriptionStatus($import->mailingListId) == '' || $import->forceSubscribe) {
+        if ($import->unsubscribe) {
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed', 'import', $import->id);
+        } elseif ($contact->getMailingListSubscriptionStatus($import->mailingListId) == '' || $import->forceSubscribe) {
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
         }
 
