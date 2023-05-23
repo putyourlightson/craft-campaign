@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.7.1 - Unreleased
+### Changed
+- Sendout previews now include template variables for the current sendout as well as a dummy contact ([#386](https://github.com/putyourlightson/craft-campaign/issues/386)).
+
 ## 2.7.0 - 2023-05-13
 ### Added
 - Added the ability to import contacts into a mailing list with a status of unsubscribed ([#384](https://github.com/putyourlightson/craft-campaign/issues/384)).

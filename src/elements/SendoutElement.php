@@ -1048,12 +1048,13 @@ class SendoutElement extends Element
         }
 
         $campaign = $this->getCampaign();
-
         if ($campaign === null) {
             return '';
         }
 
-        return $campaign->getHtmlBody();
+        $contact = new ContactElement();
+
+        return $campaign->getHtmlBody($contact, $this);
     }
 
     /**
@@ -1066,12 +1067,13 @@ class SendoutElement extends Element
         }
 
         $campaign = $this->getCampaign();
-
         if ($campaign === null) {
             return '';
         }
 
-        return $campaign->getPlaintextBody();
+        $contact = new ContactElement();
+
+        return $campaign->getPlaintextBody($contact, $this);
     }
 
     /**
