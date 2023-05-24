@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 2.7.1 - Unreleased
+## 2.7.1 - 2023-05-24
 ### Changed
 - Sendout previews now include template variables for the current sendout as well as a dummy contact ([#386](https://github.com/putyourlightson/craft-campaign/issues/386)).
+- Webhooks now return a successful response when receiving the email address of a contact that does not exist ([#388](https://github.com/putyourlightson/craft-campaign/issues/388)).
 
 ## 2.7.0 - 2023-05-13
 ### Added

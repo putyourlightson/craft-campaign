@@ -298,7 +298,7 @@ class WebhookController extends Controller
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
-            return $this->_asRawFailure('Contact not found.');
+            return $this->_asRawSuccess();
         }
 
         if ($event == 'complained') {
@@ -325,6 +325,8 @@ class WebhookController extends Controller
      */
     private function _asRawFailure(string $message = ''): Response
     {
+        Campaign::$plugin->log($message, [], Logger::LEVEL_WARNING);
+
         return $this->asRaw(Craft::t('campaign', $message))
             ->setStatusCode(400);
     }

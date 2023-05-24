@@ -49,6 +49,7 @@ class SettingsModel extends Model
 
     /**
      * @var array|null The allowed IP addresses for incoming webhook requests from Postmark
+     * @link https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
      * @since 1.19.0
      */
     public ?array $postmarkAllowedIpAddresses = [
