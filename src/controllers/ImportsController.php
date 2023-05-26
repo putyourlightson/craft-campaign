@@ -116,7 +116,6 @@ class ImportsController extends Controller
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? null;
 
-
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
             Campaign::$plugin->log('Couldn’t import file. {errors}', ['errors' => $errors]);
@@ -181,7 +180,7 @@ class ImportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $import = $this->_getImportModelFromParams();
+        $import = $this->_getImportModelFromParams('field_');
         $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
 
@@ -288,7 +287,7 @@ class ImportsController extends Controller
         return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
     }
 
-    private function _getImportModelFromParams(): ImportModel
+    private function _getImportModelFromParams(string $fieldIndexPrefix = null): ImportModel
     {
         $import = new ImportModel();
         $import->assetId = $this->request->getRequiredBodyParam('assetId');
@@ -298,9 +297,11 @@ class ImportsController extends Controller
         $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
 
-        foreach ($import->fieldIndexes as $key => $fieldIndex) {
-            if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
-                $import->fieldIndexes[$key] = 'field_' . $fieldIndex;
+        if ($fieldIndexPrefix) {
+            foreach ($import->fieldIndexes as $key => $fieldIndex) {
+                if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
+                    $import->fieldIndexes[$key] = $fieldIndexPrefix . $fieldIndex;
+                }
             }
         }
 

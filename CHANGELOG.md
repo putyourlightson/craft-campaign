@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.7.2 - 2023-05-26
+### Fixed
+- Fixed a bug in which custom field values were not being imported when importing contacts via CSV files ([#390](https://github.com/putyourlightson/craft-campaign/issues/390)).
+
 ## 2.7.1 - 2023-05-24
 ### Changed
 - Sendout previews now include template variables for the current sendout as well as a dummy contact ([#386](https://github.com/putyourlightson/craft-campaign/issues/386)).
