@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 2.7.2 - 2023-05-26
+### Changed
+- Errors are now logged when syncing users to contacts fail.
+
 ### Fixed
 - Fixed a bug in which custom field values were not being imported when importing contacts via CSV files ([#390](https://github.com/putyourlightson/craft-campaign/issues/390)).
 

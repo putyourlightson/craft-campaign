@@ -164,6 +164,9 @@ class SyncService extends Component
         $contact->setFieldValues($user->getFieldValues());
 
         if (!Craft::$app->getElements()->saveElement($contact)) {
+            $errors = implode('. ', $contact->getErrorSummary(true));
+            Campaign::$plugin->log('Couldn’t sync user. {errors}', ['errors' => $errors]);
+
             return;
         }
 
