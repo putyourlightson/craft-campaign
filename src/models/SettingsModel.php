@@ -13,6 +13,7 @@ use craft\behaviors\FieldLayoutBehavior;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailFieldLayoutElement;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactFieldLayoutTab;
 use yii\validators\EmailValidator;
 
@@ -250,9 +251,17 @@ class SettingsModel extends Model
 
         // Ensure email field exists
         if (!$fieldLayout->isFieldIncluded('email')) {
-            $fieldLayout->setTabs([
-                new ContactFieldLayoutTab(),
-            ]);
+            $tab = $fieldLayout->getTabs()[0];
+
+            if ($tab === null) {
+                $tab = new ContactFieldLayoutTab();
+            } else {
+                $emailElement = new ContactEmailFieldLayoutElement();
+                $tab->setElements(array_merge([$emailElement], $tab->getElements()));
+            }
+
+            $fieldLayout->setTabs([$tab]);
+            Craft::$app->getFields()->saveLayout($fieldLayout);
         }
 
         return $fieldLayout;

@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\fieldlayoutelements\contacts;
 
+use Craft;
 use craft\base\ElementInterface;
 use craft\models\FieldLayoutTab;
 
@@ -13,6 +14,16 @@ use craft\models\FieldLayoutTab;
  */
 class ContactFieldLayoutTab extends FieldLayoutTab
 {
+    /**
+     * @inheritdoc
+     */
+    public function init(): void
+    {
+        parent::init();
+
+        $this->name = Craft::t('campaign', 'Contact');
+    }
+
     /**
      * @inheritdoc
      */
