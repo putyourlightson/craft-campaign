@@ -18,6 +18,6 @@
 {% endset %}
 {{ forms.field({
     label: 'Time of Day'|t('campaign'),
-    instructions: "The time of day from which to send (recommended)."|t('campaign'),
+    instructions: "The time of day at which to send (recommended)."|t('campaign'),
     errors: schedule.getErrors('timeOfDay'),
 }, input) }}

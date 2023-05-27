@@ -2,7 +2,7 @@
 
 ## 2.7.3 - Unreleased
 ### Changed
-- Contact field names now include info modals with instructions in the CSV file import field.
+- Contact field names now include info modals with instructions in the CSV file import field ([#392](https://github.com/putyourlightson/craft-campaign/issues/392)).
 
 ## 2.7.2 - 2023-05-26
 ### Changed
