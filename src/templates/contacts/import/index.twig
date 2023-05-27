@@ -44,9 +44,9 @@
             {% set value = field.name ~ (field.required ? ' (' ~ 'required'|t('campaign') ~ ')') %}
             {% set info = null %}
             {% if field is instance of('\\craft\\fields\\BaseOptionsField') %}
-                {% set info = 'The value in the CSV file should be an array of option values, for example: {value1}. Double quotation marks should be used for escaping string values, for example: {value2}'|t('campaign', { value1: '`[1,2,3]`', value2: '`"[""val1"",""val2"",""val3""]"`' }) %}
+                {% set info = 'The value in the CSV file should be an array of option values surrounded by double quotation marks, for example: {value1}. Two double quotation marks should be used for escaping string values, for example: {value2}'|t('campaign', { value1: '`"[1,2,3]"`', value2: '`"[""val1"",""val2"",""val3""]"`' }) %}
             {% elseif field is instance of('\\craft\\fields\\BaseRelationField') %}
-                {% set info = 'The value in the CSV file should be an array of element IDs, for example: {value}'|t('campaign', { value: '`[1,2,3]`' }) %}
+                {% set info = 'The value in the CSV file should be an array of element IDs surrounded by double quotation marks, for example: {value}'|t('campaign', { value: '`"[1,2,3]"`' }) %}
             {% endif %}
             {% if info %}
                 {% set value = value ~ ' <span class="info">' ~ info ~ '</span>' %}
