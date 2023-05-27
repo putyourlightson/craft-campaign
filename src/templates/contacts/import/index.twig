@@ -8,10 +8,6 @@
 
 {% set title = 'Import'|t('campaign') %}
 {% set crumbs = [] %}
-{% set contactFieldNames = ['Email [' ~ 'required'|t('campaign') ~ ']'] %}
-{% for field in craft.campaign.settings.getContactFields() %}
-    {% set contactFieldNames = contactFieldNames|merge([field.name ~ (field.required ? ' [' ~ 'required'|t('campaign') ~ ']')]) %}
-{% endfor %}
 
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') %}
 
@@ -39,9 +35,33 @@
         {{ csrfInput() }}
         <input type="hidden" name="action" value="campaign/imports/upload-file" />
 
+        {% set contactFieldInfo = {
+            '\craft\fields\BaseOptionsField': '\craft\fields\BaseOptionsField',
+            '\craft\fields\BaseRelationField': '\craft\fields\BaseRelationField',
+        } %}
+        {% set contactFieldNames = ['Email (' ~ 'required'|t('campaign') ~ ')'] %}
+        {% for field in craft.campaign.settings.getContactFields() %}
+            {% set value = field.name ~ (field.required ? ' (' ~ 'required'|t('campaign') ~ ')') %}
+            {% set info = null %}
+            {% if field is instance of('\\craft\\fields\\BaseOptionsField') %}
+                {% set info = 'The value in the CSV file should be an array of option values, for example: {value1}. Double quotation marks should be used for escaping string values, for example: {value2}'|t('campaign', { value1: '`[1,2,3]`', value2: '`"[""val1"",""val2"",""val3""]"`' }) %}
+            {% elseif field is instance of('\\craft\\fields\\BaseRelationField') %}
+                {% set info = 'The value in the CSV file should be an array of element IDs, for example: {value}'|t('campaign', { value: '`[1,2,3]`' }) %}
+            {% endif %}
+            {% if info %}
+                {% set value = value ~ ' <span class="info">' ~ info ~ '</span>' %}
+            {% endif %}
+            {% set contactFieldNames = contactFieldNames|push(value) %}
+        {% endfor %}
+        {% set tip %}
+            {{ 'The following contact fields are available:' }}
+            <br>
+            {{ contactFieldNames|join(', ')|raw }}
+        {% endset %}
         {{ forms.fileField({
             label: "CSV File"|t('campaign'),
-            instructions: ("Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers. The following contact fields are available:"|t('campaign') ~ "\n" ~ '`' ~ contactFieldNames|join(', ') ~ '`'),
+            instructions: 'Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers.'|t('campaign'),
+            tip: tip,
             name: 'file',
             required: true
         }) }}
