@@ -6,7 +6,7 @@
 
 ## 2.7.2 - 2023-05-26
 ### Changed
-- Errors are now logged when syncing users to contacts fail.
+- Errors when syncing users to contacts are now logged.
 
 ### Fixed
 - Fixed a bug in which custom field values were not being imported when importing contacts via CSV files ([#390](https://github.com/putyourlightson/craft-campaign/issues/390)).
