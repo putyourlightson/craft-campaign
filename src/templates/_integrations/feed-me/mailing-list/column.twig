@@ -1,0 +1,6 @@
+{% set mailingListTypeId = feed.elementGroup[elementType].mailingListTypeId %}
+{% set mailingListType = craft.campaign.getMailingListTypeById(mailingListTypeId) %}
+
+{% if mailingListType %}
+    <span class="element-group">{{ mailingListType.name }}</span>
+{% endif %}

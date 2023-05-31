@@ -1,0 +1,17 @@
+{% import '_includes/forms' as forms %}
+
+{% set mailingListTypeId = feed.elementGroup[elementType].mailingListTypeId ?? null %}
+
+<div class="element-sub-group">
+    {{ forms.selectField({
+        label: 'Mailing List Type'|t('campaign'),
+        instructions: 'Choose the mailing list type to add mailing lists to.'|t('campaign'),
+        class: 'element-parent-group',
+        id: 'elementGroup-' ~ elementType ~ '-mailingListTypeId',
+        name: 'elementGroup[' ~ elementType ~ '][mailingListTypeId]',
+        options: craft.feedme.getSelectOptions(element.groups, 'name'),
+        value: mailingListTypeId,
+        required: true,
+        errors: feed.getErrors('elementGroup'),
+    }) }}
+</div>

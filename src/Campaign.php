@@ -16,6 +16,8 @@ use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\feedme\events\RegisterFeedMeElementsEvent;
+use craft\feedme\services\Elements as FeedMeElements;
 use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\helpers\MailerHelper;
@@ -54,6 +56,9 @@ use putyourlightson\campaign\fields\CampaignsField;
 use putyourlightson\campaign\fields\ContactsField;
 use putyourlightson\campaign\fields\MailingListsField;
 use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
+use putyourlightson\campaign\integrations\feedme\CampaignFeedMeElement;
+use putyourlightson\campaign\integrations\feedme\ContactFeedMeElement;
+use putyourlightson\campaign\integrations\feedme\MailingListFeedMeElement;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
@@ -212,6 +217,7 @@ class Campaign extends Plugin
             $this->_registerCpUrlRules();
             $this->_registerUtilities();
             $this->_registerWidgets();
+            $this->_registerFeedMeElements();
         }
 
         // If Craft edition is pro
@@ -838,5 +844,18 @@ class Campaign extends Plugin
                 ];
             }
         );
+    }
+
+    private function _registerFeedMeElements(): void
+    {
+        if (Craft::$app->getPlugins()->isPluginInstalled('feed-me')) {
+            Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
+                function(RegisterFeedMeElementsEvent $event) {
+                    $event->elements[] = CampaignFeedMeElement::class;
+                    $event->elements[] = ContactFeedMeElement::class;
+                    $event->elements[] = MailingListFeedMeElement::class;
+                }
+            );
+        }
     }
 }

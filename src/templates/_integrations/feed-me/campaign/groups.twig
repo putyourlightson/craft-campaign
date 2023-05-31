@@ -1,0 +1,17 @@
+{% import '_includes/forms' as forms %}
+
+{% set campaignTypeId = feed.elementGroup[elementType].campaignTypeId ?? null %}
+
+<div class="element-sub-group">
+    {{ forms.selectField({
+        label: 'Campaign Type'|t('campaign'),
+        instructions: 'Choose the campaign type to add campaigns to.'|t('campaign'),
+        class: 'element-parent-group',
+        id: 'elementGroup-' ~ elementType ~ '-campaignTypeId',
+        name: 'elementGroup[' ~ elementType ~ '][campaignTypeId]',
+        options: craft.feedme.getSelectOptions(element.groups, 'name'),
+        value: campaignTypeId,
+        required: true,
+        errors: feed.getErrors('elementGroup'),
+    }) }}
+</div>

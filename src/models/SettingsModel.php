@@ -251,11 +251,12 @@ class SettingsModel extends Model
 
         // Ensure email field exists
         if (!$fieldLayout->isFieldIncluded('email')) {
-            $tab = $fieldLayout->getTabs()[0];
+            $tabs = $fieldLayout->getTabs();
 
-            if ($tab === null) {
+            if (empty($tabs)) {
                 $tab = new ContactFieldLayoutTab();
             } else {
+                $tab = $tabs[0];
                 $emailElement = new ContactEmailFieldLayoutElement();
                 $tab->setElements(array_merge([$emailElement], $tab->getElements()));
             }

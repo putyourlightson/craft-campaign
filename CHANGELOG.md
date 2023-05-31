@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
-## 2.7.3 - Unreleased
+## 2.8.0 - Unreleased
+### Added
+- Added the ability to import campaigns, contacts and mailing lists using Feed Me ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).
+
 ### Changed
 - Contact field names now include info modals with instructions in the CSV file import field ([#392](https://github.com/putyourlightson/craft-campaign/issues/392)).
 

@@ -1,0 +1,28 @@
+{% import '_includes/forms' as forms %}
+
+{% set mailingListId = feed.elementGroup[elementType].mailingListId ?? null %}
+{% set subscriptionStatus = feed.elementGroup[elementType].subscriptionStatus ?? null %}
+
+<div class="element-sub-group">
+    {{ forms.selectField({
+        label: 'Mailing List'|t('campaign'),
+        instructions: 'Choose the mailing list to subscribe contacts to.'|t('campaign'),
+        class: 'element-parent-group',
+        id: 'elementGroup-' ~ elementType ~ '-mailingListId',
+        name: 'elementGroup[' ~ elementType ~ '][mailingListId]',
+        options: craft.feedme.getSelectOptions(element.groups, 'title'),
+        value: mailingListId,
+        errors: feed.getErrors('elementGroup'),
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Subscription Status'|t('campaign'),
+        instructions: 'Choose the subscription status to give contacts.'|t('campaign'),
+        class: 'element-parent-group',
+        id: 'elementGroup-' ~ elementType ~ '-subscriptionStatus',
+        name: 'elementGroup[' ~ elementType ~ '][subscriptionStatus]',
+        options: element.subscriptionStatusOptions,
+        value: subscriptionStatus,
+        errors: feed.getErrors('elementGroup'),
+    }) }}
+</div>

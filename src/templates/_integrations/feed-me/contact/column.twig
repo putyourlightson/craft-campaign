@@ -1,0 +1,9 @@
+{% set mailingListId = feed.elementGroup[elementType].mailingListId %}
+
+{% if mailingListId %}
+    {% set mailingList = craft.campaign.mailingLists.id(mailingListId).one() %}
+
+    {% if mailingList %}
+        <span class="element-group">{{ mailingList.title }}</span>
+    {% endif %}
+{% endif %}

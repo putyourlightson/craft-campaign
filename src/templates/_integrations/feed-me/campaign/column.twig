@@ -1,0 +1,6 @@
+{% set campaignTypeId = feed.elementGroup[elementType].campaignTypeId %}
+{% set campaignType = craft.campaign.getCampaignTypeById(campaignTypeId) %}
+
+{% if campaignType %}
+    <span class="element-group">{{ campaignType.name }}</span>
+{% endif %}
