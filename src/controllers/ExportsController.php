@@ -67,21 +67,14 @@ class ExportsController extends Controller
             'fields' => $this->request->getBodyParam('fields'),
         ]);
 
-        // Get storage directory path
         $path = Craft::$app->getPath()->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';
-
-        // Create directory
         FileHelper::createDirectory($path);
-
-        // Set file path
         $export->filePath = $path . 'export.csv';
 
-        // Export it
         if (!Campaign::$plugin->exports->exportFile($export)) {
             return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
         }
 
-        // Log it
         Campaign::$plugin->log('File exported by "{username}".');
 
         return $this->response->sendFile($export->filePath);

@@ -60,6 +60,8 @@ class ImportsService extends Component
     public function getAllImports(): array
     {
         $imports = [];
+
+        /** @var ImportRecord[] $importRecords */
         $importRecords = ImportRecord::find()->all();
 
         foreach ($importRecords as $importRecord) {

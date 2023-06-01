@@ -435,7 +435,7 @@ class SendoutsService extends Component
     /**
      * Prepares sending.
      */
-    public function prepareSending(SendoutElement $sendout): void
+    public function prepareSending(SendoutElement $sendout, ?int $batch = null): void
     {
         if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
             $sendout->sendStatus = SendoutElement::STATUS_SENDING;
@@ -443,8 +443,15 @@ class SendoutsService extends Component
             $this->_updateSendoutRecord($sendout, ['sendStatus']);
         }
 
-        // Set the current site from the sendout's site ID
+        // Set the current site from the sendout’s site ID
         Craft::$app->getSites()->setCurrentSite($sendout->siteId);
+
+        if ($batch !== null) {
+            Campaign::$plugin->log('Sending batch {batch} of sendout "{title}".', [
+                'batch' => $batch,
+                'title' => $sendout->title,
+            ]);
+        }
     }
 
     /**
@@ -452,9 +459,7 @@ class SendoutsService extends Component
      */
     public function finaliseSending(SendoutElement $sendout): void
     {
-        // If not failed
         if ($sendout->sendStatus != SendoutElement::STATUS_FAILED) {
-            // Change sending status to sent
             if ($sendout->sendStatus == SendoutElement::STATUS_SENDING) {
                 $sendout->sendStatus = SendoutElement::STATUS_SENT;
             }
@@ -466,9 +471,12 @@ class SendoutsService extends Component
             ) {
                 $sendout->sendStatus = SendoutElement::STATUS_PENDING;
             }
+
+            Campaign::$plugin->log('Sending of sendout "{title}" completed.', [
+                'title' => $sendout->title,
+            ]);
         }
 
-        // Get campaign
         $campaign = $sendout->getCampaign();
 
         if ($campaign !== null) {

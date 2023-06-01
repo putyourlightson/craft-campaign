@@ -76,8 +76,9 @@ EOD;
         foreach ($sendouts as $sendout) {
             Campaign::$plugin->sendouts->pauseSendout($sendout);
 
-            // Log it
-            Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title]);
+            Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', [
+                'title' => $sendout->title,
+            ]);
         }
 
         $this->setMessage(Craft::t('campaign', 'Sendouts paused.'));

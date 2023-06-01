@@ -84,8 +84,9 @@ EOD;
         foreach ($sendouts as $sendout) {
             Campaign::$plugin->sendouts->cancelSendout($sendout);
 
-            // Log it
-            Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title]);
+            Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', [
+                'title' => $sendout->title,
+            ]);
         }
 
         $this->setMessage(Craft::t('campaign', 'Sendouts cancelled.'));

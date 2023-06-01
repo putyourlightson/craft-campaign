@@ -255,28 +255,21 @@ class SendoutsController extends Controller
      */
     public function actionSend(): ?Response
     {
-        // Require permission to send
         $this->requirePermission('campaign:sendSendouts');
-
         $this->requirePostRequest();
 
         $sendout = $this->_getSendoutFromParamId();
-
-        // Store current user ID
         $sendout->senderId = Craft::$app->getUser()->getId();
-
-        // Set status to pending
         $sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
-        // Save it
         if (!Craft::$app->getElements()->saveElement($sendout)) {
             return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
         }
 
-        // Log it
-        Campaign::$plugin->log('Sendout "{title}" initiated by "{username}".', ['title' => $sendout->title]);
+        Campaign::$plugin->log('Sendout "{title}" initiated by "{username}".', [
+            'title' => $sendout->title,
+        ]);
 
-        // Queue pending sendouts
         Campaign::$plugin->sendouts->queuePendingSendouts();
 
         return $this->asModelSuccess($sendout, Craft::t('campaign', 'Sendout saved.'), 'sendout');
@@ -322,8 +315,9 @@ class SendoutsController extends Controller
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be paused.'));
         }
 
-        // Log it
-        Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', ['title' => $sendout->title]);
+        Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', [
+            'title' => $sendout->title,
+        ]);
 
         return $this->asSuccess(Craft::t('campaign', 'Sendout paused.'));
     }
@@ -341,8 +335,9 @@ class SendoutsController extends Controller
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be cancelled.'));
         }
 
-        // Log it
-        Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', ['title' => $sendout->title]);
+        Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', [
+            'title' => $sendout->title,
+        ]);
 
         return $this->asSuccess(Craft::t('campaign', 'Sendout cancelled.'));
     }

@@ -27,7 +27,7 @@ class PendingContactsService extends Component
      */
     public function getPendingContactByPid(string $pid): ?PendingContactModel
     {
-        // Get pending contact
+        /** @var PendingContactRecord|null $pendingContactRecord */
         $pendingContactRecord = PendingContactRecord::find()
             ->andWhere(['pid' => $pid])
             ->one();
@@ -173,7 +173,9 @@ class PendingContactsService extends Component
             $pendingContactRecord->delete();
 
             if (!$softDeleted) {
-                Campaign::$plugin->log('Deleted pending contact "{email}" because they took too long to verify their email.', ['email' => $pendingContactRecord->email]);
+                Campaign::$plugin->log('Deleted pending contact "{email}" because they took too long to verify their email.', [
+                    'email' => $pendingContactRecord->email,
+                ]);
             }
         }
     }

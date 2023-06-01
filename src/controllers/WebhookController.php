@@ -288,7 +288,6 @@ class WebhookController extends Controller
      */
     private function _callWebhook(string $event, string $email = null): Response
     {
-        // Log request
         Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);
 
         if ($email === null) {

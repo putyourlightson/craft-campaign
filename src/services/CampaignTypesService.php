@@ -395,6 +395,8 @@ class CampaignTypesService extends Component
     {
         if (!isset($this->_campaignTypes)) {
             $campaignTypes = [];
+
+            /** @var CampaignTypeRecord[] $campaignTypeRecords */
             $campaignTypeRecords = CampaignTypeRecord::find()
                 ->innerJoinWith('site')
                 ->orderBy(['name' => SORT_ASC])

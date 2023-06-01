@@ -118,7 +118,9 @@ class ImportsController extends Controller
 
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
-            Campaign::$plugin->log('Couldn’t import file. {errors}', ['errors' => $errors]);
+            Campaign::$plugin->log('Couldn’t import file. {errors}', [
+                'errors' => $errors,
+            ]);
 
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import file.'));
 
@@ -136,7 +138,9 @@ class ImportsController extends Controller
             }
         }
 
-        Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', ['fileName' => $import->fileName]);
+        Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', [
+            'fileName' => $import->fileName,
+        ]);
 
         return $this->asModelSuccess($import, Craft::t('campaign', 'CSV file successfully queued for importing.'), 'import');
     }
@@ -186,7 +190,9 @@ class ImportsController extends Controller
 
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
-            Campaign::$plugin->log('Couldn’t import user group. {errors}', ['errors' => $errors]);
+            Campaign::$plugin->log('Couldn’t import user group. {errors}', [
+                'errors' => $errors,
+            ]);
 
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import user group.'));
 
@@ -204,8 +210,9 @@ class ImportsController extends Controller
             }
         }
 
-        // Log it
-        Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', ['userGroup' => $import->getUserGroup()->name]);
+        Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', [
+            'userGroup' => $import->getUserGroup()->name,
+        ]);
 
         return $this->asModelSuccess($import, Craft::t('campaign', 'User group successfully queued for importing.'), 'import');
     }

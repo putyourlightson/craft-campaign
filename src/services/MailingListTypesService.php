@@ -105,6 +105,7 @@ class MailingListTypesService extends Component
      */
     public function getMailingListTypeById(int $mailingListTypeId): ?MailingListTypeModel
     {
+        /** @var MailingListTypeRecord|null $mailingListTypeRecord */
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
             ->where([MailingListTypeRecord::tableName() . '.id' => $mailingListTypeId])
@@ -125,6 +126,7 @@ class MailingListTypesService extends Component
      */
     public function getMailingListTypeByHandle(string $mailingListTypeHandle): ?MailingListTypeModel
     {
+        /** @var MailingListTypeRecord|null $mailingListTypeRecord */
         $mailingListTypeRecord = MailingListTypeRecord::find()
             ->innerJoinWith('site')
             ->where([MailingListTypeRecord::tableName() . '.handle' => $mailingListTypeHandle])
@@ -420,6 +422,8 @@ class MailingListTypesService extends Component
     {
         if (!isset($this->_mailingListTypes)) {
             $mailingListTypes = [];
+
+            /** @var MailingListTypeRecord[] $mailingListTypeRecords */
             $mailingListTypeRecords = MailingListTypeRecord::find()
                 ->innerJoinWith('site')
                 ->orderBy(['name' => SORT_ASC])

@@ -92,7 +92,7 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         $timeLimit = ($timeLimit == 0) ? null : round($timeLimit * $settings->timeThreshold);
 
         // Prepare sending
-        Campaign::$plugin->sendouts->prepareSending($sendout);
+        Campaign::$plugin->sendouts->prepareSending($sendout, $this->batch);
 
         // Get pending recipients
         $pendingRecipients = $sendout->getPendingRecipients();
