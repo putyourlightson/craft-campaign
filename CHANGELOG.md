@@ -1,5 +1,8 @@
 # Release Notes for Campaign
 
+## 1.24.2 - 2023-06-01
+- Added logging of sendout batches and when a sendout completes ([#385](https://github.com/putyourlightson/craft-campaign/issues/385)).
+
 ## 1.24.1 - 2023-01-25
 ### Fixed
 - Fixed a bug where Date and Number fields could be misinterpreted in campaign live preview requests, if the site’s language used different date/number formats than the user’s formatting locale ([#360](https://github.com/putyourlightson/craft-campaign/issues/360)).
