@@ -205,6 +205,7 @@ class Campaign extends Plugin
         $this->_registerTemplateHooks();
         $this->_registerAllowedOrigins();
         $this->_registerTwigExtensions();
+        $this->_registerFeedMeElements();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -217,7 +218,6 @@ class Campaign extends Plugin
             $this->_registerCpUrlRules();
             $this->_registerUtilities();
             $this->_registerWidgets();
-            $this->_registerFeedMeElements();
         }
 
         // If Craft edition is pro
@@ -695,6 +695,24 @@ class Campaign extends Plugin
     }
 
     /**
+     * Registers Feed Me elements.
+     *
+     * @since 2.8.0
+     */
+    private function _registerFeedMeElements(): void
+    {
+        if (Craft::$app->getPlugins()->isPluginInstalled('feed-me')) {
+            Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
+                function(RegisterFeedMeElementsEvent $event) {
+                    $event->elements[] = CampaignFeedMeElement::class;
+                    $event->elements[] = ContactFeedMeElement::class;
+                    $event->elements[] = MailingListFeedMeElement::class;
+                }
+            );
+        }
+    }
+
+    /**
      * Registers native fields.
      *
      * @since 2.0.0
@@ -844,18 +862,5 @@ class Campaign extends Plugin
                 ];
             }
         );
-    }
-
-    private function _registerFeedMeElements(): void
-    {
-        if (Craft::$app->getPlugins()->isPluginInstalled('feed-me')) {
-            Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
-                function(RegisterFeedMeElementsEvent $event) {
-                    $event->elements[] = CampaignFeedMeElement::class;
-                    $event->elements[] = ContactFeedMeElement::class;
-                    $event->elements[] = MailingListFeedMeElement::class;
-                }
-            );
-        }
     }
 }

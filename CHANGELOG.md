@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.8.1 - 2023-06-08
+### Fixed
+Fixed a bug in which Feed Me imports were not working when the queue was being run via console requests ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).
+
 ## 2.8.0 - 2023-06-01
 ### Added
 - Added the ability to import campaigns, contacts and mailing lists using Feed Me ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).
