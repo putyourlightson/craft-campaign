@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.8.2 - 2023-06-12
+### Fixed
+Fixed a bug in which Campaign dashboard widgets were throwing exceptions when a date range was set ([#396](https://github.com/putyourlightson/craft-campaign/issues/396)).
+
 ## 2.8.1 - 2023-06-08
 ### Fixed
 Fixed a bug in which Feed Me imports were not working when the queue was being run via console requests ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).

@@ -110,8 +110,8 @@ class CampaignStatsWidget extends Widget
             $endDate = Db::prepareDateForDb($endDate);
 
             $campaignQuery->andWhere(['and',
-                ['>=', 'dateCreated', $startDate],
-                ['<', 'dateCreated', $endDate],
+                ['>=', '[[elements.dateCreated]]', $startDate],
+                ['<', '[[elements.dateCreated]]', $endDate],
             ]);
             $sendoutQuery->andWhere(['and',
                 ['>=', 'sendDate', $startDate],

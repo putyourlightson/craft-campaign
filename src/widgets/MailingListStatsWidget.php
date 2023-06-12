@@ -106,8 +106,8 @@ class MailingListStatsWidget extends Widget
             $endDate = Db::prepareDateForDb($endDate);
 
             $mailingListQuery->andWhere(['and',
-                ['>=', 'dateCreated', $startDate],
-                ['<', 'dateCreated', $endDate],
+                ['>=', '[[elements.dateCreated]]', $startDate],
+                ['<', '[[elements.dateCreated]]', $endDate],
             ]);
             $contactMailingListQuery->andWhere(['and',
                 ['>=', 'subscribed', $startDate],
