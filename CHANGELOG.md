@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.8.3 - Unreleased
+### Fixed
+Fixed a bug that was causing errors when updating search indexes when a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
+
 ## 2.8.2 - 2023-06-12
 ### Fixed
 Fixed a bug in which Campaign dashboard widgets were throwing exceptions when a date range was set ([#396](https://github.com/putyourlightson/craft-campaign/issues/396)).

@@ -1082,7 +1082,7 @@ class SendoutElement extends Element
     public function getSearchKeywords(string $attribute): string
     {
         if ($attribute == 'subject') {
-            return LitEmoji::unicodeToShortcode($this->{$attribute});
+            return LitEmoji::unicodeToShortcode($this->{$attribute} ?? '');
         }
 
         return parent::getSearchKeywords($attribute);
@@ -1259,7 +1259,7 @@ class SendoutElement extends Element
 
         if (Craft::$app->getDb()->getIsMysql()) {
             // Encode subject for emojis
-            $this->subject = LitEmoji::unicodeToShortcode($this->subject);
+            $this->subject = LitEmoji::unicodeToShortcode($this->subject ?? '');
         }
 
         if (Campaign::$plugin->settings->showSendoutTitleField === false) {
