@@ -105,9 +105,11 @@ class WebhookController extends Controller
                 $email = $body['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->_callWebhook('bounced', $email);
             }
+
+            return $this->_asRawFailure('Event `' . ($eventType ?? '') . '` not found.');
         }
 
-        return $this->_asRawFailure('Event not found.');
+        return $this->_asRawFailure('No event provided.');
     }
 
     /**
@@ -173,7 +175,11 @@ class WebhookController extends Controller
             return $this->_callWebhook('bounced', $email);
         }
 
-        return $this->_asRawFailure('Event not found.');
+        if ($event) {
+            return $this->_asRawFailure('Event `' . $event . '` not found.');
+        }
+
+        return $this->_asRawFailure('No event provided.');
     }
 
     /**
@@ -198,9 +204,13 @@ class WebhookController extends Controller
                     return $this->_callWebhook('bounced', $email);
                 }
             }
+
+            $eventTypes = array_filter(array_map(fn($event) => $event['event'] ?? null, $events));
+
+            return $this->_asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
         }
 
-        return $this->_asRawFailure('Event not found.');
+        return $this->_asRawFailure('No event provided.');
     }
 
     /**
@@ -250,7 +260,11 @@ class WebhookController extends Controller
             }
         }
 
-        return $this->_asRawFailure('Event not found.');
+        if ($eventType) {
+            return $this->_asRawFailure('Event `' . $eventType . '` not found.');
+        }
+
+        return $this->_asRawFailure('No event provided.');
     }
 
     /**
@@ -278,9 +292,13 @@ class WebhookController extends Controller
                     return $this->_callWebhook('bounced', $email);
                 }
             }
+
+            $eventTypes = array_filter(array_map(fn($event) => $event['event'] ?? null, $events));
+
+            return $this->_asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
         }
 
-        return $this->_asRawFailure('Event not found.');
+        return $this->_asRawFailure('No event provided.');
     }
 
     /**
@@ -291,7 +309,7 @@ class WebhookController extends Controller
         Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);
 
         if ($email === null) {
-            return $this->_asRawFailure('Email not found.');
+            return $this->_asRawFailure('No email provided.');
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);

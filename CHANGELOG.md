@@ -1,6 +1,9 @@
 # Release Notes for Campaign
 
 ## 2.8.3 - Unreleased
+### Changed
+- Logged messages now include the event that was passed into a webhook when a failure is encountered ([#398](https://github.com/putyourlightson/craft-campaign/issues/398)).
+
 ### Fixed
 Fixed a bug that was causing errors when updating search indexes when a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
 
