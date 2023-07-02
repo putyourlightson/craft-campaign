@@ -5,7 +5,8 @@
 - Logged messages now include the event that was passed into a webhook when a failure is encountered ([#398](https://github.com/putyourlightson/craft-campaign/issues/398)).
 
 ### Fixed
-Fixed a bug that was causing errors when updating search indexes when a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
+Fixed a bug that was causing errors when updating search indexes if a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
+Fixed a bug that was throwing an exception if the Feed Me package was removed but the plugin was still installed ([#400](https://github.com/putyourlightson/craft-campaign/issues/400)).
 
 ## 2.8.2 - 2023-06-12
 ### Fixed
