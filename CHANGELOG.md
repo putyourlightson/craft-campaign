@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.8.3 - Unreleased
+## 2.8.3 - 2023-07-17
 ### Changed
 - Logged messages now include the event that was passed into a webhook when a failure is encountered ([#398](https://github.com/putyourlightson/craft-campaign/issues/398)).
 
