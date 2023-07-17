@@ -5,16 +5,16 @@
 - Logged messages now include the event that was passed into a webhook when a failure is encountered ([#398](https://github.com/putyourlightson/craft-campaign/issues/398)).
 
 ### Fixed
-Fixed a bug that was causing errors when updating search indexes if a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
-Fixed a bug that was throwing an exception if the Feed Me package was removed but the plugin was still installed ([#400](https://github.com/putyourlightson/craft-campaign/issues/400)).
+- Fixed a bug that was causing errors when updating search indexes if a sendout’s subject was not set ([#397](https://github.com/putyourlightson/craft-campaign/issues/397)).
+- Fixed a bug that was throwing an exception if the Feed Me package was removed but the plugin was still installed ([#400](https://github.com/putyourlightson/craft-campaign/issues/400)).
 
 ## 2.8.2 - 2023-06-12
 ### Fixed
-Fixed a bug in which Campaign dashboard widgets were throwing exceptions when a date range was set ([#396](https://github.com/putyourlightson/craft-campaign/issues/396)).
+- Fixed a bug in which Campaign dashboard widgets were throwing exceptions when a date range was set ([#396](https://github.com/putyourlightson/craft-campaign/issues/396)).
 
 ## 2.8.1 - 2023-06-08
 ### Fixed
-Fixed a bug in which Feed Me imports were not working when the queue was being run via console requests ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).
+- Fixed a bug in which Feed Me imports were not working when the queue was being run via console requests ([#395](https://github.com/putyourlightson/craft-campaign/issues/395)).
 
 ## 2.8.0 - 2023-06-01
 ### Added
