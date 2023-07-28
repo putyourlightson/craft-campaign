@@ -19,15 +19,6 @@ use putyourlightson\campaigntests\unit\BaseUnitTest;
  */
 class SyncServiceTest extends BaseUnitTest
 {
-    protected function _before(): void
-    {
-        parent::_before();
-
-        Craft::$app->setEdition(Craft::Pro);
-        Campaign::$plugin->edition = Campaign::EDITION_PRO;
-        Campaign::$plugin->sync->registerUserEvents();
-    }
-
     public function _fixtures(): array
     {
         return [
@@ -35,6 +26,22 @@ class SyncServiceTest extends BaseUnitTest
                 'class' => MailingListsFixture::class,
             ],
         ];
+    }
+
+    /**
+     * @var MailingListElement
+     */
+    protected MailingListElement $mailingList;
+
+    protected function _before(): void
+    {
+        parent::_before();
+
+        $this->mailingList = MailingListElement::find()->one();
+
+        Craft::$app->setEdition(Craft::Pro);
+        Campaign::$plugin->edition = Campaign::EDITION_PRO;
+        Campaign::$plugin->sync->registerUserEvents();
     }
 
     public function testSyncUser(): void
@@ -45,9 +52,8 @@ class SyncServiceTest extends BaseUnitTest
         ]);
         $this->assertTrue(Craft::$app->userGroups->saveGroup($userGroup));
 
-        $mailingList = MailingListElement::find()->one();
-        $mailingList->syncedUserGroupId = $userGroup->id;
-        $this->assertTrue(Craft::$app->elements->saveElement($mailingList));
+        $this->mailingList->syncedUserGroupId = $userGroup->id;
+        $this->assertTrue(Craft::$app->elements->saveElement($this->mailingList));
 
         $email = 'syncuser@test.com';
         $user = new User([
@@ -65,6 +71,6 @@ class SyncServiceTest extends BaseUnitTest
 
         $mailingLists = $contact->getSubscribedMailingLists();
         $mailingListIds = collect($mailingLists)->pluck('id')->all();
-        $this->assertEquals([$mailingList->id], $mailingListIds);
+        $this->assertEquals([$this->mailingList->id], $mailingListIds);
     }
 }
