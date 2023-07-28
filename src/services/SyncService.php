@@ -192,8 +192,7 @@ class SyncService extends Component
             $contactMailingListRecord->source = $user->id;
 
             $contactMailingListRecord->save();
-        }
-        // If user is not active and contact mailing list record exists then delete it
+        } // If user is not active and contact mailing list record exists then delete it
         elseif ($user->status != User::STATUS_ACTIVE && $contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }

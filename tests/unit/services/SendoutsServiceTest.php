@@ -173,7 +173,7 @@ class SendoutsServiceTest extends BaseUnitTest
         Event::on(
             SendoutScheduleCondition::class,
             BaseCondition::EVENT_REGISTER_CONDITION_RULE_TYPES,
-            function(RegisterConditionRuleTypesEvent $event) {
+            function (RegisterConditionRuleTypesEvent $event) {
                 $event->conditionRuleTypes[] = TitleConditionRule::class;
             }
         );

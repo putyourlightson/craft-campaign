@@ -151,7 +151,7 @@ class CampaignsService extends Component
         $fromNameEmail = SettingsHelper::getFromNameEmail($campaign->siteId);
 
         // Compose message
-        /** @var Message $message*/
+        /** @var Message $message */
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($contact->email)
@@ -188,7 +188,7 @@ class CampaignsService extends Component
 
         // Clear up all registered files and asset bundles before rendering a template
         Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE,
-            function() {
+            function () {
                 Craft::$app->getView()->clear();
             }
         );

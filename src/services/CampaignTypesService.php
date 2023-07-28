@@ -93,7 +93,7 @@ class CampaignTypesService extends Component
         }
 
         return ArrayHelper::where($this->getAllCampaignTypes(),
-            function(CampaignTypeModel $campaignType) use ($user) {
+            function (CampaignTypeModel $campaignType) use ($user) {
                 return $user->can('campaign:campaigns:' . $campaignType->uid);
             },
             true, true, false
