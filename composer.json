@@ -1,60 +1,60 @@
 {
-    "name": "putyourlightson/craft-campaign",
-    "description": "Send and manage email campaigns, contacts and mailing lists.",
-    "version": "2.8.3",
-    "type": "craft-plugin",
-    "homepage": "https://putyourlightson.com/plugins/campaign",
-    "license": "proprietary",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "newsletter",
-        "email",
-        "mailing",
-        "list",
-        "contact"
-    ],
-    "require": {
-        "php": "^8.0.2",
-        "ext-dom": "*",
-        "craftcms/cms": "^4.0",
-        "matomo/device-detector": "^3.9.1|^4.0|^5.0|^6.0",
-        "html2text/html2text": "^4.3.1",
-        "elvanto/litemoji": "^3.0.1|^4.0",
-        "aws/aws-php-sns-message-validator": "^1.5"
-    },
-    "require-dev": {
-        "codeception/codeception": "^4.1.29",
-        "codeception/module-asserts": "^1.3.1",
-        "codeception/module-yii2": "^1.1.5",
-        "craftcms/ecs": "dev-main",
-        "craftcms/phpstan": "dev-main",
-        "yiisoft/yii2-redis": "^2.0",
-        "vlucas/phpdotenv": "^5.4.1"
-    },
-    "autoload": {
-        "psr-4": {
-          "putyourlightson\\campaign\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-          "putyourlightson\\campaigntests\\": "tests/"
-        }
-    },
-    "support": {
-        "docs": "https://putyourlightson.com/plugins/campaign",
-        "source": "https://github.com/putyourlightson/craft-campaign",
-        "issues": "https://github.com/putyourlightson/craft-campaign/issues"
-    },
-    "extra": {
-        "name": "Campaign",
-        "handle": "campaign",
-        "developer": "PutYourLightsOn",
-        "developerUrl": "https://putyourlightson.com/",
-        "documentationUrl": "https://putyourlightson.com/plugins/campaign",
-        "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
-        "class": "putyourlightson\\campaign\\Campaign"
+  "name": "putyourlightson/craft-campaign",
+  "description": "Send and manage email campaigns, contacts and mailing lists.",
+  "version": "2.8.4",
+  "type": "craft-plugin",
+  "homepage": "https://putyourlightson.com/plugins/campaign",
+  "license": "proprietary",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "newsletter",
+    "email",
+    "mailing",
+    "list",
+    "contact"
+  ],
+  "require": {
+    "php": "^8.0.2",
+    "ext-dom": "*",
+    "craftcms/cms": "^4.0",
+    "matomo/device-detector": "^3.9.1|^4.0|^5.0|^6.0",
+    "html2text/html2text": "^4.3.1",
+    "elvanto/litemoji": "^3.0.1|^4.0",
+    "aws/aws-php-sns-message-validator": "^1.5"
+  },
+  "require-dev": {
+    "codeception/codeception": "^4.1.29",
+    "codeception/module-asserts": "^1.3.1",
+    "codeception/module-yii2": "^1.1.5",
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "yiisoft/yii2-redis": "^2.0",
+    "vlucas/phpdotenv": "^5.4.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "putyourlightson\\campaign\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "putyourlightson\\campaigntests\\": "tests/"
+    }
+  },
+  "support": {
+    "docs": "https://putyourlightson.com/plugins/campaign",
+    "source": "https://github.com/putyourlightson/craft-campaign",
+    "issues": "https://github.com/putyourlightson/craft-campaign/issues"
+  },
+  "extra": {
+    "name": "Campaign",
+    "handle": "campaign",
+    "developer": "PutYourLightsOn",
+    "developerUrl": "https://putyourlightson.com/",
+    "documentationUrl": "https://putyourlightson.com/plugins/campaign",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
+    "class": "putyourlightson\\campaign\\Campaign"
+  }
 }

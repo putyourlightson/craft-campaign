@@ -107,15 +107,13 @@ class TrackerController extends BaseMessageController
         // Track unsubscribe
         $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
 
-        if ($mailingList === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
-        }
-
         if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        return $this->renderMessageTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
+        $unsubscribeSuccessTemplate = $mailingList ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : null;
+
+        return $this->renderMessageTemplate($unsubscribeSuccessTemplate, [
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
