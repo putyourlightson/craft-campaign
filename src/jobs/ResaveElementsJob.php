@@ -28,7 +28,7 @@ class ResaveElementsJob extends ResaveElements
     {
         // Register beforeSaveElement event, so we can update the element's site ID
         Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 /** @var Element $element */
                 $element = $event->element;
                 $element->siteId = $this->siteId ?? $element->siteId;

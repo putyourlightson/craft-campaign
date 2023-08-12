@@ -188,7 +188,7 @@ class CampaignsService extends Component
 
         // Clear up all registered files and asset bundles before rendering a template
         Event::on(View::class, View::EVENT_BEFORE_RENDER_TEMPLATE,
-            function () {
+            function() {
                 Craft::$app->getView()->clear();
             }
         );

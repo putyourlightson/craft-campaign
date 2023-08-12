@@ -122,7 +122,6 @@ class SendoutsService extends Component
         return $this->_getPendingRecipientsStandard($sendout);
     }
 
-
     /**
      * Returns the number of pending recipients, not including failed attempts.
      */
@@ -193,8 +192,7 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
-        }
-        /** @noinspection PhpRedundantCatchClauseInspection */
+        } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
             Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
@@ -284,8 +282,7 @@ class SendoutsService extends Component
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout, $mailingList);
-        }
-        /** @noinspection PhpRedundantCatchClauseInspection */
+        } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
@@ -743,7 +740,7 @@ class SendoutsService extends Component
         // Suppress markup errors and prepend XML tag to force utf-8 encoding (https://gist.github.com/Xeoncross/9401853)
         @$dom->loadHTML('<?xml encoding="utf-8"?>' . $body);
 
-        /** @var DOMElement[] $elements*/
+        /** @var DOMElement[] $elements */
         $elements = $dom->getElementsByTagName('a');
 
         foreach ($elements as $element) {

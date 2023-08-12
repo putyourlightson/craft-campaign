@@ -411,7 +411,7 @@ class Campaign extends Plugin
             'campaign/campaigns/<campaignTypeHandle:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
             'campaign/contacts/new' => 'campaign/contacts/create',
             'campaign/contacts/<elementId:\d+>' => 'elements/edit',
-            // TODO: remove in 3.0.0, when element index URLs include the source, added in Craft 4.3.0.
+            // TODO: remove in 5.0.0, when element index URLs include the source, added in Craft 4.3.0.
             'campaign/contacts/view/<sourceId:\d+>' => ['template' => 'campaign/contacts/view'],
             'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/import/_view'],
             'campaign/contacts/import' => 'campaign/imports/index',
@@ -469,7 +469,7 @@ class Campaign extends Plugin
      */
     private function _registerComponents(): void
     {
-        $this->set('mailer', fn () => $this->createMailer());
+        $this->set('mailer', fn() => $this->createMailer());
     }
 
     /**
@@ -480,7 +480,7 @@ class Campaign extends Plugin
     private function _registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('campaign', CampaignVariable::class);
@@ -514,7 +514,7 @@ class Campaign extends Plugin
     private function _registerElementTypes(): void
     {
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CampaignElement::class;
                 $event->types[] = ContactElement::class;
                 $event->types[] = MailingListElement::class;
@@ -529,7 +529,7 @@ class Campaign extends Plugin
      */
     private function _registerFieldTypes(): void
     {
-        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function (RegisterComponentTypesEvent $event) {
+        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = CampaignsField::class;
             $event->types[] = ContactsField::class;
             $event->types[] = MailingListsField::class;
@@ -542,7 +542,7 @@ class Campaign extends Plugin
     private function _registerAfterInstallEvent(): void
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     // Don't proceed if plugin exists in incoming project config, otherwise updates won't be applied
                     // https://github.com/putyourlightson/craft-campaign/issues/191
@@ -571,7 +571,7 @@ class Campaign extends Plugin
     private function _registerFieldEvents(): void
     {
         Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
-            function (FieldEvent $event) {
+            function(FieldEvent $event) {
                 if ($event->isNew === false) {
                     $this->segments->handleChangedField($event->field);
                 }
@@ -579,7 +579,7 @@ class Campaign extends Plugin
         );
 
         Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD,
-            function (FieldEvent $event) {
+            function(FieldEvent $event) {
                 $this->segments->handleDeletedField($event->field);
             }
         );
@@ -611,7 +611,7 @@ class Campaign extends Plugin
         Event::on(Sites::class, Sites::EVENT_AFTER_DELETE_SITE, [$this->mailingListTypes, 'handleDeletedSite']);
 
         // Rebuild project config data
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
             $event->config['campaign'] = ProjectConfigDataHelper::rebuildProjectConfig();
         });
     }
@@ -623,7 +623,7 @@ class Campaign extends Plugin
      */
     private function _registerTemplateHooks(): void
     {
-        Craft::$app->getView()->hook('cp.users.edit.details', function ($context) {
+        Craft::$app->getView()->hook('cp.users.edit.details', function($context) {
             /** @var User|null $user */
             $user = $context['user'] ?? null;
 
@@ -653,7 +653,7 @@ class Campaign extends Plugin
     private function _registerAllowedOrigins(): void
     {
         Event::on(PreviewController::class, Controller::EVENT_BEFORE_ACTION,
-            function (ActionEvent $event) {
+            function(ActionEvent $event) {
                 if ($event->action->id === 'preview') {
                     $origins = Craft::$app->getRequest()->getOrigin();
 
@@ -705,7 +705,7 @@ class Campaign extends Plugin
         // https://github.com/putyourlightson/craft-campaign/issues/400
         if (Craft::$app->getPlugins()->getPlugin('feed-me') !== null) {
             Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
-                function (RegisterFeedMeElementsEvent $event) {
+                function(RegisterFeedMeElementsEvent $event) {
                     $event->elements[] = CampaignFeedMeElement::class;
                     $event->elements[] = ContactFeedMeElement::class;
                     $event->elements[] = MailingListFeedMeElement::class;
@@ -722,7 +722,7 @@ class Campaign extends Plugin
     private function _registerNativeFields(): void
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
-            function (DefineFieldLayoutFieldsEvent $event) {
+            function(DefineFieldLayoutFieldsEvent $event) {
                 /** @var FieldLayout $fieldLayout */
                 $fieldLayout = $event->sender;
 
@@ -763,7 +763,7 @@ class Campaign extends Plugin
     private function _registerCpUrlRules(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            function(RegisterUrlRulesEvent $event) {
                 $event->rules = array_merge($event->rules, $this->getCpRoutes());
             }
         );
@@ -777,7 +777,7 @@ class Campaign extends Plugin
     private function _registerUtilities(): void
     {
         Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CampaignUtility::class;
             }
         );
@@ -791,7 +791,7 @@ class Campaign extends Plugin
     private function _registerWidgets(): void
     {
         Event::on(Dashboard::class, Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CampaignStatsWidget::class;
                 $event->types[] = MailingListStatsWidget::class;
             }
@@ -806,7 +806,7 @@ class Campaign extends Plugin
     private function _registerUserPermissions(): void
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function (RegisterUserPermissionsEvent $event) {
+            function(RegisterUserPermissionsEvent $event) {
                 $campaignTypePermissions = [];
                 foreach ($this->campaignTypes->getAllCampaignTypes() as $campaignType) {
                     $campaignTypePermissions['campaign:campaigns:' . $campaignType->uid] = [

@@ -93,7 +93,7 @@ class MailingListTypesService extends Component
         }
 
         return ArrayHelper::where($this->getAllMailingListTypes(),
-            function (MailingListTypeModel $mailingListType) use ($user) {
+            function(MailingListTypeModel $mailingListType) use ($user) {
                 return $user->can('campaign:mailingLists:' . $mailingListType->uid);
             },
             true, true, false
