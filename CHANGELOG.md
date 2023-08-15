@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.8.4 - Unreleased
+## 2.8.4 - 2023-08-15
 
 ### Fixed
 
