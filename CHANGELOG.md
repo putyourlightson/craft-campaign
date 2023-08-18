@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.8.5 - Unreleased
+
+### Added
+
+- Added the `has a value` and `is empty` options to legacy segment conditions ([#407](https://github.com/putyourlightson/craft-campaign/issues/407))
+
 ## 2.8.4 - 2023-08-15
 
 ### Fixed

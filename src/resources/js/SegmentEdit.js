@@ -17,6 +17,7 @@ Campaign.SegmentEdit = Garnish.Base.extend({
         this.addListener($element.find('.deleteAndCondition'), 'click', 'deleteAndCondition');
         this.addListener($element.find('.deleteOrCondition'), 'click', 'deleteOrCondition');
         this.addListener($element.find('.conditionField'), 'change', 'refreshConditions');
+        this.addListener($element.find('.conditionOperator'), 'change', 'refreshConditions');
     },
 
     addAndCondition: function(event) {
@@ -74,11 +75,15 @@ Campaign.SegmentEdit = Garnish.Base.extend({
                 $(this).closest('.orCondition').find('.conditionOperator').addClass('hidden').prop('disabled', true);
                 $(this).closest('.orCondition').find('.conditionOperator.' + field).removeClass('hidden').prop('disabled', false);
                 $(this).closest('.orCondition').find('.conditionValue').addClass('hidden').find('input, select').prop('disabled', true);
-                $(this).closest('.orCondition').find('.conditionValue.' + field).removeClass('hidden').find('input, select').prop('disabled', false);
-                $(this).closest('.orCondition').find('.conditionValue.' + field + '-' + unique).removeClass('hidden').find('input, select').prop('disabled', false);
 
-                if ($(this).closest('.orCondition').find('.conditionValue:visible').length === 0) {
-                    $(this).closest('.orCondition').find('.conditionValue.default').removeClass('hidden').find('input, select').prop('disabled', false);
+                const conditionOperator = $(this).closest('.orCondition').find('.conditionOperator.' + field).val();
+                if (conditionOperator !== 'empty' && conditionOperator !== 'notempty') {
+                    $(this).closest('.orCondition').find('.conditionValue.' + field).removeClass('hidden').find('input, select').prop('disabled', false);
+                    $(this).closest('.orCondition').find('.conditionValue.' + field + '-' + unique).removeClass('hidden').find('input, select').prop('disabled', false);
+
+                    if ($(this).closest('.orCondition').find('.conditionValue:visible').length === 0) {
+                        $(this).closest('.orCondition').find('.conditionValue.default').removeClass('hidden').find('input, select').prop('disabled', false);
+                    }
                 }
             });
         });

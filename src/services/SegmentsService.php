@@ -247,22 +247,27 @@ class SegmentsService extends Component
             foreach ($andCondition as $orCondition) {
                 $operator = $orCondition[0];
 
-                // If operator contains %v
-                if (str_contains($operator, '%v')) {
+                // Handle empty and not empty operators
+                if ($operator === 'empty') {
+                    $orCondition = [
+                        $orCondition[1] => '',
+                        $orCondition[1] => null,
+                    ];
+                } elseif ($operator === 'notempty') {
+                    $orCondition = [
+                        'or',
+                        ['not', [$orCondition[1] => '']],
+                        ['not', [$orCondition[1] => null]],
+                    ];
+                } elseif (str_contains($operator, '%v')) {
                     $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
                     $orCondition[2] = '%' . $orCondition[2];
                     $orCondition[3] = false;
-                }
-
-                // If operator contains v%
-                if (str_contains($operator, 'v%')) {
+                } elseif (str_contains($operator, 'v%')) {
                     $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
                     $orCondition[2] .= '%';
                     $orCondition[3] = false;
-                }
-
-                // Convert value if is a date
-                if (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
+                } elseif (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
                     $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
                 }
 

@@ -62,7 +62,11 @@ class SegmentHelper
                 'not like v%' => Craft::t('campaign', 'does not start with'),
                 'like %v' => Craft::t('campaign', 'ends with'),
                 'not like %v' => Craft::t('campaign', 'does not end with'),
-            ]
+            ],
+            [
+                'notempty' => Craft::t('campaign', 'has a value'),
+                'empty' => Craft::t('campaign', 'is empty'),
+            ],
         );
 
         $fieldOperators = [
@@ -109,12 +113,14 @@ class SegmentHelper
     {
         $settings = Campaign::$plugin->settings;
 
-        $availableFields = [[
-            'type' => Email::class,
-            'column' => 'email',
-            'name' => $settings->getEmailFieldLabel(),
-            'options' => null,
-        ]];
+        $availableFields = [
+            [
+                'type' => Email::class,
+                'column' => 'email',
+                'name' => $settings->getEmailFieldLabel(),
+                'options' => null,
+            ],
+        ];
 
         // Get contact fields
         $fields = Campaign::$plugin->settings->getContactFields();
