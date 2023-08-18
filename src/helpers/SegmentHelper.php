@@ -73,6 +73,10 @@ class SegmentHelper
                 'not like v%' => Craft::t('campaign', 'does not start with'),
                 'like %v' => Craft::t('campaign', 'ends with'),
                 'not like %v' => Craft::t('campaign', 'does not end with'),
+            ],
+            [
+                'notempty' => Craft::t('campaign', 'has a value'),
+                'empty' => Craft::t('campaign', 'is empty'),
             ]
         );
 
