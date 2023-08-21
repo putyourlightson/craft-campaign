@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added the `has a value` and `is empty` options to segment conditions ([#407](https://github.com/putyourlightson/craft-campaign/issues/407))
+- Added the `has a value` and `is empty` options to segment conditions ([#407](https://github.com/putyourlightson/craft-campaign/issues/407)).
 ## 1.24.2 - 2023-06-01
 - Added logging of sendout batches and when a sendout completes ([#385](https://github.com/putyourlightson/craft-campaign/issues/385)).
 
