@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.24.3 - Unreleased
+## 1.24.3 - 2023-08-21
 
 ### Added
 
