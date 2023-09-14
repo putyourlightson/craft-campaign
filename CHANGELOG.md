@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.8.6 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which Campaign, Contact and Mailing List element types were not being registered by the Feed Me plugin ([#412](https://github.com/putyourlightson/craft-campaign/issues/412)).
+
 ## 2.8.5 - 2023-08-21
 
 ### Added

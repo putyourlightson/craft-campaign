@@ -36,6 +36,7 @@ use craft\services\ProjectConfig;
 use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\services\Utilities;
+use craft\web\Application;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
@@ -701,17 +702,20 @@ class Campaign extends Plugin
      */
     private function _registerFeedMeElements(): void
     {
-        // Ensure that the plugin is enabled and exists
+        // Ensure that the plugin is enabled and exists after application initialisation.
         // https://github.com/putyourlightson/craft-campaign/issues/400
-        if (Craft::$app->getPlugins()->getPlugin('feed-me') !== null) {
-            Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
-                function(RegisterFeedMeElementsEvent $event) {
-                    $event->elements[] = CampaignFeedMeElement::class;
-                    $event->elements[] = ContactFeedMeElement::class;
-                    $event->elements[] = MailingListFeedMeElement::class;
-                }
-            );
-        }
+        // https://github.com/putyourlightson/craft-campaign/issues/412
+        Event::on(Application::class, Application::EVENT_INIT, function() {
+            if (Craft::$app->getPlugins()->getPlugin('feed-me') !== null) {
+                Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
+                    function(RegisterFeedMeElementsEvent $event) {
+                        $event->elements[] = CampaignFeedMeElement::class;
+                        $event->elements[] = ContactFeedMeElement::class;
+                        $event->elements[] = MailingListFeedMeElement::class;
+                    }
+                );
+            }
+        });
     }
 
     /**
