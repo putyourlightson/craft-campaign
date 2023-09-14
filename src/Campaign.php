@@ -702,9 +702,10 @@ class Campaign extends Plugin
      */
     private function _registerFeedMeElements(): void
     {
-        // Ensure that the plugin is enabled and exists after application initialisation.
+        // Ensure that the plugin is enabled and exists on application initialisation.
         // https://github.com/putyourlightson/craft-campaign/issues/400
         // https://github.com/putyourlightson/craft-campaign/issues/412
+        // TODO: replace with `Application::onInit()` in 5.0.0
         Event::on(Application::class, Application::EVENT_INIT, function() {
             if (Craft::$app->getPlugins()->getPlugin('feed-me') !== null) {
                 Event::on(FeedMeElements::class, FeedMeElements::EVENT_REGISTER_FEED_ME_ELEMENTS,
