@@ -2,6 +2,10 @@
 
 ## 2.8.6 - Unreleased
 
+### Changed
+
+- Improvements to the French translation.
+
 ### Fixed
 
 - Fixed a bug in which Campaign, Contact and Mailing List element types were not being registered by the Feed Me plugin ([#412](https://github.com/putyourlightson/craft-campaign/issues/412)).

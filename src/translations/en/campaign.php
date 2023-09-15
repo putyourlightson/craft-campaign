@@ -9,7 +9,7 @@
  * @author    PutYourLightsOn
  * @package   Campaign
  * @since     1.0.0
-*/
+ */
 return [
     'Plugin Name' => 'Campaign',
     // -------------------------------------------------------------------------
@@ -17,7 +17,7 @@ return [
     '“{name}” Mailing Lists' => '',
     '(reply to {email})' => '',
     '{count} pending sendout(s) queued.' => '',
-    '{num, number} {num, plural, =1{mailing list} other{mailing lists}}' => '',
+    '{num, plural, =1{mailing list} other{mailing lists}}' => '',
     'A contact with that email address could not be found.' => '',
     'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => '',

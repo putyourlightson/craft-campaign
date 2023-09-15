@@ -10,7 +10,7 @@
  * @author    Scandella
  * @package   Campaign
  * @since     1.22.0
-*/
+ */
 return [
     'Plugin Name' => 'Newsletters',
     // -------------------------------------------------------------------------
@@ -18,7 +18,7 @@ return [
     '“{name}” Mailing Lists' => '“{name}” Listes d’envoi',
     '(reply to {email})' => '(répondre à {email})',
     '{count} pending sendout(s) queued.' => '{count} envoi(s) en attente.',
-    '{num, number} {num, plural, =1{mailing list} other{mailing lists}}' => '',
+    '{num, plural, =1{mailing list} other{mailing lists}}' => '{num, plural, =1{liste de diffusion} other{listes de diffusion}}',
     'A contact with that email address could not be found.' => 'Le contact avec cette adresse email n’a pas été trouvé.',
     'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => 'Un contact avec l’email "{email}" existe déjà. [View contact &raquo;]({url})',
     'A CSV file must be selected to upload.' => 'Un fichier CSV est requis.',
@@ -118,7 +118,7 @@ return [
     'Cancel' => 'Annuler',
     'Cancelled' => 'Annulé',
     'Changing this can lead to sent campaigns not being reachable and other undesirable results.' => 'Changer ce paramètre aura pour conséquence des newsletters introuvables et d’autres résultats indésirables.',
-	'Chart unavailable when anonymous tracking is enabled.' => 'Le graphique est indisponible lorsque le suivi anonyme est activé.',
+    'Chart unavailable when anonymous tracking is enabled.' => 'Le graphique est indisponible lorsque le suivi anonyme est activé.',
     'Choose a campaign' => 'Choisissez une newsletter',
     'Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers.' => 'Choisissez un fichier CSV (valeurs séparées par des virgules) pour importer les données de contact. La première ligne du fichier doit contenir les en-têtes de colonne.',
     'Choose a mailing list to sync. ' => 'Choisissez une liste de diffusion à synchroniser.',

@@ -10,7 +10,7 @@
  * @author    Andreas Becker
  * @package   Campaign
  * @since     1.23.0
-*/
+ */
 return [
     'Plugin Name' => 'Campaign',
     // -------------------------------------------------------------------------
@@ -18,7 +18,7 @@ return [
     '“{name}” Mailing Lists' => '',
     '(reply to {email})' => '(an {email} antworten)',
     '{count} pending sendout(s) queued.' => '{count} Sendung(en) in Warteschlange',
-    '{num, number} {num, plural, =1{mailing list} other{mailing lists}}' => '',
+    '{num, plural, =1{mailing list} other{mailing lists}}' => '{num, plural, =1{Mailing-Liste} other{Mailing-Listen}}',
     'A contact with that email address could not be found.' => 'Es wurde kein Kontakt mit dieser E-Mail-Adresse gefunden.',
     'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
     'A CSV file must be selected to upload.' => 'Es muss eine CSV-Datei zum Hochladen ausgewählt werden.',
