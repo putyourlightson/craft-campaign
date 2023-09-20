@@ -1,10 +1,13 @@
 # Release Notes for Campaign
 
+## 1.24.4 - 2023-09-20
+### Fixed
+- Fixed a bug in which the cached sendout element view was not invalidated after a sendout completed ([#416](https://github.com/putyourlightson/craft-campaign/issues/416)).
+
 ## 1.24.3 - 2023-08-21
-
 ### Added
-
 - Added the `has a value` and `is empty` options to segment conditions ([#407](https://github.com/putyourlightson/craft-campaign/issues/407)).
+
 ## 1.24.2 - 2023-06-01
 - Added logging of sendout batches and when a sendout completes ([#385](https://github.com/putyourlightson/craft-campaign/issues/385)).
 

@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\services;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use craft\queue\Queue;
+use craft\services\Elements;
 use craft\web\View;
 use DateTime;
 use DOMDocument;
@@ -791,7 +792,17 @@ class SendoutsService extends Component
         // Set attributes from sendout's fields
         $sendoutRecord->setAttributes($sendout->toArray($fields), false);
 
-        return $sendoutRecord->save();
+        if (!$sendoutRecord->save()) {
+            return false;
+        }
+
+        // Invalidate caches for the sendout, since the update may have been
+        // made programmatically.
+        if (method_exists(Craft::$app->getElements(), 'invalidateCachesForElement')) {
+            Craft::$app->getElements()->invalidateCachesForElement($sendout);
+        }
+
+        return true;
     }
 
     /**
