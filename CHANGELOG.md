@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.8.7 - 2023-09-25
+
+### Fixed
+
+- Fixed relation field values not saving in Craft 4.5.4 and above ([#414](https://github.com/putyourlightson/craft-campaign/issues/414)).
+
 ## 2.8.6 - 2023-09-20
 
 ### Changed
