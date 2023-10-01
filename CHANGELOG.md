@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.8.8 - Unreleased
+
+### Fixed
+
+- Fixed the email settings being overwritten when contact settings were saved ([#421](https://github.com/putyourlightson/craft-campaign/issues/421)).
+
 ## 2.8.7 - 2023-09-25
 
 ### Fixed

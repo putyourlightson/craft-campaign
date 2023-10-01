@@ -52,7 +52,7 @@ class SettingsController extends BaseSettingsController
      * Edit email settings.
      *
      * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
-     * @param TransportAdapterInterface|null $adapter  The transport adapter, if there were any validation errors.
+     * @param TransportAdapterInterface|null $adapter The transport adapter, if there were any validation errors.
      */
     public function actionEditEmail(SettingsModel $settings = null, TransportAdapterInterface $adapter = null): Response
     {
@@ -239,7 +239,7 @@ class SettingsController extends BaseSettingsController
     {
         $this->requirePostRequest();
 
-        $settings = $this->_getEmailSettingsFromPost();
+        $settings = Campaign::$plugin->settings;
 
         $settings->enableAnonymousTracking = Craft::$app->getRequest()->getBodyParam('enableAnonymousTracking', $settings->enableAnonymousTracking);
 
