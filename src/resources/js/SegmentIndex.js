@@ -136,7 +136,7 @@ Campaign.SegmentIndex = Craft.BaseElementIndex.extend({
         // Update the URL if we're on the Segments index
         // ---------------------------------------------------------------------
 
-        if (this.settings.context == 'index' && typeof history !== 'undefined') {
+        if (this.settings.context === 'index' && typeof history !== 'undefined') {
             let uri = 'campaign/segments';
 
             if (selectedSourceHandle) {

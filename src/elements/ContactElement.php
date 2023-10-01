@@ -169,7 +169,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    protected static function defineSources(string $context = null): array
+    protected static function defineSources(string $context): array
     {
         $sources = [
             [

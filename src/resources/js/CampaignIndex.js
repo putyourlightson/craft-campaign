@@ -141,7 +141,7 @@ Campaign.CampaignIndex = Craft.BaseElementIndex.extend({
         // Update the URL if we're on the Campaigns index
         // ---------------------------------------------------------------------
 
-        if (this.settings.context == 'index' && typeof history !== 'undefined') {
+        if (this.settings.context === 'index' && typeof history !== 'undefined') {
             let uri = 'campaign/campaigns';
 
             if (selectedSourceHandle) {

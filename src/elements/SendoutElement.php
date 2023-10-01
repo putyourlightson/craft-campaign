@@ -224,7 +224,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    protected static function defineSources(string $context = null): array
+    protected static function defineSources(string $context): array
     {
         $sources = [
             [
@@ -568,7 +568,7 @@ class SendoutElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['sendoutType', ], 'required'];
+        $rules[] = [['sendoutType'], 'required'];
         $rules[] = [['fromName', 'fromEmail', 'subject', 'campaignId'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['contactIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
         $rules[] = [['mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];

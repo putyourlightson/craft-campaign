@@ -7,7 +7,9 @@ namespace putyourlightson\campaign\fields;
 
 use Craft;
 use craft\elements\conditions\ElementConditionInterface;
+use craft\elements\ElementCollection;
 use craft\fields\BaseRelationField;
+use putyourlightson\campaign\elements\db\MailingListElementQuery;
 use putyourlightson\campaign\elements\MailingListElement;
 
 /**
@@ -37,6 +39,14 @@ class MailingListsField extends BaseRelationField
     public static function defaultSelectionLabel(): string
     {
         return Craft::t('campaign', 'Add a mailing list');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function valueType(): string
+    {
+        return sprintf('\\%s|\\%s<\\%s>', MailingListElementQuery::class, ElementCollection::class, MailingListElement::class);
     }
 
     /**

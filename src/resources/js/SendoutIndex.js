@@ -136,7 +136,7 @@ Campaign.SendoutIndex = Craft.BaseElementIndex.extend({
         // Update the URL if we're on the Sendouts index
         // ---------------------------------------------------------------------
 
-        if (this.settings.context == 'index' && typeof history !== 'undefined') {
+        if (this.settings.context === 'index' && typeof history !== 'undefined') {
             let uri = 'campaign/sendouts';
 
             if (selectedSourceHandle) {
