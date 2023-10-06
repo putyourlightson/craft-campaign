@@ -151,6 +151,13 @@ class SettingsModel extends Model
     public int $sendoutJobTtr = 300;
 
     /**
+     * The priority to give the sendout cache job (the lower the number, the higher the priority).
+     *
+     * @since 2.9.0
+     */
+    public ?int $sendoutJobPriority = null;
+
+    /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
      */
     public bool $geoIp = false;

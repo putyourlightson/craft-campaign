@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
-## 2.8.8 - Unreleased
+## 2.9.0 - Unreleased
+
+### Added
+
+- Added the `sendoutJobPriority` config setting that allows changing the priority of sendout jobs ([#422](https://github.com/putyourlightson/craft-campaign/issues/422)).
 
 ### Changed
 

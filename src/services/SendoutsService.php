@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
+use craft\helpers\Queue;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use DateTime;
@@ -152,13 +153,12 @@ class SendoutsService extends Component
             /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
                 if ($sendout->getCanSendNow()) {
-                    $queue = Craft::$app->getQueue();
-
                     // Add sendout job to queue
-                    $queue->push(new SendoutJob([
+                    $job = new SendoutJob([
                         'sendoutId' => $sendout->id,
                         'title' => $sendout->title,
-                    ]));
+                    ]);
+                    Queue::push($job, Campaign::$plugin->settings->sendoutJobPriority);
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
                     $this->_updateSendoutRecord($sendout, ['sendStatus']);
