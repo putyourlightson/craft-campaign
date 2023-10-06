@@ -107,7 +107,7 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the sendout's pending recipients.
+     * Returns the sendout’s pending recipients.
      */
     public function getPendingRecipients(SendoutElement $sendout): array
     {
@@ -644,6 +644,7 @@ class SendoutsService extends Component
             ->groupBy('contactId')
             ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
+            ->orderBy(['contactId' => SORT_ASC])
             ->asArray()
             ->all();
     }

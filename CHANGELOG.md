@@ -2,6 +2,10 @@
 
 ## 2.8.8 - Unreleased
 
+### Changed
+
+- Sendouts are now sent to contacts in a deterministic order ([#423](https://github.com/putyourlightson/craft-campaign/issues/423)).
+
 ### Fixed
 
 - Fixed the email settings being overwritten when contact settings were saved ([#421](https://github.com/putyourlightson/craft-campaign/issues/421)).
