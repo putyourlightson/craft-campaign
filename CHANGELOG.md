@@ -13,6 +13,7 @@
 ### Fixed
 
 - Fixed the email settings being overwritten when contact settings were saved ([#421](https://github.com/putyourlightson/craft-campaign/issues/421)).
+- Fixed the status filter for campaigns, mailing lists and contacts selectable in sendouts ([#419](https://github.com/putyourlightson/craft-campaign/issues/419)).
 
 ## 2.8.7 - 2023-09-25
 

@@ -30,6 +30,9 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
+use putyourlightson\campaign\validators\SendableCampaignValidator;
+use putyourlightson\campaign\validators\SendableContactsValidator;
+use putyourlightson\campaign\validators\SendableMailingListsValidator;
 use yii\web\Response;
 
 /**
@@ -569,9 +572,10 @@ class SendoutElement extends Element
     {
         $rules = parent::defineRules();
         $rules[] = [['sendoutType'], 'required'];
-        $rules[] = [['fromName', 'fromEmail', 'subject', 'campaignId'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
-        $rules[] = [['contactIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
-        $rules[] = [['mailingListIds'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
+        $rules[] = [['fromName', 'fromEmail', 'subject'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['campaignId'], SendableCampaignValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['mailingListIds'], SendableMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
+        $rules[] = [['contactIds'], SendableContactsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject'], 'string', 'max' => 255];

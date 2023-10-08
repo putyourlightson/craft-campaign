@@ -15,7 +15,8 @@
         }) }}
     {% else %}
         {% if sendout.campaign %}
-            <span class="status {{ sendout.campaign.status }}"></span><a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
+            <span class="status {{ sendout.campaign.status }}"></span>
+            <a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
         {% else %}
             {{ 'Campaign not found.'|t('campaign') }}
         {% endif %}
@@ -83,12 +84,12 @@
                 name: 'contactIds',
                 elementType: contactElementType,
                 selectionLabel: "Add a contact"|t('campaign'),
-                criteria: contactElementCriteria,
                 elements: sendout.contacts,
             }) }}
         {% else %}
             {% for contact in sendout.contacts %}
-                <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+                <span class="status {{ contact.status }}"></span>
+                <a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
                 <br/>
             {% endfor %}
         {% endif %}
@@ -112,7 +113,8 @@
             }) }}
         {% else %}
             {% for mailingList in sendout.mailingLists %}
-                <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+                <span class="status {{ mailingList.status }}"></span>
+                <a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
                 <br/>
             {% endfor %}
         {% endif %}
@@ -136,7 +138,8 @@
             }) }}
         {% else %}
             {% for excludedMailingList in sendout.excludedMailingLists %}
-                <span class="status {{ excludedMailingList.status }}"></span><a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
+                <span class="status {{ excludedMailingList.status }}"></span>
+                <a href="{{ excludedMailingList.cpEditUrl }}" class="go" target="_blank">{{ excludedMailingList.title }}</a>
                 <br/>
             {% endfor %}
             {% if sendout.excludedMailingLists|length == 0 %}
@@ -163,7 +166,8 @@
                 }) }}
             {% else %}
                 {% for segment in sendout.segments %}
-                    <span class="status {{ segment.status }}"></span><a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
+                    <span class="status {{ segment.status }}"></span>
+                    <a href="{{ segment.cpEditUrl }}" class="go" target="_blank">{{ segment.title }}</a>
                     <br/>
                 {% endfor %}
                 {% if sendout.segments|length == 0 %}
@@ -212,7 +216,8 @@
     {% else %}
         {% set notificationContacts = sendout.getNotificationContacts() %}
         {% for contact in notificationContacts %}
-            <span class="status {{ contact.status }}"></span><a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
+            <span class="status {{ contact.status }}"></span>
+            <a href="{{ contact.cpEditUrl }}" class="go" target="_blank">{{ contact.email }}</a>
             <br/>
         {% endfor %}
         {% if notificationContacts is empty %}

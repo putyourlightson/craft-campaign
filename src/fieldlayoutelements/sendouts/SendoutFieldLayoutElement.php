@@ -65,17 +65,12 @@ class SendoutFieldLayoutElement extends BaseNativeField
             'campaignElementType' => CampaignElement::class,
             'campaignElementCriteria' => [
                 'siteId' => $siteId,
-                'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
             ],
             'mailingListElementType' => MailingListElement::class,
             'mailingListElementCriteria' => [
                 'siteId' => $siteId,
-                'status' => Element::STATUS_ENABLED,
             ],
             'contactElementType' => ContactElement::class,
-            'contactElementCriteria' => [
-                'status' => Element::STATUS_ENABLED,
-            ],
         ];
 
         if (Campaign::$plugin->getIsPro()) {
