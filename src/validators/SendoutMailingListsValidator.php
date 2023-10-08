@@ -13,8 +13,13 @@ use putyourlightson\campaign\elements\SendoutElement;
 /**
  * @since 2.9.0
  */
-class SendableExcludedMailingListsValidator extends UniqueValidator
+class SendoutMailingListsValidator extends UniqueValidator
 {
+    /**
+     * @inheritdoc
+     */
+    public $skipOnEmpty = false;
+
     /**
      * @inheritdoc
      *
@@ -22,12 +27,18 @@ class SendableExcludedMailingListsValidator extends UniqueValidator
      */
     public function validateAttribute($model, $attribute): void
     {
-        $mailingLists = $model->getExcludedMailingLists();
+        $mailingLists = $model->getMailingLists();
+
+        if (empty($mailingLists)) {
+            $this->addError($model, $attribute, Craft::t('campaign', 'At least one mailing list must be selected.'));
+
+            return;
+        }
 
         foreach ($mailingLists as $mailingList) {
             $status = $mailingList->getStatus();
             if ($status !== Element::STATUS_ENABLED) {
-                $this->addError($model, $attribute, Craft::t('campaign', 'One or more disabled excluded mailing lists were selected.'));
+                $this->addError($model, $attribute, Craft::t('campaign', 'One or more disabled mailing lists were selected.'));
 
                 return;
             }

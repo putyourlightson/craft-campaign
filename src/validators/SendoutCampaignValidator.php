@@ -13,7 +13,7 @@ use putyourlightson\campaign\elements\SendoutElement;
 /**
  * @since 2.9.0
  */
-class SendableCampaignValidator extends UniqueValidator
+class SendoutCampaignValidator extends UniqueValidator
 {
     /**
      * @inheritdoc

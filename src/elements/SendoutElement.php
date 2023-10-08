@@ -30,11 +30,11 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
 use putyourlightson\campaign\records\SendoutRecord;
-use putyourlightson\campaign\validators\SendableCampaignValidator;
-use putyourlightson\campaign\validators\SendableContactsValidator;
-use putyourlightson\campaign\validators\SendableExcludedMailingListsValidator;
-use putyourlightson\campaign\validators\SendableMailingListsValidator;
-use putyourlightson\campaign\validators\SendableSegmentsValidator;
+use putyourlightson\campaign\validators\SendoutCampaignValidator;
+use putyourlightson\campaign\validators\SendoutContactsValidator;
+use putyourlightson\campaign\validators\SendoutExcludedMailingListsValidator;
+use putyourlightson\campaign\validators\SendoutMailingListsValidator;
+use putyourlightson\campaign\validators\SendoutSegmentsValidator;
 use yii\web\Response;
 
 /**
@@ -575,11 +575,11 @@ class SendoutElement extends Element
         $rules = parent::defineRules();
         $rules[] = [['sendoutType'], 'required'];
         $rules[] = [['fromName', 'fromEmail', 'subject'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
-        $rules[] = [['campaignId'], SendableCampaignValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
-        $rules[] = [['mailingListIds'], SendableMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
-        $rules[] = [['excludedMailingListIds'], SendableExcludedMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
-        $rules[] = [['contactIds'], SendableContactsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
-        $rules[] = [['segmentIds'], SendableSegmentsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['campaignId'], SendoutCampaignValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['mailingListIds'], SendoutMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
+        $rules[] = [['excludedMailingListIds'], SendoutExcludedMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
+        $rules[] = [['contactIds'], SendoutContactsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
+        $rules[] = [['segmentIds'], SendoutSegmentsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject'], 'string', 'max' => 255];
