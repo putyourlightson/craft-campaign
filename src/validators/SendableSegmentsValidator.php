@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\validators;
 
+use Craft;
 use craft\base\Element;
 use craft\validators\UniqueValidator;
 use putyourlightson\campaign\elements\SendoutElement;
