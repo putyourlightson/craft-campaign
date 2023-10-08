@@ -223,14 +223,12 @@ class SendoutsController extends Controller
         $variables['campaignElementType'] = CampaignElement::class;
         $variables['campaignElementCriteria'] = [
             'siteId' => $sendout->site->id,
-            'status' => [CampaignElement::STATUS_SENT, CampaignElement::STATUS_PENDING],
         ];
 
         // Mailing list element selector variables
         $variables['mailingListElementType'] = MailingListElement::class;
         $variables['mailingListElementCriteria'] = [
             'siteId' => $sendout->site->id,
-            'status' => MailingListElement::STATUS_ENABLED,
         ];
 
         if (Campaign::$plugin->getIsPro()) {
@@ -238,15 +236,11 @@ class SendoutsController extends Controller
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
                 'siteId' => $sendout->site->id,
-                'status' => SegmentElement::STATUS_ENABLED,
             ];
         }
 
         // Contact element selector variables
         $variables['contactElementType'] = ContactElement::class;
-        $variables['contactElementCriteria'] = [
-            'status' => ContactElement::STATUS_ACTIVE,
-        ];
 
         // Get test contacts
         $variables['testContacts'] = [];

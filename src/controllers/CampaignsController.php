@@ -142,9 +142,6 @@ class CampaignsController extends Controller
 
         // Contact element selector variables
         $variables['contactElementType'] = ContactElement::class;
-        $variables['contactElementCriteria'] = [
-            'status' => ContactElement::STATUS_ACTIVE,
-        ];
 
         // Get test contacts
         $variables['testContacts'] = $campaignType->getTestContactsWithDefault();
