@@ -38,7 +38,7 @@ class SendableCampaignValidator extends UniqueValidator
         $status = $campaign->getStatus();
 
         if ($status !== CampaignElement::STATUS_PENDING && $status !== CampaignElement::STATUS_SENT) {
-            $this->addError($model, $attribute, Craft::t('campaign', 'You have selected an unsendable campaign.'));
+            $this->addError($model, $attribute, Craft::t('campaign', 'An unsendable campaign has been selected.'));
         }
     }
 }

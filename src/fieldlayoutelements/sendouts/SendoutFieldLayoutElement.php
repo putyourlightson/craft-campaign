@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\fieldlayoutelements\sendouts;
 
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
 use craft\helpers\Template;
@@ -78,7 +77,6 @@ class SendoutFieldLayoutElement extends BaseNativeField
             $variables['segmentElementType'] = SegmentElement::class;
             $variables['segmentElementCriteria'] = [
                 'siteId' => $siteId,
-                'status' => Element::STATUS_ENABLED,
             ];
         }
 

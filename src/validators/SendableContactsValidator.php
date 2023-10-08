@@ -38,7 +38,7 @@ class SendableContactsValidator extends UniqueValidator
         foreach ($contacts as $contact) {
             $status = $contact->getStatus();
             if ($status !== ContactElement::STATUS_ACTIVE) {
-                $this->addError($model, $attribute, 'One or more disabled contacts were selected.');
+                $this->addError($model, $attribute, Craft::t('campaign', 'One or more disabled contacts were selected.'));
 
                 return;
             }
