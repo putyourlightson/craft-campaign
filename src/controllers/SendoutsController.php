@@ -211,9 +211,6 @@ class SendoutsController extends Controller
             'schedule' => $sendout->getSchedule(),
             'settings' => Campaign::$plugin->settings,
             'contactElementType' => ContactElement::class,
-            'contactElementCriteria' => [
-                'status' => ContactElement::STATUS_ACTIVE,
-            ],
             'testContacts' => $campaignType ? $campaignType->getTestContactsWithDefault() : [],
             'actions' => [],
             'system' => [
