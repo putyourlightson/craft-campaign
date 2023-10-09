@@ -13,7 +13,7 @@
 {% block content %}
     {% if craft.campaign.allMailingListTypes|length == 0 %}
         <div class="zilch">
-            <p>No mailing list types exist yet.</p>
+            <p>{{ 'No mailing list types exist.'|t('campaign') }}</p>
             <div style="font-size: 14px;">
                 <a href="{{ url('campaign/settings/mailinglisttypes/new') }}" class="btn submit add icon">
                     {{ 'New mailing list type'|t('campaign') }}
