@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.24.5 - Unreleased
+## 1.24.5 - 2023-10-09
 ### Fixed
 - Fixed the status filter for campaigns, mailing lists and contacts selectable in sendouts ([#419](https://github.com/putyourlightson/craft-campaign/issues/419)).
 
