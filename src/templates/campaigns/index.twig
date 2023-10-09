@@ -10,9 +10,24 @@
     'New {campaignType} campaign',
 ]) %}
 
+{% block content %}
+    {% if craft.campaign.allCampaignTypes|length == 0 %}
+        <div class="zilch">
+            <p>No campaign types exist yet.</p>
+            <div style="font-size: 14px;">
+                <a href="{{ url('campaign/settings/campaigntypes/new') }}" class="btn submit add icon">
+                    {{ 'New campaign type'|t('campaign') }}
+                </a>
+            </div>
+        </div>
+        {% block footer %}{% endblock %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
 
 {% if campaignTypeHandle is defined %}
     {% js %}
-        window.defaultCampaignTypeHandle = '{{ campaignTypeHandle|e('js') }}';
+    window.defaultCampaignTypeHandle = '{{ campaignTypeHandle|e('js') }}';
     {% endjs %}
 {% endif %}

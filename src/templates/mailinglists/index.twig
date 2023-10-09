@@ -10,9 +10,24 @@
     'New {mailingListType} mailing list',
 ]) %}
 
+{% block content %}
+    {% if craft.campaign.allMailingListTypes|length == 0 %}
+        <div class="zilch">
+            <p>No mailing list types exist yet.</p>
+            <div style="font-size: 14px;">
+                <a href="{{ url('campaign/settings/mailinglisttypes/new') }}" class="btn submit add icon">
+                    {{ 'New mailing list type'|t('campaign') }}
+                </a>
+            </div>
+        </div>
+        {% block footer %}{% endblock %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
 
 {% if mailingListTypeHandle is defined %}
     {% js %}
-        window.defaultMailingListTypeHandle = '{{ mailingListTypeHandle|e('js') }}';
+    window.defaultMailingListTypeHandle = '{{ mailingListTypeHandle|e('js') }}';
     {% endjs %}
 {% endif %}

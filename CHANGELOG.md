@@ -4,7 +4,9 @@
 
 ### Added
 
-- Added the `sendoutJobPriority` config setting that allows changing the priority of sendout jobs ([#422](https://github.com/putyourlightson/craft-campaign/issues/422)).
+- Added an info message and a new campaign type button to the campaign index page when no campaign types exist.
+- Added an info message and a new mailing list type button to the mailing list index page when no mailing list types exist.
+- Added the `sendoutJobPriority` config setting ([#422](https://github.com/putyourlightson/craft-campaign/issues/422)).
 
 ### Changed
 
