@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.9.1 - Unreleased
+
+### Changed
+
+- Disabled validation when saving elements in specific cases.
+
 ## 2.9.0 - 2023-10-09
 
 ### Added

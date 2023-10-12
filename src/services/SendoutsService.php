@@ -498,7 +498,7 @@ class SendoutsService extends Component
 
         $campaign->recipients = $recipients;
 
-        Craft::$app->getElements()->saveElement($campaign);
+        Craft::$app->getElements()->saveElement($campaign, false);
 
         // Send notification email
         $this->sendNotification($sendout);

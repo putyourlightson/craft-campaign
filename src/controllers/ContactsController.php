@@ -198,7 +198,7 @@ class ContactsController extends Controller
         $contact = $this->_getPostedContact();
         $contact->{$status} = new DateTime();
 
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        if (!Craft::$app->getElements()->saveElement($contact, false)) {
             return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t mark contact as ' . $status . '.'), 'contact');
         }
 
@@ -215,7 +215,7 @@ class ContactsController extends Controller
         $contact = $this->_getPostedContact();
         $contact->{$status} = null;
 
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        if (!Craft::$app->getElements()->saveElement($contact, false)) {
             return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t unmark contact as ' . $status . '.'), 'contact');
         }
 

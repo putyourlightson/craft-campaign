@@ -140,7 +140,7 @@ class CampaignsController extends Controller
         // Set closed date to now
         $campaign->dateClosed = new DateTime();
 
-        if (!Craft::$app->getElements()->saveElement($campaign)) {
+        if (!Craft::$app->getElements()->saveElement($campaign, false)) {
             return $this->asModelFailure($campaign, Craft::t('campaign', 'Couldn’t close campaign.'), 'campaign', [
                 'errors' => $campaign->getErrors(),
             ]);

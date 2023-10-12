@@ -87,7 +87,7 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = $userGroup->id;
-        Craft::$app->getElements()->saveElement($mailingList);
+        Craft::$app->getElements()->saveElement($mailingList, false);
         Campaign::$plugin->sync->queueSync($mailingList);
 
         return $this->asSuccess(Craft::t('campaign', 'Mailing list successfully queued for syncing with user group.'));
@@ -108,7 +108,7 @@ class SyncController extends Controller
         }
 
         $mailingList->syncedUserGroupId = null;
-        Craft::$app->getElements()->saveElement($mailingList);
+        Craft::$app->getElements()->saveElement($mailingList, false);
 
         return $this->asSuccess(Craft::t('campaign', 'Syncing successfully removed.'));
     }

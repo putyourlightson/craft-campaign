@@ -123,7 +123,7 @@ class PendingContactsService extends Component
         // Set field values
         $contact->setFieldValues(Json::decode($pendingContact->fieldData));
 
-        if (!Craft::$app->getElements()->saveElement($contact)) {
+        if (!Craft::$app->getElements()->saveElement($contact, false)) {
             return null;
         }
 
