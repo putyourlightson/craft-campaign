@@ -5,6 +5,7 @@
 ### Changed
 
 - Disabled validation when saving elements in specific cases.
+- Unsubscribed, complained and bounced counts are now included when syncing campaign reports.
 
 ## 2.9.0 - 2023-10-09
 

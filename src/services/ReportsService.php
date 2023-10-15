@@ -606,6 +606,9 @@ class ReportsService extends Component
             $campaignRecord->recipients = $this->_getCampaignColumnCount($campaignRecord->id, 'sent');
             $campaignRecord->opened = $this->_getCampaignColumnCount($campaignRecord->id, 'opened');
             $campaignRecord->clicked = $this->_getCampaignColumnCount($campaignRecord->id, 'clicked');
+            $campaignRecord->unsubscribed = $this->_getCampaignColumnCount($campaignRecord->id, 'unsubscribed');
+            $campaignRecord->complained = $this->_getCampaignColumnCount($campaignRecord->id, 'complained');
+            $campaignRecord->bounced = $this->_getCampaignColumnCount($campaignRecord->id, 'bounced');
             $campaignRecord->opens = $this->_getCampaignColumnSum($campaignRecord->id, 'opens');
             $campaignRecord->clicks = $this->_getCampaignColumnSum($campaignRecord->id, 'clicks');
             $campaignRecord->save();
