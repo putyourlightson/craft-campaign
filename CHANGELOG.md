@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.9.2 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which selecting a user group to import was throwing an exception ([#425](https://github.com/putyourlightson/craft-campaign/issues/425)).
+
 ## 2.9.1 - 2023-10-17
 
 ### Changed

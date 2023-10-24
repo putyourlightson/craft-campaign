@@ -113,6 +113,9 @@ class ImportsController extends Controller
         $this->requirePostRequest();
 
         $import = $this->_getImportModelFromParams();
+        $import->assetId = $this->request->getRequiredBodyParam('assetId');
+        $import->fileName = $this->request->getRequiredBodyParam('fileName');
+
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
         $import->mailingListId = $mailingListIds[0] ?? null;
 
@@ -186,7 +189,9 @@ class ImportsController extends Controller
 
         $import = $this->_getImportModelFromParams('field_');
         $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
+
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
+        $import->mailingListId = $mailingListIds[0] ?? null;
 
         if (!$import->validate()) {
             $errors = implode('. ', $import->getErrorSummary(true));
@@ -297,8 +302,7 @@ class ImportsController extends Controller
     private function _getImportModelFromParams(string $fieldIndexPrefix = null): ImportModel
     {
         $import = new ImportModel();
-        $import->assetId = $this->request->getRequiredBodyParam('assetId');
-        $import->fileName = $this->request->getRequiredBodyParam('fileName');
+
         $import->unsubscribe = (bool)$this->request->getBodyParam('unsubscribe');
         $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
         $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
