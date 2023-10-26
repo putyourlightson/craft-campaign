@@ -5,6 +5,9 @@
 
 namespace putyourlightson\campaign\helpers;
 
+use Craft;
+use LitEmoji\LitEmoji;
+
 /**
  * @since 1.8.2
  */
@@ -18,10 +21,48 @@ class SendoutHelper
         $unit = strtolower(substr($value, -1, 1));
 
         return (int)$value * match ($unit) {
-            'g' => pow(1024, 3),
-            'm' => pow(1024, 2),
-            'k' => 1024,
-            default => 1,
-        };
+                'g' => pow(1024, 3),
+                'm' => pow(1024, 2),
+                'k' => 1024,
+                default => 1,
+            };
+    }
+
+    /**
+     * Encodes emojis if necessary.
+     * TODO: remove in Campaign 3 when Craft 5 supports utf8mb4 encoding.
+     *
+     * @since 2.9.2
+     */
+    public static function encodeEmojis(string $value): string
+    {
+        if (!Craft::$app->getDb()->getIsMysql()) {
+            return $value;
+        }
+
+        if (empty($value)) {
+            return $value;
+        }
+
+        return LitEmoji::unicodeToShortcode($value);
+    }
+
+    /**
+     * Decodes emojis if necessary.
+     * TODO: remove in Campaign 3 when Craft 5 supports utf8mb4 encoding.
+     *
+     * @since 2.9.2
+     */
+    public static function decodeEmojis(string $value): string
+    {
+        if (!Craft::$app->getDb()->getIsMysql()) {
+            return $value;
+        }
+
+        if (empty($value)) {
+            return $value;
+        }
+
+        return LitEmoji::shortcodeToUnicode($value);
     }
 }

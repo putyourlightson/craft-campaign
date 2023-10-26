@@ -18,7 +18,6 @@ use craft\models\FieldLayout;
 use craft\validators\DateTimeValidator;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
-use LitEmoji\LitEmoji;
 use putyourlightson\campaign\base\ScheduleModel;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\actions\CancelSendouts;
@@ -26,6 +25,7 @@ use putyourlightson\campaign\elements\actions\EditSendout;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutTab;
+use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
@@ -543,11 +543,8 @@ class SendoutElement extends Element
     {
         parent::init();
 
-        if (Craft::$app->getDb()->getIsMysql()) {
-            // Decode emojis
-            $this->title = $this->title ? LitEmoji::shortcodeToUnicode($this->title) : '';
-            $this->subject = $this->subject ? LitEmoji::shortcodeToUnicode($this->subject) : '';
-        }
+        $this->title = SendoutHelper::decodeEmojis($this->title);
+        $this->subject = SendoutHelper::decodeEmojis($this->subject);
     }
 
     /**
@@ -1089,8 +1086,8 @@ class SendoutElement extends Element
      */
     public function getSearchKeywords(string $attribute): string
     {
-        if ($attribute == 'subject') {
-            return LitEmoji::unicodeToShortcode($this->{$attribute} ?? '');
+        if ($attribute == 'title' || $attribute == 'subject') {
+            return SendoutHelper::encodeEmojis($this->{$attribute});
         }
 
         return parent::getSearchKeywords($attribute);
@@ -1265,10 +1262,8 @@ class SendoutElement extends Element
             $this->lastSent = null;
         }
 
-        if (Craft::$app->getDb()->getIsMysql()) {
-            // Encode subject for emojis
-            $this->subject = LitEmoji::unicodeToShortcode($this->subject ?? '');
-        }
+        $this->title = SendoutHelper::encodeEmojis($this->title);
+        $this->subject = SendoutHelper::encodeEmojis($this->subject);
 
         if (Campaign::$plugin->settings->showSendoutTitleField === false) {
             $this->title = $this->subject;

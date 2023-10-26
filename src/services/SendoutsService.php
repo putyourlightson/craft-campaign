@@ -20,6 +20,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEmailEvent;
+use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\jobs\SendoutJob;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -156,7 +157,7 @@ class SendoutsService extends Component
                     // Add sendout job to queue
                     $job = new SendoutJob([
                         'sendoutId' => $sendout->id,
-                        'title' => $sendout->title,
+                        'title' => SendoutHelper::encodeEmojis($sendout->title),
                     ]);
                     Queue::push($job, Campaign::$plugin->settings->sendoutJobPriority);
 

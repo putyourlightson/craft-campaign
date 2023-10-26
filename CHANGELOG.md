@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed a bug in which selecting a user group to import was throwing an exception ([#425](https://github.com/putyourlightson/craft-campaign/issues/425)).
+- Fixed a bug in which saving a sendout with emojis in the subject could throw an error when adding the sendout to the queue  ([#426](https://github.com/putyourlightson/craft-campaign/issues/426)).
 
 ## 2.9.1 - 2023-10-17
 
