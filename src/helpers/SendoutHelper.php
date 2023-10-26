@@ -19,13 +19,14 @@ class SendoutHelper
     public static function memoryInBytes(string $value): int
     {
         $unit = strtolower(substr($value, -1, 1));
+        $unitValue = match ($unit) {
+            'g' => pow(1024, 3),
+            'm' => pow(1024, 2),
+            'k' => 1024,
+            default => 1,
+        };
 
-        return (int)$value * match ($unit) {
-                'g' => pow(1024, 3),
-                'm' => pow(1024, 2),
-                'k' => 1024,
-                default => 1,
-            };
+        return (int)$value * $unitValue;
     }
 
     /**
@@ -34,14 +35,14 @@ class SendoutHelper
      *
      * @since 2.9.2
      */
-    public static function encodeEmojis(string $value): string
+    public static function encodeEmojis(?string $value): string
     {
         if (!Craft::$app->getDb()->getIsMysql()) {
             return $value;
         }
 
         if (empty($value)) {
-            return $value;
+            return '';
         }
 
         return LitEmoji::unicodeToShortcode($value);
@@ -53,14 +54,14 @@ class SendoutHelper
      *
      * @since 2.9.2
      */
-    public static function decodeEmojis(string $value): string
+    public static function decodeEmojis(?string $value): string
     {
         if (!Craft::$app->getDb()->getIsMysql()) {
             return $value;
         }
 
         if (empty($value)) {
-            return $value;
+            return '';
         }
 
         return LitEmoji::shortcodeToUnicode($value);
