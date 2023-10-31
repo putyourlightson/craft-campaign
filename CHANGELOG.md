@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.9.3 - 2023-10-31
+
+### Fixed
+
+- Fixed a bug in which an exception could be thrown on the sendouts screen ([#429](https://github.com/putyourlightson/craft-campaign/issues/429)).
+
 ## 2.9.2 - 2023-10-26
 
 ### Fixed

@@ -54,7 +54,7 @@ class SendoutHelper
      *
      * @since 2.9.2
      */
-    public static function decodeEmojis(?string $value): string
+    public static function decodeEmojis(?string $value): ?string
     {
         if (!Craft::$app->getDb()->getIsMysql()) {
             return $value;
