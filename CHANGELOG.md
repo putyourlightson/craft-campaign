@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed a bug in which importing Campaign elements using the Feed Me plugin could throw errors when the queue job was run via the console ([#428](https://github.com/putyourlightson/craft-campaign/issues/428)).
+- Fixed a bug in which importing a user group could throw an exception in some scenarios ([#431](https://github.com/putyourlightson/craft-campaign/issues/431)).
 
 ## 2.9.3 - 2023-10-31
 

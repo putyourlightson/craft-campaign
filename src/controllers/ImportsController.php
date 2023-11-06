@@ -308,7 +308,7 @@ class ImportsController extends Controller
         $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
 
-        if ($fieldIndexPrefix) {
+        if (is_array($import->fieldIndexes) && $fieldIndexPrefix) {
             foreach ($import->fieldIndexes as $key => $fieldIndex) {
                 if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
                     $import->fieldIndexes[$key] = $fieldIndexPrefix . $fieldIndex;
