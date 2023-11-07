@@ -1,5 +1,15 @@
 # Release Notes for Campaign
 
+## 2.10.0 - Unreleased
+
+### Added
+
+- Added a webhook controller action for [MailerSend](https://www.mailersend.com/) ([#415](https://github.com/putyourlightson/craft-campaign/issues/415)).
+
+### Changed
+
+- Renamed the `mailgunWebhookSigningKey` setting to `webhookSigningKey`.
+
 ## 2.9.4 - 2023-11-07
 
 ### Fixed

@@ -45,8 +45,17 @@ class SettingsModel extends Model
     /**
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      * @since 1.19.0
+     * @deprecated in 2.10.0. Use [[$webhookSigningKey]] instead.
+     *
+     * TODO: remove in 3.0.0
      */
     public ?string $mailgunWebhookSigningKey = null;
+
+    /**
+     * @var string|null A webhook signing key used to validate incoming webhook requests
+     * @since 2.10.0
+     */
+    public ?string $webhookSigningKey = null;
 
     /**
      * @var array|null The allowed IP addresses for incoming webhook requests from Postmark

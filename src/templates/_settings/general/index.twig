@@ -70,10 +70,7 @@
                 <tr>
                     <th class="thin">
                         Amazon SES
-                        <span class="info">
-                            "Include original headers" must be enabled for each notification type. <br/>
-                            See this <a href="https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/" target="_blank" rel="noopener">article</a> for details on where and how to enable this.
-                        </span>
+                        {{ macros.info('“Include original headers” must be enabled for each notification type.<br>See this <a href="{url}" target="_blank">article</a> for details on where and how to enable this.', { url: 'https://aws.amazon.com/blogs/messaging-and-targeting/amazon-ses-now-includes-original-message-headers-in-notifications/' }) }}
                     </th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/amazon-ses', { key: apiKey }) }}</textarea>
@@ -81,10 +78,16 @@
                 </tr>
                 <tr>
                     <th class="thin">
+                        MailerSend
+                    </th>
+                    <td class="textual code">
+                        <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailersend', { key: apiKey }) }}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="thin">
                         Mailgun
-                        <span class="info">
-                            Use the "Permanent Failure" event type to catch bounces and the "Spam Complaints" event type to catch complaints.
-                        </span>
+                        {{ macros.info('Use the “Permanent Failure” event type to catch bounces and the “Spam Complaints” event type to catch complaints.') }}
                     </th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/mailgun', { key: apiKey }) }}</textarea>
@@ -116,15 +119,18 @@
         instructions: "Add the appropriate webhook URL to trigger complain and bounce notifications (works for the listed services only)."|t('campaign'),
     }, table) }}
 
+    {% set info %}
+        {{ macros.info('Currently implemented for MailerSend (signing secret) and Mailgun (signing key).') }}
+    {% endset %}
     {{ forms.autosuggestField({
-        label: "Mailgun Webhook Signing Key"|t('campaign'),
-        instructions: "A webhook signing key provided by Mailgun to validate incoming webhook requests."|t('campaign'),
-        warning: (config.mailgunWebhookSigningKey is defined ? macros.configWarning('mailgunWebhookSigningKey')),
-        id: 'mailgunWebhookSigningKey',
-        name: 'mailgunWebhookSigningKey',
+        label: "Webhook Signing Key"|t('campaign'),
+        instructions: "A webhook signing key provided by an email delivery service and used to validate incoming webhook requests." ~ info,
+        warning: (config.webhookSigningKey is defined ? macros.configWarning('webhookSigningKey')),
+        id: 'webhookSigningKey',
+        name: 'webhookSigningKey',
         suggestEnvVars: true,
-        value: settings.mailgunWebhookSigningKey,
-        errors: settings.getErrors('mailgunWebhookSigningKey'),
+        value: settings.webhookSigningKey,
+        errors: settings.getErrors('webhookSigningKey'),
     }) }}
 
 {% endblock %}

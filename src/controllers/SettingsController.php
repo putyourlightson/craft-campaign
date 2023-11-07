@@ -196,7 +196,7 @@ class SettingsController extends BaseSettingsController
         // Set the simple stuff
         $settings->testMode = $this->request->getBodyParam('testMode', $settings->testMode);
         $settings->apiKey = $this->request->getBodyParam('apiKey', $settings->apiKey);
-        $settings->mailgunWebhookSigningKey = $this->request->getBodyParam('mailgunWebhookSigningKey', $settings->mailgunWebhookSigningKey);
+        $settings->webhookSigningKey = $this->request->getBodyParam('webhookSigningKey', $settings->webhookSigningKey);
 
         // Save it
         if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {

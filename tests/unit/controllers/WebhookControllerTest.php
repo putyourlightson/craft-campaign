@@ -33,6 +33,11 @@ class WebhookControllerTest extends BaseControllerTest
     /**
      * @var array
      */
+    protected array $mailersendRequestBody;
+
+    /**
+     * @var array
+     */
     protected array $mailgunRequestBody;
 
     /**
@@ -47,6 +52,18 @@ class WebhookControllerTest extends BaseControllerTest
         $this->_getContact();
         $this->contact->bounced = null;
         Craft::$app->elements->saveElement($this->contact);
+
+        $this->mailersendRequestBody = [
+            'type' => 'activity.hard_bounced',
+            'data' => [
+                'email' => [
+                    'from' => 'test@email.com',
+                    'recipient' => [
+                        'email' => $this->contact->email,
+                    ],
+                ],
+            ],
+        ];
 
         $this->mailgunRequestBody = [
             'signature' => [
@@ -78,9 +95,49 @@ class WebhookControllerTest extends BaseControllerTest
             ->one();
     }
 
+    public function testMailersendSignatureFail(): void
+    {
+        Campaign::$plugin->getSettings()->webhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
+
+        Craft::$app->getRequest()->setRawBody(json_encode($this->mailersendRequestBody));
+
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/mailersend', [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+        ]);
+
+        $this->assertEquals('Signature could not be authenticated.', $response->data);
+    }
+
+    public function testMailersendSignatureSuccess(): void
+    {
+        $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
+
+        $signingKey = 'key-aBcDeFgHiJkLmNoP';
+        Campaign::$plugin->getSettings()->webhookSigningKey = $signingKey;
+
+        $rawBody = json_encode($this->mailersendRequestBody);
+        Craft::$app->request->headers->set(
+            'Signature',
+            hash_hmac('sha256', $rawBody, $signingKey),
+        );
+        Craft::$app->getRequest()->setRawBody($rawBody);
+
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/mailersend', [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+        ]);
+
+        $this->assertEquals(200, $response->statusCode);
+        $this->assertEquals(200, $response->statusCode);
+
+        $this->_getContact();
+        $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
+    }
+
     public function testMailgunSignatureFail(): void
     {
-        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
+        Campaign::$plugin->getSettings()->webhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
 
         Craft::$app->getRequest()->setRawBody(json_encode($this->mailgunRequestBody));
 
@@ -97,7 +154,7 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
         $signingKey = 'key-aBcDeFgHiJkLmNoP';
-        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = $signingKey;
+        Campaign::$plugin->getSettings()->webhookSigningKey = $signingKey;
 
         $this->mailgunRequestBody['signature']['signature'] = hash_hmac(
             'sha256',
@@ -120,7 +177,7 @@ class WebhookControllerTest extends BaseControllerTest
 
     public function testMailgunLegacy(): void
     {
-        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = null;
+        Campaign::$plugin->getSettings()->webhookSigningKey = null;
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
         /** @var Response $response */

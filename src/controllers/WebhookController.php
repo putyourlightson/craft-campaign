@@ -33,7 +33,15 @@ class WebhookController extends Controller
     /**
      * @inheritdoc
      */
-    protected int|bool|array $allowAnonymous = ['test', 'amazon-ses', 'mailgun', 'mandrill', 'postmark', 'sendgrid'];
+    protected int|bool|array $allowAnonymous = [
+        'test',
+        'amazon-ses',
+        'mailersend',
+        'mailgun',
+        'mandrill',
+        'postmark',
+        'sendgrid',
+    ];
 
     /**
      * @inheritdoc
@@ -113,6 +121,55 @@ class WebhookController extends Controller
     }
 
     /**
+     * MailerSend
+     * https://developers.mailersend.com/api/v1/webhooks.html
+     *
+     * @since 2.10.0
+     */
+    public function actionMailersend(): Response|string
+    {
+        $this->requirePostRequest();
+
+        $rawBody = $this->request->getRawBody();
+        $body = Json::decodeIfJson($rawBody);
+        $eventType = $body['type'] ?? null;
+        $email = $body['data']['email']['recipient']['email'] ?? '';
+
+        // Validate the event signature if a signing key is set
+        // https://developers.mailersend.com/api/v1/webhooks.html#security
+        $signingKey = App::parseEnv(Campaign::$plugin->settings->webhookSigningKey);
+
+        if ($signingKey) {
+            $signature = Craft::$app->request->headers->get('Signature', '');
+            $hashedValue = hash_hmac('sha256', $rawBody, $signingKey);
+
+            if (!hash_equals($signature, $hashedValue)) {
+                return $this->_asRawFailure('Signature could not be authenticated.');
+            }
+        }
+
+        // Check if this is a test webhook request
+        $from = $body['data']['email']['from'] ?? '';
+        if ($from == 'test@example.com') {
+            return $this->_asRawSuccess('Success.');
+        }
+
+        if ($eventType == 'activity.spam_complaint') {
+            return $this->_callWebhook('complained', $email);
+        }
+
+        if ($eventType == 'activity.hard_bounced') {
+            return $this->_callWebhook('bounced', $email);
+        }
+
+        if ($eventType) {
+            return $this->_asRawFailure('Event type `' . $eventType . '` not found.');
+        }
+
+        return $this->_asRawFailure('No event provided.');
+    }
+
+    /**
      * Mailgun
      */
     public function actionMailgun(): ?Response
@@ -143,17 +200,17 @@ class WebhookController extends Controller
 
         // Validate the event signature if a signing key is set
         // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-        $signingKey = App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
+        $signingKey = App::parseEnv(Campaign::$plugin->settings->webhookSigningKey);
 
         if ($signingKey) {
             $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
-            if ($signature != $hashedValue) {
+            if (!hash_equals($signature, $hashedValue)) {
                 return $this->_asRawFailure('Signature could not be authenticated.');
             }
         }
 
-        // Check if this is a test webhook request from Mailgun
+        // Check if this is a test webhook request
         if ($email == 'alice@example.com') {
             return $this->_asRawSuccess('Success.');
         }
@@ -234,16 +291,14 @@ class WebhookController extends Controller
         // https://postmarkapp.com/developer/webhooks/spam-complaint-webhook
         if ($eventType == 'SpamComplaint') {
             return $this->_callWebhook('complained', $email);
-        }
-        // https://postmarkapp.com/developer/webhooks/bounce-webhook
+        } // https://postmarkapp.com/developer/webhooks/bounce-webhook
         elseif ($eventType == 'Bounce') {
             $bounceType = $this->request->getBodyParam('Type');
 
             if ($bounceType == 'HardBounce') {
                 return $this->_callWebhook('bounced', $email);
             }
-        }
-        // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
+        } // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
         elseif ($eventType == 'SubscriptionChange') {
             $suppress = $this->request->getBodyParam('SuppressSending');
 
