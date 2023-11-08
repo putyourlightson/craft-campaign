@@ -4,6 +4,9 @@
 ### Added
 - Added the `sendoutJobPriority` config setting ([#433](https://github.com/putyourlightson/craft-campaign/issues/433)).
 
+### Changed
+- Sendouts are now sent to contacts in a deterministic order ([#423](https://github.com/putyourlightson/craft-campaign/issues/423)).
+
 ## 1.24.5 - 2023-10-09
 ### Fixed
 - Fixed the status filter for campaigns, mailing lists and contacts selectable in sendouts ([#419](https://github.com/putyourlightson/craft-campaign/issues/419)).

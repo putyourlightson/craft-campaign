@@ -200,6 +200,7 @@ class SendoutsService extends Component
             ->groupBy('contactId')
             ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
+            ->orderBy(['contactId' => SORT_ASC])
             ->asArray()
             ->all();
 
