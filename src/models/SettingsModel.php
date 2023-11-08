@@ -144,7 +144,7 @@ class SettingsModel extends Model
     public int $maxSendFailuresAllowed = 1;
 
     /**
-     * @var int The maximum number of times to attempt retrying a failed sendout job
+     * @var int The maximum number of times to attempt retrying a failed queue job
      */
     public int $maxRetryAttempts = 10;
 
@@ -165,6 +165,18 @@ class SettingsModel extends Model
      * @since 2.9.0
      */
     public ?int $sendoutJobPriority = null;
+
+    /**
+     * @var int The amount of time in seconds to reserve an import job
+     * @since 2.10.0
+     */
+    public int $importJobTtr = 300;
+
+    /**
+     * @var int The amount of time in seconds to reserve a sync job
+     * @since 2.10.0
+     */
+    public int $syncJobTtr = 300;
 
     /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses

@@ -89,7 +89,7 @@ return [
         // The maximum number of failed attempts to send to contacts that are allowed before failing the entire sendout
         //'maxSendFailuresAllowed' => 1,
 
-        // The maximum number of times to attempt retrying a failed sendout job
+        // The maximum number of times to attempt retrying a failed queue job
         //'maxRetryAttempts' => 10,
 
         // The amount of time in seconds to reserve a sendout job
@@ -97,6 +97,12 @@ return [
 
         // The priority to give the sendout cache job (the lower the number, the higher the priority)
         //'sendoutJobPriority' => 10,
+
+        // The amount of time in seconds to reserve an import job
+        //'importJobTtr' => 300,
+
+        // The amount of time in seconds to reserve a sync job
+        //'syncJobTtr' => 300,
 
         // Enable GeoIP to geolocate contacts by their IP addresses
         //'geoIp' => false,

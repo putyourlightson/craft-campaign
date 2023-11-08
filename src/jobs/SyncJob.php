@@ -11,16 +11,33 @@ use craft\queue\BaseJob;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\SyncEvent;
 use putyourlightson\campaign\services\SyncService;
+use yii\queue\RetryableJobInterface;
 
 /**
  * @since 1.2.0
  */
-class SyncJob extends BaseJob
+class SyncJob extends BaseJob implements RetryableJobInterface
 {
     /**
      * @var int
      */
     public int $mailingListId;
+
+    /**
+     * @inheritdoc
+     */
+    public function getTtr(): int
+    {
+        return Campaign::$plugin->settings->syncJobTtr;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canRetry($attempt, $error): bool
+    {
+        return $attempt < Campaign::$plugin->settings->maxRetryAttempts;
+    }
 
     /**
      * @inheritdoc

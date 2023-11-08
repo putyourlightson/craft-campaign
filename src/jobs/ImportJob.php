@@ -11,13 +11,30 @@ use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ImportEvent;
 use putyourlightson\campaign\services\ImportsService;
+use yii\queue\RetryableJobInterface;
 
-class ImportJob extends BaseJob
+class ImportJob extends BaseJob implements RetryableJobInterface
 {
     /**
      * @var int
      */
     public int $importId;
+
+    /**
+     * @inheritdoc
+     */
+    public function getTtr(): int
+    {
+        return Campaign::$plugin->settings->importJobTtr;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function canRetry($attempt, $error): bool
+    {
+        return $attempt < Campaign::$plugin->settings->maxRetryAttempts;
+    }
 
     /**
      * @inheritdoc
