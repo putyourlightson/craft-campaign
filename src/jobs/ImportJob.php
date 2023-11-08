@@ -33,7 +33,7 @@ class ImportJob extends BaseJob implements RetryableJobInterface
      */
     public function canRetry($attempt, $error): bool
     {
-        return $attempt < Campaign::$plugin->settings->maxRetryAttempts;
+        return false;
     }
 
     /**

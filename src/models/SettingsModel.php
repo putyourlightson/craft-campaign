@@ -144,7 +144,7 @@ class SettingsModel extends Model
     public int $maxSendFailuresAllowed = 1;
 
     /**
-     * @var int The maximum number of times to attempt retrying a failed queue job
+     * @var int The maximum number of times to attempt retrying a failed sendout job
      */
     public int $maxRetryAttempts = 10;
 
