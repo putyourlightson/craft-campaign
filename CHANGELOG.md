@@ -5,6 +5,7 @@
 ### Added
 
 - Added a webhook controller action for [MailerSend](https://www.mailersend.com/) ([#415](https://github.com/putyourlightson/craft-campaign/issues/415)).
+- Added the `importJobTtr` and `syncJobTtr` config settings ([#432](https://github.com/putyourlightson/craft-campaign/issues/432)).
 
 ### Changed
 
