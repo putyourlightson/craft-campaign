@@ -89,6 +89,9 @@ return [
         // The amount of time in seconds to reserve a sendout job
         //'sendoutJobTtr' => 300,
 
+        // The priority to give the sendout cache job (the lower the number, the higher the priority)
+        //'sendoutJobPriority' => null,
+
         // Enable GeoIP to geolocate contacts by their IP addresses
         //'geoIp' => false,
 

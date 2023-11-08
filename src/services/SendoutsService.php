@@ -6,8 +6,8 @@
 namespace putyourlightson\campaign\services;
 
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Queue;
 use craft\helpers\StringHelper;
-use craft\queue\Queue;
 use craft\services\Elements;
 use craft\web\View;
 use DateTime;
@@ -265,14 +265,12 @@ class SendoutsService extends Component
                         && Campaign::$plugin->getIsPro() && $sendout->getCanSendNow()
                     )
                 ) {
-                    /** @var Queue $queue */
-                    $queue = Craft::$app->getQueue();
-
                     // Add sendout job to queue
-                    $queue->push(new SendoutJob([
+                    $job = new SendoutJob([
                         'sendoutId' => $sendout->id,
                         'title' => $sendout->title,
-                    ]));
+                    ]);
+                    Queue::push($job, Campaign::$plugin->getSettings()->sendoutJobPriority);
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
 

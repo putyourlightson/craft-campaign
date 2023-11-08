@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 1.25.0 - 2023-11-08
+### Added
+- Added the `sendoutJobPriority` config setting ([#433](https://github.com/putyourlightson/craft-campaign/issues/433)).
+
 ## 1.24.5 - 2023-10-09
 ### Fixed
 - Fixed the status filter for campaigns, mailing lists and contacts selectable in sendouts ([#419](https://github.com/putyourlightson/craft-campaign/issues/419)).
