@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 1.25.0 - 2023-11-08
+## 1.25.0 - 2023-11-09
 ### Added
 - Added the `sendoutJobPriority` config setting ([#433](https://github.com/putyourlightson/craft-campaign/issues/433)).
 
