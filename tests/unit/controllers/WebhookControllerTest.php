@@ -97,7 +97,7 @@ class WebhookControllerTest extends BaseControllerTest
 
         $this->sendgridRequestBody = [
             [
-                'event' => 'bounced',
+                'event' => 'bounce',
                 'email' => $this->contact->email,
             ],
         ];

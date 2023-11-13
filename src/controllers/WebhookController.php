@@ -68,7 +68,7 @@ class WebhookController extends Controller
      */
     public function actionTest(): ?Response
     {
-        return $this->asSuccess('Success.');
+        return $this->asSuccess('Test success.');
     }
 
     /**
@@ -147,7 +147,7 @@ class WebhookController extends Controller
         // Check if this is a test webhook request
         $from = $events['data']['email']['from'] ?? '';
         if ($from == 'test@example.com') {
-            return $this->_asRawSuccess('Success.');
+            return $this->_asRawSuccess('Test success.');
         }
 
         if ($eventType == 'activity.spam_complaint') {
@@ -201,7 +201,7 @@ class WebhookController extends Controller
 
         // Check if this is a test webhook request
         if ($email == 'alice@example.com') {
-            return $this->_asRawSuccess('Success.');
+            return $this->_asRawSuccess('Test success.');
         }
 
         if ($event == 'complained') {
@@ -329,6 +329,11 @@ class WebhookController extends Controller
             foreach ($events as $event) {
                 $eventType = $event['event'] ?? '';
                 $email = $event['email'] ?? '';
+
+                // Check if this is a test webhook request
+                if ($email == 'example@test.com') {
+                    return $this->_asRawSuccess('Test success.');
+                }
 
                 // https://docs.sendgrid.com/for-developers/tracking-events/event#engagement-events
                 if ($eventType == 'spamreport') {
