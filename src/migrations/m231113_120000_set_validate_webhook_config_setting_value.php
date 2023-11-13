@@ -5,7 +5,7 @@ namespace putyourlightson\campaign\migrations;
 use Craft;
 use craft\db\Migration;
 
-class m231107_120000_copy_webhook_signing_key_config_setting_value extends Migration
+class m231113_120000_set_validate_webhook_config_setting_value extends Migration
 {
     /**
      * @inheritdoc
@@ -14,13 +14,14 @@ class m231107_120000_copy_webhook_signing_key_config_setting_value extends Migra
     {
         $projectConfig = Craft::$app->getProjectConfig();
 
-        // Don't make the same config changes twice
+        // Don’t make the same config changes twice
         $schemaVersion = $projectConfig->get('plugins.campaign.schemaVersion', true);
 
         if (version_compare($schemaVersion, '2.10.0', '<')) {
+            $signingKey = $projectConfig->get('plugins.campaign.settings.mailgunWebhookSigningKey');
             $projectConfig->set(
-                'plugins.campaign.settings.webhookSigningKey',
-                $projectConfig->get('plugins.campaign.settings.mailgunWebhookSigningKey'),
+                'plugins.campaign.settings.validateWebhookRequests',
+                !empty($signingKey),
             );
         }
 
