@@ -106,7 +106,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="thin">Sendgrid</th>
+                    <th class="thin">SendGrid</th>
                     <td class="textual code">
                         <textarea rows="1" disabled>{{ siteUrl(craft.app.config.general.actionTrigger ~ '/campaign/webhook/sendgrid', { key: apiKey }) }}</textarea>
                     </td>
@@ -120,17 +120,48 @@
     }, table) }}
 
     {% set info %}
-        {{ macros.info('Currently implemented for MailerSend (signing secret) and Mailgun (signing key).') }}
+        {{ macros.info('Currently supported for MailerSend, Mailgun and SendGrid.') }}
     {% endset %}
-    {{ forms.autosuggestField({
-        label: "Webhook Signing Key"|t('campaign'),
-        instructions: "A webhook signing key provided by an email delivery service and used to validate incoming webhook requests." ~ info,
-        warning: (config.webhookSigningKey is defined ? macros.configWarning('webhookSigningKey')),
-        id: 'webhookSigningKey',
-        name: 'webhookSigningKey',
-        suggestEnvVars: true,
-        value: settings.webhookSigningKey,
-        errors: settings.getErrors('webhookSigningKey'),
+    {{ forms.lightswitchField({
+        label: "Validate Webhook Requests"|t('campaign'),
+        instructions: "Whether to validate incoming webhook requests using a verification key."|t('campaign') ~ info,
+        warning: (config.validateWebhookRequests is defined ? macros.configWarning('validateWebhookRequests')),
+        name: 'validateWebhookRequests',
+        on: settings.validateWebhookRequests,
+        toggle: 'webhookSigningFields',
     }) }}
+
+    <div id="webhookSigningFields" class="{{ not settings.validateWebhookRequests ? 'hidden' }}">
+        {{ forms.autosuggestField({
+            label: "MailerSend Webhook Signing Secret"|t('campaign'),
+            instructions: "A webhook signing secret provided by MailerSend to validate incoming webhook requests."|t('campaign'),
+            warning: (config.mailersendWebhookSigningSecret is defined ? macros.configWarning('mailersendWebhookSigningSecret')),
+            id: 'mailersendWebhookSigningSecret',
+            name: 'mailersendWebhookSigningSecret',
+            suggestEnvVars: true,
+            value: settings.mailersendWebhookSigningSecret,
+            errors: settings.getErrors('mailersendWebhookSigningSecret'),
+        }) }}
+        {{ forms.autosuggestField({
+            label: "Mailgun Webhook Signing Key"|t('campaign'),
+            instructions: "A webhook signing key provided by Mailgun to validate incoming webhook requests."|t('campaign'),
+            warning: (config.mailgunWebhookSigningKey is defined ? macros.configWarning('mailgunWebhookSigningKey')),
+            id: 'mailgunWebhookSigningKey',
+            name: 'mailgunWebhookSigningKey',
+            suggestEnvVars: true,
+            value: settings.mailgunWebhookSigningKey,
+            errors: settings.getErrors('mailgunWebhookSigningKey'),
+        }) }}
+        {{ forms.autosuggestField({
+            label: "SendGrid Webhook Verification Key"|t('campaign'),
+            instructions: "A webhook verification key provided by SendGrid to validate incoming webhook requests."|t('campaign'),
+            warning: (config.sendgridWebhookVerificationKey is defined ? macros.configWarning('sendgridWebhookVerificationKey')),
+            id: 'sendgridWebhookVerificationKey',
+            name: 'sendgridWebhookVerificationKey',
+            suggestEnvVars: true,
+            value: settings.sendgridWebhookVerificationKey,
+            errors: settings.getErrors('sendgridWebhookVerificationKey'),
+        }) }}
+    </div>
 
 {% endblock %}

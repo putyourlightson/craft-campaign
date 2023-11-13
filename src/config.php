@@ -28,8 +28,17 @@ return [
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
-        // A webhook signing key used to validate incoming webhook requests
-        //webhookSigningKey => 'key-aBcDeFgHiJkLmNoP',
+        //Whether to validate incoming webhook requests using a verification key
+        //validateWebhookRequests => true,
+
+        // A webhook signing secret provided by MailerSend to validate incoming webhook requests
+        //mailersendWebhookSigningSecret => 'aBcDeFgHiJkLmNoP123',
+
+        // A webhook signing key provided by Mailgun to validate incoming webhook requests
+        //mailgunWebhookSigningKey => 'key-aBcDeFgHiJkLmNoP',
+
+        // A webhook verification key provided by SendGrid to validate incoming webhook requests
+        //sendgridWebhookVerificationKey => 'aBcDeFgHiJkLmNoP123==',
 
         // The allowed IP addresses for incoming webhook requests from Postmark
         //postmarkAllowedIpAddresses => [

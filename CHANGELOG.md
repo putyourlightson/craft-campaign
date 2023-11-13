@@ -4,12 +4,10 @@
 
 ### Added
 
-- Added a webhook controller action for [MailerSend](https://www.mailersend.com/) ([#415](https://github.com/putyourlightson/craft-campaign/issues/415)).
+- Added a new validate webhook request lightswitch field setting.
+- Added a webhook controller action for [MailerSend](https://www.mailersend.com/) and signature key verification with a new `mailersendWebhookSigningSecret` setting ([#415](https://github.com/putyourlightson/craft-campaign/issues/415)).
+- Added verification to the SendGrid webhook controller action with a new `sendgridWebhookVerificationKey` setting.
 - Added the `importJobTtr` and `syncJobTtr` config settings ([#432](https://github.com/putyourlightson/craft-campaign/issues/432)).
-
-### Changed
-
-- Renamed the `mailgunWebhookSigningKey` setting to `webhookSigningKey`.
 
 ## 2.9.4 - 2023-11-07
 

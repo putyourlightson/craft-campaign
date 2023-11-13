@@ -43,19 +43,28 @@ class SettingsModel extends Model
     public string $apiKey;
 
     /**
+     * @var bool Whether to validate incoming webhook requests using a signing key or secret
+     * @since 2.10.0
+     */
+    public bool $validateWebhookRequests = false;
+
+    /**
+     * @var string|null A webhook signing secret provided by MailerSend to validate incoming webhook requests
+     * @since 2.10.0
+     */
+    public ?string $mailersendWebhookSigningSecret = null;
+
+    /**
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      * @since 1.19.0
-     * @deprecated in 2.10.0. Use [[$webhookSigningKey]] instead.
-     *
-     * TODO: remove in 3.0.0
      */
     public ?string $mailgunWebhookSigningKey = null;
 
     /**
-     * @var string|null A webhook signing key used to validate incoming webhook requests
+     * @var string|null A webhook verification key provided by SendGrid to validate incoming webhook requests
      * @since 2.10.0
      */
-    public ?string $webhookSigningKey = null;
+    public ?string $sendgridWebhookVerificationKey = null;
 
     /**
      * @var array|null The allowed IP addresses for incoming webhook requests from Postmark

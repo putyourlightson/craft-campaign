@@ -7,6 +7,8 @@ namespace putyourlightson\campaigntests\unit\controllers;
 
 use Craft;
 use craft\web\Response;
+use EllipticCurve\Ecdsa;
+use EllipticCurve\PrivateKey;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaigntests\fixtures\ContactsFixture;
@@ -45,6 +47,11 @@ class WebhookControllerTest extends BaseControllerTest
      */
     protected array $postmarkRequestParams;
 
+    /**
+     * @var array
+     */
+    protected array $sendgridRequestBody;
+
     protected function _before(): void
     {
         parent::_before();
@@ -52,6 +59,8 @@ class WebhookControllerTest extends BaseControllerTest
         $this->_getContact();
         $this->contact->bounced = null;
         Craft::$app->elements->saveElement($this->contact);
+
+        Campaign::$plugin->settings->validateWebhookRequests = true;
 
         $this->mailersendRequestBody = [
             'type' => 'activity.hard_bounced',
@@ -85,6 +94,13 @@ class WebhookControllerTest extends BaseControllerTest
             'Type' => 'HardBounce',
             'Email' => $this->contact->email,
         ];
+
+        $this->sendgridRequestBody = [
+            [
+                'event' => 'bounced',
+                'email' => $this->contact->email,
+            ],
+        ];
     }
 
     protected function _getContact(): void
@@ -95,9 +111,9 @@ class WebhookControllerTest extends BaseControllerTest
             ->one();
     }
 
-    public function testMailersendSignatureFail(): void
+    public function testMailersendVerificationFailure(): void
     {
-        Campaign::$plugin->getSettings()->webhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
+        Campaign::$plugin->getSettings()->mailersendWebhookSigningSecret = 'aBcDeFgHiJkLmNoP123';
 
         Craft::$app->getRequest()->setRawBody(json_encode($this->mailersendRequestBody));
 
@@ -109,19 +125,19 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals('Signature could not be authenticated.', $response->data);
     }
 
-    public function testMailersendSignatureSuccess(): void
+    public function testMailersendVerificationSuccess(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
-        $signingKey = 'key-aBcDeFgHiJkLmNoP';
-        Campaign::$plugin->getSettings()->webhookSigningKey = $signingKey;
+        $signingSecret = 'aBcDeFgHiJkLmNoP123';
+        Campaign::$plugin->getSettings()->mailersendWebhookSigningSecret = $signingSecret;
 
-        $rawBody = json_encode($this->mailersendRequestBody);
+        $body = json_encode($this->mailersendRequestBody);
+        Craft::$app->getRequest()->setRawBody($body);
         Craft::$app->request->headers->set(
             'Signature',
-            hash_hmac('sha256', $rawBody, $signingKey),
+            hash_hmac('sha256', $body, $signingSecret),
         );
-        Craft::$app->getRequest()->setRawBody($rawBody);
 
         /** @var Response $response */
         $response = $this->runActionWithParams('webhook/mailersend', [
@@ -129,15 +145,14 @@ class WebhookControllerTest extends BaseControllerTest
         ]);
 
         $this->assertEquals(200, $response->statusCode);
-        $this->assertEquals(200, $response->statusCode);
 
         $this->_getContact();
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testMailgunSignatureFail(): void
+    public function testMailgunVerificationFailure(): void
     {
-        Campaign::$plugin->getSettings()->webhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
+        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = 'key-aBcDeFgHiJkLmNoP';
 
         Craft::$app->getRequest()->setRawBody(json_encode($this->mailgunRequestBody));
 
@@ -149,12 +164,12 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals('Signature could not be authenticated.', $response->data);
     }
 
-    public function testMailgunSignatureSuccess(): void
+    public function testMailgunVerificationSuccess(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
         $signingKey = 'key-aBcDeFgHiJkLmNoP';
-        Campaign::$plugin->getSettings()->webhookSigningKey = $signingKey;
+        Campaign::$plugin->getSettings()->mailgunWebhookSigningKey = $signingKey;
 
         $this->mailgunRequestBody['signature']['signature'] = hash_hmac(
             'sha256',
@@ -177,7 +192,7 @@ class WebhookControllerTest extends BaseControllerTest
 
     public function testMailgunLegacy(): void
     {
-        Campaign::$plugin->getSettings()->webhookSigningKey = null;
+        Campaign::$plugin->getSettings()->validateWebhookRequests = false;
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
         /** @var Response $response */
@@ -218,18 +233,40 @@ class WebhookControllerTest extends BaseControllerTest
         $this->assertEquals(ContactElement::STATUS_BOUNCED, $this->contact->getStatus());
     }
 
-    public function testSendgrid(): void
+    public function testSendgridVerificationFailure(): void
+    {
+        Campaign::$plugin->getSettings()->sendgridWebhookVerificationKey = 'aBcDeFgHiJkLmNoP123==';
+
+        Craft::$app->getRequest()->setRawBody(json_encode($this->sendgridRequestBody));
+
+        /** @var Response $response */
+        $response = $this->runActionWithParams('webhook/sendgrid', [
+            'key' => Campaign::$plugin->getSettings()->apiKey,
+        ]);
+
+        $this->assertEquals('Signature could not be authenticated.', $response->data);
+    }
+
+    public function testSendgridVerificationSuccess(): void
     {
         $this->assertEquals(ContactElement::STATUS_ACTIVE, $this->contact->getStatus());
 
-        $events = [
-            [
-                'event' => 'bounced',
-                'email' => $this->contact->email,
-            ],
-        ];
+        $body = json_encode($this->sendgridRequestBody);
+        Craft::$app->getRequest()->setRawBody($body);
 
-        Craft::$app->getRequest()->setRawBody(json_encode($events));
+        $privateKey = PrivateKey::fromString('MHQCAQEEIODvZuS34wFbt0X53+P5EnSj6tMjfVK01dD1dgDH02RzoAcGBSuBBAAKoUQDQgAE/nvHu/SQQaos9TUljQsUuKI15Zr5SabPrbwtbfT/408rkVVzq8vAisbBRmpeRREXj5aog/Mq8RrdYy75W9q/Ig==');
+        Campaign::$plugin->getSettings()->sendgridWebhookVerificationKey = $privateKey->publicKey()->toString();
+
+        $timestamp = strtotime('now');
+        $timestampedBody = $timestamp . $body;
+        Craft::$app->request->headers->set(
+            'X-Twilio-Email-Event-Webhook-Signature',
+            Ecdsa::sign($timestampedBody, $privateKey)->toBase64(),
+        );
+        Craft::$app->request->headers->set(
+            'X-Twilio-Email-Event-Webhook-Timestamp',
+            $timestamp,
+        );
 
         /** @var Response $response */
         $response = $this->runActionWithParams('webhook/sendgrid', [

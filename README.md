@@ -5,18 +5,18 @@
 
 # Campaign Plugin for Craft CMS
 
-Campaign is an email marketing plugin built specifically for Craft. It aims to bring the distribution of content by email into the CMS, where we believe it should be, along with the same ethos of flexibility and user-friendliness that Craft does. 
+Campaign is an email marketing plugin built specifically for Craft. It aims to bring the distribution of content by email into the CMS, where we believe it should be, along with the same ethos of flexibility and user-friendliness that Craft does.
 
 - Complete control and personalisation of emails using Twig templates.
-- Integrates seamlessly with Amazon SES, Mailgun, Mandrill, Sendgrid, etc.
+- Integrates seamlessly with Amazon SES, Mailgun, Mandrill, SendGrid, etc.
 - Unlimited campaigns, subscribers, mailing lists and sendouts.
- 
+
 ![Campaign plugin](https://putyourlightson.com/assets/images/plugins/campaign/campaign-edit-slideout.png)
 
 ## Documentation
 
 Learn more and read the documentation at [putyourlightson.com/plugins/campaign »](https://putyourlightson.com/plugins/campaign)
-  
+
 Read more about the pro version at [putyourlightson.com/plugins/campaign#pro-edition »](https://putyourlightson.com/plugins/campaign#pro-edition)
 
 ## License

@@ -12,8 +12,12 @@ use Craft;
 use craft\helpers\App;
 use craft\helpers\Json;
 use craft\web\Controller;
+use EllipticCurve\Ecdsa;
+use EllipticCurve\PublicKey;
+use EllipticCurve\Signature;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
+use yii\base\ErrorException;
 use yii\log\Logger;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -130,26 +134,18 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        $rawBody = $this->request->getRawBody();
-        $body = Json::decodeIfJson($rawBody);
-        $eventType = $body['type'] ?? null;
-        $email = $body['data']['email']['recipient']['email'] ?? '';
+        $body = $this->request->getRawBody();
 
-        // Validate the event signature if a signing key is set
-        // https://developers.mailersend.com/api/v1/webhooks.html#security
-        $signingKey = App::parseEnv(Campaign::$plugin->settings->webhookSigningKey);
-
-        if ($signingKey) {
-            $signature = Craft::$app->request->headers->get('Signature', '');
-            $hashedValue = hash_hmac('sha256', $rawBody, $signingKey);
-
-            if (!hash_equals($signature, $hashedValue)) {
-                return $this->_asRawFailure('Signature could not be authenticated.');
-            }
+        if (!$this->_isValidMailersendRequest($body)) {
+            return $this->_asRawFailure('Signature could not be authenticated.');
         }
 
+        $events = Json::decodeIfJson($body);
+        $eventType = $events['type'] ?? null;
+        $email = $events['data']['email']['recipient']['email'] ?? '';
+
         // Check if this is a test webhook request
-        $from = $body['data']['email']['from'] ?? '';
+        $from = $events['data']['email']['from'] ?? '';
         if ($from == 'test@example.com') {
             return $this->_asRawSuccess('Success.');
         }
@@ -190,24 +186,17 @@ class WebhookController extends Controller
         $email = $eventData['recipient'] ?? '';
 
         // Legacy webhooks
+        // TODO: remove in Campaign 3.
         if ($eventData === null) {
-            $signature = $this->request->getBodyParam('signature');
-            $timestamp = $this->request->getBodyParam('timestamp');
-            $token = $this->request->getBodyParam('token');
-            $event = $this->request->getBodyParam('event');
-            $email = $this->request->getBodyParam('recipient');
+            $signature = $this->request->getBodyParam('signature', '');
+            $timestamp = $this->request->getBodyParam('timestamp', '');
+            $token = $this->request->getBodyParam('token', '');
+            $event = $this->request->getBodyParam('event', '');
+            $email = $this->request->getBodyParam('recipient', '');
         }
 
-        // Validate the event signature if a signing key is set
-        // https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
-        $signingKey = App::parseEnv(Campaign::$plugin->settings->webhookSigningKey);
-
-        if ($signingKey) {
-            $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
-
-            if (!hash_equals($signature, $hashedValue)) {
-                return $this->_asRawFailure('Signature could not be authenticated.');
-            }
+        if (!$this->_isValidMailgunRequest($signature, $timestamp, $token)) {
+            return $this->_asRawFailure('Signature could not be authenticated.');
         }
 
         // Check if this is a test webhook request
@@ -323,17 +312,18 @@ class WebhookController extends Controller
     }
 
     /**
-     * Sendgrid
+     * SendGrid
      */
     public function actionSendgrid(): ?Response
     {
         $this->requirePostRequest();
 
-        // TODO: Validate the signature if a verification key is set
-        // https://sendgrid.com/docs/for-developers/tracking-events/getting-started-event-webhook-security-features
-
         $body = $this->request->getRawBody();
         $events = Json::decodeIfJson($body);
+
+        if (!$this->_isValidSendgridRequest($body)) {
+            return $this->_asRawFailure('Signature could not be authenticated.');
+        }
 
         if (is_array($events)) {
             foreach ($events as $event) {
@@ -401,5 +391,63 @@ class WebhookController extends Controller
 
         return $this->asRaw(Craft::t('campaign', $message))
             ->setStatusCode(400);
+    }
+
+    /**
+     * @link https://developers.mailersend.com/api/v1/webhooks.html#security
+     */
+    private function _isValidMailersendRequest(string $body): bool
+    {
+        if (!Campaign::$plugin->settings->validateWebhookRequests) {
+            return true;
+        }
+
+        $signingSecret = (string)App::parseEnv(Campaign::$plugin->settings->mailersendWebhookSigningSecret);
+        $signature = $this->request->headers->get('Signature', '');
+        $hashedValue = hash_hmac('sha256', $body, $signingSecret);
+
+        return hash_equals($signature, $hashedValue);
+    }
+
+    /**
+     * @link https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
+     */
+    private function _isValidMailgunRequest(string $signature, string $timestamp, string $token): bool
+    {
+        if (!Campaign::$plugin->settings->validateWebhookRequests) {
+            return true;
+        }
+
+        $signingKey = (string)App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
+        $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
+
+        return hash_equals($signature, $hashedValue);
+    }
+
+    /**
+     * @link https://docs.sendgrid.com/for-developers/tracking-events/getting-started-event-webhook-security-features
+     */
+    private function _isValidSendgridRequest(string $body): bool
+    {
+        if (!Campaign::$plugin->settings->validateWebhookRequests) {
+            return true;
+        }
+
+        $signature = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Signature', '');
+        $timestamp = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Timestamp', '');
+        $verificationKey = (string)App::parseEnv(Campaign::$plugin->settings->sendgridWebhookVerificationKey) ?: base64_encode('empty');
+
+        // https://github.com/sendgrid/sendgrid-php/blob/9335dca98bc64456a72db73469d1dd67db72f6ea/lib/eventwebhook/EventWebhook.php#L23-L26
+        $publicKey = PublicKey::fromString($verificationKey);
+
+        // https://github.com/sendgrid/sendgrid-php/blob/9335dca98bc64456a72db73469d1dd67db72f6ea/lib/eventwebhook/EventWebhook.php#L39-L46
+        $timestampedBody = $timestamp . $body;
+        $decodedSignature = Signature::fromBase64($signature);
+
+        try {
+            return Ecdsa::verify($timestampedBody, $decodedSignature, $publicKey);
+        } catch (ErrorException) {
+            return false;
+        }
     }
 }
