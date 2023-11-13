@@ -9,6 +9,10 @@
 - Added verification to the SendGrid webhook controller action with a new `sendgridWebhookVerificationKey` setting.
 - Added the `importJobTtr` and `syncJobTtr` config settings ([#432](https://github.com/putyourlightson/craft-campaign/issues/432)).
 
+### Changed
+
+- Updated the SendGrid webhook event names.
+
 ## 2.9.4 - 2023-11-07
 
 ### Fixed

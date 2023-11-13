@@ -330,10 +330,13 @@ class WebhookController extends Controller
                 $eventType = $event['event'] ?? '';
                 $email = $event['email'] ?? '';
 
-                if ($eventType == 'complained') {
+                // https://docs.sendgrid.com/for-developers/tracking-events/event#engagement-events
+                if ($eventType == 'spamreport') {
                     return $this->_callWebhook('complained', $email);
                 }
-                if ($eventType == 'bounced') {
+
+                // https://docs.sendgrid.com/for-developers/tracking-events/event#delivery-events
+                if ($eventType == 'bounce') {
                     return $this->_callWebhook('bounced', $email);
                 }
             }
@@ -435,7 +438,7 @@ class WebhookController extends Controller
 
         $signature = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Signature', '');
         $timestamp = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Timestamp', '');
-        $verificationKey = (string)App::parseEnv(Campaign::$plugin->settings->sendgridWebhookVerificationKey) ?: base64_encode('empty');
+        $verificationKey = (string)App::parseEnv(Campaign::$plugin->settings->sendgridWebhookVerificationKey);
 
         // https://github.com/sendgrid/sendgrid-php/blob/9335dca98bc64456a72db73469d1dd67db72f6ea/lib/eventwebhook/EventWebhook.php#L23-L26
         $publicKey = PublicKey::fromString($verificationKey);
