@@ -12,6 +12,7 @@
 ### Changed
 
 - Updated the SendGrid webhook event names.
+- Adding or removing test contacts no longer shows an unsaved changes notification ([#437](https://github.com/putyourlightson/craft-campaign/issues/437)).
 
 ## 2.9.4 - 2023-11-07
 

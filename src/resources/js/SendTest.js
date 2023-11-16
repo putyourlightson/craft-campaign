@@ -5,8 +5,17 @@
  * SendTest class
  */
 Campaign.SendTest = Garnish.Base.extend({
+    $elementSelect: null,
+
     init: function() {
+        this.$elementSelect = $('.test-email .elementselect');
+        this.preventUnsavedChanges();
+        this.addListener(this.$elementSelect, 'change', 'preventUnsavedChanges');
         this.addListener($('.send-test'), 'click', 'sendTest');
+    },
+
+    preventUnsavedChanges: function() {
+        this.$elementSelect.find('input').attr('name', '');
     },
 
     sendTest: function(event) {
@@ -19,7 +28,7 @@ Campaign.SendTest = Garnish.Base.extend({
         $('.send-test').addClass('disabled');
 
         const contactIds = [];
-        $('.test-email .elementselect input').each(function() {
+        this.$elementSelect.find('input').each(function() {
             contactIds.push($(this).val());
         });
 
