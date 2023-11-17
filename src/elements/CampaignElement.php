@@ -850,7 +850,7 @@ class CampaignElement extends Element
             'elementType' => ContactElement::class,
             'selectionLabel' => Craft::t('campaign', 'Add a contact'),
             'criteria' => ['status' => ContactElement::STATUS_ACTIVE],
-            'elements' => $this->getCampaignType()->getTestContacts(),
+            'elements' => $this->getCampaignType()->getTestContactsWithDefault(),
         ]);
 
         $sendTestButton = Cp::fieldHtml(

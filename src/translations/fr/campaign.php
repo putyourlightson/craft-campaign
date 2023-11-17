@@ -588,7 +588,7 @@ return [
     'The date on which to end sending (leave blank for forever).' => 'La date à laquelle il faut mettre fin à l’envoi (laissez le champ libre pour toujours).',
     'The days of the month on which to send.' => 'Les jours du mois où il faut envoyer.',
     'The days of the week on which to send.' => 'Les jours de la semaine où il faut envoyer.',
-    'The default contacts to use for test emails (leave blank to use the currently logged in user).' => 'Les contacts par défaut à utiliser pour les email de test (laissez vide pour utiliser l’utilisateur actuellement connecté).',
+    'The default contacts to use for test emails (leave blank to use the currently logged-in user).' => 'Les contacts par défaut à utiliser pour les email de test (laissez vide pour utiliser l’utilisateur actuellement connecté).',
     'The email sending service to use for sending.' => 'Le service d’envoi d’email à utiliser pour l’envoi.',
     'The email subject (emojis allowed 🎉).' => 'Le sujet de la newsletter (emojis autorisées 🎉).',
     'The execution time limit per sendout batch in seconds (set to 0 for unlimited).' => 'La limite de temps d’exécution par lot d’envoi en secondes (0 pour illimité).',

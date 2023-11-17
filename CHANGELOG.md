@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.10.1 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which a default contact was not being shown in test contacts on the campaign edit page ([#437](https://github.com/putyourlightson/craft-campaign/issues/437)).
+
 ## 2.10.0 - 2023-11-16
 
 ### Added
