@@ -31,18 +31,22 @@ class UniqueContactEmailValidator extends UniqueValidator
                 'element.draftId' => null,
                 'element.revisionId' => null,
             ])
-            ->andWhere(['not', [
-                ContactRecord::tableName() . '.id' => $model->canonicalId,
-            ]])
+            ->andWhere([
+                'not', [
+                    ContactRecord::tableName() . '.id' => $model->canonicalId,
+                ],
+            ])
             ->scalar();
 
         if ($contactId) {
             $contact = ContactElement::findOne($contactId);
-            $message = Craft::t('campaign', 'A contact with the email "{email}" already exists. [View contact &raquo;]({url})', [
-                'email' => $model->email,
-                'url' => $contact->cpEditUrl,
-            ]);
-            $this->addError($model, $attribute, $message);
+            if ($contact) {
+                $message = Craft::t('campaign', 'A contact with the email "{email}" already exists. [View contact &raquo;]({url})', [
+                    'email' => $model->email,
+                    'url' => $contact->getCpEditUrl(),
+                ]);
+                $this->addError($model, $attribute, $message);
+            }
         }
     }
 }

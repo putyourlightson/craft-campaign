@@ -11,6 +11,7 @@
 ### Fixed
 
 - Fixed a bug in which a default contact was not being shown in test contacts on the campaign edit page ([#437](https://github.com/putyourlightson/craft-campaign/issues/437)).
+- Fixed a bug in which saving a contact could throw an exception if the contact record existed but the contact was not active.
 
 ## 2.10.0 - 2023-11-16
 
