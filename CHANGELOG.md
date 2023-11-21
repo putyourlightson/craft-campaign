@@ -1,9 +1,10 @@
 # Release Notes for Campaign
 
-## 2.11.0 - 2023-11-21
+## 2.11.0 - Unreleased
 
 ### Added
 
+- Added the ability to bulk subscribe and unsubscribe contacts to and from mailing lists in the contact index page ([#418](https://github.com/putyourlightson/craft-campaign/issues/418)).
 - Added the ability to configure a custom queue component via `config/app.php` to use when running queue jobs.
 - Added an `importJobPriority` config setting that determines what priority to give import jobs.
 

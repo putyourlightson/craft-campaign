@@ -21,6 +21,8 @@ use craft\validators\DateTimeValidator;
 use craft\web\CpScreenResponseBehavior;
 use DateTime;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\actions\SubscribeContacts;
+use putyourlightson\campaign\elements\actions\UnsubscribeContacts;
 use putyourlightson\campaign\elements\conditions\contacts\ContactCondition;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactMailingListFieldLayoutTab;
@@ -224,6 +226,23 @@ class ContactElement extends Element
     {
         $actions = [];
         $elementsService = Craft::$app->getElements();
+
+        // Subscribe/unsubscribe
+        $mailingLists = Campaign::$plugin->mailingLists->getAllMailingLists();
+        foreach ($mailingLists as $mailingList) {
+            $actions[] = $elementsService->createAction([
+                'type' => SubscribeContacts::class,
+                'mailingListId' => $mailingList->id,
+                'mailingListTitle' => $mailingList->title,
+            ]);
+        }
+        foreach ($mailingLists as $mailingList) {
+            $actions[] = $elementsService->createAction([
+                'type' => UnsubscribeContacts::class,
+                'mailingListId' => $mailingList->id,
+                'mailingListTitle' => $mailingList->title,
+            ]);
+        }
 
         // Edit
         $actions[] = $elementsService->createAction([
