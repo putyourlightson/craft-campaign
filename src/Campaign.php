@@ -333,6 +333,7 @@ class Campaign extends Plugin
         $message = Craft::t('campaign', $message, $params);
 
         LogToFile::info($message, 'campaign');
+        Craft::info($message, 'campaign');
     }
 
     // Protected Methods
