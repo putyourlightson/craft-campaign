@@ -83,7 +83,9 @@ use putyourlightson\campaign\widgets\MailingListStatsWidget;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
+use yii\di\Instance;
 use yii\log\Logger;
+use yii\queue\Queue;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -186,6 +188,13 @@ class Campaign extends Plugin
     public string $minVersionRequired = '1.21.0';
 
     /**
+     * The queue to use for running jobs.
+     *
+     * @since 2.11.0
+     */
+    public Queue|array|string $queue = 'queue';
+
+    /**
      * @inheritdoc
      */
     public function init(): void
@@ -195,6 +204,7 @@ class Campaign extends Plugin
         $this->name = Craft::t('campaign', 'Plugin Name');
 
         $this->_registerComponents();
+        $this->_registerInstances();
         $this->_registerVariables();
         $this->_registerLogTarget();
         $this->_registerElementTypes();
@@ -470,6 +480,14 @@ class Campaign extends Plugin
     private function _registerComponents(): void
     {
         $this->set('mailer', fn() => $this->createMailer());
+    }
+
+    /**
+     * Registers instances configured via `config/app.php`, ensuring they are of the correct type.
+     */
+    private function _registerInstances(): void
+    {
+        $this->queue = Instance::ensure($this->queue, Queue::class);
     }
 
     /**

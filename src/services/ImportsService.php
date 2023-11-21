@@ -134,7 +134,6 @@ class ImportsService extends Component
     {
         $columns = [];
 
-        // If CSV file
         if ($import->fileName) {
             $handle = $this->getHandle($import);
 
@@ -143,9 +142,7 @@ class ImportsService extends Component
             }
 
             $columns = fgetcsv($handle);
-        }
-        // Else user group
-        else {
+        } else {
             $columns = [
                 'email' => Craft::t('campaign', 'Email'),
                 'firstName' => Craft::t('campaign', 'First Name'),
@@ -169,10 +166,8 @@ class ImportsService extends Component
     public function getRows(ImportModel $import, int $offset = null, int $length = null): array
     {
         $offset = $offset ?? 0;
-
         $rows = [];
 
-        // If CSV file
         if ($import->fileName) {
             $handle = $this->getHandle($import);
 
@@ -200,9 +195,7 @@ class ImportsService extends Component
             }
 
             fclose($handle);
-        }
-        // Else user group
-        else {
+        } else {
             // Get rows as arrays
             $rows = User::find()
                 ->groupId($import->userGroupId)
@@ -378,11 +371,17 @@ class ImportsService extends Component
         $fieldHandles = array_map(fn($field) => $field->handle, $customFields);
         $fieldHandles[] = 'email';
 
-        Queue::push(new UpdateSearchIndex([
+        $job = new UpdateSearchIndex([
             'elementType' => ContactElement::class,
             'elementId' => $this->_importedContactIds,
             'siteId' => '*',
             'fieldHandles' => $fieldHandles,
-        ]), 2048);
+        ]);
+
+        Queue::push(
+            job: $job,
+            priority: Campaign::$plugin->settings->importJobPriority,
+            queue: Campaign::$plugin->queue,
+        );
     }
 }

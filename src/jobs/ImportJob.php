@@ -13,6 +13,9 @@ use putyourlightson\campaign\events\ImportEvent;
 use putyourlightson\campaign\services\ImportsService;
 use yii\queue\RetryableJobInterface;
 
+/**
+ * @property-read int $ttr
+ */
 class ImportJob extends BaseJob implements RetryableJobInterface
 {
     /**

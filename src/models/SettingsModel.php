@@ -163,7 +163,8 @@ class SettingsModel extends Model
     public int $batchJobDelay = 10;
 
     /**
-     * @var int The amount of time in seconds to reserve a sendout job
+     * The amount of time in seconds to reserve a sendout job.
+     *
      * @since 1.9.0
      */
     public int $sendoutJobTtr = 300;
@@ -176,10 +177,18 @@ class SettingsModel extends Model
     public ?int $sendoutJobPriority = null;
 
     /**
-     * @var int The amount of time in seconds to reserve an import job
+     * The amount of time in seconds to reserve an import job.
+     *
      * @since 2.10.0
      */
     public int $importJobTtr = 300;
+
+    /**
+     * The priority to give the import job (the lower the number, the higher the priority).
+     *
+     * @since 2.11.0
+     */
+    public int $importJobPriority = 2048;
 
     /**
      * @var int The amount of time in seconds to reserve a sync job

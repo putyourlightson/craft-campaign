@@ -1,6 +1,11 @@
 # Release Notes for Campaign
 
-## 2.10.1 - Unreleased
+## 2.11.0 - 2023-11-21
+
+### Added
+
+- Added the ability to configure a custom queue component via `config/app.php` to use when running queue jobs.
+- Added an `importJobPriority` config setting that determines what priority to give import jobs.
 
 ### Fixed
 

@@ -38,7 +38,7 @@ class m230117_120000_rename_field_layout_elements extends Migration
         return false;
     }
 
-    private function _renameFieldLayoutElements(array $fieldLayouts, string $newType)
+    private function _renameFieldLayoutElements(array $fieldLayouts, string $newType): void
     {
         foreach ($fieldLayouts as $fieldLayout) {
             if ($fieldLayout->id === null) {

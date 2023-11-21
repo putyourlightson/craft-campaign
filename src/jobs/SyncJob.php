@@ -15,6 +15,8 @@ use yii\queue\RetryableJobInterface;
 
 /**
  * @since 1.2.0
+ *
+ * @property-read int $ttr
  */
 class SyncJob extends BaseJob implements RetryableJobInterface
 {

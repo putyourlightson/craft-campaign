@@ -159,7 +159,12 @@ class SendoutsService extends Component
                         'sendoutId' => $sendout->id,
                         'title' => SendoutHelper::encodeEmojis($sendout->title),
                     ]);
-                    Queue::push($job, Campaign::$plugin->settings->sendoutJobPriority);
+
+                    Queue::push(
+                        job: $job,
+                        priority: Campaign::$plugin->settings->sendoutJobPriority,
+                        queue: Campaign::$plugin->queue,
+                    );
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
                     $this->_updateSendoutRecord($sendout, ['sendStatus']);

@@ -74,10 +74,10 @@ class CpAsset extends AssetBundle
 
     private function _registerEditableTypes(BaseView $view): void
     {
-        $editableCampaignTypes = Json::encode($this->_getEditableCampaignTypes(), JSON_UNESCAPED_UNICODE);
-        $editableMailingListTypes = Json::encode($this->_getEditableMailingListTypes(), JSON_UNESCAPED_UNICODE);
-        $editableSegmentTypes = Json::encode($this->_getEditableSegmentTypes(), JSON_UNESCAPED_UNICODE);
-        $editableSendoutTypes = Json::encode($this->_getEditableSendoutTypes(), JSON_UNESCAPED_UNICODE);
+        $editableCampaignTypes = Json::encode($this->_getEditableCampaignTypes());
+        $editableMailingListTypes = Json::encode($this->_getEditableMailingListTypes());
+        $editableSegmentTypes = Json::encode($this->_getEditableSegmentTypes());
+        $editableSendoutTypes = Json::encode($this->_getEditableSendoutTypes());
 
         $js = <<<JS
 window.Craft.editableCampaignTypes = $editableCampaignTypes;

@@ -110,6 +110,9 @@ return [
         // The amount of time in seconds to reserve an import job
         //'importJobTtr' => 300,
 
+        // The priority to give the import job (the lower the number, the higher the priority).
+        //'importJobPriority' => 2048,
+
         // The amount of time in seconds to reserve a sync job
         //'syncJobTtr' => 300,
 
