@@ -20,7 +20,7 @@ return [
     '{num, plural, =1{mailing list} other{mailing lists}}' => '',
     'A campaign must be selected.' => '',
     'A contact with that email address could not be found.' => '',
-    'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => '',
+    'A contact with the email “{email}” already exists. [View contact →]({url})' => '',
     'A CSV file must be selected to upload.' => '',
     'A label to use for the email field.' => '',
     'A preview of the HTML version of the email body.' => '',

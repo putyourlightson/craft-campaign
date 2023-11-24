@@ -21,7 +21,7 @@ return [
     '{num, plural, =1{mailing list} other{mailing lists}}' => '{num, plural, =1{liste de diffusion} other{listes de diffusion}}',
     'A campaign must be selected.' => '',
     'A contact with that email address could not be found.' => 'Le contact avec cette adresse email n’a pas été trouvé.',
-    'A contact with the email "{email}" already exists. [View contact &raquo;]({url})' => 'Un contact avec l’email "{email}" existe déjà. [View contact &raquo;]({url})',
+    'A contact with the email “{email}” already exists. [View contact →]({url})' => 'Un contact avec l’email “{email}” existe déjà. [View contact →]({url})',
     'A CSV file must be selected to upload.' => 'Un fichier CSV est requis.',
     'A label to use for the email field.' => 'Étiquette à utiliser pour le champ de l’email.',
     'A preview of the HTML version of the email body.' => 'Aperçu de la version HTML',

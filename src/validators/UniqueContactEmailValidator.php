@@ -41,7 +41,7 @@ class UniqueContactEmailValidator extends UniqueValidator
         if ($contactId) {
             $contact = ContactElement::findOne($contactId);
             if ($contact) {
-                $message = Craft::t('campaign', 'A contact with the email "{email}" already exists. [View contact &raquo;]({url})', [
+                $message = Craft::t('campaign', 'A contact with the email “{email}” already exists. [View contact →]({url})', [
                     'email' => $model->email,
                     'url' => $contact->getCpEditUrl(),
                 ]);
