@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.11.0 - Unreleased
+## 2.11.0 - 2023-11-28
 
 ### Added
 
