@@ -7,7 +7,7 @@ return static function(ECSConfig $ecsConfig): void {
     $ecsConfig->parallel();
     $ecsConfig->paths([
         __DIR__ . '/src',
-        __DIR__ . '/tests/unit',
+        __DIR__ . '/tests/pest',
         __FILE__,
     ]);
 

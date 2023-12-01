@@ -99,7 +99,7 @@ class FormsService extends Component
             }
         }
 
-        return $this->_sendEmail($pendingContact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
+        return $this->sendEmail($pendingContact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
     }
 
     /**
@@ -142,7 +142,7 @@ class FormsService extends Component
             }
         }
 
-        return $this->_sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
+        return $this->sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
     }
 
     /**
@@ -304,7 +304,7 @@ class FormsService extends Component
     /**
      * Sends an email to a contact.
      */
-    public function _sendEmail(string $email, string $subject, string $htmlBody, string $plaintextBody, int $siteId): bool
+    public function sendEmail(string $email, string $subject, string $htmlBody, string $plaintextBody, int $siteId): bool
     {
         // Get from name and email
         $fromNameEmail = SettingsHelper::getFromNameEmail($siteId);

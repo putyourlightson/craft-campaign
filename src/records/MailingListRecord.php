@@ -28,7 +28,7 @@ class MailingListRecord extends ActiveRecord
     }
 
     /**
-     * Returns the campaign type.
+     * Returns the mailing list type.
      */
     public function getMailingListType(): ActiveQuery
     {
