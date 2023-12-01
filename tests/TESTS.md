@@ -4,6 +4,14 @@ This document outlines the test specification for the Campaign plugin.
 
 ---
 
+## Architecture Tests
+
+### [Architecture](pest/Architecture/ArchitectureTest.php)
+
+_Tests the architecture of the plugin._
+
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Source code does not contain any “dump or die” statements.  
+
 ## Feature Tests
 
 ### [ContactInteraction](pest/Feature/ContactInteractionTest.php)
