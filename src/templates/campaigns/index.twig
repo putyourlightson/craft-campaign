@@ -4,6 +4,7 @@
 {% set canHaveDrafts = true %}
 {% set title = 'Campaigns'|t('campaign') %}
 {% set selectedSubnavItem = 'campaigns' %}
+{% set allCampaignTypes = craft.campaign.allCampaignTypes %}
 
 {% do view.registerTranslations('campaign', [
     'New campaign',
@@ -11,7 +12,7 @@
 ]) %}
 
 {% block content %}
-    {% if craft.campaign.allCampaignTypes|length == 0 %}
+    {% if allCampaignTypes|length == 0 %}
         <div class="zilch">
             <p>{{ 'No campaign types exist.'|t('campaign') }}</p>
             <div style="font-size: initial;">
@@ -20,8 +21,13 @@
                 </a>
             </div>
         </div>
-        {% block footer %}{% endblock %}
     {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {% if allCampaignTypes|length > 0 %}
         {{ parent() }}
     {% endif %}
 {% endblock %}
