@@ -37,12 +37,12 @@ class SendoutHelper
      */
     public static function encodeEmojis(?string $value): string
     {
-        if (!Craft::$app->getDb()->getIsMysql()) {
-            return $value;
-        }
-
         if (empty($value)) {
             return '';
+        }
+
+        if (!Craft::$app->getDb()->getIsMysql()) {
+            return $value;
         }
 
         return LitEmoji::unicodeToShortcode($value);
