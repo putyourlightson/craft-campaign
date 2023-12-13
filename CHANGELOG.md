@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed a bug in which the element count was not appearing for campaigns and mailing lists when there were no results.
+- Fixed a bug that could cause an error when viewing contacts in an incomplete segment ([#441](https://github.com/putyourlightson/craft-campaign/issues/441)).
 
 ## 2.11.0 - 2023-11-28
 

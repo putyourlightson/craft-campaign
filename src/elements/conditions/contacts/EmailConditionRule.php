@@ -42,6 +42,7 @@ class EmailConditionRule extends BaseTextConditionRule implements ElementConditi
         if ($this->paramValue() === null) {
             return;
         }
+
         /** @var ContactElementQuery $query */
         $query->email($this->paramValue());
     }
