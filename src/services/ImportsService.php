@@ -379,9 +379,11 @@ class ImportsService extends Component
         ]);
 
         Queue::push(
-            job: $job,
-            priority: Campaign::$plugin->settings->importJobPriority,
-            queue: Campaign::$plugin->queue,
+            $job,
+            Campaign::$plugin->settings->importJobPriority,
+            null,
+            Campaign::$plugin->settings->importJobTtr,
+            Campaign::$plugin->queue,
         );
     }
 }

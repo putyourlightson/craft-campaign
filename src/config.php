@@ -116,6 +116,9 @@ return [
         // The amount of time in seconds to reserve a sync job
         //'syncJobTtr' => 300,
 
+        // The priority to give the sync job (the lower the number, the higher the priority).
+        //'syncJobPriority' => 2048,
+
         // Enable GeoIP to geolocate contacts by their IP addresses
         //'geoIp' => false,
 

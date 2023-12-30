@@ -154,7 +154,6 @@ class SendoutsService extends Component
             /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
                 if ($sendout->getCanSendNow()) {
-                    // Add sendout job to queue
                     $job = new SendoutJob([
                         'sendoutId' => $sendout->id,
                         'title' => SendoutHelper::encodeEmojis($sendout->title),

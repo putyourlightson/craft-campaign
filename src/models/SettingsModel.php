@@ -197,6 +197,13 @@ class SettingsModel extends Model
     public int $syncJobTtr = 300;
 
     /**
+     * The priority to give the sync job (the lower the number, the higher the priority).
+     *
+     * @since 2.11.1
+     */
+    public int $syncJobPriority = 2048;
+
+    /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
      */
     public bool $geoIp = false;
