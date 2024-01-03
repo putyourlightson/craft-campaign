@@ -163,6 +163,10 @@ class ContactElementQuery extends ElementQuery
             }
         }
 
+        if ($this->lastActivity) {
+            $this->subQuery->andWhere(Db::parseDateParam('campaign_contacts.lastActivity', $this->lastActivity));
+        }
+
         return parent::beforePrepare();
     }
 

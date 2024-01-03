@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.11.1 - Unreleased
+## 2.12.0 - 2024-01-03
 
 ### Added
 
@@ -12,6 +12,7 @@
 - Fixed a bug that could cause an error when viewing contacts in an incomplete segment ([#441](https://github.com/putyourlightson/craft-campaign/issues/441)).
 - Fixed a bug in which the import job TTR setting was not being respected ([#445](https://github.com/putyourlightson/craft-campaign/issues/445)).
 - Fixed a bug in which the sendout job max retry attempts setting was not being respected.
+- Fixed a bug in which filtering contacts by last activity was not working ([#446](https://github.com/putyourlightson/craft-campaign/issues/446)).
 
 ## 2.11.0 - 2023-11-28
 
