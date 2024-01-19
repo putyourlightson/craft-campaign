@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.12.1 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which the link on the welcome screen was not clickable in Webkit browsers ([#449](https://github.com/putyourlightson/craft-campaign/issues/449)).
+
 ## 2.12.0 - 2024-01-03
 
 ### Added

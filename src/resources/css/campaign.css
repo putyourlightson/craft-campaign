@@ -15,9 +15,6 @@ table th.thin, table td.thin {
 }
 
 .welcome {
-    position: relative;
-    width: 100%;
-    height: 100%;
     min-height: 700px;
     background: url('../images/welcome.jpg') center;
     background-size: cover;
@@ -30,9 +27,6 @@ table th.thin, table td.thin {
 }
 
 .welcome-oil {
-    position: absolute;
-    width: 100%;
-    height: 100%;
     background: url('../images/welcome-oil.jpg') center;
     background-size: cover;
     filter: grayscale(100%);
