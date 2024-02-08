@@ -159,7 +159,10 @@ class SyncService extends Component
         $contact->userId = $user->id;
         $contact->email = $user->email;
 
-        // Set first and last name from user fields only if they exist
+        // Set the name fields from user fields only if they exist
+        if (isset($contact->fullName)) {
+            $contact->setFieldValue('fullName', $user->fullName);
+        }
         if (isset($contact->firstName)) {
             $contact->setFieldValue('firstName', $user->firstName);
         }

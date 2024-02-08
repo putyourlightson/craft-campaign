@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
-## 2.12.1 - Unreleased
+## 2.12.1 - 2024-01-08
+
+### Changed
+
+- The `fullName` field is now synced from users to contacts, provided it exists on the contact field layout ([#452](https://github.com/putyourlightson/craft-campaign/issues/452)).
 
 ### Fixed
 
