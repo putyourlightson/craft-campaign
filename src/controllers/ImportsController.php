@@ -310,7 +310,7 @@ class ImportsController extends Controller
 
         if (is_array($import->fieldIndexes) && $fieldIndexPrefix) {
             foreach ($import->fieldIndexes as $key => $fieldIndex) {
-                if ($fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
+                if ($fieldIndex != 'fullName' && $fieldIndex != 'firstName' && $fieldIndex != 'lastName') {
                     $import->fieldIndexes[$key] = $fieldIndexPrefix . $fieldIndex;
                 }
             }

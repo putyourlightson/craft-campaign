@@ -145,6 +145,7 @@ class ImportsService extends Component
         } else {
             $columns = [
                 'email' => Craft::t('campaign', 'Email'),
+                'fullName' => Craft::t('campaign', 'Full Name'),
                 'firstName' => Craft::t('campaign', 'First Name'),
                 'lastName' => Craft::t('campaign', 'Last Name'),
             ];
