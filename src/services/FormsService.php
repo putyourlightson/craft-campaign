@@ -146,7 +146,7 @@ class FormsService extends Component
     }
 
     /**
-     * Creates and subscribes a contact, with verification if enabled on the mailing list.
+     * Creates and subscribes a contact, with verification if enabled on the mailing list type.
      *
      * @since 2.1.0
      */

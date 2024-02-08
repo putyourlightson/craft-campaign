@@ -133,13 +133,7 @@ class SettingsHelper
         }
 
         foreach ($sites as $site) {
-            // How this works was changed in 3.6.0
-            // https://github.com/craftcms/cms/issues/3964#issuecomment-737546660
-            if (version_compare(Craft::$app->getVersion(), '3.6.0', '>=')) {
-                $unparsedBaseUrl = $site->getBaseUrl(false);
-            } else {
-                $unparsedBaseUrl = $site->baseUrl;
-            }
+            $unparsedBaseUrl = $site->getBaseUrl(false);
 
             if (stripos($unparsedBaseUrl, '@web') !== false) {
                 return true;
