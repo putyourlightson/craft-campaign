@@ -27,6 +27,7 @@
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
+    "craftcms/feed-me": "^5.0.0",
     "craftcms/phpstan": "dev-main",
     "markhuot/craft-pest-core": "^2.0.0-rc2",
     "mockery/mockery": "^1.0",
