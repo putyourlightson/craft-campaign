@@ -422,6 +422,7 @@ return [
     'One or more disabled excluded mailing lists were selected.' => '',
     'One or more disabled mailing lists were selected.' => '',
     'One or more disabled segments were selected.' => '',
+    'Open Rate' => '',
     'Open Rate is calculated by dividing the number of contacts that opened an email by the number of contacts that received the email.' => '',
     'Opened' => '',
     'Opens' => '',

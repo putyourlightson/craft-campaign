@@ -423,6 +423,7 @@ return [
     'One or more disabled excluded mailing lists were selected.' => '',
     'One or more disabled mailing lists were selected.' => '',
     'One or more disabled segments were selected.' => '',
+    'Open Rate' => '',
     'Open Rate is calculated by dividing the number of contacts that opened an email by the number of contacts that received the email.' => 'Le taux d’ouverture est calculé en divisant le nombre de contacts qui ont ouvert un courriel par le nombre de contacts qui ont reçu le courriel.',
     'Opened' => 'Lus',
     'Opens' => 'Ouvre',
