@@ -9,12 +9,4 @@
 
 {% do view.registerTranslations('campaign', [
     'New segment',
-    'New {segmentType} segment',
 ]) %}
-
-
-{% if segmentType is defined %}
-    {% js %}
-        window.defaultSegmentTypeHandle = '{{ segmentType|e('js') }}';
-    {% endjs %}
-{% endif %}

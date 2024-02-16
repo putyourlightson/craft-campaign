@@ -242,10 +242,7 @@ class Install extends Migration
         if (!$this->db->tableExists(SegmentRecord::tableName())) {
             $this->createTable(SegmentRecord::tableName(), [
                 'id' => $this->integer()->notNull(),
-                'segmentType' => $this->string()->notNull(),
                 'contactCondition' => $this->text(),
-                'conditions' => $this->text(),
-                'template' => $this->text(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -326,7 +323,6 @@ class Install extends Migration
         $this->createIndex(null, ContactMailingListRecord::tableName(), 'subscriptionStatus');
         $this->createIndex(null, LinkRecord::tableName(), 'lid', true);
         $this->createIndex(null, MailingListTypeRecord::tableName(), 'handle', true);
-        $this->createIndex(null, SegmentRecord::tableName(), 'segmentType');
         $this->createIndex(null, SendoutRecord::tableName(), 'sid');
         $this->createIndex(null, SendoutRecord::tableName(), 'sendoutType');
         $this->createIndex(null, SendoutRecord::tableName(), 'sendStatus');

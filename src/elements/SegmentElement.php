@@ -27,24 +27,12 @@ use yii\web\Response;
 
 /**
  * @property-read int $contactCount
- * @property-read string $segmentTypeLabel
  * @property-read int $conditionCount
  * @property-read null|string $postEditUrl
  * @property-read array[] $crumbs
  */
 class SegmentElement extends Element
 {
-    /**
-     * Returns the segment types.
-     */
-    public static function segmentTypes(): array
-    {
-        return [
-            'regular' => Craft::t('campaign', 'Regular'),
-            'template' => Craft::t('campaign', 'Template'),
-        ];
-    }
-
     /**
      * @inheritdoc
      */
@@ -138,28 +126,13 @@ class SegmentElement extends Element
      */
     protected static function defineSources(string $context): array
     {
-        $sources = [
+        return [
             [
                 'key' => '*',
                 'label' => Craft::t('campaign', 'All segments'),
                 'criteria' => [],
             ],
-            [
-                'heading' => Craft::t('campaign', 'Segment Types'),
-            ],
         ];
-        $segmentTypes = self::segmentTypes();
-
-        foreach ($segmentTypes as $segmentType => $label) {
-            $sources[] = [
-                'key' => 'segmentType:' . $segmentType,
-                'label' => $label,
-                'data' => ['handle' => $segmentType],
-                'criteria' => ['segmentType' => $segmentType],
-            ];
-        }
-
-        return $sources;
     }
 
     /**
@@ -206,7 +179,6 @@ class SegmentElement extends Element
     {
         return [
             'title' => Craft::t('app', 'Title'),
-            'segmentType' => Craft::t('campaign', 'Segment Type'),
             [
                 'label' => Craft::t('app', 'Date Created'),
                 'orderBy' => 'elements.dateCreated',
@@ -226,8 +198,6 @@ class SegmentElement extends Element
     protected static function defineTableAttributes(): array
     {
         return [
-            'segmentType' => ['label' => Craft::t('campaign', 'Segment Type')],
-            'conditions' => ['label' => Craft::t('campaign', 'Conditions')],
             'contacts' => ['label' => Craft::t('campaign', 'Contacts')],
             'slug' => ['label' => Craft::t('app', 'Slug')],
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
@@ -240,16 +210,6 @@ class SegmentElement extends Element
      */
     protected static function defineDefaultTableAttributes(string $source): array
     {
-        if ($source == '*') {
-            return ['segmentType', 'conditions', 'contacts'];
-        }
-
-        $segmentType = str_replace('segmentType:', '', $source);
-
-        if ($segmentType == 'regular') {
-            return ['conditions', 'contacts'];
-        }
-
         return ['contacts'];
     }
 
@@ -259,27 +219,10 @@ class SegmentElement extends Element
     protected function attributeHtml(string $attribute): string
     {
         return match ($attribute) {
-            'segmentType' => $this->getSegmentTypeLabel(),
-            'conditions' => (string)$this->getConditionCount(),
             'contacts' => (string)$this->getContactCount(),
             default => parent::attributeHtml($attribute),
         };
     }
-
-    /**
-     * @var string|null
-     */
-    public ?string $segmentType = null;
-
-    /**
-     * @var array|null
-     */
-    public ?array $conditions = [];
-
-    /**
-     * @var string|null
-     */
-    public ?string $template = '';
 
     /**
      * @var ElementConditionInterface|null
@@ -304,8 +247,6 @@ class SegmentElement extends Element
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        $rules[] = [['segmentType'], 'required'];
-        $rules[] = [['segmentType', 'template'], 'string'];
         $rules[] = [['contactCondition'], 'safe'];
 
         return $rules;
@@ -325,8 +266,6 @@ class SegmentElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        Craft::$app->getView()->registerJs('new Campaign.SegmentEdit();');
-
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'segments';
 
@@ -334,10 +273,6 @@ class SegmentElement extends Element
             [
                 'label' => Craft::t('campaign', 'Segments'),
                 'url' => UrlHelper::url('campaign/segments'),
-            ],
-            [
-                'label' => $this->getSegmentTypeLabel(),
-                'url' => UrlHelper::url('campaign/segments/' . $this->segmentType),
             ],
         ]);
     }
@@ -348,7 +283,7 @@ class SegmentElement extends Element
      */
     protected function cpEditUrl(): ?string
     {
-        $path = sprintf('campaign/segments/%s/%s', $this->segmentType, $this->getCanonicalId());
+        $path = sprintf('campaign/segments/%s', $this->getCanonicalId());
 
         // Ignore homepage/temp slugs
         if ($this->slug && !str_starts_with($this->slug, '__')) {
@@ -451,16 +386,6 @@ class SegmentElement extends Element
     }
 
     /**
-     * Returns the segment type label for the given segment type.
-     */
-    public function getSegmentTypeLabel(): string
-    {
-        $segmentTypes = self::segmentTypes();
-
-        return $segmentTypes[$this->segmentType];
-    }
-
-    /**
      * Returns the contact condition.
      */
     public function getContactCondition(): ElementConditionInterface
@@ -496,19 +421,7 @@ class SegmentElement extends Element
      */
     public function getConditionCount(): int
     {
-        if ($this->segmentType == 'regular') {
-            return count($this->getContactCondition()->getConditionRules());
-        } elseif ($this->segmentType == 'template') {
-            return 1;
-        }
-
-        $count = 0;
-
-        foreach ($this->conditions as $conditions) {
-            $count += count($conditions);
-        }
-
-        return $count;
+        return count($this->getContactCondition()->getConditionRules());
     }
 
     /**
@@ -576,11 +489,7 @@ class SegmentElement extends Element
                 $segmentRecord = SegmentRecord::findOne($this->id);
             }
 
-            $segmentRecord->segmentType = $this->segmentType;
             $segmentRecord->contactCondition = $this->getContactCondition()->getConfig();
-            $segmentRecord->conditions = $this->conditions;
-            $segmentRecord->template = $this->template;
-
             $segmentRecord->save(false);
         }
 

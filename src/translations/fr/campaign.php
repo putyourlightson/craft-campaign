@@ -386,7 +386,6 @@ return [
     'Name' => 'Nom',
     'New {campaignType} campaign' => 'Nouvelle newsletter {campaignType}',
     'New {mailingListType} mailing list' => 'Nouvelle liste de diffusion {mailingListType}',
-    'New {segmentType} segment' => 'Nouveau segment {segmentType}',
     'New {sendoutType} sendout' => 'Nouvelle campagne {sendoutType}',
     'New campaign type' => 'Nouveau type de newsletter',
     'New campaign' => 'Nouvelle newsletter',

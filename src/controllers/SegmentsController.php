@@ -14,7 +14,6 @@ use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SegmentElement;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -37,12 +36,8 @@ class SegmentsController extends Controller
      * @see CategoriesController::actionCreate()
      * @since 2.0.0
      */
-    public function actionCreate(string $segmentType): Response
+    public function actionCreate(): Response
     {
-        if (!isset(SegmentElement::segmentTypes()[$segmentType])) {
-            throw new BadRequestHttpException("Invalid segment type: $segmentType");
-        }
-
         $site = Cp::requestedSite();
         if (!$site) {
             throw new SiteNotFoundException();
@@ -51,7 +46,6 @@ class SegmentsController extends Controller
         // Create & populate the draft
         $segment = Craft::createObject(SegmentElement::class);
         $segment->siteId = $site->id;
-        $segment->segmentType = $segmentType;
 
         // Make sure the user is allowed to create this segment
         $user = Craft::$app->getUser()->getIdentity();

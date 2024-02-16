@@ -2,7 +2,8 @@
 
 ## 3.0.0-beta.1 - Unreleased
 
-> {warning} “Legacy” segments are no longer available and should be replaced with “Regular” segments before updating.
+> {warning} “Legacy” and “Template” segments are no longer available will be deleted in this update. They should be replaced with regular segments
+_before_ updating.
 
 ### Added
 
@@ -10,4 +11,5 @@
 
 ### Removed
 
-- Removed the “Legacy” segment type. Use the “Regular” segment type instead.
+- Removed the “Legacy” and “Template” segment types. Use regular segments instead.
+- Removed the `segmentType` property and function from the segment element query.

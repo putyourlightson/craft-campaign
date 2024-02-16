@@ -5,16 +5,10 @@
 
 namespace putyourlightson\campaign\services;
 
-use Craft;
 use craft\base\Component;
-use craft\base\FieldInterface;
-use craft\helpers\ElementHelper;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
 use putyourlightson\campaign\elements\SegmentElement;
-use putyourlightson\campaign\helpers\SegmentHelper;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 /**
  * @since 1.9.0
@@ -97,30 +91,10 @@ class SegmentsService extends Component
      */
     public function getFilteredContacts(SegmentElement $segment, array $contactIds = null): array
     {
-        $filteredContacts = [];
         $contactElementQuery = $this->getContactElementQuery($contactIds);
+        $segment->getContactCondition()->modifyQuery($contactElementQuery);
 
-        if ($segment->segmentType == 'regular') {
-            $segment->getContactCondition()->modifyQuery($contactElementQuery);
-            $filteredContacts = $contactElementQuery->all();
-        } elseif ($segment->segmentType == 'template') {
-            $contacts = $contactElementQuery->all();
-
-            foreach ($contacts as $contact) {
-                try {
-                    $rendered = Craft::$app->getView()->renderString($segment->template, [
-                        'contact' => $contact,
-                    ]);
-
-                    if (trim($rendered)) {
-                        $filteredContacts[] = $contact;
-                    }
-                } catch (LoaderError|SyntaxError) {
-                }
-            }
-        }
-
-        return $filteredContacts;
+        return $contactElementQuery->all();
     }
 
     /**
@@ -130,95 +104,10 @@ class SegmentsService extends Component
      */
     public function getFilteredContactIds(SegmentElement $segment, array $contactIds = null): array
     {
-        $filteredContactIds = [];
         $contactElementQuery = $this->getContactElementQuery($contactIds);
+        $segment->getContactCondition()->modifyQuery($contactElementQuery);
 
-        if ($segment->segmentType == 'regular') {
-            $segment->getContactCondition()->modifyQuery($contactElementQuery);
-            $filteredContactIds = $contactElementQuery->ids();
-        } elseif ($segment->segmentType == 'template') {
-            $contacts = $this->getFilteredContacts($segment, $contactIds);
-
-            foreach ($contacts as $contact) {
-                $filteredContactIds[] = $contact->id;
-            }
-        }
-
-        return $filteredContactIds;
-    }
-
-    /**
-     * Handles a changed field, updating segment conditions if necessary.
-     */
-    public function handleChangedField(FieldInterface $field): void
-    {
-        if (!SegmentHelper::isContactField($field)) {
-            return;
-        }
-
-        // TODO: figure out this mess.
-        $newFieldColumn = ElementHelper::fieldColumnFromField($field);
-        $oldFieldColumn = ElementHelper::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
-
-        if ($newFieldColumn == $oldFieldColumn) {
-            return;
-        }
-
-        $modified = false;
-
-        /** @var SegmentElement[] $segments */
-        $segments = SegmentElement::find()
-            ->status(null)
-            ->all();
-
-        foreach ($segments as $segment) {
-            foreach ($segment->conditions as &$andCondition) {
-                foreach ($andCondition as &$orCondition) {
-                    if ($orCondition[1] == $oldFieldColumn) {
-                        $orCondition[1] = $newFieldColumn;
-                        $modified = true;
-                    }
-                }
-            }
-
-            if ($modified) {
-                Craft::$app->getElements()->saveElement($segment, false);
-            }
-        }
-    }
-
-    /**
-     * Handles a deleted field, updating segment conditions if necessary.
-     */
-    public function handleDeletedField(FieldInterface $field): void
-    {
-        if (!SegmentHelper::isContactField($field)) {
-            return;
-        }
-
-        $modified = false;
-
-        /** @var SegmentElement[] $segments */
-        $segments = SegmentElement::find()
-            ->status(null)
-            ->all();
-
-        foreach ($segments as $segment) {
-            $fieldColumn = ElementHelper::fieldColumnFromField($field);
-
-            foreach ($segment->conditions as &$andCondition) {
-                foreach ($andCondition as $key => $orCondition) {
-                    if ($orCondition[1] == $fieldColumn) {
-                        unset($andCondition[$key]);
-                        $modified = true;
-                    }
-                }
-            }
-
-            if ($modified) {
-                Craft::$app->getElements()->saveElement($segment, false);
-            }
-        }
+        return $contactElementQuery->ids();
     }
 
     private function getContactElementQuery(array $contactIds = null): ContactElementQuery

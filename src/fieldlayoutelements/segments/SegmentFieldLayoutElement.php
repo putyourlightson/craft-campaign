@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\fieldlayoutelements\segments;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
-use putyourlightson\campaign\assets\SegmentEditAsset;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\helpers\SegmentHelper;
 
@@ -36,10 +35,8 @@ class SegmentFieldLayoutElement extends BaseNativeField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        Craft::$app->getView()->registerAssetBundle(SegmentEditAsset::class);
-
         return Craft::$app->getView()->renderTemplate(
-            'campaign/segments/_includes/segmentTypes/' . $element->segmentType,
+            'campaign/segments/_includes/fields',
             [
                 'segment' => $element,
                 'availableFields' => SegmentHelper::getAvailableFields(),

@@ -11,7 +11,6 @@ use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset as CraftCpAsset;
 use craft\web\View;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use yii\web\View as BaseView;
 
@@ -76,14 +75,16 @@ class CpAsset extends AssetBundle
     {
         $editableCampaignTypes = Json::encode($this->getEditableCampaignTypes());
         $editableMailingListTypes = Json::encode($this->getEditableMailingListTypes());
-        $editableSegmentTypes = Json::encode($this->getEditableSegmentTypes());
         $editableSendoutTypes = Json::encode($this->getEditableSendoutTypes());
+
+        $user = Craft::$app->getUser()->getIdentity();
+        $canEditSegments = $user->can('campaign:segments');
 
         $js = <<<JS
 window.Craft.editableCampaignTypes = $editableCampaignTypes;
 window.Craft.editableMailingListTypes = $editableMailingListTypes;
-window.Craft.editableSegmentTypes = $editableSegmentTypes;
 window.Craft.editableSendoutTypes = $editableSendoutTypes;
+window.Craft.canEditSegments = $canEditSegments;
 JS;
 
         $view->registerJs($js, BaseView::POS_HEAD);
@@ -121,20 +122,6 @@ JS;
         }
 
         return $mailingListTypes;
-    }
-
-    private function getEditableSegmentTypes(): array
-    {
-        $segmentTypes = [];
-
-        foreach (SegmentElement::segmentTypes() as $handle => $name) {
-            $segmentTypes[] = [
-                'handle' => $handle,
-                'name' => Craft::t('campaign', $name),
-            ];
-        }
-
-        return $segmentTypes;
     }
 
     private function getEditableSendoutTypes(): array

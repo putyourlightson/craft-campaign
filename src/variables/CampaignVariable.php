@@ -166,14 +166,6 @@ class CampaignVariable
     }
 
     /**
-     * Returns all segment types.
-     */
-    public function getAllSegmentTypes(): array
-    {
-        return SegmentElement::segmentTypes();
-    }
-
-    /**
      * Returns a sendout by ID.
      */
     public function getSendoutById(int $sendoutId): ?SendoutElement

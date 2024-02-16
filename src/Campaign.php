@@ -10,7 +10,6 @@ use craft\base\Plugin;
 use craft\controllers\PreviewController;
 use craft\elements\User;
 use craft\events\DefineFieldLayoutFieldsEvent;
-use craft\events\FieldEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -180,7 +179,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.10.0';
+    public string $schemaVersion = '3.0.0.0';
 
     /**
      * @inheritdoc
@@ -210,7 +209,6 @@ class Campaign extends Plugin
         $this->registerElementTypes();
         $this->registerFieldTypes();
         $this->registerAfterInstallEvent();
-        $this->registerFieldEvents();
         $this->registerProjectConfigListeners();
         $this->registerTemplateHooks();
         $this->registerAllowedOrigins();
@@ -433,10 +431,10 @@ class Campaign extends Plugin
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>' => ['template' => 'campaign/mailinglists/index'],
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/new' => 'campaign/mailing-lists/create',
             'campaign/mailinglists/<mailingListTypeHandle:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
-            'campaign/segments/<segmentType:{handle}>' => ['template' => 'campaign/segments/index'],
-            'campaign/segments/<segmentType:{handle}>/new' => 'campaign/segments/create',
-            'campaign/segments/<segmentType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/segments/create',
-            'campaign/segments/<segmentType:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
+            'campaign/segments' => ['template' => 'campaign/segments/index'],
+            'campaign/segments/new' => 'campaign/segments/create',
+            'campaign/segments/new/<siteHandle:{handle}>' => 'campaign/segments/create',
+            'campaign/segments/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
             'campaign/sendouts/<sendoutType:{handle}>' => ['template' => 'campaign/sendouts/index'],
             'campaign/sendouts/<sendoutType:{handle}>/new' => 'campaign/sendouts/create',
             'campaign/sendouts/<sendoutType:{handle}>/new/<siteHandle:{handle}>' => 'campaign/sendouts/create',
@@ -579,26 +577,6 @@ class Campaign extends Plugin
                         )->send();
                     }
                 }
-            }
-        );
-    }
-
-    /**
-     * Registers field events.
-     */
-    private function registerFieldEvents(): void
-    {
-        Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
-            function(FieldEvent $event) {
-                if ($event->isNew === false) {
-                    $this->segments->handleChangedField($event->field);
-                }
-            }
-        );
-
-        Event::on(Fields::class, Fields::EVENT_AFTER_DELETE_FIELD,
-            function(FieldEvent $event) {
-                $this->segments->handleDeletedField($event->field);
             }
         );
     }
