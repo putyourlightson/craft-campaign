@@ -102,7 +102,7 @@ class ImportsController extends Controller
         $import->assetId = $asset->id;
         $import->fileName = $fileName;
 
-        return $this->_returnFieldsTemplate($import);
+        return $this->returnFieldsTemplate($import);
     }
 
     /**
@@ -112,7 +112,7 @@ class ImportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $import = $this->_getImportModelFromParams();
+        $import = $this->getImportModelFromParams();
         $import->assetId = $this->request->getRequiredBodyParam('assetId');
         $import->fileName = $this->request->getRequiredBodyParam('fileName');
 
@@ -128,7 +128,7 @@ class ImportsController extends Controller
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import file.'));
 
             // Send the import back to the fields template
-            return $this->_returnFieldsTemplate($import, $mailingListIds);
+            return $this->returnFieldsTemplate($import, $mailingListIds);
         }
 
         // Save and queue an import for each mailing list
@@ -177,7 +177,7 @@ class ImportsController extends Controller
 
         $import->userGroupId = $userGroupId;
 
-        return $this->_returnFieldsTemplate($import);
+        return $this->returnFieldsTemplate($import);
     }
 
     /**
@@ -187,7 +187,7 @@ class ImportsController extends Controller
     {
         $this->requirePostRequest();
 
-        $import = $this->_getImportModelFromParams('field_');
+        $import = $this->getImportModelFromParams('field_');
         $import->userGroupId = $this->request->getRequiredBodyParam('userGroupId');
 
         $mailingListIds = $this->request->getBodyParam('mailingListIds');
@@ -202,7 +202,7 @@ class ImportsController extends Controller
             Craft::$app->getSession()->setError(Craft::t('campaign', 'Couldn’t import user group.'));
 
             // Send the import back to the fields template
-            return $this->_returnFieldsTemplate($import);
+            return $this->returnFieldsTemplate($import);
         }
 
         // Save and queue an import for each mailing list
@@ -264,7 +264,7 @@ class ImportsController extends Controller
     /**
      * Returns the `fields` template.
      */
-    private function _returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): Response
+    private function returnFieldsTemplate(ImportModel $import, array|string|null $mailingListIds = []): Response
     {
         // Set the current site to the site handle if set
         $siteHandle = $this->request->getSegment(4);
@@ -299,7 +299,7 @@ class ImportsController extends Controller
         return $this->renderTemplate('campaign/contacts/import/_fields', $variables);
     }
 
-    private function _getImportModelFromParams(string $fieldIndexPrefix = null): ImportModel
+    private function getImportModelFromParams(string $fieldIndexPrefix = null): ImportModel
     {
         $import = new ImportModel();
 

@@ -61,9 +61,9 @@ class CampaignTypesService extends Component
 
     /**
      * @var MemoizableArray<CampaignTypeModel>|null
-     * @see _campaignTypes()
+     * @see campaignTypes()
      */
-    private ?MemoizableArray $_campaignTypes = null;
+    private ?MemoizableArray $campaignTypes = null;
 
     /**
      * Returns all campaign types.
@@ -72,7 +72,7 @@ class CampaignTypesService extends Component
      */
     public function getAllCampaignTypes(): array
     {
-        return $this->_campaignTypes()->all();
+        return $this->campaignTypes()->all();
     }
 
     /**
@@ -105,7 +105,7 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeById(int $campaignTypeId): ?CampaignTypeModel
     {
-        return $this->_campaignTypes()->firstWhere('id', $campaignTypeId);
+        return $this->campaignTypes()->firstWhere('id', $campaignTypeId);
     }
 
     /**
@@ -113,7 +113,7 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeByUid(string $uid): ?CampaignTypeModel
     {
-        return $this->_campaignTypes()->firstWhere('uid', $uid, true);
+        return $this->campaignTypes()->firstWhere('uid', $uid, true);
     }
 
     /**
@@ -121,7 +121,7 @@ class CampaignTypesService extends Component
      */
     public function getCampaignTypeByHandle(string $campaignTypeHandle): ?CampaignTypeModel
     {
-        return $this->_campaignTypes()->firstWhere('handle', $campaignTypeHandle, true);
+        return $this->campaignTypes()->firstWhere('handle', $campaignTypeHandle, true);
     }
 
     /**
@@ -236,7 +236,7 @@ class CampaignTypesService extends Component
         }
 
         // Clear caches
-        $this->_campaignTypes = null;
+        $this->campaignTypes = null;
 
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
@@ -351,7 +351,7 @@ class CampaignTypesService extends Component
         }
 
         // Clear caches
-        $this->_campaignTypes = null;
+        $this->campaignTypes = null;
 
         // Get campaign type model
         $campaignType = $this->getCampaignTypeById($campaignTypeRecord->id);
@@ -391,9 +391,9 @@ class CampaignTypesService extends Component
      *
      * @return MemoizableArray<CampaignTypeModel>
      */
-    private function _campaignTypes(): MemoizableArray
+    private function campaignTypes(): MemoizableArray
     {
-        if (!isset($this->_campaignTypes)) {
+        if (!isset($this->campaignTypes)) {
             $campaignTypes = [];
 
             /** @var CampaignTypeRecord[] $campaignTypeRecords */
@@ -408,9 +408,9 @@ class CampaignTypesService extends Component
                 $campaignTypes[] = $campaignType;
             }
 
-            $this->_campaignTypes = new MemoizableArray($campaignTypes);
+            $this->campaignTypes = new MemoizableArray($campaignTypes);
         }
 
-        return $this->_campaignTypes;
+        return $this->campaignTypes;
     }
 }

@@ -134,6 +134,7 @@ class SegmentHelper
                 if (!empty($supportedFields[$fieldType])) {
                     $availableFields[] = [
                         'type' => $fieldType,
+                        // TODO: find the right method to use here.
                         'column' => ElementHelper::fieldColumnFromField($field),
                         'name' => $field->name,
                         'options' => ($field instanceof BaseOptionsField ? $field->options : null),

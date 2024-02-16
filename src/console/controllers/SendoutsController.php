@@ -24,7 +24,7 @@ class SendoutsController extends Controller
      */
     public function actionQueue(): int
     {
-        $this->_queuePendingSendouts();
+        $this->queuePendingSendouts();
 
         return ExitCode::OK;
     }
@@ -34,7 +34,7 @@ class SendoutsController extends Controller
      */
     public function actionRun(): int
     {
-        $this->_queuePendingSendouts();
+        $this->queuePendingSendouts();
 
         /** @var Queue $queue */
         $queue = Craft::$app->getQueue();
@@ -43,7 +43,7 @@ class SendoutsController extends Controller
         return ExitCode::OK;
     }
 
-    private function _queuePendingSendouts(): void
+    private function queuePendingSendouts(): void
     {
         $count = Campaign::$plugin->sendouts->queuePendingSendouts();
 

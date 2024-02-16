@@ -25,7 +25,6 @@ use putyourlightson\campaign\elements\actions\EditSendout;
 use putyourlightson\campaign\elements\actions\PauseSendouts;
 use putyourlightson\campaign\elements\db\SendoutElementQuery;
 use putyourlightson\campaign\fieldlayoutelements\sendouts\SendoutFieldLayoutTab;
-use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\AutomatedScheduleModel;
 use putyourlightson\campaign\models\RecurringScheduleModel;
@@ -38,16 +37,13 @@ use putyourlightson\campaign\validators\SendoutSegmentsValidator;
 use yii\web\Response;
 
 /**
- * @property ScheduleModel|array|string|null $schedule
  * @property-write array $campaignIds
  * @property-read null|string $cpPreviewUrl
  * @property-read bool $isResumable
- * @property-read array $pendingRecipients
  * @property-read string $sendoutTypeLabel
  * @property-read float $progressFraction
  * @property-read bool $isModifiable
  * @property-read int $segmentCount
- * @property-read SegmentElement[] $segments
  * @property-read int $pendingRecipientCount
  * @property-read bool $isDeletable
  * @property-read int $contactCount
@@ -56,19 +52,13 @@ use yii\web\Response;
  * @property-read null|string $postEditUrl
  * @property-read int $mailingListCount
  * @property-read bool $canSendNow
- * @property-read MailingListElement[] $excludedMailingLists
  * @property-read string $fromNameEmailLabel
  * @property-read bool $isSendable
- * @property-read User|null $sender
  * @property-read array[] $crumbs
  * @property-read bool $isCancellable
- * @property-read null|CampaignElement $campaign
  * @property-read string $progress
  * @property-read string[] $notificationEmailAddresses
  * @property-read ContactElement[] $notificationContacts
- * @property-read ContactElement[] $contacts
- * @property-read ContactElement[] $failedContacts
- * @property-read MailingListElement[] $mailingLists
  */
 class SendoutElement extends Element
 {
@@ -162,14 +152,6 @@ class SendoutElement extends Element
     public static function refHandle(): ?string
     {
         return 'sendout';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasContent(): bool
-    {
-        return true;
     }
 
     /**
@@ -492,60 +474,49 @@ class SendoutElement extends Element
     /**
      * @var CampaignElement|null
      */
-    private ?CampaignElement $_campaign = null;
+    private ?CampaignElement $campaign = null;
 
     /**
      * @var User|null
      */
-    private ?User $_sender = null;
+    private ?User $sender = null;
 
     /**
      * @var ContactElement[]|null
      */
-    private ?array $_contacts = null;
+    private ?array $contacts = null;
 
     /**
      * @var ContactElement[]|null
      */
-    private ?array $_failedContacts = null;
+    private ?array $failedContacts = null;
 
     /**
      * @var MailingListElement[]|null
      */
-    private ?array $_mailingLists = null;
+    private ?array $mailingLists = null;
 
     /**
      * @var MailingListElement[]|null
      */
-    private ?array $_excludedMailingLists = null;
+    private ?array $excludedMailingLists = null;
 
     /**
      * @var SegmentElement[]|null
      */
-    private ?array $_segments = null;
+    private ?array $segments = null;
 
     /**
      * @var array|null
      */
-    private ?array $_pendingRecipients = null;
+    private ?array $pendingRecipients = null;
 
     /**
      * @var ScheduleModel|null Schedule
      * @see getSchedule()
      * @see setSchedule()
      */
-    private ?ScheduleModel $_schedule = null;
-
-    /**
-     * @inheritdoc
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        $this->title = SendoutHelper::decodeEmojis($this->title);
-        $this->subject = SendoutHelper::decodeEmojis($this->subject);
-    }
+    private ?ScheduleModel $schedule = null;
 
     /**
      * @inheritdoc
@@ -760,7 +731,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the from name, email and reply to.
+     * Returns the “from” name, email and reply to.
      */
     public function getFromNameEmail(): string
     {
@@ -768,7 +739,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the from name, email and reply to label.
+     * Returns the “from” name, email and reply to label.
      */
     public function getFromNameEmailLabel(): string
     {
@@ -821,13 +792,13 @@ class SendoutElement extends Element
             return null;
         }
 
-        if ($this->_campaign !== null) {
-            return $this->_campaign;
+        if ($this->campaign !== null) {
+            return $this->campaign;
         }
 
-        $this->_campaign = Campaign::$plugin->campaigns->getCampaignById($this->campaignId);
+        $this->campaign = Campaign::$plugin->campaigns->getCampaignById($this->campaignId);
 
-        return $this->_campaign;
+        return $this->campaign;
     }
 
     /**
@@ -839,13 +810,13 @@ class SendoutElement extends Element
             return null;
         }
 
-        if ($this->_sender !== null) {
-            return $this->_sender;
+        if ($this->sender !== null) {
+            return $this->sender;
         }
 
-        $this->_sender = Craft::$app->getUsers()->getUserById($this->senderId);
+        $this->sender = Craft::$app->getUsers()->getUserById($this->senderId);
 
-        return $this->_sender;
+        return $this->sender;
     }
 
     /**
@@ -899,13 +870,13 @@ class SendoutElement extends Element
      */
     public function getContacts(): array
     {
-        if ($this->_contacts !== null) {
-            return $this->_contacts;
+        if ($this->contacts !== null) {
+            return $this->contacts;
         }
 
-        $this->_contacts = Campaign::$plugin->contacts->getContactsByIds($this->contactIds);
+        $this->contacts = Campaign::$plugin->contacts->getContactsByIds($this->contactIds);
 
-        return $this->_contacts;
+        return $this->contacts;
     }
 
     /**
@@ -915,13 +886,13 @@ class SendoutElement extends Element
      */
     public function getFailedContacts(): array
     {
-        if ($this->_failedContacts !== null) {
-            return $this->_failedContacts;
+        if ($this->failedContacts !== null) {
+            return $this->failedContacts;
         }
 
-        $this->_failedContacts = Campaign::$plugin->contacts->getContactsByIds($this->failedContactIds);
+        $this->failedContacts = Campaign::$plugin->contacts->getContactsByIds($this->failedContactIds);
 
-        return $this->_failedContacts;
+        return $this->failedContacts;
     }
 
     /**
@@ -939,13 +910,13 @@ class SendoutElement extends Element
      */
     public function getMailingLists(): array
     {
-        if ($this->_mailingLists !== null) {
-            return $this->_mailingLists;
+        if ($this->mailingLists !== null) {
+            return $this->mailingLists;
         }
 
-        $this->_mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->mailingListIds);
+        $this->mailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->mailingListIds);
 
-        return $this->_mailingLists;
+        return $this->mailingLists;
     }
 
     /**
@@ -963,13 +934,13 @@ class SendoutElement extends Element
      */
     public function getExcludedMailingLists(): array
     {
-        if ($this->_excludedMailingLists !== null) {
-            return $this->_excludedMailingLists;
+        if ($this->excludedMailingLists !== null) {
+            return $this->excludedMailingLists;
         }
 
-        $this->_excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->excludedMailingListIds);
+        $this->excludedMailingLists = Campaign::$plugin->mailingLists->getMailingListsByIds($this->excludedMailingListIds);
 
-        return $this->_excludedMailingLists;
+        return $this->excludedMailingLists;
     }
 
     /**
@@ -991,13 +962,13 @@ class SendoutElement extends Element
             return [];
         }
 
-        if ($this->_segments !== null) {
-            return $this->_segments;
+        if ($this->segments !== null) {
+            return $this->segments;
         }
 
-        $this->_segments = Campaign::$plugin->segments->getSegmentsByIds($this->segmentIds);
+        $this->segments = Campaign::$plugin->segments->getSegmentsByIds($this->segmentIds);
 
-        return $this->_segments;
+        return $this->segments;
     }
 
     /**
@@ -1007,17 +978,17 @@ class SendoutElement extends Element
      */
     public function getSchedule(): ScheduleModel|null
     {
-        if ($this->_schedule !== null) {
-            return $this->_schedule;
+        if ($this->schedule !== null) {
+            return $this->schedule;
         }
 
         if ($this->sendoutType == 'automated') {
-            $this->_schedule = new AutomatedScheduleModel();
+            $this->schedule = new AutomatedScheduleModel();
         } elseif ($this->sendoutType == 'recurring') {
-            $this->_schedule = new RecurringScheduleModel();
+            $this->schedule = new RecurringScheduleModel();
         }
 
-        return $this->_schedule;
+        return $this->schedule;
     }
 
     /**
@@ -1026,13 +997,13 @@ class SendoutElement extends Element
      */
     public function getPendingRecipients(): array
     {
-        if ($this->_pendingRecipients !== null) {
-            return $this->_pendingRecipients;
+        if ($this->pendingRecipients !== null) {
+            return $this->pendingRecipients;
         }
 
-        $this->_pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this);
+        $this->pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this);
 
-        return $this->_pendingRecipients;
+        return $this->pendingRecipients;
     }
 
     /**
@@ -1079,18 +1050,6 @@ class SendoutElement extends Element
         $contact = new ContactElement();
 
         return $campaign->getPlaintextBody($contact, $this);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSearchKeywords(string $attribute): string
-    {
-        if ($attribute == 'title' || $attribute == 'subject') {
-            return SendoutHelper::encodeEmojis($this->{$attribute});
-        }
-
-        return parent::getSearchKeywords($attribute);
     }
 
     /**
@@ -1184,10 +1143,10 @@ class SendoutElement extends Element
         }
 
         if ($schedule instanceof ScheduleModel) {
-            $this->_schedule = $schedule;
+            $this->schedule = $schedule;
         } else {
-            $this->_schedule = $this->getSchedule();
-            $this->_schedule->setAttributes($schedule ?: []);
+            $this->schedule = $this->getSchedule();
+            $this->schedule->setAttributes($schedule ?: []);
         }
     }
 
@@ -1220,7 +1179,7 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         switch ($attribute) {
             case 'sendoutType':
@@ -1238,7 +1197,7 @@ class SendoutElement extends Element
                 return (string)$this->getMailingListCount();
         }
 
-        return parent::tableAttributeHtml($attribute);
+        return parent::attributeHtml($attribute);
     }
 
     /**
@@ -1261,9 +1220,6 @@ class SendoutElement extends Element
             $this->sendDate = null;
             $this->lastSent = null;
         }
-
-        $this->title = SendoutHelper::encodeEmojis($this->title);
-        $this->subject = SendoutHelper::encodeEmojis($this->subject);
 
         if (Campaign::$plugin->settings->showSendoutTitleField === false) {
             $this->title = $this->subject;

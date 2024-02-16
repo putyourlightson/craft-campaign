@@ -29,9 +29,9 @@ class FormsController extends BaseMessageController
     public function actionSubscribe(): ?Response
     {
         $this->requirePostRequest();
-        $this->_validateRecaptcha();
+        $this->validateRecaptcha();
 
-        $mailingList = $this->_getMailingListFromParams();
+        $mailingList = $this->getMailingListFromParams();
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
@@ -68,9 +68,9 @@ class FormsController extends BaseMessageController
     public function actionUnsubscribe(): ?Response
     {
         $this->requirePostRequest();
-        $this->_validateRecaptcha();
+        $this->validateRecaptcha();
 
-        $mailingList = $this->_getMailingListFromParams();
+        $mailingList = $this->getMailingListFromParams();
         if ($mailingList === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
@@ -101,10 +101,10 @@ class FormsController extends BaseMessageController
     public function actionUpdateContact(): ?Response
     {
         $this->requirePostRequest();
-        $this->_validateRecaptcha();
+        $this->validateRecaptcha();
 
         // Get verified contact
-        $contact = $this->_getVerifiedContact();
+        $contact = $this->getVerifiedContact();
 
         if ($contact === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
@@ -202,7 +202,7 @@ class FormsController extends BaseMessageController
     public function actionVerifyUnsubscribe(): ?Response
     {
         // Get verified contact
-        $contact = $this->_getVerifiedContact();
+        $contact = $this->getVerifiedContact();
 
         if ($contact === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
@@ -232,7 +232,7 @@ class FormsController extends BaseMessageController
     /**
      * Returns a mailing list from the posted parameters.
      */
-    private function _getMailingListFromParams(): ?MailingListElement
+    private function getMailingListFromParams(): ?MailingListElement
     {
         $mailingListSlug = $this->request->getRequiredBodyParam('mailingList');
         $siteId = $this->request->getBodyParam('siteId');
@@ -243,7 +243,7 @@ class FormsController extends BaseMessageController
     /**
      * Validates reCAPTCHA if enabled.
      */
-    private function _validateRecaptcha(): void
+    private function validateRecaptcha(): void
     {
         // Validate reCAPTCHA if enabled
         if (Campaign::$plugin->settings->reCaptcha) {
@@ -260,7 +260,7 @@ class FormsController extends BaseMessageController
     /**
      * Gets contact by CID, verified by UID.
      */
-    private function _getVerifiedContact(): ?ContactElement
+    private function getVerifiedContact(): ?ContactElement
     {
         $cid = $this->request->getParam('cid');
         $uid = $this->request->getParam('uid');

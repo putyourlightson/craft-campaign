@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\base\FieldInterface;
-use craft\helpers\Db;
 use craft\helpers\ElementHelper;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\db\ContactElementQuery;
@@ -99,15 +98,11 @@ class SegmentsService extends Component
     public function getFilteredContacts(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContacts = [];
-        $contactElementQuery = $this->_getContactElementQuery($contactIds);
+        $contactElementQuery = $this->getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContacts = $contactElementQuery->all();
-        } elseif ($segment->segmentType == 'legacy') {
-            $filteredContacts = $contactElementQuery
-                ->andWhere($this->_getConditions($segment))
-                ->all();
         } elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
 
@@ -136,13 +131,11 @@ class SegmentsService extends Component
     public function getFilteredContactIds(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContactIds = [];
-        $contactElementQuery = $this->_getContactElementQuery($contactIds);
+        $contactElementQuery = $this->getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContactIds = $contactElementQuery->ids();
-        } elseif ($segment->segmentType == 'legacy') {
-            $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
         } elseif ($segment->segmentType == 'template') {
             $contacts = $this->getFilteredContacts($segment, $contactIds);
 
@@ -163,10 +156,7 @@ class SegmentsService extends Component
             return;
         }
 
-        if (!$field::hasContentColumn()) {
-            return;
-        }
-
+        // TODO: figure out this mess.
         $newFieldColumn = ElementHelper::fieldColumnFromField($field);
         $oldFieldColumn = ElementHelper::fieldColumn($field->columnPrefix, $field->oldHandle, $field->columnSuffix);
 
@@ -231,56 +221,7 @@ class SegmentsService extends Component
         }
     }
 
-    /**
-     * Returns the conditions.
-     *
-     * @return array[]
-     */
-    private function _getConditions(SegmentElement $segment): array
-    {
-        $conditions = ['and'];
-
-        /** @var array $andCondition */
-        foreach ($segment->conditions as $andCondition) {
-            $condition = ['or'];
-
-            foreach ($andCondition as $orCondition) {
-                $operator = $orCondition[0];
-
-                // Handle empty and not empty operators
-                if ($operator === 'empty') {
-                    $orCondition = [
-                        $orCondition[1] => '',
-                        $orCondition[1] => null,
-                    ];
-                } elseif ($operator === 'notempty') {
-                    $orCondition = [
-                        'or',
-                        ['not', [$orCondition[1] => '']],
-                        ['not', [$orCondition[1] => null]],
-                    ];
-                } elseif (str_contains($operator, '%v')) {
-                    $orCondition[0] = trim(str_replace('%v', '', $orCondition[0]));
-                    $orCondition[2] = '%' . $orCondition[2];
-                    $orCondition[3] = false;
-                } elseif (str_contains($operator, 'v%')) {
-                    $orCondition[0] = trim(str_replace('v%', '', $orCondition[0]));
-                    $orCondition[2] .= '%';
-                    $orCondition[3] = false;
-                } elseif (preg_match('/\d{1,2}\/\d{1,2}\/\d{4}/', $orCondition[2])) {
-                    $orCondition[2] = Db::prepareDateForDb(['date' => $orCondition[2]]) ?? '';
-                }
-
-                $condition[] = $orCondition;
-            }
-
-            $conditions[] = $condition;
-        }
-
-        return $conditions;
-    }
-
-    private function _getContactElementQuery(array $contactIds = null): ContactElementQuery
+    private function getContactElementQuery(array $contactIds = null): ContactElementQuery
     {
         $contactQuery = ContactElement::find();
 

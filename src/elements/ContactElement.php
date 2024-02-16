@@ -50,7 +50,6 @@ use yii\web\Response;
  * @property-read User|null $user
  * @property-read array[] $crumbs
  * @property-read null|string $postEditUrl
- * @property-read MailingListElement[] $mailingLists
  */
 class ContactElement extends Element
 {
@@ -118,14 +117,6 @@ class ContactElement extends Element
      * @inheritdoc
      */
     public static function trackChanges(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasContent(): bool
     {
         return true;
     }
@@ -413,7 +404,7 @@ class ContactElement extends Element
      * @var null|FieldLayout Field layout
      * @see getFieldLayout()
      */
-    private ?FieldLayout $_fieldLayout = null;
+    private ?FieldLayout $fieldLayout = null;
 
     /**
      * @inheritdoc
@@ -466,25 +457,25 @@ class ContactElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
-        if ($this->_fieldLayout !== null) {
-            return $this->_fieldLayout;
+        if ($this->fieldLayout !== null) {
+            return $this->fieldLayout;
         }
 
-        $this->_fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->settings->getContactFieldLayout();
+        $this->fieldLayout = parent::getFieldLayout() ?? Campaign::$plugin->settings->getContactFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $this->_fieldLayout;
+            return $this->fieldLayout;
         }
 
-        $this->_fieldLayout->setTabs(array_merge(
-            $this->_fieldLayout->getTabs(),
+        $this->fieldLayout->setTabs(array_merge(
+            $this->fieldLayout->getTabs(),
             [
                 new ContactMailingListFieldLayoutTab(),
                 new ContactReportFieldLayoutTab(),
             ],
         ));
 
-        return $this->_fieldLayout;
+        return $this->fieldLayout;
     }
 
     /**
@@ -497,7 +488,7 @@ class ContactElement extends Element
         $metadata = parent::metadata();
 
         if ($syncedUser = $this->getUser()) {
-            $metadata[Craft::t('campaign', 'Synced')] = Cp::elementHtml($syncedUser);
+            $metadata[Craft::t('campaign', 'Synced')] = Cp::elementChipHtml($syncedUser);
         }
 
         $metadata[Craft::t('campaign', 'CID')] = Html::tag('code', $this->cid);
@@ -671,7 +662,7 @@ class ContactElement extends Element
      */
     public function getSubscribedCount(): int
     {
-        return $this->_getMailingListCount('subscribed');
+        return $this->getMailingListCount('subscribed');
     }
 
     /**
@@ -679,7 +670,7 @@ class ContactElement extends Element
      */
     public function getUnsubscribedCount(): int
     {
-        return $this->_getMailingListCount('unsubscribed');
+        return $this->getMailingListCount('unsubscribed');
     }
 
     /**
@@ -687,7 +678,7 @@ class ContactElement extends Element
      */
     public function getComplainedCount(): int
     {
-        return $this->_getMailingListCount('complained');
+        return $this->getMailingListCount('complained');
     }
 
     /**
@@ -695,7 +686,7 @@ class ContactElement extends Element
      */
     public function getBouncedCount(): int
     {
-        return $this->_getMailingListCount('bounced');
+        return $this->getMailingListCount('bounced');
     }
 
     /**
@@ -703,7 +694,7 @@ class ContactElement extends Element
      */
     public function getSubscribedMailingLists(): array
     {
-        return $this->_getMailingLists('subscribed');
+        return $this->getMailingListsWithStatus('subscribed');
     }
 
     /**
@@ -711,7 +702,7 @@ class ContactElement extends Element
      */
     public function getUnsubscribedMailingLists(): array
     {
-        return $this->_getMailingLists('unsubscribed');
+        return $this->getMailingListsWithStatus('unsubscribed');
     }
 
     /**
@@ -719,7 +710,7 @@ class ContactElement extends Element
      */
     public function getComplainedMailingLists(): array
     {
-        return $this->_getMailingLists('complained');
+        return $this->getMailingListsWithStatus('complained');
     }
 
     /**
@@ -727,7 +718,7 @@ class ContactElement extends Element
      */
     public function getBouncedMailingLists(): array
     {
-        return $this->_getMailingLists('bounced');
+        return $this->getMailingListsWithStatus('bounced');
     }
 
     /**
@@ -735,7 +726,7 @@ class ContactElement extends Element
      */
     public function getMailingLists(): array
     {
-        return $this->_getMailingLists();
+        return $this->getMailingListsWithStatus();
     }
 
     /**
@@ -769,7 +760,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getThumbUrl(int $size): ?string
+    public function thumbUrl(int $size): ?string
     {
         // Get image from Gravatar, defaulting to a blank image
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=blank&s=' . $size;
@@ -778,7 +769,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    public function getHasRoundedThumb(): bool
+    public function hasRoundedThumb(): bool
     {
         return true;
     }
@@ -899,7 +890,7 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         if ($attribute == 'subscriptionStatus') {
             if ($this->subscriptionStatus) {
@@ -907,7 +898,7 @@ class ContactElement extends Element
             }
         }
 
-        return parent::tableAttributeHtml($attribute);
+        return parent::inlineAttributeInputHtml($attribute);
     }
 
     /**
@@ -959,7 +950,7 @@ class ContactElement extends Element
     /**
      * Returns the number of mailing lists that this contact is in.
      */
-    private function _getMailingListCount(string $subscriptionStatus = null): int
+    private function getMailingListCount(string $subscriptionStatus = null): int
     {
         $subscriptionStatus = $subscriptionStatus ?? '';
 
@@ -975,11 +966,11 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns the mailing lists that this contact is in.
+     * Returns the mailing lists that this contact is in with the provided status.
      *
      * @return MailingListElement[]
      */
-    private function _getMailingLists(string $subscriptionStatus = null): array
+    private function getMailingListsWithStatus(string $subscriptionStatus = null): array
     {
         $subscriptionStatus = $subscriptionStatus ?? '';
 

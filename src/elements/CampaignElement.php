@@ -35,7 +35,6 @@ use yii\i18n\Formatter;
 use yii\web\Response;
 
 /**
- * @property-read CampaignTypeModel $campaignType
  * @property-read int $openRate
  * @property-read int $clickRate
  * @property-read string[] $cacheTags
@@ -111,14 +110,6 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    public static function hasContent(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function hasTitles(): bool
     {
         return true;
@@ -170,13 +161,11 @@ class CampaignElement extends Element
     }
 
     /**
-     * @inheritdoc
-     * @param CampaignTypeModel $context
-     * @since 2.0.0
+     * @since 3.0.0
      */
-    public static function gqlTypeNameByContext(mixed $context): string
+    public static function gqlTypeName(CampaignTypeModel $campaignType): string
     {
-        return $context->handle . '_CampaignType';
+        return $campaignType->handle . '_CampaignType';
     }
 
     /**
@@ -187,16 +176,6 @@ class CampaignElement extends Element
     public static function gqlScopesByContext(mixed $context): array
     {
         return ['campaigntypes.' . $context->uid];
-    }
-
-    /**
-     * @inheritdoc
-     * @param CampaignTypeModel $context
-     * @since 2.0.0
-     */
-    public static function gqlMutationNameByContext(mixed $context): string
-    {
-        return 'save_' . self::gqlTypeNameByContext($context);
     }
 
     /**
@@ -234,20 +213,23 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      * @since 2.0.0
+     * @see Entry::defineFieldLayouts()
      */
-    protected static function defineFieldLayouts(string $source): array
+    protected static function defineFieldLayouts(?string $source): array
     {
-        $fieldLayouts = [];
-
-        if (preg_match('/^campaignType:(.+)$/', $source, $matches)) {
-            $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByUid($matches[1]);
-
-            if ($campaignType) {
-                $fieldLayouts[] = $campaignType->getFieldLayout();
+        if ($source !== null) {
+            $campaignTypes = [];
+            if (preg_match('/^campaignType:(.+)$/', $source, $matches)) {
+                $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByUid($matches[1]);
+                if ($campaignType) {
+                    $campaignTypes[] = $campaignType;
+                }
             }
+        } else {
+            $campaignTypes = Campaign::$plugin->campaignTypes->getAllCampaignTypes();
         }
 
-        return $fieldLayouts;
+        return array_map(fn(CampaignTypeModel $campaignTypes) => $campaignTypes->getFieldLayout(), $campaignTypes);
     }
 
     /**
@@ -428,17 +410,17 @@ class CampaignElement extends Element
     /**
      * @var null|CampaignTypeModel Campaign type
      */
-    private ?CampaignTypeModel $_campaignType = null;
+    private ?CampaignTypeModel $campaignType = null;
 
     /**
      * @var null|FieldLayout Field layout
      */
-    private ?FieldLayout $_fieldLayout = null;
+    private ?FieldLayout $fieldLayout = null;
 
     /**
      * @var null|string
      */
-    private ?string $_language = null;
+    private ?string $language = null;
 
     /**
      * @inheritdoc
@@ -456,22 +438,21 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         return match ($attribute) {
             'campaignType' => $this->getCampaignType()->name,
             'openRate' => $this->getOpenRate() . '%',
             'clickRate' => $this->getClickRate() . '%',
-            default => parent::tableAttributeHtml($attribute),
+            default => parent::attributeHtml($attribute),
         };
     }
 
     /**
      * @inheritdoc
-     * @since 2.0.0
-     * TODO: replace with cacheTags() in version 3.0.0
+     * @since 3.0.0
      */
-    public function getCacheTags(): array
+    public function cacheTags(): array
     {
         return [
             "campaignType:$this->campaignTypeId",
@@ -550,7 +531,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -563,7 +544,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -585,7 +566,7 @@ class CampaignElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -602,8 +583,8 @@ class CampaignElement extends Element
      */
     public function getCampaignType(): CampaignTypeModel
     {
-        if ($this->_campaignType !== null) {
-            return $this->_campaignType;
+        if ($this->campaignType !== null) {
+            return $this->campaignType;
         }
 
         if ($this->campaignTypeId === null) {
@@ -616,7 +597,7 @@ class CampaignElement extends Element
             throw new InvalidConfigException('Invalid campaign type ID: ' . $this->campaignTypeId);
         }
 
-        $this->_campaignType = $campaignType;
+        $this->campaignType = $campaignType;
 
         return $campaignType;
     }
@@ -628,7 +609,7 @@ class CampaignElement extends Element
     {
         Campaign::$plugin->campaigns->prepareRequestToGetHtmlBody();
 
-        return $this->_getBody('html', $contact, $sendout, $mailingList);
+        return $this->getBody('html', $contact, $sendout, $mailingList);
     }
 
     /**
@@ -636,7 +617,7 @@ class CampaignElement extends Element
      */
     public function getPlaintextBody(ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
-        return html_entity_decode($this->_getBody('plaintext', $contact, $sendout, $mailingList), ENT_QUOTES);
+        return html_entity_decode($this->getBody('plaintext', $contact, $sendout, $mailingList), ENT_QUOTES);
     }
 
     /**
@@ -786,26 +767,26 @@ class CampaignElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
-        if ($this->_fieldLayout !== null) {
-            return $this->_fieldLayout;
+        if ($this->fieldLayout !== null) {
+            return $this->fieldLayout;
         }
 
-        $this->_fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
+        $this->fieldLayout = parent::getFieldLayout() ?? $this->getCampaignType()->getFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $this->_fieldLayout;
+            return $this->fieldLayout;
         }
 
         if ($this->getStatus() == CampaignElement::STATUS_SENT) {
-            $this->_fieldLayout->setTabs(array_merge(
-                $this->_fieldLayout->getTabs(),
+            $this->fieldLayout->setTabs(array_merge(
+                $this->fieldLayout->getTabs(),
                 [
                     new CampaignReportFieldLayoutTab(),
                 ],
             ));
         }
 
-        return $this->_fieldLayout;
+        return $this->fieldLayout;
     }
 
     /**
@@ -889,7 +870,7 @@ class CampaignElement extends Element
             $this->dateClosed = null;
         }
 
-        $this->_updateTitle();
+        $this->updateTitle();
 
         return parent::beforeSave($isNew);
     }
@@ -932,7 +913,7 @@ class CampaignElement extends Element
         parent::afterPropagate($isNew);
 
         // Save a new revision?
-        if ($this->_shouldSaveRevision()) {
+        if ($this->shouldSaveRevision()) {
             Craft::$app->getRevisions()->createRevision($this, $this->revisionCreatorId, $this->revisionNotes);
         }
     }
@@ -942,7 +923,7 @@ class CampaignElement extends Element
      *
      * @see Entry::_shouldSaveRevision()
      */
-    private function _shouldSaveRevision(): bool
+    private function shouldSaveRevision(): bool
     {
         return (
             $this->id &&
@@ -959,7 +940,7 @@ class CampaignElement extends Element
      * @since 2.5.0
      * @see Entry::updateTitle()
      */
-    private function _updateTitle(): void
+    private function updateTitle(): void
     {
         $campaignType = $this->getCampaignType();
 
@@ -980,7 +961,7 @@ class CampaignElement extends Element
     /**
      * Returns the campaign's body
      */
-    private function _getBody(string $templateType = 'html', ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
+    private function getBody(string $templateType = 'html', ContactElement $contact = null, SendoutElement $sendout = null, MailingListElement $mailingList = null): string
     {
         if ($contact === null) {
             $contact = new ContactElement();
@@ -1010,7 +991,7 @@ class CampaignElement extends Element
         Craft::$app->getSites()->setCurrentSite($this->siteId);
 
         // Set the language to the campaign's language as this does not automatically happen for CP requests
-        Craft::$app->language = $this->_getLanguage();
+        Craft::$app->language = $this->getLanguage();
 
         try {
             // Render the page template only for HTML, to prevent Yii block tags being left behind
@@ -1029,21 +1010,21 @@ class CampaignElement extends Element
     }
 
     /**
-     * Returns the campaign's language
+     * @inheritdoc
      */
-    private function _getLanguage(): string
+    public function getLanguage(): string
     {
-        if ($this->_language === null) {
-            $this->_language = $this->getSite()->language;
+        if ($this->language === null) {
+            $this->language = $this->getSite()->language;
         }
 
-        return $this->_language;
+        return $this->language;
     }
 
     /**
      * Returns whether the campaign can be managed by the user.
      */
-    private function _canManage(User $user): bool
+    private function canManage(User $user): bool
     {
         return $user->can('campaign:campaigns:' . $this->getCampaignType()->uid);
     }

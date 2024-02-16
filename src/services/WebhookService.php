@@ -23,7 +23,7 @@ class WebhookService extends Component
             'email' => $contact->email,
         ]);
 
-        $this->_addInteraction($contact, 'complained');
+        $this->addInteraction($contact, 'complained');
     }
 
     /**
@@ -35,7 +35,7 @@ class WebhookService extends Component
             'email' => $contact->email,
         ]);
 
-        $this->_addInteraction($contact, 'bounced');
+        $this->addInteraction($contact, 'bounced');
     }
 
     /**
@@ -47,13 +47,13 @@ class WebhookService extends Component
             'email' => $contact->email,
         ]);
 
-        $this->_addInteraction($contact, 'unsubscribed');
+        $this->addInteraction($contact, 'unsubscribed');
     }
 
     /**
      * Adds an interaction.
      */
-    private function _addInteraction(ContactElement $contact, string $interaction): void
+    private function addInteraction(ContactElement $contact, string $interaction): void
     {
         // Get all contact campaigns
         $contactCampaignRecords = ContactCampaignRecord::find()

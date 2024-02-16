@@ -1,7 +1,7 @@
 {
   "name": "putyourlightson/craft-campaign",
   "description": "Send and manage email campaigns, contacts and mailing lists.",
-  "version": "2.12.1",
+  "version": "3.0.0-beta.1",
   "type": "craft-plugin",
   "homepage": "https://putyourlightson.com/plugins/campaign",
   "license": "proprietary",
@@ -16,37 +16,36 @@
     "contact"
   ],
   "require": {
-    "php": "^8.0.2",
+    "php": "^8.2",
     "ext-dom": "*",
     "aws/aws-php-sns-message-validator": "^1.5",
-    "craftcms/cms": "^4.0",
-    "elvanto/litemoji": "^3.0.1|^4.0",
+    "craftcms/cms": "^5.0.0-beta.1",
     "html2text/html2text": "^4.3.1",
     "matomo/device-detector": "^3.9.1|^4.0|^5.0|^6.0",
     "starkbank/ecdsa": "0.*"
   },
   "require-dev": {
     "craftcms/ecs": "dev-main",
-    "craftcms/feed-me": "^5.0.0",
+    "craftcms/feed-me": "^5.0.0-beta.1",
     "craftcms/phpstan": "dev-main",
-    "markhuot/craft-pest-core": "^2.0.0-rc2",
-    "mockery/mockery": "^1.0",
+    "markhuot/craft-pest-core": "v3.x-dev",
     "putyourlightson/craft-generate-test-spec": "v2.x-dev"
   },
-  "scripts": {
-    "phpstan": "phpstan --ansi --memory-limit=1G",
-    "check-cs": "ecs check --ansi",
-    "fix-cs": "ecs check --fix --ansi"
-  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/bencroker/craft-pest-core"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "putyourlightson\\campaign\\": "src/"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "putyourlightson\\campaigntests\\": "tests/"
-    }
+  "scripts": {
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
   },
   "config": {
     "allow-plugins": {
@@ -68,7 +67,7 @@
     "developer": "PutYourLightsOn",
     "developerUrl": "https://putyourlightson.com/",
     "documentationUrl": "https://putyourlightson.com/plugins/campaign",
-    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v1/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v2/CHANGELOG.md",
     "class": "putyourlightson\\campaign\\Campaign"
   }
 }

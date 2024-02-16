@@ -61,9 +61,9 @@ class MailingListTypesService extends Component
 
     /**
      * @var MemoizableArray<MailingListTypeModel>|null
-     * @see _mailingListTypes()
+     * @see mailingListTypes()
      */
-    private ?MemoizableArray $_mailingListTypes = null;
+    private ?MemoizableArray $mailingListTypes = null;
 
     /**
      * Returns all mailing list types.
@@ -72,7 +72,7 @@ class MailingListTypesService extends Component
      */
     public function getAllMailingListTypes(): array
     {
-        return $this->_mailingListTypes()->all();
+        return $this->mailingListTypes()->all();
     }
 
     /**
@@ -147,7 +147,7 @@ class MailingListTypesService extends Component
      */
     public function getMailingListTypeByUid(string $uid): ?MailingListTypeModel
     {
-        return $this->_mailingListTypes()->firstWhere('uid', $uid, true);
+        return $this->mailingListTypes()->firstWhere('uid', $uid, true);
     }
 
     /**
@@ -263,7 +263,7 @@ class MailingListTypesService extends Component
         }
 
         // Clear caches
-        $this->_mailingListTypes = null;
+        $this->mailingListTypes = null;
 
         // Get mailing list type model
         $mailingListType = $this->getMailingListTypeById($mailingListTypeRecord->id);
@@ -378,7 +378,7 @@ class MailingListTypesService extends Component
         }
 
         // Clear caches
-        $this->_mailingListTypes = null;
+        $this->mailingListTypes = null;
 
         // Get mailing list type model
         $mailingListType = $this->getMailingListTypeById($mailingListTypeRecord->id);
@@ -418,9 +418,9 @@ class MailingListTypesService extends Component
      *
      * @return MemoizableArray<MailingListTypeModel>
      */
-    private function _mailingListTypes(): MemoizableArray
+    private function mailingListTypes(): MemoizableArray
     {
-        if (!isset($this->_mailingListTypes)) {
+        if (!isset($this->mailingListTypes)) {
             $mailingListTypes = [];
 
             /** @var MailingListTypeRecord[] $mailingListTypeRecords */
@@ -435,9 +435,9 @@ class MailingListTypesService extends Component
                 $mailingListTypes[] = $mailingListType;
             }
 
-            $this->_mailingListTypes = new MemoizableArray($mailingListTypes);
+            $this->mailingListTypes = new MemoizableArray($mailingListTypes);
         }
 
-        return $this->_mailingListTypes;
+        return $this->mailingListTypes;
     }
 }

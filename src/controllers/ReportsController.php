@@ -38,7 +38,7 @@ class ReportsController extends Controller
 
         // Get chart data
         $data = Campaign::$plugin->reports->getCampaignChartData($campaignId, $interval);
-        $chart = $this->_getChartData($data, $interval);
+        $chart = $this->getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
@@ -55,7 +55,7 @@ class ReportsController extends Controller
 
         // Get chart data
         $data = Campaign::$plugin->reports->getMailingListChartData($mailingListId, $interval);
-        $chart = $this->_getChartData($data, $interval);
+        $chart = $this->getChartData($data, $interval);
 
         return $this->asJson($chart);
     }
@@ -63,7 +63,7 @@ class ReportsController extends Controller
     /**
      * Returns chart data.
      */
-    private function _getChartData(array $data, string $interval): array
+    private function getChartData(array $data, string $interval): array
     {
         $chart = [];
 
@@ -109,7 +109,7 @@ class ReportsController extends Controller
         }
 
         // Get colors
-        $chart['colors'] = $this->_getColors($data['interactions']);
+        $chart['colors'] = $this->getColors($data['interactions']);
 
         // Get interval and locale
         $chart['interval'] = $interval;
@@ -121,7 +121,7 @@ class ReportsController extends Controller
     /**
      * Returns colors.
      */
-    private function _getColors(array $interactions): array
+    private function getColors(array $interactions): array
     {
         $allColors = [
             'recipients' => '#E3E5E8',

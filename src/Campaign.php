@@ -185,7 +185,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $minVersionRequired = '1.21.0';
+    public string $minVersionRequired = '2.10.0';
 
     /**
      * The queue to use for running jobs.
@@ -203,19 +203,19 @@ class Campaign extends Plugin
         self::$plugin = $this;
         $this->name = Craft::t('campaign', 'Plugin Name');
 
-        $this->_registerComponents();
-        $this->_registerInstances();
-        $this->_registerVariables();
-        $this->_registerLogTarget();
-        $this->_registerElementTypes();
-        $this->_registerFieldTypes();
-        $this->_registerAfterInstallEvent();
-        $this->_registerFieldEvents();
-        $this->_registerProjectConfigListeners();
-        $this->_registerTemplateHooks();
-        $this->_registerAllowedOrigins();
-        $this->_registerTwigExtensions();
-        $this->_registerFeedMeElements();
+        $this->registerComponents();
+        $this->registerInstances();
+        $this->registerVariables();
+        $this->registerLogTarget();
+        $this->registerElementTypes();
+        $this->registerFieldTypes();
+        $this->registerAfterInstallEvent();
+        $this->registerFieldEvents();
+        $this->registerProjectConfigListeners();
+        $this->registerTemplateHooks();
+        $this->registerAllowedOrigins();
+        $this->registerTwigExtensions();
+        $this->registerFeedMeElements();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -223,16 +223,16 @@ class Campaign extends Plugin
         }
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
-            $this->_registerNativeFields();
-            $this->_registerAssetBundles();
-            $this->_registerCpUrlRules();
-            $this->_registerUtilities();
-            $this->_registerWidgets();
+            $this->registerNativeFields();
+            $this->registerAssetBundles();
+            $this->registerCpUrlRules();
+            $this->registerUtilities();
+            $this->registerWidgets();
         }
 
         // If Craft edition is pro
         if (Craft::$app->getEdition() === Craft::Pro) {
-            $this->_registerUserPermissions();
+            $this->registerUserPermissions();
             $this->sync->registerUserEvents();
         }
     }
@@ -421,7 +421,7 @@ class Campaign extends Plugin
             'campaign/campaigns/<campaignTypeHandle:{handle}>/<elementId:\d+><slug:(?:-[^\/]*)?>' => 'elements/edit',
             'campaign/contacts/new' => 'campaign/contacts/create',
             'campaign/contacts/<elementId:\d+>' => 'elements/edit',
-            // TODO: remove in 5.0.0, when element index URLs include the source, added in Craft 4.3.0.
+            // TODO: remove in v3, when element index URLs include the source, added in Craft 4.3.0.
             'campaign/contacts/view/<sourceId:\d+>' => ['template' => 'campaign/contacts/view'],
             'campaign/contacts/import/<importId:\d+>' => ['template' => 'campaign/contacts/import/_view'],
             'campaign/contacts/import' => 'campaign/imports/index',
@@ -477,7 +477,7 @@ class Campaign extends Plugin
      *
      * @see Plugins::$pluginConfigs
      */
-    private function _registerComponents(): void
+    private function registerComponents(): void
     {
         $this->set('mailer', fn() => $this->createMailer());
     }
@@ -485,7 +485,7 @@ class Campaign extends Plugin
     /**
      * Registers instances configured via `config/app.php`, ensuring they are of the correct type.
      */
-    private function _registerInstances(): void
+    private function registerInstances(): void
     {
         $this->queue = Instance::ensure($this->queue, Queue::class);
     }
@@ -495,7 +495,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerVariables(): void
+    private function registerVariables(): void
     {
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT,
             function(Event $event) {
@@ -511,7 +511,7 @@ class Campaign extends Plugin
      *
      * @see LineFormatter::SIMPLE_FORMAT
      */
-    private function _registerLogTarget(): void
+    private function registerLogTarget(): void
     {
         Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
             'name' => 'campaign',
@@ -529,7 +529,7 @@ class Campaign extends Plugin
     /**
      * Registers element types.
      */
-    private function _registerElementTypes(): void
+    private function registerElementTypes(): void
     {
         Event::on(Elements::class, Elements::EVENT_REGISTER_ELEMENT_TYPES,
             function(RegisterComponentTypesEvent $event) {
@@ -545,7 +545,7 @@ class Campaign extends Plugin
     /**
      * Registers custom field types.
      */
-    private function _registerFieldTypes(): void
+    private function registerFieldTypes(): void
     {
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = CampaignsField::class;
@@ -557,7 +557,7 @@ class Campaign extends Plugin
     /**
      * Registers after install event.
      */
-    private function _registerAfterInstallEvent(): void
+    private function registerAfterInstallEvent(): void
     {
         Event::on(Plugins::class, Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function(PluginEvent $event) {
@@ -586,7 +586,7 @@ class Campaign extends Plugin
     /**
      * Registers field events.
      */
-    private function _registerFieldEvents(): void
+    private function registerFieldEvents(): void
     {
         Event::on(Fields::class, Fields::EVENT_AFTER_SAVE_FIELD,
             function(FieldEvent $event) {
@@ -606,7 +606,7 @@ class Campaign extends Plugin
     /**
      * Registers event listeners for project config changes.
      */
-    private function _registerProjectConfigListeners(): void
+    private function registerProjectConfigListeners(): void
     {
         // Contact field layout
         Craft::$app->getProjectConfig()
@@ -639,7 +639,7 @@ class Campaign extends Plugin
      *
      * @since 1.15.1
      */
-    private function _registerTemplateHooks(): void
+    private function registerTemplateHooks(): void
     {
         Craft::$app->getView()->hook('cp.users.edit.details', function($context) {
             /** @var User|null $user */
@@ -668,7 +668,7 @@ class Campaign extends Plugin
      *
      * @since 1.21.0
      */
-    private function _registerAllowedOrigins(): void
+    private function registerAllowedOrigins(): void
     {
         Event::on(PreviewController::class, Controller::EVENT_BEFORE_ACTION,
             function(ActionEvent $event) {
@@ -707,7 +707,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerTwigExtensions(): void
+    private function registerTwigExtensions(): void
     {
         Craft::$app->getView()->registerTwigExtension(new CampaignTwigExtension());
     }
@@ -717,7 +717,7 @@ class Campaign extends Plugin
      *
      * @since 2.8.0
      */
-    private function _registerFeedMeElements(): void
+    private function registerFeedMeElements(): void
     {
         // Only check that the class exists, disregarding application initialisation.
         // https://github.com/putyourlightson/craft-campaign/issues/428
@@ -737,7 +737,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerNativeFields(): void
+    private function registerNativeFields(): void
     {
         Event::on(FieldLayout::class, FieldLayout::EVENT_DEFINE_NATIVE_FIELDS,
             function(DefineFieldLayoutFieldsEvent $event) {
@@ -764,7 +764,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerAssetBundles(): void
+    private function registerAssetBundles(): void
     {
         Craft::$app->getView()->registerAssetBundle(CpAsset::class);
 
@@ -778,7 +778,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerCpUrlRules(): void
+    private function registerCpUrlRules(): void
     {
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
@@ -792,9 +792,9 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerUtilities(): void
+    private function registerUtilities(): void
     {
-        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITY_TYPES,
+        Event::on(Utilities::class, Utilities::EVENT_REGISTER_UTILITIES,
             function(RegisterComponentTypesEvent $event) {
                 $event->types[] = CampaignUtility::class;
             }
@@ -806,7 +806,7 @@ class Campaign extends Plugin
      *
      * @since 2.4.0
      */
-    private function _registerWidgets(): void
+    private function registerWidgets(): void
     {
         Event::on(Dashboard::class, Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function(RegisterComponentTypesEvent $event) {
@@ -821,7 +821,7 @@ class Campaign extends Plugin
      *
      * @since 2.0.0
      */
-    private function _registerUserPermissions(): void
+    private function registerUserPermissions(): void
     {
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {

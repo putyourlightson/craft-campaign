@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\services;
 
 use Craft;
 use craft\base\Component;
-use craft\helpers\ConfigHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use DateTime;
@@ -151,13 +150,7 @@ class PendingContactsService extends Component
             return;
         }
 
-        $purgePendingContactsDuration = ConfigHelper::durationInSeconds($settings->purgePendingContactsDuration);
-        // TODO: switch to using `DateTimeHelper::toDateInterval` in Campaign 3.
-        /** @noinspection PhpDeprecationInspection */
-        $interval = DateTimeHelper::secondsToInterval($purgePendingContactsDuration);
-        $expire = DateTimeHelper::currentUTCDateTime();
-        $pastTime = $expire->sub($interval);
-
+        $pastTime = DateTimeHelper::toDateInterval($settings->purgePendingContactsDuration);
         $pendingContactRecords = PendingContactRecord::find()
             ->andWhere(['<', 'dateUpdated', Db::prepareDateForDb($pastTime)])
             ->all();

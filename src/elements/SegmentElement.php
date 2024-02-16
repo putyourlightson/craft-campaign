@@ -26,14 +26,11 @@ use putyourlightson\campaign\records\SegmentRecord;
 use yii\web\Response;
 
 /**
- * @property ElementConditionInterface|array|string|null $contactCondition
  * @property-read int $contactCount
  * @property-read string $segmentTypeLabel
  * @property-read int $conditionCount
- * @property-read ContactElement[] $contacts
  * @property-read null|string $postEditUrl
  * @property-read array[] $crumbs
- * @property-read int[] $contactIds
  */
 class SegmentElement extends Element
 {
@@ -44,7 +41,6 @@ class SegmentElement extends Element
     {
         return [
             'regular' => Craft::t('campaign', 'Regular'),
-            'legacy' => Craft::t('campaign', 'Legacy'),
             'template' => Craft::t('campaign', 'Template'),
         ];
     }
@@ -93,14 +89,6 @@ class SegmentElement extends Element
      * @inheritdoc
      */
     public static function trackChanges(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasContent(): bool
     {
         return true;
     }
@@ -258,7 +246,7 @@ class SegmentElement extends Element
 
         $segmentType = str_replace('segmentType:', '', $source);
 
-        if ($segmentType == 'regular' || $segmentType == 'legacy') {
+        if ($segmentType == 'regular') {
             return ['conditions', 'contacts'];
         }
 
@@ -268,13 +256,13 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    protected function tableAttributeHtml(string $attribute): string
+    protected function attributeHtml(string $attribute): string
     {
         return match ($attribute) {
             'segmentType' => $this->getSegmentTypeLabel(),
             'conditions' => (string)$this->getConditionCount(),
             'contacts' => (string)$this->getContactCount(),
-            default => parent::tableAttributeHtml($attribute),
+            default => parent::attributeHtml($attribute),
         };
     }
 
@@ -298,17 +286,17 @@ class SegmentElement extends Element
      * @see getContactCondition()
      * @see setContactCondition()
      */
-    private ?ElementConditionInterface $_contactCondition = null;
+    private ?ElementConditionInterface $contactCondition = null;
 
     /**
      * @var ContactElement[]|null
      */
-    private ?array $_contacts = null;
+    private ?array $contacts = null;
 
     /**
      * @var int[]|null
      */
-    private ?array $_contactIds = null;
+    private ?array $contactIds = null;
 
     /**
      * @inheritdoc
@@ -318,7 +306,6 @@ class SegmentElement extends Element
         $rules = parent::defineRules();
         $rules[] = [['segmentType'], 'required'];
         $rules[] = [['segmentType', 'template'], 'string'];
-        $rules[] = [['conditions'], 'required', 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SegmentElement $element) => $element->segmentType == 'legacy'];
         $rules[] = [['contactCondition'], 'safe'];
 
         return $rules;
@@ -478,7 +465,7 @@ class SegmentElement extends Element
      */
     public function getContactCondition(): ElementConditionInterface
     {
-        $condition = $this->_contactCondition ?? ContactElement::createCondition();
+        $condition = $this->contactCondition ?? ContactElement::createCondition();
         $condition->mainTag = 'div';
         $condition->name = 'contactCondition';
 
@@ -501,7 +488,7 @@ class SegmentElement extends Element
         $condition->forProjectConfig = false;
 
         /** @var ContactCondition $condition */
-        $this->_contactCondition = $condition;
+        $this->contactCondition = $condition;
     }
 
     /**
@@ -531,13 +518,13 @@ class SegmentElement extends Element
      */
     public function getContacts(): array
     {
-        if ($this->_contacts !== null) {
-            return $this->_contacts;
+        if ($this->contacts !== null) {
+            return $this->contacts;
         }
 
-        $this->_contacts = Campaign::$plugin->segments->getContacts($this);
+        $this->contacts = Campaign::$plugin->segments->getContacts($this);
 
-        return $this->_contacts;
+        return $this->contacts;
     }
 
     /**
@@ -547,13 +534,13 @@ class SegmentElement extends Element
      */
     public function getContactIds(): array
     {
-        if ($this->_contactIds !== null) {
-            return $this->_contactIds;
+        if ($this->contactIds !== null) {
+            return $this->contactIds;
         }
 
-        $this->_contactIds = Campaign::$plugin->segments->getContactIds($this);
+        $this->contactIds = Campaign::$plugin->segments->getContactIds($this);
 
-        return $this->_contactIds;
+        return $this->contactIds;
     }
 
     /**
@@ -572,15 +559,6 @@ class SegmentElement extends Element
         // Ensure the slug is unique, even though segments don't have URIs,
         // which prevents us from depending on the SlugValidator class.
         ElementHelper::setUniqueUri($this);
-
-        if ($this->segmentType == 'legacy') {
-            // Sort OR conditions by keys, since they'll come in unordered.
-            foreach ($this->conditions as &$andCondition) {
-                foreach ($andCondition as &$orCondition) {
-                    ksort($orCondition);
-                }
-            }
-        }
 
         return parent::beforeSave($isNew);
     }

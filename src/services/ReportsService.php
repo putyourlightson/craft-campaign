@@ -124,7 +124,7 @@ class ReportsService extends Component
     {
         $interval = $interval ?? 'hours';
 
-        return $this->_getChartData(
+        return $this->getChartData(
             ContactCampaignRecord::class,
             ['campaignId' => $campaignId],
             ContactCampaignModel::INTERACTIONS,
@@ -150,7 +150,7 @@ class ReportsService extends Component
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['sendouts' => SendoutRecord::tableName()], '[[sendouts.id]] = [[sendoutId]]')
-            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[sendoutId]]')
+            ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES], '[[elements_sites.elementId]] = [[sendoutId]]')
             ->where($condition)
             ->orderBy(['sent' => SORT_DESC])
             ->all();
@@ -219,7 +219,7 @@ class ReportsService extends Component
         }
 
         // Return contact activity
-        return $this->_getActivity($contactCampaigns, $interaction, $limit);
+        return $this->getActivity($contactCampaigns, $interaction, $limit);
     }
 
     /**
@@ -260,7 +260,7 @@ class ReportsService extends Component
         }
 
         // Return locations of contact campaigns
-        return $this->_getLocations(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
+        return $this->getLocations(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $campaign->opened, $limit);
     }
 
     /**
@@ -276,7 +276,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact campaigns
-        return $this->_getDevices(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $detailed, $campaign->opened, $limit);
+        return $this->getDevices(ContactCampaignRecord::class, ['and', ['campaignId' => $campaignId], ['not', ['opened' => null]]], $detailed, $campaign->opened, $limit);
     }
 
     /**
@@ -325,7 +325,7 @@ class ReportsService extends Component
             ->count();
 
         // Return locations of contacts
-        return $this->_getLocations(ContactRecord::class, [], $total, $limit);
+        return $this->getLocations(ContactRecord::class, [], $total, $limit);
     }
 
     /**
@@ -339,7 +339,7 @@ class ReportsService extends Component
             ->count();
 
         // Return device, os and client of contacts
-        return $this->_getDevices(ContactRecord::class, [], $detailed, $total, $limit);
+        return $this->getDevices(ContactRecord::class, [], $detailed, $total, $limit);
     }
 
     /**
@@ -360,7 +360,7 @@ class ReportsService extends Component
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[campaignId]]')
-            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[campaignId]]')
+            ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES], '[[elements_sites.elementId]] = [[campaignId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -382,7 +382,7 @@ class ReportsService extends Component
         }
 
         // Return contact activity
-        return $this->_getActivity($contactCampaigns, null, $limit);
+        return $this->getActivity($contactCampaigns, null, $limit);
     }
 
     /**
@@ -403,7 +403,7 @@ class ReportsService extends Component
             ->from(['contactMailingLists' => ContactMailingListRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[mailingListId]]')
-            ->innerJoin(['content' => Table::CONTENT], '[[content.elementId]] = [[mailingListId]]')
+            ->innerJoin(['elements_sites' => Table::ELEMENTS_SITES], '[[elements_sites.elementId]] = [[mailingListId]]')
             ->where($condition)
             ->orderBy(['dateUpdated' => SORT_DESC])
             ->all();
@@ -425,7 +425,7 @@ class ReportsService extends Component
         }
 
         // Return contact activity
-        return $this->_getActivity($contactMailingLists, null, $limit);
+        return $this->getActivity($contactMailingLists, null, $limit);
     }
 
     /**
@@ -486,7 +486,7 @@ class ReportsService extends Component
      */
     public function getMailingListChartData(int $mailingListId, string $interval = 'days'): array
     {
-        return $this->_getChartData(
+        return $this->getChartData(
             ContactMailingListRecord::class,
             ['mailingListId' => $mailingListId],
             ContactMailingListModel::INTERACTIONS,
@@ -537,7 +537,7 @@ class ReportsService extends Component
         }
 
         // Return contact activity
-        return $this->_getActivity($contactMailingLists, $interaction, $limit);
+        return $this->getActivity($contactMailingLists, $interaction, $limit);
     }
 
     /**
@@ -553,7 +553,7 @@ class ReportsService extends Component
         }
 
         // Return locations of contact mailing lists
-        return $this->_getLocations(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $mailingList->getSubscribedCount(), $limit);
+        return $this->getLocations(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $mailingList->getSubscribedCount(), $limit);
     }
 
     /**
@@ -569,7 +569,7 @@ class ReportsService extends Component
         }
 
         // Return device, os and client of contact mailing lists
-        return $this->_getDevices(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
+        return $this->getDevices(ContactMailingListRecord::class, ['and', ['mailingListId' => $mailingListId], ['not', ['subscribed' => null]]], $detailed, $mailingList->getSubscribedCount(), $limit);
     }
 
     /**
@@ -603,14 +603,14 @@ class ReportsService extends Component
         $campaignRecords = CampaignRecord::find()->all();
 
         foreach ($campaignRecords as $campaignRecord) {
-            $campaignRecord->recipients = $this->_getCampaignColumnCount($campaignRecord->id, 'sent');
-            $campaignRecord->opened = $this->_getCampaignColumnCount($campaignRecord->id, 'opened');
-            $campaignRecord->clicked = $this->_getCampaignColumnCount($campaignRecord->id, 'clicked');
-            $campaignRecord->unsubscribed = $this->_getCampaignColumnCount($campaignRecord->id, 'unsubscribed');
-            $campaignRecord->complained = $this->_getCampaignColumnCount($campaignRecord->id, 'complained');
-            $campaignRecord->bounced = $this->_getCampaignColumnCount($campaignRecord->id, 'bounced');
-            $campaignRecord->opens = $this->_getCampaignColumnSum($campaignRecord->id, 'opens');
-            $campaignRecord->clicks = $this->_getCampaignColumnSum($campaignRecord->id, 'clicks');
+            $campaignRecord->recipients = $this->getCampaignColumnCount($campaignRecord->id, 'sent');
+            $campaignRecord->opened = $this->getCampaignColumnCount($campaignRecord->id, 'opened');
+            $campaignRecord->clicked = $this->getCampaignColumnCount($campaignRecord->id, 'clicked');
+            $campaignRecord->unsubscribed = $this->getCampaignColumnCount($campaignRecord->id, 'unsubscribed');
+            $campaignRecord->complained = $this->getCampaignColumnCount($campaignRecord->id, 'complained');
+            $campaignRecord->bounced = $this->getCampaignColumnCount($campaignRecord->id, 'bounced');
+            $campaignRecord->opens = $this->getCampaignColumnSum($campaignRecord->id, 'opens');
+            $campaignRecord->clicks = $this->getCampaignColumnSum($campaignRecord->id, 'clicks');
             $campaignRecord->save();
         }
     }
@@ -618,12 +618,12 @@ class ReportsService extends Component
     /**
      * Returns chart data.
      */
-    private function _getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
+    private function getChartData(string $recordClass, array $condition, array $interactions, string $interval): array
     {
         $data = [];
 
         // Get date time format ensuring interval is valid
-        $format = $this->_getDateTimeFormat($interval);
+        $format = $this->getDateTimeFormat($interval);
 
         if ($format === null) {
             return [];
@@ -706,7 +706,7 @@ class ReportsService extends Component
      *
      * @return ContactActivityModel[]
      */
-    private function _getActivity(array $models, string $interaction = null, int $limit = null): array
+    private function getActivity(array $models, string $interaction = null, int $limit = null): array
     {
         $activity = [];
 
@@ -763,7 +763,7 @@ class ReportsService extends Component
     /**
      * Returns locations.
      */
-    private function _getLocations(string $recordClass, array $condition, int $total, int $limit = null): array
+    private function getLocations(string $recordClass, array $condition, int $total, int $limit = null): array
     {
         $results = [];
         $fields = ['country', 'MAX([[geoIp]]) AS geoIp'];
@@ -818,7 +818,7 @@ class ReportsService extends Component
         }
 
         // Sort results
-        usort($results, [$this, '_compareCount']);
+        usort($results, [$this, 'compareCount']);
 
         // Enforce the limit
         if ($limit !== null) {
@@ -831,7 +831,7 @@ class ReportsService extends Component
     /**
      * Returns devices.
      */
-    private function _getDevices(string $recordClass, array $condition, bool $detailed, int $total, int $limit = null): array
+    private function getDevices(string $recordClass, array $condition, bool $detailed, int $total, int $limit = null): array
     {
         $results = [];
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
@@ -863,7 +863,7 @@ class ReportsService extends Component
         }
 
         // Sort results
-        usort($results, [$this, '_compareCount']);
+        usort($results, [$this, 'compareCount']);
 
         // Enforce the limit
         if ($limit !== null) {
@@ -876,7 +876,7 @@ class ReportsService extends Component
     /**
      * Returns date time format.
      */
-    private function _getDateTimeFormat(string $interval): ?string
+    private function getDateTimeFormat(string $interval): ?string
     {
         /**
          * @see DATE_ATOM
@@ -895,12 +895,12 @@ class ReportsService extends Component
     /**
      * Compares two count values by count descending.
      */
-    private function _compareCount(array $a, array $b): int
+    private function compareCount(array $a, array $b): int
     {
         return (int)$a['count'] < (int)$b['count'] ? 1 : -1;
     }
 
-    private function _getCampaignColumnCount(int $campaignId, string $column): int
+    private function getCampaignColumnCount(int $campaignId, string $column): int
     {
         $count = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])
@@ -910,7 +910,7 @@ class ReportsService extends Component
         return $count ?? 0;
     }
 
-    private function _getCampaignColumnSum(int $campaignId, string $column): int
+    private function getCampaignColumnSum(int $campaignId, string $column): int
     {
         $sum = ContactCampaignRecord::find()
             ->where(['campaignId' => $campaignId])

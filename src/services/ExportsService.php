@@ -68,7 +68,7 @@ class ExportsService extends Component
                 ->all();
 
             foreach ($contacts as $contact) {
-                $subscription = $this->_getSubscription($contact, $mailingList);
+                $subscription = $this->getSubscription($contact, $mailingList);
 
                 $row = [];
                 $row[] = $mailingList->title;
@@ -88,8 +88,7 @@ class ExportsService extends Component
                         }
 
                         $value = implode(',', $elements);
-                    }
-                    // https://github.com/putyourlightson/craft-campaign/issues/297
+                    } // https://github.com/putyourlightson/craft-campaign/issues/297
                     elseif ($value instanceof MultiOptionsFieldData) {
                         $value = implode(',', iterator_to_array($value));
                     }
@@ -115,7 +114,7 @@ class ExportsService extends Component
         return true;
     }
 
-    private function _getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
+    private function getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
     {
         /** @var ContactMailingListRecord|null */
         return ContactMailingListRecord::find()

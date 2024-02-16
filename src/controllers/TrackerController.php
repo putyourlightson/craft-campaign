@@ -27,8 +27,8 @@ class TrackerController extends BaseMessageController
     public function actionOpen(): ?Response
     {
         // Get contact and sendout
-        $contact = $this->_getContact();
-        $sendout = $this->_getSendout();
+        $contact = $this->getContact();
+        $sendout = $this->getSendout();
 
         if ($contact && $sendout) {
             // Track open
@@ -47,9 +47,9 @@ class TrackerController extends BaseMessageController
     public function actionClick(): ?Response
     {
         // Get contact, sendout and link
-        $contact = $this->_getContact();
-        $sendout = $this->_getSendout();
-        $linkRecord = $this->_getLink();
+        $contact = $this->getContact();
+        $sendout = $this->getSendout();
+        $linkRecord = $this->getLink();
 
         if ($linkRecord === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Link not found.'));
@@ -97,8 +97,8 @@ class TrackerController extends BaseMessageController
         }
 
         // Get contact and sendout
-        $contact = $this->_getContact();
-        $sendout = $this->_getSendout();
+        $contact = $this->getContact();
+        $sendout = $this->getSendout();
 
         if ($contact === null || $sendout === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
@@ -123,7 +123,7 @@ class TrackerController extends BaseMessageController
     /**
      * Gets a contact by CID in param.
      */
-    private function _getContact(): ?ContactElement
+    private function getContact(): ?ContactElement
     {
         $cid = $this->request->getParam('cid');
 
@@ -137,7 +137,7 @@ class TrackerController extends BaseMessageController
     /**
      * Gets a sendout by SID in param.
      */
-    private function _getSendout(): ?SendoutElement
+    private function getSendout(): ?SendoutElement
     {
         $sid = $this->request->getParam('sid');
 
@@ -151,7 +151,7 @@ class TrackerController extends BaseMessageController
     /**
      * Gets a link by LID in param.
      */
-    private function _getLink(): ?LinkRecord
+    private function getLink(): ?LinkRecord
     {
         $lid = $this->request->getParam('lid');
 
