@@ -13,3 +13,4 @@ _before_ updating.
 
 - Removed the “Legacy” and “Template” segment types. Use regular segments instead.
 - Removed the `segmentType` property and function from the segment element query.
+- Removed the `SegmentHelper` class.

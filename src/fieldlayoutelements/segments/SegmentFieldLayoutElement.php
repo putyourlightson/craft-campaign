@@ -9,7 +9,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\BaseNativeField;
 use putyourlightson\campaign\elements\SegmentElement;
-use putyourlightson\campaign\helpers\SegmentHelper;
 
 /**
  * @since 2.0.0
@@ -39,8 +38,6 @@ class SegmentFieldLayoutElement extends BaseNativeField
             'campaign/segments/_includes/fields',
             [
                 'segment' => $element,
-                'availableFields' => SegmentHelper::getAvailableFields(),
-                'fieldOperators' => SegmentHelper::getFieldOperators(),
             ],
         );
     }
