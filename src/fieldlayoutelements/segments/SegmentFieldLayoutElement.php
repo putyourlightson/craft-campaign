@@ -34,11 +34,8 @@ class SegmentFieldLayoutElement extends BaseNativeField
      */
     public function formHtml(?ElementInterface $element = null, bool $static = false): ?string
     {
-        return Craft::$app->getView()->renderTemplate(
-            'campaign/segments/_includes/fields',
-            [
-                'segment' => $element,
-            ],
-        );
+        return Craft::$app->getView()->renderTemplate('campaign/segments/_includes/fields', [
+            'segment' => $element,
+        ]);
     }
 }
