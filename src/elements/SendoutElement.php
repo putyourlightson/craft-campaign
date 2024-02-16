@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
@@ -1187,11 +1188,11 @@ class SendoutElement extends Element
 
             case 'campaignId':
                 $campaign = $this->getCampaign();
-                return $campaign ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $campaign]) : '';
+                return $campaign ? Cp::elementChipHtml($campaign) : '';
 
             case 'sender':
                 $sender = $this->getSender();
-                return $sender ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $sender]) : '';
+                return $sender ? Cp::elementChipHtml($sender) : '';
 
             case 'mailingListIds':
                 return (string)$this->getMailingListCount();

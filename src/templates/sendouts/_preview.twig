@@ -20,16 +20,13 @@
 {% endblock %}
 
 
-{% block contextMenu %}
+{% block actionButton %}
 
     {% if sendout.isModifiable %}
-        <a href="{{ sendout.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
+        <a href="{{ sendout.cpEditUrl }}" class="button btn">
+            {{ 'Edit'|t('campaign') }}
+        </a>
     {% endif %}
-
-{% endblock %}
-
-
-{% block actionButton %}
 
     {% if sendout.isModifiable or sendout.isResumable %}
         {% include 'campaign/sendouts/_includes/preflight' %}
@@ -123,7 +120,7 @@
                 <div class="elementThumb data">
                     <h5 class="heading">{{ "Sent By"|t('campaign') }}</h5>
                     <div class="value">
-                        {% include '_elements/element' with {element: sender} %}
+                        {{ elementChip(sender) }}
                     </div>
                 </div>
             {% endif %}

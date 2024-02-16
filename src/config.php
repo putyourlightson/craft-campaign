@@ -75,22 +75,10 @@ return [
         //'showSendoutTitleField' = false,
 
         // The maximum size of sendout batches
-        //'maxBatchSize' => 10000,
-
-        // The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
-        //'memoryLimit' => '1024M',
-
-        // The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-        //'timeLimit' => 3600,
-
-        // The threshold for memory usage per sendout batch as a fraction
-        //'memoryThreshold' => 0.8,
-
-        // The threshold for execution time per sendout batch as a fraction
-        //'timeThreshold' => 0.8,
+        //'maxBatchSize' => 100,
 
         // The amount of time in seconds to delay jobs between sendout batches
-        //'batchJobDelay' => 10,
+        //'batchJobDelay' => 0,
 
         // The maximum number of times to attempt sending a sendout to a single contact before failing
         //'maxSendAttempts' => 3,

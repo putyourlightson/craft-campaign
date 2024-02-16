@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\elements\User;
+use craft\helpers\App;
 use craft\queue\BaseJob;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\SyncEvent;
@@ -49,8 +50,7 @@ class SyncJob extends BaseJob
             return;
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
+        App::maxPowerCaptain();
 
         // Get users in user group
         $users = User::find()

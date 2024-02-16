@@ -118,27 +118,12 @@ class SettingsModel extends Model
     /**
      * @var int|null The maximum size of sendout batches
      */
-    public ?int $maxBatchSize = 10000;
+    public ?int $maxBatchSize = 100;
 
     /**
-     * @var string|null The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+     * @var int The amount of time in seconds to delay jobs between sendout batches
      */
-    public ?string $memoryLimit = '1024M';
-
-    /**
-     * @var int|null The execution time limit per sendout batch in seconds (set to 0 for unlimited)
-     */
-    public ?int $timeLimit = 3600;
-
-    /**
-     * @var float The threshold for memory usage per sendout batch as a fraction
-     */
-    public float $memoryThreshold = 0.8;
-
-    /**
-     * @var float The threshold for execution time per sendout batch as a fraction
-     */
-    public float $timeThreshold = 0.8;
+    public int $batchJobDelay = 0;
 
     /**
      * @var int The maximum number of times to attempt sending a sendout to a single contact before failing
@@ -156,11 +141,6 @@ class SettingsModel extends Model
      * @var int The maximum number of times to attempt retrying a failed sendout job
      */
     public int $maxRetryAttempts = 10;
-
-    /**
-     * @var int The amount of time in seconds to delay jobs between sendout batches
-     */
-    public int $batchJobDelay = 10;
 
     /**
      * The amount of time in seconds to reserve a sendout job.
@@ -268,10 +248,10 @@ class SettingsModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize', 'memoryLimit', 'timeLimit'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
-            [['maxBatchSize', 'timeLimit'], 'integer'],
+            [['maxBatchSize'], 'integer'],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
             [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->reCaptcha],
         ];

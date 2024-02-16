@@ -6,6 +6,7 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
+use craft\helpers\App;
 use craft\queue\BaseJob;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -43,8 +44,7 @@ class ImportJob extends BaseJob
             return;
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
+        App::maxPowerCaptain();
 
         // Get rows
         $rows = Campaign::$plugin->imports->getRows($import);

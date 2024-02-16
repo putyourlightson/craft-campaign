@@ -14,13 +14,17 @@
 
     {% if import.fileName %}
         {% set input %}
-            <p><a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}">{{ import.fileName }}</a></p>
+            <p>
+                <a href="{{ actionUrl('campaign/imports/download-file', {importId: import.id}) }}">{{ import.fileName }}</a>
+            </p>
         {% endset %}
         {{ forms.field({label: "CSV File"|t('campaign')}, input) }}
     {% else %}
         {% set userGroup = import.getUserGroup() %}
         {% set input %}
-            <p><a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup is not null ? userGroup.name }}</a></p>
+            <p>
+                <a href="{{ cpUrl('users') }}" class="go" target="_blank">{{ userGroup is not null ? userGroup.name }}</a>
+            </p>
         {% endset %}
         {{ forms.field({label: "User Group"|t('campaign')}, input) }}
     {% endif %}
@@ -28,7 +32,8 @@
     {% set mailingList = import.getMailingList() %}
     {% set input %}
         {% if mailingList %}
-            <span class="status {{ mailingList.status }}"></span><a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
+            <span class="status {{ mailingList.status }}"></span>
+            <a href="{{ mailingList.cpEditUrl }}" class="go" target="_blank">{{ mailingList.title }}</a>
         {% else %}
             -
         {% endif %}
@@ -64,7 +69,10 @@
         <div class="elementThumb data first">
             <h5 class="heading">{{ "Imported By"|t('campaign') }}</h5>
             <div class="value">
-                {% include '_elements/element' with {element: import.getUser()} %}
+                {% set user = import.getUser() %}
+                {% if user %}
+                    {{ elementChip(import.getUser()) }}
+                {% endif %}
             </div>
         </div>
         <div class="data">

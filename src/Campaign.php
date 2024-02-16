@@ -326,22 +326,6 @@ class Campaign extends Plugin
     }
 
     /**
-     * Sets max memory and time limits.
-     */
-    public function maxPowerLieutenant(): void
-    {
-        $settings = $this->getSettings();
-
-        // Set memory limit
-        @ini_set('memory_limit', $settings->memoryLimit);
-
-        // Try to reset time limit
-        if (!function_exists('set_time_limit') || !@set_time_limit($settings->timeLimit)) {
-            $this->log('set_time_limit() is not available');
-        }
-    }
-
-    /**
      * Logs a message.
      */
     public function log(string $message, array $params = [], int $type = Logger::LEVEL_INFO): void
