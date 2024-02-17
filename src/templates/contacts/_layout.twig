@@ -29,14 +29,3 @@
     {% endif %}
 
 {% endif %}
-
-
-{% block contextMenu %}
-
-    {% if craft.app.getIsMultiSite() %}
-        {% include '_elements/sitemenu' with {
-            urlFormat: cpUrl(craft.app.request.url, {site: '{handle}'}),
-        } only %}
-    {% endif %}
-
-{% endblock %}

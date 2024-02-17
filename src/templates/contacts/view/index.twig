@@ -3,12 +3,5 @@
 {% set elementType = 'putyourlightson\\campaign\\elements\\ContactElement' %}
 {% set canHaveDrafts = true %}
 {% set title = 'Contacts'|t('campaign') %}
-
-
-{% block contextMenu %}
-
-    {% if craft.app.getIsMultiSite() %}
-        {% include '_elements/sitemenu' %}
-    {% endif %}
-
-{% endblock %}
+{# TODO: change to `true` after merging of https://github.com/craftcms/cms/pull/14414 #}
+{% set showSiteMenu = 1 %}

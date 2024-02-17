@@ -3,10 +3,8 @@
 {% set title = 'Mailing Lists'|t('campaign') %}
 
 {% set crumbs = [] %}
-
 {% set showSiteMenu = true %}
-{% set siteId = craft.app.request.getParam('siteId') ?? 0 %}
-{% set data = craft.campaign.reports.getMailingListsReportData(siteId) %}
+{% set data = craft.campaign.reports.getMailingListsReportData(requestedSite) %}
 
 
 {% block content %}
@@ -45,22 +43,24 @@
     {% if data.mailingLists|length %}
         <table id="mailingLists" class="data fullwidth collapsible">
             <thead>
-            <th scope="col">{{ "Title"|t('app') }}</th>
-            <th scope="col">{{ "Subscribed"|t('campaign') }}</th>
-            <th scope="col">{{ "Unsubscribed"|t('campaign') }}</th>
-            <th scope="col">{{ "Complained"|t('campaign') }}</th>
-            <th scope="col">{{ "Bounced"|t('campaign') }}</th>
+                <th scope="col">{{ "Title"|t('app') }}</th>
+                <th scope="col">{{ "Subscribed"|t('campaign') }}</th>
+                <th scope="col">{{ "Unsubscribed"|t('campaign') }}</th>
+                <th scope="col">{{ "Complained"|t('campaign') }}</th>
+                <th scope="col">{{ "Bounced"|t('campaign') }}</th>
             </thead>
             <tbody>
-            {% for mailingList in data.mailingLists %}
-                <tr>
-                    <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ mailingList.reportUrl }}">{{ mailingList.title }}</a></th>
-                    <td data-title="{{ 'Subscribed'|t('campaign') }}">{{ mailingList.subscribedCount }}</td>
-                    <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ mailingList.unsubscribedCount }}</td>
-                    <td data-title="{{ 'Complained'|t('campaign') }}">{{ mailingList.complainedCount }}</td>
-                    <td data-title="{{ 'Bounced'|t('campaign') }}">{{ mailingList.bouncedCount }}</td>
-                </tr>
-            {% endfor %}
+                {% for mailingList in data.mailingLists %}
+                    <tr>
+                        <th scope="row" data-title="{{ 'Title'|t('app') }}">
+                            <a href="{{ mailingList.reportUrl }}">{{ mailingList.title }}</a>
+                        </th>
+                        <td data-title="{{ 'Subscribed'|t('campaign') }}">{{ mailingList.subscribedCount }}</td>
+                        <td data-title="{{ 'Unsubscribed'|t('campaign') }}">{{ mailingList.unsubscribedCount }}</td>
+                        <td data-title="{{ 'Complained'|t('campaign') }}">{{ mailingList.complainedCount }}</td>
+                        <td data-title="{{ 'Bounced'|t('campaign') }}">{{ mailingList.bouncedCount }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
 

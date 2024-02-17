@@ -14,6 +14,7 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
+use craft\models\Site;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -55,13 +56,13 @@ class ReportsService extends Component
     /**
      * Returns campaigns report data.
      */
-    public function getCampaignsReportData(int $siteId = null): array
+    public function getCampaignsReportData(Site|int $site = null): array
     {
         // Get all sent campaigns
         $campaigns = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
             ->orderBy('lastSent DESC')
-            ->siteId($siteId)
+            ->site($site)
             ->all();
 
         // Get data
@@ -81,7 +82,7 @@ class ReportsService extends Component
 
         // Get sendouts count
         $data['sendouts'] = SendoutElement::find()
-            ->siteId($siteId)
+            ->site($site)
             ->count();
 
         return $data;
@@ -431,11 +432,11 @@ class ReportsService extends Component
     /**
      * Returns mailing lists report data.
      */
-    public function getMailingListsReportData(int $siteId = null): array
+    public function getMailingListsReportData(Site|int $site = null): array
     {
         // Get all mailing lists in all sites
         $mailingLists = MailingListElement::find()
-            ->siteId($siteId)
+            ->site($site)
             ->all();
 
         // Get data
