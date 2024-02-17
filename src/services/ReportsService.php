@@ -146,7 +146,7 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactCampaigns.*', 'contacts.email', 'sendouts.sendoutType', 'content.title'])
+            ->select(['contactCampaigns.*', 'contacts.email', 'sendouts.sendoutType', 'elements_sites.title'])
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['sendouts' => SendoutRecord::tableName()], '[[sendouts.id]] = [[sendoutId]]')
@@ -356,7 +356,7 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactCampaigns.*', 'contacts.email', 'elements.dateDeleted', 'content.title'])
+            ->select(['contactCampaigns.*', 'contacts.email', 'elements.dateDeleted', 'elements_sites.title'])
             ->from(['contactCampaigns' => ContactCampaignRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[campaignId]]')
@@ -399,7 +399,7 @@ class ReportsService extends Component
         }
 
         $results = (new Query())
-            ->select(['contactMailingLists.*', 'contacts.email', 'elements.dateDeleted', 'content.title'])
+            ->select(['contactMailingLists.*', 'contacts.email', 'elements.dateDeleted', 'elements_sites.title'])
             ->from(['contactMailingLists' => ContactMailingListRecord::tableName()])
             ->innerJoin(['contacts' => ContactRecord::tableName()], '[[contacts.id]] = [[contactId]]')
             ->innerJoin(['elements' => Table::ELEMENTS], '[[elements.id]] = [[mailingListId]]')

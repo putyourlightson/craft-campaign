@@ -108,14 +108,6 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
-    public function getUriFormat(): ?string
-    {
-        return '{slug}';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function find(): SegmentElementQuery
     {
         return new SegmentElementQuery(static::class);
@@ -243,6 +235,20 @@ class SegmentElement extends Element
 
     /**
      * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function crumbs(): array
+    {
+        return [
+            [
+                'label' => Craft::t('campaign', 'Segments'),
+                'url' => UrlHelper::url('campaign/segments'),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function defineRules(): array
     {
@@ -268,13 +274,6 @@ class SegmentElement extends Element
     {
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'segments';
-
-        $response->crumbs([
-            [
-                'label' => Craft::t('campaign', 'Segments'),
-                'url' => UrlHelper::url('campaign/segments'),
-            ],
-        ]);
     }
 
     /**

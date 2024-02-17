@@ -586,18 +586,6 @@ class SendoutElement extends Element
         }
 
         $response->selectedSubnavItem = 'sendouts';
-
-        $response->crumbs([
-            [
-                'label' => Craft::t('campaign', 'Sendouts'),
-                'url' => UrlHelper::url('campaign/sendouts'),
-            ],
-            [
-                'label' => $this->getSendoutTypeLabel(),
-                'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
-            ],
-        ]);
-
         $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
         $response->redirectUrl = $this->getCpPreviewUrl();
     }
@@ -612,6 +600,24 @@ class SendoutElement extends Element
         $path = sprintf('campaign/sendouts/%s/%s/%s', $this->sendoutType, 'preview', $this->getCanonicalId());
 
         return UrlHelper::cpUrl($path);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function crumbs(): array
+    {
+        return [
+            [
+                'label' => Craft::t('campaign', 'Sendouts'),
+                'url' => UrlHelper::url('campaign/sendouts'),
+            ],
+            [
+                'label' => $this->getSendoutTypeLabel(),
+                'url' => UrlHelper::url('campaign/sendouts/' . $this->sendoutType),
+            ],
+        ];
     }
 
     /**

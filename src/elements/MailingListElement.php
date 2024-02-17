@@ -305,6 +305,26 @@ class MailingListElement extends Element
 
     /**
      * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function crumbs(): array
+    {
+        $mailingListType = $this->getMailingListType();
+
+        return [
+            [
+                'label' => Craft::t('campaign', 'Mailing Lists'),
+                'url' => UrlHelper::url('campaign/mailinglists'),
+            ],
+            [
+                'label' => Craft::t('campaign', $mailingListType->name),
+                'url' => UrlHelper::url('campaign/mailinglists/' . $mailingListType->handle),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function uiLabel(): ?string
     {
@@ -484,18 +504,6 @@ class MailingListElement extends Element
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'mailinglists';
-
-        $mailingListType = $this->getMailingListType();
-        $response->crumbs([
-            [
-                'label' => Craft::t('campaign', 'Mailing Lists'),
-                'url' => UrlHelper::url('campaign/mailinglists'),
-            ],
-            [
-                'label' => Craft::t('campaign', $mailingListType->name),
-                'url' => UrlHelper::url('campaign/mailinglists/' . $mailingListType->handle),
-            ],
-        ]);
     }
 
     /**

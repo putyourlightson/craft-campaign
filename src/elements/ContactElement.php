@@ -480,6 +480,128 @@ class ContactElement extends Element
 
     /**
      * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function crumbs(): array
+    {
+        return [
+            [
+                'label' => Craft::t('campaign', 'Contacts'),
+                'url' => UrlHelper::url('campaign/contacts'),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function safeActionMenuItems(): array
+    {
+        if (!$this->id || $this->getIsUnpublishedDraft()) {
+            return parent::destructiveActionMenuItems();
+        }
+
+        $items = [];
+
+        if ($this->complained !== null) {
+            $items[] = [
+                'icon' => 'hand',
+                'label' => Craft::t('campaign', 'Unmark contact as complained'),
+                'action' => 'campaign/contacts/unmark-complained',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
+            ];
+        }
+
+        if ($this->bounced !== null) {
+            $items[] = [
+                'icon' => 'ban',
+                'label' => Craft::t('campaign', 'Unmark contact as bounced'),
+                'action' => 'campaign/contacts/unmark-bounced',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
+            ];
+        }
+
+        if ($this->blocked !== null) {
+            $items[] = [
+                'icon' => 'do-not-enter',
+                'label' => Craft::t('campaign', 'Unmark contact as blocked'),
+                'action' => 'campaign/contacts/unmark-blocked',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
+            ];
+        }
+
+        return array_merge(
+            $items,
+            parent::safeActionMenuItems(),
+        );
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function destructiveActionMenuItems(): array
+    {
+        if (!$this->id || $this->getIsUnpublishedDraft()) {
+            return parent::destructiveActionMenuItems();
+        }
+
+        $items = [];
+
+        if ($this->complained === null) {
+            $items[] = [
+                'icon' => 'hand',
+                'label' => Craft::t('campaign', 'Mark contact as complained'),
+                'action' => 'campaign/contacts/mark-complained',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
+            ];
+        }
+
+        if ($this->bounced === null) {
+            $items[] = [
+                'icon' => 'ban',
+                'label' => Craft::t('campaign', 'Mark contact as bounced'),
+                'action' => 'campaign/contacts/mark-bounced',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
+            ];
+        }
+
+        if ($this->blocked === null) {
+            $items[] = [
+                'icon' => 'do-not-enter',
+                'label' => Craft::t('campaign', 'Mark contact as blocked'),
+                'action' => 'campaign/contacts/mark-blocked',
+                'params' => [
+                    'contactId' => $this->id,
+                ],
+                'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
+            ];
+        }
+
+        return array_merge(
+            $items,
+            parent::destructiveActionMenuItems(),
+        );
+    }
+
+    /**
+     * @inheritdoc
      * @since 2.0.0
      */
     protected function metadata(): array
@@ -784,67 +906,6 @@ class ContactElement extends Element
 
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'contacts';
-
-        $response->crumbs([
-            [
-                'label' => Craft::t('campaign', 'Contacts'),
-                'url' => UrlHelper::url('campaign/contacts'),
-            ],
-        ]);
-
-        if ($this->complained === null) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Mark contact as complained'),
-                [
-                    'action' => 'campaign/contacts/mark-complained',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as complained?'),
-                ],
-            );
-        } else {
-            $response->addAltAction(
-                Craft::t('campaign', 'Unmark contact as complained'),
-                [
-                    'action' => 'campaign/contacts/unmark-complained',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as complained?'),
-                ],
-            );
-        }
-
-        if ($this->bounced === null) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Mark contact as bounced'),
-                [
-                    'action' => 'campaign/contacts/mark-bounced',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as bounced?'),
-                ],
-            );
-        } else {
-            $response->addAltAction(
-                Craft::t('campaign', 'Unmark contact as bounced'),
-                [
-                    'action' => 'campaign/contacts/unmark-bounced',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as bounced?'),
-                ],
-            );
-        }
-
-        if ($this->blocked === null) {
-            $response->addAltAction(
-                Craft::t('campaign', 'Mark contact as blocked'),
-                [
-                    'action' => 'campaign/contacts/mark-blocked',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to mark this contact as blocked?'),
-                ],
-            );
-        } else {
-            $response->addAltAction(
-                Craft::t('campaign', 'Unmark contact as blocked'),
-                [
-                    'action' => 'campaign/contacts/unmark-blocked',
-                    'confirm' => Craft::t('campaign', 'Are you sure you want to unmark this contact as blocked?'),
-                ],
-            );
-        }
     }
 
     /**
@@ -898,7 +959,7 @@ class ContactElement extends Element
             }
         }
 
-        return parent::inlineAttributeInputHtml($attribute);
+        return parent::attributeHtml($attribute);
     }
 
     /**

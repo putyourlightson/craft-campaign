@@ -477,6 +477,26 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     * @since 3.0.0
+     */
+    protected function crumbs(): array
+    {
+        $campaignType = $this->getCampaignType();
+
+        return [
+            [
+                'label' => Craft::t('campaign', 'Campaigns'),
+                'url' => UrlHelper::url('campaign/campaigns'),
+            ],
+            [
+                'label' => Craft::t('campaign', $campaignType->name),
+                'url' => UrlHelper::url('campaign/campaigns/' . $campaignType->handle),
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function uiLabel(): ?string
     {
@@ -695,19 +715,6 @@ class CampaignElement extends Element
     {
         /** @var Response|CpScreenResponseBehavior $response */
         $response->selectedSubnavItem = 'campaigns';
-
-        $campaignType = $this->getCampaignType();
-        $response->crumbs([
-            [
-                'label' => Craft::t('campaign', 'Campaigns'),
-                'url' => UrlHelper::url('campaign/campaigns'),
-            ],
-            [
-                'label' => Craft::t('campaign', $campaignType->name),
-                'url' => UrlHelper::url('campaign/campaigns/' . $campaignType->handle),
-            ],
-        ]);
-
         $response->addAltAction(
             Craft::t('campaign', 'Save and create new regular sendout'),
             [
