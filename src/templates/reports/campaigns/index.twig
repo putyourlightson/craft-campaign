@@ -4,8 +4,7 @@
 {% set selectedSubnavItem = 'reports' %}
 {% set crumbs = [] %}
 {% set showSiteMenu = true %}
-{% set siteId = craft.app.request.getParam('siteId') ?? 0 %}
-{% set data = craft.campaign.reports.getCampaignsReportData(siteId) %}
+{% set data = craft.campaign.reports.getCampaignsReportData(requestedSite) %}
 
 
 {% block content %}

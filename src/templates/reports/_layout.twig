@@ -14,7 +14,7 @@
 
 {% set showSiteMenu = showSiteMenu ?? false %}
 {% if showSiteMenu and craft.app.getIsMultiSite() %}
-    {% set crumbs = [{
+    {% set crumbs = (crumbs ?? [])|unshift({
         id: 'site-crumb',
         icon: 'world',
         label: requestedSite.name|t('site'),
@@ -22,7 +22,7 @@
             items: siteMenuItems(null, requestedSite),
             label: 'Select site'|t('site')
         },
-    }]|merge(crumbs) %}
+    }) %}
 {% endif %}
 
 

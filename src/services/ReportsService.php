@@ -56,7 +56,7 @@ class ReportsService extends Component
     /**
      * Returns campaigns report data.
      */
-    public function getCampaignsReportData(Site|int $site = null): array
+    public function getCampaignsReportData(Site|int|null $site = null): array
     {
         // Get all sent campaigns
         $campaigns = CampaignElement::find()
@@ -432,7 +432,7 @@ class ReportsService extends Component
     /**
      * Returns mailing lists report data.
      */
-    public function getMailingListsReportData(Site|int $site = null): array
+    public function getMailingListsReportData(Site|int|null $site = null): array
     {
         // Get all mailing lists in all sites
         $mailingLists = MailingListElement::find()
