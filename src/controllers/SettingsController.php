@@ -17,7 +17,6 @@ use craft\web\UrlManager;
 use putyourlightson\campaign\base\BaseSettingsController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use yii\web\Response;

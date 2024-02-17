@@ -9,8 +9,7 @@ readonly class PendingRecipientBatcher implements Batchable
     public function __construct(
         private array $pendingRecipients,
         private ?int $limit = null,
-    )
-    {
+    ) {
     }
 
     /**
