@@ -12,6 +12,6 @@
 
 {% if sendoutType is defined %}
     {% js %}
-        window.defaultSendoutTypeHandle = '{{ sendoutType|e('js') }}';
+    window.defaultSendoutTypeHandle = '{{ sendoutType|e('js') }}';
     {% endjs %}
 {% endif %}
