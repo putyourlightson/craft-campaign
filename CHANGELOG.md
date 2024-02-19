@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.0.0-beta.1 - Unreleased
+## 3.0.0-beta.1 - 2024-02-19
 
 > {warning} “Legacy” and “Template” segments are no longer available will be deleted in this update. They should be replaced with regular segments
 _before_ updating.
