@@ -2,22 +2,18 @@
 
 ## Static Analysis
 
-To run static analysis on the plugin,
-install [PHPStan for Craft CMS](https://github.com/craftcms/phpstan) and run the
-following command from the root of your project.
+To run static analysis on the plugin, install [PHPStan for Craft CMS](https://github.com/craftcms/phpstan) and run the following command from the root of your project.
 
 ```shell
-./vendor/bin/phpstan analyse -c vendor/putyourlightson/craft-camapgin/phpstan.neon  --memory-limit 1G
+php vendor/bin/phpstan analyse -c vendor/putyourlightson/craft-campaign/phpstan.neon  --memory-limit 1G
 ```
 
 ## Easy Coding Standard
 
-To run the Easy Coding Standard on the plugin,
-install [ECS for Craft CMS](https://github.com/craftcms/ecs) and run the
-following command from the root of your project.
+To run the Easy Coding Standard on the plugin, install [ECS for Craft CMS](https://github.com/craftcms/ecs) and run the following command from the root of your project.
 
 ```shell
-./vendor/bin/ecs check -c vendor/putyourlightson/craft-camapgin/ecs.php
+php vendor/bin/ecs check -c vendor/putyourlightson/craft-campaign/ecs.php
 ```
 
 ## Pest Tests
@@ -31,11 +27,11 @@ composer require markhuot/craft-pest-core:^2.0.0-rc2 --dev
 Then run the following command from the root of your project.
 
 ```shell
-php php vendor/bin/pest --configuration=vendor/putyourlightson/craft-campaign/tests/pest/phpunit.xml --test-directory=vendor/putyourlightson/craft-campaign/tests/pest
+php vendor/bin/pest vendor/putyourlightson/craft-campaign/tests/pest --test-directory=vendor/putyourlightson/craft-campaign/tests/pest --colors --display-deprecations
 ```
 
 Or to run a specific test.
 
 ```shell
-php php vendor/bin/pest --configuration=vendor/putyourlightson/craft-campaign/tests/pest/phpunit.xml --test-directory=vendor/putyourlightson/craft-campaign/tests/pest --filter=TrackerTest
+php vendor/bin/pest vendor/putyourlightson/craft-campaign/tests/pest --test-directory=vendor/putyourlightson/craft-campaign/tests/pest --colors --display-deprecations --filter=MySpecificTest
 ```

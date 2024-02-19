@@ -137,6 +137,7 @@ table th.thin, table td.thin {
         opacity: 0;
     }
 }
+
 @-webkit-keyframes saturate-fadeOut {
     50% {
         filter: grayscale(0);
@@ -151,6 +152,7 @@ table th.thin, table td.thin {
         opacity: 1;
     }
 }
+
 @-webkit-keyframes fadeIn {
     100% {
         opacity: 1;
@@ -162,6 +164,7 @@ table th.thin, table td.thin {
         opacity: 0;
     }
 }
+
 @-webkit-keyframes fadeOut {
     100% {
         opacity: 0;
@@ -260,7 +263,7 @@ label.subscriptionStatus.bounced {
     height: 350px;
     resize: vertical;
     border-radius: 5px;
-    box-shadow: 0 0 0 1px #cdd8e4,0 2px 12px rgba(205,216,228,.5);
+    box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgba(205, 216, 228, .5);
 }
 
 textarea.email-body {
@@ -285,6 +288,10 @@ textarea.email-body {
 
 .details .meta.test-email > .field:last-of-type {
     padding-bottom: 10px !important;
+}
+
+.details .meta.test-email .input {
+    width: 100%;
 }
 
 .device {
@@ -325,6 +332,7 @@ textarea.email-body {
         float: left;
         width: 47%;
     }
+
     .cols .half:first-child {
         padding-right: 6%;
     }
