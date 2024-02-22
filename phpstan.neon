@@ -6,6 +6,4 @@ parameters:
         - examples
         - src
     scanFiles:
-        # This file must be added to the project root:
-        # https://github.com/craftcms/cms/blob/develop/lib/craft/behaviors/CustomFieldBehavior.php
         - lib/craft/behaviors/CustomFieldBehavior.php
