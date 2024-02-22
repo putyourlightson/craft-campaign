@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace modules\sitemodule\conditions\segments;
+namespace modules\conditions\segments;
 
 use craft\base\conditions\BaseConditionRule;
 use craft\base\ElementInterface;
@@ -41,9 +41,11 @@ class ContactIsUserConditionRule extends BaseConditionRule implements ElementCon
     public function modifyQuery(ElementQueryInterface $query): void
     {
         /** @var ContactElementQuery $query */
-        $query->andWhere(['not', [
-            'userId' => null,
-        ]]);
+        $query->andWhere([
+            'not', [
+                'userId' => null,
+            ],
+        ]);
     }
 
     /**
