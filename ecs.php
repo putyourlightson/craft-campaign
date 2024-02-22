@@ -5,6 +5,7 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return static function(ECSConfig $ecsConfig): void {
     $ecsConfig->paths([
+        __DIR__ . '/examples',
         __DIR__ . '/src',
         __DIR__ . '/tests/pest',
         __FILE__,

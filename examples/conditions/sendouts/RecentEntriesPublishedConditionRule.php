@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace modules\sitemodule\conditions\sendouts;
+namespace modules\conditions\sendouts;
 
 use craft\base\conditions\BaseSelectConditionRule;
 use craft\base\ElementInterface;
@@ -60,7 +60,7 @@ class RecentEntriesPublishedConditionRule extends BaseSelectConditionRule implem
     public function matchElement(ElementInterface $element): bool
     {
         // Return whether any entries were published in the previous period
-        $date = (new DateTime())->modify('-1 '. $this->value);
+        $date = (new DateTime())->modify('-1 ' . $this->value);
 
         return Entry::find()
             ->after($date)
