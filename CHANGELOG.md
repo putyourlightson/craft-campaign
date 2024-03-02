@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 2.12.2 - Unreleased
+
+### Security
+
+- Improved escaping of table values in the plugins settings.
+- Removed the ability to use `contact` and `mailingList` variables in sendout subjects.
+
 ## 2.12.1 - 2024-01-08
 
 ### Changed

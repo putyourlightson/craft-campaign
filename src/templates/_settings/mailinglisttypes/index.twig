@@ -31,7 +31,6 @@
 {% for mailingListType in craft.campaign.getAllMailingListTypes() %}
     {% set tableData = tableData|merge([{
         id: mailingListType.id,
-        name: mailingListType.name|e,
         title: mailingListType.name|e,
         url: mailingListType.cpEditUrl,
         handle: mailingListType.handle|e,
