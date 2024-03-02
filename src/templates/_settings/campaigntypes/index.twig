@@ -32,8 +32,7 @@
 {% for campaignType in craft.campaign.getAllCampaignTypes() %}
     {% set tableData = tableData|merge([{
         id: campaignType.id,
-        name: campaignType.name|e,
-        title: campaignType.name,
+        title: campaignType.name|e,
         url: campaignType.cpEditUrl,
         handle: campaignType.handle|e,
         site: campaignType.site.name|e,
