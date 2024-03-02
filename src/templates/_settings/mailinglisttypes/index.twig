@@ -32,7 +32,7 @@
     {% set tableData = tableData|merge([{
         id: mailingListType.id,
         name: mailingListType.name|e,
-        title: mailingListType.name,
+        title: mailingListType.name|e,
         url: mailingListType.cpEditUrl,
         handle: mailingListType.handle|e,
         site: mailingListType.site.name|e,
