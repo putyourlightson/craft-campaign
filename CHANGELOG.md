@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
-## 2.12.2 - Unreleased
+## 2.12.2 - 2024-03-05
+
+### Changed
+ 
+- A custom log target is now only registered if a dispatcher exists.
 
 ### Security
 

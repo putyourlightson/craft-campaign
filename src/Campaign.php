@@ -84,6 +84,7 @@ use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
 use yii\di\Instance;
+use yii\log\Dispatcher;
 use yii\log\Logger;
 use yii\queue\Queue;
 use yii\web\ForbiddenHttpException;
@@ -513,17 +514,19 @@ class Campaign extends Plugin
      */
     private function _registerLogTarget(): void
     {
-        Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
-            'name' => 'campaign',
-            'categories' => ['campaign'],
-            'level' => LogLevel::INFO,
-            'logContext' => false,
-            'allowLineBreaks' => false,
-            'formatter' => new LineFormatter(
-                format: "[%datetime%] %message%\n",
-                dateFormat: 'Y-m-d H:i:s',
-            ),
-        ]);
+        if (Craft::getLogger()->dispatcher instanceof Dispatcher) {
+            Craft::getLogger()->dispatcher->targets[] = new MonologTarget([
+                'name' => 'campaign',
+                'categories' => ['campaign'],
+                'level' => LogLevel::INFO,
+                'logContext' => false,
+                'allowLineBreaks' => false,
+                'formatter' => new LineFormatter(
+                    format: "[%datetime%] %message%\n",
+                    dateFormat: 'Y-m-d H:i:s',
+                ),
+            ]);
+        }
     }
 
     /**
