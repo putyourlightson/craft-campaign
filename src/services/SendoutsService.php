@@ -307,9 +307,6 @@ class SendoutsService extends Component
         // Set the current site from the sendout's site ID
         Craft::$app->sites->setCurrentSite($sendout->siteId);
 
-        // Get subject
-        $subject = Craft::$app->getView()->renderString($sendout->subject, ['contact' => $contact]);
-
         // Get body, catching template rendering errors
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout);
@@ -330,7 +327,7 @@ class SendoutsService extends Component
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
-            ->setSubject('[Test] '.$subject)
+            ->setSubject('[Test] '.$sendout->subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
@@ -400,12 +397,6 @@ class SendoutsService extends Component
 
         $mailingList = $this->_getMailingList($mailingListId);
 
-        // Get subject
-        $subject = Craft::$app->getView()->renderString($sendout->subject, [
-            'contact' => $contact,
-            'mailingList' => $mailingList,
-        ]);
-
         // Get body, catching template rendering errors
         try {
             $htmlBody = $campaign->getHtmlBody($contact, $sendout, $mailingList);
@@ -440,7 +431,7 @@ class SendoutsService extends Component
         $message = Campaign::$plugin->mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
-            ->setSubject($subject)
+            ->setSubject($sendout->subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 

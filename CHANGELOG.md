@@ -1,8 +1,11 @@
 # Release Notes for Campaign
 
-## 1.25.1 - Unreleased
+## 1.25.1 - 2024-03-05
 ### Changed
 - Logs are now output to the Craft log, in addition to the Campaign log file.
+
+### Security
+- Removed the ability to use `contact` and `mailingList` variables in sendout subjects.
 
 ## 1.25.0 - 2023-11-09
 ### Added
