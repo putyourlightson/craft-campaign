@@ -73,6 +73,11 @@ class CpAsset extends AssetBundle
 
     private function registerEditableTypes(BaseView $view): void
     {
+        $user = Craft::$app->getUser()->getIdentity();
+        if ($user === null) {
+            return;
+        }
+
         $editableCampaignTypes = Json::encode($this->getEditableCampaignTypes());
         $editableMailingListTypes = Json::encode($this->getEditableMailingListTypes());
         $editableSendoutTypes = Json::encode($this->getEditableSendoutTypes());
