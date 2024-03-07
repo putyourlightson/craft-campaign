@@ -91,16 +91,13 @@ class SyncService extends Component
      */
     public function queueSync(MailingListElement $mailingList): void
     {
-        $job = new SyncJob([
-            'mailingListId' => $mailingList->id,
-        ]);
-
         Queue::push(
-            $job,
-            Campaign::$plugin->settings->syncJobPriority,
-            null,
-            Campaign::$plugin->settings->syncJobTtr,
-            Campaign::$plugin->queue,
+            job: new SyncJob([
+                'mailingListId' => $mailingList->id,
+            ]),
+            priority: Campaign::$plugin->settings->syncJobPriority,
+            ttr: Campaign::$plugin->settings->syncJobTtr,
+            queue: Campaign::$plugin->queue,
         );
     }
 

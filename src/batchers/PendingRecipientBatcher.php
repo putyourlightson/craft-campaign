@@ -1,6 +1,6 @@
 <?php
 
-namespace putyourlightson\campaign\jobs;
+namespace putyourlightson\campaign\batchers;
 
 use craft\base\Batchable;
 

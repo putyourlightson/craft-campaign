@@ -143,14 +143,13 @@ class SendoutsService extends Component
             /** @var SendoutElement $sendout */
             foreach ($sendouts as $sendout) {
                 if ($sendout->getCanSendNow()) {
-                    $job = new SendoutJob([
-                        'sendoutId' => $sendout->id,
-                        'title' => $sendout->title,
-                    ]);
-
                     Queue::push(
-                        job: $job,
+                        job: new SendoutJob([
+                            'sendoutId' => $sendout->id,
+                            'title' => $sendout->title,
+                        ]),
                         priority: Campaign::$plugin->settings->sendoutJobPriority,
+                        ttr: Campaign::$plugin->settings->sendoutJobTtr,
                         queue: Campaign::$plugin->queue,
                     );
 

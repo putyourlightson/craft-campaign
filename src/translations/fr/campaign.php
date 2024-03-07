@@ -503,7 +503,7 @@ return [
     'Send sendouts' => 'Envoyer les campagnes',
     'Send Test Email' => 'Envoyer un mail de test',
     'Send Test' => 'Envoyer le test',
-    'Sending “{title}” sendout [batch {batch}]' => 'Envoi de “{title}” par [batch {batch}]',
+    'Sending “{title}” sendout.' => 'Envoi de “{title}”.',
     'Sending completed: {title}' => 'Envoi complété : {title}',
     'Sending failed: {title}' => 'Échec de l’envoi : {title}',
     'Sending failed. Please check your email settings and the error in the logs.' => 'Échec de l’envoi. Veuillez vérifiez les réglages de vos emails et les erreurs dans les logs.',

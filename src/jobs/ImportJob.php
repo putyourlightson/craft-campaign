@@ -6,30 +6,33 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
-use craft\helpers\App;
-use craft\queue\BaseJob;
+use craft\queue\BaseBatchedJob;
 use DateTime;
+use putyourlightson\campaign\batchers\RowBatcher;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\events\ImportEvent;
+use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\services\ImportsService;
 
-/**
- * @property-read int $ttr
- */
-class ImportJob extends BaseJob
+class ImportJob extends BaseBatchedJob
 {
     /**
      * @var int
      */
     public int $importId;
 
+    public int $batchSize = 1;
+    /**
+     * @var ImportModel|null
+     */
+    private ?ImportModel $import = null;
+
     /**
      * @inheritdoc
      */
     public function execute($queue): void
     {
-        $import = Campaign::$plugin->imports->getImportById($this->importId);
-
+        $import = $this->getImport();
         if ($import === null) {
             return;
         }
@@ -44,21 +47,15 @@ class ImportJob extends BaseJob
             return;
         }
 
-        App::maxPowerCaptain();
+        parent::execute($queue);
+    }
 
-        // Get rows
-        $rows = Campaign::$plugin->imports->getRows($import);
-        $total = count($rows);
-
-        // Loop as long as the there are lines
-        foreach ($rows as $i => $row) {
-            // Set progress
-            $this->setProgress($queue, $i / $total);
-
-            // Import row
-            $import = Campaign::$plugin->imports->importRow($import, $row, $i + 1);
-        }
-
+    /**
+     * @inheritdoc
+     */
+    protected function after(): void
+    {
+        $import = $this->getImport();
         $import->dateImported = new DateTime();
 
         // Save import
@@ -69,8 +66,33 @@ class ImportJob extends BaseJob
 
         // Fire an after event
         if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
-            Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, $event);
+            Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, new ImportEvent([
+                'import' => $import,
+            ]));
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function loadData(): RowBatcher
+    {
+        $import = $this->getImport();
+        if ($import === null) {
+            return new RowBatcher([]);
+        }
+
+        $rows = Campaign::$plugin->imports->getRows($import);
+
+        return new RowBatcher($rows);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function processItem(mixed $item): void
+    {
+        Campaign::$plugin->imports->importRow($this->getImport(), $item);
     }
 
     /**
@@ -79,5 +101,14 @@ class ImportJob extends BaseJob
     protected function defaultDescription(): string
     {
         return Craft::t('campaign', 'Importing contacts.');
+    }
+
+    private function getImport(): ?ImportModel
+    {
+        if ($this->import === null) {
+            $this->import = Campaign::$plugin->imports->getImportById($this->importId);
+        }
+
+        return $this->import;
     }
 }

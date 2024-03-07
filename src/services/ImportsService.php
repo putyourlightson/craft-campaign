@@ -247,14 +247,20 @@ class ImportsService extends Component
      */
     public function queueImport(ImportModel $import): void
     {
-        // Add import job to queue
-        Craft::$app->getQueue()->push(new ImportJob(['importId' => $import->id]));
+        Queue::push(
+            job: new ImportJob([
+                'importId' => $import->id,
+            ]),
+            priority: Campaign::$plugin->settings->importJobPriority,
+            ttr: Campaign::$plugin->settings->importJobTtr,
+            queue: Campaign::$plugin->queue,
+        );
     }
 
     /**
      * Imports a row into a contact.
      */
-    public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
+    public function importRow(ImportModel $import, array $row): ImportModel
     {
         // Get mailing list or memoize it
         if (empty($this->mailingLists[$import->mailingListId])) {
@@ -316,7 +322,7 @@ class ImportsService extends Component
         if (!$success) {
             $import->failures++;
 
-            Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
+            Campaign::$plugin->log(implode('. ', $contact->getErrorSummary(true)) . ' [' . implode(',', $row) . ']');
 
             Campaign::$plugin->imports->saveImport($import);
 
@@ -379,12 +385,6 @@ class ImportsService extends Component
             'fieldHandles' => $fieldHandles,
         ]);
 
-        Queue::push(
-            $job,
-            Campaign::$plugin->settings->importJobPriority,
-            null,
-            Campaign::$plugin->settings->importJobTtr,
-            Campaign::$plugin->queue,
-        );
+        Queue::push($job);
     }
 }

@@ -502,7 +502,7 @@ return [
     'Send sendouts' => '',
     'Send Test Email' => '',
     'Send Test' => '',
-    'Sending “{title}” sendout [batch {batch}]' => '',
+    'Sending “{title}” sendout.' => '',
     'Sending completed: {title}' => '',
     'Sending failed: {title}' => '',
     'Sending failed. Please check your email settings and the error in the logs.' => '',

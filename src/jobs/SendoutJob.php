@@ -6,17 +6,14 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
-use craft\helpers\App;
 use craft\queue\BaseBatchedJob;
+use putyourlightson\campaign\batchers\PendingRecipientBatcher;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
 use putyourlightson\campaign\services\SendoutsService;
 use yii\queue\RetryableJobInterface;
 
-/**
- * @property-read int $ttr
- */
 class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
 {
     /**
@@ -28,18 +25,6 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
      * @var string|null
      */
     public ?string $title = null;
-
-    /**
-     * @var int
-     */
-    public int $batch = 1;
-
-    public function init(): void
-    {
-        $this->batchSize = Campaign::$plugin->settings->maxBatchSize;
-
-        parent::init();
-    }
 
     /**
      * @inheritdoc
@@ -60,11 +45,12 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
     /**
      * @inheritdoc
      */
-    protected function beforeBatch(): void
+    public function execute($queue): void
     {
-        App::maxPowerCaptain();
-
         $sendout = $this->getCurrentSendout();
+        if ($sendout === null || !$sendout->getIsSendable()) {
+            return;
+        }
 
         $event = new SendoutEvent([
             'sendout' => $sendout,
@@ -75,13 +61,26 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
             return;
         }
 
-        Campaign::$plugin->sendouts->prepareSending($sendout, $this->batch);
+        parent::execute($queue);
     }
 
     /**
      * @inheritdoc
-     *
-     * @since 5.0.0
+     */
+    protected function beforeBatch(): void
+    {
+        Campaign::$plugin->sendouts->prepareSending($this->getCurrentSendout(), $this->batchIndex + 1);
+
+        if ($this->batchIndex > 0) {
+            $batchJobDelay = Campaign::$plugin->settings->batchJobDelay;
+            if ($batchJobDelay > 0) {
+                sleep(Campaign::$plugin->settings->batchJobDelay);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function afterBatch(): void
     {
@@ -150,9 +149,8 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Sending “{title}” sendout [batch {batch}]', [
+        return Craft::t('campaign', 'Sending “{title}” sendout.', [
             'title' => $this->title,
-            'batch' => $this->batch,
         ]);
     }
 

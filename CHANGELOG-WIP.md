@@ -1,13 +1,6 @@
 # Release Notes for Campaign
 
-## 3.0.0-beta.2 - Unreleased
-
-### Added
-
-- Added batching to import queue jobs.
-- Added batching to sync queue jobs.
-
-## 3.0.0-beta.1 - 2024-02-19
+## 3.0.0 - Unreleased
 
 > {warning} “Legacy” and “Template” segments are no longer available will be deleted in this update. They should be replaced with regular segments
 _before_ updating.
@@ -15,6 +8,8 @@ _before_ updating.
 ### Added
 
 - Added compatibility with Craft 5.0.0.
+- Added batching to import queue jobs.
+- Added batching to sync queue jobs.
 
 ### Changed
 
