@@ -41,7 +41,6 @@ class SyncJob extends BaseBatchedJob
             return;
         }
 
-        // Fire a before event
         $event = new SyncEvent([
             'mailingList' => $mailingList,
         ]);

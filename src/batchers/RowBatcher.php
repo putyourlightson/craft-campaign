@@ -4,11 +4,15 @@ namespace putyourlightson\campaign\batchers;
 
 use craft\base\Batchable;
 
+/**
+ * @since 2.13.0
+ */
 readonly class RowBatcher implements Batchable
 {
     public function __construct(
         private array $rows,
-    ) {
+    )
+    {
     }
 
     /**

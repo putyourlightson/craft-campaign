@@ -21,7 +21,6 @@ class ImportJob extends BaseBatchedJob
      */
     public int $importId;
 
-    public int $batchSize = 1;
     /**
      * @var ImportModel|null
      */
@@ -37,7 +36,6 @@ class ImportJob extends BaseBatchedJob
             return;
         }
 
-        // Fire a before event
         $event = new ImportEvent([
             'import' => $import,
         ]);
@@ -58,13 +56,9 @@ class ImportJob extends BaseBatchedJob
         $import = $this->getImport();
         $import->dateImported = new DateTime();
 
-        // Save import
         Campaign::$plugin->imports->saveImport($import);
-
-        // Update the search indexes
         Campaign::$plugin->imports->updateSearchIndexes();
 
-        // Fire an after event
         if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
             Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, new ImportEvent([
                 'import' => $import,

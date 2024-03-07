@@ -13,7 +13,8 @@ _before_ updating.
 
 ### Changed
 
-- Changed the default sendout batch job delay setting to `0`.
+- Changed the default maximum size of sendout batches to `100`.
+- Changed the default sendout batch job delay to `0`.
 
 ### Removed
 

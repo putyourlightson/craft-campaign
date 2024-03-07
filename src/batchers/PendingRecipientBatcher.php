@@ -4,12 +4,16 @@ namespace putyourlightson\campaign\batchers;
 
 use craft\base\Batchable;
 
+/**
+ * @since 2.13.0
+ */
 readonly class PendingRecipientBatcher implements Batchable
 {
     public function __construct(
         private array $pendingRecipients,
         private ?int $limit = null,
-    ) {
+    )
+    {
     }
 
     /**
