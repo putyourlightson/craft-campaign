@@ -1,5 +1,23 @@
 # Release Notes for Campaign
 
+## 2.13.0 - Unreleased
+
+### Added
+
+- Added batching to import queue jobs.
+- Added batching to sync queue jobs.
+
+### Changed
+ 
+- Campaign now requires Craft CMS 4.4.0 or later.
+
+### Deprecated
+
+- Deprecated the `memoryLimit` config setting.
+- Deprecated the `memoryThreshold` config setting.
+- Deprecated the `timeLimit` config setting.
+- Deprecated the `timeThreshold` config setting.
+
 ## 2.12.2 - 2024-03-05
 
 ### Changed

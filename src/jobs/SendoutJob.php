@@ -6,18 +6,18 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
-use craft\queue\BaseJob;
+use craft\queue\BaseBatchedJob;
+use putyourlightson\campaign\batchers\PendingRecipientBatcher;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
-use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\services\SendoutsService;
 use yii\queue\RetryableJobInterface;
 
 /**
  * @property-read int $ttr
  */
-class SendoutJob extends BaseJob implements RetryableJobInterface
+class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
 {
     /**
      * @var int
@@ -28,11 +28,6 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      * @var string|null
      */
     public ?string $title = null;
-
-    /**
-     * @var int
-     */
-    public int $batch = 1;
 
     /**
      * @inheritdoc
@@ -55,19 +50,11 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
      */
     public function execute($queue): void
     {
-        // Get sendout
-        $sendout = Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
-
-        if ($sendout === null) {
+        $sendout = $this->_getCurrentSendout();
+        if ($sendout === null || !$sendout->getIsSendable()) {
             return;
         }
 
-        // Ensure sendout is sendable
-        if (!$sendout->getIsSendable()) {
-            return;
-        }
-
-        // Fire a before event
         $event = new SendoutEvent([
             'sendout' => $sendout,
         ]);
@@ -80,68 +67,32 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
-        // Get settings
-        $settings = Campaign::$plugin->settings;
+        // TODO: move what’s below this into the `BaseBatchedJob::beforeBatch` method in Campaign 3.
 
-        // Get memory limit or set to null if unlimited
-        $memoryLimit = ini_get('memory_limit');
-        $memoryLimit = ($memoryLimit == -1) ? null : round(SendoutHelper::memoryInBytes($memoryLimit) * $settings->memoryThreshold);
+        Campaign::$plugin->sendouts->prepareSending($sendout, $this->batchIndex + 1);
 
-        // Get time limit or set to null if unlimited
-        $timeLimit = ini_get('max_execution_time');
-        $timeLimit = ($timeLimit == 0) ? null : round($timeLimit * $settings->timeThreshold);
-
-        // Prepare sending
-        Campaign::$plugin->sendouts->prepareSending($sendout, $this->batch);
-
-        // Get pending recipients
-        $pendingRecipients = $sendout->getPendingRecipients();
-
-        $count = 0;
-        $batchSize = min(count($pendingRecipients) + 1, $settings->maxBatchSize);
-
-        foreach ($pendingRecipients as $pendingRecipient) {
-            $this->setProgress($queue, $count / $batchSize);
-            $count++;
-
-            $contact = Campaign::$plugin->contacts->getContactById($pendingRecipient['contactId']);
-
-            if ($contact === null) {
-                continue;
-            }
-
-            // Send email
-            Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $pendingRecipient['mailingListId']);
-
-            // If we're beyond the memory limit or time limit or max batch size has been reached
-            $memoryUsage = memory_get_usage();
-
-            if (($memoryLimit && $memoryUsage > $memoryLimit)
-                || ($timeLimit && time() - $_SERVER['REQUEST_TIME'] > $timeLimit)
-                || $count >= $batchSize
-            ) {
-                // Add new job to queue with delay
-                Craft::$app->getQueue()->delay($settings->batchJobDelay)->push(new self([
-                    'sendoutId' => $this->sendoutId,
-                    'title' => $this->title,
-                    'batch' => $this->batch + 1,
-                ]));
-
-                return;
-            }
-
-            // Ensure sendout send status is still sending as it may have had its status changed
-            $sendoutSendStatus = Campaign::$plugin->sendouts->getSendoutSendStatusById($sendout->id);
-
-            if ($sendoutSendStatus !== SendoutElement::STATUS_SENDING) {
-                break;
+        if ($this->batchIndex > 0) {
+            $batchJobDelay = Campaign::$plugin->settings->batchJobDelay;
+            if ($batchJobDelay > 0) {
+                sleep(Campaign::$plugin->settings->batchJobDelay);
             }
         }
 
-        // Finalise sending
+        parent::execute($queue);
+
+        // TODO: move what’s below this into the `BaseBatchedJob::after` method in Campaign 3.
+
+        if ($this->itemOffset < $this->totalItems()) {
+            return;
+        }
+
+        $sendout = $this->_getCurrentSendout();
+        if ($sendout === null || !$sendout->getIsSendable()) {
+            return;
+        }
+
         Campaign::$plugin->sendouts->finaliseSending($sendout);
 
-        // Fire an after event
         if (Campaign::$plugin->sendouts->hasEventHandlers(SendoutsService::EVENT_AFTER_SEND)) {
             Campaign::$plugin->sendouts->trigger(SendoutsService::EVENT_AFTER_SEND, new SendoutEvent([
                 'sendout' => $sendout,
@@ -152,11 +103,51 @@ class SendoutJob extends BaseJob implements RetryableJobInterface
     /**
      * @inheritdoc
      */
+    protected function loadData(): PendingRecipientBatcher
+    {
+        $sendout = $this->_getCurrentSendout();
+        if ($sendout === null || !$sendout->getIsSendable()) {
+            return new PendingRecipientBatcher([]);
+        }
+
+        return new PendingRecipientBatcher($sendout->getPendingRecipients(), $this->batchSize);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function processItem(mixed $item): void
+    {
+        // Ensure the send status is still `sending`, as it may have changed.
+        $sendout = $this->_getCurrentSendout();
+        if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
+            return;
+        }
+
+        $contact = Campaign::$plugin->contacts->getContactById($item['contactId']);
+
+        if ($contact === null) {
+            return;
+        }
+
+        Campaign::$plugin->sendouts->sendEmail($sendout, $contact, $item['mailingListId']);
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Sending “{title}” sendout [batch {batch}]', [
+        return Craft::t('campaign', 'Sending “{title}” sendout.', [
             'title' => $this->title,
-            'batch' => $this->batch,
         ]);
+    }
+
+    /**
+     * Returns a fresh version of the current sendout.
+     */
+    private function _getCurrentSendout(): ?SendoutElement
+    {
+        return Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
     }
 }

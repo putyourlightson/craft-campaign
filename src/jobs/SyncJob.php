@@ -6,18 +6,20 @@
 namespace putyourlightson\campaign\jobs;
 
 use Craft;
+use craft\base\Batchable;
+use craft\db\QueryBatcher;
 use craft\elements\User;
-use craft\queue\BaseJob;
+use craft\queue\BaseBatchedJob;
+use putyourlightson\campaign\batchers\RowBatcher;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\SyncEvent;
 use putyourlightson\campaign\services\SyncService;
 
 /**
  * @since 1.2.0
- *
- * @property-read int $ttr
  */
-class SyncJob extends BaseJob
+class SyncJob extends BaseBatchedJob
 {
     /**
      * @var int
@@ -25,21 +27,20 @@ class SyncJob extends BaseJob
     public int $mailingListId;
 
     /**
+     * @var MailingListElement|null
+     */
+    public ?MailingListElement $_mailingList = null;
+
+    /**
      * @inheritdoc
      */
     public function execute($queue): void
     {
-        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
-
-        if ($mailingList === null) {
+        $mailingList = $this->_getMailingList();
+        if ($mailingList === null || $mailingList->syncedUserGroupId === null) {
             return;
         }
 
-        if ($mailingList->syncedUserGroupId === null) {
-            return;
-        }
-
-        // Fire a before event
         $event = new SyncEvent([
             'mailingList' => $mailingList,
         ]);
@@ -52,27 +53,41 @@ class SyncJob extends BaseJob
         // Call for max power
         Campaign::$plugin->maxPowerLieutenant();
 
-        // Get users in user group
-        $users = User::find()
-            ->groupId($mailingList->syncedUserGroupId)
-            ->all();
+        parent::execute($queue);
 
-        $total = count($users);
+        // TODO: move what’s below this into the `BaseBatchedJob::after` method in Campaign 3.
 
-        foreach ($users as $i => $user) {
-            // Set progress
-            $this->setProgress($queue, $i / $total);
-
-            // Sync user to contact in mailing list
-            Campaign::$plugin->sync->syncUserMailingList($user, $mailingList);
+        if ($this->itemOffset < $this->totalItems()) {
+            return;
         }
 
-        // Fire an after event
         if (Campaign::$plugin->sync->hasEventHandlers(SyncService::EVENT_AFTER_SYNC)) {
-            Campaign::$plugin->sync->trigger(SyncService::EVENT_AFTER_SYNC, new SyncEvent([
-                'mailingList' => $mailingList,
-            ]));
+            Campaign::$plugin->sync->trigger(SyncService::EVENT_AFTER_SYNC, $event);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function loadData(): Batchable
+    {
+        $mailingList = $this->_getMailingList();
+        if ($mailingList === null || $mailingList->syncedUserGroupId === null) {
+            return new RowBatcher([]);
+        }
+
+        $query = User::find()
+            ->groupId($mailingList->syncedUserGroupId);
+
+        return new QueryBatcher($query);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function processItem(mixed $item): void
+    {
+        Campaign::$plugin->sync->syncUserMailingList($item, $this->_getMailingList());
     }
 
     /**
@@ -81,5 +96,14 @@ class SyncJob extends BaseJob
     protected function defaultDescription(): string
     {
         return Craft::t('campaign', 'Syncing mailing list.');
+    }
+
+    private function _getMailingList(): ?MailingListElement
+    {
+        if ($this->_mailingList === null) {
+            $this->_mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
+        }
+
+        return $this->_mailingList;
     }
 }

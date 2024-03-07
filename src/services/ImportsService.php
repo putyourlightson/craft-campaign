@@ -254,7 +254,7 @@ class ImportsService extends Component
     /**
      * Imports a row into a contact.
      */
-    public function importRow(ImportModel $import, array $row, int $lineNumber): ImportModel
+    public function importRow(ImportModel $import, array $row): ImportModel
     {
         // Get mailing list or memoize it
         if (empty($this->_mailingLists[$import->mailingListId])) {
@@ -316,7 +316,7 @@ class ImportsService extends Component
         if (!$success) {
             $import->failures++;
 
-            Campaign::$plugin->log('Line ' . $lineNumber . ': ' . implode('. ', $contact->getErrorSummary(true)));
+            Campaign::$plugin->log(implode('. ', $contact->getErrorSummary(true)) . ' [' . implode(',', $row) . ']');
 
             Campaign::$plugin->imports->saveImport($import);
 
