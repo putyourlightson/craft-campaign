@@ -504,7 +504,7 @@ return [
     'Send sendouts' => 'Verschicke Sendungen',
     'Send Test Email' => 'Sende Test-E-Mail',
     'Send Test' => 'Sende Test',
-    'Sending “{title}” sendout [batch {batch}]' => 'Sende “{title}”-Sendung [Charge {batch}]',
+    'Sending “{title}” sendout.' => 'Sende “{title}”-Sendung.',
     'Sending completed: {title}' => 'Senden beendet: {title}',
     'Sending failed: {title}' => 'Senden fehlgeschlagen: {title}',
     'Sending failed. Please check your email settings and the error in the logs.' => 'Senden fehlgeschlagen. Bitte überprüfen Sie Ihre E-Mail-Einstellungen und den Fehler-Log.',

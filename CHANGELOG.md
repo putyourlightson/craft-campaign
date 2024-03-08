@@ -17,6 +17,7 @@
 - Deprecated the `memoryThreshold` config setting.
 - Deprecated the `timeLimit` config setting.
 - Deprecated the `timeThreshold` config setting.
+- Deprecated the `Campaign::maxPowerLieutenant()` method. Use `App:maxPowerCaptain()` instead.
 
 ## 2.12.2 - 2024-03-05
 

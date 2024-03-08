@@ -17,7 +17,6 @@ use craft\web\UrlManager;
 use putyourlightson\campaign\base\BaseSettingsController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\helpers\SendoutHelper;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\SettingsModel;
 use yii\web\Response;
@@ -136,17 +135,12 @@ class SettingsController extends BaseSettingsController
             $settings = Campaign::$plugin->settings;
         }
 
-        $memoryLimit = $settings->memoryLimit ? SendoutHelper::memoryInBytes($settings->memoryLimit) : 0;
-
         return $this->renderTemplate('campaign/_settings/sendout', [
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'contactElementType' => ContactElement::class,
-            'system' => [
-                'memoryLimit' => ini_get('memory_limit'),
-                'memoryLimitExceeded' => $memoryLimit > SendoutHelper::memoryInBytes(ini_get('memory_limit')),
-                'timeLimit' => ini_get('max_execution_time'),
-            ],
+            'memoryLimit' => ini_get('memory_limit'),
+            'timeLimit' => ini_get('max_execution_time'),
         ]);
     }
 

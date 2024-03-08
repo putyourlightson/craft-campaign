@@ -122,21 +122,25 @@ class SettingsModel extends Model
 
     /**
      * @var string|null The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
+     * @deprecated in 2.13.0.
      */
     public ?string $memoryLimit = '1024M';
 
     /**
      * @var int|null The execution time limit per sendout batch in seconds (set to 0 for unlimited)
+     * @deprecated in 2.13.0.
      */
     public ?int $timeLimit = 3600;
 
     /**
      * @var float The threshold for memory usage per sendout batch as a fraction
+     * @deprecated in 2.13.0.
      */
     public float $memoryThreshold = 0.8;
 
     /**
      * @var float The threshold for execution time per sendout batch as a fraction
+     * @deprecated in 2.13.0.
      */
     public float $timeThreshold = 0.8;
 

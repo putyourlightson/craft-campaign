@@ -52,8 +52,9 @@
                 {% endif %}
                 <span class="info">
                     {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
-                    {{ 'Memory Limit'|t('campaign') }}: {{ system.memoryLimit == -1 ? 'Unlimited'|t('campaign') : system.memoryLimit }}<br/>
-                    {{ 'Max Execution Time'|t('campaign') }}: {{ system.timeLimit == 0 ? 'Unlimited'|t('campaign') : system.timeLimit ~ 's' }}<br/>
+                    {{ 'Batch Job Delay'|t('campaign') }}: {{ settings.batchJobDelay == 0 ? 'None'|t('campaign') : settings.batchJobDelay ~ 's' }}<br/>
+                    {{ 'Memory Limit'|t('campaign') }}: {{ memoryLimit == -1 ? 'Unlimited'|t('campaign') : memoryLimit }}<br/>
+                    {{ 'Max Execution Time'|t('campaign') }}: {{ timeLimit == 0 ? 'Unlimited'|t('campaign') : timeLimit ~ 's' }}<br/>
                     {% if isDynamicWebAliasUsed %}
                         <span class="warning">
                             {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown(inlineOnly=true) }}
@@ -61,7 +62,9 @@
                     {% endif %}
                 </span>
             </p>
-            <p><input type="submit" class="btn submit launch" value="{{ saveLabel }}"></p>
+            <p>
+                <input type="submit" class="btn submit launch" value="{{ saveLabel }}">
+            </p>
             <div class="rocketeer"></div>
             <p class="spinner big hidden"></p>
             <p class="error hidden"></p>

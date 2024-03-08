@@ -9,7 +9,7 @@ use craft\base\Component;
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
-use putyourlightson\campaign\Campaign;
+use craft\helpers\App;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\ExportEvent;
@@ -43,8 +43,7 @@ class ExportsService extends Component
             return false;
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
+        App::maxPowerCaptain();
 
         // Open file for writing
         $handle = fopen($export->filePath, 'wb');
@@ -88,8 +87,7 @@ class ExportsService extends Component
                         }
 
                         $value = implode(',', $elements);
-                    }
-                    // https://github.com/putyourlightson/craft-campaign/issues/297
+                    } // https://github.com/putyourlightson/craft-campaign/issues/297
                     elseif ($value instanceof MultiOptionsFieldData) {
                         $value = implode(',', iterator_to_array($value));
                     }

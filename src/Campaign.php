@@ -330,6 +330,8 @@ class Campaign extends Plugin
 
     /**
      * Sets max memory and time limits.
+     *
+     * @deprecated in 2.13.0. Use `App:maxPowerCaptain()` instead.
      */
     public function maxPowerLieutenant(): void
     {

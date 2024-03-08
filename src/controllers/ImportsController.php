@@ -7,6 +7,7 @@ namespace putyourlightson\campaign\controllers;
 
 use Craft;
 use craft\elements\Asset;
+use craft\helpers\App;
 use craft\helpers\Assets;
 use craft\helpers\FileHelper;
 use craft\web\Controller;
@@ -235,8 +236,7 @@ class ImportsController extends Controller
             throw new BadRequestHttpException('Import not found.');
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
+        App::maxPowerCaptain();
 
         $handle = Campaign::$plugin->imports->getHandle($import);
 

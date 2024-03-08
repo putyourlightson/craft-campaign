@@ -50,9 +50,6 @@ class SyncJob extends BaseBatchedJob
             return;
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
         parent::execute($queue);
 
         // TODO: move what’s below this into the `BaseBatchedJob::after` method in Campaign 3.

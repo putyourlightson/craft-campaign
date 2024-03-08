@@ -64,9 +64,6 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
             return;
         }
 
-        // Call for max power
-        Campaign::$plugin->maxPowerLieutenant();
-
         // TODO: move what’s below this into the `BaseBatchedJob::beforeBatch` method in Campaign 3.
 
         Campaign::$plugin->sendouts->prepareSending($sendout, $this->batchIndex + 1);
