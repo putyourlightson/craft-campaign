@@ -214,10 +214,8 @@ class SendoutsController extends Controller
             'testContactCriteria' => ['status' => ContactElement::STATUS_ACTIVE],
             'testContacts' => $campaignType ? $campaignType->getTestContactsWithDefault() : [],
             'actions' => [],
-            'system' => [
-                'memoryLimit' => ini_get('memory_limit'),
-                'timeLimit' => ini_get('max_execution_time'),
-            ],
+            'memoryLimit' => ini_get('memory_limit'),
+            'timeLimit' => ini_get('max_execution_time'),
             'isDynamicWebAliasUsed' => SettingsHelper::isDynamicWebAliasUsed($sendout->siteId),
             'getHtmlBodyActionUrl' => UrlHelper::actionUrl('campaign/sendouts/get-html-body'),
             'sendTestActionUrl' => UrlHelper::actionUrl('campaign/sendouts/send-test'),
