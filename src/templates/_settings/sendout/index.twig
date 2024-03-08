@@ -29,17 +29,11 @@
 
     <hr>
 
-    {% set input %}
-        {{ forms.checkbox({
-            label: "Show the title field for sendouts."|t('campaign'),
-            name: 'showSendoutTitleField',
-            checked: settings.showSendoutTitleField,
-        }) }}
-    {% endset %}
-    {{ forms.field({
+    {{ forms.lightswitchField({
         label: "Show Title Field"|t('campaign'),
-        instructions: "If unchecked, the subject will be used as the title."|t('campaign'),
-    }, input) }}
+        instructions: "Whether the title field should be visible in addition to the subject. If off, the subject will be used as the title."|t('campaign'),
+        on: settings.showSendoutTitleField,
+    }) }}
 
     <hr>
 
