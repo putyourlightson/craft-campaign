@@ -91,7 +91,7 @@ class ImportJob extends BaseBatchedJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Importing contacts.');
+        return Craft::t('campaign', 'Importing contacts');
     }
 
     private function _getImport(): ?ImportModel
