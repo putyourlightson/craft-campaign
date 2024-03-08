@@ -130,7 +130,16 @@ class SendoutsService extends Component
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
-        return count($this->getPendingRecipients($sendout)) - $sendout->failures;
+        $count = 0;
+
+        // TODO Do this for all sendout types, so only IDs are queried at this stage
+        if ($sendout->sendoutType == 'regular') {
+            $count = count($this->_getPendingRecipientsStandardIds($sendout));
+        } else {
+            $count = count($this->getPendingRecipients($sendout));
+        }
+
+        return $count - $sendout->failures;
     }
 
     /**
@@ -588,16 +597,26 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the standard sendout's pending contact IDs.
+     * Returns the standard sendout’s shared base query condition config.
      */
-    private function _getPendingRecipientsStandard(SendoutElement $sendout): array
+    private function _getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
     {
-        App::maxPowerCaptain();
-
         $baseCondition = [
             'mailingListId' => $sendout->mailingListIds,
             'subscriptionStatus' => 'subscribed',
         ];
+
+        return $baseCondition;
+    }
+
+    /**
+     * Returns the standard sendout’s pending contact IDs.
+     */
+    private function _getPendingRecipientsStandardIds(SendoutElement $sendout): array
+    {
+        App::maxPowerCaptain();
+
+        $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
 
         // Get contacts subscribed to sendout's mailing lists
         $query = ContactMailingListRecord::find()
@@ -632,6 +651,19 @@ class SendoutsService extends Component
                 $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
             }
         }
+
+        return $contactIds;
+    }
+
+    /**
+     * Returns the standard sendout’s pending contacts.
+     */
+    private function _getPendingRecipientsStandard(SendoutElement $sendout): array
+    {
+        App::maxPowerCaptain();
+
+        $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
+        $contactIds = $this->_getPendingRecipientsStandardIds($sendout);
 
         // Get recipients as array
         return ContactMailingListRecord::find()
