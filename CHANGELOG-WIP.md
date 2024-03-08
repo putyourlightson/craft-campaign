@@ -8,8 +8,6 @@ _before_ updating.
 ### Added
 
 - Added compatibility with Craft 5.0.0.
-- Added batching to import queue jobs.
-- Added batching to sync queue jobs.
 
 ### Changed
 

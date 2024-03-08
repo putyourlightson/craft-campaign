@@ -11,8 +11,7 @@ readonly class RowBatcher implements Batchable
 {
     public function __construct(
         private array $rows,
-    )
-    {
+    ) {
     }
 
     /**

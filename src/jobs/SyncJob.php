@@ -95,7 +95,7 @@ class SyncJob extends BaseBatchedJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('campaign', 'Syncing mailing list.');
+        return Craft::t('campaign', 'Syncing mailing list');
     }
 
     private function getMailingList(): ?MailingListElement
