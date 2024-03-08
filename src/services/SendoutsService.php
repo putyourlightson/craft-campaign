@@ -665,15 +665,23 @@ class SendoutsService extends Component
         $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
         $contactIds = $this->_getPendingRecipientsStandardIds($sendout);
 
+        $contacts = [];
+
         // Get recipients as array
-        return ContactMailingListRecord::find()
+        $contactsQuery = ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
             ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
             ->orderBy(['contactId' => SORT_ASC])
-            ->asArray()
-            ->all();
+            ->asArray();
+
+        // Fetch 10,000 contacts at a time
+        foreach($contactsQuery->each(10000) as $contact) {
+            $contacts[] = $contact;
+        }
+        
+        return $contacts;
     }
 
     /**
