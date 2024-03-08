@@ -32,6 +32,16 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
     /**
      * @inheritdoc
      */
+    public function init(): void
+    {
+        $this->batchSize = Campaign::$plugin->settings->maxBatchSize;
+
+        parent::init();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getTtr(): int
     {
         return Campaign::$plugin->settings->sendoutJobTtr;
