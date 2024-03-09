@@ -727,16 +727,16 @@ class SendoutsService extends Component
             }
         }
 
+        if ($limit !== null) {
+            $contactIds = array_slice($contactIds, 0, $limit);
+        }
+
         foreach ($contactIds as $contactId) {
             $recipients[] = [
                 'contactId' => $contactId,
                 'mailingListId' => null,
                 'subscribed' => null,
             ];
-        }
-
-        if ($limit !== null) {
-            $recipients = array_slice($recipients, 0, $limit);
         }
 
         return $recipients;
