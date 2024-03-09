@@ -100,17 +100,17 @@ class SendoutsService extends Component
     /**
      * Returns the sendout’s pending recipients.
      */
-    public function getPendingRecipients(SendoutElement $sendout): array
+    public function getPendingRecipients(SendoutElement $sendout, int $limit = null): array
     {
         if ($sendout->sendoutType == 'automated') {
-            return $this->getPendingRecipientsAutomated($sendout);
+            return $this->getPendingRecipientsAutomated($sendout, $limit);
         }
 
         if ($sendout->sendoutType == 'singular') {
-            return $this->getPendingRecipientsSingular($sendout);
+            return $this->getPendingRecipientsSingular($sendout, $limit);
         }
 
-        return $this->getPendingRecipientsStandard($sendout);
+        return $this->getPendingRecipientsStandard($sendout, $limit);
     }
 
     /**
@@ -118,7 +118,13 @@ class SendoutsService extends Component
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
-        return count($this->getPendingRecipients($sendout)) - $sendout->failures;
+        if ($sendout->sendoutType === 'regular') {
+            $count = count($this->getPendingRecipientsStandardIds($sendout));
+        } else {
+            $count = count($this->getPendingRecipients($sendout));
+        }
+
+        return $count - $sendout->failures;
     }
 
     /**
@@ -175,7 +181,7 @@ class SendoutsService extends Component
             return false;
         }
 
-        // Set the current site from the sendout's site ID
+        // Set the current site from the sendout’s site ID
         Craft::$app->getSites()->setCurrentSite($sendout->siteId);
 
         // Get body, catching template rendering errors
@@ -576,21 +582,30 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the standard sendout's pending contact IDs.
+     * Returns the standard sendout’s base query condition.
      */
-    private function getPendingRecipientsStandard(SendoutElement $sendout): array
+    private function getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
     {
-        App::maxPowerCaptain();
-
-        $baseCondition = [
+        return [
             'mailingListId' => $sendout->mailingListIds,
             'subscriptionStatus' => 'subscribed',
         ];
+    }
 
-        // Get contacts subscribed to sendout's mailing lists
+    /**
+     * Returns the standard sendout’s pending recipient contact IDs.
+     *
+     * @return int[]
+     */
+    private function getPendingRecipientsStandardIds(SendoutElement $sendout): array
+    {
+        App::maxPowerCaptain();
+
+        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
+
+        // Get contacts subscribed to sendout’s mailing lists
         $query = ContactMailingListRecord::find()
-            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
-            ->groupBy('contactId')
+            ->select('contactId')
             ->andWhere($baseCondition);
 
         // Ensure contacts have not complained, bounced, or been blocked (in contact record)
@@ -601,7 +616,7 @@ class SendoutsService extends Component
                 'contact.blocked' => null,
             ]);
 
-        // Exclude contacts subscribed to sendout's excluded mailing lists
+        // Exclude contacts subscribed to sendout’s excluded mailing lists
         $query->andWhere(['not', ['contactId' => $this->getExcludedMailingListRecipientsQuery($sendout)]]);
 
         // Check whether we should exclude recipients that were sent to today only
@@ -621,8 +636,29 @@ class SendoutsService extends Component
             }
         }
 
-        // Get recipients as array
-        return ContactMailingListRecord::find()
+        return $contactIds;
+    }
+
+    /**
+     * Returns the standard sendout’s pending recipients.
+     *
+     * @return  array<int, array{
+     *              contactId: int,
+     *              mailingListId: int,
+     *              subscribed: string,
+     *          }>
+     */
+    private function getPendingRecipientsStandard(SendoutElement $sendout, int $limit = null): array
+    {
+        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
+        $contactIds = $this->getPendingRecipientsStandardIds($sendout);
+
+        if ($limit !== null) {
+            $contactIds = array_slice($contactIds, 0, $limit);
+        }
+
+        /** @var array $recipients */
+        $recipients = ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
             ->where($baseCondition)
@@ -630,13 +666,16 @@ class SendoutsService extends Component
             ->orderBy(['contactId' => SORT_ASC])
             ->asArray()
             ->all();
+
+        return $recipients;
     }
 
     /**
-     * Returns the automated sendout's pending recipients.
+     * Returns the automated sendout’s pending recipients.
      */
-    private function getPendingRecipientsAutomated(SendoutElement $sendout): array
+    private function getPendingRecipientsAutomated(SendoutElement $sendout, int $limit = null): array
     {
+        // We can only apply the limit after we have the filtered the recipients.
         $recipients = $this->getPendingRecipientsStandard($sendout);
 
         /** @var AutomatedScheduleModel $schedule */
@@ -653,13 +692,17 @@ class SendoutsService extends Component
             }
         }
 
+        if ($limit !== null) {
+            $recipients = array_slice($recipients, 0, $limit);
+        }
+
         return $recipients;
     }
 
     /**
-     * Returns the singular sendout's pending contact IDs.
+     * Returns the singular sendout’s pending contact IDs.
      */
-    private function getPendingRecipientsSingular(SendoutElement $sendout): array
+    private function getPendingRecipientsSingular(SendoutElement $sendout, int $limit = null): array
     {
         $recipients = [];
         $excludeContactIds = $this->getSentRecipientsQuery($sendout)->column();
@@ -670,6 +713,10 @@ class SendoutsService extends Component
             foreach ($sendout->getSegments() as $segment) {
                 $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
             }
+        }
+
+        if ($limit !== null) {
+            $contactIds = array_slice($contactIds, 0, $limit);
         }
 
         foreach ($contactIds as $contactId) {
@@ -684,7 +731,7 @@ class SendoutsService extends Component
     }
 
     /**
-     * Updates a sendout's record with the provided fields.
+     * Updates a sendout’s record with the provided fields.
      */
     private function updateSendoutRecord(SendoutElement $sendout, array $fields): bool
     {
@@ -695,7 +742,7 @@ class SendoutsService extends Component
             return false;
         }
 
-        // Set attributes from sendout's fields
+        // Set attributes from sendout’s fields
         $sendoutRecord->setAttributes($sendout->toArray($fields), false);
 
         if (!$sendoutRecord->save()) {

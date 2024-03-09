@@ -89,7 +89,7 @@ class SendoutsController extends Controller
     public function actionGetPendingRecipientCount(): Response
     {
         $sendout = $this->getSendoutFromParamId();
-        $this->response->content = (string)$sendout->getPendingRecipientCount();
+        $this->response->content = (string)Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
 
         return $this->response;
     }

@@ -11,6 +11,7 @@ use craft\elements\actions\Delete;
 use craft\elements\actions\Duplicate;
 use craft\elements\actions\Restore;
 use craft\elements\User;
+use craft\enums\CmsEdition;
 use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -45,7 +46,6 @@ use yii\web\Response;
  * @property-read float $progressFraction
  * @property-read bool $isModifiable
  * @property-read int $segmentCount
- * @property-read int $pendingRecipientCount
  * @property-read bool $isDeletable
  * @property-read int $contactCount
  * @property-read bool $isPausable
@@ -326,8 +326,8 @@ class SendoutElement extends Element
             'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
         ];
 
-        // Hide sender from Craft Personal/Client
-        if (Craft::$app->getEdition() !== Craft::Pro) {
+        // Hide sender if not Craft Pro edition
+        if (Craft::$app->edition !== CmsEdition::Pro) {
             unset($attributes['sender']);
         }
 
@@ -506,11 +506,6 @@ class SendoutElement extends Element
      * @var SegmentElement[]|null
      */
     private ?array $segments = null;
-
-    /**
-     * @var array|null
-     */
-    private ?array $pendingRecipients = null;
 
     /**
      * @var ScheduleModel|null Schedule
@@ -760,7 +755,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's progress as a fraction.
+     * Returns the sendout’s progress as a fraction.
      */
     public function getProgressFraction(): float
     {
@@ -768,8 +763,7 @@ class SendoutElement extends Element
             return 1;
         }
 
-        // Get expected recipients
-        $expectedRecipients = $this->getPendingRecipientCount();
+        $expectedRecipients = Campaign::$plugin->sendouts->getPendingRecipientCount($this);
 
         $progress = $expectedRecipients == 0 ?: $this->recipients / ($this->recipients + $expectedRecipients);
 
@@ -777,7 +771,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's progress.
+     * Returns the sendout’s progress.
      */
     public function getProgress(): string
     {
@@ -791,7 +785,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's campaign.
+     * Returns the sendout’s campaign.
      */
     public function getCampaign(): ?CampaignElement
     {
@@ -827,7 +821,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's notification email addresses.
+     * Returns the sendout’s notification email addresses.
      *
      * @return string[]
      */
@@ -844,7 +838,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's notification contacts, or the default notification
+     * Returns the sendout’s notification contacts, or the default notification
      * contacts if this is a fresh sendout.
      *
      * @return ContactElement[]
@@ -863,7 +857,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's contact count.
+     * Returns the sendout’s contact count.
      */
     public function getContactCount(): int
     {
@@ -871,7 +865,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's contacts.
+     * Returns the sendout’s contacts.
      *
      * @return ContactElement[]
      */
@@ -887,7 +881,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's failed contacts.
+     * Returns the sendout’s failed contacts.
      *
      * @return ContactElement[]
      */
@@ -903,7 +897,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's mailing list count.
+     * Returns the sendout’s mailing list count.
      */
     public function getMailingListCount(): int
     {
@@ -911,7 +905,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's mailing lists.
+     * Returns the sendout’s mailing lists.
      *
      * @return MailingListElement[]
      */
@@ -927,7 +921,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's excluded mailing list count.
+     * Returns the sendout’s excluded mailing list count.
      */
     public function getExcludedMailingListCount(): int
     {
@@ -935,7 +929,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's excluded mailing lists.
+     * Returns the sendout’s excluded mailing lists.
      *
      * @return MailingListElement[]
      */
@@ -951,7 +945,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's segment count.
+     * Returns the sendout’s segment count.
      */
     public function getSegmentCount(): int
     {
@@ -959,7 +953,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's segments.
+     * Returns the sendout’s segments.
      *
      * @return SegmentElement[]
      */
@@ -979,7 +973,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's schedule.
+     * Returns the sendout’s schedule.
      *
      * @return ScheduleModel|null
      */
@@ -999,30 +993,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's pending recipient contact and mailing list IDs based
-     * on its mailing lists, segments and schedule.
-     */
-    public function getPendingRecipients(): array
-    {
-        if ($this->pendingRecipients !== null) {
-            return $this->pendingRecipients;
-        }
-
-        $this->pendingRecipients = Campaign::$plugin->sendouts->getPendingRecipients($this);
-
-        return $this->pendingRecipients;
-    }
-
-    /**
-     * Returns the sendout's pending recipient count
-     */
-    public function getPendingRecipientCount(): int
-    {
-        return count($this->getPendingRecipients());
-    }
-
-    /**
-     * Returns the sendout's HTML body.
+     * Returns the sendout’s HTML body.
      */
     public function getHtmlBody(): ?string
     {
@@ -1041,7 +1012,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Returns the sendout's plaintext body.
+     * Returns the sendout’s plaintext body.
      */
     public function getPlaintextBody(): ?string
     {
@@ -1137,7 +1108,7 @@ class SendoutElement extends Element
     }
 
     /**
-     * Sets the sendout's schedule.
+     * Sets the sendout’s schedule.
      */
     public function setSchedule(ScheduleModel|array|string|null $schedule): void
     {

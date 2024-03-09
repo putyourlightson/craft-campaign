@@ -7,7 +7,7 @@ namespace putyourlightson\campaign\jobs;
 
 use Craft;
 use craft\queue\BaseBatchedJob;
-use putyourlightson\campaign\batchers\PendingRecipientBatcher;
+use putyourlightson\campaign\batchers\SendoutBatcher;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\events\SendoutEvent;
@@ -111,14 +111,14 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
     /**
      * @inheritdoc
      */
-    protected function loadData(): PendingRecipientBatcher
+    protected function loadData(): SendoutBatcher
     {
         $sendout = $this->getCurrentSendout();
         if ($sendout === null || !$sendout->getIsSendable()) {
-            return new PendingRecipientBatcher([]);
+            return new SendoutBatcher(null);
         }
 
-        return new PendingRecipientBatcher($sendout->getPendingRecipients(), $this->batchSize);
+        return new SendoutBatcher($sendout);
     }
 
     /**

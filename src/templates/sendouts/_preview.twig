@@ -2,6 +2,7 @@
 
 {% import '_includes/forms' as forms %}
 
+{# @var sendout putyourlightson\campaign\elements\Sendout #}
 {% set title = sendout.title %}
 {% set crumbs = [
     { label: sendout.sendoutTypeLabel, url: url('campaign/sendouts/' ~ sendout.sendoutType) }

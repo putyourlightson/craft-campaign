@@ -17,11 +17,13 @@ _before_ updating.
 ### Removed
 
 - Removed the “Legacy” and “Template” segment types. Use regular segments instead.
-- Removed the `segmentType` property and function from the segment element query.
-- Removed the `SegmentHelper` class.
-- Removed the `SendoutHelper` class.
-- Removed the `Campaign::maxPowerLieutenant` method.
 - Removed the `memoryLimit` config setting.
 - Removed the `memoryThreshold` config setting.
 - Removed the `timeLimit` config setting.
 - Removed the `timeThreshold` config setting.
+- Removed the `segmentType` property and function from the segment element query.
+- Removed the `SegmentHelper` class.
+- Removed the `SendoutHelper` class.
+- Removed the `Campaign::maxPowerLieutenant` method.
+- Removed the `SendoutElement::getPendingRecipients()` method. Use `Campaign::$plugin->sendouts->getPendingRecipients()` instead.
+- Removed the `SendoutElement::getPendingRecipientCount()` method. Use `Campaign::$plugin->sendouts->getPendingRecipients()` instead.

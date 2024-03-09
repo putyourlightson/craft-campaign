@@ -75,7 +75,7 @@ class ExportsController extends Controller
             return $this->asModelFailure($export, Craft::t('campaign', 'Couldn’t export file.'), 'export');
         }
 
-        Campaign::$plugin->log('File exported by "{username}".');
+        Campaign::$plugin->log('File exported by “{username}”.');
 
         return $this->response->sendFile($export->filePath);
     }

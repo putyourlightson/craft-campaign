@@ -2,6 +2,7 @@
 /**
  * @copyright Copyright (c) PutYourLightsOn
  */
+
 namespace putyourlightson\campaign\elements\actions;
 
 use Craft;
@@ -76,7 +77,7 @@ EOD;
         foreach ($sendouts as $sendout) {
             Campaign::$plugin->sendouts->pauseSendout($sendout);
 
-            Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', [
+            Campaign::$plugin->log('Sendout “{title}” paused by “{username}”.', [
                 'title' => $sendout->title,
             ]);
         }
