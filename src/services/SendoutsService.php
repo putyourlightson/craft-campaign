@@ -130,10 +130,7 @@ class SendoutsService extends Component
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
-        $count = 0;
-
-        // TODO Do this for all sendout types, so only IDs are queried at this stage
-        if ($sendout->sendoutType == 'regular') {
+        if ($sendout->sendoutType === 'regular') {
             $count = count($this->_getPendingRecipientsStandardIds($sendout));
         } else {
             $count = count($this->getPendingRecipients($sendout));
@@ -597,16 +594,14 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the standard sendout’s shared base query condition config.
+     * Returns the standard sendout’s base query condition.
      */
     private function _getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
     {
-        $baseCondition = [
+        return [
             'mailingListId' => $sendout->mailingListIds,
             'subscriptionStatus' => 'subscribed',
         ];
-
-        return $baseCondition;
     }
 
     /**
@@ -665,23 +660,15 @@ class SendoutsService extends Component
         $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
         $contactIds = $this->_getPendingRecipientsStandardIds($sendout);
 
-        $contacts = [];
-
         // Get recipients as array
-        $contactsQuery = ContactMailingListRecord::find()
+        return ContactMailingListRecord::find()
             ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
             ->groupBy('contactId')
             ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
             ->orderBy(['contactId' => SORT_ASC])
-            ->asArray();
-
-        // Fetch 10,000 contacts at a time
-        foreach($contactsQuery->each(10000) as $contact) {
-            $contacts[] = $contact;
-        }
-        
-        return $contacts;
+            ->asArray()
+            ->all();
     }
 
     /**
