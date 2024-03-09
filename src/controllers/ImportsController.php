@@ -142,7 +142,7 @@ class ImportsController extends Controller
             }
         }
 
-        Campaign::$plugin->log('CSV file "{fileName}" imported by "{username}".', [
+        Campaign::$plugin->log('CSV file "{fileName}" imported by “{username}”.', [
             'fileName' => $import->fileName,
         ]);
 
@@ -216,7 +216,7 @@ class ImportsController extends Controller
             }
         }
 
-        Campaign::$plugin->log('User group "{userGroup}" imported by "{username}".', [
+        Campaign::$plugin->log('User group "{userGroup}" imported by “{username}”.', [
             'userGroup' => $import->getUserGroup()->name,
         ]);
 

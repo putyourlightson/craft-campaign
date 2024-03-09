@@ -89,7 +89,7 @@ class SendoutsController extends Controller
     public function actionGetPendingRecipientCount(): Response
     {
         $sendout = $this->_getSendoutFromParamId();
-        $this->response->content = (string)$sendout->getPendingRecipientCount();
+        $this->response->content = (string)Campaign::$plugin->sendouts->getPendingRecipientCount($sendout);
 
         return $this->response;
     }
@@ -262,7 +262,7 @@ class SendoutsController extends Controller
             return $this->asModelFailure($sendout, Craft::t('campaign', 'Couldn’t save sendout.'), 'sendout');
         }
 
-        Campaign::$plugin->log('Sendout "{title}" initiated by "{username}".', [
+        Campaign::$plugin->log('Sendout “{title}” initiated by “{username}”.', [
             'title' => $sendout->title,
         ]);
 
@@ -311,7 +311,7 @@ class SendoutsController extends Controller
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be paused.'));
         }
 
-        Campaign::$plugin->log('Sendout "{title}" paused by "{username}".', [
+        Campaign::$plugin->log('Sendout “{title}” paused by “{username}”.', [
             'title' => $sendout->title,
         ]);
 
@@ -331,7 +331,7 @@ class SendoutsController extends Controller
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be cancelled.'));
         }
 
-        Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', [
+        Campaign::$plugin->log('Sendout “{title}” cancelled by “{username}”.', [
             'title' => $sendout->title,
         ]);
 

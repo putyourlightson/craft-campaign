@@ -2,6 +2,7 @@
 /**
  * @copyright Copyright (c) PutYourLightsOn
  */
+
 namespace putyourlightson\campaign\elements\actions;
 
 use Craft;
@@ -84,7 +85,7 @@ EOD;
         foreach ($sendouts as $sendout) {
             Campaign::$plugin->sendouts->cancelSendout($sendout);
 
-            Campaign::$plugin->log('Sendout "{title}" cancelled by "{username}".', [
+            Campaign::$plugin->log('Sendout “{title}” cancelled by “{username}”.', [
                 'title' => $sendout->title,
             ]);
         }

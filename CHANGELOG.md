@@ -11,6 +11,10 @@
  
 - Campaign now requires Craft CMS 4.4.0 or later.
 
+### Fixed
+
+- Fixed a bug in which the expected recipients count could fail in sendouts with very large numbers of contacts. 
+
 ### Deprecated
 
 - Deprecated the `memoryLimit` config setting.
@@ -18,6 +22,8 @@
 - Deprecated the `timeLimit` config setting.
 - Deprecated the `timeThreshold` config setting.
 - Deprecated the `Campaign::maxPowerLieutenant()` method. Use `App:maxPowerCaptain()` instead.
+- Deprecated the `SendoutElement::getPendingRecipients()` method. Use `Campaign::$plugin->sendouts->getPendingRecipients()` instead.
+- Deprecated the `SendoutElement::getPendingRecipientCount()` method. Use `Campaign::$plugin->sendouts->getPendingRecipients()` instead.
 
 ## 2.12.2 - 2024-03-05
 
