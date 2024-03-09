@@ -687,6 +687,7 @@ class SendoutsService extends Component
      */
     private function _getPendingRecipientsAutomated(SendoutElement $sendout, int $limit = null): array
     {
+        // We can only apply the limit after we have the filtered the recipients.
         $recipients = $this->_getPendingRecipientsStandard($sendout);
 
         /** @var AutomatedScheduleModel $schedule */
