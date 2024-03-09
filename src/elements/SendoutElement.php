@@ -1040,11 +1040,7 @@ class SendoutElement extends Element
      */
     public function getPendingRecipientCount(): int
     {
-        if ($this->_pendingRecipients !== null) {
-            return count($this->_pendingRecipients);
-        }
-
-        return Campaign::$plugin->sendouts->getPendingRecipientCount($this);
+        return count($this->getPendingRecipients());
     }
 
     /**
