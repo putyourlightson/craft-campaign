@@ -166,7 +166,7 @@ class PendingContactsService extends Component
             $pendingContactRecord->delete();
 
             if (!$softDeleted) {
-                Campaign::$plugin->log('Deleted pending contact "{email}" because they took too long to verify their email.', [
+                Campaign::$plugin->log('Deleted pending contact “{email}” because they took too long to verify their email.', [
                     'email' => $pendingContactRecord->email,
                 ]);
             }

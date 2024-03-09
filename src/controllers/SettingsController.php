@@ -139,8 +139,6 @@ class SettingsController extends BaseSettingsController
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'contactElementType' => ContactElement::class,
-            'memoryLimit' => ini_get('memory_limit'),
-            'timeLimit' => ini_get('max_execution_time'),
         ]);
     }
 

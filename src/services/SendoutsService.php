@@ -190,7 +190,7 @@ class SendoutsService extends Component
             $plaintextBody = $campaign->getPlaintextBody($contact, $sendout);
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
-            Campaign::$plugin->log('Testing of the sendout "{title}" failed due to a Twig error when rendering the template.', [
+            Campaign::$plugin->log('Testing of the sendout “{title}” failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
             ]);
 
@@ -278,7 +278,7 @@ class SendoutsService extends Component
 
             $this->updateSendoutRecord($sendout, ['sendStatus']);
 
-            Campaign::$plugin->log('Sending of the sendout "{title}" failed due to a Twig error when rendering the template.', [
+            Campaign::$plugin->log('Sending of the sendout “{title}” failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
             ]);
 
@@ -356,7 +356,7 @@ class SendoutsService extends Component
 
             $this->updateSendoutRecord($sendout, ['failures', 'sendStatus']);
 
-            Campaign::$plugin->log('Sending of the sendout "{title}" to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
+            Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
                 'title' => $sendout->title,
                 'email' => $contact->email,
                 'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
@@ -401,11 +401,11 @@ class SendoutsService extends Component
         if ($sendout->sendStatus == SendoutElement::STATUS_SENT) {
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
-            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] has been successfully completed!!', $variables);
+            $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] has been successfully completed!!', $variables);
         } else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
-            $plaintextBody = Craft::t('campaign', 'Sending of the sendout "{title}" [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
+            $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
         // Compose message
@@ -434,7 +434,7 @@ class SendoutsService extends Component
         Craft::$app->getSites()->setCurrentSite($sendout->siteId);
 
         if ($batch !== null) {
-            Campaign::$plugin->log('Sending batch {batch} of sendout "{title}".', [
+            Campaign::$plugin->log('Sending batch {batch} of sendout “{title}”.', [
                 'batch' => $batch,
                 'title' => $sendout->title,
             ]);
@@ -459,7 +459,7 @@ class SendoutsService extends Component
                 $sendout->sendStatus = SendoutElement::STATUS_PENDING;
             }
 
-            Campaign::$plugin->log('Sending of sendout "{title}" completed.', [
+            Campaign::$plugin->log('Sending of sendout “{title}” completed.', [
                 'title' => $sendout->title,
             ]);
         }
