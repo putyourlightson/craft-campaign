@@ -35,7 +35,7 @@ Campaign.ContactEdit = Garnish.Base.extend({
 
                     $row.find('input, .remove').addClass('hidden');
 
-                    if (response.data.subscriptionStatus == 'subscribed') {
+                    if (response.data.subscriptionStatus === 'subscribed') {
                         $row.find('input.unsubscribe').removeClass('hidden');
                     }
                     else {

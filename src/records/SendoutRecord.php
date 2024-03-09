@@ -13,7 +13,7 @@ use DateTime;
  * @property string $sid SID
  * @property int $campaignId Campaign ID
  * @property int $senderId Sender ID
- * @property string $sendoutTypeSendout Sendout type
+ * @property string $sendoutType Sendout type
  * @property string $sendStatus Send status
  * @property string $fromName From name
  * @property string $fromEmail From email

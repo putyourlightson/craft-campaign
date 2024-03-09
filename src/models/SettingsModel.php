@@ -272,7 +272,7 @@ class SettingsModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize', 'memoryLimit', 'timeLimit'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
             [['maxBatchSize', 'timeLimit'], 'integer'],

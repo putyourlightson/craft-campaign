@@ -139,8 +139,6 @@ class SettingsController extends BaseSettingsController
             'settings' => $settings,
             'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
             'contactElementType' => ContactElement::class,
-            'memoryLimit' => ini_get('memory_limit'),
-            'timeLimit' => ini_get('max_execution_time'),
         ]);
     }
 
@@ -267,8 +265,6 @@ class SettingsController extends BaseSettingsController
         $settings->defaultNotificationContactIds = $this->request->getBodyParam('defaultNotificationContactIds', $settings->defaultNotificationContactIds) ?: null;
         $settings->showSendoutTitleField = $this->request->getBodyParam('showSendoutTitleField', $settings->showSendoutTitleField) ?: false;
         $settings->maxBatchSize = $this->request->getBodyParam('maxBatchSize', $settings->maxBatchSize) ?: null;
-        $settings->memoryLimit = $this->request->getBodyParam('memoryLimit', $settings->memoryLimit) ?: null;
-        $settings->timeLimit = $this->request->getBodyParam('timeLimit', $settings->timeLimit) ?: null;
 
         // Save it
         if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
