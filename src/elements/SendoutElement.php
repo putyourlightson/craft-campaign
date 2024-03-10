@@ -1133,25 +1133,14 @@ class SendoutElement extends Element
      */
     protected function htmlAttributes(string $context): array
     {
-        $htmlAttributes = [];
-
-        if ($this->getIsModifiable()) {
-            $htmlAttributes['data-modifiable'] = true;
-        }
-
-        if ($this->getIsPausable()) {
-            $htmlAttributes['data-pausable'] = true;
-        }
-
-        if ($this->getIsResumable()) {
-            $htmlAttributes['data-resumable'] = true;
-        }
-
-        if ($this->getIsCancellable()) {
-            $htmlAttributes['data-cancellable'] = true;
-        }
-
-        return $htmlAttributes;
+        return [
+            'data' => [
+                'modifiable' => $this->getIsModifiable(),
+                'pausable' => $this->getIsPausable(),
+                'resumable' => $this->getIsResumable(),
+                'cancellable' => $this->getIsCancellable(),
+            ],
+        ];
     }
 
     /**

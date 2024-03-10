@@ -10,6 +10,7 @@
 ### Fixed
 
 - Fixed a bug in which the expected recipients count could fail in sendouts with very large numbers of contacts.
+- Fixed a bug in which sendout actions were unavailable on the sendout index page.
 
 ### Removed
 
