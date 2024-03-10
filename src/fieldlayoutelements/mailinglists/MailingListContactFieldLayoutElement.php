@@ -51,11 +51,6 @@ class MailingListContactFieldLayoutElement extends BaseNativeField
             'source' => 'mailingList:' . $element->uid,
         ]);
 
-        // TODO: remove in 3.0.0, when element index URLs include the source, added in Craft 4.3.0.
-        if (version_compare(Craft::$app->getVersion(), '4.3.0', '<')) {
-            $viewAllUrl = UrlHelper::cpUrl('campaign/contacts/view/' . $element->id);
-        }
-
         return Craft::$app->getView()->renderTemplate(
             'campaign/mailinglists/_includes/contacts',
             [

@@ -7,12 +7,12 @@ namespace putyourlightson\campaign\widgets;
 
 use Craft;
 use craft\base\Widget;
+use craft\helpers\DateRange;
 use craft\helpers\Db;
 use putyourlightson\campaign\assets\WidgetAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\SendoutElement;
-use putyourlightson\campaign\helpers\DateRangeHelper;
 use putyourlightson\campaign\helpers\NumberHelper;
 use putyourlightson\campaign\records\ContactCampaignRecord;
 
@@ -105,19 +105,22 @@ class CampaignStatsWidget extends Widget
         }
 
         if ($this->dateRange) {
-            [$startDate, $endDate] = DateRangeHelper::dateRangeByType($this->dateRange);
+            [$startDate, $endDate] = DateRange::dateRangeByType($this->dateRange);
             $startDate = Db::prepareDateForDb($startDate);
             $endDate = Db::prepareDateForDb($endDate);
 
-            $campaignQuery->andWhere(['and',
+            $campaignQuery->andWhere([
+                'and',
                 ['>=', '[[elements.dateCreated]]', $startDate],
                 ['<', '[[elements.dateCreated]]', $endDate],
             ]);
-            $sendoutQuery->andWhere(['and',
+            $sendoutQuery->andWhere([
+                'and',
                 ['>=', 'sendDate', $startDate],
                 ['<', 'sendDate', $endDate],
             ]);
-            $contactCampaignQuery->andWhere(['and',
+            $contactCampaignQuery->andWhere([
+                'and',
                 ['>=', 'sent', $startDate],
                 ['<', 'sent', $endDate],
             ]);

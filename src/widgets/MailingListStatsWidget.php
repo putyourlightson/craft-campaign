@@ -7,11 +7,11 @@ namespace putyourlightson\campaign\widgets;
 
 use Craft;
 use craft\base\Widget;
+use craft\helpers\DateRange;
 use craft\helpers\Db;
 use putyourlightson\campaign\assets\WidgetAsset;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\helpers\DateRangeHelper;
 use putyourlightson\campaign\records\ContactMailingListRecord;
 
 /**
@@ -101,15 +101,17 @@ class MailingListStatsWidget extends Widget
         }
 
         if ($this->dateRange) {
-            [$startDate, $endDate] = DateRangeHelper::dateRangeByType($this->dateRange);
+            [$startDate, $endDate] = DateRange::dateRangeByType($this->dateRange);
             $startDate = Db::prepareDateForDb($startDate);
             $endDate = Db::prepareDateForDb($endDate);
 
-            $mailingListQuery->andWhere(['and',
+            $mailingListQuery->andWhere([
+                'and',
                 ['>=', '[[elements.dateCreated]]', $startDate],
                 ['<', '[[elements.dateCreated]]', $endDate],
             ]);
-            $contactMailingListQuery->andWhere(['and',
+            $contactMailingListQuery->andWhere([
+                'and',
                 ['>=', 'subscribed', $startDate],
                 ['<', 'subscribed', $endDate],
             ]);
