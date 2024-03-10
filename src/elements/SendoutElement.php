@@ -1217,6 +1217,9 @@ class SendoutElement extends Element
 
             case 'mailingListIds':
                 return (string)$this->getMailingListCount();
+
+            case 'recipients':
+                return number_format($this->recipients);
         }
 
         return parent::tableAttributeHtml($attribute);

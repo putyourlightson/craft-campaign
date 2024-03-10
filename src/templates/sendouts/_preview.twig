@@ -134,17 +134,17 @@
                     <div class="value">
                         {% if sendout.campaign %}
                             <a href="{{ sendout.campaign.getReportUrl('recipients', { sendout: sendout.id }) }}">
-                                {{ sendout.recipients }}
+                                {{ sendout.recipients|number_format }}
                             </a>
                         {% else %}
-                            {{ sendout.recipients }}
+                            {{ sendout.recipients|number_format }}
                         {% endif %}
                     </div>
                 </div>
                 <div class="data">
                     <h5 class="heading">{{ "Failures"|t('campaign') }}</h5>
                     <div class="value">
-                        {{ sendout.failures }}
+                        {{ sendout.failures|number_format }}
                         {% if sendout.failedContacts %}
                             <span class="info">
                                 {% for contact in sendout.failedContacts %}
