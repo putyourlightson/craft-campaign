@@ -118,12 +118,12 @@ class SettingsModel extends Model
     /**
      * @var int|null The maximum size of sendout batches
      */
-    public ?int $maxBatchSize = 100;
+    public ?int $maxBatchSize = 10000;
 
     /**
      * @var int The amount of time in seconds to delay jobs between sendout batches
      */
-    public int $batchJobDelay = 0;
+    public int $batchJobDelay = 10;
 
     /**
      * @var int The maximum number of times to attempt sending a sendout to a single contact before failing

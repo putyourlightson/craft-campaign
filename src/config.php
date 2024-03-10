@@ -75,10 +75,10 @@ return [
         //'showSendoutTitleField' = false,
 
         // The maximum size of sendout batches
-        //'maxBatchSize' => 100,
+        //'maxBatchSize' => 10000,
 
         // The amount of time in seconds to delay jobs between sendout batches
-        //'batchJobDelay' => 0,
+        //'batchJobDelay' => 10,
 
         // The maximum number of times to attempt sending a sendout to a single contact before failing
         //'maxSendAttempts' => 3,

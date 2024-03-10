@@ -25,11 +25,6 @@ _before_ updating.
 
 - Added compatibility with Craft 5.0.0.
 
-### Changed
-
-- Changed the default maximum size of sendout batches to `100`.
-- Changed the default sendout batch job delay to `0`.
-
 ### Removed
 
 - Removed the “Legacy” and “Template” segment types. Use regular segments instead.
