@@ -31,6 +31,7 @@ use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\SendoutRecord;
 use Twig\Error\Error;
 use yii\db\ActiveQuery;
+use yii\mail\MessageInterface;
 
 class SendoutsService extends Component
 {
@@ -334,19 +335,7 @@ class SendoutsService extends Component
             return;
         }
 
-        $success = false;
-
-        // Attempt to send message
-        for ($i = 0; $i < Campaign::$plugin->settings->maxSendAttempts; $i++) {
-            $success = $message->send();
-
-            if ($success) {
-                break;
-            }
-
-            // Wait a second, in case we're being throttled
-            sleep(1);
-        }
+        $success = $this->_sendMessage($message);
 
         if ($success) {
             // Update sent date and save
@@ -831,5 +820,22 @@ class SendoutsService extends Component
 
         // Save document element to maintain utf-8 encoding (https://gist.github.com/Xeoncross/9401853)
         return $dom->saveHTML($dom->documentElement);
+    }
+
+    /**
+     * Sends a message, potentially with multiple attempts.
+     */
+    private function _sendMessage(MessageInterface $message): bool
+    {
+        for ($i = 0; $i < Campaign::$plugin->settings->maxSendAttempts; $i++) {
+            if ($message->send()) {
+                return true;
+            }
+
+            // Hang on a second, in case we’re being throttled.
+            sleep(1);
+        }
+
+        return false;
     }
 }
