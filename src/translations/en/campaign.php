@@ -595,7 +595,7 @@ return [
     'The date on which to end sending (leave blank for forever).' => '',
     'The days of the month on which to send.' => '',
     'The days of the week on which to send.' => '',
-    'The default contacts to use for test emails (leave blank to use the currently logged-in user).' => '',
+    'The default contacts to use for test emails (leave blank to use a contact with the same email address as the currently logged-in user).' => '',
     'The email sending service to use for sending.' => '',
     'The email subject (emojis allowed 🎉).' => '',
     'The execution time limit per sendout batch in seconds (set to 0 for unlimited).' => '',

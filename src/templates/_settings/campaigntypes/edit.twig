@@ -121,7 +121,7 @@
 
     {{ forms.elementSelectField({
         label: "Default Test Contacts"|t('campaign'),
-        instructions: "The default contacts to use for test emails (leave blank to use the currently logged-in user)."|t('campaign'),
+        instructions: "The default contacts to use for test emails (leave blank to use a contact with the same email address as the currently logged-in user)."|t('campaign'),
         id: 'testContactIds',
         name: 'testContactIds',
         elementType: contactElementType,
