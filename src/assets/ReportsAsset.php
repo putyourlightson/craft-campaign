@@ -43,7 +43,7 @@ class ReportsAsset extends AssetBundle
      * @inheritdoc
      */
     public $js = [
-        'https://cdn.jsdelivr.net/npm/apexcharts@3',
+        'https://cdn.jsdelivr.net/npm/apexcharts@3.46',
         self::DATATABLES_BASE_URL . 'datatables.min.js',
         'js/Chart.js',
         'js/DataTable.js',
