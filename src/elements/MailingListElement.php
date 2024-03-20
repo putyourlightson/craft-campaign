@@ -291,7 +291,7 @@ class MailingListElement extends Element
     public function cacheTags(): array
     {
         return [
-            "mailingListType:$this->mailingListTypeId",
+            'mailingListType:' . $this->mailingListTypeId,
         ];
     }
 

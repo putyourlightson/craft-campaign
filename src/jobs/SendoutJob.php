@@ -82,9 +82,9 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
         Campaign::$plugin->sendouts->prepareSending($this->getCurrentSendout(), $this->batchIndex + 1);
 
         if ($this->batchIndex > 0) {
-            $batchJobDelay = Campaign::$plugin->settings->batchJobDelay;
-            if ($batchJobDelay > 0) {
-                sleep(Campaign::$plugin->settings->batchJobDelay);
+            $sendoutJobBatchDelay = Campaign::$plugin->settings->sendoutJobBatchDelay;
+            if ($sendoutJobBatchDelay > 0) {
+                sleep($sendoutJobBatchDelay);
             }
         }
     }
