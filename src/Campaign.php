@@ -185,7 +185,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $minVersionRequired = '2.10.0';
+    public string $minVersionRequired = '2.13.0';
 
     /**
      * The queue to use for running jobs.

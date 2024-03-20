@@ -39,14 +39,27 @@
 
     {{ forms.textField({
         type: 'number',
-        label: "Max Batch Size"|t('campaign'),
-        instructions: "The maximum size of sendout batches."|t('campaign'),
-        warning: (config.maxBatchSize is defined ? macros.configWarning('maxBatchSize')),
-        id: 'maxBatchSize',
-        name: 'maxBatchSize',
-        placeholder: '1000',
-        value: settings.maxBatchSize,
-        errors: settings.getErrors('maxBatchSize'),
+        label: "Sendout Job Batch Size"|t('campaign'),
+        instructions: "The batch size to use for sendout jobs."|t('campaign'),
+        warning: (config.sendoutJobBatchSize is defined ? macros.configWarning('sendoutJobBatchSize')),
+        id: 'sendoutJobBatchSize',
+        name: 'sendoutJobBatchSize',
+        placeholder: 100,
+        value: settings.sendoutJobBatchSize,
+        errors: settings.getErrors('sendoutJobBatchSize'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        type: 'number',
+        label: "Sendout Job Batch Delay"|t('campaign'),
+        instructions: "The amount of time in seconds to delay between sendout job batches."|t('campaign'),
+        warning: (config.sendoutJobBatchDelay is defined ? macros.configWarning('sendoutJobBatchDelay')),
+        id: 'sendoutJobBatchDelay',
+        name: 'sendoutJobBatchDelay',
+        placeholder: 0,
+        value: settings.sendoutJobBatchDelay,
+        errors: settings.getErrors('sendoutJobBatchDelay'),
         required: true,
     }) }}
 

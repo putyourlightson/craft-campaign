@@ -116,14 +116,14 @@ class SettingsModel extends Model
     public bool $showSendoutTitleField = false;
 
     /**
-     * @var int|null The maximum size of sendout batches
+     * @var int|null The batch size to use for sendout jobs
      */
-    public ?int $maxBatchSize = 10000;
+    public ?int $sendoutJobBatchSize = 100;
 
     /**
-     * @var int The amount of time in seconds to delay jobs between sendout batches
+     * @var int|null The amount of time in seconds to delay between sendout job batches
      */
-    public int $batchJobDelay = 10;
+    public ?int $sendoutJobBatchDelay = 0;
 
     /**
      * @var int The maximum number of times to attempt sending a sendout to a single contact before failing
@@ -143,13 +143,6 @@ class SettingsModel extends Model
     public int $maxRetryAttempts = 10;
 
     /**
-     * The priority to give the sendout cache job (the lower the number, the higher the priority).
-     *
-     * @since 2.9.0
-     */
-    public ?int $sendoutJobPriority = null;
-
-    /**
      * The amount of time in seconds to reserve a sendout job.
      *
      * @since 1.9.0
@@ -157,11 +150,11 @@ class SettingsModel extends Model
     public int $sendoutJobTtr = 300;
 
     /**
-     * The priority to give the import job (the lower the number, the higher the priority).
+     * The priority to give the sendout cache job (the lower the number, the higher the priority).
      *
-     * @since 2.11.0
+     * @since 2.9.0
      */
-    public int $importJobPriority = 2048;
+    public ?int $sendoutJobPriority = null;
 
     /**
      * The amount of time in seconds to reserve an import job.
@@ -171,17 +164,24 @@ class SettingsModel extends Model
     public int $importJobTtr = 300;
 
     /**
-     * The priority to give the sync job (the lower the number, the higher the priority).
+     * The priority to give the import job (the lower the number, the higher the priority).
      *
-     * @since 2.11.1
+     * @since 2.11.0
      */
-    public int $syncJobPriority = 2048;
+    public int $importJobPriority = 2048;
 
     /**
      * @var int The amount of time in seconds to reserve a sync job
      * @since 2.10.0
      */
     public int $syncJobTtr = 300;
+
+    /**
+     * The priority to give the sync job (the lower the number, the higher the priority).
+     *
+     * @since 2.11.1
+     */
+    public int $syncJobPriority = 2048;
 
     /**
      * @var bool Enable GeoIP to geolocate contacts by their IP addresses
@@ -248,10 +248,11 @@ class SettingsModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'sendoutJobBatchSize', 'sendoutJobBatchDelay'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
-            [['maxBatchSize'], 'integer'],
+            [['sendoutJobBatchSize'], 'integer', 'min' => 1],
+            [['sendoutJobBatchDelay'], 'integer', 'min' => 0],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
             [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->reCaptcha],
         ];

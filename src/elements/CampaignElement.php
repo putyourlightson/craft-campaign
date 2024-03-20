@@ -455,7 +455,7 @@ class CampaignElement extends Element
     public function cacheTags(): array
     {
         return [
-            "campaignType:$this->campaignTypeId",
+            'campaignType:' . $this->campaignTypeId,
         ];
     }
 
