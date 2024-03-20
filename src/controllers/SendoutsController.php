@@ -88,7 +88,7 @@ class SendoutsController extends Controller
      */
     public function actionGetPendingRecipientCount(): Response
     {
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
         $this->response->content = number_format(Campaign::$plugin->sendouts->getPendingRecipientCount($sendout));
 
         return $this->response;
@@ -99,7 +99,7 @@ class SendoutsController extends Controller
      */
     public function actionGetHtmlBody(): Response
     {
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
         $this->response->content = $sendout->getHtmlBody();
 
         return $this->response;
@@ -110,7 +110,7 @@ class SendoutsController extends Controller
      */
     public function actionGetPlaintextBody(): Response
     {
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
         $this->response->content = $sendout->getPlaintextBody();
 
         return $this->response;
@@ -252,7 +252,7 @@ class SendoutsController extends Controller
         $this->requirePermission('campaign:sendSendouts');
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
         $sendout->senderId = Craft::$app->getUser()->getId();
         $sendout->sendStatus = SendoutElement::STATUS_PENDING;
 
@@ -278,7 +278,7 @@ class SendoutsController extends Controller
         $this->requireAcceptsJson();
 
         $contactIds = $this->request->getBodyParam('contactIds');
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
 
         // Validate test contacts
         if (empty($contactIds)) {
@@ -303,7 +303,7 @@ class SendoutsController extends Controller
     {
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->pauseSendout($sendout)) {
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be paused.'));
@@ -323,7 +323,7 @@ class SendoutsController extends Controller
     {
         $this->requirePostRequest();
 
-        $sendout = $this->_getSendoutFromParamId();
+        $sendout = $this->getSendoutFromParamId();
 
         if (!Campaign::$plugin->sendouts->cancelSendout($sendout)) {
             return $this->asFailure(Craft::t('campaign', 'Sendout could not be cancelled.'));
@@ -339,7 +339,7 @@ class SendoutsController extends Controller
     /**
      * Gets a sendout from a param ID.
      */
-    private function _getSendoutFromParamId(): SendoutElement
+    private function getSendoutFromParamId(): SendoutElement
     {
         $sendoutId = $this->request->getRequiredParam('sendoutId');
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);

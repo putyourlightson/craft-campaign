@@ -124,7 +124,7 @@ class MailingListsService extends Component
         $contactMailingListRecord->subscriptionStatus = $interaction;
         $contactMailingListRecord->save();
 
-        $this->_invalidateCaches($contact, $mailingList);
+        $this->invalidateCaches($contact, $mailingList);
     }
 
     /**
@@ -143,13 +143,13 @@ class MailingListsService extends Component
             $contactMailingListRecord->delete();
         }
 
-        $this->_invalidateCaches($contact, $mailingList);
+        $this->invalidateCaches($contact, $mailingList);
     }
 
     /**
      * Invalidates element caches for the given contact and mailing list.
      */
-    private function _invalidateCaches(ContactElement $contact, MailingListElement $mailingList): void
+    private function invalidateCaches(ContactElement $contact, MailingListElement $mailingList): void
     {
         Craft::$app->getElements()->invalidateCachesForElement($contact);
         Craft::$app->getElements()->invalidateCachesForElement($mailingList);

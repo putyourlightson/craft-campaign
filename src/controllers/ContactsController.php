@@ -75,7 +75,7 @@ class ContactsController extends Controller
      */
     public function actionMarkComplained(): ?Response
     {
-        return $this->_markContactStatus('complained');
+        return $this->markContactStatus('complained');
     }
 
     /**
@@ -83,7 +83,7 @@ class ContactsController extends Controller
      */
     public function actionMarkBounced(): ?Response
     {
-        return $this->_markContactStatus('bounced');
+        return $this->markContactStatus('bounced');
     }
 
     /**
@@ -91,7 +91,7 @@ class ContactsController extends Controller
      */
     public function actionMarkBlocked(): ?Response
     {
-        return $this->_markContactStatus('blocked');
+        return $this->markContactStatus('blocked');
     }
 
     /**
@@ -99,7 +99,7 @@ class ContactsController extends Controller
      */
     public function actionUnmarkComplained(): ?Response
     {
-        return $this->_unmarkContactStatus('complained');
+        return $this->unmarkContactStatus('complained');
     }
 
     /**
@@ -107,7 +107,7 @@ class ContactsController extends Controller
      */
     public function actionUnmarkBounced(): ?Response
     {
-        return $this->_unmarkContactStatus('bounced');
+        return $this->unmarkContactStatus('bounced');
     }
 
     /**
@@ -115,7 +115,7 @@ class ContactsController extends Controller
      */
     public function actionUnmarkBlocked(): ?Response
     {
-        return $this->_unmarkContactStatus('blocked');
+        return $this->unmarkContactStatus('blocked');
     }
 
     /**
@@ -123,7 +123,7 @@ class ContactsController extends Controller
      */
     public function actionSubscribeMailingList(): ?Response
     {
-        return $this->_updateSubscription('subscribed');
+        return $this->updateSubscription('subscribed');
     }
 
     /**
@@ -131,7 +131,7 @@ class ContactsController extends Controller
      */
     public function actionUnsubscribeMailingList(): ?Response
     {
-        return $this->_updateSubscription('unsubscribed');
+        return $this->updateSubscription('unsubscribed');
     }
 
     /**
@@ -139,10 +139,10 @@ class ContactsController extends Controller
      */
     public function actionRemoveMailingList(): ?Response
     {
-        return $this->_updateSubscription('');
+        return $this->updateSubscription('');
     }
 
-    private function _getPostedContact(): ContactElement
+    private function getPostedContact(): ContactElement
     {
         // Accept either `elementId` or `contactId`
         $contactId = $this->request->getBodyParam('elementId');
@@ -161,11 +161,11 @@ class ContactsController extends Controller
         return $contact;
     }
 
-    private function _updateSubscription(string $subscriptionStatus): ?Response
+    private function updateSubscription(string $subscriptionStatus): ?Response
     {
         $this->requirePostRequest();
 
-        $contact = $this->_getPostedContact();
+        $contact = $this->getPostedContact();
         $mailingListId = $this->request->getRequiredBodyParam('mailingListId');
         $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
@@ -191,11 +191,11 @@ class ContactsController extends Controller
     /**
      * Marks a contact status.
      */
-    private function _markContactStatus(string $status): ?Response
+    private function markContactStatus(string $status): ?Response
     {
         $this->requirePostRequest();
 
-        $contact = $this->_getPostedContact();
+        $contact = $this->getPostedContact();
         $contact->{$status} = new DateTime();
 
         if (!Craft::$app->getElements()->saveElement($contact, false)) {
@@ -208,11 +208,11 @@ class ContactsController extends Controller
     /**
      * Unmarks a contact status.
      */
-    private function _unmarkContactStatus(string $status): ?Response
+    private function unmarkContactStatus(string $status): ?Response
     {
         $this->requirePostRequest();
 
-        $contact = $this->_getPostedContact();
+        $contact = $this->getPostedContact();
         $contact->{$status} = null;
 
         if (!Craft::$app->getElements()->saveElement($contact, false)) {

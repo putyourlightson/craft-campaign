@@ -88,7 +88,7 @@ class WebhookController extends Controller
         try {
             $validator->validate($message);
         } catch (InvalidSnsMessageException) {
-            return $this->_asRawFailure('SNS message validation error.');
+            return $this->asRawFailure('SNS message validation error.');
         }
 
         // Check the type of the message and handle the subscription.
@@ -111,17 +111,17 @@ class WebhookController extends Controller
 
             if ($eventType == 'Complaint') {
                 $email = $body['complaint']['complainedRecipients'][0]['emailAddress'];
-                return $this->_callWebhook('complained', $email);
+                return $this->callWebhook('complained', $email);
             }
             if ($eventType == 'Bounce' && $body['bounce']['bounceType'] == 'Permanent') {
                 $email = $body['bounce']['bouncedRecipients'][0]['emailAddress'];
-                return $this->_callWebhook('bounced', $email);
+                return $this->callWebhook('bounced', $email);
             }
 
-            return $this->_asRawFailure('Event `' . ($eventType ?? '') . '` not found.');
+            return $this->asRawFailure('Event `' . ($eventType ?? '') . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
@@ -136,8 +136,8 @@ class WebhookController extends Controller
 
         $body = $this->request->getRawBody();
 
-        if (!$this->_isValidMailersendRequest($body)) {
-            return $this->_asRawFailure('Signature could not be authenticated.');
+        if (!$this->isValidMailersendRequest($body)) {
+            return $this->asRawFailure('Signature could not be authenticated.');
         }
 
         $events = Json::decodeIfJson($body);
@@ -147,22 +147,22 @@ class WebhookController extends Controller
         // Check if this is a test webhook request
         $from = $events['data']['email']['from'] ?? '';
         if ($from == 'test@example.com') {
-            return $this->_asRawSuccess('Test success.');
+            return $this->asRawSuccess('Test success.');
         }
 
         if ($eventType == 'activity.spam_complaint') {
-            return $this->_callWebhook('complained', $email);
+            return $this->callWebhook('complained', $email);
         }
 
         if ($eventType == 'activity.hard_bounced') {
-            return $this->_callWebhook('bounced', $email);
+            return $this->callWebhook('bounced', $email);
         }
 
         if ($eventType) {
-            return $this->_asRawFailure('Event type `' . $eventType . '` not found.');
+            return $this->asRawFailure('Event type `' . $eventType . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
@@ -195,17 +195,17 @@ class WebhookController extends Controller
             $email = $this->request->getBodyParam('recipient', '');
         }
 
-        if (!$this->_isValidMailgunRequest($signature, $timestamp, $token)) {
-            return $this->_asRawFailure('Signature could not be authenticated.');
+        if (!$this->isValidMailgunRequest($signature, $timestamp, $token)) {
+            return $this->asRawFailure('Signature could not be authenticated.');
         }
 
         // Check if this is a test webhook request
         if ($email == 'alice@example.com') {
-            return $this->_asRawSuccess('Test success.');
+            return $this->asRawSuccess('Test success.');
         }
 
         if ($event == 'complained') {
-            return $this->_callWebhook('complained', $email);
+            return $this->callWebhook('complained', $email);
         }
 
         // Only mark as bounced if the reason indicates that it is a hard bounce.
@@ -213,19 +213,19 @@ class WebhookController extends Controller
         if ($event == 'failed' && $severity == 'permanent'
             && ($reason == 'bounce' || $reason == 'suppress-bounce')
         ) {
-            return $this->_callWebhook('bounced', $email);
+            return $this->callWebhook('bounced', $email);
         }
 
         // Legacy webhook
         if ($event == 'bounced') {
-            return $this->_callWebhook('bounced', $email);
+            return $this->callWebhook('bounced', $email);
         }
 
         if ($event) {
-            return $this->_asRawFailure('Event `' . $event . '` not found.');
+            return $this->asRawFailure('Event `' . $event . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
@@ -244,19 +244,19 @@ class WebhookController extends Controller
                 $email = $event['msg']['email'] ?? '';
 
                 if ($eventType == 'spam') {
-                    return $this->_callWebhook('complained', $email);
+                    return $this->callWebhook('complained', $email);
                 }
                 if ($eventType == 'hard_bounce') {
-                    return $this->_callWebhook('bounced', $email);
+                    return $this->callWebhook('bounced', $email);
                 }
             }
 
             $eventTypes = array_filter(array_map(fn($event) => $event['event'] ?? null, $events));
 
-            return $this->_asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
+            return $this->asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
@@ -271,7 +271,7 @@ class WebhookController extends Controller
         $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
 
         if ($allowedIpAddresses && !in_array($this->request->getRemoteIP(), $allowedIpAddresses)) {
-            return $this->_asRawFailure('IP address not allowed.');
+            return $this->asRawFailure('IP address not allowed.');
         }
 
         $eventType = $this->request->getBodyParam('RecordType');
@@ -279,13 +279,13 @@ class WebhookController extends Controller
 
         // https://postmarkapp.com/developer/webhooks/spam-complaint-webhook
         if ($eventType == 'SpamComplaint') {
-            return $this->_callWebhook('complained', $email);
+            return $this->callWebhook('complained', $email);
         } // https://postmarkapp.com/developer/webhooks/bounce-webhook
         elseif ($eventType == 'Bounce') {
             $bounceType = $this->request->getBodyParam('Type');
 
             if ($bounceType == 'HardBounce') {
-                return $this->_callWebhook('bounced', $email);
+                return $this->callWebhook('bounced', $email);
             }
         } // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
         elseif ($eventType == 'SubscriptionChange') {
@@ -295,20 +295,20 @@ class WebhookController extends Controller
                 $reason = $this->request->getBodyParam('SuppressionReason');
 
                 if ($reason == 'SpamComplaint') {
-                    return $this->_callWebhook('complained', $email);
+                    return $this->callWebhook('complained', $email);
                 } elseif ($reason == 'HardBounce') {
-                    return $this->_callWebhook('bounced', $email);
+                    return $this->callWebhook('bounced', $email);
                 } else {
-                    return $this->_callWebhook('unsubscribed', $email);
+                    return $this->callWebhook('unsubscribed', $email);
                 }
             }
         }
 
         if ($eventType) {
-            return $this->_asRawFailure('Event `' . $eventType . '` not found.');
+            return $this->asRawFailure('Event `' . $eventType . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
@@ -321,8 +321,8 @@ class WebhookController extends Controller
         $body = $this->request->getRawBody();
         $events = Json::decodeIfJson($body);
 
-        if (!$this->_isValidSendgridRequest($body)) {
-            return $this->_asRawFailure('Signature could not be authenticated.');
+        if (!$this->isValidSendgridRequest($body)) {
+            return $this->asRawFailure('Signature could not be authenticated.');
         }
 
         if (is_array($events)) {
@@ -332,43 +332,43 @@ class WebhookController extends Controller
 
                 // Check if this is a test webhook request
                 if ($email == 'example@test.com') {
-                    return $this->_asRawSuccess('Test success.');
+                    return $this->asRawSuccess('Test success.');
                 }
 
                 // https://docs.sendgrid.com/for-developers/tracking-events/event#engagement-events
                 if ($eventType == 'spamreport') {
-                    return $this->_callWebhook('complained', $email);
+                    return $this->callWebhook('complained', $email);
                 }
 
                 // https://docs.sendgrid.com/for-developers/tracking-events/event#delivery-events
                 if ($eventType == 'bounce') {
-                    return $this->_callWebhook('bounced', $email);
+                    return $this->callWebhook('bounced', $email);
                 }
             }
 
             $eventTypes = array_filter(array_map(fn($event) => $event['event'] ?? null, $events));
 
-            return $this->_asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
+            return $this->asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
         }
 
-        return $this->_asRawFailure('No event provided.');
+        return $this->asRawFailure('No event provided.');
     }
 
     /**
      * Calls a webhook.
      */
-    private function _callWebhook(string $event, string $email = null): Response
+    private function callWebhook(string $event, string $email = null): Response
     {
         Campaign::$plugin->log('Webhook request: ' . $this->request->getRawBody(), [], Logger::LEVEL_WARNING);
 
         if ($email === null) {
-            return $this->_asRawFailure('No email provided.');
+            return $this->asRawFailure('No email provided.');
         }
 
         $contact = Campaign::$plugin->contacts->getContactByEmail($email);
 
         if ($contact === null) {
-            return $this->_asRawSuccess();
+            return $this->asRawSuccess();
         }
 
         if ($event == 'complained') {
@@ -379,13 +379,13 @@ class WebhookController extends Controller
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 
-        return $this->_asRawSuccess();
+        return $this->asRawSuccess();
     }
 
     /**
      * Returns a raw response success.
      */
-    private function _asRawSuccess(string $message = ''): Response
+    private function asRawSuccess(string $message = ''): Response
     {
         return $this->asRaw(Craft::t('campaign', $message));
     }
@@ -393,7 +393,7 @@ class WebhookController extends Controller
     /**
      * Returns a raw response failure.
      */
-    private function _asRawFailure(string $message = ''): Response
+    private function asRawFailure(string $message = ''): Response
     {
         Campaign::$plugin->log($message, [], Logger::LEVEL_WARNING);
 
@@ -404,7 +404,7 @@ class WebhookController extends Controller
     /**
      * @link https://developers.mailersend.com/api/v1/webhooks.html#security
      */
-    private function _isValidMailersendRequest(string $body): bool
+    private function isValidMailersendRequest(string $body): bool
     {
         if (!Campaign::$plugin->settings->validateWebhookRequests) {
             return true;
@@ -420,7 +420,7 @@ class WebhookController extends Controller
     /**
      * @link https://documentation.mailgun.com/en/latest/user_manual.html#webhooks
      */
-    private function _isValidMailgunRequest(string $signature, string $timestamp, string $token): bool
+    private function isValidMailgunRequest(string $signature, string $timestamp, string $token): bool
     {
         if (!Campaign::$plugin->settings->validateWebhookRequests) {
             return true;
@@ -435,7 +435,7 @@ class WebhookController extends Controller
     /**
      * @link https://docs.sendgrid.com/for-developers/tracking-events/getting-started-event-webhook-security-features
      */
-    private function _isValidSendgridRequest(string $body): bool
+    private function isValidSendgridRequest(string $body): bool
     {
         if (!Campaign::$plugin->settings->validateWebhookRequests) {
             return true;

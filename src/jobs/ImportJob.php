@@ -24,14 +24,14 @@ class ImportJob extends BaseBatchedJob
     /**
      * @var ImportModel|null
      */
-    private ?ImportModel $_import = null;
+    private ?ImportModel $import = null;
 
     /**
      * @inheritdoc
      */
     public function execute($queue): void
     {
-        $import = $this->_getImport();
+        $import = $this->getImport();
         if ($import === null) {
             return;
         }
@@ -68,7 +68,7 @@ class ImportJob extends BaseBatchedJob
      */
     protected function loadData(): RowBatcher
     {
-        $import = $this->_getImport();
+        $import = $this->getImport();
         if ($import === null) {
             return new RowBatcher([]);
         }
@@ -83,7 +83,7 @@ class ImportJob extends BaseBatchedJob
      */
     protected function processItem(mixed $item): void
     {
-        Campaign::$plugin->imports->importRow($this->_getImport(), $item);
+        Campaign::$plugin->imports->importRow($this->getImport(), $item);
     }
 
     /**
@@ -94,12 +94,12 @@ class ImportJob extends BaseBatchedJob
         return Craft::t('campaign', 'Importing contacts');
     }
 
-    private function _getImport(): ?ImportModel
+    private function getImport(): ?ImportModel
     {
-        if ($this->_import === null) {
-            $this->_import = Campaign::$plugin->imports->getImportById($this->importId);
+        if ($this->import === null) {
+            $this->import = Campaign::$plugin->imports->getImportById($this->importId);
         }
 
-        return $this->_import;
+        return $this->import;
     }
 }

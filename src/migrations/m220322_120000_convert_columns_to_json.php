@@ -17,10 +17,10 @@ class m220322_120000_convert_columns_to_json extends Migration
         $records = SendoutRecord::find()->all();
 
         foreach ($records as $record) {
-            $record->contactIds = $this->_asArrayOrNull($record->contactIds);
-            $record->mailingListIds = $this->_asArrayOrNull($record->mailingListIds);
-            $record->excludedMailingListIds = $this->_asArrayOrNull($record->excludedMailingListIds);
-            $record->segmentIds = $this->_asArrayOrNull($record->segmentIds);
+            $record->contactIds = $this->asArrayOrNull($record->contactIds);
+            $record->mailingListIds = $this->asArrayOrNull($record->mailingListIds);
+            $record->excludedMailingListIds = $this->asArrayOrNull($record->excludedMailingListIds);
+            $record->segmentIds = $this->asArrayOrNull($record->segmentIds);
 
             $record->save();
         }
@@ -41,7 +41,7 @@ class m220322_120000_convert_columns_to_json extends Migration
     /**
      * Returns values as an array or null.
      */
-    private function _asArrayOrNull($value): ?array
+    private function asArrayOrNull($value): ?array
     {
         if ($value && is_string($value)) {
             return StringHelper::split($value);

@@ -67,7 +67,7 @@ class ExportsService extends Component
                 ->all();
 
             foreach ($contacts as $contact) {
-                $subscription = $this->_getSubscription($contact, $mailingList);
+                $subscription = $this->getSubscription($contact, $mailingList);
 
                 $row = [];
                 $row[] = $mailingList->title;
@@ -113,7 +113,7 @@ class ExportsService extends Component
         return true;
     }
 
-    private function _getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
+    private function getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
     {
         /** @var ContactMailingListRecord|null */
         return ContactMailingListRecord::find()

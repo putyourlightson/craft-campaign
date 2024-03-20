@@ -29,14 +29,14 @@ class SyncJob extends BaseBatchedJob
     /**
      * @var MailingListElement|null
      */
-    public ?MailingListElement $_mailingList = null;
+    public ?MailingListElement $mailingList = null;
 
     /**
      * @inheritdoc
      */
     public function execute($queue): void
     {
-        $mailingList = $this->_getMailingList();
+        $mailingList = $this->getMailingList();
         if ($mailingList === null || $mailingList->syncedUserGroupId === null) {
             return;
         }
@@ -68,7 +68,7 @@ class SyncJob extends BaseBatchedJob
      */
     protected function loadData(): Batchable
     {
-        $mailingList = $this->_getMailingList();
+        $mailingList = $this->getMailingList();
         if ($mailingList === null || $mailingList->syncedUserGroupId === null) {
             return new RowBatcher([]);
         }
@@ -84,7 +84,7 @@ class SyncJob extends BaseBatchedJob
      */
     protected function processItem(mixed $item): void
     {
-        Campaign::$plugin->sync->syncUserMailingList($item, $this->_getMailingList());
+        Campaign::$plugin->sync->syncUserMailingList($item, $this->getMailingList());
     }
 
     /**
@@ -95,12 +95,12 @@ class SyncJob extends BaseBatchedJob
         return Craft::t('campaign', 'Syncing mailing list');
     }
 
-    private function _getMailingList(): ?MailingListElement
+    private function getMailingList(): ?MailingListElement
     {
-        if ($this->_mailingList === null) {
-            $this->_mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
+        if ($this->mailingList === null) {
+            $this->mailingList = Campaign::$plugin->mailingLists->getMailingListById($this->mailingListId);
         }
 
-        return $this->_mailingList;
+        return $this->mailingList;
     }
 }

@@ -23,12 +23,12 @@ class ContactActivityHelper
     /**
      * @var array|null
      */
-    private static ?array $_geoIp = null;
+    private static ?array $geoIp = null;
 
     /**
      * @var array|null
      */
-    private static ?array $_device = null;
+    private static ?array $device = null;
 
     /**
      * Updates contact activity.
@@ -68,8 +68,8 @@ class ContactActivityHelper
      */
     public static function getGeoIp(int $timeout = 5): ?array
     {
-        if (self::$_geoIp !== null) {
-            return self::$_geoIp;
+        if (self::$geoIp !== null) {
+            return self::$geoIp;
         }
 
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
@@ -99,7 +99,7 @@ class ContactActivityHelper
             return null;
         }
 
-        self::$_geoIp = [
+        self::$geoIp = [
             'continentCode' => $geoIp['continent_code'] ?? '',
             'continentName' => $geoIp['continent_name'] ?? '',
             'countryCode' => $geoIp['country_code'],
@@ -111,7 +111,7 @@ class ContactActivityHelper
             'timeZone' => $geoIp['time_zone']['id'] ?? '',
         ];
 
-        return self::$_geoIp;
+        return self::$geoIp;
     }
 
     /**
@@ -119,8 +119,8 @@ class ContactActivityHelper
      */
     public static function getDevice(): ?array
     {
-        if (self::$_device !== null) {
-            return self::$_device;
+        if (self::$device !== null) {
+            return self::$device;
         }
 
         if (Craft::$app->getRequest()->getIsConsoleRequest()) {
@@ -137,17 +137,17 @@ class ContactActivityHelper
             return null;
         }
 
-        self::$_device = [
+        self::$device = [
             'device' => $deviceDetector->getDeviceName(),
             'os' => $deviceDetector->getOs('name'),
             'client' => $deviceDetector->getClient('name'),
         ];
 
         // Replace unknown values with blank string
-        foreach (self::$_device as &$value) {
+        foreach (self::$device as &$value) {
             $value = ($value == DeviceDetector::UNKNOWN) ? '' : $value;
         }
 
-        return self::$_device;
+        return self::$device;
     }
 }

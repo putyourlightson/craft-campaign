@@ -45,12 +45,12 @@ class ImportsService extends Component
     /**
      * @var array
      */
-    private array $_mailingLists = [];
+    private array $mailingLists = [];
 
     /**
      * @var array
      */
-    private array $_importedContactIds = [];
+    private array $importedContactIds = [];
 
     /**
      * Returns all imports.
@@ -257,11 +257,11 @@ class ImportsService extends Component
     public function importRow(ImportModel $import, array $row): ImportModel
     {
         // Get mailing list or memoize it
-        if (empty($this->_mailingLists[$import->mailingListId])) {
-            $this->_mailingLists[$import->mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
+        if (empty($this->mailingLists[$import->mailingListId])) {
+            $this->mailingLists[$import->mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($import->mailingListId);
         }
 
-        $mailingList = $this->_mailingLists[$import->mailingListId];
+        $mailingList = $this->mailingLists[$import->mailingListId];
 
         if ($mailingList === null) {
             return $import;
@@ -337,7 +337,7 @@ class ImportsService extends Component
             Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', 'import', $import->id);
         }
 
-        $this->_importedContactIds[] = $contact->id;
+        $this->importedContactIds[] = $contact->id;
 
         return $import;
     }
@@ -374,7 +374,7 @@ class ImportsService extends Component
 
         $job = new UpdateSearchIndex([
             'elementType' => ContactElement::class,
-            'elementId' => $this->_importedContactIds,
+            'elementId' => $this->importedContactIds,
             'siteId' => '*',
             'fieldHandles' => $fieldHandles,
         ]);

@@ -58,9 +58,11 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
         /** @var ContactElementQuery $query */
         $query->innerJoin(ContactCampaignRecord::tableName(), '[[campaign_contacts.id]] = [[contactId]]');
 
-        $query->andWhere(['not', [
-            $this->_operatorColumn($this->operator) => null,
-        ]]);
+        $query->andWhere([
+            'not', [
+                $this->operatorColumn($this->operator) => null,
+            ],
+        ]);
 
         $elementId = $this->getElementId();
         if ($elementId !== null) {
@@ -112,10 +114,11 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
             ->where([
                 'contactId' => $element->id,
             ])
-            ->andWhere(['not', [
-                $this->_operatorColumn($this->operator) => null,
-            ],
-        ]);
+            ->andWhere([
+                'not', [
+                    $this->operatorColumn($this->operator) => null,
+                ],
+            ]);
 
         $elementId = $this->getElementId();
         if ($elementId !== null) {
@@ -128,7 +131,7 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
     /**
      * Returns the column to query on based on the operator.
      */
-    private function _operatorColumn(string $operator): string
+    private function operatorColumn(string $operator): string
     {
         return match ($operator) {
             'clicked', 'clickedCampaign' => 'clicked',

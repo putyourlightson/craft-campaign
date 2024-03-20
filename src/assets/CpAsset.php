@@ -56,13 +56,13 @@ class CpAsset extends AssetBundle
         parent::registerAssetFiles($view);
 
         if ($view instanceof View) {
-            $this->_registerTranslations($view);
+            $this->registerTranslations($view);
         }
 
-        $this->_registerEditableTypes($view);
+        $this->registerEditableTypes($view);
     }
 
-    private function _registerTranslations(View $view): void
+    private function registerTranslations(View $view): void
     {
         $view->registerTranslations('app', [
             '(blank)',
@@ -72,17 +72,17 @@ class CpAsset extends AssetBundle
         ]);
     }
 
-    private function _registerEditableTypes(BaseView $view): void
+    private function registerEditableTypes(BaseView $view): void
     {
         $user = Craft::$app->getUser()->getIdentity();
         if ($user === null) {
             return;
         }
 
-        $editableCampaignTypes = Json::encode($this->_getEditableCampaignTypes());
-        $editableMailingListTypes = Json::encode($this->_getEditableMailingListTypes());
-        $editableSegmentTypes = Json::encode($this->_getEditableSegmentTypes());
-        $editableSendoutTypes = Json::encode($this->_getEditableSendoutTypes());
+        $editableCampaignTypes = Json::encode($this->getEditableCampaignTypes());
+        $editableMailingListTypes = Json::encode($this->getEditableMailingListTypes());
+        $editableSegmentTypes = Json::encode($this->getEditableSegmentTypes());
+        $editableSendoutTypes = Json::encode($this->getEditableSendoutTypes());
 
         $js = <<<JS
 window.Craft.editableCampaignTypes = $editableCampaignTypes;
@@ -94,7 +94,7 @@ JS;
         $view->registerJs($js, BaseView::POS_HEAD);
     }
 
-    private function _getEditableCampaignTypes(): array
+    private function getEditableCampaignTypes(): array
     {
         $campaignTypes = [];
 
@@ -111,7 +111,7 @@ JS;
         return $campaignTypes;
     }
 
-    private function _getEditableMailingListTypes(): array
+    private function getEditableMailingListTypes(): array
     {
         $mailingListTypes = [];
 
@@ -128,7 +128,7 @@ JS;
         return $mailingListTypes;
     }
 
-    private function _getEditableSegmentTypes(): array
+    private function getEditableSegmentTypes(): array
     {
         $segmentTypes = [];
 
@@ -142,7 +142,7 @@ JS;
         return $segmentTypes;
     }
 
-    private function _getEditableSendoutTypes(): array
+    private function getEditableSendoutTypes(): array
     {
         $sendoutTypes = [];
 

@@ -208,7 +208,7 @@ class SettingsController extends BaseSettingsController
     {
         $this->requirePostRequest();
 
-        $settings = $this->_getEmailSettingsFromPost();
+        $settings = $this->getEmailSettingsFromPost();
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -326,7 +326,7 @@ class SettingsController extends BaseSettingsController
     {
         $this->requirePostRequest();
 
-        $settings = $this->_getEmailSettingsFromPost();
+        $settings = $this->getEmailSettingsFromPost();
 
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
@@ -387,7 +387,7 @@ class SettingsController extends BaseSettingsController
     /**
      * Returns email settings populated with post data.
      */
-    private function _getEmailSettingsFromPost(): SettingsModel
+    private function getEmailSettingsFromPost(): SettingsModel
     {
         $settings = Campaign::$plugin->settings;
         $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);

@@ -27,7 +27,7 @@ class CampaignsService extends Component
     /**
      * @var bool|null
      */
-    public ?bool $_requestPrepared = null;
+    private ?bool $requestPrepared = null;
 
     /**
      * Returns a campaign by ID.
@@ -98,33 +98,33 @@ class CampaignsService extends Component
         // If first time for this interaction
         if ($contactCampaignRecord->{$interaction} === null) {
             $contactCampaignRecord->{$interaction} = new DateTime();
-            $this->_incrementRecordColumn($campaignRecord, $interaction);
+            $this->incrementRecordColumn($campaignRecord, $interaction);
         }
 
         if ($interaction == 'opened') {
-            $this->_incrementRecordColumn($contactCampaignRecord, 'opens');
-            $this->_incrementRecordColumn($campaignRecord, 'opens');
+            $this->incrementRecordColumn($contactCampaignRecord, 'opens');
+            $this->incrementRecordColumn($campaignRecord, 'opens');
         } elseif ($interaction == 'clicked') {
             // If not yet opened
             if ($contactCampaignRecord->opened === null) {
                 $contactCampaignRecord->opened = new DateTime();
                 $contactCampaignRecord->opens = 1;
-                $this->_incrementRecordColumn($campaignRecord, 'opened');
-                $this->_incrementRecordColumn($campaignRecord, 'opens');
+                $this->incrementRecordColumn($campaignRecord, 'opened');
+                $this->incrementRecordColumn($campaignRecord, 'opens');
             }
 
             // Increment clicks
-            $this->_incrementRecordColumn($contactCampaignRecord, 'clicks');
-            $this->_incrementRecordColumn($campaignRecord, 'clicks');
+            $this->incrementRecordColumn($contactCampaignRecord, 'clicks');
+            $this->incrementRecordColumn($campaignRecord, 'clicks');
 
             // If link record exists
             if ($linkRecord !== null) {
                 // Increment clicks
-                $this->_incrementRecordColumn($linkRecord, 'clicks');
+                $this->incrementRecordColumn($linkRecord, 'clicks');
 
                 // Increment clicked if first link click for this contact
                 if (!in_array($linkRecord->id, explode(',', $contactCampaignRecord->links))) {
-                    $this->_incrementRecordColumn($linkRecord, 'clicked');
+                    $this->incrementRecordColumn($linkRecord, 'clicked');
                 }
 
                 // Append link ID
@@ -176,7 +176,7 @@ class CampaignsService extends Component
      */
     public function prepareRequestToGetHtmlBody(): void
     {
-        if ($this->_requestPrepared === true) {
+        if ($this->requestPrepared === true) {
             return;
         }
 
@@ -193,7 +193,7 @@ class CampaignsService extends Component
             }
         );
 
-        $this->_requestPrepared = true;
+        $this->requestPrepared = true;
     }
 
     /**
@@ -203,7 +203,7 @@ class CampaignsService extends Component
      * @see https://github.com/putyourlightson/craft-campaign/issues/232
      * @see https://github.com/putyourlightson/craft-campaign/issues/285
      */
-    private function _incrementRecordColumn(ActiveRecord $record, string $column): void
+    private function incrementRecordColumn(ActiveRecord $record, string $column): void
     {
         // Respect anonymous tracking for contact campaign records.
         if ($record instanceof ContactCampaignRecord && Campaign::$plugin->settings->enableAnonymousTracking) {

@@ -60,7 +60,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
      */
     public function execute($queue): void
     {
-        $sendout = $this->_getCurrentSendout();
+        $sendout = $this->getCurrentSendout();
         if ($sendout === null || !$sendout->getIsSendable()) {
             return;
         }
@@ -93,7 +93,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
             return;
         }
 
-        $sendout = $this->_getCurrentSendout();
+        $sendout = $this->getCurrentSendout();
         if ($sendout === null || !$sendout->getIsSendable()) {
             return;
         }
@@ -112,7 +112,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
      */
     protected function loadData(): SendoutBatcher
     {
-        $sendout = $this->_getCurrentSendout();
+        $sendout = $this->getCurrentSendout();
         if ($sendout === null || !$sendout->getIsSendable()) {
             return new SendoutBatcher(null);
         }
@@ -126,7 +126,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
     protected function processItem(mixed $item): void
     {
         // Ensure the send status is still `sending`, as it may have changed.
-        $sendout = $this->_getCurrentSendout();
+        $sendout = $this->getCurrentSendout();
         if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
             return;
         }
@@ -153,7 +153,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
     /**
      * Returns a fresh version of the current sendout.
      */
-    private function _getCurrentSendout(): ?SendoutElement
+    private function getCurrentSendout(): ?SendoutElement
     {
         return Campaign::$plugin->sendouts->getSendoutById($this->sendoutId);
     }

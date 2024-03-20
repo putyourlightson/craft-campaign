@@ -99,14 +99,14 @@ class SegmentsService extends Component
     public function getFilteredContacts(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContacts = [];
-        $contactElementQuery = $this->_getContactElementQuery($contactIds);
+        $contactElementQuery = $this->getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContacts = $contactElementQuery->all();
         } elseif ($segment->segmentType == 'legacy') {
             $filteredContacts = $contactElementQuery
-                ->andWhere($this->_getConditions($segment))
+                ->andWhere($this->getConditions($segment))
                 ->all();
         } elseif ($segment->segmentType == 'template') {
             $contacts = $contactElementQuery->all();
@@ -136,13 +136,13 @@ class SegmentsService extends Component
     public function getFilteredContactIds(SegmentElement $segment, array $contactIds = null): array
     {
         $filteredContactIds = [];
-        $contactElementQuery = $this->_getContactElementQuery($contactIds);
+        $contactElementQuery = $this->getContactElementQuery($contactIds);
 
         if ($segment->segmentType == 'regular') {
             $segment->getContactCondition()->modifyQuery($contactElementQuery);
             $filteredContactIds = $contactElementQuery->ids();
         } elseif ($segment->segmentType == 'legacy') {
-            $filteredContactIds = $contactElementQuery->where($this->_getConditions($segment))->ids();
+            $filteredContactIds = $contactElementQuery->where($this->getConditions($segment))->ids();
         } elseif ($segment->segmentType == 'template') {
             $contacts = $this->getFilteredContacts($segment, $contactIds);
 
@@ -236,7 +236,7 @@ class SegmentsService extends Component
      *
      * @return array[]
      */
-    private function _getConditions(SegmentElement $segment): array
+    private function getConditions(SegmentElement $segment): array
     {
         $conditions = ['and'];
 
@@ -280,7 +280,7 @@ class SegmentsService extends Component
         return $conditions;
     }
 
-    private function _getContactElementQuery(array $contactIds = null): ContactElementQuery
+    private function getContactElementQuery(array $contactIds = null): ContactElementQuery
     {
         $contactQuery = ContactElement::find();
 

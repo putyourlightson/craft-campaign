@@ -25,16 +25,6 @@ use putyourlightson\campaign\fieldlayoutelements\segments\SegmentFieldLayoutTab;
 use putyourlightson\campaign\records\SegmentRecord;
 use yii\web\Response;
 
-/**
- * @property ElementConditionInterface|array|string|null $contactCondition
- * @property-read int $contactCount
- * @property-read string $segmentTypeLabel
- * @property-read int $conditionCount
- * @property-read ContactElement[] $contacts
- * @property-read null|string $postEditUrl
- * @property-read array[] $crumbs
- * @property-read int[] $contactIds
- */
 class SegmentElement extends Element
 {
     /**
@@ -298,17 +288,17 @@ class SegmentElement extends Element
      * @see getContactCondition()
      * @see setContactCondition()
      */
-    private ?ElementConditionInterface $_contactCondition = null;
+    private ?ElementConditionInterface $contactCondition = null;
 
     /**
      * @var ContactElement[]|null
      */
-    private ?array $_contacts = null;
+    private ?array $contacts = null;
 
     /**
      * @var int[]|null
      */
-    private ?array $_contactIds = null;
+    private ?array $contactIds = null;
 
     /**
      * @inheritdoc
@@ -478,7 +468,7 @@ class SegmentElement extends Element
      */
     public function getContactCondition(): ElementConditionInterface
     {
-        $condition = $this->_contactCondition ?? ContactElement::createCondition();
+        $condition = $this->contactCondition ?? ContactElement::createCondition();
         $condition->mainTag = 'div';
         $condition->name = 'contactCondition';
 
@@ -501,7 +491,7 @@ class SegmentElement extends Element
         $condition->forProjectConfig = false;
 
         /** @var ContactCondition $condition */
-        $this->_contactCondition = $condition;
+        $this->contactCondition = $condition;
     }
 
     /**
@@ -531,13 +521,13 @@ class SegmentElement extends Element
      */
     public function getContacts(): array
     {
-        if ($this->_contacts !== null) {
-            return $this->_contacts;
+        if ($this->contacts !== null) {
+            return $this->contacts;
         }
 
-        $this->_contacts = Campaign::$plugin->segments->getContacts($this);
+        $this->contacts = Campaign::$plugin->segments->getContacts($this);
 
-        return $this->_contacts;
+        return $this->contacts;
     }
 
     /**
@@ -547,13 +537,13 @@ class SegmentElement extends Element
      */
     public function getContactIds(): array
     {
-        if ($this->_contactIds !== null) {
-            return $this->_contactIds;
+        if ($this->contactIds !== null) {
+            return $this->contactIds;
         }
 
-        $this->_contactIds = Campaign::$plugin->segments->getContactIds($this);
+        $this->contactIds = Campaign::$plugin->segments->getContactIds($this);
 
-        return $this->_contactIds;
+        return $this->contactIds;
     }
 
     /**

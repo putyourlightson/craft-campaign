@@ -278,7 +278,7 @@ class MailingListElement extends Element
     /**
      * @var null|FieldLayout Field layout
      */
-    private ?FieldLayout $_fieldLayout = null;
+    private ?FieldLayout $fieldLayout = null;
 
     /**
      * @inheritdoc
@@ -332,7 +332,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -345,7 +345,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -367,7 +367,7 @@ class MailingListElement extends Element
             return true;
         }
 
-        return $this->_canManage($user);
+        return $this->canManage($user);
     }
 
     /**
@@ -384,7 +384,7 @@ class MailingListElement extends Element
      */
     public function getSubscribedCount(): int
     {
-        return $this->_getContactCount('subscribed');
+        return $this->getContactCount('subscribed');
     }
 
     /**
@@ -392,7 +392,7 @@ class MailingListElement extends Element
      */
     public function getUnsubscribedCount(): int
     {
-        return $this->_getContactCount('unsubscribed');
+        return $this->getContactCount('unsubscribed');
     }
 
     /**
@@ -400,7 +400,7 @@ class MailingListElement extends Element
      */
     public function getComplainedCount(): int
     {
-        return $this->_getContactCount('complained');
+        return $this->getContactCount('complained');
     }
 
     /**
@@ -408,7 +408,7 @@ class MailingListElement extends Element
      */
     public function getBouncedCount(): int
     {
-        return $this->_getContactCount('bounced');
+        return $this->getContactCount('bounced');
     }
 
     /**
@@ -418,7 +418,7 @@ class MailingListElement extends Element
      */
     public function getSubscribedContacts(): array
     {
-        return $this->_getContactsBySubscriptionStatus('subscribed');
+        return $this->getContactsBySubscriptionStatus('subscribed');
     }
 
     /**
@@ -428,7 +428,7 @@ class MailingListElement extends Element
      */
     public function getUnsubscribedContacts(): array
     {
-        return $this->_getContactsBySubscriptionStatus('unsubscribed');
+        return $this->getContactsBySubscriptionStatus('unsubscribed');
     }
 
     /**
@@ -438,7 +438,7 @@ class MailingListElement extends Element
      */
     public function getComplainedContacts(): array
     {
-        return $this->_getContactsBySubscriptionStatus('complained');
+        return $this->getContactsBySubscriptionStatus('complained');
     }
 
     /**
@@ -448,7 +448,7 @@ class MailingListElement extends Element
      */
     public function getBouncedContacts(): array
     {
-        return $this->_getContactsBySubscriptionStatus('bounced');
+        return $this->getContactsBySubscriptionStatus('bounced');
     }
 
     /**
@@ -529,19 +529,19 @@ class MailingListElement extends Element
     public function getFieldLayout(): ?FieldLayout
     {
         // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
-        if ($this->_fieldLayout !== null) {
-            return $this->_fieldLayout;
+        if ($this->fieldLayout !== null) {
+            return $this->fieldLayout;
         }
 
-        $this->_fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
+        $this->fieldLayout = parent::getFieldLayout() ?? $this->getMailingListType()->getFieldLayout();
 
         if (!Craft::$app->getRequest()->getIsCpRequest()) {
-            return $this->_fieldLayout;
+            return $this->fieldLayout;
         }
 
         if (!$this->getIsFresh()) {
-            $this->_fieldLayout->setTabs(array_merge(
-                $this->_fieldLayout->getTabs(),
+            $this->fieldLayout->setTabs(array_merge(
+                $this->fieldLayout->getTabs(),
                 [
                     new MailingListContactFieldLayoutTab(),
                     new MailingListReportFieldLayoutTab(),
@@ -549,7 +549,7 @@ class MailingListElement extends Element
             ));
         }
 
-        return $this->_fieldLayout;
+        return $this->fieldLayout;
     }
 
     /**
@@ -631,7 +631,7 @@ class MailingListElement extends Element
     /**
      * Returns the number of contacts in this mailing list.
      */
-    private function _getContactCount(string $subscriptionStatus = null): int
+    private function getContactCount(string $subscriptionStatus = null): int
     {
         $subscriptionStatus = $subscriptionStatus ?? '';
 
@@ -651,7 +651,7 @@ class MailingListElement extends Element
      *
      * @return ContactElement[]
      */
-    private function _getContactsBySubscriptionStatus(string $subscriptionStatus = null): array
+    private function getContactsBySubscriptionStatus(string $subscriptionStatus = null): array
     {
         $query = ContactMailingListRecord::find()
             ->select('contactId')
@@ -669,7 +669,7 @@ class MailingListElement extends Element
     /**
      * Returns whether the mailing list can be managed by the user.
      */
-    private function _canManage(User $user): bool
+    private function canManage(User $user): bool
     {
         return $user->can('campaign:mailingLists:' . $this->getMailingListType()->uid);
     }

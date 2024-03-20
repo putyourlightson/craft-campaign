@@ -14,10 +14,6 @@ use DateTime;
 use putyourlightson\campaign\elements\conditions\sendouts\SendoutScheduleCondition;
 use putyourlightson\campaign\elements\SendoutElement;
 
-/**
- * @property ElementConditionInterface|array|string|null $condition
- * @property-read array $intervalOptions
- */
 abstract class ScheduleModel extends Model implements ScheduleInterface
 {
     /**
@@ -45,7 +41,7 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
      * @see getCondition()
      * @see setCondition()
      */
-    private ?ElementConditionInterface $_condition = null;
+    private ?ElementConditionInterface $condition = null;
 
     /**
      * @inheritdoc
@@ -71,7 +67,7 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
      */
     public function getCondition(): ElementConditionInterface
     {
-        $condition = $this->_condition ?? Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
+        $condition = $this->condition ?? Craft::createObject(SendoutScheduleCondition::class, [SendoutElement::class]);
         $condition->mainTag = 'div';
         $condition->name = 'condition';
 
@@ -94,7 +90,7 @@ abstract class ScheduleModel extends Model implements ScheduleInterface
         $condition->forProjectConfig = false;
 
         /** @var SendoutScheduleCondition $condition */
-        $this->_condition = $condition;
+        $this->condition = $condition;
     }
 
     /**

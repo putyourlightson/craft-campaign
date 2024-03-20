@@ -17,11 +17,11 @@ class m230117_120000_rename_field_layout_elements extends Migration
      */
     public function safeUp(): bool
     {
-        $this->_renameFieldLayoutElements(
+        $this->renameFieldLayoutElements(
             Craft::$app->getFields()->getLayoutsByType(CampaignElement::class), 'putyourlightson\\campaign\\fieldlayoutelements\\campaigns',
         );
 
-        $this->_renameFieldLayoutElements(
+        $this->renameFieldLayoutElements(
             Craft::$app->getFields()->getLayoutsByType(MailingListElement::class), 'putyourlightson\\campaign\\fieldlayoutelements\\NonTranslatableTitleField',
         );
 
@@ -38,7 +38,7 @@ class m230117_120000_rename_field_layout_elements extends Migration
         return false;
     }
 
-    private function _renameFieldLayoutElements(array $fieldLayouts, string $newType): void
+    private function renameFieldLayoutElements(array $fieldLayouts, string $newType): void
     {
         foreach ($fieldLayouts as $fieldLayout) {
             if ($fieldLayout->id === null) {

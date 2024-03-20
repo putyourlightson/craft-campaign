@@ -58,12 +58,12 @@ class SendoutsService extends Component
     /**
      * @var array
      */
-    private array $_mailingLists = [];
+    private array $mailingLists = [];
 
     /**
      * @var array
      */
-    private array $_links = [];
+    private array $links = [];
 
     /**
      * Returns a sendout by ID.
@@ -116,14 +116,14 @@ class SendoutsService extends Component
     public function getPendingRecipients(SendoutElement $sendout, int $limit = null): array
     {
         if ($sendout->sendoutType == 'automated') {
-            return $this->_getPendingRecipientsAutomated($sendout, $limit);
+            return $this->getPendingRecipientsAutomated($sendout, $limit);
         }
 
         if ($sendout->sendoutType == 'singular') {
-            return $this->_getPendingRecipientsSingular($sendout, $limit);
+            return $this->getPendingRecipientsSingular($sendout, $limit);
         }
 
-        return $this->_getPendingRecipientsStandard($sendout, $limit);
+        return $this->getPendingRecipientsStandard($sendout, $limit);
     }
 
     /**
@@ -132,7 +132,7 @@ class SendoutsService extends Component
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
         if ($sendout->sendoutType === 'regular') {
-            $count = count($this->_getPendingRecipientsStandardIds($sendout));
+            $count = count($this->getPendingRecipientsStandardIds($sendout));
         } else {
             $count = count($this->getPendingRecipients($sendout));
         }
@@ -173,7 +173,7 @@ class SendoutsService extends Component
                     );
 
                     $sendout->sendStatus = SendoutElement::STATUS_QUEUED;
-                    $this->_updateSendoutRecord($sendout, ['sendStatus']);
+                    $this->updateSendoutRecord($sendout, ['sendStatus']);
                     $count++;
                 }
             }
@@ -211,7 +211,7 @@ class SendoutsService extends Component
         }
 
         // Convert links in HTML body
-        $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
+        $htmlBody = $this->convertLinks($htmlBody, $contact, $sendout);
 
         // Compose message
         $message = Campaign::$plugin->mailer->compose()
@@ -279,7 +279,7 @@ class SendoutsService extends Component
         $contactCampaignRecord->campaignId = $campaign->id;
         $contactCampaignRecord->mailingListId = $mailingListId;
 
-        $mailingList = $mailingListId ? $this->_getMailingListById($mailingListId) : null;
+        $mailingList = $mailingListId ? $this->getMailingListById($mailingListId) : null;
 
         // Get body, catching template rendering errors
         try {
@@ -289,7 +289,7 @@ class SendoutsService extends Component
         catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
 
-            $this->_updateSendoutRecord($sendout, ['sendStatus']);
+            $this->updateSendoutRecord($sendout, ['sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout “{title}” failed due to a Twig error when rendering the template.', [
                 'title' => $sendout->title,
@@ -299,7 +299,7 @@ class SendoutsService extends Component
         }
 
         // Convert links in HTML body
-        $htmlBody = $this->_convertLinks($htmlBody, $contact, $sendout);
+        $htmlBody = $this->convertLinks($htmlBody, $contact, $sendout);
 
         // Add tracking image to HTML body
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/open';
@@ -335,7 +335,7 @@ class SendoutsService extends Component
             return;
         }
 
-        $success = $this->_sendMessage($message);
+        $success = $this->sendMessage($message);
 
         if ($success) {
             // Update sent date and save
@@ -346,7 +346,7 @@ class SendoutsService extends Component
             $sendout->recipients++;
             $sendout->lastSent = new DateTime();
 
-            $this->_updateSendoutRecord($sendout, ['recipients', 'lastSent']);
+            $this->updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         } else {
             // Update failures and send status
             $sendout->failures++;
@@ -355,7 +355,7 @@ class SendoutsService extends Component
                 $sendout->sendStatus = SendoutElement::STATUS_FAILED;
             }
 
-            $this->_updateSendoutRecord($sendout, ['failures', 'sendStatus']);
+            $this->updateSendoutRecord($sendout, ['failures', 'sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
                 'title' => $sendout->title,
@@ -428,7 +428,7 @@ class SendoutsService extends Component
         if ($sendout->sendStatus !== SendoutElement::STATUS_SENDING) {
             $sendout->sendStatus = SendoutElement::STATUS_SENDING;
 
-            $this->_updateSendoutRecord($sendout, ['sendStatus']);
+            $this->updateSendoutRecord($sendout, ['sendStatus']);
         }
 
         // Set the current site from the sendout’s site ID
@@ -480,7 +480,7 @@ class SendoutsService extends Component
             }
         }
 
-        $this->_updateSendoutRecord($sendout, ['sendStatus', 'htmlBody', 'plaintextBody']);
+        $this->updateSendoutRecord($sendout, ['sendStatus', 'htmlBody', 'plaintextBody']);
 
         // Update campaign recipients
         $recipients = ContactCampaignRecord::find()
@@ -506,7 +506,7 @@ class SendoutsService extends Component
 
         $sendout->sendStatus = SendoutElement::STATUS_PAUSED;
 
-        return $this->_updateSendoutRecord($sendout, ['sendStatus']);
+        return $this->updateSendoutRecord($sendout, ['sendStatus']);
     }
 
     /**
@@ -520,7 +520,7 @@ class SendoutsService extends Component
 
         $sendout->sendStatus = SendoutElement::STATUS_CANCELLED;
 
-        return $this->_updateSendoutRecord($sendout, ['sendStatus']);
+        return $this->updateSendoutRecord($sendout, ['sendStatus']);
     }
 
     /**
@@ -538,21 +538,21 @@ class SendoutsService extends Component
     /**
      * Returns a mailing list by ID.
      */
-    private function _getMailingListById(int $mailingListId): MailingListElement
+    private function getMailingListById(int $mailingListId): MailingListElement
     {
-        if (!empty($this->_mailingLists[$mailingListId])) {
-            return $this->_mailingLists[$mailingListId];
+        if (!empty($this->mailingLists[$mailingListId])) {
+            return $this->mailingLists[$mailingListId];
         }
 
-        $this->_mailingLists[$mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+        $this->mailingLists[$mailingListId] = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
 
-        return $this->_mailingLists[$mailingListId];
+        return $this->mailingLists[$mailingListId];
     }
 
     /**
      * Returns excluded mailing list recipients query.
      */
-    private function _getExcludedMailingListRecipientsQuery(SendoutElement $sendout): ActiveQuery
+    private function getExcludedMailingListRecipientsQuery(SendoutElement $sendout): ActiveQuery
     {
         return ContactMailingListRecord::find()
             ->select('contactId')
@@ -565,7 +565,7 @@ class SendoutsService extends Component
     /**
      * Returns excluded recipients query.
      */
-    private function _getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = false): ActiveQuery
+    private function getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = false): ActiveQuery
     {
         $query = ContactCampaignRecord::find()
             ->select('contactId')
@@ -585,7 +585,7 @@ class SendoutsService extends Component
     /**
      * Returns the standard sendout’s base query condition.
      */
-    private function _getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
+    private function getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
     {
         return [
             'mailingListId' => $sendout->mailingListIds,
@@ -598,11 +598,11 @@ class SendoutsService extends Component
      *
      * @return int[]
      */
-    private function _getPendingRecipientsStandardIds(SendoutElement $sendout): array
+    private function getPendingRecipientsStandardIds(SendoutElement $sendout): array
     {
         App::maxPowerCaptain();
 
-        $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
+        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
 
         // Get contacts subscribed to sendout’s mailing lists
         $query = ContactMailingListRecord::find()
@@ -618,14 +618,14 @@ class SendoutsService extends Component
             ]);
 
         // Exclude contacts subscribed to sendout’s excluded mailing lists
-        $query->andWhere(['not', ['contactId' => $this->_getExcludedMailingListRecipientsQuery($sendout)]]);
+        $query->andWhere(['not', ['contactId' => $this->getExcludedMailingListRecipientsQuery($sendout)]]);
 
         // Check whether we should exclude recipients that were sent to today only
         $schedule = $sendout->getSchedule();
         $excludeSentTodayOnly = $sendout->sendoutType == 'recurring' && $schedule->canSendToContactsMultipleTimes;
 
         // Exclude sent recipients
-        $query->andWhere(['not', ['contactId' => $this->_getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
+        $query->andWhere(['not', ['contactId' => $this->getSentRecipientsQuery($sendout, $excludeSentTodayOnly)]]);
 
         // Get contact IDs
         $contactIds = $query->column();
@@ -649,10 +649,10 @@ class SendoutsService extends Component
      *              subscribed: string,
      *          }>
      */
-    private function _getPendingRecipientsStandard(SendoutElement $sendout, int $limit = null): array
+    private function getPendingRecipientsStandard(SendoutElement $sendout, int $limit = null): array
     {
-        $baseCondition = $this->_getPendingRecipientsStandardBaseCondition($sendout);
-        $contactIds = $this->_getPendingRecipientsStandardIds($sendout);
+        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
+        $contactIds = $this->getPendingRecipientsStandardIds($sendout);
 
         if ($limit !== null) {
             $contactIds = array_slice($contactIds, 0, $limit);
@@ -674,10 +674,10 @@ class SendoutsService extends Component
     /**
      * Returns the automated sendout’s pending recipients.
      */
-    private function _getPendingRecipientsAutomated(SendoutElement $sendout, int $limit = null): array
+    private function getPendingRecipientsAutomated(SendoutElement $sendout, int $limit = null): array
     {
         // We can only apply the limit after we have the filtered the recipients.
-        $recipients = $this->_getPendingRecipientsStandard($sendout);
+        $recipients = $this->getPendingRecipientsStandard($sendout);
 
         /** @var AutomatedScheduleModel $schedule */
         $schedule = $sendout->getSchedule();
@@ -703,10 +703,10 @@ class SendoutsService extends Component
     /**
      * Returns the singular sendout’s pending contact IDs.
      */
-    private function _getPendingRecipientsSingular(SendoutElement $sendout, int $limit = null): array
+    private function getPendingRecipientsSingular(SendoutElement $sendout, int $limit = null): array
     {
         $recipients = [];
-        $excludeContactIds = $this->_getSentRecipientsQuery($sendout)->column();
+        $excludeContactIds = $this->getSentRecipientsQuery($sendout)->column();
         $contactIds = array_diff($sendout->contactIds, $excludeContactIds);
 
         // Filter recipients by segments
@@ -734,7 +734,7 @@ class SendoutsService extends Component
     /**
      * Updates a sendout’s record with the provided fields.
      */
-    private function _updateSendoutRecord(SendoutElement $sendout, array $fields): bool
+    private function updateSendoutRecord(SendoutElement $sendout, array $fields): bool
     {
         /** @var SendoutRecord|null $sendoutRecord */
         $sendoutRecord = SendoutRecord::find()->where(['id' => $sendout->id])->one();
@@ -760,7 +760,7 @@ class SendoutsService extends Component
     /**
      * Converts links.
      */
-    private function _convertLinks(string $body, ContactElement $contact, SendoutElement $sendout): string
+    private function convertLinks(string $body, ContactElement $contact, SendoutElement $sendout): string
     {
         // Get base URL
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/click';
@@ -789,7 +789,7 @@ class SendoutsService extends Component
                 $key = $url . ':' . $title;
 
                 // If link has not yet been converted
-                if (!isset($this->_links[$key])) {
+                if (!isset($this->links[$key])) {
                     // Check for link record in database
                     $linkRecord = LinkRecord::findOne([
                         'campaignId' => $sendout->campaignId,
@@ -808,10 +808,10 @@ class SendoutsService extends Component
                     }
 
                     // Add link to converted links
-                    $this->_links[$key] = $linkRecord->lid;
+                    $this->links[$key] = $linkRecord->lid;
                 }
 
-                $lid = $this->_links[$key];
+                $lid = $this->links[$key];
 
                 // Replace href attribute
                 $element->setAttribute('href', $baseUrl . '&lid=' . $lid);
@@ -825,7 +825,7 @@ class SendoutsService extends Component
     /**
      * Sends a message, potentially with multiple attempts.
      */
-    private function _sendMessage(MessageInterface $message): bool
+    private function sendMessage(MessageInterface $message): bool
     {
         for ($i = 0; $i < Campaign::$plugin->settings->maxSendAttempts; $i++) {
             if ($message->send()) {
