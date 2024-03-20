@@ -798,6 +798,18 @@ class CampaignElement extends Element
 
     /**
      * @inheritdoc
+     */
+    public function getLanguage(): string
+    {
+        if ($this->language === null) {
+            $this->language = $this->getSite()->language;
+        }
+
+        return $this->language;
+    }
+
+    /**
+     * @inheritdoc
      * @since 2.0.0
      */
     protected function metadata(): array
@@ -1014,18 +1026,6 @@ class CampaignElement extends Element
         }
 
         return $body;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLanguage(): string
-    {
-        if ($this->language === null) {
-            $this->language = $this->getSite()->language;
-        }
-
-        return $this->language;
     }
 
     /**
