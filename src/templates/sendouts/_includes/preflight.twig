@@ -51,10 +51,8 @@
                     {{ 'All systems are GO!'|t('campaign') }}
                 {% endif %}
                 <span class="info">
-                    {{ 'Max Batch Size'|t('campaign') }}: {{ settings.maxBatchSize }}<br/>
-                    {{ 'Batch Job Delay'|t('campaign') }}: {{ settings.batchJobDelay == 0 ? 'None'|t('campaign') : settings.batchJobDelay ~ 's' }}<br/>
-                    {{ 'Memory Limit'|t('campaign') }}: {{ memoryLimit == -1 ? 'Unlimited'|t('campaign') : memoryLimit }}<br/>
-                    {{ 'Max Execution Time'|t('campaign') }}: {{ timeLimit == 0 ? 'Unlimited'|t('campaign') : timeLimit ~ 's' }}<br/>
+                    {{ 'Batch Size'|t('campaign') }}: {{ settings.sendoutJobBatchSize }}<br/>
+                    {{ 'Batch Delay'|t('campaign') }}: {{ settings.sendoutJobBatchDelay == 0 ? 'None'|t('campaign') : settings.sendoutJobBatchDelay ~ ' seconds' }}<br/>
                     {% if isDynamicWebAliasUsed %}
                         <span class="warning">
                             {{ 'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.'|t('campaign')|markdown(inlineOnly=true) }}

@@ -74,11 +74,14 @@ return [
         // Whether the title field should be shown for sendouts
         //'showSendoutTitleField' = false,
 
-        // The maximum size of sendout batches
-        //'maxBatchSize' => 10000,
+        // The batch size to use for sendout jobs
+        //'sendoutJobBatchSize' => 100,
 
-        // The amount of time in seconds to delay jobs between sendout batches
-        //'batchJobDelay' => 10,
+        // The batch size to use for sendout jobs
+        //'sendoutJobBatchSize' => 100,
+
+        // The amount of time in seconds to delay between sendout job batches
+        //'sendoutJobBatchDelay' => 0,
 
         // The maximum number of times to attempt sending a sendout to a single contact before failing
         //'maxSendAttempts' => 3,

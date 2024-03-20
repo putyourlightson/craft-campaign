@@ -116,9 +116,26 @@ class SettingsModel extends Model
     public bool $showSendoutTitleField = false;
 
     /**
+     * @var int|null The batch size to use for sendout jobs
+     */
+    public ?int $sendoutJobBatchSize = 100;
+
+    /**
+     * @var int|null The amount of time in seconds to delay between sendout job batches
+     */
+    public ?int $sendoutJobBatchDelay = 0;
+
+    /**
      * @var int|null The maximum size of sendout batches
+     * @deprecated in 2.13.0.
      */
     public ?int $maxBatchSize = 10000;
+
+    /**
+     * @var int The amount of time in seconds to delay jobs between sendout batches
+     * @deprecated in 2.13.0.
+     */
+    public int $batchJobDelay = 10;
 
     /**
      * @var string|null The memory usage limit per sendout batch in bytes or a shorthand byte value (set to -1 for unlimited)
@@ -160,11 +177,6 @@ class SettingsModel extends Model
      * @var int The maximum number of times to attempt retrying a failed sendout job
      */
     public int $maxRetryAttempts = 10;
-
-    /**
-     * @var int The amount of time in seconds to delay jobs between sendout batches
-     */
-    public int $batchJobDelay = 10;
 
     /**
      * The amount of time in seconds to reserve a sendout job.
@@ -272,10 +284,11 @@ class SettingsModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'maxBatchSize'], 'required'],
+            [['apiKey', 'fromNamesEmails', 'transportType', 'sendoutJobBatchSize', 'sendoutJobBatchDelay'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
-            [['maxBatchSize', 'timeLimit'], 'integer'],
+            [['sendoutJobBatchSize'], 'integer', 'min' => 1],
+            [['sendoutJobBatchDelay'], 'integer', 'min' => 0],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
             [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->reCaptcha],
         ];

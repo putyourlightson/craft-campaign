@@ -34,7 +34,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
      */
     public function init(): void
     {
-        $this->batchSize = Campaign::$plugin->settings->maxBatchSize;
+        $this->batchSize = Campaign::$plugin->settings->sendoutJobBatchSize;
 
         parent::init();
     }
@@ -79,9 +79,9 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
         Campaign::$plugin->sendouts->prepareSending($sendout, $this->batchIndex + 1);
 
         if ($this->batchIndex > 0) {
-            $batchJobDelay = Campaign::$plugin->settings->batchJobDelay;
-            if ($batchJobDelay > 0) {
-                sleep(Campaign::$plugin->settings->batchJobDelay);
+            $sendoutJobBatchDelay = Campaign::$plugin->settings->sendoutJobBatchDelay;
+            if ($sendoutJobBatchDelay > 0) {
+                sleep($sendoutJobBatchDelay);
             }
         }
 
