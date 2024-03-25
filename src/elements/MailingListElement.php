@@ -277,6 +277,7 @@ class MailingListElement extends Element
 
     /**
      * @var null|FieldLayout Field layout
+     * @see self::getFieldLayout()
      */
     private ?FieldLayout $fieldLayout = null;
 

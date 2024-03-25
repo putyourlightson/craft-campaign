@@ -77,9 +77,6 @@ return [
         // The batch size to use for sendout jobs
         //'sendoutJobBatchSize' => 100,
 
-        // The batch size to use for sendout jobs
-        //'sendoutJobBatchSize' => 100,
-
         // The amount of time in seconds to delay between sendout job batches
         //'sendoutJobBatchDelay' => 0,
 
