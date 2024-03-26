@@ -180,7 +180,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '3.0.0.0';
+    public string $schemaVersion = '3.0.0.3';
 
     /**
      * @inheritdoc
