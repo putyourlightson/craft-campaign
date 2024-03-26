@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.13.1 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which newly created contacts were not being indexed for searching if only an email address was the only field added ([#463](https://github.com/putyourlightson/craft-campaign/issues/463)).
+
 ## 2.13.0 - 2024-03-25
 
 ### Added

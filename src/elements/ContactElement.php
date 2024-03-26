@@ -392,6 +392,12 @@ class ContactElement extends Element
     public ?string $subscriptionStatus = null;
 
     /**
+     * @var string|null The initial email value, if there was one.
+     * @see getDirtyAttributes()
+     */
+    private ?string $savedEmail = null;
+
+    /**
      * @var null|FieldLayout Field layout
      * @see getFieldLayout()
      */
@@ -403,6 +409,16 @@ class ContactElement extends Element
     public function __toString(): string
     {
         return $this->email ?? '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init(): void
+    {
+        parent::init();
+
+        $this->savedEmail = $this->email;
     }
 
     /**
@@ -763,6 +779,20 @@ class ContactElement extends Element
     public function getHasRoundedThumb(): bool
     {
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDirtyAttributes(): array
+    {
+        $dirtyAttributes = parent::getDirtyAttributes();
+
+        if ($this->email !== $this->savedEmail && !in_array('email', $dirtyAttributes)) {
+            $dirtyAttributes[] = 'email';
+        }
+
+        return $dirtyAttributes;
     }
 
     /**
