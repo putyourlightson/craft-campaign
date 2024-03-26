@@ -474,36 +474,43 @@ class SendoutElement extends Element
 
     /**
      * @var CampaignElement|null
+     * @see self::getCampaign()
      */
     private ?CampaignElement $campaign = null;
 
     /**
      * @var User|null
+     * @see self::getSender()
      */
     private ?User $sender = null;
 
     /**
      * @var ContactElement[]|null
+     * @see self::getContacts()
      */
     private ?array $contacts = null;
 
     /**
      * @var ContactElement[]|null
+     * @see self::getFailedContacts()
      */
     private ?array $failedContacts = null;
 
     /**
      * @var MailingListElement[]|null
+     * @see self::getMailingLists()
      */
     private ?array $mailingLists = null;
 
     /**
      * @var MailingListElement[]|null
+     * @see self::getExcludedMailingLists()
      */
     private ?array $excludedMailingLists = null;
 
     /**
      * @var SegmentElement[]|null
+     * @see self::getSegments()
      */
     private ?array $segments = null;
 

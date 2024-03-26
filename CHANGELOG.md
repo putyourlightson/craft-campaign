@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.0.0-beta.2 - Unreleased
+## 3.0.0-beta.2 - 2024-03-26
 
 ### Added
 
@@ -11,6 +11,8 @@
 
 - Fixed a bug in which the expected recipients count could fail in sendouts with very large numbers of contacts.
 - Fixed a bug in which sendout actions were unavailable on the sendout index page.
+- Fixed a bug in which newly created contacts were not being indexed for searching if only an email address was the only field added ([#463](https://github.com/putyourlightson/craft-campaign/issues/463)).
+
 
 ### Removed
 
