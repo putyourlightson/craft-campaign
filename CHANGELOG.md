@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.13.2 - Unreleased
+
+### Fixed
+
+- Fixed the buttons to create new campaign types and mailing list types appearing when allow admin changes was disabled or the user did not have the necessary permissions.
+
 ## 2.13.1 - 2024-03-26
 
 ### Fixed
