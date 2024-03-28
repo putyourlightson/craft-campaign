@@ -2,11 +2,14 @@
 
 namespace putyourlightson\campaign\migrations;
 
+use Craft;
 use craft\migrations\BaseContentRefactorMigration;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SegmentElement;
+use putyourlightson\campaign\elements\SendoutElement;
 
 class m240326_120000_content_refactor_elements extends BaseContentRefactorMigration
 {
@@ -31,7 +34,17 @@ class m240326_120000_content_refactor_elements extends BaseContentRefactorMigrat
 
         $this->updateElements(
             ContactElement::find()->ids(),
-            Campaign::$plugin->settings->getContactFieldLayout(),
+            Craft::$app->getFields()->getLayoutByType(ContactElement::class),
+        );
+
+        $this->updateElements(
+            SegmentElement::find()->ids(),
+            Craft::$app->getFields()->getLayoutByType(SegmentElement::class),
+        );
+
+        $this->updateElements(
+            SendoutElement::find()->ids(),
+            Craft::$app->getFields()->getLayoutByType(SendoutElement::class),
         );
 
         return true;
