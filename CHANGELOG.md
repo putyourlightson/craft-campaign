@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.0.0-beta.3 - Unreleased
+## 3.0.0-beta.3 - 2024-03-27
 
 ### Added
 
