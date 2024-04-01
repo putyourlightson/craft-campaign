@@ -15,11 +15,13 @@
     {% if allCampaignTypes|length == 0 %}
         <div class="zilch">
             <p>{{ 'No campaign types exist.'|t('campaign') }}</p>
-            <div style="font-size: initial;">
-                <a href="{{ url('campaign/settings/campaigntypes/new') }}" class="btn submit add icon">
-                    {{ 'New campaign type'|t('campaign') }}
-                </a>
-            </div>
+            {% if craft.app.config.general.allowAdminChanges and currentUser.can('campaign:settings') %}
+                <div style="font-size: initial;">
+                    <a href="{{ url('campaign/settings/campaigntypes/new') }}" class="btn submit add icon">
+                        {{ 'New campaign type'|t('campaign') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     {% else %}
         {{ parent() }}

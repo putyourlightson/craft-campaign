@@ -583,7 +583,8 @@ class SendoutElement extends Element
             // Only redirect if we're not already redirecting, to prevent an endless loop in Craft 4.0.4 and above.
             // https://github.com/putyourlightson/craft-campaign/issues/316
             if (!$response->getIsRedirection()) {
-                $response->redirect($this->getCpPreviewUrl());
+                $response->redirect($this->getCpPreviewUrl())->send();
+                return;
             }
         }
 
