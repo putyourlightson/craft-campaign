@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed the buttons to create new campaign types and mailing list types appearing when allow admin changes was disabled or the user did not have the necessary permissions.
+- Fixed an error that could appear when clicking on a sent sendout as an impersonated user in Craft Cloud.
 
 ## 2.13.1 - 2024-03-26
 
