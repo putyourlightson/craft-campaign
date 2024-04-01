@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 3.0.0-beta.4 - 2024-04-01
+
+### Fixed
+
+- Fixed the buttons to create new campaign types and mailing list types appearing when allow admin changes was disabled or the user did not have the necessary permissions.
+- Fixed an error that could appear when clicking on a sent sendout as an impersonated user in Craft Cloud.
+
 ## 3.0.0-beta.3 - 2024-03-27
 
 ### Added
