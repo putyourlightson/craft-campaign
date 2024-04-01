@@ -12,7 +12,7 @@
 ]) %}
 
 {% block content %}
-    {% if allCampaignTypes|length >= 0 %}
+    {% if allCampaignTypes|length == 0 %}
         <div class="zilch">
             <p>{{ 'No campaign types exist.'|t('campaign') }}</p>
             {% if craft.app.config.general.allowAdminChanges and currentUser.can('campaign:settings') %}
