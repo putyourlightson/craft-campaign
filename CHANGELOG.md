@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.13.2 - Unreleased
+## 2.13.2 - 2024-04-01
 
 ### Fixed
 
