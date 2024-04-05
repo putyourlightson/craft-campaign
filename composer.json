@@ -65,7 +65,7 @@
     "developer": "PutYourLightsOn",
     "developerUrl": "https://putyourlightson.com/",
     "documentationUrl": "https://putyourlightson.com/plugins/campaign",
-    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/v2/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/putyourlightson/craft-campaign/develop/CHANGELOG.md",
     "class": "putyourlightson\\campaign\\Campaign"
   }
 }
