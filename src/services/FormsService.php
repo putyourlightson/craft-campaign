@@ -213,11 +213,11 @@ class FormsService extends Component
     /**
      * Subscribes a contact.
      */
-    public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verify = null): void
+    public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verified = null): void
     {
         $sourceType = $sourceType ?? '';
         $source = $source ?? '';
-        $verify = $verify ?? false;
+        $verified = $verified ?? false;
 
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_SUBSCRIBE_CONTACT)) {
@@ -229,7 +229,7 @@ class FormsService extends Component
             ]));
         }
 
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verify);
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'subscribed', $sourceType, $source, $verified);
 
         // Update contact activity
         ContactActivityHelper::updateContactActivity($contact);
@@ -248,8 +248,11 @@ class FormsService extends Component
     /**
      * Unsubscribes a contact.
      */
-    public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList): void
+    public function unsubscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null): void
     {
+        $sourceType = $sourceType ?? '';
+        $source = $source ?? '';
+
         // Fire a before event
         if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
             $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
@@ -258,7 +261,7 @@ class FormsService extends Component
             ]));
         }
 
-        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
+        Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed', $sourceType, $source);
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {

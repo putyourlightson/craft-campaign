@@ -84,7 +84,7 @@ class MailingListsService extends Component
     /**
      * Adds a contact interaction.
      */
-    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', int|string $source = '', bool $verify = false): void
+    public function addContactInteraction(ContactElement $contact, MailingListElement $mailingList, string $interaction, string $sourceType = '', int|string $source = '', bool $verified = false): void
     {
         // Ensure that interaction exists
         if (!in_array($interaction, ContactMailingListModel::INTERACTIONS)) {
@@ -110,13 +110,13 @@ class MailingListsService extends Component
             $contactMailingListRecord->{$interaction} = new DateTime();
         }
 
-        // If subscribing
-        if ($interaction == 'subscribed') {
+        // If subscribing or unsubscribing
+        if ($interaction === 'subscribed' || $interaction === 'unsubscribed') {
             // Set source and source URL if not already set
             $contactMailingListRecord->sourceType = $contactMailingListRecord->sourceType ?? $sourceType;
             $contactMailingListRecord->source = $contactMailingListRecord->source ?? $source;
 
-            if ($verify && $contactMailingListRecord->verified === null) {
+            if ($verified && $contactMailingListRecord->verified === null) {
                 $contactMailingListRecord->verified = new DateTime();
             }
         }
