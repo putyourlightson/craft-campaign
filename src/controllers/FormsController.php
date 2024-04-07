@@ -37,9 +37,8 @@ class FormsController extends BaseMessageController
         }
 
         $email = $this->request->getRequiredParam('email');
-        $referrer = $this->request->getReferrer() ?: '';
 
-        $contact = Campaign::$plugin->forms->createAndSubscribeContact($email, null, $mailingList, 'web', $referrer);
+        $contact = Campaign::$plugin->forms->createAndSubscribeContact($email, null, $mailingList, 'web', $this->request->getReferrer());
 
         if ($contact->hasErrors()) {
             $modelName = $contact instanceof ContactElement ? 'contact' : 'pendingContact';
@@ -96,7 +95,7 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Updates a contact.
+     * Updates a contact’s fields and mailing list subscriptions.
      */
     public function actionUpdateContact(): ?Response
     {
@@ -117,6 +116,13 @@ class FormsController extends BaseMessageController
         // Save it
         if (!Campaign::$plugin->forms->updateContact($contact)) {
             return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), 'contact');
+        }
+
+        $mailingLists = $this->request->getBodyParam('mailingList');
+        if (is_array($mailingLists)) {
+            foreach ($mailingLists as $mailingListId => $subscribed) {
+                $this->updateContactSubscription($contact, $mailingListId, $subscribed);
+            }
         }
 
         return $this->asModelSuccess($contact, '', 'contact');
@@ -216,7 +222,7 @@ class FormsController extends BaseMessageController
             throw new NotFoundHttpException(Craft::t('campaign', 'Mailing list not found.'));
         }
 
-        Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList);
+        Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList, 'web', $this->request->getReferrer());
 
         if ($this->request->getBodyParam('redirect')) {
             return $this->redirectToPostedUrl($contact);
@@ -281,5 +287,22 @@ class FormsController extends BaseMessageController
         }
 
         return $contact;
+    }
+
+    /**
+     * Updates a contact’s subscription to a mailing list.
+     */
+    private function updateContactSubscription(ContactElement $contact, int $mailingListId, bool $subscribed): void
+    {
+        $mailingList = Campaign::$plugin->mailingLists->getMailingListById($mailingListId);
+        if ($mailingList === null) {
+            return;
+        }
+
+        if ($subscribed) {
+            Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $this->request->getReferrer());
+        } else {
+            Campaign::$plugin->forms->unsubscribeContact($contact, $mailingList, 'web', $this->request->getReferrer());
+        }
     }
 }

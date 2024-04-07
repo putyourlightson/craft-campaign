@@ -1,6 +1,11 @@
 # Release Notes for Campaign
 
-## 2.13.3 - Unreleased
+## 2.14.0 - Unreleased
+
+### Added
+
+- Added the ability to bulk subscribe/unsubscribe an existing contact from a mailing list using a front-end form.
+- Added tracking of the unsubscribe source originating from a front-end request.
 
 ### Fixed
 
