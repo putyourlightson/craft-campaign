@@ -13,6 +13,7 @@ class SendoutBatcher implements Batchable
 {
     public function __construct(
         private ?SendoutElement $sendout,
+        private int $offset = 0,
     ) {
     }
 
@@ -28,7 +29,7 @@ class SendoutBatcher implements Batchable
         // Return the number of pending plus sent recipients.
         $pendingRecipientCount = Campaign::$plugin->sendouts->getPendingRecipientCount($this->sendout);
 
-        return $pendingRecipientCount + $this->sendout->recipients;
+        return $pendingRecipientCount + $this->offset;
     }
 
     /**

@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 2.13.3 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which the total recipient count in running sendouts was being incorrectly displayed. 
+- Fixed a typo in the `All` interaction type in English. 
+
 ## 2.13.2 - 2024-04-01
 
 ### Fixed

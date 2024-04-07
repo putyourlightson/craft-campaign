@@ -37,7 +37,7 @@ return [
     'Add the following tag to all Campaign forms (not doing so will prevent forms from submitting).' => '',
     'Added' => '',
     'Alias Check Failed – one of your site or asset volume URLs is using a dynamic `@web` alias.' => '',
-    'All' => 'Alle',
+    'All' => '',
     'All campaigns' => '',
     'All contacts' => '',
     'All mailing lists' => '',

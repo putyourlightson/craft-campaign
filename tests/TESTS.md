@@ -25,7 +25,7 @@ _Tests contact interactions with campaigns._
 _Tests properties of contacts._
 
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) A contact with the same email address as another contact cannot be saved.  
-![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) A contact with the same email address as a soft deleted contact can be saved.  
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) A contact with the same email address as a soft-deleted contact can be saved.  
 
 ### [Form](pest/Feature/FormTest.php)
 
@@ -50,9 +50,9 @@ _Tests importing contacts into mailing lists._
 _Tests verifying pending contacts._
 
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a pending contact creates a contact.  
-![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a pending contact for a soft deleted contact restores the contact.  
-![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a pending contact soft deletes the pending contact.  
-![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a soft deleted pending does nothing.  
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a pending contact for a soft-deleted contact restores the contact.  
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a pending contact soft-deletes the pending contact.  
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Verifying a soft-deleted pending does nothing.  
 
 ### [PendingRecipient](pest/Feature/PendingRecipientTest.php)
 

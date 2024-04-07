@@ -117,7 +117,7 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
             return new SendoutBatcher(null);
         }
 
-        return new SendoutBatcher($sendout);
+        return new SendoutBatcher($sendout, $this->itemOffset);
     }
 
     /**
