@@ -26,15 +26,8 @@
     "craftcms/ecs": "dev-main",
     "craftcms/feed-me": "^6.0",
     "craftcms/phpstan": "dev-main",
-    "markhuot/craft-pest-core": "v3.x-dev",
     "putyourlightson/craft-generate-test-spec": "v2.x-dev"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/bencroker/craft-pest-core"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "putyourlightson\\campaign\\": "src/"
