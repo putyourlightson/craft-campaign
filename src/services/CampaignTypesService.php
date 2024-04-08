@@ -181,8 +181,6 @@ class CampaignTypesService extends Component
 
     /**
      * Handles a changed campaign type.
-     *
-     * TODO: see if all change handlers can be removed in v3.
      */
     public function handleChangedCampaignType(ConfigEvent $event): void
     {
