@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added the ability to bulk subscribe/unsubscribe an existing contact from a mailing list using a front-end form.
+- Added the ability to bulk subscribe/unsubscribe an existing contact from a mailing list using a front-end form ([#237](https://github.com/putyourlightson/craft-campaign/issues/237)).
 - Added tracking of the unsubscribe source originating from a front-end request.
 
 ### Fixed
