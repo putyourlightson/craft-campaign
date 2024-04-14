@@ -95,12 +95,12 @@ class CampaignElementQuery extends ElementQuery
 
         // Add the last sent date
         $sendoutQuery = SendoutRecord::find()
-            ->select('campaignId, MAX([[lastSent]]) AS lastSent')
-            ->groupBy('campaignId');
+            ->select(['campaignId', 'lastSent' => 'MAX([[lastSent]])'])
+            ->groupBy(['campaignId']);
 
-        $this->query->addSelect('lastSent');
+        $this->query->addSelect(['lastSent']);
         $this->subQuery->leftJoin(['campaign_sendouts' => $sendoutQuery], '[[campaign_sendouts.campaignId]] = [[campaign_campaigns.id]]');
-        $this->subQuery->select('campaign_sendouts.lastSent AS lastSent');
+        $this->subQuery->select(['lastSent' => 'campaign_sendouts.lastSent']);
 
         // Filter by campaign types in sites that have not been deleted
         $this->subQuery->innerJoin(CampaignTypeRecord::tableName() . ' campaign_campaigntypes', '[[campaign_campaigntypes.id]] = [[campaign_campaigns.campaignTypeId]]');

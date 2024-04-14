@@ -13,10 +13,12 @@ use craft\helpers\Db;
 use craft\helpers\Queue;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\mail\Message;
 use DateTime;
 use DOMDocument;
 use DOMElement;
 use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -88,7 +90,7 @@ class SendoutsService extends Component
         }
 
         $sendoutId = SendoutRecord::find()
-            ->select('id')
+            ->select(['id'])
             ->where(['sid' => $sid])
             ->scalar();
 
@@ -105,7 +107,7 @@ class SendoutsService extends Component
     public function getSendoutSendStatusById(int $sendoutId): bool|string|null
     {
         return SendoutRecord::find()
-            ->select('sendStatus')
+            ->select(['sendStatus'])
             ->where(['id' => $sendoutId])
             ->scalar();
     }
@@ -311,9 +313,22 @@ class SendoutsService extends Component
             Campaign::$plugin->mailer->useFileTransport = true;
         }
 
-        // Create message
-        $message = Campaign::$plugin->mailer->compose()
-            ->setFrom([$sendout->fromEmail => $sendout->fromName])
+        /**
+         * Use the one-click unsubscribe controller action.
+         *
+         * @see TrackerController::actionOneClickUnsubscribe()
+         */
+        $oneClickUnsubscribeUrl = str_replace('campaign/t/unsubscribe', 'campaign/t/one-click-unsubscribe', $contact->getUnsubscribeUrl($sendout));
+
+        /** @var Message $message */
+        $message = Campaign::$plugin->mailer->compose();
+
+        if (Campaign::$plugin->settings->addOneClickUnsubscribeHeaders) {
+            $message->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
+                ->setHeader('List-Unsubscribe', $oneClickUnsubscribeUrl);
+        }
+
+        $message->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
             ->setSubject($sendout->subject)
             ->setHtmlBody($htmlBody)
@@ -555,7 +570,7 @@ class SendoutsService extends Component
     private function getExcludedMailingListRecipientsQuery(SendoutElement $sendout): ActiveQuery
     {
         return ContactMailingListRecord::find()
-            ->select('contactId')
+            ->select(['contactId'])
             ->where([
                 'mailingListId' => $sendout->excludedMailingListIds,
                 'subscriptionStatus' => 'subscribed',
@@ -568,7 +583,7 @@ class SendoutsService extends Component
     private function getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = false): ActiveQuery
     {
         $query = ContactCampaignRecord::find()
-            ->select('contactId')
+            ->select(['contactId'])
             ->where(['sendoutId' => $sendout->id])
             ->andWhere(['not', ['sent' => null]]);
 
@@ -606,7 +621,7 @@ class SendoutsService extends Component
 
         // Get contacts subscribed to sendout’s mailing lists
         $query = ContactMailingListRecord::find()
-            ->select('contactId')
+            ->select(['contactId'])
             ->andWhere($baseCondition);
 
         // Ensure contacts have not complained, bounced, or been blocked (in contact record)
@@ -660,8 +675,8 @@ class SendoutsService extends Component
 
         /** @var array $recipients */
         $recipients = ContactMailingListRecord::find()
-            ->select(['contactId', 'min([[mailingListId]]) as mailingListId', 'min([[subscribed]]) as subscribed'])
-            ->groupBy('contactId')
+            ->select(['contactId', 'mailingListId' => 'MIN([[mailingListId]])', 'subscribed' => 'MIN([[subscribed]])'])
+            ->groupBy(['contactId'])
             ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
             ->orderBy(['contactId' => SORT_ASC])

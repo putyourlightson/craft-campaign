@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 2.15.0 - Unreleased
+
+### Added
+
+- Added one-click unsubscribe headers to sent emails ([#467](https://github.com/putyourlightson/craft-campaign/issues/467)).
+- Added a new one-click unsubscribe controller action.
+- Added an `addOneClickUnsubscribeHeaders` config setting that determines whether one-click unsubscribe headers should be added to emails, defaulting to `true`.
+
 ## 2.14.0 - 2024-04-08
 
 ### Added
@@ -23,7 +31,7 @@
 
 ### Fixed
 
-- Fixed a bug in which newly created contacts were not being indexed for searching if only an email address was the only field added ([#463](https://github.com/putyourlightson/craft-campaign/issues/463)).
+- Fixed a bug in which newly created contacts were not being indexed for searching if an email address was the only field added ([#463](https://github.com/putyourlightson/craft-campaign/issues/463)).
 
 ## 2.13.0 - 2024-03-25
 
@@ -35,6 +43,7 @@
 ### Changed
  
 - Campaign now requires Craft CMS 4.4.0 or later.
+- Change
 - The sendout job batch size is now set to `100` by default, unless it was previously modified by the `maxBatchSize` config setting.
 - The sendout job batch delay is now set to `0` by default, unless it was previously modified by the `batchJobDelay` config setting.
 - Renamed the `maxBatchSize` config setting to `sendoutJobBatchSize`.

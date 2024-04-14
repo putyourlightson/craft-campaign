@@ -117,7 +117,7 @@ class MailingListElementQuery extends ElementQuery
         }
 
         $this->subQuery->innerJoin(MailingListTypeRecord::tableName() . ' campaign_mailinglisttypes', '[[campaign_mailinglisttypes.id]] = [[campaign_mailinglists.mailingListTypeId]]');
-        $this->subQuery->select('campaign_mailinglisttypes.name AS mailingListType');
+        $this->subQuery->select(['mailingListType' => 'campaign_mailinglisttypes.name']);
 
         $this->subQuery->innerJoin(Table::SITES . ' sites', '[[sites.id]] = [[campaign_mailinglisttypes.siteId]]');
         $this->subQuery->andWhere(['[[sites.dateDeleted]]' => null]);

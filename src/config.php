@@ -28,20 +28,23 @@ return [
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
-        //Whether to validate incoming webhook requests using a verification key
-        //validateWebhookRequests => true,
+        // Whether one-click unsubscribe headers should be added to emails.
+        //'addOneClickUnsubscribeHeaders' => true,
+
+        // Whether to validate incoming webhook requests using a verification key
+        //'validateWebhookRequests' => true,
 
         // A webhook signing secret provided by MailerSend to validate incoming webhook requests
-        //mailersendWebhookSigningSecret => 'aBcDeFgHiJkLmNoP123',
+        //'mailersendWebhookSigningSecret' => 'aBcDeFgHiJkLmNoP123',
 
         // A webhook signing key provided by Mailgun to validate incoming webhook requests
-        //mailgunWebhookSigningKey => 'key-aBcDeFgHiJkLmNoP',
+        //'mailgunWebhookSigningKey' => 'key-aBcDeFgHiJkLmNoP',
 
         // A webhook verification key provided by SendGrid to validate incoming webhook requests
-        //sendgridWebhookVerificationKey => 'aBcDeFgHiJkLmNoP123==',
+        //'sendgridWebhookVerificationKey' => 'aBcDeFgHiJkLmNoP123==',
 
         // The allowed IP addresses for incoming webhook requests from Postmark
-        //postmarkAllowedIpAddresses => [
+        //'postmarkAllowedIpAddresses' => [
         //    '3.134.147.250',
         //    '50.31.156.6',
         //    '50.31.156.77',

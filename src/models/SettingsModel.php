@@ -43,6 +43,12 @@ class SettingsModel extends Model
     public string $apiKey;
 
     /**
+     * @var bool Whether one-click unsubscribe headers should be added to emails.
+     * @since 2.15.0
+     */
+    public bool $addOneClickUnsubscribeHeaders = true;
+
+    /**
      * @var bool Whether to validate incoming webhook requests using a signing key or secret
      * @since 2.10.0
      */

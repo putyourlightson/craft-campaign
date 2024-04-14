@@ -145,9 +145,9 @@ class ContactElementQuery extends ElementQuery
         }
 
         if ($this->mailingListId) {
-            $this->query->addSelect('subscriptionStatus');
+            $this->query->addSelect(['subscriptionStatus']);
             $this->subQuery->innerJoin(ContactMailingListRecord::tableName() . ' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
-            $this->subQuery->select('campaign_contacts_mailinglists.subscriptionStatus AS subscriptionStatus');
+            $this->subQuery->select(['subscriptionStatus' => 'campaign_contacts_mailinglists.subscriptionStatus']);
             $this->subQuery->andWhere(Db::parseParam('campaign_contacts_mailinglists.mailingListId', $this->mailingListId));
         } else {
             // Add a dummy subscriptionStatus value to prevent sorted queries from failing

@@ -654,7 +654,7 @@ class ContactElement extends Element
     {
         /** @var ContactMailingListRecord|null $contactMailingList */
         $contactMailingList = ContactMailingListRecord::find()
-            ->select('subscriptionStatus')
+            ->select(['subscriptionStatus'])
             ->where([
                 'contactId' => $this->id,
                 'mailingListId' => $mailingListId,
@@ -1005,7 +1005,7 @@ class ContactElement extends Element
 
         /** @var ContactMailingListRecord[] $contactMailingLists */
         $contactMailingLists = ContactMailingListRecord::find()
-            ->select('mailingListId')
+            ->select(['mailingListId'])
             ->where($condition)
             ->all();
 

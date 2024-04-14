@@ -60,7 +60,7 @@ class ReportsService extends Component
         // Get all sent campaigns
         $campaigns = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
-            ->orderBy('lastSent DESC')
+            ->orderBy(['lastSent' => SORT_DESC])
             ->siteId($siteId)
             ->all();
 
@@ -649,7 +649,7 @@ class ReportsService extends Component
         $fields = [];
 
         foreach ($record->fields() as $field) {
-            $fields[] = 'MIN([[' . $field . ']]) AS ' . $field;
+            $fields[$field] = 'MIN([[' . $field . ']])';
         }
 
         // Get records within date range
@@ -658,7 +658,7 @@ class ReportsService extends Component
             ->where($condition)
             ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
             ->orderBy(['dateCreated' => SORT_ASC])
-            ->groupBy('contactId')
+            ->groupBy(['contactId'])
             ->all();
 
         // Get activity
@@ -770,14 +770,14 @@ class ReportsService extends Component
 
         /** @var ActiveRecord $recordClass */
         $query = ContactRecord::find()
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->groupBy('country');
+            ->select(array_merge($fields, ['count' => 'COUNT(*)']))
+            ->groupBy(['country']);
 
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
-                ->select('contactId')
+                ->select(['contactId'])
                 ->where($condition)
-                ->groupBy('contactId')
+                ->groupBy(['contactId'])
                 ->column();
 
             $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
@@ -838,15 +838,15 @@ class ReportsService extends Component
 
         /** @var ActiveRecord $recordClass */
         $query = ContactRecord::find()
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
+            ->select(array_merge($fields, ['count' => 'COUNT(*)']))
             ->where(['not', ['device' => null]])
             ->groupBy($fields);
 
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
-                ->select('contactId')
+                ->select(['contactId'])
                 ->where($condition)
-                ->groupBy('contactId')
+                ->groupBy(['contactId'])
                 ->column();
 
             $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
