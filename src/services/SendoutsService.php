@@ -18,7 +18,6 @@ use DateTime;
 use DOMDocument;
 use DOMElement;
 use putyourlightson\campaign\Campaign;
-use putyourlightson\campaign\controllers\TrackerController;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -99,17 +98,6 @@ class SendoutsService extends Component
         }
 
         return $this->getSendoutById($sendoutId);
-    }
-
-    /**
-     * Returns sendout send status by ID.
-     */
-    public function getSendoutSendStatusById(int $sendoutId): bool|string|null
-    {
-        return SendoutRecord::find()
-            ->select(['sendStatus'])
-            ->where(['id' => $sendoutId])
-            ->scalar();
     }
 
     /**
@@ -313,17 +301,13 @@ class SendoutsService extends Component
             Campaign::$plugin->mailer->useFileTransport = true;
         }
 
-        /**
-         * Use the one-click unsubscribe controller action.
-         *
-         * @see TrackerController::actionOneClickUnsubscribe()
-         */
-        $oneClickUnsubscribeUrl = str_replace('campaign/t/unsubscribe', 'campaign/t/one-click-unsubscribe', $contact->getUnsubscribeUrl($sendout));
-
         /** @var Message $message */
         $message = Campaign::$plugin->mailer->compose();
 
         if (Campaign::$plugin->settings->addOneClickUnsubscribeHeaders) {
+            // Use the one-click unsubscribe controller action.
+            $oneClickUnsubscribeUrl = str_replace('campaign/t/unsubscribe', 'campaign/t/one-click-unsubscribe', $contact->getUnsubscribeUrl($sendout));
+
             $message->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
                 ->setHeader('List-Unsubscribe', $oneClickUnsubscribeUrl);
         }
