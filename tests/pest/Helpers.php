@@ -138,13 +138,13 @@ function cleanup(): void
 {
     $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle(App::env('TEST_CAMPAIGN_TYPE_HANDLE'));
     $campaignIds = CampaignRecord::find()
-        ->select('id')
+        ->select(['id'])
         ->where(['campaignTypeId' => $campaignType->id])
         ->column();
 
     $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeByHandle(App::env('TEST_MAILING_LIST_TYPE_HANDLE'));
     $mailingListIds = MailingListRecord::find()
-        ->select('id')
+        ->select(['id'])
         ->where(['mailingListTypeId' => $mailingListType->id])
         ->column();
 
@@ -153,7 +153,7 @@ function cleanup(): void
 
     $userGroup = Craft::$app->userGroups->getGroupByHandle(App::env('TEST_USER_GROUP_HANDLE'));
     $userIds = User::find()
-        ->select('id')
+        ->select(['id'])
         ->groupId($userGroup->id)
         ->column();
 

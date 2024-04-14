@@ -656,7 +656,7 @@ class MailingListElement extends Element
     private function getContactsBySubscriptionStatus(string $subscriptionStatus = null): array
     {
         $query = ContactMailingListRecord::find()
-            ->select('contactId')
+            ->select(['contactId'])
             ->where(['mailingListId' => $this->id]);
 
         if ($subscriptionStatus) {

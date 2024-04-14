@@ -840,7 +840,7 @@ class SendoutElement extends Element
         }
 
         return ContactElement::find()
-            ->select('email')
+            ->select(['email'])
             ->id($this->notificationContactIds)
             ->column();
     }
