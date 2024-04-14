@@ -10,6 +10,7 @@ use craft\base\Component;
 use craft\db\ActiveRecord;
 use craft\db\Query;
 use craft\db\Table;
+use craft\enums\CmsEdition;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\Json;
@@ -56,12 +57,12 @@ class ReportsService extends Component
     /**
      * Returns campaigns report data.
      */
-    public function getCampaignsReportData(Site|int|null $site = null): array
+    public function getCampaignsReportData(Site|null $site = null): array
     {
         // Get all sent campaigns
         $campaigns = CampaignElement::find()
             ->status(CampaignElement::STATUS_SENT)
-            ->orderBy('lastSent DESC')
+            ->orderBy(['lastSent' => SORT_DESC])
             ->site($site)
             ->all();
 
@@ -432,7 +433,7 @@ class ReportsService extends Component
     /**
      * Returns mailing lists report data.
      */
-    public function getMailingListsReportData(Site|int|null $site = null): array
+    public function getMailingListsReportData(Site|null $site = null): array
     {
         // Get all mailing lists in all sites
         $mailingLists = MailingListElement::find()
@@ -650,7 +651,7 @@ class ReportsService extends Component
         $fields = [];
 
         foreach ($record->fields() as $field) {
-            $fields[] = 'MIN([[' . $field . ']]) AS ' . $field;
+            $fields[$field] = 'MIN([[' . $field . ']])';
         }
 
         // Get records within date range
@@ -659,7 +660,7 @@ class ReportsService extends Component
             ->where($condition)
             ->andWhere(Db::parseDateParam('dateCreated', $endDateTime, '<'))
             ->orderBy(['dateCreated' => SORT_ASC])
-            ->groupBy('contactId')
+            ->groupBy(['contactId'])
             ->all();
 
         // Get activity
@@ -737,7 +738,7 @@ class ReportsService extends Component
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/' . $model->source);
                                 break;
                             case 'user':
-                                $path = (Craft::$app->getEdition() === Craft::Pro && $model->source) ? 'users/' . $model->source : 'myaccount';
+                                $path = (Craft::$app->edition !== CmsEdition::Solo && $model->source) ? 'users/' . $model->source : 'myaccount';
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
                                 break;
                             default:
@@ -771,14 +772,14 @@ class ReportsService extends Component
 
         /** @var ActiveRecord $recordClass */
         $query = ContactRecord::find()
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
-            ->groupBy('country');
+            ->select(array_merge($fields, ['count' => 'COUNT(*)']))
+            ->groupBy(['country']);
 
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
-                ->select('contactId')
+                ->select(['contactId'])
                 ->where($condition)
-                ->groupBy('contactId')
+                ->groupBy(['contactId'])
                 ->column();
 
             $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);
@@ -839,15 +840,15 @@ class ReportsService extends Component
 
         /** @var ActiveRecord $recordClass */
         $query = ContactRecord::find()
-            ->select(array_merge($fields, ['COUNT(*) AS count']))
+            ->select(array_merge($fields, ['count' => 'COUNT(*)']))
             ->where(['not', ['device' => null]])
             ->groupBy($fields);
 
         if ($recordClass != ContactRecord::class) {
             $contactIds = $recordClass::find()
-                ->select('contactId')
+                ->select(['contactId'])
                 ->where($condition)
-                ->groupBy('contactId')
+                ->groupBy(['contactId'])
                 ->column();
 
             $query->andWhere([ContactRecord::tableName() . '.id' => $contactIds]);

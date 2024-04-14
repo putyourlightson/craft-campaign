@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 3.1.0 - Unreleased
+
+### Added
+
+- Added one-click unsubscribe headers to sent emails ([#467](https://github.com/putyourlightson/craft-campaign/issues/467)).
+- Added a new one-click unsubscribe controller action.
+- Added an `addOneClickUnsubscribeHeaders` config setting that determines whether one-click unsubscribe headers should be added to emails, defaulting to `true`.
+
 ## 3.0.0 - 2024-04-08
 
 > {warning} “Legacy” and “Template” segments are no longer available will be deleted in this update. They should be replaced with regular segments before updating, or they will be lost.
