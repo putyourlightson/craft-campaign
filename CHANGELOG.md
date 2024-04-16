@@ -1,5 +1,15 @@
 # Release Notes for Campaign
 
+## 3.1.1 - 2024-04-16
+
+### Changed
+
+- Changed the order of fetched mailing lists to be more deterministic.
+
+### Fixed
+
+- Fixed the syntax used in one-click unsubscribe headers.
+
 ## 3.1.0 - 2024-04-08
 
 ### Added
