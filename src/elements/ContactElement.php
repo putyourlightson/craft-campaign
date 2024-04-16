@@ -1077,6 +1077,7 @@ class ContactElement extends Element
         $contactMailingLists = ContactMailingListRecord::find()
             ->select(['mailingListId'])
             ->where($condition)
+            ->orderBy(['title' => SORT_ASC])
             ->all();
 
         foreach ($contactMailingLists as $contactMailingList) {

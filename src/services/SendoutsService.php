@@ -307,8 +307,9 @@ class SendoutsService extends Component
             // Use the one-click unsubscribe controller action.
             $oneClickUnsubscribeUrl = str_replace('campaign/t/unsubscribe', 'campaign/t/one-click-unsubscribe', $contact->getUnsubscribeUrl($sendout));
 
-            $message->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
-                ->setHeader('List-Unsubscribe', $oneClickUnsubscribeUrl);
+            // https://www.rfc-editor.org/rfc/rfc8058
+            $message->setHeader('List-Unsubscribe', '<' . $oneClickUnsubscribeUrl . '>')
+                ->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
         }
 
         $message->setFrom([$sendout->fromEmail => $sendout->fromName])
