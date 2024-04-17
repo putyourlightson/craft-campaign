@@ -53,7 +53,6 @@
 ### Changed
  
 - Campaign now requires Craft CMS 4.4.0 or later.
-- Change
 - The sendout job batch size is now set to `100` by default, unless it was previously modified by the `maxBatchSize` config setting.
 - The sendout job batch delay is now set to `0` by default, unless it was previously modified by the `batchJobDelay` config setting.
 - Renamed the `maxBatchSize` config setting to `sendoutJobBatchSize`.
