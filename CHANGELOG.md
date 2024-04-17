@@ -8,6 +8,11 @@
 - Added a new one-click unsubscribe controller action.
 - Added an `addOneClickUnsubscribeHeaders` config setting that determines whether one-click unsubscribe headers should be added to emails, defaulting to `true`.
 
+### Changed
+
+- Campaign now requires Craft CMS 3.5.0 or later.
+- Element index caches are now cleared when certain actions take place.
+
 ## 1.25.1 - 2024-03-05
 ### Changed
 - Logs are now output to the Craft log, in addition to the Campaign log file.

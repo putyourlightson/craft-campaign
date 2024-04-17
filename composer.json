@@ -16,7 +16,7 @@
         "contact"
     ],
     "require": {
-        "craftcms/cms": "^3.1.20",
+        "craftcms/cms": "^3.5.0",
         "putyourlightson/craft-log-to-file": "^1.2.3",
         "matomo/device-detector": "^3.9.1|^4.0|^5.0|^6.0",
         "html2text/html2text": "^4.3.1",

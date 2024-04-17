@@ -290,6 +290,9 @@ class CampaignTypesService extends Component
                 'siteId' => $campaignType->siteId,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(CampaignElement::class);
     }
 
     /**
@@ -390,6 +393,9 @@ class CampaignTypesService extends Component
                 'campaignType' => $campaignType,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(CampaignElement::class);
     }
 
     /**

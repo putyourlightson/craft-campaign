@@ -284,6 +284,9 @@ class MailingListTypesService extends Component
                 'siteId' => $mailingListType->siteId,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(MailingListElement::class);
     }
 
     /**
@@ -384,6 +387,9 @@ class MailingListTypesService extends Component
                 'mailingListType' => $mailingListType,
             ]));
         }
+
+        // Invalidate element caches
+        Craft::$app->getElements()->invalidateCachesForElementType(MailingListElement::class);
     }
 
     /**

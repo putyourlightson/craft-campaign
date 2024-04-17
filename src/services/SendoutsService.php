@@ -799,9 +799,7 @@ class SendoutsService extends Component
 
         // Invalidate caches for the sendout, since the update may have been
         // made programmatically.
-        if (method_exists(Craft::$app->getElements(), 'invalidateCachesForElement')) {
-            Craft::$app->getElements()->invalidateCachesForElement($sendout);
-        }
+        Craft::$app->getElements()->invalidateCachesForElement($sendout);
 
         return true;
     }

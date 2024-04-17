@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\services;
 
+use Craft;
 use craft\base\Component;
 use DateTime;
 use Exception;
@@ -139,6 +140,8 @@ class MailingListsService extends Component
 
         $contactMailingListRecord->subscriptionStatus = $interaction;
         $contactMailingListRecord->save();
+
+        $this->_invalidateCaches($contact, $mailingList);
     }
 
     /**
@@ -161,5 +164,16 @@ class MailingListsService extends Component
         if ($contactMailingListRecord !== null) {
             $contactMailingListRecord->delete();
         }
+
+        $this->_invalidateCaches($contact, $mailingList);
+    }
+
+    /**
+     * Invalidates element caches for the given contact and mailing list.
+     */
+    private function _invalidateCaches(ContactElement $contact, MailingListElement $mailingList)
+    {
+        Craft::$app->getElements()->invalidateCachesForElement($contact);
+        Craft::$app->getElements()->invalidateCachesForElement($mailingList);
     }
 }
