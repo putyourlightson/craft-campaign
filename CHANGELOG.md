@@ -1,5 +1,13 @@
 # Release Notes for Campaign
 
+## 1.26.0 - 2024-04-17
+
+### Added
+
+- Added one-click unsubscribe headers to sent emails ([#467](https://github.com/putyourlightson/craft-campaign/issues/467)).
+- Added a new one-click unsubscribe controller action.
+- Added an `addOneClickUnsubscribeHeaders` config setting that determines whether one-click unsubscribe headers should be added to emails, defaulting to `true`.
+
 ## 1.25.1 - 2024-03-05
 ### Changed
 - Logs are now output to the Craft log, in addition to the Campaign log file.

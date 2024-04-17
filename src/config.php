@@ -25,6 +25,9 @@ return [
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 
+        // Whether one-click unsubscribe headers should be added to emails.
+        //'addOneClickUnsubscribeHeaders' => true,
+
         // A webhook signing key provided by Mailgun to validate incoming webhook requests
         //mailgunWebhookSigningKey => 'key-aBcDeFgHiJkLmNoP',
 

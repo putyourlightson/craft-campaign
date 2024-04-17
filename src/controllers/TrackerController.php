@@ -34,6 +34,16 @@ class TrackerController extends BaseMessageController
     /**
      * @inheritdoc
      */
+    public $enableCsrfValidation = false;
+
+    /**
+     * @var bool Disable Snaptcha validation
+     */
+    public $enableSnaptchaValidation = false;
+
+    /**
+     * @inheritdoc
+     */
     protected $allowAnonymous = true;
 
     // Public Methods
@@ -144,6 +154,32 @@ class TrackerController extends BaseMessageController
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ]);
+    }
+
+    /**
+     * Tracks a one-click unsubscribe.
+     * https://postmarkapp.com/support/article/1299-how-to-include-a-list-unsubscribe-header
+     *
+     * @since 1.26.0
+     */
+    public function actionOneClickUnsubscribe(): Response
+    {
+        // Ignore if a non-POST requests but don’t require it, since anti-spam tools may send GET requests.
+        if (!$this->request->getIsPost()) {
+            return $this->asRaw('');
+        }
+
+        // Get contact and sendout
+        $contact = $this->_getContact();
+        $sendout = $this->_getSendout();
+
+        if ($contact === null || $sendout === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
+        }
+
+        Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+
+        return $this->asRaw('OK');
     }
 
     /**

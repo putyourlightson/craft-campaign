@@ -42,6 +42,12 @@ class SettingsModel extends Model
     public $apiKey;
 
     /**
+     * @var bool Whether one-click unsubscribe headers should be added to emails.
+     * @since 1.26.0
+     */
+    public $addOneClickUnsubscribeHeaders = true;
+
+    /**
      * @var string|null A webhook signing key provided by Mailgun to validate incoming webhook requests
      * @since 1.19.0
      */

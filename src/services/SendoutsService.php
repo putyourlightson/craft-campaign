@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\services;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Queue;
 use craft\helpers\StringHelper;
+use craft\mail\Message;
 use craft\services\Elements;
 use craft\web\View;
 use DateTime;
@@ -427,9 +428,19 @@ class SendoutsService extends Component
             Campaign::$plugin->mailer->useFileTransport = true;
         }
 
-        // Create message
-        $message = Campaign::$plugin->mailer->compose()
-            ->setFrom([$sendout->fromEmail => $sendout->fromName])
+        /** @var Message $message */
+        $message = Campaign::$plugin->mailer->compose();
+
+        if (Campaign::$plugin->getSettings()->addOneClickUnsubscribeHeaders) {
+            // Use the one-click unsubscribe controller action.
+            $oneClickUnsubscribeUrl = str_replace('campaign/t/unsubscribe', 'campaign/t/one-click-unsubscribe', $contact->getUnsubscribeUrl($sendout));
+
+            // https://www.rfc-editor.org/rfc/rfc8058
+            $message->setHeader('List-Unsubscribe', '<' . $oneClickUnsubscribeUrl . '>')
+                ->setHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+        }
+
+        $message->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
             ->setSubject($sendout->subject)
             ->setHtmlBody($htmlBody)
