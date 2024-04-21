@@ -12,6 +12,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\Template;
@@ -1007,7 +1008,6 @@ class ContactElement extends Element
         $contactMailingLists = ContactMailingListRecord::find()
             ->select(['mailingListId'])
             ->where($condition)
-            ->orderBy(['title' => SORT_ASC])
             ->all();
 
         foreach ($contactMailingLists as $contactMailingList) {
@@ -1017,6 +1017,8 @@ class ContactElement extends Element
                 $mailingLists[] = $mailingList;
             }
         }
+
+        ArrayHelper::multisort($mailingLists, 'title');
 
         return $mailingLists;
     }

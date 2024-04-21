@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.15.2 - Unreleased
+
+### Fixed
+
+- Fixed a bug in which calling `getMailingLists()` on a contact element could throw an exception ([#469](https://github.com/putyourlightson/craft-campaign/issues/469)).
+
 ## 2.15.1 - 2024-04-16
 
 ### Changed
