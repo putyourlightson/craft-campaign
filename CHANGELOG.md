@@ -1,10 +1,10 @@
 # Release Notes for Campaign
 
-## 3.1.2 - Unreleased
+## 3.1.2 - 2024-05-02
 
 ### Fixed
 
-- Fixed a bug in which the content column was not being populated for elements in non primary sites after upgrading from Campaign 2 ([#470](https://github.com/putyourlightson/craft-campaign/issues/470)).
+- Fixed a bug in which the content for elements in non-primary sites was not migrated after upgrading from Campaign 2 ([#470](https://github.com/putyourlightson/craft-campaign/issues/470)).
 - Fixed the PHPDoc type for relation field values.
 
 ## 3.1.1 - 2024-04-16
