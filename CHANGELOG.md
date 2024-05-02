@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.1.2 - Unreleased
+
+### Fixed
+
+- Fixed the PHPDoc type for relation field values.
+
 ## 3.1.1 - 2024-04-16
 
 ### Changed

@@ -41,7 +41,7 @@ class ContactsField extends BaseRelationField
     /**
      * @inheritdoc
      */
-    public static function valueType(): string
+    public static function phpType(): string
     {
         return sprintf('\\%s|\\%s<\\%s>', ContactElementQuery::class, ElementCollection::class, ContactElement::class);
     }
