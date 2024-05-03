@@ -83,7 +83,7 @@ class CpAsset extends AssetBundle
         $editableSendoutTypes = Json::encode($this->getEditableSendoutTypes());
 
         $user = Craft::$app->getUser()->getIdentity();
-        $canEditSegments = $user->can('campaign:segments');
+        $canEditSegments = $user->can('campaign:segments') ? 'true' : 'false';
 
         $js = <<<JS
 window.Craft.editableCampaignTypes = $editableCampaignTypes;

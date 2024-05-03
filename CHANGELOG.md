@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.1.3 - 2024-05-03
+
+### Fixed
+
+- Fixed a bug in which non-admin users without permissions to edit segments were not seeing content ([#472](https://github.com/putyourlightson/craft-campaign/issues/472)).
+
 ## 3.1.2 - 2024-05-02
 
 ### Fixed
