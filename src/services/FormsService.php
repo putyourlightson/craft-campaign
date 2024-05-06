@@ -173,6 +173,7 @@ class FormsService extends Component
         }
 
         $contact->setScenario(Element::SCENARIO_LIVE);
+        $source = $this->getTruncatedSource($source);
 
         // If subscribe verification required
         if ($mailingList->getMailingListType()->subscribeVerificationRequired) {
@@ -216,7 +217,7 @@ class FormsService extends Component
     public function subscribeContact(ContactElement $contact, MailingListElement $mailingList, string $sourceType = null, string $source = null, bool $verified = null): void
     {
         $sourceType = $sourceType ?? '';
-        $source = $source ?? '';
+        $source = $this->getTruncatedSource($source);
         $verified = $verified ?? false;
 
         // Fire a before event
@@ -326,5 +327,19 @@ class FormsService extends Component
         }
 
         return $message->send();
+    }
+
+    /**
+     * Returns a truncated source if longer than the allowed length.
+     */
+    private function getTruncatedSource(?string $source): string
+    {
+        if ($source === null) {
+            return '';
+        }
+
+        $suffix = '...';
+
+        return StringHelper::truncate($source, 255 - strlen($suffix), $suffix);
     }
 }

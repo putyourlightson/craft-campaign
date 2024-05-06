@@ -34,6 +34,7 @@ _Tests interacting with contacts via forms._
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) A verify subscribe email is sent to a pending contact on subscribe.  
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) A verify unsubscribe email is sent to a contact on unsubscribe.  
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Subscribing and then unsubscribing a contact works.  
+![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Subscribing results in a truncated source if too long.  
 ![Pass](https://raw.githubusercontent.com/putyourlightson/craft-generate-test-spec/main/icons/pass.svg) Updating a contact modifies its last activity timestamp.  
 
 ### [Import](pest/Feature/ImportTest.php)
