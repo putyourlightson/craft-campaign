@@ -1,7 +1,9 @@
 <?php
 
+use craft\helpers\StringHelper;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\models\PendingContactModel;
+use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\services\FormsService;
 
 /**
@@ -49,7 +51,25 @@ test('Subscribing and then unsubscribing a contact works', function() {
     $subscribedMailingLists = $contact->getSubscribedMailingLists();
 
     expect($subscribedMailingLists)
-        ->toHaveCount(0);
+        ->toBeEmpty();
+});
+
+test('Subscribing results in a truncated source if too long', function() {
+    $mailingList = createMailingList();
+    $contact = createContact();
+    $source = StringHelper::randomString(252);
+    Campaign::$plugin->forms->subscribeContact($contact, $mailingList, 'web', $source . StringHelper::randomString(10));
+
+    /** @var ContactMailingListRecord $contactMailingListRecord */
+    $contactMailingListRecord = ContactMailingListRecord::find()
+        ->where([
+            'contactId' => $contact->id,
+            'mailingListId' => $mailingList->id,
+        ])
+        ->one();
+
+    expect($contactMailingListRecord->source)
+        ->toBe($source . '...');
 });
 
 test('Updating a contact modifies its last activity timestamp', function() {
