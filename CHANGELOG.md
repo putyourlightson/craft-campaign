@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.1.4 - 2024-05-06
+
+### Fixed
+
+- Fixed a bug in which contact subscriptions were failing when the referrer URL was longer than 255 characters ([#473](https://github.com/putyourlightson/craft-campaign/issues/473)).
+
 ## 3.1.3 - 2024-05-03
 
 ### Fixed
