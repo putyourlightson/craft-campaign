@@ -12,19 +12,19 @@ use putyourlightson\campaign\Campaign;
 use yii\web\ForbiddenHttpException;
 
 /**
- * @since 1.8.0
+ * @since 2.16.0
  */
-class RecaptchaHelper
+class TurnstileHelper
 {
     /**
      * @const string
      */
-    public const RECAPTCHA_ACTION = 'homepage';
+    public const TURNSTILE_ACTION = 'homepage';
 
     /**
-     * Validates reCAPTCHA.
+     * Validates the response.
      */
-    public static function validateRecaptcha(string $recaptchaResponse, string $ip): void
+    public static function validate(string $response, string $ip): void
     {
         $settings = Campaign::$plugin->settings;
 
@@ -36,10 +36,10 @@ class RecaptchaHelper
         ]);
 
         try {
-            $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+            $response = $client->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
                 'form_params' => [
-                    'secret' => $settings->getRecaptchaSecretKey(),
-                    'response' => $recaptchaResponse,
+                    'secret' => $settings->getTurnstileSecretKey(),
+                    'response' => $response,
                     'remoteip' => $ip,
                 ],
             ]);
@@ -50,12 +50,10 @@ class RecaptchaHelper
         } catch (ConnectException) {
         }
 
-        if (empty($result['success'])) {
-            throw new ForbiddenHttpException($settings->reCaptchaErrorMessage);
-        }
+        $success = $result['success'] ?? false;
 
-        if (!empty($result['action']) && $result['action'] != self::RECAPTCHA_ACTION) {
-            throw new ForbiddenHttpException($settings->getRecaptchaErrorMessage());
+        if (!$success) {
+            throw new ForbiddenHttpException($settings->getTurnstileErrorMessage());
         }
     }
 }

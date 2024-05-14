@@ -9,7 +9,7 @@
 
 {% block pageTitle %}
     {{ parent() }}
-    {% if craft.campaign.userCanEditContacts() %}
+    {% if craft.campaign.canUserEditContacts() %}
         <a href="{{ contact.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
 {% endblock %}

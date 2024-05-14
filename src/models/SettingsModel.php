@@ -10,6 +10,7 @@ use craft\base\FieldInterface;
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\behaviors\FieldLayoutBehavior;
+use craft\helpers\App;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
@@ -253,7 +254,27 @@ class SettingsModel extends Model
     /**
      * @var string The reCAPTCHA error message
      */
-    public string $reCaptchaErrorMessage = 'Your form submission was blocked by Google reCAPTCHA. Please go back and try again.';
+    public string $reCaptchaErrorMessage = 'Your form submission was flagged as spam by Google reCAPTCHA. Please go back and try again.';
+
+    /**
+     * @var bool Enable Turnstile to protect mailing list subscription forms from bots
+     */
+    public bool $turnstile = false;
+
+    /**
+     * @var string|null The Turnstile site key
+     */
+    public ?string $turnstileSiteKey = null;
+
+    /**
+     * @var string|null The Turnstile secret key
+     */
+    public ?string $turnstileSecretKey = null;
+
+    /**
+     * @var string The Turnstile error message
+     */
+    public string $turnstileErrorMessage = 'Your form submission was flagged as spam by Turnstile. Please go back and try again.';
 
     /**
      * @var int The maximum number of pending contacts to store per email address and mailing list
@@ -297,6 +318,7 @@ class SettingsModel extends Model
             [['sendoutJobBatchDelay'], 'integer', 'min' => 0],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
             [['reCaptchaSiteKey', 'reCaptchaSecretKey', 'reCaptchaErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->reCaptcha],
+            [['turnstileSiteKey', 'turnstileSecretKey', 'turnstileErrorMessage'], 'required', 'when' => fn(SettingsModel $model) => $model->turnstile],
         ];
     }
 
@@ -314,8 +336,121 @@ class SettingsModel extends Model
         $labels['reCaptchaSiteKey'] = Craft::t('campaign', 'reCAPTCHA Site Key');
         $labels['reCaptchaSecretKey'] = Craft::t('campaign', 'reCAPTCHA Secret Key');
         $labels['reCaptchaErrorMessage'] = Craft::t('campaign', 'reCAPTCHA Error Message');
+        $labels['turnstileSiteKey'] = Craft::t('campaign', 'Turnstile Site Key');
+        $labels['turnstileSecretKey'] = Craft::t('campaign', 'Turnstile Secret Key');
+        $labels['turnstileErrorMessage'] = Craft::t('campaign', 'Turnstile Error Message');
 
         return $labels;
+    }
+
+    /**
+     * Returns the parsed API key.
+     *
+     * @since 2.16.0
+     */
+    public function getApiKey(): string
+    {
+        return App::parseEnv($this->apiKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed MailerSend webhook signing secret.
+     *
+     * @since 2.16.0
+     */
+    public function getMailersendWebhookSigningSecret(): string
+    {
+        return App::parseEnv($this->mailersendWebhookSigningSecret) ?? '';
+    }
+
+    /**
+     * Returns the parsed Mailgun webhook signing secret.
+     *
+     * @since 2.16.0
+     */
+    public function getMailgunWebhookSigningSecret(): string
+    {
+        return App::parseEnv($this->mailgunWebhookSigningKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed SendGrid webhook signing secret.
+     *
+     * @since 2.16.0
+     */
+    public function getSendgridWebhookSigningSecret(): string
+    {
+        return App::parseEnv($this->sendgridWebhookVerificationKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed ipstack.com API key.
+     *
+     * @since 2.16.0
+     */
+    public function getIpstackApiKey(): string
+    {
+        return App::parseEnv($this->ipstackApiKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed reCAPTCHA site key.
+     *
+     * @since 2.16.0
+     */
+    public function getRecaptchaSiteKey(): string
+    {
+        return App::parseEnv($this->reCaptchaSiteKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed reCAPTCHA secret key.
+     *
+     * @since 2.16.0
+     */
+    public function getRecaptchaSecretKey(): string
+    {
+        return App::parseEnv($this->reCaptchaSecretKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed reCAPTCHA error message.
+     *
+     * @since 2.16.0
+     */
+    public function getRecaptchaErrorMessage(): string
+    {
+        return App::parseEnv($this->reCaptchaErrorMessage) ?? '';
+    }
+
+    /**
+     * Returns the parsed Turnstile site key.
+     *
+     * @since 2.16.0
+     */
+    public function getTurnstileSiteKey(): string
+    {
+        return App::parseEnv($this->turnstileSiteKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed Turnstile secret key.
+     *
+     * @since 2.16.0
+     */
+    public function getTurnstileSecretKey(): string
+    {
+        return App::parseEnv($this->turnstileSecretKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed Turnstile error message.
+     *
+     * @since 2.16.0
+     */
+    public function getTurnstileErrorMessage(): string
+    {
+        return App::parseEnv($this->turnstileErrorMessage) ?? '';
     }
 
     /**

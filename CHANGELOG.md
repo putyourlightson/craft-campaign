@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.16.0 - Unreleased
+
+### Added
+
+- Added the ability to enforce spam prevention on front-end forms using Cloudflare Turnstile ([#447](https://github.com/putyourlightson/craft-campaign/issues/447)).
+
 ## 2.15.3 - 2024-05-06
 
 ### Fixed

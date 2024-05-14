@@ -358,7 +358,7 @@ class Campaign extends Plugin
     /**
      * Returns whether the current user can edit contacts.
      */
-    public function userCanEditContacts(): bool
+    public function canUserEditContacts(): bool
     {
         /** @var User|null $currentUser */
         $currentUser = Craft::$app->getUser()->getIdentity();
@@ -455,6 +455,7 @@ class Campaign extends Plugin
             'campaign/settings/contact' => 'campaign/settings/edit-contact',
             'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
             'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',
+            'campaign/settings/turnstile' => 'campaign/settings/edit-turnstile',
             'campaign/settings/campaigntypes' => 'campaign/campaign-types/index',
             'campaign/settings/campaigntypes/new' => 'campaign/campaign-types/edit',
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit',

@@ -1,0 +1,75 @@
+{% extends 'campaign/_settings/layout' %}
+
+{% import '_includes/forms' as forms %}
+{% import 'campaign/_macros' as macros %}
+
+{% set title = 'Turnstile Settings'|t('campaign') %}
+
+{% set crumbs = [] %}
+
+{% set fullPageForm = true %}
+
+
+{% block content %}
+
+    <input type="hidden" name="action" value="campaign/settings/save-turnstile">
+
+    {{ forms.lightswitchField({
+        first: true,
+        label: "Turnstile"|t('campaign'),
+        instructions: 'Enable Turnstile to protect mailing list subscription forms from bots using the “invisible” Turnstile widget. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', { url: 'https://developers.cloudflare.com/turnstile/' }),
+        warning: (config.turnstile is defined ? macros.configWarning('turnstile')),
+        id: 'turnstile',
+        name: 'turnstile',
+        on: settings.turnstile,
+        errors: settings.getErrors('turnstile')
+    }) }}
+
+    {% set code %}
+        <code>{{ '{{ craft.campaign.turnstile }}' }}</code>
+    {% endset %}
+    {{ forms.field({
+        instructions: "Add the following tag to all Campaign forms (not doing so will prevent forms from submitting)."|t('campaign'),
+    }, code) }}
+
+    {{ forms.autosuggestField({
+        label: "Turnstile Site Key"|t('campaign'),
+        instructions: "The Turnstile site key for this domain."|t('campaign'),
+        warning: (config.turnstileSiteKey is defined ? macros.configWarning('turnstileSiteKey')),
+        id: 'turnstileSiteKey',
+        name: 'turnstileSiteKey',
+        suggestEnvVars: true,
+        value: settings.turnstileSiteKey,
+        errors: settings.getErrors('turnstileSiteKey')
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Turnstile Secret Key"|t('campaign'),
+        instructions: "The Turnstile secret key for this domain."|t('campaign'),
+        warning: (config.turnstileSecretKey is defined ? macros.configWarning('turnstileSecretKey')),
+        id: 'turnstileSecretKey',
+        name: 'turnstileSecretKey',
+        suggestEnvVars: true,
+        value: settings.turnstileSecretKey,
+        errors: settings.getErrors('turnstileSecretKey')
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Turnstile Error Message"|t('campaign'),
+        instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
+        warning: (config.turnstileErrorMessage is defined ? macros.configWarning('turnstileErrorMessage')),
+        id: 'turnstileErrorMessage',
+        name: 'turnstileErrorMessage',
+        suggestEnvVars: true,
+        value: settings.turnstileErrorMessage,
+        errors: settings.getErrors('turnstileErrorMessage')
+    }) }}
+
+    <p>
+        <em>
+            {{ 'Create and view your Turnstile keys at {link}'|t('campaign', { link: '<a href="https://dash.cloudflare.com/" class="go" target="_blank" rel="noopener">dash.cloudflare.com</a>' })|raw }}
+        </em>
+    </p>
+
+
+{% endblock %}
