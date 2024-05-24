@@ -47,7 +47,7 @@ class FormsController extends BaseMessageController
         }
 
         if ($this->request->getAcceptsJson()) {
-            return $this->asSuccess();
+            return $this->asSuccess($mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),);
         }
 
         if ($this->request->getBodyParam('redirect')) {
