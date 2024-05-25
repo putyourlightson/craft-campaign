@@ -46,8 +46,10 @@ class FormsController extends BaseMessageController
             return $this->asModelFailure($contact, Craft::t('campaign', 'Couldn’t save contact.'), $modelName);
         }
 
+        $message = $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.');
+        
         if ($this->request->getAcceptsJson()) {
-            return $this->asSuccess($mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),);
+            return $message;
         }
 
         if ($this->request->getBodyParam('redirect')) {
@@ -56,7 +58,7 @@ class FormsController extends BaseMessageController
 
         return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
             'title' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
-            'message' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.'),
+            'message' => $message,
             'mailingList' => $mailingList,
         ]);
     }
