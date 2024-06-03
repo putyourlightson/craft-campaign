@@ -14,6 +14,7 @@ use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\records\BatchEmailRecord;
 use putyourlightson\campaign\records\CampaignRecord;
 use putyourlightson\campaign\records\CampaignTypeRecord;
 use putyourlightson\campaign\records\ContactCampaignRecord;
@@ -285,6 +286,24 @@ class Install extends Migration
             ]);
         }
 
+        if (!$this->db->tableExists(BatchEmailRecord::tableName())) {
+            $this->createTable(BatchEmailRecord::tableName(), [
+                'id' => $this->integer()->notNull(),
+                'sid' => $this->shortUid(),
+                'fromName' => $this->string(),
+                'fromEmail' => $this->string(),
+                'replyToEmail' => $this->string(),
+                'to' => $this->string(),
+                'subject' => $this->text(),
+                'htmlBody' => $this->mediumText(),
+                'plaintextBody' => $this->mediumText(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+                'PRIMARY KEY([[id]])',
+            ]);
+        }
+
         if (!$this->db->tableExists(ImportRecord::tableName())) {
             $this->createTable(ImportRecord::tableName(), [
                 'id' => $this->primaryKey(),
@@ -403,6 +422,7 @@ class Install extends Migration
     protected function deleteTables(): void
     {
         // Drop tables with foreign keys first
+        $this->dropTableIfExists(BatchEmailRecord::tableName());
         $this->dropTableIfExists(SendoutRecord::tableName());
         $this->dropTableIfExists(ContactCampaignRecord::tableName());
         $this->dropTableIfExists(LinkRecord::tableName());

@@ -60,6 +60,7 @@ use putyourlightson\campaign\integrations\feedme\CampaignFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\ContactFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\MailingListFeedMeElement;
 use putyourlightson\campaign\models\SettingsModel;
+use putyourlightson\campaign\services\BatchEmailService;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
 use putyourlightson\campaign\services\ContactsService;
@@ -90,6 +91,7 @@ use yii\queue\Queue;
 use yii\web\ForbiddenHttpException;
 
 /**
+ * @property-read BatchEmailService $batchEmail
  * @property-read CampaignsService $campaigns
  * @property-read CampaignTypesService $campaignTypes
  * @property-read ContactsService $contacts
@@ -138,6 +140,7 @@ class Campaign extends Plugin
     {
         return [
             'components' => [
+                'batchEmail' => ['class' => BatchEmailService::class],
                 'campaigns' => ['class' => CampaignsService::class],
                 'campaignTypes' => ['class' => CampaignTypesService::class],
                 'contacts' => ['class' => ContactsService::class],
@@ -181,7 +184,7 @@ class Campaign extends Plugin
     /**
      * @inheritdoc
      */
-    public string $schemaVersion = '2.13.0';
+    public string $schemaVersion = '2.16.0';
 
     /**
      * @inheritdoc

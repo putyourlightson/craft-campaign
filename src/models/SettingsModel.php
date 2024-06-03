@@ -10,11 +10,13 @@ use craft\base\FieldInterface;
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\behaviors\FieldLayoutBehavior;
+use craft\mail\transportadapters\TransportAdapterInterface;
 use craft\models\FieldLayout;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactEmailFieldLayoutElement;
 use putyourlightson\campaign\fieldlayoutelements\contacts\ContactFieldLayoutTab;
+use putyourlightson\campaign\services\BatchEmailService;
 use yii\validators\EmailValidator;
 
 /**
@@ -110,6 +112,12 @@ class SettingsModel extends Model
      * @var array|null The transport type’s settings
      */
     public ?array $transportSettings = null;
+
+    /**
+     * @var bool Whether batch email sending is enabled (pro edition only)
+     * @since 2.16.0
+     */
+    public bool $batchEmailSending = true;
 
     /**
      * @var array|null Default notification contact IDs
@@ -363,6 +371,32 @@ class SettingsModel extends Model
     public function getContactFields(): array
     {
         return $this->getContactFieldLayout()->getCustomFields();
+    }
+
+    /**
+     * Returns whether batch email sending is supported by the provided transport adapter.
+     */
+    public function isBatchEmailSendingSupported(TransportAdapterInterface|string|null $adapter): bool
+    {
+        if (!Campaign::$plugin->getIsPro()) {
+            return false;
+        }
+
+        if ($adapter === null) {
+            return false;
+        }
+
+        $adapterClass = is_string($adapter) ? $adapter : $adapter::class;
+
+        return isset(BatchEmailService::BATCH_MAILERS[$adapterClass]);
+    }
+
+    /**
+     * Returns whether emails should be sent in batches.
+     */
+    public function shouldSendInBatches(): bool
+    {
+        return $this->isBatchEmailSendingSupported($this->transportType) && $this->batchEmailSending;
     }
 
     /**

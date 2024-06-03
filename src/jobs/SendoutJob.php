@@ -87,6 +87,10 @@ class SendoutJob extends BaseBatchedJob implements RetryableJobInterface
 
         parent::execute($queue);
 
+        // TODO: move what’s below this into the `BaseBatchedJob::afterBatch` method in Campaign 3.
+
+        Campaign::$plugin->batchEmail->sendBatchEmails($sendout);
+
         // TODO: move what’s below this into the `BaseBatchedJob::after` method in Campaign 3.
 
         if ($this->itemOffset < $this->totalItems()) {

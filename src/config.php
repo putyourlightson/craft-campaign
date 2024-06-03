@@ -71,6 +71,9 @@ return [
         // The transport type’s settings
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
+        // Whether batch email sending is enabled (pro edition only)
+        //'batchEmailSending' = true,
+
         // Default notification contact IDs
         //'defaultNotificationContactIds' = [1],
 

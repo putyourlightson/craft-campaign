@@ -70,7 +70,16 @@
         {% set isCurrent = (className(_adapter) == className(adapter)) %}
         <div id="{{ className(_adapter)|id }}"{% if not isCurrent %} class="hidden"{% endif %}>
             {% namespace 'transportTypes[' ~ className(_adapter) ~ ']' %}
-                {{ (isCurrent ? adapter : _adapter).getSettingsHtml()|raw }}
+                {% set currentAdapter = isCurrent ? adapter : _adapter %}
+                {{ currentAdapter.getSettingsHtml()|raw }}
+                {% if settings.isBatchEmailSendingSupported(currentAdapter) %}
+                    {{ forms.lightswitchField({
+                        label: 'Batch Email Sending',
+                        name: 'batchEmailSending',
+                        instructions: 'Whether emails should be sent in batches, for faster sendouts.'|t('campaign'),
+                        on: settings.batchEmailSending,
+                    }) }}
+                {% endif %}
             {% endnamespace %}
         </div>
     {% endfor %}

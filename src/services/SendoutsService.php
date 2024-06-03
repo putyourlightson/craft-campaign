@@ -335,7 +335,11 @@ class SendoutsService extends Component
             return;
         }
 
-        $success = $this->sendMessage($message);
+        if (Campaign::$plugin->settings->shouldSendInBatches()) {
+            $success = Campaign::$plugin->batchEmail->addMessage($sendout, $message);
+        } else {
+            $success = $this->sendMessage($message);
+        }
 
         if ($success) {
             // Update sent date and save

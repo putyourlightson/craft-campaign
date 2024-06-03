@@ -210,6 +210,11 @@ class SettingsController extends BaseSettingsController
 
         $settings = $this->getEmailSettingsFromPost();
 
+        if (isset($settings->transportSettings['batchEmailSending'])) {
+            $settings->batchEmailSending = $settings->transportSettings['batchEmailSending'];
+            unset($settings->transportSettings['batchEmailSending']);
+        }
+
         // Create the transport adapter so that we can validate it
         /** @var BaseTransportAdapter $adapter */
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
