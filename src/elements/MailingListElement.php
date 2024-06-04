@@ -38,7 +38,6 @@ use yii\web\Response;
  * @property-read int $subscribedCount
  * @property-read MailingListTypeModel $mailingListType
  * @property-read ContactElement[] $complainedContacts
- * @property-read string[] $cacheTags
  * @property-read null|string $postEditUrl
  * @property-read array[] $crumbs
  * @property-read ContactElement[] $subscribedContacts
@@ -296,7 +295,7 @@ class MailingListElement extends Element
     /**
      * @inheritdoc
      */
-    public function cacheTags(): array
+    protected function cacheTags(): array
     {
         return [
             'mailingListType:' . $this->mailingListTypeId,

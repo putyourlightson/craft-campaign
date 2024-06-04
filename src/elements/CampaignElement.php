@@ -460,7 +460,7 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
-    public function cacheTags(): array
+    protected function cacheTags(): array
     {
         return [
             'campaignType:' . $this->campaignTypeId,
