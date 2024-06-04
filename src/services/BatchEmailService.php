@@ -7,9 +7,8 @@ namespace putyourlightson\campaign\services;
 
 use craft\base\Component;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Component as ComponentHelper;
 use craft\mail\Message;
-use putyourlightson\campaign\batchmailers\BatchMailerInterface;
+use putyourlightson\campaign\base\BaseBatchMailer;
 use putyourlightson\campaign\batchmailers\PostmarkBatchMailer;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\SendoutElement;
@@ -17,7 +16,7 @@ use putyourlightson\campaign\records\BatchEmailRecord;
 
 class BatchEmailService extends Component
 {
-    const BATCH_MAILERS = [
+    public const BATCH_MAILERS = [
         'craftcms\postmark\Adapter' => PostmarkBatchMailer::class,
     ];
 
@@ -50,6 +49,7 @@ class BatchEmailService extends Component
             return false;
         }
 
+        /** @var BatchEmailRecord[] $emails */
         $emails = BatchEmailRecord::find()
             ->where(['sid' => $sendout->sid])
             ->all();
@@ -59,14 +59,14 @@ class BatchEmailService extends Component
         return $batchMailer->sendBatchEmails($emails);
     }
 
-    private function createBatchMailer(): BatchMailerInterface
+    private function createBatchMailer(): BaseBatchMailer
     {
         $transportType = Campaign::$plugin->settings->transportType;
         $batchMailerType = self::BATCH_MAILERS[$transportType];
 
-        return ComponentHelper::createComponent([
-            'type' => $batchMailerType,
-            'settings' => Campaign::$plugin->settings->transportSettings,
-        ], BatchMailerInterface::class);
+        $batchMailer = new $batchMailerType();
+        $batchMailer->setAttributes(Campaign::$plugin->settings->transportSettings);
+
+        return $batchMailer;
     }
 }

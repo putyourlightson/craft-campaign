@@ -5,11 +5,13 @@
 
 namespace putyourlightson\campaign\batchmailers;
 
-use Craft;
-use craftcms\postmark\Adapter;
 use GuzzleHttp\Exception\ConnectException;
+use putyourlightson\campaign\base\BaseBatchMailer;
 
-class PostmarkBatchMailer implements BatchMailerInterface
+/**
+ * https://postmarkapp.com/developer/user-guide/send-email-with-api/batch-emails
+ */
+class PostmarkBatchMailer extends BaseBatchMailer
 {
     public const MAX_BATCH_SIZE = 500;
 
@@ -19,15 +21,12 @@ class PostmarkBatchMailer implements BatchMailerInterface
 
     /**
      * @inheritdoc
-     *
-     * @param Adapter $adapter
      */
     public function sendBatchEmails(array $emails): bool
     {
         $messages = [];
 
         foreach ($emails as $email) {
-            // https://postmarkapp.com/developer/user-guide/send-email-with-api/batch-emails
             $messages[] = [
                 'From' => $email->fromEmail,
                 'To' => $email->to,
@@ -38,10 +37,7 @@ class PostmarkBatchMailer implements BatchMailerInterface
             ];
         }
 
-        $client = Craft::createGuzzleClient([
-            'timeout' => 60,
-            'connect_timeout' => 60,
-        ]);
+        $client = $this->getClient();
 
         while (count($messages) > 0) {
             $batchMessages = array_splice($messages, 0, self::MAX_BATCH_SIZE);
@@ -51,7 +47,7 @@ class PostmarkBatchMailer implements BatchMailerInterface
                     'headers' => [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json',
-                        'X-Postmark-Server-Token' => $adapter->token,
+                        'X-Postmark-Server-Token' => $this->token,
                     ],
                     'form_params' => $batchMessages,
                 ]);
