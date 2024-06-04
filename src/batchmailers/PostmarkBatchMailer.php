@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\batchmailers;
 
 use GuzzleHttp\Exception\ConnectException;
-use putyourlightson\campaign\base\BaseBatchMailer;
 
 /**
  * https://postmarkapp.com/developer/user-guide/send-email-with-api/batch-emails

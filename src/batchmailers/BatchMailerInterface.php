@@ -3,7 +3,7 @@
  * @copyright Copyright (c) PutYourLightsOn
  */
 
-namespace putyourlightson\campaign\base;
+namespace putyourlightson\campaign\batchmailers;
 
 use putyourlightson\campaign\records\BatchEmailRecord;
 
