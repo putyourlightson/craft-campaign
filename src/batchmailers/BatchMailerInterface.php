@@ -14,5 +14,5 @@ interface BatchMailerInterface
      *
      * @param BatchEmailRecord[] $emails
      */
-    public function sendBatchEmails(array $emails): bool;
+    public function sendBatchEmails(array $emails): void;
 }

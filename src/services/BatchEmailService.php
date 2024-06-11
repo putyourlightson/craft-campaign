@@ -42,11 +42,11 @@ class BatchEmailService extends Component
     /**
      * Sends batched emails for the provided sendout.
      */
-    public function sendBatchEmails(SendoutElement $sendout): bool
+    public function sendBatchEmails(SendoutElement $sendout): void
     {
         $settings = Campaign::$plugin->getSettings();
         if (!$settings->isBatchEmailSendingSupported($settings->transportType)) {
-            return false;
+            return;
         }
 
         /** @var BatchEmailRecord[] $emails */
@@ -54,9 +54,7 @@ class BatchEmailService extends Component
             ->where(['sid' => $sendout->sid])
             ->all();
 
-        $batchMailer = $this->createBatchMailer();
-
-        return $batchMailer->sendBatchEmails($emails);
+        $this->createBatchMailer()->sendBatchEmails($emails);
     }
 
     private function createBatchMailer(): BaseBatchMailer

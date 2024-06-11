@@ -15,16 +15,23 @@ class PostmarkBatchMailer extends BaseBatchMailer
     public const MAX_BATCH_SIZE = 500;
 
     public ?string $token = null;
-
     public ?string $messageStream = null;
 
     /**
      * @inheritdoc
      */
-    public function sendBatchEmails(array $emails): bool
+    public function sendBatchEmails(array $emails): void
     {
-        $messages = [];
+        $client = $this->createClient([
+            'base_uri' => 'https://api.postmarkapp.com',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'X-Postmark-Server-Token' => $this->token,
+            ],
+        ]);
 
+        $messages = [];
         foreach ($emails as $email) {
             $messages[] = [
                 'From' => $email->fromEmail,
@@ -36,25 +43,15 @@ class PostmarkBatchMailer extends BaseBatchMailer
             ];
         }
 
-        $client = $this->getClient();
-
         while (count($messages) > 0) {
-            $batchMessages = array_splice($messages, 0, self::MAX_BATCH_SIZE);
+            $messageBatch = array_splice($messages, 0, self::MAX_BATCH_SIZE);
 
             try {
-                $client->post('https://api.postmarkapp.com/email/batch', [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                        'X-Postmark-Server-Token' => $this->token,
-                    ],
-                    'form_params' => $batchMessages,
+                $client->post('/email/batch', [
+                    'form_params' => $messageBatch,
                 ]);
             } catch (ConnectException) {
-                return false;
             }
         }
-
-        return true;
     }
 }

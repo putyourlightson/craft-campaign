@@ -12,9 +12,9 @@ use GuzzleHttp\Client;
 abstract class BaseBatchMailer extends Model implements BatchMailerInterface
 {
     /**
-     * Returns a Guzzle client using the provided config.
+     * Creates and returns a Guzzle client using the provided config.
      */
-    public function getClient(array $config = []): Client
+    public function createClient(array $config = []): Client
     {
         $config = array_merge([
             'timeout' => 60,
