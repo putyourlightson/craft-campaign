@@ -37,7 +37,6 @@ use yii\web\Response;
 /**
  * @property-read int $openRate
  * @property-read int $clickRate
- * @property-read string[] $cacheTags
  * @property-read null|string $postEditUrl
  * @property-read array[] $crumbs
  * @property-read string $reportUrl
@@ -452,7 +451,7 @@ class CampaignElement extends Element
      * @inheritdoc
      * @since 3.0.0
      */
-    public function cacheTags(): array
+    protected function cacheTags(): array
     {
         return [
             'campaignType:' . $this->campaignTypeId,
