@@ -5,6 +5,7 @@
 ### Added
 
 - Added the ability to enforce spam prevention on front-end forms using Cloudflare Turnstile ([#447](https://github.com/putyourlightson/craft-campaign/issues/447)).
+- Added the `resave/campaigns`, `resave/contacts` and `resave/mailing-lists` console commands ([#481](https://github.com/putyourlightson/craft-campaign/issues/481)).
 
 ## 2.15.3 - 2024-05-06
 
