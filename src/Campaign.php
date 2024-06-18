@@ -7,8 +7,11 @@ namespace putyourlightson\campaign;
 
 use Craft;
 use craft\base\Plugin;
+use craft\console\Controller as ConsoleController;
+use craft\console\controllers\ResaveController;
 use craft\controllers\PreviewController;
 use craft\elements\User;
+use craft\events\DefineConsoleActionsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
 use craft\events\RebuildConfigEvent;
@@ -221,6 +224,10 @@ class Campaign extends Plugin
             $this->controllerMap = ['t' => TrackerController::class];
         }
 
+        if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+            $this->registerResaveCommands();
+        }
+
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $this->registerNativeFields();
             $this->registerAssetBundles();
@@ -346,7 +353,7 @@ class Campaign extends Plugin
     /**
      * Returns whether the current user can edit contacts.
      */
-    public function userCanEditContacts(): bool
+    public function canUserEditContacts(): bool
     {
         /** @var User|null $currentUser */
         $currentUser = Craft::$app->getUser()->getIdentity();
@@ -443,6 +450,7 @@ class Campaign extends Plugin
             'campaign/settings/contact' => 'campaign/settings/edit-contact',
             'campaign/settings/geoip' => 'campaign/settings/edit-geoip',
             'campaign/settings/recaptcha' => 'campaign/settings/edit-recaptcha',
+            'campaign/settings/turnstile' => 'campaign/settings/edit-turnstile',
             'campaign/settings/campaigntypes' => 'campaign/campaign-types/index',
             'campaign/settings/campaigntypes/new' => 'campaign/campaign-types/edit',
             'campaign/settings/campaigntypes/<campaignTypeId:\d+>' => 'campaign/campaign-types/edit',
@@ -842,6 +850,62 @@ class Campaign extends Plugin
                 $event->permissions[] = [
                     'heading' => $this->name,
                     'permissions' => $permissions,
+                ];
+            }
+        );
+    }
+
+    /**
+     * Registers resave commands.
+     *
+     * @since 2.16.0
+     */
+    private function registerResaveCommands(): void
+    {
+        Event::on(ResaveController::class, ConsoleController::EVENT_DEFINE_ACTIONS,
+            function(DefineConsoleActionsEvent $event) {
+                $event->actions['campaigns'] = [
+                    'action' => function(): int {
+                        /** @var ResaveController $controller */
+                        $controller = Craft::$app->controller;
+                        $criteria = [];
+                        if ($controller->type !== null) {
+                            $criteria['campaignType'] = explode(',', $controller->type);
+                        }
+                        return $controller->resaveElements(CampaignElement::class, $criteria);
+                    },
+                    'options' => ['type'],
+                    'helpSummary' => 'Re-saves Campaign campaigns.',
+                    'optionsHelp' => [
+                        'type' => 'The campaign type handle(s) of the campaigns to resave.',
+                    ],
+                ];
+
+                $event->actions['mailing-lists'] = [
+                    'action' => function(): int {
+                        /** @var ResaveController $controller */
+                        $controller = Craft::$app->controller;
+                        $criteria = [];
+                        if ($controller->type !== null) {
+                            $criteria['mailingListType'] = explode(',', $controller->type);
+                        }
+                        return $controller->resaveElements(MailingListElement::class, $criteria);
+                    },
+                    'options' => ['type'],
+                    'helpSummary' => 'Re-saves Campaign mailing lists.',
+                    'optionsHelp' => [
+                        'type' => 'The mailing lists type handle(s) of the mailing lists to resave.',
+                    ],
+                ];
+
+                $event->actions['contacts'] = [
+                    'action' => function(): int {
+                        /** @var ResaveController $controller */
+                        $controller = Craft::$app->controller;
+                        return $controller->resaveElements(ContactElement::class);
+                    },
+                    'options' => [],
+                    'helpSummary' => 'Re-saves Campaign contacts.',
                 ];
             }
         );

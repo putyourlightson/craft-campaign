@@ -5,7 +5,6 @@
 
 namespace putyourlightson\campaign\variables;
 
-use craft\helpers\App;
 use craft\helpers\Template;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
@@ -20,6 +19,7 @@ use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
 use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\helpers\TurnstileHelper;
 use putyourlightson\campaign\models\CampaignTypeModel;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\models\MailingListTypeModel;
@@ -207,32 +207,55 @@ class CampaignVariable
 
         if ($settings->reCaptcha) {
             $id = 'campaign-recaptcha-' . StringHelper::randomString(6);
-            $reCaptchaSiteKey = App::parseEnv($settings->reCaptchaSiteKey);
+            $reCaptchaSiteKey = $settings->getRecaptchaSiteKey();
+            $action = RecaptchaHelper::RECAPTCHA_ACTION;
 
-            $output = '
-                <input id="' . $id . '" type="hidden" name="g-recaptcha-response" value="">
-                <script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSiteKey . '"></script>
+            $output = <<<HTML
+                <input id="$id" type="hidden" name="g-recaptcha-response" value="">
+                <script src="https://www.google.com/recaptcha/api.js?render=$reCaptchaSiteKey"></script>
                 <script>
                     grecaptcha.ready(function() {
-                        grecaptcha.execute("' . $reCaptchaSiteKey . '", {
-                            action: "' . RecaptchaHelper::RECAPTCHA_ACTION . '"
+                        grecaptcha.execute('$reCaptchaSiteKey', {
+                            action: '$action',
                         }).then(function(token) {
-                            document.getElementById("' . $id . '").value = token;
+                            document.getElementById('$id').value = token;
                         });
                     });
                 </script>
-            ';
+            HTML;
         }
 
         return Template::raw($output);
     }
 
     /**
-     * Returns reCAPTCHA site key.
+     * Returns Turnstile markup.
      */
-    public function getRecaptchaSiteKey(): string
+    public function getTurnstile(): Markup
     {
-        return App::parseEnv(Campaign::$plugin->settings->reCaptchaSiteKey);
+        $output = '';
+        $settings = Campaign::$plugin->settings;
+
+        if ($settings->turnstile) {
+            $id = 'campaign-turnstile-' . StringHelper::randomString(6);
+            $turnstileSiteKey = $settings->getTurnstileSiteKey();
+            $action = TurnstileHelper::TURNSTILE_ACTION;
+
+            $output = <<<HTML
+                <input id="$id" type="hidden" name="cf-turnstile-response" value="">
+                <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+                <script>
+                    turnstile.ready(function () {
+                        turnstile.render('#$id', {
+                            sitekey: '$turnstileSiteKey',
+                            action: '$action',
+                        });
+                    });
+                </script>
+            HTML;
+        }
+
+        return Template::raw($output);
     }
 
     /**
@@ -246,8 +269,8 @@ class CampaignVariable
     /**
      * Returns whether the current user can edit contacts.
      */
-    public function userCanEditContacts(): bool
+    public function canUserEditContacts(): bool
     {
-        return Campaign::$plugin->userCanEditContacts();
+        return Campaign::$plugin->canUserEditContacts();
     }
 }

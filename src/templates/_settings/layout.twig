@@ -43,6 +43,11 @@
                 </a>
             </li>
             <li>
+                <a class="{{ segment3 == 'turnstile' ? 'sel' }}" href="{{ url('campaign/settings/turnstile') }}">
+                    {{ 'Turnstile Settings'|t('campaign') }}
+                </a>
+            </li>
+            <li>
                 <a class="{{ segment3 == 'campaigntypes' ? 'sel' }}" href="{{ url('campaign/settings/campaigntypes') }}">
                     {{ 'Campaign Types'|t('campaign') }}
                 </a>

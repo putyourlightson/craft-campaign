@@ -6,12 +6,12 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
-use craft\helpers\App;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\RecaptchaHelper;
+use putyourlightson\campaign\helpers\TurnstileHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -30,6 +30,7 @@ class FormsController extends BaseMessageController
     {
         $this->requirePostRequest();
         $this->validateRecaptcha();
+        $this->validateTurnstile();
 
         $mailingList = $this->getMailingListFromParams();
         if ($mailingList === null) {
@@ -47,7 +48,7 @@ class FormsController extends BaseMessageController
         }
 
         $message = $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Thank you for subscribing to the mailing list. Please check your email for a verification link.') : Craft::t('campaign', 'You have successfully subscribed to the mailing list.');
-        
+
         if ($this->request->getAcceptsJson()) {
             return $this->asSuccess($message);
         }
@@ -70,6 +71,7 @@ class FormsController extends BaseMessageController
     {
         $this->requirePostRequest();
         $this->validateRecaptcha();
+        $this->validateTurnstile();
 
         $mailingList = $this->getMailingListFromParams();
         if ($mailingList === null) {
@@ -103,6 +105,7 @@ class FormsController extends BaseMessageController
     {
         $this->requirePostRequest();
         $this->validateRecaptcha();
+        $this->validateTurnstile();
 
         // Get verified contact
         $contact = $this->getVerifiedContact();
@@ -249,19 +252,34 @@ class FormsController extends BaseMessageController
     }
 
     /**
-     * Validates reCAPTCHA if enabled.
+     * Validates reCAPTCHA, if enabled.
      */
     private function validateRecaptcha(): void
     {
-        // Validate reCAPTCHA if enabled
         if (Campaign::$plugin->settings->reCaptcha) {
             $response = $this->request->getParam('g-recaptcha-response');
 
             if ($response === null) {
-                throw new ForbiddenHttpException(App::parseEnv(Campaign::$plugin->settings->reCaptchaErrorMessage));
+                throw new ForbiddenHttpException(Campaign::$plugin->settings->getRecaptchaErrorMessage());
             }
 
             RecaptchaHelper::validateRecaptcha($response, $this->request->getRemoteIP());
+        }
+    }
+
+    /**
+     * Validates Turnstile, if enabled.
+     */
+    private function validateTurnstile(): void
+    {
+        if (Campaign::$plugin->settings->turnstile) {
+            $response = $this->request->getParam('cf-turnstile-response');
+
+            if ($response === null) {
+                throw new ForbiddenHttpException(Campaign::$plugin->settings->getTurnstileErrorMessage());
+            }
+
+            TurnstileHelper::validate($response, $this->request->getRemoteIP());
         }
     }
 
