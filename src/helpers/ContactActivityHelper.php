@@ -6,7 +6,6 @@
 namespace putyourlightson\campaign\helpers;
 
 use Craft;
-use craft\helpers\App;
 use craft\helpers\Json;
 use DateTime;
 use DeviceDetector\DeviceDetector;
@@ -83,7 +82,7 @@ class ContactActivityHelper
 
         try {
             $ip = Craft::$app->getRequest()->getRemoteIP();
-            $apiKey = App::parseEnv(Campaign::$plugin->settings->ipstackApiKey);
+            $apiKey = Campaign::$plugin->settings->getIpstackApiKey();
 
             /** @noinspection HttpUrlsUsage */
             $response = $client->get('http://api.ipstack.com/' . $ip . '?access_key=' . $apiKey);

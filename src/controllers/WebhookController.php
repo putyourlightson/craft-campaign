@@ -9,7 +9,6 @@ use Aws\Sns\Exception\InvalidSnsMessageException;
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use Craft;
-use craft\helpers\App;
 use craft\helpers\Json;
 use craft\web\Controller;
 use EllipticCurve\Ecdsa;
@@ -54,7 +53,7 @@ class WebhookController extends Controller
     {
         // Verify API key
         $key = $this->request->getParam('key');
-        $apiKey = App::parseEnv(Campaign::$plugin->settings->apiKey);
+        $apiKey = Campaign::$plugin->settings->getApiKey();
 
         if ($key === null || empty($apiKey) || $key != $apiKey) {
             throw new ForbiddenHttpException('Unauthorised access.');
@@ -410,7 +409,7 @@ class WebhookController extends Controller
             return true;
         }
 
-        $signingSecret = (string)App::parseEnv(Campaign::$plugin->settings->mailersendWebhookSigningSecret);
+        $signingSecret = Campaign::$plugin->settings->getMailersendWebhookSigningSecret();
         $signature = $this->request->headers->get('Signature', '');
         $hashedValue = hash_hmac('sha256', $body, $signingSecret);
 
@@ -426,7 +425,7 @@ class WebhookController extends Controller
             return true;
         }
 
-        $signingKey = (string)App::parseEnv(Campaign::$plugin->settings->mailgunWebhookSigningKey);
+        $signingKey = Campaign::$plugin->settings->getMailgunWebhookSigningSecret();
         $hashedValue = hash_hmac('sha256', $timestamp . $token, $signingKey);
 
         return hash_equals($signature, $hashedValue);
@@ -443,7 +442,7 @@ class WebhookController extends Controller
 
         $signature = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Signature', '');
         $timestamp = $this->request->headers->get('X-Twilio-Email-Event-Webhook-Timestamp', '');
-        $verificationKey = (string)App::parseEnv(Campaign::$plugin->settings->sendgridWebhookVerificationKey);
+        $verificationKey = Campaign::$plugin->settings->getSendgridWebhookSigningSecret();
 
         // https://github.com/sendgrid/sendgrid-php/blob/9335dca98bc64456a72db73469d1dd67db72f6ea/lib/eventwebhook/EventWebhook.php#L23-L26
         $publicKey = PublicKey::fromString($verificationKey);

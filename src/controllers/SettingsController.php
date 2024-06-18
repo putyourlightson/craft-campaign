@@ -177,6 +177,23 @@ class SettingsController extends BaseSettingsController
     }
 
     /**
+     * Edit Turnstile settings.
+     *
+     * @param SettingsModel|null $settings The settings being edited, if there were any validation errors.
+     */
+    public function actionEditTurnstile(SettingsModel $settings = null): Response
+    {
+        if ($settings === null) {
+            $settings = Campaign::$plugin->settings;
+        }
+
+        return $this->renderTemplate('campaign/_settings/turnstile', [
+            'settings' => $settings,
+            'config' => Craft::$app->getConfig()->getConfigFromFile('campaign'),
+        ]);
+    }
+
+    /**
      * Saves general settings.
      */
     public function actionSaveGeneral(): ?Response
@@ -317,6 +334,29 @@ class SettingsController extends BaseSettingsController
         }
 
         return $this->asSuccess(Craft::t('campaign', 'reCAPTCHA settings saved.'));
+    }
+
+    /**
+     * Saves Turnstile settings.
+     */
+    public function actionSaveTurnstile(): ?Response
+    {
+        $this->requirePostRequest();
+
+        $settings = Campaign::$plugin->settings;
+
+        // Set the simple stuff
+        $settings->turnstile = $this->request->getBodyParam('turnstile', $settings->turnstile);
+        $settings->turnstileSiteKey = $this->request->getBodyParam('turnstileSiteKey', $settings->turnstileSiteKey);
+        $settings->turnstileSecretKey = $this->request->getBodyParam('turnstileSecretKey', $settings->turnstileSecretKey);
+        $settings->turnstileErrorMessage = $this->request->getBodyParam('turnstileErrorMessage', $settings->turnstileErrorMessage);
+
+        // Save it
+        if (!Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save Turnstile settings.'), 'settings');
+        }
+
+        return $this->asSuccess(Craft::t('campaign', 'Turnstile settings saved.'));
     }
 
     /**
