@@ -49,6 +49,9 @@ class ContactIsAttendingConditionRule extends BaseConditionRule implements Eleme
         /** @phpstan-ignore-next-line */
         $ids = $rsvp->attending->ids();
 
+        /**
+         * Filters contacts by IDs matching those that are attending.
+         */
         $query->andWhere([
             'id' => $ids,
         ]);
