@@ -39,10 +39,14 @@ class ContactIsAttendingConditionRule extends BaseConditionRule implements Eleme
      */
     public function modifyQuery(ElementQueryInterface $query): void
     {
+        /**
+         * Gets the RSVP entry that contains an entries field with the handle `attending`, that contains the IDs of the contacts that are attending.
+         */
         $rsvp = Entry::find()
             ->section('rsvp')
             ->one();
 
+        /** @phpstan-ignore-next-line */
         $ids = $rsvp->attending->ids();
 
         $query->andWhere([

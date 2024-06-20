@@ -10,7 +10,6 @@ use craft\base\ElementInterface;
 use craft\elements\conditions\ElementConditionRuleInterface;
 use craft\elements\db\ElementQueryInterface;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\db\ContactElementQuery;
 
 class ContactIsUserConditionRule extends BaseConditionRule implements ElementConditionRuleInterface
 {
@@ -40,7 +39,9 @@ class ContactIsUserConditionRule extends BaseConditionRule implements ElementCon
      */
     public function modifyQuery(ElementQueryInterface $query): void
     {
-        /** @var ContactElementQuery $query */
+        /**
+         * Filters contacts by those that have non-empty user IDs.
+         */
         $query->andWhere([
             'not', [
                 'userId' => null,
