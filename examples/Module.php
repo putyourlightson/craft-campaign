@@ -5,6 +5,7 @@ namespace modules;
 use Craft;
 use craft\base\conditions\BaseCondition;
 use craft\events\RegisterConditionRulesEvent;
+use modules\conditions\segments\ContactIsAttendingConditionRule;
 use modules\conditions\segments\ContactIsUserConditionRule;
 use modules\conditions\sendouts\LastEntryHasImageConditionRule;
 use modules\conditions\sendouts\MondayMorningSendoutConditionRule;
@@ -26,6 +27,7 @@ class Module extends \yii\base\Module
             BaseCondition::EVENT_REGISTER_CONDITION_RULES,
             function(RegisterConditionRulesEvent $event) {
                 $event->conditionRules[] = ContactIsUserConditionRule::class;
+                $event->conditionRules[] = ContactIsAttendingConditionRule::class;
             }
         );
 
