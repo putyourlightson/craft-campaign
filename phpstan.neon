@@ -11,5 +11,6 @@ parameters:
         # Exclude Feed Me integration until it can installed alongside Pest
         - %currentWorkingDirectory%/vendor/putyourlightson/craft-campaign/src/integrations/feedme/*
     ignoreErrors:
-        # Exclude Feed Me events until it can installed alongside Pest
-        - '*craft\\feedme\\events\\RegisterFeedMeElementsEvent*'
+        -
+            # Exclude Feed Me events until it can installed alongside Pest
+            message: '*RegisterFeedMeElementsEvent*'
