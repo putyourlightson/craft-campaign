@@ -53,16 +53,14 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
         return [];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function modifyQuery(ElementQueryInterface $query): void
     {
         /** @var ContactElementQuery $query */
-        $query->innerJoin(ContactCampaignRecord::tableName(), '[[campaign_contacts.id]] = [[contactId]]');
-
-        $query->andWhere([
-            'not', [
-                $this->operatorColumn($this->operator) => null,
-            ],
-        ]);
+        $query->innerJoin(ContactCampaignRecord::tableName(), '[[campaign_contacts.id]] = [[contactId]]')
+            ->andWhere($this->getOperatorCondition());
 
         $elementId = $this->getElementId();
         if ($elementId !== null) {
@@ -76,7 +74,7 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
     protected function inputHtml(): string
     {
         return match ($this->operator) {
-            'openedCampaign', 'clickedCampaign' => parent::inputHtml(),
+            'openedCampaign', 'clickedCampaign', 'neverOpenedCampaign' => parent::inputHtml(),
             default => '',
         };
     }
@@ -86,8 +84,10 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
         return [
             'opened',
             'clicked',
+            'neverOpened',
             'openedCampaign',
             'clickedCampaign',
+            'neverOpenedCampaign',
         ];
     }
 
@@ -99,8 +99,10 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
         return match ($operator) {
             'opened' => Craft::t('campaign', 'opened any campaign'),
             'clicked' => Craft::t('campaign', 'clicked a link in any campaign'),
+            'neverOpened' => Craft::t('campaign', 'never opened any campaign'),
             'openedCampaign' => Craft::t('campaign', 'opened the campaign'),
             'clickedCampaign' => Craft::t('campaign', 'clicked a link in the campaign'),
+            'neverOpenedCampaign' => Craft::t('campaign', 'never opened the campaign'),
             default => parent::operatorLabel($operator),
         };
     }
@@ -114,11 +116,7 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
             ->where([
                 'contactId' => $element->id,
             ])
-            ->andWhere([
-                'not', [
-                    $this->operatorColumn($this->operator) => null,
-                ],
-            ]);
+            ->andWhere($this->getOperatorCondition());
 
         $elementId = $this->getElementId();
         if ($elementId !== null) {
@@ -129,13 +127,24 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
     }
 
     /**
-     * Returns the column to query on based on the operator.
+     * Returns the condition for the operator.
      */
-    private function operatorColumn(string $operator): string
+    private function getOperatorCondition(): array
     {
-        return match ($operator) {
+        $operatorColumn = match ($this->operator) {
             'clicked', 'clickedCampaign' => 'clicked',
             default => 'opened',
         };
+
+        if (str_starts_with($this->operator, 'never')) {
+            return [$operatorColumn => null];
+        }
+
+        return [
+            'not',
+            [
+                $operatorColumn => null,
+            ],
+        ];
     }
 }

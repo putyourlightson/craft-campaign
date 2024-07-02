@@ -1,5 +1,15 @@
 # Release Notes for Campaign
 
+## 3.3.0 - 2024-07-02
+
+### Added
+
+- Added the ability to segment contacts by campaign activity with a “never opened” operator  ([#482](https://github.com/putyourlightson/craft-campaign/issues/482)).
+
+### Changed
+
+- At most one campaign activity rule can now be added to the contact condition in a segment.
+
 ## 3.2.0 - 2024-06-25
 
 ### Added
