@@ -1,7 +1,3 @@
-/*
-* Colour Palette: 600 colours from https://material.io/guidelines/style/color.html#color-color-palette
-*/
-
 table th.thin, table td.thin {
     white-space: nowrap;
 }
@@ -183,43 +179,38 @@ table th.thin, table td.thin {
 }
 
 .status.sent {
-    background: #27AE60;
-    border-color: rgba(0, 0, 0, 0) !important;
+    background-color: var(--enabled-color);
+    border-color: transparent !important;
 }
 
 .status.sending {
-    background: rgba(39, 174, 96, 0.2);
-    border-color: #27AE60 !important;
+    background-color: rgb(32, 160, 123, 0.3);
+    border-color: var(--enabled-color) !important;
 }
 
 .status.queued {
-    background: rgba(242, 132, 45, 0.2);
-    border-color: #F2842D !important;
+    background-color: rgb(203, 110, 23, 0.3);
+    border-color: var(--pending-color) !important;
+}
+
+.status.blocked, .status.closed, .status.cancelled, .status.paused {
+    background-color: var(--disabled-color);
+    border-color: transparent !important;
 }
 
 .status.paused {
-    background: rgba(208, 2, 27, 0.2);
-    border-color: #D6301A !important;
-}
-
-.status.closed, .status.cancelled {
-    background: #D6301A;
-    border-color: rgba(0, 0, 0, 0) !important;
+    background-color: rgb(207, 17, 36, 0.3);
+    border-color: var(--disabled-color) !important;
 }
 
 .status.complained {
-    background: #6D4C41;
-    border-color: rgba(0, 0, 0, 0) !important;
+    background-color: var(--ui-control-color);
+    border-color: transparent !important;
 }
 
-.status.failed, .status.bounced {
-    background: #263238;
-    border-color: rgba(0, 0, 0, 0) !important;
-}
-
-.status.blocked {
-    background: #CF1124;
-    border-color: rgba(0, 0, 0, 0) !important;
+.status.bounced, .status.failed {
+    background-color: var(--gray-800);
+    border-color: transparent !important;
 }
 
 label.subscriptionStatus {
@@ -232,27 +223,28 @@ label.subscriptionStatus {
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.5pt;
-    background: #b9bfc6;
+    background-color: var(--ui-control-color);
+}
+
+label.subscriptionStatus.none {
+    background-color: var(--gray-100);
+    color: var(--text-color);
 }
 
 label.subscriptionStatus.subscribed {
-    background: #43A047;
+    background-color: var(--enabled-color);
 }
 
 label.subscriptionStatus.unsubscribed {
-    background: #E53935;
+    background-color: var(--disabled-color);
 }
 
 label.subscriptionStatus.pending {
-    background: #FB8C00;
-}
-
-label.subscriptionStatus.complained {
-    background: #6D4C41;
+    background-color: var(--pending-color);
 }
 
 label.subscriptionStatus.bounced {
-    background: #263238;
+    background-color: var(--gray-800);
 }
 
 .email-body {

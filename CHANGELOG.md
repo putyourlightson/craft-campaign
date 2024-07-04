@@ -6,6 +6,10 @@
 
 - Added the ability to create campaign types without public URLs.
 
+### Changed
+
+- Updated status colours to match those used in the control panel UI.
+
 ## 2.16.0 - 2024-06-25
 
 ### Added
