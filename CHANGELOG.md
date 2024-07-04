@@ -1,5 +1,15 @@
 # Release Notes for Campaign
 
+## 3.4.0 - Unreleased
+
+### Added
+
+- Added the ability to create campaign types without public URLs.
+
+### Changed
+
+- Updated status colours to match those used in the control panel UI.
+
 ## 3.3.0 - 2024-07-02
 
 ### Added
