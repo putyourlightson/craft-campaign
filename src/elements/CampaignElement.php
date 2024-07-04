@@ -531,7 +531,7 @@ class CampaignElement extends Element
                 'template' => $this->getCampaignType()->htmlTemplate,
                 'variables' => [
                     'campaign' => $this,
-                    'browserVersionUrl' => $this->url,
+                    'browserVersionUrl' => $this->getUrl(),
                     'contact' => new ContactElement(),
                     'unsubscribeUrl' => '',
                     'isWebRequest' => true,

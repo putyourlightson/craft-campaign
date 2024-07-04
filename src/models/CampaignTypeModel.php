@@ -16,7 +16,6 @@ use craft\validators\HandleValidator;
 use craft\validators\SiteIdValidator;
 use craft\validators\UniqueValidator;
 use craft\validators\UriFormatValidator;
-use craft\web\View;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
@@ -128,7 +127,7 @@ class CampaignTypeModel extends Model
         $rules = parent::defineRules();
         $rules[] = [['id', 'siteId', 'fieldLayoutId'], 'integer'];
         $rules[] = [['siteId'], SiteIdValidator::class];
-        $rules[] = [['siteId', 'name', 'handle', 'uriFormat', 'htmlTemplate', 'plaintextTemplate'], 'required'];
+        $rules[] = [['siteId', 'name', 'handle', 'htmlTemplate', 'plaintextTemplate'], 'required'];
         $rules[] = [['name', 'handle'], 'string', 'max' => 255];
         $rules[] = [['name', 'handle'], UniqueValidator::class, 'targetClass' => CampaignTypeRecord::class];
         $rules[] = [['handle'], HandleValidator::class, 'reservedWords' => ['id', 'dateCreated', 'dateUpdated', 'uid', 'title']];
@@ -213,20 +212,5 @@ class CampaignTypeModel extends Model
         }
 
         return $testContacts;
-    }
-
-    /**
-     * Returns whether the URI format is set and if the template paths are valid.
-     */
-    public function hasValidTemplates(): bool
-    {
-        if ($this->uriFormat === null) {
-            return false;
-        }
-
-        // Return whether both templates exist.
-        return $this->htmlTemplate !== null && $this->plaintextTemplate !== null
-            && Craft::$app->getView()->doesTemplateExist($this->htmlTemplate, View::TEMPLATE_MODE_SITE)
-            && Craft::$app->getView()->doesTemplateExist($this->plaintextTemplate, View::TEMPLATE_MODE_SITE);
     }
 }
