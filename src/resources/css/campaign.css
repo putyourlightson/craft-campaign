@@ -14,8 +14,8 @@ table th.thin, table td.thin {
     min-height: 700px;
     background: url('../images/welcome.jpg') center;
     background-size: cover;
-    color: #fff;
-    text-shadow: 0 0 8px #000;
+    color: var(--white);
+    text-shadow: 0 0 8px var(--black);
     font-size: 20px;
     text-align: center;
     opacity: 0;
@@ -30,7 +30,7 @@ table th.thin, table td.thin {
 }
 
 .welcome a, .welcome a:after {
-    color: #fff !important;
+    color: var(--white) !important;
     text-decoration: none;
 }
 
@@ -64,13 +64,6 @@ table th.thin, table td.thin {
 .preflight > div, .preflight .body {
     height: 100%;
     text-align: center;
-}
-
-.preflight .photo {
-    margin-top: 69px;
-    width: 100px;
-    border: 2px solid #949599;
-    border-radius: 50%;
 }
 
 .preflight .footer {
@@ -113,13 +106,13 @@ table th.thin, table td.thin {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    box-shadow: 0 0 50px #000;
+    box-shadow: 0 0 50px var(--black);
     background: url('../images/launch.jpg') no-repeat;
     background-size: contain;
 }
 
 .launched {
-    color: #fff;
+    color: var(--white);
     height: 100%;
     background: url('../images/launched.jpg') #8AB59F center 30px no-repeat;
     background-size: cover;
@@ -174,7 +167,7 @@ table th.thin, table td.thin {
     margin-top: -5px;
     width: 100%;
     z-index: 10;
-    background: #000 url('../images/dev-mode.svg');
+    background: var(--black) url('../images/dev-mode.svg');
     cursor: help;
 }
 
@@ -204,7 +197,7 @@ table th.thin, table td.thin {
 }
 
 .status.complained {
-    background-color: var(--ui-control-color);
+    background-color: var(--amber-800);
     border-color: transparent !important;
 }
 
@@ -220,7 +213,7 @@ label.subscriptionStatus {
     font-size: 11px;
     line-height: 22px;
     height: 22px;
-    color: #fff;
+    color: var(--white);
     text-transform: uppercase;
     letter-spacing: 0.5pt;
     background-color: var(--ui-control-color);
@@ -243,6 +236,10 @@ label.subscriptionStatus.pending {
     background-color: var(--pending-color);
 }
 
+label.subscriptionStatus.complained {
+    background-color: var(--amber-800);
+}
+
 label.subscriptionStatus.bounced {
     background-color: var(--gray-800);
 }
@@ -252,19 +249,11 @@ label.subscriptionStatus.bounced {
     height: 350px;
     resize: vertical;
     border-radius: 5px;
-    box-shadow: 0 0 0 1px #cdd8e4,0 2px 12px rgba(205,216,228,.5);
+    box-shadow: 0 0 0 1px var(--gray-200),0 2px 12px var(--gray-200);
 }
 
 textarea.email-body {
     padding: 10px;
-}
-
-.meta .info:before {
-    color: #7a7f86;
-}
-
-.meta .data .value .element {
-    margin-left: -7px;
 }
 
 .details .meta.test-email > .field {
