@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.0 - Unreleased
+
+### Added
+
+- Added the ability to create campaign types without public URLs.
+
 ## 2.16.0 - 2024-06-25
 
 ### Added

@@ -60,19 +60,20 @@
 
     <hr>
 
+    {% set infoText = 'Tags that output campaign properties, such as `{slug}`, may be used.' %}
+
     {{ forms.textField({
         label: "Campaign URI Format"|t('campaign'),
-        instructions: "What the campaign URIs should look like. You can include tags that output campaign properties, such as `{slug}`."|t('campaign'),
+        instructions: "What campaign URIs should look like (required for live preview). Leave blank if campaigns shouldn’t have URLs."|t('campaign') ~ macros.info(infoText),
         id: 'uriFormat',
         name: 'uriFormat',
         class: 'code',
         value: campaignType.uriFormat,
         errors: campaignType.getErrors('uriFormat'),
-        autocomplete: true,
-        required: true
+        autocomplete: true
     }) }}
 
-    {% set infoText = 'Available template tags: {tags}' %}
+    {% set infoText = 'Available template tags: <br>{tags}' %}
     {% set tags = '`campaign`, `contact`, `mailingList`, `browserVersionUrl`, `unsubscribeUrl`' %}
 
     {{ forms.autosuggestField({
@@ -101,7 +102,7 @@
         required: true
     }) }}
 
-    {% set infoText = 'Available template tags: {tags}.<br><br>Google Analytics example:<br>`{example}`' %}
+    {% set infoText = 'Available template tags: <br>{tags}.<br><br>Google Analytics example:<br>`{example}`' %}
     {% set tags = '`campaign`, `sendout`' %}
     {% set example = 'utm_source=campaign-plugin&utm_medium=email&utm_campaign={{ campaign.title }}
 ' %}
