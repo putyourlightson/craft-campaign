@@ -224,17 +224,14 @@ class MailingListElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        return [
+        return array_merge(parent::defineTableAttributes(), [
             'mailingListType' => ['label' => Craft::t('campaign', 'Mailing List Type')],
             'subscribed' => ['label' => Craft::t('campaign', 'Subscribed')],
             'unsubscribed' => ['label' => Craft::t('campaign', 'Unsubscribed')],
             'complained' => ['label' => Craft::t('campaign', 'Complained')],
             'bounced' => ['label' => Craft::t('campaign', 'Bounced')],
             'slug' => ['label' => Craft::t('app', 'Slug')],
-            'id' => ['label' => Craft::t('app', 'ID')],
-            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
-        ];
+        ]);
     }
 
     /**

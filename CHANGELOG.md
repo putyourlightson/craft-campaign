@@ -2,9 +2,13 @@
 
 ## 3.4.1 - Unreleased
 
+### Changed
+
+- Updated the table attributes for all element types.
+
 ### Fixed
 
-- Fixed missing draft status icons in sendouts.
+- Fixed the missing draft status icons in sendouts.
 
 ## 3.4.0 - 2024-07-04
 

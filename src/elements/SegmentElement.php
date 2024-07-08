@@ -189,12 +189,10 @@ class SegmentElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        return [
+        return array_merge(parent::defineTableAttributes(), [
             'contacts' => ['label' => Craft::t('campaign', 'Contacts')],
             'slug' => ['label' => Craft::t('app', 'Slug')],
-            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
-        ];
+        ]);
     }
 
     /**

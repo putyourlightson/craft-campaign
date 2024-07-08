@@ -304,14 +304,12 @@ class ContactElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        return [
+        return array_merge(parent::defineTableAttributes(), [
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],
             'verified' => ['label' => Craft::t('campaign', 'Verified')],
-            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
-        ];
+        ]);
     }
 
     /**

@@ -311,7 +311,7 @@ class SendoutElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $attributes = [
+        $attributes = array_merge(parent::defineTableAttributes(), [
             'sendoutType' => ['label' => Craft::t('campaign', 'Sendout Type')],
             'subject' => ['label' => Craft::t('campaign', 'Subject')],
             'campaignId' => ['label' => Craft::t('campaign', 'Campaign')],
@@ -322,9 +322,7 @@ class SendoutElement extends Element
             'mailingListIds' => ['label' => Craft::t('campaign', 'Mailing Lists')],
             'sendDate' => ['label' => Craft::t('campaign', 'Send Date')],
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
-            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
-        ];
+        ]);
 
         // Hide sender if not Craft Pro edition
         if (Craft::$app->edition !== CmsEdition::Pro) {

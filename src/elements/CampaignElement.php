@@ -308,8 +308,7 @@ class CampaignElement extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        return [
-            'title' => ['label' => Craft::t('app', 'Title')],
+        return array_merge(parent::defineTableAttributes(), [
             'campaignType' => ['label' => Craft::t('campaign', 'Campaign Type')],
             'recipients' => ['label' => Craft::t('campaign', 'Recipients')],
             'opened' => ['label' => Craft::t('campaign', 'Opened')],
@@ -322,13 +321,7 @@ class CampaignElement extends Element
             'openRate' => ['label' => Craft::t('campaign', 'Open Rate')],
             'clickRate' => ['label' => Craft::t('campaign', 'Click Rate')],
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
-            'slug' => ['label' => Craft::t('app', 'Slug')],
-            'uri' => ['label' => Craft::t('app', 'URI')],
-            'link' => ['label' => Craft::t('app', 'Link'), 'icon' => 'world'],
-            'id' => ['label' => Craft::t('app', 'ID')],
-            'dateCreated' => ['label' => Craft::t('app', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('app', 'Date Updated')],
-        ];
+        ]);
     }
 
     /**
