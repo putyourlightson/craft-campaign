@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.4.1 - Unreleased
+
+### Fixed
+
+- Fixed missing draft status icons in sendouts.
+
 ## 3.4.0 - 2024-07-04
 
 ### Added
