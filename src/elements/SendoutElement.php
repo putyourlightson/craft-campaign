@@ -1167,7 +1167,7 @@ class SendoutElement extends Element
                 return $sender ? Cp::elementChipHtml($sender) : '';
 
             case 'mailingListIds':
-                return (string)$this->getMailingListCount();
+                return number_format($this->getMailingListCount());
 
             case 'recipients':
                 return number_format($this->recipients);

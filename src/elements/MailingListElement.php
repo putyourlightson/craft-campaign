@@ -584,10 +584,10 @@ class MailingListElement extends Element
     {
         return match ($attribute) {
             'mailingListType' => $this->getMailingListType()->name,
-            'subscribed' => (string)$this->getSubscribedCount(),
-            'unsubscribed' => (string)$this->getUnsubscribedCount(),
-            'complained' => (string)$this->getComplainedCount(),
-            'bounced' => (string)$this->getBouncedCount(),
+            'subscribed' => number_format($this->getSubscribedCount()),
+            'unsubscribed' => number_format($this->getUnsubscribedCount()),
+            'complained' => number_format($this->getComplainedCount()),
+            'bounced' => number_format($this->getBouncedCount()),
             default => parent::attributeHtml($attribute),
         };
     }

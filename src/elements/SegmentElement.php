@@ -209,7 +209,7 @@ class SegmentElement extends Element
     protected function attributeHtml(string $attribute): string
     {
         return match ($attribute) {
-            'contacts' => (string)$this->getContactCount(),
+            'contacts' => number_format($this->getContactCount()),
             default => parent::attributeHtml($attribute),
         };
     }
