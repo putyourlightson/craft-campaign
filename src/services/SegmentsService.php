@@ -91,10 +91,8 @@ class SegmentsService extends Component
      */
     public function getFilteredContacts(SegmentElement $segment, array $contactIds = null): array
     {
-        $contactElementQuery = $this->getContactElementQuery($contactIds);
-        $segment->getContactCondition()->modifyQuery($contactElementQuery);
-
-        return $contactElementQuery->all();
+        return $this->getFilteredContactQuery($segment, $contactIds)
+            ->all();
     }
 
     /**
@@ -104,19 +102,19 @@ class SegmentsService extends Component
      */
     public function getFilteredContactIds(SegmentElement $segment, array $contactIds = null): array
     {
-        $contactElementQuery = $this->getContactElementQuery($contactIds);
-        $segment->getContactCondition()->modifyQuery($contactElementQuery);
-
-        return $contactElementQuery->ids();
+        return $this->getFilteredContactQuery($segment, $contactIds)
+            ->ids();
     }
 
-    private function getContactElementQuery(array $contactIds = null): ContactElementQuery
+    private function getFilteredContactQuery(SegmentElement $segment, array $contactIds = null): ContactElementQuery
     {
         $contactQuery = ContactElement::find();
 
         if ($contactIds !== null) {
             $contactQuery->id($contactIds);
         }
+
+        $segment->getContactCondition()->modifyQuery($contactQuery);
 
         return $contactQuery;
     }

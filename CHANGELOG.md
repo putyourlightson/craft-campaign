@@ -4,10 +4,12 @@
 
 ### Changed
 
+- Improved the number formatting of counts on element index pages.
 - Updated the table attributes for all element types.
 
 ### Fixed
 
+- Fixed the displayed contact count on segment index pages ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
 - Fixed the missing draft status icons in sendouts.
 
 ## 3.4.0 - 2024-07-04

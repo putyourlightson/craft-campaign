@@ -66,6 +66,8 @@ class CampaignActivityConditionRule extends BaseElementSelectConditionRule imple
         if ($elementId !== null) {
             $query->andWhere(['campaignId' => $elementId]);
         }
+
+        $query->groupBy(['contactId']);
     }
 
     /**
