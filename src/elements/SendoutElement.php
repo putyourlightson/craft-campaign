@@ -1191,7 +1191,7 @@ class SendoutElement extends Element
                 return $sender ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $sender]) : '';
 
             case 'mailingListIds':
-                return (string)$this->getMailingListCount();
+                return number_format($this->getMailingListCount());
 
             case 'recipients':
                 return number_format($this->recipients);

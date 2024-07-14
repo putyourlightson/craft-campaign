@@ -262,8 +262,8 @@ class SegmentElement extends Element
     {
         return match ($attribute) {
             'segmentType' => $this->getSegmentTypeLabel(),
-            'conditions' => (string)$this->getConditionCount(),
-            'contacts' => (string)$this->getContactCount(),
+            'conditions' => number_format($this->getConditionCount()),
+            'contacts' => number_format($this->getContactCount()),
             default => parent::tableAttributeHtml($attribute),
         };
     }

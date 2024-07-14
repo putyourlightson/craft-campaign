@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.1 - Unreleased
+
+### Changed
+
+- Improved the number formatting of counts on element index pages.
+
 ## 2.17.0 - 2024-07-04
 
 ### Added
