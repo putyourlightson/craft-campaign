@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.17.1 - Unreleased
+## 2.17.1 - 2024-07-15
 
 ### Changed
 
