@@ -394,7 +394,7 @@ class SendoutsService extends Component
         $variables = [
             'title' => $sendout->title,
             'emailSettingsUrl' => UrlHelper::cpUrl('campaign/settings/email'),
-            'sendoutUrl' => $sendout->cpEditUrl,
+            'sendoutUrl' => $sendout->getCpEditUrl(),
             'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
         ];
 

@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.4.2 - 2024-08-02
+
+### Changed
+
+- IP addresses are now logged in failed webhook requests from Postmark.
+
 ## 3.4.1 - 2024-07-15
 
 ### Changed
