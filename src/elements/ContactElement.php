@@ -784,7 +784,7 @@ class ContactElement extends Element
      */
     protected function thumbSvg(): ?string
     {
-        $initials = mb_strtoupper(mb_substr($this->email, 0, 2));
+        $initials = mb_strtoupper(mb_substr(str_replace('@', '', $this->email), 0, 2));
 
         return <<<XML
             <svg version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
