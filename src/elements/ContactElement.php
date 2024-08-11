@@ -133,6 +133,14 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
+    public static function hasThumbs(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function statuses(): array
     {
         return [
@@ -895,32 +903,48 @@ class ContactElement extends Element
     }
 
     /**
-     * Returns an image from unavatar.io, with an SVG behind it as a fallback.
-     *
-     * @see User::getThumbHtml()
+     * @inheritdoc
      */
-    public function getThumbHtml(int $size): ?string
+    protected function thumbUrl(int $size): ?string
     {
-        $value = strtolower(trim($this->email));
-        $image = Html::img('https://unavatar.io/' . $value . '?fallback=false', [
-            'width' => $size,
-            'height' => $size,
-        ]);
+        $user = $this->getUser();
 
-        $initials = mb_strtoupper(mb_substr(str_replace('@', '', $value), 0, 2));
-        $svg = <<<XML
+        if ($user) {
+            return $user->thumbUrl($size);
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function thumbSvg(): ?string
+    {
+        $initials = mb_strtoupper(mb_substr($this->email, 0, 2));
+
+        return <<<XML
             <svg version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="50" cy="50" r="50" fill="var(--gray-100)"/>
                 <text x="50" y="66" font-size="46" font-weight="500" font-family="sans-serif" text-anchor="middle" fill="var(--gray-700)">$initials</text>
             </svg>
         XML;
+    }
 
-        $options = [
-            'class' => 'thumb rounded',
-        ];
+    /**
+     * @inheritdoc
+     */
+    protected function thumbAlt(): ?string
+    {
+        return $this->email;
+    }
 
-        return Html::tag('div', $svg, $options)
-            . Html::tag('div', $image, $options + ['style' => 'position: absolute']);
+    /**
+     * @inheritdoc
+     */
+    protected function hasRoundedThumb(): bool
+    {
+        return true;
     }
 
     /**
