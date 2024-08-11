@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Contact avatars are now fetched from unavatar.io instead of gravatar.com, and a fallback SVG with initials is used if none is found.
+- Contact avatars are no longer fetched from gravatar.com. Instead, a synced user profile photo is used, if one exists, falling back to an SVG with initials.
 
 ## 2.17.2 - 2024-08-02
 
