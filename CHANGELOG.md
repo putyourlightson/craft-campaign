@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.3 - Unreleased
+
+### Changed
+
+- Contact avatars are now fetched from unavatar.io instead of gravatar.com, and a fallback SVG with initials is used if none is found.
+
 ## 2.17.2 - 2024-08-02
 
 ### Changed

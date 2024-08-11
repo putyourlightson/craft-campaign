@@ -32,13 +32,6 @@ class CpAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $css = [
-        'css/cp.css',
-    ];
-
-    /**
-     * @inheritdoc
-     */
     public $js = [
         'js/Campaign.js',
         'js/CampaignIndex.js',

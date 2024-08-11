@@ -766,20 +766,32 @@ class ContactElement extends Element
     }
 
     /**
-     * @inheritdoc
+     * Returns an image from unavatar.io, with an SVG behind it as a fallback.
      */
-    public function getThumbUrl(int $size): ?string
+    public function getThumbHtml(int $size): ?string
     {
-        // Get image from Gravatar, defaulting to a blank image
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=blank&s=' . $size;
-    }
+        $value = strtolower(trim($this->email));
+        $image = Html::img('https://unavatar.io/' . $value . '?fallback=false', [
+            'width' => $size,
+            'height' => $size,
+            // Fixes a black border issue
+            'style' => 'border: 1px solid transparent',
+        ]);
 
-    /**
-     * @inheritdoc
-     */
-    public function getHasRoundedThumb(): bool
-    {
-        return true;
+        $initials = mb_strtoupper(mb_substr(str_replace('@', '', $value), 0, 2));
+        $svg = <<<XML
+            <svg version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="50" fill="var(--gray-100)"/>
+                <text x="50" y="66" font-size="46" font-weight="500" font-family="sans-serif" text-anchor="middle" fill="var(--gray-700)">$initials</text>
+            </svg>
+        XML;
+
+        $options = [
+            'class' => 'elementthumb rounded',
+        ];
+
+        return Html::tag('div', $svg, $options)
+            . Html::tag('div', $image, $options);
     }
 
     /**
