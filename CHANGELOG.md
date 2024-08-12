@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Contact avatars are no longer fetched from gravatar.com. Instead, a user profile photo is used, if one exists, falling back to an SVG with a coloured gradient and initial.
+- Contact avatars are no longer fetched from Gravatar. Instead, a user profile photo is used, if one exists, falling back to an SVG with a coloured gradient and initial.
 
 ## 3.4.2 - 2024-08-02
 
