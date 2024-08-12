@@ -1,10 +1,10 @@
 # Release Notes for Campaign
 
-## 3.4.3 - Unreleased
+## 3.4.3 - 2024-08-12
 
 ### Changed
 
-- Contact avatars are no longer fetched from gravatar.com. Instead, a synced user profile photo is used, if one exists, falling back to an SVG with initials.
+- Contact avatars are no longer fetched from gravatar.com. Instead, a user profile photo is used, if one exists, falling back to an SVG with a coloured gradient and initial.
 
 ## 3.4.2 - 2024-08-02
 
