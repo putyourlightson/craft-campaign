@@ -400,11 +400,11 @@ class SendoutsService extends Component
 
         if ($sendout->sendStatus == SendoutElement::STATUS_SENT) {
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" has been successfully completed!!', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout “<a href="{sendoutUrl}">{title}</a>” has been successfully completed!!', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] has been successfully completed!!', $variables);
         } else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout "<a href="{sendoutUrl}">{title}</a>" failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout “<a href="{sendoutUrl}">{title}</a>” failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
