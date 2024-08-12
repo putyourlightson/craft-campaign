@@ -238,7 +238,7 @@ class Campaign extends Plugin
         }
 
         // If Craft edition is at least Team
-        if (Craft::$app->edition >= CmsEdition::Team) {
+        if (Craft::$app->edition->value >= CmsEdition::Team->value) {
             $this->registerUserPermissions();
             $this->sync->registerUserEvents();
         }
