@@ -58,6 +58,29 @@ class ContactElement extends Element
     public const STATUS_BLOCKED = 'blocked';
 
     /**
+     * @see User::$photoColors
+     */
+    private static array $photoColors = [
+        'red-100',
+        'orange-200',
+        'amber-200',
+        'yellow-200',
+        'lime-200',
+        'green-200',
+        'emerald-200',
+        'teal-200',
+        'cyan-200',
+        'sky-200',
+        'blue-200',
+        'indigo-200',
+        'violet-200',
+        'purple-200',
+        'fuchsia-200',
+        'pink-100',
+        'rose-200',
+    ];
+
+    /**
      * @inheritdoc
      */
     public static function displayName(): string
@@ -771,7 +794,6 @@ class ContactElement extends Element
     public function getThumbUrl(int $size): ?string
     {
         $user = $this->getUser();
-
         if ($user) {
             return $user->getThumbUrl($size);
         }
@@ -784,14 +806,39 @@ class ContactElement extends Element
      */
     protected function thumbSvg(): ?string
     {
-        $initials = mb_strtoupper(mb_substr(str_replace('@', '', $this->email), 0, 2));
+        $user = $this->getUser();
+        if ($user) {
+            return $user->thumbSvg();
+        }
+
+        $initials = mb_strtoupper(mb_substr($this->email, 0, 1));
+
+        // Choose a color based on the UUID
+        $uid = strtolower($this->uid ?? '00ff');
+        $totalColors = count(self::$photoColors);
+        $color1Index = base_convert(substr($uid, 0, 2), 16, 10) % $totalColors;
+        $color2Index = base_convert(substr($uid, 2, 2), 16, 10) % $totalColors;
+        if ($color2Index === $color1Index) {
+            $color2Index = ($color1Index + 1) % $totalColors;
+        }
+        $color1 = self::$photoColors[$color1Index % $totalColors];
+        $color2 = self::$photoColors[$color2Index % $totalColors];
+
+        $gradientId = sprintf('gradient-%s', \craft\helpers\StringHelper::randomString(10));
 
         return <<<XML
-            <svg version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="50" fill="var(--gray-500)" fill-opacity=".15"/>
-                <text x="50" y="66" font-size="46" font-weight="500" font-family="sans-serif" text-anchor="middle" fill="var(--gray-700)">$initials</text>
-            </svg>
-        XML;
+<svg version="1.1" baseProfile="full" width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="$gradientId" x1="0" y1="1" x2="1"  y2="0">
+        <stop offset="0%" style="stop-color:var(--$color1)" />
+        <stop offset="100%" style="stop-color:var(--$color2)" />
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="50" fill="url(#$gradientId)"/>
+    <text x="50" y="69" font-size="46" font-family="sans-serif" text-anchor="middle" fill="var(--white)" fill-opacity="0.4">$initials</text>
+    <text x="50" y="66" font-size="46" font-family="sans-serif" text-anchor="middle" fill="var(--black)" fill-opacity="0.65">$initials</text>
+</svg>
+XML;
     }
 
     /**
