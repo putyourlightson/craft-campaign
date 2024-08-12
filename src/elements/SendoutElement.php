@@ -324,8 +324,8 @@ class SendoutElement extends Element
             'lastSent' => ['label' => Craft::t('campaign', 'Last Sent')],
         ]);
 
-        // Hide sender if not Craft Pro edition
-        if (Craft::$app->edition !== CmsEdition::Pro) {
+        // Hide sender if not at least Craft Team edition
+        if (Craft::$app->edition < CmsEdition::Team) {
             unset($attributes['sender']);
         }
 

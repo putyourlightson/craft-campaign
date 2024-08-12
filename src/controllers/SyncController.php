@@ -22,7 +22,6 @@ class SyncController extends Controller
      */
     public function beforeAction($action): bool
     {
-        // Require pro
         Campaign::$plugin->requirePro();
 
         // Require permission

@@ -11,6 +11,7 @@ use craft\console\Controller as ConsoleController;
 use craft\console\controllers\ResaveController;
 use craft\controllers\PreviewController;
 use craft\elements\User;
+use craft\enums\CmsEdition;
 use craft\events\DefineConsoleActionsEvent;
 use craft\events\DefineFieldLayoutFieldsEvent;
 use craft\events\PluginEvent;
@@ -236,8 +237,8 @@ class Campaign extends Plugin
             $this->registerWidgets();
         }
 
-        // If Craft edition is pro
-        if (Craft::$app->getEdition() === Craft::Pro) {
+        // If Craft edition is at least Team
+        if (Craft::$app->edition >= CmsEdition::Team) {
             $this->registerUserPermissions();
             $this->sync->registerUserEvents();
         }
@@ -297,7 +298,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Returns true if pro version.
+     * Returns true if Pro version.
      */
     public function getIsPro(): bool
     {
@@ -305,7 +306,7 @@ class Campaign extends Plugin
     }
 
     /**
-     * Throws an exception if the plugin edition is not pro.
+     * Throws an exception if the plugin edition is not Pro.
      */
     public function requirePro(): void
     {

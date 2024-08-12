@@ -24,7 +24,6 @@ class SegmentsController extends Controller
      */
     public function beforeAction($action): bool
     {
-        // Require pro
         Campaign::$plugin->requirePro();
 
         return parent::beforeAction($action);

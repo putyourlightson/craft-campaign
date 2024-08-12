@@ -38,7 +38,7 @@ class CampaignVariable
     }
 
     /**
-     * Throws an exception if the plugin edition is not pro.
+     * Throws an exception if the plugin edition is not Pro.
      */
     public function requirePro(): void
     {

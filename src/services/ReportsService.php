@@ -738,7 +738,7 @@ class ReportsService extends Component
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl('campaign/contacts/import/' . $model->source);
                                 break;
                             case 'user':
-                                $path = (Craft::$app->edition !== CmsEdition::Solo && $model->source) ? 'users/' . $model->source : 'myaccount';
+                                $path = (Craft::$app->edition >= CmsEdition::Team && $model->source) ? 'users/' . $model->source : 'myaccount';
                                 $contactActivityModel->sourceUrl = UrlHelper::cpUrl($path);
                                 break;
                             default:
