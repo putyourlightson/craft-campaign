@@ -271,7 +271,7 @@ return [
     'Email' => 'Email',
     'Enable Anonymous Tracking' => 'Activer le tracking anonyme',
     'Enable GeoIP to geolocate contacts by their IP addresses.' => 'Activer GeoIP pour géocaliser les contacts par leurs valeurs d’adresses IP.',
-    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>' => 'Activer reCAPTCHA v3 pour empêcher des inscriptions de robots aux listes de diffusion. <a href="{url}" class="go" target="_blank" rel="noopener">En savoir plus</a>',
+    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots.' => 'Activer reCAPTCHA v3 pour empêcher des inscriptions de robots aux listes de diffusion.',
     'Enable Turnstile to protect mailing list subscription forms from bots using the “invisible” Turnstile widget.' => 'Activez Turnstile pour protéger les formulaires d’inscription aux listes de diffusion contre les robots en utilisant le widget Turnstile « invisible ».',
     'End Date' => 'Date de fin',
     'ends with' => 'Se terminant par',
