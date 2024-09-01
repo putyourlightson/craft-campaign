@@ -34,7 +34,7 @@
     {{ forms.field({
         label: "Cron Job"|t('campaign'),
         instructions: "Create a cron job using the following console command to queue and run pending sendouts on a scheduled basis (every 10 minutes for example). Change `{phpBinPath}` to your PHP path (if different)."|t('campaign', {phpBinPath: phpBinPath}),
-        warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', {url: 'https://putyourlightson.com/plugins/campaign#how-sendouts-are-sent'}),
+        warning: isDynamicWebAliasUsed ? 'It appears that one or more of your site or asset volume URLs is using a dynamic `@web` alias. If not explicitly defined, the `@web` alias is unavailable with console commands and will return a blank string.'|t('campaign') ~ ' <a href="https://putyourlightson.com/plugins/campaign#how-sendouts-are-sent" class="go" target="_blank" rel="noopener">' ~ 'Learn more'|t('campaign') ~ '</a>',
     }, code) }}
 
     {{ forms.autosuggestField({
