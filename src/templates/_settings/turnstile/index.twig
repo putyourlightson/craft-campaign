@@ -17,7 +17,7 @@
     {{ forms.lightswitchField({
         first: true,
         label: "Turnstile"|t('campaign'),
-        instructions: 'Enable Turnstile to protect mailing list subscription forms from bots using the “invisible” Turnstile widget. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>'|t('campaign', { url: 'https://developers.cloudflare.com/turnstile/' }),
+        instructions: 'Enable Turnstile to protect mailing list subscription forms from bots using the “invisible” Turnstile widget.'|t('campaign') ~ ' <a href="https://developers.cloudflare.com/turnstile/" class="go" target="_blank" rel="noopener">' ~ 'Learn more'|t('campaign') ~ '</a>',
         warning: (config.turnstile is defined ? macros.configWarning('turnstile')),
         id: 'turnstile',
         name: 'turnstile',
@@ -56,7 +56,7 @@
 
     {{ forms.autosuggestField({
         label: "Turnstile Error Message"|t('campaign'),
-        instructions: "Your form submission was blocked. Please go back and verify that you are human."|t('campaign'),
+        instructions: "The error message to display if a form submission is blocked."|t('campaign'),
         warning: (config.turnstileErrorMessage is defined ? macros.configWarning('turnstileErrorMessage')),
         id: 'turnstileErrorMessage',
         name: 'turnstileErrorMessage',
