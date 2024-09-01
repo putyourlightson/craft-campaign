@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.4 - Unreleased
+
+### Changed
+
+- Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
+
 ## 2.17.3 - 2024-08-12
 
 ### Changed
