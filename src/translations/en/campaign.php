@@ -270,7 +270,7 @@ return [
     'Email' => '',
     'Enable Anonymous Tracking' => '',
     'Enable GeoIP to geolocate contacts by their IP addresses.' => '',
-    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots. <a href="{url}" class="go" target="_blank" rel="noopener">Learn more</a>' => '',
+    'Enable reCAPTCHA v3 to protect mailing list subscription forms from bots.' => '',
     'Enable Turnstile to protect mailing list subscription forms from bots using the “invisible” Turnstile widget.' => '',
     'End Date' => '',
     'ends with' => '',
