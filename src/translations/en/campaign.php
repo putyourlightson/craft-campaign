@@ -233,7 +233,6 @@ return [
     'Create a template condition to apply to this segment. The `contact` tag is available in this context.' => '',
     'Create and view your ipstack.com API key at {link}' => '',
     'Create and view your reCAPTCHA keys at {link}' => '',
-    'Create and view your reCAPTCHA keys at {link}' => '',
     'Create and view your Turnstile keys at {link}' => '',
     'Cron Job' => '',
     'CSV file successfully queued for importing.' => '',
