@@ -7,6 +7,10 @@
 - Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
 - Improved the German translation.
 
+### Fixed
+
+- Fixed some styling issues.
+
 ## 3.4.3 - 2024-08-12
 
 ### Changed

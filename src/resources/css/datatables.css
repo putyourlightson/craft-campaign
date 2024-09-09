@@ -55,6 +55,7 @@
     background-color: rgba(96, 125, 159, 0.25);
     border: none;
     border-radius: 5px;
+    padding: 7px 17px 7px 10px;
 }
 
 .dataTables_wrapper .dataTables_filter {
@@ -65,7 +66,7 @@
     margin-left: 0 !important;
     background-color: #fbfcfe;
     border: 1px solid rgba(96, 125, 159, 0.25);
-    padding: 6px 9px;
+    padding: 6px 9px 6px 27px;
 }
 
 .dataTables_wrapper .dataTables_filter input:focus {
