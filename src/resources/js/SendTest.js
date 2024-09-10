@@ -40,7 +40,7 @@ Campaign.SendTest = Garnish.Base.extend({
 
         Craft.sendActionRequest('POST', $('.send-test').data('action'), {data})
             .then((response) => {
-                Craft.cp.displayNotice(response.data.message);
+                Craft.cp.displaySuccess(response.data.message);
             })
             .catch(({response}) => {
                 if (response.data.message) {

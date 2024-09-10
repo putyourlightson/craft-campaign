@@ -46,7 +46,7 @@ Campaign.ContactEdit = Garnish.Base.extend({
                         $row.find('.remove').removeClass('hidden');
                     }
 
-                    Craft.cp.displayNotice(response.data.message);
+                    Craft.cp.displaySuccess(response.data.message);
                 })
                 .catch(({response}) => {
                     if (response.data.message) {
