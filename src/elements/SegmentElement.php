@@ -76,6 +76,14 @@ class SegmentElement extends Element
     /**
      * @inheritdoc
      */
+    public static function hasDrafts(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function trackChanges(): bool
     {
         return true;
@@ -261,7 +269,7 @@ class SegmentElement extends Element
      */
     public function getPostEditUrl(): ?string
     {
-        return UrlHelper::cpUrl("campaign/segments");
+        return UrlHelper::cpUrl('campaign/segments');
     }
 
     /**

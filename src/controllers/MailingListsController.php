@@ -31,7 +31,7 @@ class MailingListsController extends Controller
     {
         $mailingListType = Campaign::$plugin->mailingListTypes->getMailingListTypeByHandle($mailingListTypeHandle);
         if (!$mailingListType) {
-            throw new BadRequestHttpException("Invalid mailing list type handle: $mailingListType");
+            throw new BadRequestHttpException('Invalid mailing list type handle: ' . $mailingListType);
         }
 
         $site = Cp::requestedSite();

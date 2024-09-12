@@ -124,7 +124,7 @@ class SendoutsController extends Controller
     public function actionCreate(string $sendoutType = null): Response
     {
         if (!isset(SendoutElement::sendoutTypes()[$sendoutType])) {
-            throw new BadRequestHttpException("Invalid sendout type: $sendoutType");
+            throw new BadRequestHttpException('Invalid sendout type: ' . $sendoutType);
         }
 
         $site = Cp::requestedSite();
@@ -196,7 +196,7 @@ class SendoutsController extends Controller
         $sendout = Campaign::$plugin->sendouts->getSendoutById($sendoutId);
 
         if ($sendout === null) {
-            throw new BadRequestHttpException("Invalid sendout ID: $sendoutId");
+            throw new BadRequestHttpException('Invalid sendout ID: ' . $sendoutId);
         }
 
         $this->view->registerAssetBundle(SendoutPreflightAsset::class);

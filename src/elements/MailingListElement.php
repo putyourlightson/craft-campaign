@@ -574,7 +574,7 @@ class MailingListElement extends Element
     {
         $mailingListType = $this->getMailingListType();
 
-        return UrlHelper::cpUrl("campaign/mailinglists/$mailingListType->handle");
+        return UrlHelper::cpUrl('campaign/mailinglists/' . $mailingListType->handle);
     }
 
     /**

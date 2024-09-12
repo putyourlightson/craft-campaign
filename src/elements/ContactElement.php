@@ -12,6 +12,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\conditions\ElementConditionInterface;
 use craft\elements\User;
+use craft\enums\Color;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Cp;
 use craft\helpers\Html;
@@ -175,10 +176,22 @@ class ContactElement extends Element
     public static function statuses(): array
     {
         return [
-            self::STATUS_ACTIVE => Craft::t('campaign', 'Active'),
-            self::STATUS_COMPLAINED => Craft::t('campaign', 'Complained'),
-            self::STATUS_BOUNCED => Craft::t('campaign', 'Bounced'),
-            self::STATUS_BLOCKED => Craft::t('campaign', 'Blocked'),
+            self::STATUS_ACTIVE => [
+                'label' => Craft::t('campaign', 'Active'),
+                'color' => Color::Teal,
+            ],
+            self::STATUS_COMPLAINED => [
+                'label' => Craft::t('campaign', 'Complained'),
+                'color' => Color::Orange,
+            ],
+            self::STATUS_BOUNCED => [
+                'label' => Craft::t('campaign', 'Bounced'),
+                'color' => Color::Red,
+            ],
+            self::STATUS_BLOCKED => [
+                'label' => Craft::t('campaign', 'Blocked'),
+                'color' => Color::Black,
+            ],
         ];
     }
 

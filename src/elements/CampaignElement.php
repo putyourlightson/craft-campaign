@@ -13,6 +13,7 @@ use craft\elements\actions\Edit;
 use craft\elements\actions\Restore;
 use craft\elements\Entry;
 use craft\elements\User;
+use craft\enums\Color;
 use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
@@ -152,10 +153,21 @@ class CampaignElement extends Element
     public static function statuses(): array
     {
         return [
-            self::STATUS_SENT => Craft::t('campaign', 'Sent'),
-            self::STATUS_PENDING => Craft::t('campaign', 'Pending'),
-            self::STATUS_CLOSED => Craft::t('campaign', 'Closed'),
-            self::STATUS_DISABLED => Craft::t('app', 'Disabled'),
+            self::STATUS_SENT => [
+                'label' => Craft::t('campaign', 'Sent'),
+                'color' => Color::Teal,
+            ],
+            self::STATUS_PENDING => [
+                'label' => Craft::t('campaign', 'Pending'),
+                'color' => Color::Orange,
+            ],
+            self::STATUS_CLOSED => [
+                'label' => Craft::t('campaign', 'Closed'),
+                'color' => Color::Red,
+            ],
+            self::STATUS_DISABLED => [
+                'label' => Craft::t('app', 'Disabled'),
+            ],
         ];
     }
 
@@ -765,7 +777,7 @@ class CampaignElement extends Element
     {
         $campaignType = $this->getCampaignType();
 
-        return UrlHelper::cpUrl("campaign/campaigns/$campaignType->handle");
+        return UrlHelper::cpUrl('campaign/campaigns/' . $campaignType->handle);
     }
 
     /**

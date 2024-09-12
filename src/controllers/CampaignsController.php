@@ -34,7 +34,7 @@ class CampaignsController extends Controller
     {
         $campaignType = Campaign::$plugin->campaignTypes->getCampaignTypeByHandle($campaignTypeHandle);
         if (!$campaignType) {
-            throw new BadRequestHttpException("Invalid campaign type handle: $campaignTypeHandle");
+            throw new BadRequestHttpException('Invalid campaign type handle: ' . $campaignTypeHandle);
         }
 
         $site = Cp::requestedSite();

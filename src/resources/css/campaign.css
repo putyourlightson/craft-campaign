@@ -173,46 +173,6 @@ table th.thin, table td.thin {
     cursor: help;
 }
 
-.status.sent {
-    background-color: var(--enabled-color);
-    border-color: transparent !important;
-}
-
-.status.sending {
-    background-color: rgb(32, 160, 123, 0.3);
-    border-color: var(--enabled-color) !important;
-}
-
-.status.queued {
-    background-color: rgb(203, 110, 23, 0.3);
-    border-color: var(--pending-color) !important;
-}
-
-.status.blocked, .status.closed, .status.cancelled, .status.paused {
-    background-color: var(--disabled-color);
-    border-color: transparent !important;
-}
-
-.status.paused {
-    background-color: rgb(207, 17, 36, 0.3);
-    border-color: var(--disabled-color) !important;
-}
-
-.status.complained {
-    background-color: var(--amber-800);
-    border-color: transparent !important;
-}
-
-.status.bounced, .status.failed {
-    background-color: var(--gray-800);
-    border-color: transparent !important;
-}
-
-.status.draft {
-    --outline-color: var(--gray-500);
-    box-shadow: inset 0 0 0 2px var(--outline-color);
-}
-
 label.subscriptionStatus {
     display: inline-block;
     border-radius: 3px;

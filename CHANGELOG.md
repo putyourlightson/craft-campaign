@@ -1,9 +1,15 @@
 # Release Notes for Campaign
 
-## 3.4.4 - Unreleased
+## 3.5.0 - Unreleased
+
+### Added
+
+- Added status colours to the “Status” column in element index pages.
 
 ### Changed
 
+- Campaign now requires Craft CMS 5.2.0 or later.
+- Improved the status colours of element types.
 - Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
 - Improved the German translation.
 

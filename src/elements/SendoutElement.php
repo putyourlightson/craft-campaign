@@ -12,6 +12,7 @@ use craft\elements\actions\Duplicate;
 use craft\elements\actions\Restore;
 use craft\elements\User;
 use craft\enums\CmsEdition;
+use craft\enums\Color;
 use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -158,6 +159,14 @@ class SendoutElement extends Element
     /**
      * @inheritdoc
      */
+    public static function hasDrafts(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasTitles(): bool
     {
         return true;
@@ -185,14 +194,33 @@ class SendoutElement extends Element
     public static function statuses(): array
     {
         return [
-            self::STATUS_SENT => Craft::t('campaign', 'Sent'),
-            self::STATUS_SENDING => Craft::t('campaign', 'Sending'),
-            self::STATUS_QUEUED => Craft::t('campaign', 'Queued'),
-            self::STATUS_PENDING => Craft::t('campaign', 'Pending'),
-            self::STATUS_PAUSED => Craft::t('campaign', 'Paused'),
-            self::STATUS_CANCELLED => Craft::t('campaign', 'Cancelled'),
-            self::STATUS_FAILED => Craft::t('campaign', 'Failed'),
-            self::STATUS_DRAFT => Craft::t('campaign', 'Draft'),
+            self::STATUS_SENT => [
+                'label' => Craft::t('campaign', 'Sent'),
+                'color' => Color::Teal,
+            ],
+            self::STATUS_SENDING => [
+                'label' => Craft::t('campaign', 'Sending'),
+                'color' => Color::Lime,
+            ],
+            self::STATUS_QUEUED => [
+                'label' => Craft::t('campaign', 'Queued'),
+                'color' => Color::Yellow,
+            ],
+            self::STATUS_PENDING => [
+                'label' => Craft::t('campaign', 'Pending'),
+            ],
+            self::STATUS_PAUSED => [
+                'label' => Craft::t('campaign', 'Paused'),
+                'color' => Color::Fuchsia,
+            ],
+            self::STATUS_CANCELLED => [
+                'label' => Craft::t('campaign', 'Cancelled'),
+                'color' => Color::Red,
+            ],
+            self::STATUS_FAILED => [
+                'label' => Craft::t('campaign', 'Failed'),
+                'color' => Color::Black,
+            ],
         ];
     }
 
@@ -565,7 +593,7 @@ class SendoutElement extends Element
      */
     public function getPostEditUrl(): ?string
     {
-        return UrlHelper::cpUrl("campaign/sendouts");
+        return UrlHelper::cpUrl('campaign/sendouts');
     }
 
     /**
