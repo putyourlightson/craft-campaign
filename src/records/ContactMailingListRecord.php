@@ -46,7 +46,6 @@ class ContactMailingListRecord extends ActiveRecord
             ->innerJoin(Table::ELEMENTS . ' contactElement', '[[contactElement.id]] = [[contactId]]')
             ->innerJoin(Table::ELEMENTS . ' mailingListElement', '[[mailingListElement.id]] = [[mailingListId]]')
             ->where([
-                'contactElement.draftId' => null,
                 'contactElement.dateDeleted' => null,
                 'mailingListElement.dateDeleted' => null,
             ]);
