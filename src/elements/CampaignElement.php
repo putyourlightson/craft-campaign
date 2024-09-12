@@ -101,6 +101,14 @@ class CampaignElement extends Element
     /**
      * @inheritdoc
      */
+    public static function hasDrafts(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function trackChanges(): bool
     {
         return true;
@@ -675,8 +683,9 @@ class CampaignElement extends Element
      */
     public function getStatus(): ?string
     {
-        if (!$this->enabled || $this->getIsDraft()) {
-            return self::STATUS_DISABLED;
+        $status = parent::getStatus();
+        if ($status !== self::STATUS_ENABLED) {
+            return $status;
         }
 
         if ($this->dateClosed !== null) {
