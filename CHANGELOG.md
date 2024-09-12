@@ -9,6 +9,8 @@
 
 ### Fixed
 
+- Fixed a bug in which changing the subscription status of a draft contact multiple times before saving could fail ([#494](https://github.com/putyourlightson/craft-campaign/issues/494)).
+- Fixed status icons for draft campaigns and contacts.
 - Fixed some styling issues.
 
 ## 3.4.3 - 2024-08-12
