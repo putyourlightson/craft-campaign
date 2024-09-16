@@ -98,7 +98,7 @@
             </div>
         </div>
 
-        {% if sendout.status == 'draft' and sendout.sendoutType != 'automated' %}
+        {% if sendout.status == 'unsent' and sendout.sendoutType != 'automated' %}
 
             <div class="data">
                 <h5 class="heading">{{ "Expected Recipients"|t('campaign') }}</h5>

@@ -68,34 +68,41 @@ class SendoutElement extends Element
      * @const string
      */
     public const STATUS_SENT = 'sent';
+
     /**
      * @const string
      */
     public const STATUS_SENDING = 'sending';
+
     /**
      * @const string
      */
     public const STATUS_QUEUED = 'queued';
+
     /**
      * @const string
      */
     public const STATUS_PENDING = 'pending';
+
     /**
      * @const string
      */
     public const STATUS_PAUSED = 'paused';
+
     /**
      * @const string
      */
     public const STATUS_CANCELLED = 'cancelled';
+
     /**
      * @const string
      */
     public const STATUS_FAILED = 'failed';
+
     /**
      * @const string
      */
-    public const STATUS_DRAFT = 'draft';
+    public const STATUS_UNSENT = 'unsent';
 
     /**
      * Returns the sendout types.
@@ -220,6 +227,10 @@ class SendoutElement extends Element
             self::STATUS_FAILED => [
                 'label' => Craft::t('campaign', 'Failed'),
                 'color' => Color::Black,
+            ],
+            self::STATUS_UNSENT => [
+                'label' => Craft::t('campaign', 'Unsent'),
+                'color' => Color::Gray,
             ],
         ];
     }
@@ -410,7 +421,7 @@ class SendoutElement extends Element
     /**
      * @var string Send status
      */
-    public string $sendStatus = self::STATUS_DRAFT;
+    public string $sendStatus = self::STATUS_UNSENT;
 
     /**
      * @var string|null Send from name/email/reply combo, used for posted params
@@ -809,7 +820,7 @@ class SendoutElement extends Element
      */
     public function getProgress(): string
     {
-        if ($this->sendStatus == self::STATUS_DRAFT || $this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
+        if ($this->sendStatus == self::STATUS_UNSENT || $this->sendoutType == 'automated' || $this->sendoutType == 'recurring') {
             return '';
         }
 
@@ -1078,7 +1089,7 @@ class SendoutElement extends Element
      */
     public function getIsModifiable(): bool
     {
-        return ($this->getStatus() == self::STATUS_DRAFT || $this->getStatus() == self::STATUS_PAUSED);
+        return ($this->getStatus() == self::STATUS_UNSENT || $this->getStatus() == self::STATUS_PAUSED);
     }
 
     /**
@@ -1122,7 +1133,7 @@ class SendoutElement extends Element
      */
     public function getIsCancellable(): bool
     {
-        return ($this->getStatus() != self::STATUS_DRAFT && $this->getStatus() != self::STATUS_CANCELLED && $this->getStatus() != self::STATUS_SENT);
+        return ($this->getStatus() != self::STATUS_UNSENT && $this->getStatus() != self::STATUS_CANCELLED && $this->getStatus() != self::STATUS_SENT);
     }
 
     /**
@@ -1217,7 +1228,7 @@ class SendoutElement extends Element
         // Reset stats if this is a duplicate of a non-draft sendout.
         if ($this->firstSave && $this->duplicateOf !== null) {
             $this->senderId = null;
-            $this->sendStatus = self::STATUS_DRAFT;
+            $this->sendStatus = self::STATUS_UNSENT;
             $this->recipients = 0;
             $this->failures = 0;
             $this->failedContactIds = null;
