@@ -10,7 +10,7 @@
 
 - Campaign now requires Craft CMS 5.2.0 or later.
 - Improved the status colours of element types.
-- Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
+- Improved the French translation ([#493](https://github.com/putyourlightson/craft-campaign/issues/493)).
 - Improved the German translation.
 - Renamed the “Draft” sendout status to “Unsent”.
 
