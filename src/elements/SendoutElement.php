@@ -67,6 +67,11 @@ class SendoutElement extends Element
     /**
      * @const string
      */
+    public const STATUS_UNSENT = 'unsent';
+
+    /**
+     * @const string
+     */
     public const STATUS_SENT = 'sent';
 
     /**
@@ -98,11 +103,6 @@ class SendoutElement extends Element
      * @const string
      */
     public const STATUS_FAILED = 'failed';
-
-    /**
-     * @const string
-     */
-    public const STATUS_UNSENT = 'unsent';
 
     /**
      * Returns the sendout types.
@@ -201,6 +201,10 @@ class SendoutElement extends Element
     public static function statuses(): array
     {
         return [
+            self::STATUS_UNSENT => [
+                'label' => Craft::t('campaign', 'Unsent'),
+                'color' => Color::Gray,
+            ],
             self::STATUS_SENT => [
                 'label' => Craft::t('campaign', 'Sent'),
                 'color' => Color::Teal,
@@ -227,10 +231,6 @@ class SendoutElement extends Element
             self::STATUS_FAILED => [
                 'label' => Craft::t('campaign', 'Failed'),
                 'color' => Color::Black,
-            ],
-            self::STATUS_UNSENT => [
-                'label' => Craft::t('campaign', 'Unsent'),
-                'color' => Color::Gray,
             ],
         ];
     }

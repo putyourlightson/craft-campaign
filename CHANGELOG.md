@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.5.0 - Unreleased
+## 3.5.0 - 2024-09-19
 
 ### Added
 
@@ -12,7 +12,7 @@
 - Improved the status colours of element types.
 - Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
 - Improved the German translation.
-- Renamed the “draft” sendout status to “unsent”.
+- Renamed the “Draft” sendout status to “Unsent”.
 
 ### Fixed
 
