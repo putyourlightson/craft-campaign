@@ -123,6 +123,14 @@ class ContactElement extends Element
     /**
      * @inheritdoc
      */
+    public static function hasDrafts(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function trackChanges(): bool
     {
         return true;
@@ -773,6 +781,11 @@ class ContactElement extends Element
      */
     public function getStatus(): ?string
     {
+        $status = parent::getStatus();
+        if ($status !== self::STATUS_ENABLED) {
+            return $status;
+        }
+
         if ($this->complained) {
             return self::STATUS_COMPLAINED;
         }
