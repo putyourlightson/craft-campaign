@@ -1,10 +1,16 @@
 # Release Notes for Campaign
 
-## 2.17.4 - Unreleased
+## 2.17.4 - 2024-09-23
 
 ### Changed
 
-- Improved the French translation ([#484](https://github.com/putyourlightson/craft-campaign/issues/484)).
+- Improved the French translation ([#493](https://github.com/putyourlightson/craft-campaign/issues/493)).
+- Improved the German translation.
+
+### Fixed
+
+- Fixed a bug in which changing the subscription status of a draft contact multiple times before saving could fail ([#494](https://github.com/putyourlightson/craft-campaign/issues/494)).
+- Fixed status icons for draft campaigns and contacts.
 
 ## 2.17.3 - 2024-08-12
 
