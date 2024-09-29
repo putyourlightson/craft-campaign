@@ -4,3 +4,9 @@
 {% set canHaveDrafts = true %}
 {% set title = 'Contacts'|t('campaign') %}
 {% set showSiteMenu = true %}
+
+{% do view.registerTranslations('campaign', [
+    'New contact',
+    'Subscribed',
+    'Unubscribed',
+]) %}
