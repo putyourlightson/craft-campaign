@@ -4,6 +4,12 @@
 {% set canHaveDrafts = true %}
 {% set title = 'Contacts'|t('campaign') %}
 
+{% do view.registerTranslations('campaign', [
+    'New contact',
+    'Subscribed',
+    'Unubscribed',
+]) %}
+
 
 {% block contextMenu %}
 

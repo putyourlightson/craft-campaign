@@ -1006,7 +1006,12 @@ XML;
     {
         if ($attribute == 'subscriptionStatus') {
             if ($this->subscriptionStatus) {
-                return Template::raw('<label class="subscriptionStatus ' . $this->subscriptionStatus . '">' . $this->subscriptionStatus . '</label>');
+                return Template::raw(
+                    Html::tag('label',
+                        Craft::t('campaign', ucfirst($this->subscriptionStatus)),
+                        ['class' => 'subscriptionStatus ' . $this->subscriptionStatus]
+                    )
+                );
             }
         }
 
