@@ -662,7 +662,7 @@ return [
     'Unmark contact as bounced' => 'Ne plus marquer le contact comme rejeté',
     'Unmark contact as complained' => 'Ne plus marquer le contact comme plaignant',
     'Unsent' => 'Non envoyé',
-    'Unsubscribe' => 'Désabonné',
+    'Unsubscribe' => 'Désabonner',
     'Unsubscribe Form Allowed' => 'Formulaire de désabonnement autorisé',
     'Unsubscribe from “{mailingList}”' => 'Désabonné de “{mailingList}”',
     'Unsubscribe link is invalid.' => 'Le lien de désabonnement est invalide.',
