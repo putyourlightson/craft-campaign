@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Improved translations ([#499](https://github.com/putyourlightson/craft-campaign/issues/499)).
+- Improved French and German translations ([#499](https://github.com/putyourlightson/craft-campaign/issues/499)).
 
 ## 2.17.4 - 2024-09-23
 
