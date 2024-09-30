@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.1 - 2024-09-30
+
+### Changed
+
+- Improved French and German translations ([#499](https://github.com/putyourlightson/craft-campaign/issues/499)).
+
 ## 3.5.0 - 2024-09-19
 
 ### Added
