@@ -15,7 +15,8 @@
         }) }}
     {% else %}
         {% if sendout.campaign %}
-            <span class="status {{ sendout.campaign.status }}"></span>
+            {% set status = sendout.campaign.statuses[sendout.status] %}
+            <span class="status {{ status.color.value }}"></span>
             <a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
         {% else %}
             {{ 'Campaign not found.'|t('campaign') }}

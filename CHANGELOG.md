@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.3 - Unreleased
+
+### Fixed
+
+- Fixed the sendout status colour indicators on sendout preview pages.
+
 ## 3.5.2 - 2024-10-04
 
 ### Fixed
