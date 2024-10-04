@@ -92,7 +92,8 @@
             <h5 class="heading">{{ 'Status'|t('app') }}</h5>
             <div class="value flex">
                 <div class="flex-grow">
-                    <span class="status {{ sendout.status }}"></span> {{ sendout.statuses[sendout.status] }}
+                    <span class="status {{ sendout.status }}"></span>
+                    {{ sendout.statuses[sendout.status].label ?? '' }}
                 </div>
                 {% include 'campaign/_includes/actions' %}
             </div>
