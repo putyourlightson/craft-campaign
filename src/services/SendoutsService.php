@@ -121,7 +121,10 @@ class SendoutsService extends Component
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
         if ($sendout->sendoutType === 'regular') {
-            $count = count($this->getPendingRecipientsStandardIds($sendout));
+            // Count live contacts only (not drafts).
+            $count = ContactElement::find()
+                ->id($this->getPendingRecipientsStandardIds($sendout))
+                ->count();
         } else {
             $count = count($this->getPendingRecipients($sendout));
         }

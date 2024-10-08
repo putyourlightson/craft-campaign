@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.4 - 2024-10-08
+
+### Fixed
+
+- Fixed the mailing lists view for draft contacts.
+
 ## 3.5.3 - 2024-10-08
 
 ### Fixed
