@@ -1,9 +1,10 @@
 # Release Notes for Campaign
 
-## 3.5.3 - Unreleased
+## 3.5.3 - 2024-10-08
 
 ### Fixed
 
+- Fixed the calculation of pending recipients to not include drafts.
 - Fixed the sendout status colour indicators on sendout preview pages.
 
 ## 3.5.2 - 2024-10-04

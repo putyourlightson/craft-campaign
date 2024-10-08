@@ -606,7 +606,7 @@ class SendoutsService extends Component
         // Get contacts subscribed to sendout’s mailing lists
         $query = ContactMailingListRecord::find()
             ->select(['contactId'])
-            ->andWhere($baseCondition);
+            ->where($baseCondition);
 
         // Ensure contacts have not complained, bounced, or been blocked (in contact record)
         $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
