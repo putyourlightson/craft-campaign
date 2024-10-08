@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.6 - 2024-10-08
+
+### Fixed
+
+- Fixed the calculation of pending recipients to not include drafts.
+
 ## 2.17.5 - 2024-09-30
 
 ### Changed
