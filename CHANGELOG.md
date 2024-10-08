@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.5 - 2024-10-08
+
+### Fixed
+
+- Fixed a bug in which the “delete draft” menu item could appear twice when editing a draft contact.
+
 ## 3.5.4 - 2024-10-08
 
 ### Fixed

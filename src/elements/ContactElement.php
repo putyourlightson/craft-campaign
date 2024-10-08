@@ -566,7 +566,7 @@ class ContactElement extends Element
     protected function safeActionMenuItems(): array
     {
         if (!$this->id || $this->getIsUnpublishedDraft()) {
-            return parent::destructiveActionMenuItems();
+            return parent::safeActionMenuItems();
         }
 
         $items = [];
