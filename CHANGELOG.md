@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.6 - Unreleased
+
+### Fixed
+
+- Fixed the campaign status label on sendout preview pages.
+
 ## 3.5.5 - 2024-10-08
 
 ### Fixed

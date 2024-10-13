@@ -15,7 +15,7 @@
         }) }}
     {% else %}
         {% if sendout.campaign %}
-            {% set status = sendout.campaign.statuses[sendout.status] %}
+            {% set status = sendout.campaign.statuses[sendout.campaign.status] %}
             <span class="status {{ status.color.value }}"></span>
             <a href="{{ sendout.campaign.cpEditUrl }}" class="go" target="_blank">{{ sendout.campaign.title }}</a>
         {% else %}
