@@ -456,7 +456,7 @@ class SettingsModel extends Model
     /**
      * Returns the parsed from names and emails.
      *
-     * @since 3.5.6
+     * @since 2.17.7
      */
     public function getFromNamesEmails(): array
     {

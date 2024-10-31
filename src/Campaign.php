@@ -401,9 +401,9 @@ class Campaign extends Plugin
         $settings->apiKey = StringHelper::randomString(16);
         $settings->fromNamesEmails = [
             [
-                $mailSettings->fromName,
-                $mailSettings->fromEmail,
-                '',
+                $mailSettings->fromName ?? '',
+                $mailSettings->fromEmail ?? '',
+                $mailSettings->replyToEmail ?? '',
                 Craft::$app->getSites()->getPrimarySite()->id,
             ],
         ];
