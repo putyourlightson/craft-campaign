@@ -38,7 +38,7 @@ class SettingsHelper
     {
         // Get first from name and email
         $firstFromNameEmail = [];
-        $fromNamesEmails = Campaign::$plugin->settings->fromNamesEmails;
+        $fromNamesEmails = Campaign::$plugin->settings->getFromNamesEmails();
 
         foreach ($fromNamesEmails as $fromNameEmail) {
             if ($siteId === null || empty($fromNameEmail[3]) || $fromNameEmail[3] == $siteId) {
@@ -57,9 +57,9 @@ class SettingsHelper
             $mailSettings = App::mailSettings();
 
             $firstFromNameEmail = [
-                'name' => $mailSettings->fromName,
-                'email' => $mailSettings->fromEmail,
-                'replyTo' => '',
+                'name' => App::parseEnv($mailSettings->fromName),
+                'email' => App::parseEnv($mailSettings->fromEmail),
+                'replyTo' => App::parseEnv($mailSettings->replyToEmail),
             ];
         }
 
@@ -72,7 +72,7 @@ class SettingsHelper
     public static function getFromNameEmailOptions(int $siteId = null): array
     {
         $fromNameEmailOptions = [];
-        $fromNamesEmails = Campaign::$plugin->settings->fromNamesEmails;
+        $fromNamesEmails = Campaign::$plugin->settings->getFromNamesEmails();
 
         foreach ($fromNamesEmails as $fromNameEmail) {
             $fromSiteId = $fromNameEmail[3] ?? null;

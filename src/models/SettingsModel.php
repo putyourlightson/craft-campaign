@@ -418,6 +418,26 @@ class SettingsModel extends Model
     }
 
     /**
+     * Returns the parsed from names and emails.
+     *
+     * @since 3.5.6
+     */
+    public function getFromNamesEmails(): array
+    {
+        $fromNamesEmails = [];
+        foreach ($this->fromNamesEmails as $fromNameEmail) {
+            $fromNamesEmails[] = [
+                App::parseEnv($fromNameEmail[0]) ?? '',
+                App::parseEnv($fromNameEmail[1]) ?? '',
+                App::parseEnv($fromNameEmail[2]) ?? '',
+                $fromNameEmail[3] ?? null,
+            ];
+        }
+
+        return $fromNamesEmails;
+    }
+
+    /**
      * Returns the contact field layout.
      */
     public function getContactFieldLayout(): FieldLayout
@@ -469,12 +489,14 @@ class SettingsModel extends Model
      */
     public function validateFromNamesEmails(mixed $attribute): void
     {
-        if (empty($this->fromNamesEmails)) {
+        $fromNamesEmails = $this->getFromNamesEmails();
+
+        if (empty($fromNamesEmails)) {
             $this->addError($attribute, Craft::t('campaign', 'You must enter at least one name and email.'));
             return;
         }
 
-        foreach ($this->fromNamesEmails as $fromNameEmail) {
+        foreach ($fromNamesEmails as $fromNameEmail) {
             if ($fromNameEmail[0] === '' || $fromNameEmail[1] === '') {
                 $this->addError($attribute, Craft::t('campaign', 'The name and email cannot be blank.'));
                 return;

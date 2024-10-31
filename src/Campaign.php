@@ -390,8 +390,8 @@ class Campaign extends Plugin
         $settings->apiKey = StringHelper::randomString(16);
         $settings->fromNamesEmails = [
             [
-                App::parseEnv($mailSettings->fromName),
-                App::parseEnv($mailSettings->fromEmail),
+                $mailSettings->fromName,
+                $mailSettings->fromEmail,
                 '',
                 Craft::$app->getSites()->getPrimarySite()->id,
             ],

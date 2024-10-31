@@ -1,6 +1,10 @@
 # Release Notes for Campaign
 
-## 3.5.6 - Unreleased
+## 3.5.6 - 2024-10-31
+
+### Changed
+
+- The “from names and emails” setting now accepts environment variables ([#503](https://github.com/putyourlightson/craft-campaign/issues/503)).
 
 ### Fixed
 
