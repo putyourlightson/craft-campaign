@@ -57,9 +57,9 @@ class SettingsHelper
             $mailSettings = App::mailSettings();
 
             $firstFromNameEmail = [
-                'name' => App::parseEnv($mailSettings->fromName),
-                'email' => App::parseEnv($mailSettings->fromEmail),
-                'replyTo' => App::parseEnv($mailSettings->replyToEmail),
+                'name' => App::parseEnv($mailSettings->fromName) ?? '',
+                'email' => App::parseEnv($mailSettings->fromEmail) ?? '',
+                'replyTo' => App::parseEnv($mailSettings->replyToEmail) ?? '',
             ];
         }
 
