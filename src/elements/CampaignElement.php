@@ -890,7 +890,7 @@ class CampaignElement extends Element
     public function beforeSave(bool $isNew): bool
     {
         // Reset stats if this is a duplicate of a non-draft campaign.
-        if ($this->firstSave && $this->duplicateOf !== null) {
+        if ($isNew && $this->getIsCanonical() && $this->duplicateOf !== null) {
             $this->recipients = 0;
             $this->opened = 0;
             $this->clicked = 0;
