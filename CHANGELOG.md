@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.8 - 2024-11-29
+
+### Fixed
+
+- Fixed a bug in which duplicating campaigns was not resetting the new campaign’s stats.
+
 ## 2.17.7 - 2024-10-31
 
 ### Changed
