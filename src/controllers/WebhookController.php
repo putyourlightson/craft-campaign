@@ -289,6 +289,9 @@ class WebhookController extends Controller
             if ($bounceType == 'HardBounce') {
                 return $this->callWebhook('bounced', $email);
             }
+
+            // Append the bounce type for debugging purposes.
+            $eventType .= '.' . $bounceType;
         } // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
         elseif ($eventType == 'SubscriptionChange') {
             $suppress = $this->request->getBodyParam('SuppressSending');
