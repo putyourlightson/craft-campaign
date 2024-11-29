@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 1.26.1 - 2024-11-29
+
+### Fixed
+
+- Fixed a bug in which contacts could not be filtered by segments in non-primary sites ([#504](https://github.com/putyourlightson/craft-campaign/issues/504)).
+
 ## 1.26.0 - 2024-04-17
 
 ### Added

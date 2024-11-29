@@ -175,12 +175,13 @@ class ContactElement extends Element
         if (Campaign::$plugin->getIsPro()) {
             $sources[] = ['heading' => Craft::t('campaign', 'Segments')];
 
-            $segments = SegmentElement::findAll();
+            $segments = Campaign::$plugin->segments->getAllSegments();
 
             foreach ($segments as $segment) {
                 $sources[] = [
                     'key' => 'segment:'.$segment->id,
                     'label' => $segment->title,
+                    'sites' => [$segment->siteId],
                     'data' => [
                         'id' => $segment->id
                     ],

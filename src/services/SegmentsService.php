@@ -65,6 +65,19 @@ class SegmentsService extends Component
     }
 
     /**
+     * Returns all segments.
+     *
+     * @return SegmentElement[]
+     */
+    public function getAllSegments(): array
+    {
+        /** @var SegmentElement[]] */
+        return SegmentElement::find()
+            ->site('*')
+            ->all();
+    }
+
+    /**
      * Returns the segment's contacts
      *
      * @param SegmentElement $segment
