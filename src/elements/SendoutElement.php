@@ -219,6 +219,7 @@ class SendoutElement extends Element
             ],
             self::STATUS_PENDING => [
                 'label' => Craft::t('campaign', 'Pending'),
+                'color' => Color::Orange,
             ],
             self::STATUS_PAUSED => [
                 'label' => Craft::t('campaign', 'Paused'),

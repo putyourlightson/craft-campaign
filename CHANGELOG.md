@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.8 - 2024-12-09
+
+### Fixed
+
+- Fixed a bug in which pending sendouts did not have a status colour assigned ([#507](https://github.com/putyourlightson/craft-campaign/issues/507)).
+
 ## 3.5.7 - 2024-11-29
 
 ### Fixed
