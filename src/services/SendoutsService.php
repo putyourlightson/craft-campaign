@@ -120,8 +120,7 @@ class SendoutsService extends Component
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
-        if ($sendout->sendoutType === 'regular') {
-            // Count live contacts only (not drafts).
+        if ($sendout->sendoutType === 'regular' || $sendout->sendoutType === 'scheduled') {
             $count = ContactElement::find()
                 ->id($this->getPendingRecipientsStandardIds($sendout))
                 ->count();
@@ -403,8 +402,8 @@ class SendoutsService extends Component
 
         if ($sendout->sendStatus == SendoutElement::STATUS_SENT) {
             $subject = Craft::t('campaign', 'Sending completed: {title}', $variables);
-            $htmlBody = Craft::t('campaign', 'Sending of the sendout “<a href="{sendoutUrl}">{title}</a>” has been successfully completed!!', $variables);
-            $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] has been successfully completed!!', $variables);
+            $htmlBody = Craft::t('campaign', 'Sending of the sendout “<a href="{sendoutUrl}">{title}</a>” has been successfully completed!', $variables);
+            $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] has been successfully completed!', $variables);
         } else {
             $subject = Craft::t('campaign', 'Sending failed: {title}', $variables);
             $htmlBody = Craft::t('campaign', 'Sending of the sendout “<a href="{sendoutUrl}">{title}</a>” failed after {sendAttempts} send attempt(s). Please check that your <a href="{emailSettingsUrl}">Campaign email settings</a> are correctly configured and check the error in the Craft log.', $variables);
@@ -585,17 +584,6 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the standard sendout’s base query condition.
-     */
-    private function getPendingRecipientsStandardBaseCondition(SendoutElement $sendout): array
-    {
-        return [
-            'mailingListId' => $sendout->mailingListIds,
-            'subscriptionStatus' => 'subscribed',
-        ];
-    }
-
-    /**
      * Returns the standard sendout’s pending recipient contact IDs.
      *
      * @return int[]
@@ -604,12 +592,13 @@ class SendoutsService extends Component
     {
         App::maxPowerCaptain();
 
-        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
-
         // Get contacts subscribed to sendout’s mailing lists
         $query = ContactMailingListRecord::find()
             ->select(['contactId'])
-            ->where($baseCondition);
+            ->andWhere([
+                'mailingListId' => $sendout->mailingListIds,
+                'subscriptionStatus' => 'subscribed',
+            ]);
 
         // Ensure contacts have not complained, bounced, or been blocked (in contact record)
         $query->innerJoin(ContactRecord::tableName() . ' contact', '[[contact.id]] = [[contactId]]')
@@ -653,7 +642,6 @@ class SendoutsService extends Component
      */
     private function getPendingRecipientsStandard(SendoutElement $sendout, int $limit = null): array
     {
-        $baseCondition = $this->getPendingRecipientsStandardBaseCondition($sendout);
         $contactIds = $this->getPendingRecipientsStandardIds($sendout);
 
         if ($limit !== null) {
@@ -664,7 +652,6 @@ class SendoutsService extends Component
         $recipients = ContactMailingListRecord::find()
             ->select(['contactId', 'mailingListId' => 'MIN([[mailingListId]])', 'subscribed' => 'MIN([[subscribed]])'])
             ->groupBy(['contactId'])
-            ->where($baseCondition)
             ->andWhere(['contactId' => $contactIds])
             ->orderBy(['contactId' => SORT_ASC])
             ->asArray()
