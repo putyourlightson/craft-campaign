@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.5.8 - Unreleased
+## 3.5.8 - 2024-12-09
 
 ### Fixed
 
