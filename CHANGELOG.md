@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.9 - Unreleased
+
+### Changed
+
+- Changed the field icons for campaigns, contacts and mailing lists ([#509](https://github.com/putyourlightson/craft-campaign/issues/509)).
+
 ## 3.5.8 - 2024-12-09
 
 ### Fixed

@@ -28,6 +28,14 @@ class MailingListsField extends BaseRelationField
     /**
      * @inheritdoc
      */
+    public static function icon(): string
+    {
+        return 'id-card';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function elementType(): string
     {
         return MailingListElement::class;

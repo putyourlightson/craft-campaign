@@ -25,6 +25,14 @@ class CampaignsField extends BaseRelationField
     /**
      * @inheritdoc
      */
+    public static function icon(): string
+    {
+        return 'file-lines';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function elementType(): string
     {
         return CampaignElement::class;

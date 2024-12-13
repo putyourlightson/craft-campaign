@@ -25,6 +25,14 @@ class ContactsField extends BaseRelationField
     /**
      * @inheritdoc
      */
+    public static function icon(): string
+    {
+        return 'users';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function elementType(): string
     {
         return ContactElement::class;
