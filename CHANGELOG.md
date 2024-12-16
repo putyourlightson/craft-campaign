@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.9 - 2024-12-16
+
+### Fixed
+
+- Fixed the calculation of the pending recipient count for scheduled sendouts ([#505](https://github.com/putyourlightson/craft-campaign/issues/505)).
+
 ## 2.17.8 - 2024-11-29
 
 ### Fixed
