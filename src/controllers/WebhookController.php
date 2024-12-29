@@ -108,16 +108,16 @@ class WebhookController extends Controller
             $body = Json::decodeIfJson($message['Message']);
             $eventType = $body['notificationType'] ?? null;
 
-            if ($eventType == 'Complaint') {
+            if ($eventType === 'Complaint') {
                 $email = $body['complaint']['complainedRecipients'][0]['emailAddress'];
                 return $this->callWebhook('complained', $email);
             }
-            if ($eventType == 'Bounce' && $body['bounce']['bounceType'] == 'Permanent') {
+            if ($eventType === 'Bounce' && $body['bounce']['bounceType'] === 'Permanent') {
                 $email = $body['bounce']['bouncedRecipients'][0]['emailAddress'];
                 return $this->callWebhook('bounced', $email);
             }
 
-            return $this->asRawFailure('Event `' . ($eventType ?? '') . '` not found.');
+            return $this->asRawSuccess();
         }
 
         return $this->asRawFailure('No event provided.');
@@ -145,23 +145,19 @@ class WebhookController extends Controller
 
         // Check if this is a test webhook request
         $from = $events['data']['email']['from'] ?? '';
-        if ($from == 'test@example.com') {
+        if ($from === 'test@example.com') {
             return $this->asRawSuccess('Test success.');
         }
 
-        if ($eventType == 'activity.spam_complaint') {
+        if ($eventType === 'activity.spam_complaint') {
             return $this->callWebhook('complained', $email);
         }
 
-        if ($eventType == 'activity.hard_bounced') {
+        if ($eventType === 'activity.hard_bounced') {
             return $this->callWebhook('bounced', $email);
         }
 
-        if ($eventType) {
-            return $this->asRawFailure('Event type `' . $eventType . '` not found.');
-        }
-
-        return $this->asRawFailure('No event provided.');
+        return $this->asRawSuccess();
     }
 
     /**
@@ -198,32 +194,28 @@ class WebhookController extends Controller
         }
 
         // Check if this is a test webhook request
-        if ($email == 'alice@example.com') {
+        if ($email === 'alice@example.com') {
             return $this->asRawSuccess('Test success.');
         }
 
-        if ($event == 'complained') {
+        if ($event === 'complained') {
             return $this->callWebhook('complained', $email);
         }
 
         // Only mark as bounced if the reason indicates that it is a hard bounce.
         // https://github.com/putyourlightson/craft-campaign/issues/178
-        if ($event == 'failed' && $severity == 'permanent'
-            && ($reason == 'bounce' || $reason == 'suppress-bounce')
+        if ($event === 'failed' && $severity === 'permanent'
+            && ($reason === 'bounce' || $reason === 'suppress-bounce')
         ) {
             return $this->callWebhook('bounced', $email);
         }
 
         // Support legacy Mailgun webhook event.
-        if ($event == 'bounced') {
+        if ($event === 'bounced') {
             return $this->callWebhook('bounced', $email);
         }
 
-        if ($event) {
-            return $this->asRawFailure('Event `' . $event . '` not found.');
-        }
-
-        return $this->asRawFailure('No event provided.');
+        return $this->asRawSuccess();
     }
 
     /**
@@ -241,10 +233,10 @@ class WebhookController extends Controller
                 $eventType = $event['event'] ?? '';
                 $email = $event['msg']['email'] ?? '';
 
-                if ($eventType == 'spam') {
+                if ($eventType === 'spam') {
                     return $this->callWebhook('complained', $email);
                 }
-                if ($eventType == 'hard_bounce') {
+                if ($eventType === 'hard_bounce') {
                     return $this->callWebhook('bounced', $email);
                 }
             }
@@ -279,28 +271,25 @@ class WebhookController extends Controller
         $email = $this->request->getBodyParam('Email') ?: $this->request->getBodyParam('Recipient');
 
         // https://postmarkapp.com/developer/webhooks/spam-complaint-webhook
-        if ($eventType == 'SpamComplaint') {
+        if ($eventType === 'SpamComplaint') {
             return $this->callWebhook('complained', $email);
         } // https://postmarkapp.com/developer/webhooks/bounce-webhook
-        elseif ($eventType == 'Bounce') {
+        elseif ($eventType === 'Bounce') {
             $bounceType = $this->request->getBodyParam('Type');
 
-            if ($bounceType == 'HardBounce') {
+            if ($bounceType === 'HardBounce') {
                 return $this->callWebhook('bounced', $email);
             }
-
-            // Append the bounce type for debugging purposes.
-            $eventType .= '.' . $bounceType;
         } // https://postmarkapp.com/developer/webhooks/subscription-change-webhook
-        elseif ($eventType == 'SubscriptionChange') {
+        elseif ($eventType === 'SubscriptionChange') {
             $suppress = $this->request->getBodyParam('SuppressSending');
 
             if ($suppress) {
                 $reason = $this->request->getBodyParam('SuppressionReason');
 
-                if ($reason == 'SpamComplaint') {
+                if ($reason === 'SpamComplaint') {
                     return $this->callWebhook('complained', $email);
-                } elseif ($reason == 'HardBounce') {
+                } elseif ($reason === 'HardBounce') {
                     return $this->callWebhook('bounced', $email);
                 } else {
                     return $this->callWebhook('unsubscribed', $email);
@@ -308,11 +297,7 @@ class WebhookController extends Controller
             }
         }
 
-        if ($eventType) {
-            return $this->asRawFailure('Event `' . $eventType . '` not found.');
-        }
-
-        return $this->asRawFailure('No event provided.');
+        return $this->asRawSuccess();
     }
 
     /**
@@ -335,27 +320,23 @@ class WebhookController extends Controller
                 $email = $event['email'] ?? '';
 
                 // Check if this is a test webhook request
-                if ($email == 'example@test.com') {
+                if ($email === 'example@test.com') {
                     return $this->asRawSuccess('Test success.');
                 }
 
                 // https://docs.sendgrid.com/for-developers/tracking-events/event#engagement-events
-                if ($eventType == 'spamreport') {
+                if ($eventType === 'spamreport') {
                     return $this->callWebhook('complained', $email);
                 }
 
                 // https://docs.sendgrid.com/for-developers/tracking-events/event#delivery-events
-                if ($eventType == 'bounce') {
+                if ($eventType === 'bounce') {
                     return $this->callWebhook('bounced', $email);
                 }
             }
-
-            $eventTypes = array_filter(array_map(fn($event) => $event['event'] ?? null, $events));
-
-            return $this->asRawFailure('Event `' . implode(', ', $eventTypes) . '` not found.');
         }
 
-        return $this->asRawFailure('No event provided.');
+        return $this->asRawSuccess();
     }
 
     /**
@@ -375,11 +356,11 @@ class WebhookController extends Controller
             return $this->asRawSuccess();
         }
 
-        if ($event == 'complained') {
+        if ($event === 'complained') {
             Campaign::$plugin->webhook->complain($contact);
-        } elseif ($event == 'bounced') {
+        } elseif ($event === 'bounced') {
             Campaign::$plugin->webhook->bounce($contact);
-        } elseif ($event == 'unsubscribed') {
+        } elseif ($event === 'unsubscribed') {
             Campaign::$plugin->webhook->unsubscribe($contact);
         }
 

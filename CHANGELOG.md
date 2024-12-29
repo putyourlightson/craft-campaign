@@ -5,6 +5,7 @@
 ### Changed
 
 - Changed the field icons for campaigns, contacts and mailing lists ([#509](https://github.com/putyourlightson/craft-campaign/issues/509)).
+- The webhook controller no longer logs unknown events as warnings.
 
 ## 3.5.8 - 2024-12-09
 
