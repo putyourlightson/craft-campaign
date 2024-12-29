@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.10 - Unreleased
+
+### Changed
+
+- The webhook controller no longer logs unknown events as warnings.
+
 ## 2.17.9 - 2024-12-16
 
 ### Fixed
