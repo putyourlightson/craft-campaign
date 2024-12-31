@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.17.10 - Unreleased
+## 2.17.10 - 2024-12-31
 
 ### Changed
 
