@@ -12,7 +12,7 @@ use yii\web\Response;
 
 /**
  * @since 1.10.0
-*/
+ */
 abstract class BaseMessageController extends Controller
 {
     /**

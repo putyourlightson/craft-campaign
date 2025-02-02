@@ -42,16 +42,18 @@
                     </select>
                 </div>
                 <a href="#" data-id="refresh" class="refresh">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path fill="#8f98a3" d="M9 13.5c-2.49 0-4.5-2.01-4.5-4.5S6.51 4.5 9 4.5c1.24 0 2.36.52 3.17 1.33L10 8h5V3l-1.76 1.76C12.15 3.68 10.66 3 9 3 5.69 3 3.01 5.69 3.01 9S5.69 15 9 15c2.97 0 5.43-2.16 5.9-5h-1.52c-.46 2-2.24 3.5-4.38 3.5z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#8f98a3" d="M9 13.5c-2.49 0-4.5-2.01-4.5-4.5S6.51 4.5 9 4.5c1.24 0 2.36.52 3.17 1.33L10 8h5V3l-1.76 1.76C12.15 3.68 10.66 3 9 3 5.69 3 3.01 5.69 3.01 9S5.69 15 9 15c2.97 0 5.43-2.16 5.9-5h-1.52c-.46 2-2.24 3.5-4.38 3.5z"/>
+                    </svg>
                 </a>
                 <div class="spinner big"></div>
                 <div data-id="chart"></div>
             </div>
 
             {% js %}
-                new Campaign.Chart({
-                    action: 'campaign/reports/get-campaign-chart-data',
-                    campaignId: '{{ campaign.id }}'
+            new Campaign.Chart({
+                action: 'campaign/reports/get-campaign-chart-data',
+                campaignId: '{{ campaign.id }}'
                 });
             {% endjs %}
         {% else %}
@@ -90,24 +92,33 @@
                 </tr>
                 <tr>
                     <th class="light">{{ 'Opened'|t('campaign') }}</th>
-                    <td>{{ linkInteration(data.campaign, 'opened') }} <code>[{{ data.campaign.getRate('opened') }}%]</code>
+                    <td>{{ linkInteration(data.campaign, 'opened') }}
+                        <code>[{{ data.campaign.getRate('opened') }}%]</code>
                     </td>
                 </tr>
                 <tr>
                     <th class="light">{{ 'Clicked'|t('campaign') }}</th>
-                    <td>{{ linkInteration(data.campaign, 'clicked') }} <code>[{{ data.campaign.getRate('clicked') }}%]</code></td>
+                    <td>{{ linkInteration(data.campaign, 'clicked') }}
+                        <code>[{{ data.campaign.getRate('clicked') }}%]</code>
+                    </td>
                 </tr>
                 <tr>
                     <th class="light">{{ 'Unsubscribed'|t('campaign') }}</th>
-                    <td>{{ linkInteration(data.campaign, 'unsubscribed') }} <code>[{{ data.campaign.getRate('unsubscribed') }}%]</code></td>
+                    <td>{{ linkInteration(data.campaign, 'unsubscribed') }}
+                        <code>[{{ data.campaign.getRate('unsubscribed') }}%]</code>
+                    </td>
                 </tr>
                 <tr>
                     <th class="light">{{ 'Complained'|t('campaign') }}</th>
-                    <td>{{ linkInteration(data.campaign, 'complained') }} <code>[{{ data.campaign.getRate('complained') }}%]</code></td>
+                    <td>{{ linkInteration(data.campaign, 'complained') }}
+                        <code>[{{ data.campaign.getRate('complained') }}%]</code>
+                    </td>
                 </tr>
                 <tr>
                     <th class="light">{{ 'Bounced'|t('campaign') }}</th>
-                    <td>{{ linkInteration(data.campaign, 'bounced') }} <code>[{{ data.campaign.getRate('bounced') }}%]</code></td>
+                    <td>{{ linkInteration(data.campaign, 'bounced') }}
+                        <code>[{{ data.campaign.getRate('bounced') }}%]</code>
+                    </td>
                 </tr>
                 <tr>
                     <th class="light">
@@ -167,8 +178,10 @@
             <tbody>
                 {% for sendout in data.sendouts %}
                     <tr>
-                        <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a></th>
-                        <td data-title="{{ 'Sendout Type'|t('campaign') }}">{{ sendout.sendoutType|ucfirst }}</td>
+                        <th scope="row" data-title="{{ 'Title'|t('app') }}">
+                            <a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a>
+                        </th>
+                        <td data-title="{{ 'Sendout Type'|t('campaign') }}">{{ sendout.sendoutType|capitalize }}</td>
                         <td data-title="{{ 'Recipients'|t('campaign') }}">{{ sendout.recipients }}</td>
                         <td data-title="{{ 'Send Date'|t('campaign') }}">{{ sendout.sendDate ? sendout.sendDate|datetime }}</td>
                         <td data-title="{{ 'Last Sent'|t('campaign') }}">{{ sendout.lastSent ? sendout.lastSent|datetime }}</td>

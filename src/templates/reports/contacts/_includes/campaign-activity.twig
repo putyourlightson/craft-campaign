@@ -18,7 +18,7 @@
                         {% endif %}
                     </th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">
-                        {{ activity.interaction|ucfirst|t('campaign') }}
+                        {{ activity.interaction|capitalize|t('campaign') }}
                         {% if activity.links|length %}
                             <span class="info">
                                 <p>
@@ -38,7 +38,9 @@
     </table>
 
     {% if limit is defined and limit == campaignActivity|length %}
-        <p><a href="{{ url('campaign/reports/contacts/' ~ contact.id ~ '/campaign-activity') }}" class="go">{{ "View all"|t('campaign') }}</a></p>
+        <p>
+            <a href="{{ url('campaign/reports/contacts/' ~ contact.id ~ '/campaign-activity') }}" class="go">{{ "View all"|t('campaign') }}</a>
+        </p>
     {% endif %}
 
 {% else %}

@@ -4,18 +4,18 @@
 
     <table class="data fullwidth fixed-layout">
         <tbody>
-        <tr>
-            <th class="light">{{ "Email"|t('campaign') }}</th>
-            <td>{{ contact.email }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ "Location"|t('campaign') }}</th>
-            <td>
-                {% set geoIp = contact.geoIp %}
-                {% if geoIp %}
-                    <span class="flag-icon flag-icon-{{ geoIp.countryCode ? geoIp.countryCode|lower : 'unknown' }}"></span>
-                    {{ geoIp.countryName }}
-                    <span class="info">
+            <tr>
+                <th class="light">{{ "Email"|t('campaign') }}</th>
+                <td>{{ contact.email }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ "Location"|t('campaign') }}</th>
+                <td>
+                    {% set geoIp = contact.geoIp %}
+                    {% if geoIp %}
+                        <span class="flag-icon flag-icon-{{ geoIp.countryCode ? geoIp.countryCode|lower : 'unknown' }}"></span>
+                        {{ geoIp.countryName }}
+                        <span class="info">
                         <p>
                             {{ geoIp.city is defined ? ('City'|t('campaign') ~ ': ' ~ geoIp.city|escape ~ '<br>')|raw }}
                             {{ geoIp.postCode is defined ? ('Post Code'|t('campaign') ~ ': ' ~ geoIp.postCode|escape ~ '<br>')|raw }}
@@ -25,29 +25,31 @@
                             {{ geoIp.timeZone is defined ? ('Timezone'|t('campaign') ~ ': ' ~ geoIp.timeZone|escape ~ '<br>')|raw }}
                         </p>
                     </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th class="light">{{ "Device"|t('campaign') }}</th>
-            <td><span class="device {{ contact.device }}"></span> {{ contact.device ? contact.device|ucfirst|t('campaign') }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ "OS"|t('campaign') }}</th>
-            <td>{{ contact.os|t('campaign') }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ "Client"|t('campaign') }}</th>
-            <td>{{ contact.client|t('campaign') }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ "Last Activity"|t('campaign') }}</th>
-            <td>{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
-        </tr>
-        <tr>
-            <th class="light">{{ "Verified"|t('campaign') }}</th>
-            <td>{{ contact.verified ? contact.verified|datetime }}</td>
-        </tr>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th class="light">{{ "Device"|t('campaign') }}</th>
+                <td>
+                    <span class="device {{ contact.device }}"></span> {{ contact.device ? contact.device|capitalize|t('campaign') }}
+                </td>
+            </tr>
+            <tr>
+                <th class="light">{{ "OS"|t('campaign') }}</th>
+                <td>{{ contact.os|t('campaign') }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ "Client"|t('campaign') }}</th>
+                <td>{{ contact.client|t('campaign') }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ "Last Activity"|t('campaign') }}</th>
+                <td>{{ contact.lastActivity ? contact.lastActivity|datetime }}</td>
+            </tr>
+            <tr>
+                <th class="light">{{ "Verified"|t('campaign') }}</th>
+                <td>{{ contact.verified ? contact.verified|datetime }}</td>
+            </tr>
         </tbody>
     </table>
 

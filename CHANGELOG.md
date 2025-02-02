@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 3.5.10 - Unreleased
+
+### Changed
+
+- Changed the use of the deprecated `|ucfirst` filter to `|capitalize` in all Twig templates.
+
 ## 3.5.9 - 2024-12-31
 
 ### Changed
