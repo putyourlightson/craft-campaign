@@ -7,12 +7,11 @@
 ] %}
 
 
-{% block pageTitle %}
-    {{ parent() }}
+{% set additionalButtons %}
     {% if campaign.canSave(currentUser) %}
         <a href="{{ campaign.cpEditUrl }}" class="btn">{{ 'Edit'|t('campaign') }}</a>
     {% endif %}
-{% endblock %}
+{% endset %}
 
 
 {% block content %}

@@ -1,10 +1,11 @@
 # Release Notes for Campaign
 
-## 3.5.10 - Unreleased
+## 3.5.10 - 2025-03-03
 
 ### Changed
 
 - Changed the use of the deprecated `|ucfirst` filter to `|capitalize` in all Twig templates.
+- Moved the “Edit” button into the correct position on campaign report pages.
 
 ## 3.5.9 - 2024-12-31
 
