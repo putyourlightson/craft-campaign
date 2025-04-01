@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.11 - 2025-01-01
+
+### Fixed
+
+- Fixed a bug in which the scheduling of weekly recurring sendouts could have been miscalculated ([#512](https://github.com/putyourlightson/craft-campaign/issues/512)).
+
 ## 2.17.10 - 2024-12-31
 
 ### Changed
