@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.17.11 - 2025-01-01
+## 2.17.11 - 2025-04-01
 
 ### Fixed
 
