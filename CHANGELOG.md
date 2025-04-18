@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.6.0 - Unreleased
+
+- Added a webhook controller action for [Elastic Email](https://elasticemail.com/).
+
 ## 3.5.11 - 2025-04-01
 
 ### Fixed

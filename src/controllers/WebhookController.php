@@ -44,6 +44,7 @@ class WebhookController extends Controller
         'mandrill',
         'postmark',
         'sendgrid',
+        'elastic-email',
     ];
 
     /**
@@ -121,6 +122,27 @@ class WebhookController extends Controller
         }
 
         return $this->asRawFailure('No event provided.');
+    }
+
+    /**
+     * Elastic Email
+     * https://help.elasticemail.com/en/articles/4804685-notification-settings
+     *
+     * @since 3.6.0
+     */
+    public function actionElasticEmail(): ?Response
+    {
+        $status = $this->request->getParam('status');
+        $email = urldecode($this->request->getParam('to'));
+
+        if ($status === 'Error') {
+            return $this->callWebhook('bounced', $email);
+        }
+        if ($status === 'AbuseReport') {
+            return $this->callWebhook('complained', $email);
+        }
+
+        return $this->asRawSuccess();
     }
 
     /**
