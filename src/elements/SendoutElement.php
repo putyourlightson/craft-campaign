@@ -688,6 +688,8 @@ class SendoutElement extends Element
             new SendoutFieldLayoutTab(),
         ]);
 
+        $fieldLayout->type = self::class;
+
         return $fieldLayout;
     }
 
