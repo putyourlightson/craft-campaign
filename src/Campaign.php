@@ -42,6 +42,9 @@ use craft\services\Utilities;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use doublesecretagency\sidekick\events\AddPromptsEvent;
+use doublesecretagency\sidekick\events\AddSkillsEvent;
+use doublesecretagency\sidekick\Sidekick;
 use Monolog\Formatter\LineFormatter;
 use Psr\Log\LogLevel;
 use putyourlightson\campaign\assets\CampaignAsset;
@@ -62,6 +65,8 @@ use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\integrations\feedme\CampaignFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\ContactFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\MailingListFeedMeElement;
+use putyourlightson\campaign\integrations\sidekick\CampaignsSkills;
+use putyourlightson\campaign\integrations\sidekick\CampaignTypesSkills;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
@@ -219,6 +224,7 @@ class Campaign extends Plugin
         $this->registerAllowedOrigins();
         $this->registerTwigExtensions();
         $this->registerFeedMeElements();
+        $this->registerSidekickPromptsAndSkills();
 
         // Register tracker controller shorthand for site requests
         if (Craft::$app->getRequest()->getIsSiteRequest()) {
@@ -686,6 +692,7 @@ class Campaign extends Plugin
 
     /**
      * Registers Feed Me elements.
+     * https://plugins.craftcms.com/feed-me
      *
      * @since 2.8.0
      */
@@ -699,6 +706,29 @@ class Campaign extends Plugin
                     $event->elements[] = CampaignFeedMeElement::class;
                     $event->elements[] = ContactFeedMeElement::class;
                     $event->elements[] = MailingListFeedMeElement::class;
+                }
+            );
+        }
+    }
+
+    /**
+     * Registers Sidekick prompts and skills.
+     * https://plugins.doublesecretagency.com/sidekick/
+     *
+     * @since 3.6.0
+     */
+    private function registerSidekickPromptsAndSkills(): void
+    {
+        if (class_exists(Sidekick::class)) {
+            Event::on(Sidekick::class, Sidekick::EVENT_ADD_PROMPTS,
+                function(AddPromptsEvent $event) {
+                    $event->prompts[] = Craft::getAlias('@putyourlightson/campaign/prompts/campaigns.md');
+                }
+            );
+            Event::on(Sidekick::class, Sidekick::EVENT_ADD_SKILLS,
+                function(AddSkillsEvent $event) {
+                    $event->skills[] = CampaignsSkills::class;
+                    $event->skills[] = CampaignTypesSkills::class;
                 }
             );
         }
