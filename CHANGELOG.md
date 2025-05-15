@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.17.12 - Unreleased
+
+### Changed
+
+- Changed the use of the deprecated `|ucfirst` filter to `|capitalize` in all Twig templates.
+
 ## 2.17.11 - 2025-04-01
 
 ### Fixed
@@ -128,8 +134,8 @@
 
 ### Fixed
 
-- Fixed a bug in which the total recipient count in running sendouts was being incorrectly displayed. 
-- Fixed a typo in the `All` interaction type in English. 
+- Fixed a bug in which the total recipient count in running sendouts was being incorrectly displayed.
+- Fixed a typo in the `All` interaction type in English.
 
 ## 2.13.2 - 2024-04-01
 
@@ -152,7 +158,7 @@
 - Added batching to sync queue jobs.
 
 ### Changed
- 
+
 - Campaign now requires Craft CMS 4.4.0 or later.
 - The sendout job batch size is now set to `100` by default, unless it was previously modified by the `maxBatchSize` config setting.
 - The sendout job batch delay is now set to `0` by default, unless it was previously modified by the `batchJobDelay` config setting.
@@ -179,7 +185,7 @@
 ## 2.12.2 - 2024-03-05
 
 ### Changed
- 
+
 - A custom log target is now only registered if a dispatcher exists.
 
 ### Security
