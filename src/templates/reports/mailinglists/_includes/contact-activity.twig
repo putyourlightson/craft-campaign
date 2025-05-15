@@ -19,11 +19,11 @@
                             {% endif %}
                         </th>
                         <td data-title="{{ 'Interaction'|t('campaign') }}">
-                            {{ activity.interaction|ucfirst|t('campaign') }}
+                            {{ activity.interaction|capitalize|t('campaign') }}
                         </td>
                         <td data-title="{{ 'Source'|t('campaign') }}">
                             {% if model.sourceType %}
-                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ model.sourceType|ucfirst|t('campaign') }}</a>
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ model.sourceType|capitalize|t('campaign') }}</a>
                             {% endif %}
                         </td>
                         <td data-order="{{ activity.date|datetime('U') }}" data-title="{{ 'First Interaction'|t('campaign') }}">{{ activity.date|datetime }}</td>
