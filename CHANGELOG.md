@@ -1,10 +1,9 @@
 # Release Notes for Campaign
 
-## 2.17.12 - Unreleased
+## 2.18.0 - 2025-06-02
 
-### Changed
-
-- Changed the use of the deprecated `|ucfirst` filter to `|capitalize` in all Twig templates.
+- Added the ability to segment contacts by campaign activity with a “never opened” operator  ([#482](https://github.com/putyourlightson/craft-campaign/issues/482)).
+- Replaced the use of the deprecated `|ucfirst` filter to `|capitalize` in all Twig templates.
 
 ## 2.17.11 - 2025-04-01
 
