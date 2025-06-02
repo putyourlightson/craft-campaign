@@ -97,7 +97,7 @@
                 {% for sendout in data.sendouts %}
                     <tr>
                         <th scope="row" data-title="{{ 'Title'|t('app') }}"><a href="{{ sendout.cpEditUrl }}">{{ sendout.title }}</a></th>
-                        <td data-title="{{ 'Sendout Type'|t('campaign') }}">{{ sendout.sendoutType|ucfirst }}</td>
+                        <td data-title="{{ 'Sendout Type'|t('campaign') }}">{{ sendout.sendoutType|capitalize }}</td>
                         <td data-title="{{ 'Recipients'|t('campaign') }}">{{ sendout.recipients }}</td>
                         <td data-title="{{ 'Send Date'|t('campaign') }}">{{ sendout.sendDate ? sendout.sendDate|datetime }}</td>
                         <td data-title="{{ 'Last Sent'|t('campaign') }}">{{ sendout.lastSent ? sendout.lastSent|datetime }}</td>

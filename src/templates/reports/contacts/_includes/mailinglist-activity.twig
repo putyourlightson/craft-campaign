@@ -17,13 +17,13 @@
                             <span class="line-through">{{ model.mailingListTitle }}</span>
                         {% endif %}
                     </th>
-                    <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|ucfirst|t('campaign') }}</td>
+                    <td data-title="{{ 'Interaction'|t('campaign') }}">{{ activity.interaction|capitalize|t('campaign') }}</td>
                     <td data-title="{{ 'Source'|t('campaign') }}">
                         {% if model.sourceType %}
                             {% if activity.sourceUrl %}
-                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ model.sourceType|ucfirst|t('campaign') }}</a>
+                                <a href="{{ activity.sourceUrl }}" class="go" target="_blank" rel="noopener">{{ model.sourceType|capitalize|t('campaign') }}</a>
                             {% else %}
-                                {{ model.sourceType|ucfirst|t('campaign') }}
+                                {{ model.sourceType|capitalize|t('campaign') }}
                             {% endif %}
                         {% endif %}
                     </td>

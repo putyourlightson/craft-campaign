@@ -30,7 +30,7 @@
         </tr>
         <tr>
             <th class="light">{{ "Device"|t('campaign') }}</th>
-            <td><span class="device {{ contact.device }}"></span> {{ contact.device ? contact.device|ucfirst|t('campaign') }}</td>
+            <td><span class="device {{ contact.device }}"></span> {{ contact.device ? contact.device|capitalize|t('campaign') }}</td>
         </tr>
         <tr>
             <th class="light">{{ "OS"|t('campaign') }}</th>

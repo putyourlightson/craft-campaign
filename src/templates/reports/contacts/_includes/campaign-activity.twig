@@ -18,7 +18,7 @@
                         {% endif %}
                     </th>
                     <td data-title="{{ 'Interaction'|t('campaign') }}">
-                        {{ activity.interaction|ucfirst|t('campaign') }}
+                        {{ activity.interaction|capitalize|t('campaign') }}
                         {% if activity.links|length %}
                             <span class="info">
                                 <p>
