@@ -3,6 +3,7 @@
 ## 3.6.0 - Unreleased
 
 - Added a webhook controller action for [Elastic Email](https://elasticemail.com/).
+- Added a permissions check for showing the sync contacts tab.
 
 ## 3.5.11 - 2025-04-01
 
