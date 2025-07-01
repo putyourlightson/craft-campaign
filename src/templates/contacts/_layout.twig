@@ -6,7 +6,7 @@
 ] %}
 {% set crumbs = crumbs is defined ? baseCrumbs|merge(crumbs) : [] %}
 
-{% if tabs is not defined and (currentUser.can('campaign:importContacts') or currentUser.can('campaign:exportContacts')) %}
+{% if tabs is not defined and (currentUser.can('campaign:importContacts') or currentUser.can('campaign:exportContacts') or currentUser.can('campaign:syncContacts')) %}
 
     {% set selectedTab = selectedTab ?? craft.app.request.getSegment(3) %}
 
