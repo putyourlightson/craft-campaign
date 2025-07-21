@@ -4,6 +4,7 @@
 
 - Added a webhook controller action for [Elastic Email](https://elasticemail.com/).
 - Added a permissions check for showing the sync contacts tab.
+- Fixed a bug in which contacts could be unsubscribed from previously unsubscribed mailing lists, instead of subscribed mailing lists, when sending to multiple mailing lists ([#523](https://github.com/putyourlightson/craft-campaign/issues/523)).
 
 ## 3.5.11 - 2025-04-01
 

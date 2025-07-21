@@ -11,7 +11,7 @@ afterAll(function() {
     Craft::$app->gc->hardDeleteElements();
 });
 
-test('Verifying a pending contact creates a contact', function() {
+test('A pending contact creates a contact', function() {
     $mailingList = createMailingList();
     $pendingContactRecord = createPendingContactRecord($mailingList->id);
 
@@ -22,7 +22,7 @@ test('Verifying a pending contact creates a contact', function() {
         ->not->toBeNull();
 });
 
-test('Verifying a pending contact for a soft-deleted contact restores the contact', function() {
+test('A pending contact for a soft-deleted contact restores the contact', function() {
     $mailingList = createMailingList();
     $contact = createContact();
     Craft::$app->elements->deleteElement($contact);
@@ -35,7 +35,7 @@ test('Verifying a pending contact for a soft-deleted contact restores the contac
         ->not->toBeNull();
 });
 
-test('Verifying a pending contact soft-deletes the pending contact', function() {
+test('A pending contact soft-deletes the pending contact', function() {
     $mailingList = createMailingList();
     $pendingContactRecord = createPendingContactRecord($mailingList->id);
 
@@ -45,7 +45,7 @@ test('Verifying a pending contact soft-deletes the pending contact', function() 
         ->toBeTrue();
 });
 
-test('Verifying a soft-deleted pending does nothing', function() {
+test('A soft-deleted pending does nothing', function() {
     $mailingList = createMailingList();
     $pendingContactRecord = createPendingContactRecord($mailingList->id);
     $pendingContactRecord->softDelete();
