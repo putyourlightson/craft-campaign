@@ -39,12 +39,12 @@ class WebhookController extends Controller
     protected int|bool|array $allowAnonymous = [
         'test',
         'amazon-ses',
+        'elastic-email',
         'mailersend',
         'mailgun',
         'mandrill',
         'postmark',
         'sendgrid',
-        'elastic-email',
     ];
 
     /**
@@ -132,6 +132,12 @@ class WebhookController extends Controller
      */
     public function actionElasticEmail(): ?Response
     {
+        $this->requirePostRequest();
+
+        if (!$this->isAllowedIpAddress(Campaign::$plugin->settings->elasticEmailAllowedIpAddresses)) {
+            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getRemoteIP()]));
+        }
+
         $status = $this->request->getParam('status');
         $email = urldecode($this->request->getParam('to'));
 
@@ -278,15 +284,8 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        // Ensure IP address is coming from Postmark if allowed IP addresses are set
-        // https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
-        $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
-
-        if ($allowedIpAddresses !== null) {
-            $ipAddress = $this->request->getRemoteIP();
-            if (!in_array($ipAddress, $allowedIpAddresses)) {
-                return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $ipAddress]));
-            }
+        if (!$this->isAllowedIpAddress(Campaign::$plugin->settings->postmarkAllowedIpAddresses)) {
+            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getRemoteIP()]));
         }
 
         $eventType = $this->request->getBodyParam('RecordType');
@@ -406,6 +405,21 @@ class WebhookController extends Controller
 
         return $this->asRaw(Craft::t('campaign', $message))
             ->setStatusCode(400);
+    }
+
+    /**
+     * Returns whether the request’s IP address is allowed.
+     */
+    private function isAllowedIpAddress(?array $allowedIpAddresses): bool
+    {
+        if ($allowedIpAddresses !== null) {
+            $ipAddress = $this->request->getRemoteIP();
+            if (!in_array($ipAddress, $allowedIpAddresses)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -74,6 +74,19 @@ class SettingsModel extends Model
     public ?string $sendgridWebhookVerificationKey = null;
 
     /**
+     * @var array|null The allowed IP addresses for incoming webhook requests from Elastic Email (undocumented – provided by Elastic Email support)
+     * @since 3.6.0
+     */
+    public ?array $elasticEmailAllowedIpAddresses = [
+        '51.91.28.11',
+        '51.91.28.12',
+        '51.91.212.23',
+        '51.83.3.229',
+        '51.83.3.230',
+        '51.83.3.191',
+    ];
+
+    /**
      * @var array|null The allowed IP addresses for incoming webhook requests from Postmark
      * @link https://postmarkapp.com/support/article/800-ips-for-firewalls#webhooks
      * @since 1.19.0

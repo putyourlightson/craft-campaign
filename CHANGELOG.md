@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.6.0 - Unreleased
+## 3.6.0 - 2025-07-21
 
 - Added a webhook controller action for [Elastic Email](https://elasticemail.com/).
 - Added a permissions check for showing the sync contacts tab.

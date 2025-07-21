@@ -43,6 +43,16 @@ return [
         // A webhook verification key provided by SendGrid to validate incoming webhook requests
         //'sendgridWebhookVerificationKey' => 'aBcDeFgHiJkLmNoP123==',
 
+        // The allowed IP addresses for incoming webhook requests from Elastic Email
+        //'elasticEmailAllowedIpAddresses' => [
+        //    '51.91.28.11',
+        //    '51.91.28.12',
+        //    '51.91.212.23',
+        //    '51.83.3.229',
+        //    '51.83.3.230',
+        //    '51.83.3.191',
+        //],
+
         // The allowed IP addresses for incoming webhook requests from Postmark
         //'postmarkAllowedIpAddresses' => [
         //    '3.134.147.250',
