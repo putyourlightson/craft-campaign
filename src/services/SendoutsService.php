@@ -653,7 +653,10 @@ class SendoutsService extends Component
         $recipients = ContactMailingListRecord::find()
             ->select(['contactId', 'mailingListId' => 'MIN([[mailingListId]])', 'subscribed' => 'MIN([[subscribed]])'])
             ->groupBy(['contactId'])
-            ->andWhere(['contactId' => $contactIds])
+            ->andWhere([
+                'contactId' => $contactIds,
+                'subscriptionStatus' => 'subscribed',
+            ])
             ->orderBy(['contactId' => SORT_ASC])
             ->asArray()
             ->all();

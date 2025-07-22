@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 2.18.1 - 2025-07-21
+
+- Added a permissions check for showing the sync contacts tab.
+- Fixed a bug in which contacts could be unsubscribed from previously unsubscribed mailing lists, instead of subscribed mailing lists, when sending to multiple mailing lists ([#523](https://github.com/putyourlightson/craft-campaign/issues/523)).
+
 ## 2.18.0 - 2025-06-02
 
 - Added the ability to segment contacts by campaign activity with a “never opened” operator  ([#482](https://github.com/putyourlightson/craft-campaign/issues/482)).
