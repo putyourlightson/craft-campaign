@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.6.1 - Unreleased
+
+- Added a `contactInteraction` event to the `CampaignsService` class that is triggered when a contact interacts with a sendout, such as opening an email or clicking a link.
+
 ## 3.6.0 - 2025-07-21
 
 - Added a webhook controller action for [Elastic Email](https://elasticemail.com/).

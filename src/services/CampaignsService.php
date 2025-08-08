@@ -15,6 +15,7 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\events\ContactInteractionEvent;
 use putyourlightson\campaign\helpers\SettingsHelper;
 use putyourlightson\campaign\models\ContactCampaignModel;
 use putyourlightson\campaign\records\CampaignRecord;
@@ -24,6 +25,11 @@ use yii\base\Event;
 
 class CampaignsService extends Component
 {
+    /**
+     * @event ContactInteractionEvent
+     */
+    public const EVENT_CONTACT_INTERACTION = 'contactInteraction';
+
     /**
      * @var bool|null
      */
@@ -135,6 +141,15 @@ class CampaignsService extends Component
         // Only save if anonymous tracking is disabled
         if (!Campaign::$plugin->settings->enableAnonymousTracking) {
             $contactCampaignRecord->save();
+        }
+
+        if ($this->hasEventHandlers(self::EVENT_CONTACT_INTERACTION)) {
+            $this->trigger(self::EVENT_CONTACT_INTERACTION, new ContactInteractionEvent([
+                'interaction' => $interaction,
+                'contact' => $contact,
+                'sendout' => $sendout,
+                'link' => $linkRecord,
+            ]));
         }
     }
 
