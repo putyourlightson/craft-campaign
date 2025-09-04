@@ -298,6 +298,8 @@ class Install extends Migration
                 'added' => $this->integer(),
                 'updated' => $this->integer(),
                 'failures' => $this->integer(),
+                'failedRows' => $this->text(),
+                'failureMessages' => $this->text(),
                 'dateImported' => $this->dateTime(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

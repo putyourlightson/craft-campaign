@@ -23,6 +23,8 @@ use DateTime;
  * @property int $added Added
  * @property int $updated Updated
  * @property int $failures Failures
+ * @property string[] $failedRows Failed rows
+ * @property string[] $failureMessages Failure messages
  * @property DateTime $dateImported Date imported
  */
 class ImportRecord extends ActiveRecord

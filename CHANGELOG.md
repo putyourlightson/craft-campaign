@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 3.6.1 - Unreleased
+## 3.7.0 - Unreleased
 
 - Added a `contactInteraction` event to the `CampaignsService` class that is triggered when a contact interacts with a sendout, such as opening an email or clicking a link ([#518](https://github.com/putyourlightson/craft-campaign/issues/518)).
+- Added a table of import failures to the contact import page ([#528](https://github.com/putyourlightson/craft-campaign/issues/528)).
 
 ## 3.6.0 - 2025-07-21
 

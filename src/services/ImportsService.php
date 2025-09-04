@@ -322,7 +322,10 @@ class ImportsService extends Component
         if (!$success) {
             $import->failures++;
 
-            Campaign::$plugin->log(implode('. ', $contact->getErrorSummary(true)) . ' [' . implode(',', $row) . ']');
+            $import->failedRows[] = implode(',', $row);
+            $failureMessage = $contact->getErrorSummary(false)[0] ?? '';
+            $import->failureMessages[] = $failureMessage;
+            Campaign::$plugin->log('[' . implode(',', $row) . '] : ' . $failureMessage);
 
             Campaign::$plugin->imports->saveImport($import);
 

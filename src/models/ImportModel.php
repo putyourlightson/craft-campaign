@@ -93,6 +93,16 @@ class ImportModel extends Model
     public int $failures = 0;
 
     /**
+     * @var string[] Failed rows
+     */
+    public array $failedRows = [];
+
+    /**
+     * @var string[] Failure messages
+     */
+    public array $failureMessages = [];
+
+    /**
      * @var DateTime|null Date imported
      */
     public ?DateTime $dateImported = null;
