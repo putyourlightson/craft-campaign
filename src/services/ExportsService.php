@@ -78,7 +78,7 @@ class ExportsService extends Component
                     $value = $contact->{$fieldHandle};
 
                     if ($value instanceof ElementQuery) {
-                        $elements = $value->all();
+                        $elements = $value->eagerly()->all();
 
                         // Use the string representation of each element
                         /** @var Element $element */
