@@ -4,7 +4,8 @@
 
 - Added a `contactInteraction` event to the `CampaignsService` class that is triggered when a contact interacts with a sendout, such as opening an email or clicking a link ([#518](https://github.com/putyourlightson/craft-campaign/issues/518)).
 - Added a table of import failures to the contact import page ([#528](https://github.com/putyourlightson/craft-campaign/issues/528)).
-- Added lazy eager-loading of element queries when exporting contacts ([#534](https://github.com/putyourlightson/craft-campaign/issues/534)).
+- Added a `Date Subscribed` property to the contact element.
+- Optimised the queries performed when exporting contacts ([#534](https://github.com/putyourlightson/craft-campaign/issues/534)).
 
 ## 3.6.0 - 2025-07-21
 

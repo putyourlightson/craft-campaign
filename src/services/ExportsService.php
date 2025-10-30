@@ -11,10 +11,8 @@ use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use craft\helpers\App;
 use putyourlightson\campaign\elements\ContactElement;
-use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
-use putyourlightson\campaign\records\ContactMailingListRecord;
 
 class ExportsService extends Component
 {
@@ -55,7 +53,7 @@ class ExportsService extends Component
         fputcsv($handle, array_merge([
             'mailingList',
             'subscriptionStatus',
-            'subscribedDate',
+            'dateSubscribed',
         ], $fieldHandles));
 
         $mailingLists = $export->getMailingLists();
@@ -67,12 +65,10 @@ class ExportsService extends Component
                 ->all();
 
             foreach ($contacts as $contact) {
-                $subscription = $this->getSubscription($contact, $mailingList);
-
                 $row = [];
                 $row[] = $mailingList->title;
-                $row[] = $subscription->subscriptionStatus;
-                $row[] = $subscription->subscribed;
+                $row[] = $contact->subscriptionStatus;
+                $row[] = $contact->dateSubscribed;
 
                 foreach ($fieldHandles as $fieldHandle) {
                     $value = $contact->{$fieldHandle};
@@ -111,20 +107,5 @@ class ExportsService extends Component
         }
 
         return true;
-    }
-
-    private function getSubscription(ContactElement $contact, MailingListElement $mailingList): ?ContactMailingListRecord
-    {
-        /** @var ContactMailingListRecord|null */
-        return ContactMailingListRecord::find()
-            ->select([
-                'subscriptionStatus',
-                'subscribed',
-            ])
-            ->where([
-                'contactId' => $contact->id,
-                'mailingListId' => $mailingList->id,
-            ])
-            ->one();
     }
 }
