@@ -1,5 +1,11 @@
 # Release Notes for Campaign
 
+## 2.19.0 - 2025-11-01
+
+- Added a `Date Subscribed` property to the contact element.
+- Optimised the queries performed when exporting contacts ([#534](https://github.com/putyourlightson/craft-campaign/issues/534)).
+- Fixed a bug in which exporting contacts with one or more date fields could fail.
+
 ## 2.18.1 - 2025-07-21
 
 - Added a permissions check for showing the sync contacts tab.

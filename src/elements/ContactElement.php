@@ -305,6 +305,7 @@ class ContactElement extends Element
             ],
             'cid' => Craft::t('campaign', 'Contact ID'),
             'subscriptionStatus' => Craft::t('campaign', 'Subscription Status'),
+            'dateSubscribed' => Craft::t('campaign', 'Date Subscribed'),
             'country' => Craft::t('campaign', 'Country'),
             'lastActivity' => Craft::t('campaign', 'Last Activity'),
             'verified' => Craft::t('campaign', 'Verified'),
@@ -328,6 +329,7 @@ class ContactElement extends Element
     {
         return [
             'subscriptionStatus' => ['label' => Craft::t('campaign', 'Subscription Status')],
+            'dateSubscribed' => ['label' => Craft::t('campaign', 'Date Subscribed')],
             'country' => ['label' => Craft::t('campaign', 'Country')],
             'lastActivity' => ['label' => Craft::t('campaign', 'Last Activity')],
             'verified' => ['label' => Craft::t('campaign', 'Verified')],
@@ -419,9 +421,14 @@ class ContactElement extends Element
     public ?DateTime $blocked = null;
 
     /**
-     * @var string|null Subscription status, only used when a mailing list is selected in element index
+     * @var string|null Subscription status (only used when a mailing list is selected in element index)
      */
     public ?string $subscriptionStatus = null;
+
+    /**
+     * @var DateTime|null Date subscribed (only used when a mailing list is selected in element index)
+     */
+    public ?DateTime $dateSubscribed = null;
 
     /**
      * @var string|null The initial email value, if there was one.

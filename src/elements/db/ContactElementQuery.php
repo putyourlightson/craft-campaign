@@ -145,14 +145,14 @@ class ContactElementQuery extends ElementQuery
         }
 
         if ($this->mailingListId) {
-            $this->query->addSelect(['subscriptionStatus']);
+            $this->query->addSelect(['subscriptionStatus', 'dateSubscribed']);
             $this->subQuery->innerJoin(ContactMailingListRecord::tableName() . ' campaign_contacts_mailinglists', '[[campaign_contacts.id]] = [[campaign_contacts_mailinglists.contactId]]');
-            $this->subQuery->select(['subscriptionStatus' => 'campaign_contacts_mailinglists.subscriptionStatus']);
+            $this->subQuery->select(['subscriptionStatus' => 'campaign_contacts_mailinglists.subscriptionStatus', 'dateSubscribed' => 'campaign_contacts_mailinglists.subscribed']);
             $this->subQuery->andWhere(Db::parseParam('campaign_contacts_mailinglists.mailingListId', $this->mailingListId));
         } else {
-            // Add a dummy subscriptionStatus value to prevent sorted queries from failing
+            // Add dummy column mappings to prevent sorted queries from failing.
             // https://github.com/putyourlightson/craft-campaign/issues/374
-            $this->subQuery->addSelect(['subscriptionStatus' => 'cid']);
+            $this->subQuery->addSelect(['subscriptionStatus' => 'cid', 'dateSubscribed' => 'cid']);
         }
 
         if ($this->segmentId) {
