@@ -10,6 +10,7 @@ use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use craft\helpers\App;
+use DateTime;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\events\ExportEvent;
 use putyourlightson\campaign\models\ExportModel;
@@ -68,7 +69,7 @@ class ExportsService extends Component
                 $row = [];
                 $row[] = $mailingList->title;
                 $row[] = $contact->subscriptionStatus;
-                $row[] = $contact->dateSubscribed;
+                $row[] = $contact->dateSubscribed->format('Y-m-d H:i:s');
 
                 foreach ($fieldHandles as $fieldHandle) {
                     $value = $contact->{$fieldHandle};
@@ -83,9 +84,11 @@ class ExportsService extends Component
                         }
 
                         $value = implode(',', $elements);
-                    } // https://github.com/putyourlightson/craft-campaign/issues/297
-                    elseif ($value instanceof MultiOptionsFieldData) {
+                    } elseif ($value instanceof MultiOptionsFieldData) {
+                        // https://github.com/putyourlightson/craft-campaign/issues/297
                         $value = implode(',', iterator_to_array($value));
+                    } elseif ($value instanceof DateTime) {
+                        $value = $value->format('Y-m-d H:i:s');
                     }
 
                     $row[] = $value;
