@@ -69,7 +69,7 @@ class ExportsService extends Component
                 $row = [];
                 $row[] = $mailingList->title;
                 $row[] = $contact->subscriptionStatus;
-                $row[] = $contact->dateSubscribed->format('Y-m-d H:i:s');
+                $row[] = $contact->dateSubscribed?->format('Y-m-d H:i:s');
 
                 foreach ($fieldHandles as $fieldHandle) {
                     $value = $contact->{$fieldHandle};

@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.7.1 - 2025-11-03
+
+- Fixed a bug in which an error could occur when attempting to export contacts without a date subscribed.
+
 ## 3.7.0 - 2025-11-01
 
 - Added a `contactInteraction` event to the `CampaignsService` class that is triggered when a contact interacts with a sendout, such as opening an email or clicking a link ([#518](https://github.com/putyourlightson/craft-campaign/issues/518)).
