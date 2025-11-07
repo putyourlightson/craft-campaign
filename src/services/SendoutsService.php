@@ -356,6 +356,10 @@ class SendoutsService extends Component
                 $sendout->sendStatus = SendoutElement::STATUS_FAILED;
             }
 
+            // Save failed record
+            $contactCampaignRecord->sent = null;
+            $contactCampaignRecord->save();
+
             $this->updateSendoutRecord($sendout, ['failures', 'sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
@@ -570,8 +574,7 @@ class SendoutsService extends Component
     {
         $query = ContactCampaignRecord::find()
             ->select(['contactId'])
-            ->where(['sendoutId' => $sendout->id])
-            ->andWhere(['not', ['sent' => null]]);
+            ->where(['sendoutId' => $sendout->id]);
 
         if ($todayOnly) {
             $now = new DateTime();
