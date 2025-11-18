@@ -1,8 +1,12 @@
 # Release Notes for Campaign
 
+## 3.7.2 - Unreleased
+
+- Improved how IP addresses are determined for contact activity and webhook requests.
+
 ## 3.7.1 - 2025-11-03
 
-- Fixed a bug in which an error could occur when attempting to export contacts without a date subscribed.
+- Fixed a bug in which an error could occur when attempting to export contacts without a date subscribed ([#535](https://github.com/putyourlightson/craft-campaign/issues/535)).
 
 ## 3.7.0 - 2025-11-01
 

@@ -135,7 +135,7 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         if (!$this->isAllowedIpAddress(Campaign::$plugin->settings->elasticEmailAllowedIpAddresses)) {
-            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getRemoteIP()]));
+            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getUserIP()]));
         }
 
         $status = $this->request->getParam('status');
@@ -285,7 +285,7 @@ class WebhookController extends Controller
         $this->requirePostRequest();
 
         if (!$this->isAllowedIpAddress(Campaign::$plugin->settings->postmarkAllowedIpAddresses)) {
-            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getRemoteIP()]));
+            return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $this->request->getUserIP()]));
         }
 
         $eventType = $this->request->getBodyParam('RecordType');
@@ -413,7 +413,7 @@ class WebhookController extends Controller
     private function isAllowedIpAddress(?array $allowedIpAddresses): bool
     {
         if ($allowedIpAddresses !== null) {
-            $ipAddress = $this->request->getRemoteIP();
+            $ipAddress = $this->request->getUserIP();
             if (!in_array($ipAddress, $allowedIpAddresses)) {
                 return false;
             }
