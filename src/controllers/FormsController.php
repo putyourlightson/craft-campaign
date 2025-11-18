@@ -263,7 +263,7 @@ class FormsController extends BaseMessageController
                 throw new ForbiddenHttpException(Campaign::$plugin->settings->getRecaptchaErrorMessage());
             }
 
-            RecaptchaHelper::validateRecaptcha($response, $this->request->getRemoteIP());
+            RecaptchaHelper::validateRecaptcha($response, $this->request->getUserIP());
         }
     }
 
@@ -279,7 +279,7 @@ class FormsController extends BaseMessageController
                 throw new ForbiddenHttpException(Campaign::$plugin->settings->getTurnstileErrorMessage());
             }
 
-            TurnstileHelper::validate($response, $this->request->getRemoteIP());
+            TurnstileHelper::validate($response, $this->request->getUserIP());
         }
     }
 

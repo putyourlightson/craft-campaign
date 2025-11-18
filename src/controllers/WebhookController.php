@@ -255,7 +255,7 @@ class WebhookController extends Controller
         $allowedIpAddresses = Campaign::$plugin->settings->postmarkAllowedIpAddresses;
 
         if ($allowedIpAddresses !== null) {
-            $ipAddress = $this->request->getRemoteIP();
+            $ipAddress = $this->request->getUserIP();
             if (!in_array($ipAddress, $allowedIpAddresses)) {
                 return $this->asRawFailure(Craft::t('campaign', 'IP address not allowed. [{ipAddress}]', ['ipAddress' => $ipAddress]));
             }
