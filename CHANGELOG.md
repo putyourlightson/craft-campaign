@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 2.19.2 - Unreleased
+## 2.19.2 - 2025-11-25
 
 - Improved how IP addresses are determined for contact activity and webhook requests.
+- Fixed a bug in which failed GeoIP lookups could cause errors.
 
 ## 2.19.1 - 2025-11-03
 

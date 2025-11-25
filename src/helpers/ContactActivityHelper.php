@@ -9,10 +9,12 @@ use Craft;
 use craft\helpers\Json;
 use DateTime;
 use DeviceDetector\DeviceDetector;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\records\ContactRecord;
+use yii\log\Logger;
 
 /**
  * @since 1.10.0
@@ -90,7 +92,10 @@ class ContactActivityHelper
             if ($response->getStatusCode() == 200) {
                 $geoIp = Json::decodeIfJson($response->getBody());
             }
-        } catch (ConnectException) {
+        } catch (ClientException|ConnectException $exception) {
+            Campaign::$plugin->log('GeoIP lookup failed: ' . $exception->getMessage(), [], Logger::LEVEL_ERROR);
+
+            return null;
         }
 
         // If country is empty then return null
