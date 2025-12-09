@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.7.3 - Unreleased
+
+- Removed the requirement for edit permission to the primary site to edit contacts ([#532](https://github.com/putyourlightson/craft-campaign/issues/532)).
+
 ## 3.7.2 - 2025-11-25
 
 - Improved how IP addresses are determined for contact activity and webhook requests.

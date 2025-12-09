@@ -467,7 +467,6 @@ return [
     'Report' => '',
     'Reports' => '',
     'required' => '',
-    'requires edit permission for the primary site' => '',
     'Resaving {type} campaigns' => '',
     'Resaving {type} mailing lists' => '',
     'Resume Sending' => '',

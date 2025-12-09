@@ -468,7 +468,6 @@ return [
     'Report' => 'Rapport',
     'Reports' => 'Rapports',
     'required' => 'requis',
-    'requires edit permission for the primary site' => 'Nécessite l’autorisation de modifier le site principal',
     'Resaving {type} campaigns' => 'Ré-enregistrement des newsletters {type}',
     'Resaving {type} mailing lists' => 'Ré-enregistrement des listes d’envoi {type}',
     'Resume Sending' => 'Reprise de l’envoi',

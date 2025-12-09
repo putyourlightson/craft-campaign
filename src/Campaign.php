@@ -367,14 +367,6 @@ class Campaign extends Plugin
             return false;
         }
 
-        if (Craft::$app->getIsMultiSite()) {
-            // Edit permission for the primary site is required to edit contacts
-            $primarySite = Craft::$app->getSites()->getPrimarySite();
-            if (!$currentUser->can('editSite:' . $primarySite->uid)) {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -811,18 +803,13 @@ class Campaign extends Plugin
                     ];
                 }
 
-                $manageContactsLabel = Craft::t('campaign', 'Manage contacts');
-                if (Craft::$app->getIsMultiSite()) {
-                    $manageContactsLabel .= ' (' . Craft::t('campaign', 'requires edit permission for the primary site') . ')';
-                }
-
                 $permissions = [
                     'campaign:campaigns' => [
                         'label' => Craft::t('campaign', 'Manage campaigns'),
                         'nested' => $campaignTypePermissions,
                     ],
                     'campaign:contacts' => [
-                        'label' => $manageContactsLabel,
+                        'label' => Craft::t('campaign', 'Manage contacts'),
                         'nested' => [
                             'campaign:importContacts' => ['label' => Craft::t('campaign', 'Import contacts')],
                             'campaign:exportContacts' => ['label' => Craft::t('campaign', 'Export contacts')],

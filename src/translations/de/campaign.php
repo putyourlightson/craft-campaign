@@ -468,7 +468,6 @@ return [
     'Report' => 'Report',
     'Reports' => 'Reporte',
     'required' => 'benötigt',
-    'requires edit permission for the primary site' => 'erfordert Bearbeitungsberechtigung für die primäre Website',
     'Resaving {type} campaigns' => '{type}-Kampagnen werden erneut gespeichert',
     'Resaving {type} mailing lists' => '{type}-Mailing-Listen werden erneut gespeichert',
     'Resume Sending' => 'Mit Senden fortfahren',
