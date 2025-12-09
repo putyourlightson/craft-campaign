@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.19.3 - 2025-12-09
+
+- Fixed a bug in which contacts were being unsubscribed from the oldest mailing list they were subscribed to, regardless of whether it was included in the sendout ([#538](https://github.com/putyourlightson/craft-campaign/issues/538)).
+
 ## 2.19.2 - 2025-11-25
 
 - Improved how IP addresses are determined for contact activity and webhook requests.
