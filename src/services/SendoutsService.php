@@ -339,9 +339,8 @@ class SendoutsService extends Component
         $success = $this->sendMessage($message);
 
         if ($success) {
-            // Update sent date and save
+            // Update sent date
             $contactCampaignRecord->sent = new DateTime();
-            $contactCampaignRecord->save();
 
             // Update recipients and last sent
             $sendout->recipients++;
@@ -364,6 +363,8 @@ class SendoutsService extends Component
                 'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
             ]);
         }
+
+        $contactCampaignRecord->save();
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
@@ -564,14 +565,13 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns excluded recipients query.
+     * Returns sent recipients query.
      */
     private function getSentRecipientsQuery(SendoutElement $sendout, bool $todayOnly = false): ActiveQuery
     {
         $query = ContactCampaignRecord::find()
             ->select(['contactId'])
-            ->where(['sendoutId' => $sendout->id])
-            ->andWhere(['not', ['sent' => null]]);
+            ->where(['sendoutId' => $sendout->id]);
 
         if ($todayOnly) {
             $now = new DateTime();
