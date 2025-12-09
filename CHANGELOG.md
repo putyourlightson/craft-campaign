@@ -3,6 +3,7 @@
 ## 3.7.3 - Unreleased
 
 - Removed the requirement for edit permission to the primary site to edit contacts ([#532](https://github.com/putyourlightson/craft-campaign/issues/532)).
+- Fixed a bug in which contacts were being unsubscribed from the oldest mailing list they were subscribed to, regardless of whether it was included in the sendout ([#538](https://github.com/putyourlightson/craft-campaign/issues/538)).
 
 ## 3.7.2 - 2025-11-25
 

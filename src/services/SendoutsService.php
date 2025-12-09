@@ -654,6 +654,7 @@ class SendoutsService extends Component
             ->groupBy(['contactId'])
             ->andWhere([
                 'contactId' => $contactIds,
+                'mailingListId' => $sendout->mailingListIds,
                 'subscriptionStatus' => 'subscribed',
             ])
             ->orderBy(['contactId' => SORT_ASC])
