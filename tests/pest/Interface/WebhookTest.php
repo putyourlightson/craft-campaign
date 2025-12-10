@@ -114,8 +114,8 @@ test('A legacy Mailgun bounce request marks the contact as bounced and returns a
 
 test('A Postmark bounce request with an allowed IP address marks the contact as bounced and returns a success', function() {
     $contact = createContact();
-    $_SERVER['REMOTE_ADDR'] = '1.2.3.4';
-    Campaign::$plugin->settings->postmarkAllowedIpAddresses = [$_SERVER['REMOTE_ADDR']];
+    $userIp = Craft::$app->getRequest()->getUserIP();
+    Campaign::$plugin->settings->postmarkAllowedIpAddresses = [$userIp];
 
     $response = runActionWithParams('webhook/postmark',
         getPostmarkRequestParams($contact->email),
@@ -131,7 +131,7 @@ test('A Postmark bounce request with an allowed IP address marks the contact as 
 
 test('A Postmark bounce request with a disallowed IP address returns an error', function() {
     $contact = createContact();
-    $_SERVER['REMOTE_ADDR'] = '4.3.2.1';
+    Campaign::$plugin->settings->postmarkAllowedIpAddresses = ['4.3.2.1'];
 
     $response = runActionWithParams('webhook/postmark',
         getPostmarkRequestParams($contact->email),
