@@ -3,6 +3,7 @@
 ## 2.19.3 - 2025-12-09
 
 - Fixed a bug in which contacts were being unsubscribed from the oldest mailing list they were subscribed to, regardless of whether it was included in the sendout ([#538](https://github.com/putyourlightson/craft-campaign/issues/538)).
+- Fixed a bug in which failed contacts could decrement the total number of sent emails in sendouts ([#533](https://github.com/putyourlightson/craft-campaign/issues/533)).
 
 ## 2.19.2 - 2025-11-25
 

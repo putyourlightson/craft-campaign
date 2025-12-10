@@ -22,6 +22,7 @@ use DateTime;
  * @property DateTime|null $unsubscribed Unsubscribed
  * @property DateTime|null $complained Complained
  * @property DateTime|null $bounced Bounced
+ * @property DateTime|null $failed Failed
  * @property int $opens Opens
  * @property int $clicks Clicks
  * @property string|null $links Links

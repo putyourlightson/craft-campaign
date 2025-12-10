@@ -178,6 +178,7 @@ class Install extends Migration
                 'unsubscribed' => $this->dateTime(),
                 'complained' => $this->dateTime(),
                 'bounced' => $this->dateTime(),
+                'failed' => $this->dateTime(),
                 'opens' => $this->integer()->defaultValue(0)->notNull(),
                 'clicks' => $this->integer()->defaultValue(0)->notNull(),
                 'links' => $this->text(),
