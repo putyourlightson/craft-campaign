@@ -130,8 +130,8 @@ class CampaignsController extends Controller
     {
         $this->requirePostRequest();
 
-        $campaignId = $this->request->getRequiredBodyParam('campaignId');
-        $campaign = Campaign::$plugin->campaigns->getCampaignById($campaignId);
+        $elementId = $this->request->getRequiredBodyParam('elementId');
+        $campaign = Campaign::$plugin->campaigns->getCampaignById($elementId);
 
         if (!$campaign) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));

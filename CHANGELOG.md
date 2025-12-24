@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.19.4 - 2025-12-23
+
+- Fixed a bug in which campaigns could not be closed ([#539](https://github.com/putyourlightson/craft-campaign/issues/539)).
+
 ## 2.19.3 - 2025-12-09
 
 - Fixed a bug in which contacts were being unsubscribed from the oldest mailing list they were subscribed to, regardless of whether it was included in the sendout ([#538](https://github.com/putyourlightson/craft-campaign/issues/538)).
