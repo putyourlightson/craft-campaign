@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.8.1 - 2025-12-23
+
+- Fixed a bug in which campaigns could not be closed ([#539](https://github.com/putyourlightson/craft-campaign/issues/539)).
+
 ## 3.8.0 - 2025-12-09
 
 - Contacts with permission to edit contacts can now do so without having to have edit permissions for the primary site ([#532](https://github.com/putyourlightson/craft-campaign/issues/532)).
