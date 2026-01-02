@@ -187,6 +187,51 @@ test('An unsigned SendGrid request returns an error', function() {
         ->toBe(400);
 });
 
+test('A signed Lettermint bounce request marks the contact as bounced and returns a success', function() {
+    $contact = createContact();
+    $signingSecret = 'aBcDeFgHiJkLmNoP123';
+    Campaign::$plugin->settings->lettermintWebhookSigningSecret = $signingSecret;
+
+    $body = json_encode(getLettermintRequestBody($contact->email));
+    Craft::$app->request->setRawBody($body);
+
+    $timestamp = time();
+    $signature = hash_hmac('sha256', $timestamp . $body, $signingSecret);
+
+    Craft::$app->request->headers->set(
+        'X-Lettermint-Signature',
+        't=' . $timestamp . ',v1=' . $signature
+    );
+    Craft::$app->request->headers->set('X-Lettermint-Event', 'message.hard_bounced');
+
+    $response = runActionWithParams('webhook/lettermint', [
+        'key' => Campaign::$plugin->settings->apiKey,
+    ]);
+
+    $contact = ContactElement::findOne($contact->id);
+
+    expect($response->statusCode)
+        ->toBe(200)
+        ->and($contact->getStatus())
+        ->toBe(ContactElement::STATUS_BOUNCED);
+});
+
+test('An unsigned Lettermint request returns an error', function() {
+    $contact = createContact();
+    Campaign::$plugin->settings->lettermintWebhookSigningSecret = 'aBcDeFgHiJkLmNoP123';
+
+    $body = json_encode(getLettermintRequestBody($contact->email));
+    Craft::$app->request->setRawBody($body);
+    Craft::$app->request->headers->set('X-Lettermint-Event', 'message.hard_bounced');
+
+    $response = runActionWithParams('webhook/lettermint', [
+        'key' => Campaign::$plugin->settings->apiKey,
+    ]);
+
+    expect($response->statusCode)
+        ->toBe(400);
+});
+
 function runActionWithParams(string $action, array $params = []): Response
 {
     Craft::$app->request->setBodyParams($params);
@@ -243,6 +288,15 @@ function getSendgridRequestBody(string $email): array
         [
             'event' => 'bounce',
             'email' => $email,
+        ],
+    ];
+}
+
+function getLettermintRequestBody(string $email): array
+{
+    return [
+        'data' => [
+            'recipient' => $email,
         ],
     ];
 }

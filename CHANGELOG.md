@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## unreleased
+
+- Added a webhook controller action for [Lettermint](https://lettermint.co/).
+
 ## 3.8.1 - 2025-12-23
 
 - Fixed a bug in which campaigns could not be closed ([#539](https://github.com/putyourlightson/craft-campaign/issues/539)).

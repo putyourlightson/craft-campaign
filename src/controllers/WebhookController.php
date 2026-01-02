@@ -40,6 +40,7 @@ class WebhookController extends Controller
         'test',
         'amazon-ses',
         'elastic-email',
+        'lettermint',
         'mailersend',
         'mailgun',
         'mandrill',
@@ -146,6 +147,38 @@ class WebhookController extends Controller
         }
         if ($status === 'AbuseReport') {
             return $this->callWebhook('complained', $email);
+        }
+
+        return $this->asRawSuccess();
+    }
+
+    /**
+     * Lettermint
+     * https://docs.lettermint.co/platform/webhooks/introduction
+     *
+     * @since 3.9.0
+     */
+    public function actionLettermint(): ?Response
+    {
+        $this->requirePostRequest();
+
+        $event = $this->request->getHeaders()->get('X-Lettermint-Event');
+        $data = $this->request->getBodyParam('data');
+
+        if (!$this->isValidLettermintRequest()) {
+            return $this->asRawFailure('Signature could not be authenticated.');
+        }
+
+        if ($event === 'webhook.test') {
+            return $this->asRawSuccess('Test success.');
+        }
+
+        if ($event === 'message.hard_bounced') {
+            return $this->callWebhook('bounced', $data['recipient']);
+        }
+
+        if ($event === 'message.spam_complaint') {
+            return $this->callWebhook('complained', $data['recipient']);
         }
 
         return $this->asRawSuccess();
@@ -420,6 +453,27 @@ class WebhookController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * @link https://docs.lettermint.co/platform/webhooks/signing
+     */
+    private function isValidLettermintRequest(): bool
+    {
+        if (!Campaign::$plugin->settings->validateWebhookRequests) {
+            return true;
+        }
+
+        $header = $this->request->headers->get('X-Lettermint-Signature', '');
+
+        if (!preg_match('/t=(\d+),v1=([a-f0-9]+)/', $header, $matches)) {
+            return false;
+        }
+
+        $signingKey = Campaign::$plugin->settings->getLettermintWebhookSigningSecret();
+        $hashedValue = hash_hmac('sha256', $matches[1] . $this->request->getRawBody(), $signingKey);
+
+        return hash_equals($matches[2], $hashedValue);
     }
 
     /**

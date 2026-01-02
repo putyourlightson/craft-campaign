@@ -56,6 +56,12 @@ class SettingsModel extends Model
     public bool $validateWebhookRequests = false;
 
     /**
+     * @var string|null A webhook signing secret provided by Lettermint to validate incoming webhook requests
+     * @since 3.9.0
+     */
+    public ?string $lettermintWebhookSigningSecret = null;
+
+    /**
      * @var string|null A webhook signing secret provided by MailerSend to validate incoming webhook requests
      * @since 2.10.0
      */
@@ -328,6 +334,16 @@ class SettingsModel extends Model
     public function getApiKey(): string
     {
         return App::parseEnv($this->apiKey) ?? '';
+    }
+
+    /**
+     * Returns the parsed Lettermint webhook signing secret.
+     *
+     * @since 3.9.0
+     */
+    public function getLettermintWebhookSigningSecret(): string
+    {
+        return App::parseEnv($this->lettermintWebhookSigningSecret) ?? '';
     }
 
     /**
