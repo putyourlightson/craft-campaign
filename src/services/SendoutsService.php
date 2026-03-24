@@ -116,19 +116,17 @@ class SendoutsService extends Component
     }
 
     /**
-     * Returns the number of pending recipients, not including failed attempts.
+     * Returns the number of pending recipients.
      */
     public function getPendingRecipientCount(SendoutElement $sendout): int
     {
         if ($sendout->sendoutType === 'regular' || $sendout->sendoutType === 'scheduled') {
-            $count = ContactElement::find()
+            return ContactElement::find()
                 ->id($this->getPendingRecipientsStandardIds($sendout))
                 ->count();
-        } else {
-            $count = count($this->getPendingRecipients($sendout));
         }
 
-        return $count - $sendout->failures;
+        return count($this->getPendingRecipients($sendout));
     }
 
     /**

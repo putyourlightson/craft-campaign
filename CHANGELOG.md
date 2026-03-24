@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.8.2 - Unreleased
+
+- Fixed a bug in which the number of recipients could be lower than expected when send failures occur ([#547](https://github.com/putyourlightson/craft-campaign/issues/547)).
+
 ## 3.8.1 - 2025-12-23
 
 - Fixed a bug in which campaigns could not be closed ([#539](https://github.com/putyourlightson/craft-campaign/issues/539)).
