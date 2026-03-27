@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 2.19.5 - Unreleased
+## 2.19.5 - 2026-03-27
 
 - Fixed a bug in which the number of recipients could be lower than expected when send failures occur ([#547](https://github.com/putyourlightson/craft-campaign/issues/547)).
 
