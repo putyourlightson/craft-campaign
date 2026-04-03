@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.19.6 - 2026-04-03
+
+- Fixed a bug in which an error could occur when using date range conditional rules in sendout schedules ([#550](https://github.com/putyourlightson/craft-campaign/issues/550)).
+
 ## 2.19.5 - 2026-03-27
 
 - Fixed a bug in which the number of recipients could be lower than expected when send failures occur ([#547](https://github.com/putyourlightson/craft-campaign/issues/547)).
