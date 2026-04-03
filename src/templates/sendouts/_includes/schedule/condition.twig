@@ -10,12 +10,11 @@
             {% set conditionRules = schedule.condition.getConditionRules() %}
             {% for rule in conditionRules %}
                 {# @var rule \craft\base\conditions\BaseConditionRule #}
-                {{ rule.label }} {{ rule.operator }} {{ rule.value }}
+                → {{ rule.getLabel() }}
                 <br>
             {% endfor %}
             {{ conditionRules is empty ? '-' }}
         {% endif %}
-
     {% endset %}
     {{ forms.field({
         label: 'Condition'|t('campaign'),
