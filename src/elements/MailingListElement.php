@@ -125,11 +125,13 @@ class MailingListElement extends Element
     }
 
     /**
-     * @inheritdoc
+     * Used to ensure mailing list slugs are unique.
+     *
+     * @used-by self::beforeSave
      */
     public function getUriFormat(): ?string
     {
-        return '{slug}';
+        return 'campaign:mailing-list:{slug}';
     }
 
     /**
