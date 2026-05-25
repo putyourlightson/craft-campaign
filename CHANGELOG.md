@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.8.4 - Unreleased
+
+- Mailing list slugs are now prefixed to help prevent conflicts with other element type slugs ([#558](https://github.com/putyourlightson/craft-campaign/issues/558)).
+
 ## 3.8.3 - 2026-04-03
 
 - Fixed a bug in which an error could occur when using date range conditional rules in sendout schedules ([#550](https://github.com/putyourlightson/craft-campaign/issues/550)).
