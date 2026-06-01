@@ -235,6 +235,13 @@ class SendoutsService extends Component
         $campaign = $sendout->getCampaign();
 
         if ($campaign === null || !$campaign->hasSendableStatus()) {
+            $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+            $this->updateSendoutRecord($sendout, ['sendStatus']);
+
+            Campaign::$plugin->log('Sending of the sendout “{title}” failed due to the campaign no longer being available or sendable.', [
+                'title' => $sendout->title,
+            ]);
+
             return;
         }
 
@@ -278,7 +285,6 @@ class SendoutsService extends Component
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch (Error) {
             $sendout->sendStatus = SendoutElement::STATUS_FAILED;
-
             $this->updateSendoutRecord($sendout, ['sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout “{title}” failed due to a Twig error when rendering the template.', [
