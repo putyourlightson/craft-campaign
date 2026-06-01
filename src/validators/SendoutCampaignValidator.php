@@ -7,7 +7,6 @@ namespace putyourlightson\campaign\validators;
 
 use Craft;
 use craft\validators\UniqueValidator;
-use putyourlightson\campaign\elements\CampaignElement;
 use putyourlightson\campaign\elements\SendoutElement;
 
 /**
@@ -35,9 +34,7 @@ class SendoutCampaignValidator extends UniqueValidator
             return;
         }
 
-        $status = $campaign->getStatus();
-
-        if ($status !== CampaignElement::STATUS_PENDING && $status !== CampaignElement::STATUS_SENT) {
+        if (!$campaign->hasSendableStatus()) {
             $this->addError($model, $attribute, Craft::t('campaign', 'An unsendable campaign has been selected.'));
         }
     }
