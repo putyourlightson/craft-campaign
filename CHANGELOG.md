@@ -3,6 +3,7 @@
 ## 3.8.4 - Unreleased
 
 - Mailing list slugs are now prefixed to help prevent conflicts with other element type slugs ([#558](https://github.com/putyourlightson/craft-campaign/issues/558)).
+- Fixed an issue in which sendouts would not complete when their associated campaign was deleted mid-send ([#560](https://github.com/putyourlightson/craft-campaign/issues/560)).
 
 ## 3.8.3 - 2026-04-03
 

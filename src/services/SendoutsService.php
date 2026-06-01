@@ -233,7 +233,7 @@ class SendoutsService extends Component
         // Get campaign
         $campaign = $sendout->getCampaign();
 
-        if ($campaign === null) {
+        if ($campaign === null || !$campaign->hasSendableStatus()) {
             return;
         }
 

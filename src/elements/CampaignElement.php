@@ -712,6 +712,17 @@ class CampaignElement extends Element
     }
 
     /**
+     * Returns whether the campaign has a sendable status.
+     */
+    public function hasSendableStatus(): bool
+    {
+        return in_array($this->getStatus(), [
+            self::STATUS_PENDING,
+            self::STATUS_SENT,
+        ], true);
+    }
+
+    /**
      * @inheritdoc
      * @since 2.0.0
      */
