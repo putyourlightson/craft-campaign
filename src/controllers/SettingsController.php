@@ -280,6 +280,7 @@ class SettingsController extends BaseSettingsController
 
         // Set the simple stuff
         $settings->defaultNotificationContactIds = $this->request->getBodyParam('defaultNotificationContactIds', $settings->defaultNotificationContactIds) ?: null;
+        $settings->disableLinkTracking = $this->request->getBodyParam('disableLinkTracking', $settings->disableLinkTracking) ?: false;
         $settings->showSendoutTitleField = $this->request->getBodyParam('showSendoutTitleField', $settings->showSendoutTitleField) ?: false;
         $settings->sendoutJobBatchSize = $this->request->getBodyParam('sendoutJobBatchSize', $settings->sendoutJobBatchSize) ?: null;
         $settings->sendoutJobBatchDelay = $this->request->getBodyParam('sendoutJobBatchDelay', $settings->sendoutJobBatchDelay) ?: 0;
