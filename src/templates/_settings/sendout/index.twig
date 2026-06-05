@@ -30,9 +30,22 @@
     <hr>
 
     {{ forms.lightswitchField({
+        first: true,
+        label: "Disable Link Tracking"|t('campaign'),
+        instructions: "Whether to disable link tracking in sendouts (opens will still be tracked, but clicks will not be tracked and links will not be rewritten)."|t('campaign'),
+        warning: (config.disableLinkTracking is defined ? macros.configWarning('disableLinkTracking')),
+        name: 'disableLinkTracking',
+        on: settings.disableLinkTracking,
+        errors: settings.getErrors('disableLinkTracking'),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Show Title Field"|t('campaign'),
         instructions: "Whether the title field should be visible in addition to the subject. If off, the subject will be used as the title."|t('campaign'),
+        warning: (config.showSendoutTitleField is defined ? macros.configWarning('showSendoutTitleField')),
+        name: 'showSendoutTitleField',
         on: settings.showSendoutTitleField,
+        errors: settings.getErrors('showSendoutTitleField'),
     }) }}
 
     <hr>

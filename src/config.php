@@ -72,10 +72,13 @@ return [
         //'transportSettings' => ['apiKey' => 'aBcDeFgHiJkLmNoP'],
 
         // Default notification contact IDs
-        //'defaultNotificationContactIds' = [1],
+        //'defaultNotificationContactIds' => [1],
+
+        // Whether to disable link tracking in sendouts (opens will still be tracked, but clicks will not be tracked and links will not be rewritten)
+        //'disableLinkTracking' => false,
 
         // Whether the title field should be shown for sendouts
-        //'showSendoutTitleField' = false,
+        //'showSendoutTitleField' => false,
 
         // The batch size to use for sendout jobs
         //'sendoutJobBatchSize' => 100,

@@ -118,6 +118,11 @@ class SettingsModel extends Model
     public ?array $defaultNotificationContactIds = null;
 
     /**
+     * @var bool Whether to disable link tracking in sendouts (opens will still be tracked, but clicks will not be tracked and links will not be rewritten)
+     */
+    public bool $disableLinkTracking = false;
+
+    /**
      * @var bool Whether the title field should be shown for sendouts
      */
     public bool $showSendoutTitleField = false;

@@ -761,6 +761,10 @@ class SendoutsService extends Component
      */
     private function convertLinks(string $body, ContactElement $contact, SendoutElement $sendout): string
     {
+        if (Campaign::$plugin->settings->disableLinkTracking) {
+            return $body;
+        }
+
         // Get base URL
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/click';
         $baseUrl = UrlHelper::siteUrl($path, ['cid' => $contact->cid, 'sid' => $sendout->sid]);
