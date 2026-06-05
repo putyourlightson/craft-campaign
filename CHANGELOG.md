@@ -1,5 +1,12 @@
 # Release Notes for Campaign
 
+## 2.19.7 - 2026-06-05
+
+- Added a “Disable Link Tracking” sendout setting that allows disabling link tracking in sendouts ([#559](https://github.com/putyourlightson/craft-campaign/issues/559)).
+- Mailing list slugs are now prefixed to help prevent conflicts with other element type slugs ([#558](https://github.com/putyourlightson/craft-campaign/issues/558)).
+- Fixed a bug in which sendouts would not complete when their associated campaign was deleted mid-send ([#560](https://github.com/putyourlightson/craft-campaign/issues/560)).
+- Fixed a bug in which the “Show Title Field” setting value was not saved when the lightswitch was enabled.
+
 ## 2.19.6 - 2026-04-03
 
 - Fixed a bug in which an error could occur when using date range conditional rules in sendout schedules ([#550](https://github.com/putyourlightson/craft-campaign/issues/550)).
