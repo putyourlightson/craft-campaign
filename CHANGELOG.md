@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 3.8.5 - 2026-06-05
+
+- Added a “Disable Link Tracking” sendout setting that allows disabling link tracking in sendouts ([#559](https://github.com/putyourlightson/craft-campaign/issues/559)).
+- Fixed a bug in which the “Show Title Field” setting value was not saved when the lightswitch was enabled.
+
 ## 3.8.4 - 2026-06-01
 
 - Mailing list slugs are now prefixed to help prevent conflicts with other element type slugs ([#558](https://github.com/putyourlightson/craft-campaign/issues/558)).
