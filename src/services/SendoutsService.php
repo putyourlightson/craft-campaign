@@ -349,14 +349,18 @@ class SendoutsService extends Component
 
             $this->updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         } else {
-            // Update failures and send status
             $sendout->failures++;
+
+            if (!is_array($sendout->failedContactIds)) {
+                $sendout->failedContactIds = [];
+            }
+            $sendout->failedContactIds[] = $contact->id;
 
             if ($sendout->failures >= Campaign::$plugin->settings->maxSendFailuresAllowed) {
                 $sendout->sendStatus = SendoutElement::STATUS_FAILED;
             }
 
-            $this->updateSendoutRecord($sendout, ['failures', 'sendStatus']);
+            $this->updateSendoutRecord($sendout, ['failures', 'failedContactIds', 'sendStatus']);
 
             Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
                 'title' => $sendout->title,

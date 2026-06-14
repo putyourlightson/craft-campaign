@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.8.6 - Unreleased
+
+- Failed contacts are now available in an info tooltip on sendout pages. 
+
 ## 3.8.5 - 2026-06-05
 
 - Added a “Disable Link Tracking” sendout setting that allows disabling link tracking in sendouts ([#559](https://github.com/putyourlightson/craft-campaign/issues/559)).
