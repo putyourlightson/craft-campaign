@@ -326,7 +326,7 @@ class FormsService extends Component
             $message->setReplyTo($fromNameEmail['replyTo']);
         }
 
-        return $message->send();
+        return $mailer->send($message);
     }
 
     /**

@@ -27,7 +27,6 @@ use craft\helpers\MailerHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\log\MonologTarget;
-use craft\mail\Mailer;
 use craft\mail\Message;
 use craft\mail\transportadapters\Sendmail;
 use craft\models\FieldLayout;
@@ -62,6 +61,7 @@ use putyourlightson\campaign\helpers\ProjectConfigDataHelper;
 use putyourlightson\campaign\integrations\feedme\CampaignFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\ContactFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\MailingListFeedMeElement;
+use putyourlightson\campaign\mail\CampaignMailer;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
@@ -108,7 +108,7 @@ use yii\web\ForbiddenHttpException;
  * @property-read SyncService $sync
  * @property-read TrackerService $tracker
  * @property-read WebhookService $webhook
- * @property-read Mailer $mailer
+ * @property-read CampaignMailer $mailer
  * @property-read array|null $cpNavItem
  * @property-read array $cpRoutes
  * @property-read bool $isPro
@@ -318,7 +318,7 @@ class Campaign extends Plugin
     /**
      * Creates a mailer.
      */
-    public function createMailer(SettingsModel $settings = null): Mailer
+    public function createMailer(SettingsModel $settings = null): CampaignMailer
     {
         if ($settings == null) {
             $settings = $this->getSettings();
@@ -328,7 +328,7 @@ class Campaign extends Plugin
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 
         // Create the mailer
-        return new Mailer([
+        return new CampaignMailer([
             'messageClass' => Message::class,
             'transport' => $adapter->defineTransport(),
         ]);

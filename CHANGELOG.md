@@ -1,8 +1,9 @@
 # Release Notes for Campaign
 
-## 3.8.6 - Unreleased
+## 3.8.6 - 2026-08-17
 
-- Failed contacts are now available in an info tooltip on sendout pages. 
+- Contacts are now marked as bounced when a sendout send response has a `406 Not Acceptable` status, indicating an inactive recipient.
+- Failed contacts are now available in an info tooltip on sendout pages.
 
 ## 3.8.5 - 2026-06-05
 
@@ -187,7 +188,7 @@
 
 ### Added
 
-- Added the ability to segment contacts by campaign activity with a “never opened” operator  ([#482](https://github.com/putyourlightson/craft-campaign/issues/482)).
+- Added the ability to segment contacts by campaign activity with a “never opened” operator ([#482](https://github.com/putyourlightson/craft-campaign/issues/482)).
 
 ### Changed
 

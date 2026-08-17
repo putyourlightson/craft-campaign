@@ -395,6 +395,7 @@ class SettingsController extends BaseSettingsController
         /** @var User $user */
         $user = Craft::$app->getUser()->getIdentity();
 
+        $mailer = Campaign::$plugin->mailer;
         $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($user->email)
@@ -406,7 +407,7 @@ class SettingsController extends BaseSettingsController
             $message->setReplyTo($fromNameEmail['replyTo']);
         }
 
-        if (!$message->send()) {
+        if (!$mailer->send($message)) {
             return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], [
                 'adapter' => $adapter,
             ]);

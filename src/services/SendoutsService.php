@@ -29,7 +29,9 @@ use putyourlightson\campaign\records\ContactMailingListRecord;
 use putyourlightson\campaign\records\ContactRecord;
 use putyourlightson\campaign\records\LinkRecord;
 use putyourlightson\campaign\records\SendoutRecord;
+use Symfony\Component\Mailer\Exception\HttpTransportException;
 use Twig\Error\Error;
+use yii\base\Event;
 use yii\db\ActiveQuery;
 use yii\mail\MessageInterface;
 
@@ -202,8 +204,9 @@ class SendoutsService extends Component
         // Convert links in HTML body
         $htmlBody = $this->convertLinks($htmlBody, $contact, $sendout);
 
-        // Compose message
-        $message = Campaign::$plugin->mailer->compose()
+        // Compose and send message
+        $mailer = Campaign::$plugin->mailer;
+        $message = $mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($contact->email)
             ->setSubject('[Test] ' . $sendout->subject)
@@ -214,7 +217,7 @@ class SendoutsService extends Component
             $message->setReplyTo($sendout->replyToEmail);
         }
 
-        return $message->send();
+        return $mailer->send($message);
     }
 
     /**
@@ -349,26 +352,36 @@ class SendoutsService extends Component
 
             $this->updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         } else {
-            $sendout->failures++;
-
-            if (!is_array($sendout->failedContactIds)) {
-                $sendout->failedContactIds = [];
-            }
-            $sendout->failedContactIds[] = $contact->id;
-
-            if ($sendout->failures >= Campaign::$plugin->settings->maxSendFailuresAllowed) {
-                $sendout->sendStatus = SendoutElement::STATUS_FAILED;
-            }
-
-            $this->updateSendoutRecord($sendout, ['failures', 'failedContactIds', 'sendStatus']);
-
-            Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
-                'title' => $sendout->title,
-                'email' => $contact->email,
-                'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
-            ]);
-
             $contactCampaignRecord->failed = new DateTime();
+            $lastException = Campaign::$plugin->mailer->lastException;
+
+            // A `406 Not Acceptable` response from the server indicates an invalid contact.
+            // https://postmarkapp.com/developer/api/overview#error-codes
+            if (
+                $lastException instanceof HttpTransportException
+                && $lastException->getResponse()->getStatusCode() === 406
+            ) {
+                Campaign::$plugin->webhook->bounce($contact);
+            } else {
+                $sendout->failures++;
+
+                if (!is_array($sendout->failedContactIds)) {
+                    $sendout->failedContactIds = [];
+                }
+                $sendout->failedContactIds[] = $contact->id;
+
+                if ($sendout->failures >= Campaign::$plugin->settings->maxSendFailuresAllowed) {
+                    $sendout->sendStatus = SendoutElement::STATUS_FAILED;
+                }
+
+                $this->updateSendoutRecord($sendout, ['failures', 'failedContactIds', 'sendStatus']);
+
+                Campaign::$plugin->log('Sending of the sendout “{title}” to {email} failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings are correctly configured and check the error in the Craft log.', [
+                    'title' => $sendout->title,
+                    'email' => $contact->email,
+                    'sendAttempts' => Campaign::$plugin->settings->maxSendAttempts,
+                ]);
+            }
         }
 
         $contactCampaignRecord->sent = new DateTime();
@@ -419,15 +432,16 @@ class SendoutsService extends Component
             $plaintextBody = Craft::t('campaign', 'Sending of the sendout “{title}” [{sendoutUrl}] failed after {sendAttempts} send attempt(s). Please check that your Campaign email settings [{emailSettingsUrl}] are correctly configured and check the error in the Craft log.', $variables);
         }
 
-        // Compose message
-        $message = Campaign::$plugin->mailer->compose()
+        // Compose and send message
+        $mailer = Campaign::$plugin->mailer;
+        $message = $mailer->compose()
             ->setFrom([$sendout->fromEmail => $sendout->fromName])
             ->setTo($notificationEmailAddresses)
             ->setSubject($subject)
             ->setHtmlBody($htmlBody)
             ->setTextBody($plaintextBody);
 
-        $message->send();
+        $mailer->send($message);
     }
 
     /**
@@ -833,8 +847,9 @@ class SendoutsService extends Component
      */
     private function sendMessage(MessageInterface $message): bool
     {
+        $mailer = Campaign::$plugin->mailer;
         for ($i = 0; $i < Campaign::$plugin->settings->maxSendAttempts; $i++) {
-            if ($message->send()) {
+            if ($mailer->send($message)) {
                 return true;
             }
 

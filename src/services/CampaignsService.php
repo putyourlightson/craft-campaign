@@ -8,7 +8,6 @@ namespace putyourlightson\campaign\services;
 use Craft;
 use craft\base\Component;
 use craft\db\ActiveRecord;
-use craft\mail\Message;
 use craft\web\View;
 use DateTime;
 use putyourlightson\campaign\Campaign;
@@ -165,9 +164,9 @@ class CampaignsService extends Component
         // Get from name and email
         $fromNameEmail = SettingsHelper::getFromNameEmail($campaign->siteId);
 
-        // Compose message
-        /** @var Message $message */
-        $message = Campaign::$plugin->mailer->compose()
+        // Compose and send message
+        $mailer = Campaign::$plugin->mailer;
+        $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($contact->email)
             ->setSubject('[Test] ' . $campaign->title)
@@ -178,7 +177,7 @@ class CampaignsService extends Component
             $message->setReplyTo($fromNameEmail['replyTo']);
         }
 
-        return $message->send();
+        return $mailer->send($message);
     }
 
     /**
