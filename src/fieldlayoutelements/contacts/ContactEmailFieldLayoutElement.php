@@ -64,26 +64,4 @@ class ContactEmailFieldLayoutElement extends TextField
     {
         return false;
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusClass(?ElementInterface $element = null, bool $static = false): ?string
-    {
-        if ($element && ($status = $element->getAttributeStatus('email'))) {
-            return $status[0];
-        }
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function statusLabel(?ElementInterface $element = null, bool $static = false): ?string
-    {
-        if ($element && ($status = $element->getAttributeStatus('email'))) {
-            return $status[1];
-        }
-        return null;
-    }
 }
