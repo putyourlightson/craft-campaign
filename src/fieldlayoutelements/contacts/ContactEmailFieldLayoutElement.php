@@ -8,6 +8,7 @@ namespace putyourlightson\campaign\fieldlayoutelements\contacts;
 use Craft;
 use craft\base\ElementInterface;
 use craft\fieldlayoutelements\TextField;
+use craft\helpers\StringHelper;
 
 /**
  * @since 2.0.0
@@ -71,7 +72,7 @@ class ContactEmailFieldLayoutElement extends TextField
     protected function statusClass(?ElementInterface $element = null, bool $static = false): ?string
     {
         if ($element && ($status = $element->getAttributeStatus('email'))) {
-            return $status[0];
+            return StringHelper::toString($status[0]);
         }
         return null;
     }

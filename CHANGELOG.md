@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.8.7 - 2026-08-24
+
+- Fixed a bug in which an error could occur when editing contacts ([#564](https://github.com/putyourlightson/craft-campaign/issues/564)).
+
 ## 3.8.6 - 2026-08-17
 
 - Contacts are now marked as bounced when a sendout send response has a `406 Not Acceptable` status, indicating an inactive recipient.
