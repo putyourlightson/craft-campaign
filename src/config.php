@@ -25,6 +25,9 @@ return [
         // Setting to true will save email messages into local files (in storage/runtime/debug/mail) rather than actually sending them
         //'testMode' => false,
 
+        // The number of seconds after an email is sent before opens and clicks are tracked
+        //'trackingDelay' => 10,
+
         // An API key to use for triggering tasks and notifications (min. 16 characters)
         //'apiKey' => 'aBcDeFgHiJkLmNoP',
 

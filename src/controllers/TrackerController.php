@@ -6,10 +6,12 @@
 namespace putyourlightson\campaign\controllers;
 
 use Craft;
+use craft\helpers\DateTimeHelper;
 use putyourlightson\campaign\base\BaseMessageController;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
+use putyourlightson\campaign\records\ContactCampaignRecord;
 use putyourlightson\campaign\records\LinkRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -40,7 +42,7 @@ class TrackerController extends BaseMessageController
         $contact = $this->getContact();
         $sendout = $this->getSendout();
 
-        if ($contact && $sendout) {
+        if ($contact && $sendout && $this->shouldTrack($contact, $sendout)) {
             // Track open
             Campaign::$plugin->tracker->open($contact, $sendout);
         }
@@ -69,7 +71,9 @@ class TrackerController extends BaseMessageController
 
         if ($contact && $sendout) {
             // Track click
-            Campaign::$plugin->tracker->click($contact, $sendout, $linkRecord);
+            if ($this->shouldTrack($contact, $sendout)) {
+                Campaign::$plugin->tracker->click($contact, $sendout, $linkRecord);
+            }
 
             // Add query string parameters if not empty
             $queryStringParameters = $sendout->getCampaign()->getCampaignType()->queryStringParameters;
@@ -196,5 +200,25 @@ class TrackerController extends BaseMessageController
         }
 
         return LinkRecord::findOne(['lid' => $lid]);
+    }
+
+    /**
+     * Returns whether interactions should be tracked for a contact and sendout.
+     */
+    private function shouldTrack(ContactElement $contact, SendoutElement $sendout): bool
+    {
+        $trackingDelay = Campaign::$plugin->settings->trackingDelay;
+
+        if ($trackingDelay <= 0) {
+            return true;
+        }
+
+        $contactCampaignRecord = ContactCampaignRecord::findOne([
+            'contactId' => $contact->id,
+            'sendoutId' => $sendout->id,
+        ]);
+        $sent = DateTimeHelper::toDateTime($contactCampaignRecord?->sent);
+
+        return $sent === false || $sent->getTimestamp() <= time() - $trackingDelay;
     }
 }
