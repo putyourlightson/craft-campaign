@@ -39,6 +39,11 @@ class SettingsModel extends Model
     public bool $testMode = false;
 
     /**
+     * @var int The number of seconds after an email is sent before opens and clicks are tracked
+     */
+    public int $trackingDelay = 10;
+
+    /**
      * @var string An API key to use for triggering tasks and notifications (min. 16 characters)
      */
     public string $apiKey;
@@ -296,6 +301,7 @@ class SettingsModel extends Model
             [['apiKey', 'fromNamesEmails', 'transportType', 'sendoutJobBatchSize', 'sendoutJobBatchDelay'], 'required'],
             [['apiKey'], 'string', 'length' => [16]],
             [['fromNamesEmails'], 'validateFromNamesEmails'],
+            [['trackingDelay'], 'integer', 'min' => 0],
             [['sendoutJobBatchSize'], 'integer', 'min' => 1],
             [['sendoutJobBatchDelay'], 'integer', 'min' => 0],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],

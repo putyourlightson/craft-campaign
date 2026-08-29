@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.9.0 - Unreleased
+
+- Added a `trackingDelay` config setting for ignoring opens and clicks that occur within a configurable number of seconds after an email is sent.
+
 ## 3.8.7 - 2026-08-24
 
 - Fixed a bug in which an error could occur when editing contacts ([#564](https://github.com/putyourlightson/craft-campaign/issues/564)).

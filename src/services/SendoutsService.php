@@ -343,6 +343,10 @@ class SendoutsService extends Component
             return;
         }
 
+        // Save the send time before sending so the tracking delay starts before the email can be scanned.
+        $contactCampaignRecord->sent = new DateTime();
+        $contactCampaignRecord->save();
+
         $success = $this->sendMessage($message);
 
         if ($success) {
@@ -353,6 +357,8 @@ class SendoutsService extends Component
             $this->updateSendoutRecord($sendout, ['recipients', 'lastSent']);
         } else {
             $contactCampaignRecord->failed = new DateTime();
+            $contactCampaignRecord->save();
+
             $lastException = Campaign::$plugin->mailer->lastException;
 
             // A `406 Not Acceptable` response from the server indicates an invalid contact.
@@ -383,9 +389,6 @@ class SendoutsService extends Component
                 ]);
             }
         }
-
-        $contactCampaignRecord->sent = new DateTime();
-        $contactCampaignRecord->save();
 
         // Fire an after event
         if ($this->hasEventHandlers(self::EVENT_AFTER_SEND_EMAIL)) {
