@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 3.9.0 - Unreleased
+
+- Added a `requireUnsubscribeConfirmation` config setting for requiring recipients to confirm unsubscribe requests made through unsubscribe links in emails, defaulting to `true` ([#529](https://github.com/putyourlightson/craft-campaign/issues/529)).
+- Added an `unsubscribeConfirmationTemplate` config setting for customising the unsubscribe confirmation page.
+
 ## 3.8.7 - 2026-08-24
 
 - Fixed a bug in which an error could occur when editing contacts ([#564](https://github.com/putyourlightson/craft-campaign/issues/564)).

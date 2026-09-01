@@ -616,7 +616,6 @@ class SendoutElement extends Element
     {
         Craft::$app->getView()->registerJs('new Campaign.SendoutEdit(\'' . $containerId . '\');');
 
-        /** @var Response|CpScreenResponseBehavior $response */
         if (!$this->getIsModifiable()) {
             // Only redirect if we're not already redirecting, to prevent an endless loop in Craft 4.0.4 and above.
             // https://github.com/putyourlightson/craft-campaign/issues/316
@@ -626,9 +625,11 @@ class SendoutElement extends Element
             }
         }
 
-        $response->selectedSubnavItem = 'sendouts';
-        $response->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
-        $response->redirectUrl = $this->getCpPreviewUrl();
+        /** @var CpScreenResponseBehavior $behavior */
+        $behavior = $response->getBehavior(CpScreenResponseBehavior::NAME);
+        $behavior->selectedSubnavItem = 'sendouts';
+        $behavior->submitButtonLabel = Craft::t('campaign', 'Save and Preview');
+        $behavior->redirectUrl = $this->getCpPreviewUrl();
     }
 
     /**
@@ -1246,7 +1247,7 @@ class SendoutElement extends Element
         // Get from name and email if submitted
         if ($this->fromNameEmail) {
             $fromNameEmail = explode(':', $this->fromNameEmail);
-            $this->fromName = $fromNameEmail[0] ?? '';
+            $this->fromName = $fromNameEmail[0];
             $this->fromEmail = $fromNameEmail[1] ?? '';
             $this->replyToEmail = $fromNameEmail[2] ?? '';
         }

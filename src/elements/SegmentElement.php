@@ -278,8 +278,9 @@ class SegmentElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response->selectedSubnavItem = 'segments';
+        /** @var CpScreenResponseBehavior $behavior */
+        $behavior = $response->getBehavior(CpScreenResponseBehavior::NAME);
+        $behavior->selectedSubnavItem = 'segments';
     }
 
     /**

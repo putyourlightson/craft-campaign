@@ -58,7 +58,7 @@ class SegmentsService extends Component
      */
     public function getAllSegments(): array
     {
-        /** @var SegmentElement[]] */
+        /** @var SegmentElement[] */
         return SegmentElement::find()
             ->site('*')
             ->all();

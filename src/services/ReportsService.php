@@ -632,7 +632,7 @@ class ReportsService extends Component
         }
 
         // Get first record
-        /** @var ActiveRecord $recordClass */
+        /** @var class-string<ActiveRecord> $recordClass */
         /** @var ActiveRecord|null $record */
         $record = $recordClass::find()
             ->where($condition)
@@ -770,7 +770,7 @@ class ReportsService extends Component
         $results = [];
         $fields = ['country', 'MAX([[geoIp]]) AS geoIp'];
 
-        /** @var ActiveRecord $recordClass */
+        /** @var class-string<ActiveRecord> $recordClass */
         $query = ContactRecord::find()
             ->select(array_merge($fields, ['count' => 'COUNT(*)']))
             ->groupBy(['country']);
@@ -838,7 +838,7 @@ class ReportsService extends Component
         $results = [];
         $fields = $detailed ? ['device', 'os', 'client'] : ['device'];
 
-        /** @var ActiveRecord $recordClass */
+        /** @var class-string<ActiveRecord> $recordClass */
         $query = ContactRecord::find()
             ->select(array_merge($fields, ['count' => 'COUNT(*)']))
             ->where(['not', ['device' => null]])
