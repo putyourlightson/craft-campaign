@@ -18,12 +18,12 @@ abstract class BaseMessageController extends Controller
     /**
      * Renders a message template.
      */
-    public function renderMessageTemplate(string $template = null, array $variables = []): Response
+    public function renderMessageTemplate(array $variables = [], ?string $template = null): Response
     {
         // If template was not defined or does not exist
         if (empty($template) || !Craft::$app->getView()->doesTemplateExist($template)) {
             // Use message template
-            $template = 'campaign/message';
+            $template = 'campaign/_message';
 
             return parent::renderTemplate($template, $variables, View::TEMPLATE_MODE_CP);
         }

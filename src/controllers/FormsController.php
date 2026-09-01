@@ -57,11 +57,11 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl();
         }
 
-        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
+        return $this->renderMessageTemplate([
             'title' => $mailingList->mailingListType->subscribeVerificationRequired ? Craft::t('campaign', 'Subscribed') : Craft::t('campaign', 'Subscribe'),
             'message' => $message,
             'mailingList' => $mailingList,
-        ]);
+        ], $mailingList->getMailingListType()->subscribeSuccessTemplate);
     }
 
     /**
@@ -165,14 +165,14 @@ class FormsController extends BaseMessageController
             }
 
             if ($mailingList) {
-                return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
+                return $this->renderMessageTemplate([
                     'title' => Craft::t('campaign', 'Verified'),
                     'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
                     'mailingList' => $mailingList,
                     'contact' => null,
-                ]);
+                ], $mailingList->getMailingListType()->subscribeSuccessTemplate);
             } else {
-                return $this->renderMessageTemplate('', [
+                return $this->renderMessageTemplate([
                     'title' => Craft::t('campaign', 'Verified'),
                     'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
                 ]);
@@ -199,12 +199,12 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl($contact);
         }
 
-        return $this->renderMessageTemplate($mailingList->getMailingListType()->subscribeSuccessTemplate, [
+        return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Verified'),
             'message' => Craft::t('campaign', 'You have successfully verified your email address and subscribed to the mailing list.'),
             'mailingList' => $mailingList,
             'contact' => $contact,
-        ]);
+        ], $mailingList->getMailingListType()->subscribeSuccessTemplate);
     }
 
     /**
@@ -233,11 +233,11 @@ class FormsController extends BaseMessageController
             return $this->redirectToPostedUrl($contact);
         }
 
-        return $this->renderMessageTemplate($mailingList->getMailingListType()->unsubscribeSuccessTemplate, [
+        return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
-        ]);
+        ], $mailingList->getMailingListType()->unsubscribeSuccessTemplate);
     }
 
     /**

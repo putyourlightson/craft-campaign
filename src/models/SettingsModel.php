@@ -50,6 +50,16 @@ class SettingsModel extends Model
     public bool $addOneClickUnsubscribeHeaders = true;
 
     /**
+     * @var bool Whether unsubscribe links in email bodies should require confirmation
+     */
+    public bool $requireUnsubscribeConfirmation = true;
+
+    /**
+     * @var string|null The template to use when confirming an unsubscribe request
+     */
+    public ?string $unsubscribeConfirmationTemplate = null;
+
+    /**
      * @var bool Whether to validate incoming webhook requests using a signing key or secret
      * @since 2.10.0
      */

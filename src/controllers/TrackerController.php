@@ -32,6 +32,22 @@ class TrackerController extends BaseMessageController
     protected int|bool|array $allowAnonymous = true;
 
     /**
+     * @inheritdoc
+     */
+    public function beforeAction($action): bool
+    {
+        if (
+            $action->id === 'unsubscribe' &&
+            Campaign::$plugin->settings->requireUnsubscribeConfirmation &&
+            $this->request->getIsPost()
+        ) {
+            $this->enableCsrfValidation = true;
+        }
+
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Tracks an open.
      */
     public function actionOpen(): ?Response
@@ -114,6 +130,33 @@ class TrackerController extends BaseMessageController
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
         }
 
+        if (Campaign::$plugin->settings->requireUnsubscribeConfirmation) {
+            if (!$this->request->getIsPost()) {
+                if ($this->request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'success' => false,
+                        'confirmationRequired' => true,
+                    ]);
+                }
+
+                $template = Campaign::$plugin->settings->unsubscribeConfirmationTemplate ?? 'campaign/_unsubscribe';
+
+                return $this->renderMessageTemplate(
+                    [
+                        'title' => Craft::t('campaign', 'Confirm unsubscribe'),
+                        'message' => Craft::t('campaign', 'Are you sure you want to unsubscribe this contact from this mailing list?'),
+                        'contact' => $contact,
+                        'sendout' => $sendout,
+                    ],
+                    $template,
+                );
+            }
+
+            if ($this->request->getBodyParam('confirm') !== '1') {
+                throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe confirmation is invalid.'));
+            }
+        }
+
         // Track unsubscribe
         $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
 
@@ -123,11 +166,11 @@ class TrackerController extends BaseMessageController
 
         $unsubscribeSuccessTemplate = $mailingList ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : null;
 
-        return $this->renderMessageTemplate($unsubscribeSuccessTemplate, [
+        return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
-        ]);
+        ], $unsubscribeSuccessTemplate);
     }
 
     /**

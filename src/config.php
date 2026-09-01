@@ -31,6 +31,12 @@ return [
         // Whether one-click unsubscribe headers should be added to emails.
         //'addOneClickUnsubscribeHeaders' => true,
 
+        // Whether unsubscribe links in email bodies should require confirmation
+        //'requireUnsubscribeConfirmation' => true,
+
+        // The template to use when confirming an unsubscribe request (leave blank for default confirmation template)
+        //'unsubscribeConfirmationTemplate' => null,
+
         // Whether to validate incoming webhook requests using a verification key
         //'validateWebhookRequests' => true,
 
