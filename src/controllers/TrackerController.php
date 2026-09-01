@@ -139,17 +139,13 @@ class TrackerController extends BaseMessageController
                     ]);
                 }
 
-                $template = Campaign::$plugin->settings->unsubscribeConfirmationTemplate ?? 'campaign/_unsubscribe';
-
-                return $this->renderMessageTemplate(
-                    [
-                        'title' => Craft::t('campaign', 'Confirm unsubscribe'),
-                        'message' => Craft::t('campaign', 'Are you sure you want to unsubscribe this contact from this mailing list?'),
-                        'contact' => $contact,
-                        'sendout' => $sendout,
-                    ],
-                    $template,
-                );
+                return $this->renderMessageTemplate([
+                    'title' => Craft::t('campaign', 'Confirm unsubscribe'),
+                    'message' => Craft::t('campaign', 'Are you sure you want to unsubscribe?'),
+                    'hasUnsubscribeForm' => true,
+                    'contact' => $contact,
+                    'sendout' => $sendout,
+                ], Campaign::$plugin->settings->unsubscribeConfirmationTemplate);
             }
 
             if ($this->request->getBodyParam('confirm') !== '1') {

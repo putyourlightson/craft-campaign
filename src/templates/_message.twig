@@ -6,4 +6,14 @@
     <h2>{{ title }}</h2>
     <p>{{ message }}</p>
 
+    {% if hasUnsubscribeForm ?? false %}
+        <form method="post">
+            {{ csrfInput() }}
+            <input type="hidden" name="confirm" value="1">
+            <button type="submit" class="btn submit">
+                {{ 'Unsubscribe'|t('campaign') }}
+            </button>
+        </form>
+    {% endif %}
+
 {% endblock %}
