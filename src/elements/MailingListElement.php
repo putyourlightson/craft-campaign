@@ -509,8 +509,9 @@ class MailingListElement extends Element
     {
         Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
 
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response->selectedSubnavItem = 'mailinglists';
+        /** @var CpScreenResponseBehavior $behavior */
+        $behavior = $response->getBehavior(CpScreenResponseBehavior::NAME);
+        $behavior->selectedSubnavItem = 'mailinglists';
     }
 
     /**

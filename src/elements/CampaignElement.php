@@ -737,15 +737,16 @@ class CampaignElement extends Element
      */
     public function prepareEditScreen(Response $response, string $containerId): void
     {
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response->selectedSubnavItem = 'campaigns';
-        $response->addAltAction(
+        /** @var CpScreenResponseBehavior $behavior */
+        $behavior = $response->getBehavior(CpScreenResponseBehavior::NAME);
+        $behavior->selectedSubnavItem = 'campaigns';
+        $behavior->addAltAction(
             Craft::t('campaign', 'Save and create new regular sendout'),
             [
                 'redirect' => 'campaign/sendouts/regular/new?campaignId=' . $this->id,
             ],
         );
-        $response->addAltAction(
+        $behavior->addAltAction(
             Craft::t('campaign', 'Save and create new scheduled sendout'),
             [
                 'redirect' => 'campaign/sendouts/scheduled/new?campaignId=' . $this->id,
@@ -753,7 +754,7 @@ class CampaignElement extends Element
         );
 
         if ($this->getStatus() == CampaignElement::STATUS_SENT) {
-            $response->addAltAction(
+            $behavior->addAltAction(
                 Craft::t('campaign', 'Close campaign'),
                 [
                     'action' => 'campaign/campaigns/close',

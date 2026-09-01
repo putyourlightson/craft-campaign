@@ -1051,8 +1051,9 @@ XML;
     {
         Craft::$app->getView()->registerJs('new Campaign.ContactEdit();');
 
-        /** @var Response|CpScreenResponseBehavior $response */
-        $response->selectedSubnavItem = 'contacts';
+        /** @var CpScreenResponseBehavior $behavior */
+        $behavior = $response->getBehavior(CpScreenResponseBehavior::NAME);
+        $behavior->selectedSubnavItem = 'contacts';
     }
 
     /**

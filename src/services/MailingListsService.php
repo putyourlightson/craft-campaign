@@ -75,7 +75,7 @@ class MailingListsService extends Component
      */
     public function getAllMailingLists(): array
     {
-        /** @var MailingListElement[]] */
+        /** @var MailingListElement[] */
         return MailingListElement::find()
             ->site('*')
             ->orderBy(['title' => SORT_ASC])

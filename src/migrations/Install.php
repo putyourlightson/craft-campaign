@@ -376,7 +376,7 @@ class Install extends Migration
         $elementsService = Craft::$app->getElements();
 
         foreach ($elementTypes as $elementType) {
-            /** @var Element $elementType */
+            /** @var class-string<Element> $elementType */
             $elements = $elementType::findAll();
 
             foreach ($elements as $element) {
