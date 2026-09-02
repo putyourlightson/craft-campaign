@@ -644,14 +644,7 @@ class SendoutsService extends Component
         // Get contact IDs
         $contactIds = $query->column();
 
-        // Filter recipients by segments
-        if ($sendout->segmentIds) {
-            foreach ($sendout->getSegments() as $segment) {
-                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
-            }
-        }
-
-        return $contactIds;
+        return $this->filterContactIdsBySegments($sendout, $contactIds);
     }
 
     /**
@@ -725,12 +718,7 @@ class SendoutsService extends Component
         $excludeContactIds = $this->getSentRecipientsQuery($sendout)->column();
         $contactIds = array_diff($sendout->contactIds, $excludeContactIds);
 
-        // Filter recipients by segments
-        if ($sendout->segmentIds) {
-            foreach ($sendout->getSegments() as $segment) {
-                $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
-            }
-        }
+        $contactIds = $this->filterContactIdsBySegments($sendout, $contactIds);
 
         if ($limit !== null) {
             $contactIds = array_slice($contactIds, 0, $limit);
@@ -745,6 +733,40 @@ class SendoutsService extends Component
         }
 
         return $recipients;
+    }
+
+    /**
+     * Filters contact IDs by the sendout's selected segments.
+     *
+     * @param int[] $contactIds
+     * @return int[]
+     * @since 3.9.0
+     */
+    private function filterContactIdsBySegments(SendoutElement $sendout, array $contactIds): array
+    {
+        if (!$sendout->segmentIds) {
+            return $contactIds;
+        }
+
+        $segments = $sendout->getSegments();
+        if (!$segments) {
+            return $contactIds;
+        }
+
+        if ($sendout->segmentMatch === SendoutElement::SEGMENT_MATCH_ANY) {
+            $matchingContactIds = [];
+            foreach ($segments as $segment) {
+                array_push($matchingContactIds, ...Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds));
+            }
+
+            return array_values(array_intersect($contactIds, array_unique($matchingContactIds)));
+        }
+
+        foreach ($segments as $segment) {
+            $contactIds = Campaign::$plugin->segments->getFilteredContactIds($segment, $contactIds);
+        }
+
+        return $contactIds;
     }
 
     /**

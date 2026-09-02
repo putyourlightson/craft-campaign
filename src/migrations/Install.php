@@ -269,6 +269,7 @@ class Install extends Migration
                 'mailingListIds' => $this->text(),
                 'excludedMailingListIds' => $this->text(),
                 'segmentIds' => $this->text(),
+                'segmentMatch' => $this->string()->defaultValue('all')->notNull(),
                 'recipients' => $this->integer()->defaultValue(0)->notNull(),
                 'failures' => $this->integer()->defaultValue(0)->notNull(),
                 'schedule' => $this->text(),
