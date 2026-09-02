@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.9.0 - Unreleased
+## 3.9.0 - 2026-09-02
 
 - Added the ability to schedule monthly recurring sendouts for selected occurrences of weekdays ([#211](https://github.com/putyourlightson/craft-campaign/issues/211)).
 - Added the ability to use Craft’s email settings for sending Campaign emails ([#321](https://github.com/putyourlightson/craft-campaign/issues/321)).
