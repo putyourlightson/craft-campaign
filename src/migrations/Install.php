@@ -289,6 +289,7 @@ class Install extends Migration
                 'assetId' => $this->integer(),
                 'fileName' => $this->string(),
                 'filePath' => $this->string(),
+                'delimiter' => $this->string(9)->defaultValue('comma')->notNull(),
                 'userGroupId' => $this->integer(),
                 'userId' => $this->integer(),
                 'mailingListId' => $this->integer(),

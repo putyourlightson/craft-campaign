@@ -13,6 +13,7 @@ use craft\models\UserGroup;
 use DateTime;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\CsvHelper;
 
 /**
  * @property-read string $cpViewUrl
@@ -41,6 +42,12 @@ class ImportModel extends Model
      * @var string File path
      */
     public string $filePath = '';
+
+    /**
+     * @var string CSV delimiter
+     * @since 3.9.0
+     */
+    public string $delimiter = 'comma';
 
     /**
      * @var int|null User group ID
@@ -185,6 +192,7 @@ class ImportModel extends Model
             [['id', 'assetId', 'userId', 'mailingListId'], 'integer'],
             [['mailingListId', 'emailFieldIndex'], 'required'],
             [['fileName', 'filePath'], 'string', 'max' => 255],
+            [['delimiter'], 'in', 'range' => CsvHelper::DELIMITERS, 'strict' => true],
         ];
     }
 }

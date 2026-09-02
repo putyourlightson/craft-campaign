@@ -9,6 +9,7 @@ use Craft;
 use craft\base\Model;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\CsvHelper;
 
 /**
  *
@@ -20,6 +21,12 @@ class ExportModel extends Model
      * @var string File path
      */
     public string $filePath = '';
+
+    /**
+     * @var string CSV delimiter
+     * @since 3.9.0
+     */
+    public string $delimiter = 'comma';
 
     /**
      * @var array Mailing list IDs
@@ -52,6 +59,7 @@ class ExportModel extends Model
         return [
             [['filePath', 'mailingListIds'], 'required'],
             [['filePath'], 'string', 'max' => 255],
+            [['delimiter'], 'in', 'range' => CsvHelper::DELIMITERS, 'strict' => true],
         ];
     }
 

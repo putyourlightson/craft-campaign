@@ -13,6 +13,7 @@ use DateTime;
  * @property int $assetId Asset ID
  * @property string $fileName File name
  * @property string $filePath File path
+ * @property string $delimiter CSV delimiter
  * @property int $userGroupId User group ID
  * @property int $userId User ID
  * @property int $mailingListId Mailing list ID

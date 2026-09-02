@@ -31,6 +31,15 @@
             required: true
         }) }}
 
+        {{ forms.selectField({
+            label: 'Delimiter'|t('campaign'),
+            instructions: 'Select the delimiter used to separate columns in the CSV file.'|t('campaign'),
+            name: 'delimiter',
+            value: export.delimiter,
+            options: delimiterOptions,
+            required: true,
+        }) }}
+
         {{ forms.lightswitchField({
             label: emailFieldLabel,
             name: 'fields[email]',

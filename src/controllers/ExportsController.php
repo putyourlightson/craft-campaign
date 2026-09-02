@@ -10,6 +10,7 @@ use craft\helpers\FileHelper;
 use craft\web\Controller;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\CsvHelper;
 use putyourlightson\campaign\models\ExportModel;
 use yii\web\Response;
 
@@ -49,6 +50,7 @@ class ExportsController extends Controller
             'mailingListElementType' => MailingListElement::class,
             'emailFieldLabel' => Campaign::$plugin->settings->getEmailFieldLabel(),
             'fields' => Campaign::$plugin->settings->getContactFields(),
+            'delimiterOptions' => CsvHelper::getDelimiterOptions(),
         ];
 
         // Render the template
@@ -65,6 +67,7 @@ class ExportsController extends Controller
         $export = new ExportModel([
             'mailingListIds' => $this->request->getBodyParam('mailingListIds'),
             'fields' => $this->request->getBodyParam('fields'),
+            'delimiter' => $this->request->getBodyParam('delimiter', 'comma'),
         ]);
 
         $path = Craft::$app->getPath()->getStoragePath() . '/campaign/exports/' . gmdate('YmdHis') . '/';

@@ -283,6 +283,8 @@ class FormsController extends BaseMessageController
 
     /**
      * Returns a contact from the posted parameters.
+     *
+     * @since 3.9.0
      */
     private function getContactFromParams(): ContactElement
     {
