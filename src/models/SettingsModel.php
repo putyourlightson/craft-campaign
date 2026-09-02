@@ -133,6 +133,12 @@ class SettingsModel extends Model
     public bool $sendVerificationEmailsViaCraft = false;
 
     /**
+     * @var bool Whether Craft’s email settings should be used for sending Campaign emails
+     * @since 3.9.0
+     */
+    public bool $useCraftEmailSettings = false;
+
+    /**
      * @var array|null The names and emails that sendouts can be sent from
      */
     public ?array $fromNamesEmails = null;
@@ -315,9 +321,10 @@ class SettingsModel extends Model
     protected function defineRules(): array
     {
         return [
-            [['apiKey', 'fromNamesEmails', 'transportType', 'sendoutJobBatchSize', 'sendoutJobBatchDelay'], 'required'],
+            [['apiKey', 'sendoutJobBatchSize', 'sendoutJobBatchDelay'], 'required'],
+            [['fromNamesEmails', 'transportType'], 'required', 'when' => fn(SettingsModel $model) => !$model->useCraftEmailSettings],
             [['apiKey'], 'string', 'length' => [16]],
-            [['fromNamesEmails'], 'validateFromNamesEmails'],
+            [['fromNamesEmails'], 'validateFromNamesEmails', 'when' => fn(SettingsModel $model) => !$model->useCraftEmailSettings],
             [['sendoutJobBatchSize'], 'integer', 'min' => 1],
             [['sendoutJobBatchDelay'], 'integer', 'min' => 0],
             [['ipstackApiKey'], 'required', 'when' => fn(SettingsModel $model) => $model->geoIp],
@@ -462,8 +469,12 @@ class SettingsModel extends Model
      *
      * @since 3.5.6
      */
-    public function getFromNamesEmails(): array
+    public function getFromNamesEmails(?int $siteId = null): array
     {
+        if ($this->useCraftEmailSettings) {
+            return $this->getCraftFromNamesEmails($siteId);
+        }
+
         $fromNamesEmails = [];
         foreach ($this->fromNamesEmails as $fromNameEmail) {
             $fromNamesEmails[] = [
@@ -568,5 +579,25 @@ class SettingsModel extends Model
         }
 
         return Campaign::$plugin->contacts->getContactsByIds($this->defaultNotificationContactIds);
+    }
+
+    /**
+     * Returns the parsed Craft from name and email for the provided site.
+     */
+    private function getCraftFromNamesEmails(?int $siteId): array
+    {
+        $mailSettings = App::mailSettings();
+        $site = $siteId === null ? Craft::$app->getSites()->getCurrentSite() : Craft::$app->getSites()->getSiteById($siteId);
+        $siteOverrides = version_compare(Craft::$app->getVersion(), '5.6.0', '>=') ? $mailSettings->siteOverrides : [];
+        $overrides = $site === null ? [] : $siteOverrides[$site->uid] ?? [];
+
+        return [
+            [
+                App::parseEnv($overrides['fromName'] ?? $mailSettings->fromName) ?? '',
+                App::parseEnv($overrides['fromEmail'] ?? $mailSettings->fromEmail) ?? '',
+                App::parseEnv($overrides['replyToEmail'] ?? $mailSettings->replyToEmail) ?? '',
+                $site?->id,
+            ],
+        ];
     }
 }

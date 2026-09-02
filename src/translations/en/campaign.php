@@ -687,6 +687,8 @@ return [
     'Untitled mailing list' => '',
     'Updated' => '',
     'URL' => '',
+    'Use Craft Email Settings' => '',
+    'Use [Craft’s email settings]({link}) for sending Campaign emails.' => '',
     'User group not found.' => '',
     'User group successfully queued for importing.' => '',
     'User Group' => '',
