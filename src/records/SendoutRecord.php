@@ -25,6 +25,7 @@ use DateTime;
  * @property array $mailingListIds Mailing list IDs
  * @property array $excludedMailingListIds Excluded mailing list IDs
  * @property array $segmentIds Segment IDs
+ * @property string $segmentMatch Segment matching method
  * @property int $recipients Recipients
  * @property int $failures Failures
  * @property mixed $schedule Schedule

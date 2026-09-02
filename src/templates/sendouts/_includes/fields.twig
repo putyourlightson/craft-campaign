@@ -178,9 +178,32 @@
         {% endset %}
         {{ forms.field({
             label: "Segments"|t('campaign'),
-            instructions: "The segment(s) to filter contacts by. Only contacts that fulfil the criteria in all selected segments will receive the sendout."|t('campaign'),
+            instructions: "The segment(s) to filter contacts by."|t('campaign'),
             errors: sendout.getErrors('segmentIds'),
         }, input) }}
+        {% if editable %}
+            {{ forms.selectField({
+                label: "Segment matching"|t('campaign'),
+                instructions: "Whether contacts must match all or any of the selected segments."|t('campaign'),
+                id: 'segmentMatch',
+                name: 'segmentMatch',
+                value: sendout.segmentMatch,
+                options: [
+                    {label: "All selected segments"|t('campaign'), value: 'all'},
+                    {label: "Any selected segment"|t('campaign'), value: 'any'},
+                ],
+                errors: sendout.getErrors('segmentMatch'),
+            }) }}
+        {% else %}
+            {% set input %}
+                <p>{{ sendout.segmentMatch == 'all' ? "All selected segments"|t('campaign') : "Any selected segment"|t('campaign') }}</p>
+            {% endset %}
+            {{ forms.field({
+                label: "Segment matching"|t('campaign'),
+                instructions: "Whether contacts must match all or any of the selected segments."|t('campaign'),
+                required: true,
+            }, input) }}
+        {% endif %}
     {% endif %}
 {% endif %}
 

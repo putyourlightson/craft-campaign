@@ -6,8 +6,10 @@ use craft\records\Element as ElementRecord;
 use Faker\Factory as FakerFactory;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\CampaignElement;
+use putyourlightson\campaign\elements\conditions\contacts\EmailConditionRule;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\elements\SegmentElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\ImportModel;
@@ -51,6 +53,26 @@ function createContact(string $email = null, array $attributes = []): ContactEle
     Craft::$app->elements->saveElement($contact);
 
     return $contact;
+}
+
+function createSegmentMatchingEmail(string $email): SegmentElement
+{
+    $faker = FakerFactory::create();
+    $condition = ContactElement::createCondition();
+    $condition->setConditionRules([
+        [
+            'class' => EmailConditionRule::class,
+            'operator' => '=',
+            'value' => $email,
+        ],
+    ]);
+
+    $segment = new SegmentElement();
+    $segment->title = $faker->sentence();
+    $segment->setContactCondition($condition);
+    Craft::$app->elements->saveElement($segment);
+
+    return $segment;
 }
 
 function createSendout(int $campaignId = null, array $mailingListIds = null, array $attributes = []): SendoutElement

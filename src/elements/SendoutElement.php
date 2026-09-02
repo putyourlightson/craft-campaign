@@ -105,6 +105,18 @@ class SendoutElement extends Element
     public const STATUS_FAILED = 'failed';
 
     /**
+     * @const string
+     * @since 3.9.0
+     */
+    public const SEGMENT_MATCH_ALL = 'all';
+
+    /**
+     * @const string
+     * @since 3.9.0
+     */
+    public const SEGMENT_MATCH_ANY = 'any';
+
+    /**
      * Returns the sendout types.
      */
     public static function sendoutTypes(): array
@@ -481,6 +493,12 @@ class SendoutElement extends Element
     public ?array $segmentIds = null;
 
     /**
+     * @var string Segment matching method
+     * @since 3.9.0
+     */
+    public string $segmentMatch = self::SEGMENT_MATCH_ALL;
+
+    /**
      * @var int Recipients
      */
     public int $recipients = 0;
@@ -572,6 +590,7 @@ class SendoutElement extends Element
         $labels['excludedMailingListIds'] = Craft::t('campaign', 'Excluded mailing lists');
         $labels['contactIds'] = Craft::t('campaign', 'Contacts');
         $labels['segmentIds'] = Craft::t('campaign', 'Segments');
+        $labels['segmentMatch'] = Craft::t('campaign', 'Segment matching');
 
         return $labels;
     }
@@ -589,6 +608,7 @@ class SendoutElement extends Element
         $rules[] = [['excludedMailingListIds'], SendoutExcludedMailingListsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType != 'singular'];
         $rules[] = [['contactIds'], SendoutContactsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE], 'when' => fn(SendoutElement $element) => $element->sendoutType == 'singular'];
         $rules[] = [['segmentIds'], SendoutSegmentsValidator::class, 'on' => [self::SCENARIO_DEFAULT, self::SCENARIO_LIVE]];
+        $rules[] = [['segmentMatch'], 'in', 'range' => [self::SEGMENT_MATCH_ALL, self::SEGMENT_MATCH_ANY]];
         $rules[] = [['recipients', 'campaignId', 'senderId'], 'number', 'integerOnly' => true];
         $rules[] = [['sid'], 'string', 'max' => 17];
         $rules[] = [['fromName', 'fromEmail', 'subject'], 'string', 'max' => 255];
