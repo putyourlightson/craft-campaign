@@ -2,6 +2,7 @@
 
 ## 3.9.0 - Unreleased
 
+- Added the ability to schedule monthly recurring sendouts for selected occurrences of weekdays ([#211](https://github.com/putyourlightson/craft-campaign/issues/211)).
 - Added the ability to use Craft’s email settings for sending Campaign emails ([#321](https://github.com/putyourlightson/craft-campaign/issues/321)).
 - Added the ability to select the delimiter used when importing and exporting CSV files ([#479](https://github.com/putyourlightson/craft-campaign/issues/479)).
 - Added the ability to unsubscribe contacts from all mailing lists using forms and the new `unsubscribeAllUrl` campaign template variable ([#520](https://github.com/putyourlightson/craft-campaign/issues/520)).
