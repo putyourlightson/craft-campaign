@@ -34,6 +34,9 @@ return [
         // Whether contacts are allowed to unsubscribe from all mailing lists through a form
         //'unsubscribeAllFormAllowed' => false,
 
+        // The template to use after unsubscribing from all mailing lists (leave blank for default message template)
+        //'unsubscribeAllSuccessTemplate' => null,
+
         // Whether unsubscribe links in email bodies should require confirmation
         //'requireUnsubscribeConfirmation' => true,
 

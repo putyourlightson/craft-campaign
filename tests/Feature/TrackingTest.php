@@ -76,7 +76,7 @@ test('Unsubscribing from all mailing lists updates every subscription', function
     $mailingList = createMailingList();
     Campaign::$plugin->forms->subscribeContact($contact, $mailingList);
 
-    Campaign::$plugin->tracker->unsubscribe($contact, $sendout, true);
+    Campaign::$plugin->tracker->unsubscribeAll($contact, $sendout);
 
     expect($contact->getSubscribedMailingLists())
         ->toBeEmpty()

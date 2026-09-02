@@ -56,6 +56,12 @@ class SettingsModel extends Model
     public bool $unsubscribeAllFormAllowed = false;
 
     /**
+     * @var string|null The template to use after unsubscribing from all mailing lists
+     * @since 3.9.0
+     */
+    public ?string $unsubscribeAllSuccessTemplate = null;
+
+    /**
      * @var bool Whether unsubscribe links in email bodies should require confirmation
      */
     public bool $requireUnsubscribeConfirmation = true;

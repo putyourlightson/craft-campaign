@@ -93,6 +93,8 @@ class FormsController extends BaseMessageController
 
     /**
      * Unsubscribes the provided email from all mailing lists.
+     *
+     * @since 3.9.0
      */
     public function actionUnsubscribeAll(): ?Response
     {
@@ -256,6 +258,8 @@ class FormsController extends BaseMessageController
 
     /**
      * Verifies and unsubscribes the provided contact from all mailing lists.
+     *
+     * @since 3.9.0
      */
     public function actionVerifyUnsubscribeAll(): ?Response
     {
@@ -274,7 +278,7 @@ class FormsController extends BaseMessageController
         return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Unsubscribed'),
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from all mailing lists.'),
-        ]);
+        ], Campaign::$plugin->settings->unsubscribeAllSuccessTemplate);
     }
 
     /**

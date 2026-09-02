@@ -39,7 +39,7 @@ class TrackerController extends BaseMessageController
     public function beforeAction($action): bool
     {
         if (
-            $action->id === 'unsubscribe' &&
+            in_array($action->id, ['unsubscribe', 'unsubscribe-all'], true) &&
             Campaign::$plugin->settings->requireUnsubscribeConfirmation &&
             $this->request->getIsPost()
         ) {
@@ -120,21 +120,49 @@ class TrackerController extends BaseMessageController
      */
     public function actionUnsubscribe(): ?Response
     {
-        return $this->unsubscribe();
+        return $this->processUnsubscribe();
     }
 
     /**
      * Tracks an unsubscribe from all mailing lists.
+     *
+     * @since 3.9.0
      */
     public function actionUnsubscribeAll(): ?Response
     {
-        return $this->unsubscribe(true);
+        return $this->processUnsubscribe(true);
     }
 
     /**
-     * Tracks an unsubscribe.
+     * Tracks a one-click unsubscribe.
+     * https://postmarkapp.com/support/article/1299-how-to-include-a-list-unsubscribe-header
+     *
+     * @since 2.15.0
      */
-    private function unsubscribe(bool $all = false): Response
+    public function actionOneClickUnsubscribe(): ?Response
+    {
+        // Ignore if a non-POST requests but don’t require it, since anti-spam tools may send GET requests.
+        if (!$this->request->getIsPost()) {
+            return $this->asRaw('');
+        }
+
+        // Get contact and sendout
+        $contact = $this->getContact();
+        $sendout = $this->getSendout();
+
+        if ($contact === null || $sendout === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
+        }
+
+        Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+
+        return $this->asRaw('OK');
+    }
+
+    /**
+     * Processes an unsubscribe.
+     */
+    private function processUnsubscribe(bool $all = false): Response
     {
         if ($this->request->getParam('sid') === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
@@ -178,13 +206,20 @@ class TrackerController extends BaseMessageController
         }
 
         // Track unsubscribe
-        $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout, $all);
+        $mailingList = null;
+        if ($all) {
+            Campaign::$plugin->tracker->unsubscribeAll($contact, $sendout);
+        } else {
+            $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+        }
 
         if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
         }
 
-        $unsubscribeSuccessTemplate = $mailingList ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : null;
+        $unsubscribeSuccessTemplate = $all ?
+            Campaign::$plugin->settings->unsubscribeAllSuccessTemplate :
+            $mailingList?->getMailingListType()->unsubscribeSuccessTemplate;
 
         return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Unsubscribed'),
@@ -193,32 +228,6 @@ class TrackerController extends BaseMessageController
                 Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ], $unsubscribeSuccessTemplate);
-    }
-
-    /**
-     * Tracks a one-click unsubscribe.
-     * https://postmarkapp.com/support/article/1299-how-to-include-a-list-unsubscribe-header
-     *
-     * @since 2.15.0
-     */
-    public function actionOneClickUnsubscribe(): ?Response
-    {
-        // Ignore if a non-POST requests but don’t require it, since anti-spam tools may send GET requests.
-        if (!$this->request->getIsPost()) {
-            return $this->asRaw('');
-        }
-
-        // Get contact and sendout
-        $contact = $this->getContact();
-        $sendout = $this->getSendout();
-
-        if ($contact === null || $sendout === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
-        }
-
-        Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
-
-        return $this->asRaw('OK');
     }
 
     /**
