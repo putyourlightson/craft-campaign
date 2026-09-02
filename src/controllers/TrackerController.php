@@ -35,6 +35,7 @@ class TrackerController extends BaseMessageController
 
     /**
      * @inheritdoc
+     * @since 3.9.0
      */
     public function beforeAction($action): bool
     {
@@ -161,6 +162,8 @@ class TrackerController extends BaseMessageController
 
     /**
      * Processes an unsubscribe.
+     *
+     * @since 3.9.0
      */
     private function processUnsubscribe(bool $all = false): Response
     {

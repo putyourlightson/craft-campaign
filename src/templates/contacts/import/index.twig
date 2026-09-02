@@ -60,10 +60,18 @@
         {% endset %}
         {{ forms.fileField({
             label: "CSV File"|t('campaign'),
-            instructions: 'Choose a CSV file (comma-separated values) to import contact data. The first line of the file should contain the column headers.'|t('campaign'),
+            instructions: 'Choose a CSV file to import contact data. The first line of the file should contain the column headers.'|t('campaign'),
             tip: tip,
             name: 'file',
             required: true
+        }) }}
+
+        {{ forms.selectField({
+            label: 'Delimiter'|t('campaign'),
+            instructions: 'Select the delimiter used to separate columns in the CSV file.'|t('campaign'),
+            name: 'delimiter',
+            options: delimiterOptions,
+            required: true,
         }) }}
 
         <input type="submit" class="btn submit" value="{{ 'Next'|t('campaign') }}" />

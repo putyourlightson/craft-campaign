@@ -85,6 +85,8 @@ class TrackerService extends Component
 
     /**
      * Returns the contact campaign for the provided contact and sendout.
+     *
+     * @since 3.9.0
      */
     private function getContactCampaign(ContactElement $contact, SendoutElement $sendout): ?ContactCampaignModel
     {
@@ -110,6 +112,7 @@ class TrackerService extends Component
      * Tracks an unsubscribe from the provided mailing lists.
      *
      * @param MailingListElement[] $mailingLists
+     * @since 3.9.0
      */
     private function processUnsubscribe(ContactElement $contact, SendoutElement $sendout, array $mailingLists): void
     {

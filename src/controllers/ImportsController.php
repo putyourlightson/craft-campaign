@@ -14,6 +14,7 @@ use craft\web\Controller;
 use craft\web\UploadedFile;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\CsvHelper;
 use putyourlightson\campaign\models\ImportModel;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -46,7 +47,9 @@ class ImportsController extends Controller
         }
 
         // Render the template
-        return $this->renderTemplate('campaign/contacts/import');
+        return $this->renderTemplate('campaign/contacts/import', [
+            'delimiterOptions' => CsvHelper::getDelimiterOptions(),
+        ]);
     }
 
     /**
@@ -57,6 +60,16 @@ class ImportsController extends Controller
     public function actionUploadFile(ImportModel $import = null): ?Response
     {
         $this->requirePostRequest();
+
+        if ($import === null) {
+            $import = new ImportModel();
+        }
+
+        $import->delimiter = $this->request->getBodyParam('delimiter', 'comma');
+
+        if (!$import->validate(['delimiter'])) {
+            throw new BadRequestHttpException('Invalid CSV delimiter.');
+        }
 
         // Get the uploaded file
         $file = UploadedFile::getInstanceByName('file');
@@ -94,10 +107,6 @@ class ImportsController extends Controller
 
         if (!Craft::$app->getElements()->saveElement($asset)) {
             return $this->asFailure(Craft::t('campaign', 'Unable to upload CSV file.'));
-        }
-
-        if ($import === null) {
-            $import = new ImportModel();
         }
 
         $import->assetId = $asset->id;
@@ -305,6 +314,7 @@ class ImportsController extends Controller
 
         $import->unsubscribe = (bool)$this->request->getBodyParam('unsubscribe');
         $import->forceSubscribe = (bool)$this->request->getBodyParam('forceSubscribe');
+        $import->delimiter = $this->request->getBodyParam('delimiter', 'comma');
         $import->emailFieldIndex = $this->request->getBodyParam('emailFieldIndex');
         $import->fieldIndexes = $this->request->getBodyParam('fieldIndexes');
 

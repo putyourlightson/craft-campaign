@@ -63,11 +63,13 @@ class SettingsModel extends Model
 
     /**
      * @var bool Whether unsubscribe links in email bodies should require confirmation
+     * @since 3.9.0
      */
     public bool $requireUnsubscribeConfirmation = true;
 
     /**
      * @var string|null The template to use when confirming an unsubscribe request
+     * @since 3.9.0
      */
     public ?string $unsubscribeConfirmationTemplate = null;
 
@@ -583,6 +585,8 @@ class SettingsModel extends Model
 
     /**
      * Returns the parsed Craft from name and email for the provided site.
+     *
+     * @since 3.9.0
      */
     private function getCraftFromNamesEmails(?int $siteId): array
     {

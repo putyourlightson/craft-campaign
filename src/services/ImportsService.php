@@ -15,6 +15,7 @@ use craft\helpers\Queue;
 use craft\queue\jobs\UpdateSearchIndex;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\helpers\CsvHelper;
 use putyourlightson\campaign\jobs\ImportJob;
 use putyourlightson\campaign\models\ImportModel;
 use putyourlightson\campaign\records\ImportRecord;
@@ -141,7 +142,7 @@ class ImportsService extends Component
                 return $columns;
             }
 
-            $columns = fgetcsv($handle);
+            $columns = fgetcsv($handle, separator: CsvHelper::getDelimiterCharacter($import->delimiter));
         } else {
             $columns = [
                 'email' => Craft::t('campaign', 'Email'),
@@ -176,13 +177,14 @@ class ImportsService extends Component
                 return [];
             }
 
+            $delimiter = CsvHelper::getDelimiterCharacter($import->delimiter);
             $i = 0;
             $count = 0;
 
             // Increment offset to skip columns row
             $offset++;
 
-            while ($row = fgetcsv($handle)) {
+            while ($row = fgetcsv($handle, separator: $delimiter)) {
                 if ($length !== null && $count >= $length) {
                     break;
                 }

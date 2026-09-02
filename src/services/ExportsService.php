@@ -13,6 +13,7 @@ use craft\helpers\App;
 use DateTime;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\events\ExportEvent;
+use putyourlightson\campaign\helpers\CsvHelper;
 use putyourlightson\campaign\models\ExportModel;
 
 class ExportsService extends Component
@@ -32,6 +33,10 @@ class ExportsService extends Component
      */
     public function exportFile(ExportModel $export): bool
     {
+        if (!$export->validate()) {
+            return false;
+        }
+
         // Fire a before event
         $event = new ExportEvent([
             'export' => $export,
@@ -43,6 +48,7 @@ class ExportsService extends Component
         }
 
         App::maxPowerCaptain();
+        $delimiter = CsvHelper::getDelimiterCharacter($export->delimiter);
 
         // Open file for writing
         $handle = fopen($export->filePath, 'wb');
@@ -55,7 +61,7 @@ class ExportsService extends Component
             'mailingList',
             'subscriptionStatus',
             'dateSubscribed',
-        ], $fieldHandles));
+        ], $fieldHandles), separator: $delimiter, escape: '\\');
 
         $mailingLists = $export->getMailingLists();
 
@@ -95,7 +101,7 @@ class ExportsService extends Component
                 }
 
                 // Write contact fields to file
-                fputcsv($handle, $row);
+                fputcsv($handle, $row, separator: $delimiter, escape: '\\');
             }
         }
 
