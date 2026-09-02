@@ -69,3 +69,19 @@ test('Unsubscribes are tracked on the campaign and update the contact’s mailin
         ->and($status)
         ->toBe('unsubscribed');
 });
+
+test('Unsubscribing from all mailing lists updates every subscription', function() {
+    $contact = createContact();
+    $sendout = createSendoutWithSubscribedContact($contact);
+    $mailingList = createMailingList();
+    Campaign::$plugin->forms->subscribeContact($contact, $mailingList);
+
+    Campaign::$plugin->tracker->unsubscribeAll($contact, $sendout);
+
+    expect($contact->getSubscribedMailingLists())
+        ->toBeEmpty()
+        ->and($contact->getMailingListSubscriptionStatus($sendout->mailingListIds[0]))
+        ->toBe('unsubscribed')
+        ->and($contact->getMailingListSubscriptionStatus($mailingList->id))
+        ->toBe('unsubscribed');
+});

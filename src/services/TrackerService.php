@@ -57,6 +57,37 @@ class TrackerService extends Component
      */
     public function unsubscribe(ContactElement $contact, SendoutElement $sendout): ?MailingListElement
     {
+        $contactCampaign = $this->getContactCampaign($contact, $sendout);
+        if ($contactCampaign === null) {
+            return null;
+        }
+
+        $mailingList = $contactCampaign->getMailingList();
+        $mailingLists = $mailingList === null ? [] : [$mailingList];
+        $this->processUnsubscribe($contact, $sendout, $mailingLists);
+
+        return $mailingList;
+    }
+
+    /**
+     * Tracks an unsubscribe from all mailing lists.
+     *
+     * @since 3.9.0
+     */
+    public function unsubscribeAll(ContactElement $contact, SendoutElement $sendout): void
+    {
+        if ($this->getContactCampaign($contact, $sendout) === null) {
+            return;
+        }
+
+        $this->processUnsubscribe($contact, $sendout, $contact->getSubscribedMailingLists());
+    }
+
+    /**
+     * Returns the contact campaign for the provided contact and sendout.
+     */
+    private function getContactCampaign(ContactElement $contact, SendoutElement $sendout): ?ContactCampaignModel
+    {
         /** @var ContactCampaignRecord|null $contactCampaignRecord */
         $contactCampaignRecord = ContactCampaignRecord::find()
             ->where([
@@ -72,18 +103,26 @@ class TrackerService extends Component
         $contactCampaign = new ContactCampaignModel();
         $contactCampaign->setAttributes($contactCampaignRecord->getAttributes(), false);
 
-        $mailingList = $contactCampaign->getMailingList();
+        return $contactCampaign;
+    }
 
-        if ($mailingList !== null) {
+    /**
+     * Tracks an unsubscribe from the provided mailing lists.
+     *
+     * @param MailingListElement[] $mailingLists
+     */
+    private function processUnsubscribe(ContactElement $contact, SendoutElement $sendout, array $mailingLists): void
+    {
+        foreach ($mailingLists as $subscribedMailingList) {
             // Fire a before event
             if ($this->hasEventHandlers(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT)) {
                 $this->trigger(self::EVENT_BEFORE_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
                     'contact' => $contact,
-                    'mailingList' => $mailingList,
+                    'mailingList' => $subscribedMailingList,
                 ]));
             }
 
-            Campaign::$plugin->mailingLists->addContactInteraction($contact, $mailingList, 'unsubscribed');
+            Campaign::$plugin->mailingLists->addContactInteraction($contact, $subscribedMailingList, 'unsubscribed');
         }
 
         Campaign::$plugin->campaigns->addContactInteraction($contact, $sendout, 'unsubscribed');
@@ -91,14 +130,14 @@ class TrackerService extends Component
         // Update contact activity
         ContactActivityHelper::updateContactActivity($contact);
 
-        // Fire an after event
-        if ($mailingList !== null && $this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
-            $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
-                'contact' => $contact,
-                'mailingList' => $mailingList,
-            ]));
+        // Fire after events
+        if ($this->hasEventHandlers(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT)) {
+            foreach ($mailingLists as $subscribedMailingList) {
+                $this->trigger(self::EVENT_AFTER_UNSUBSCRIBE_CONTACT, new UnsubscribeContactEvent([
+                    'contact' => $contact,
+                    'mailingList' => $subscribedMailingList,
+                ]));
+            }
         }
-
-        return $mailingList;
     }
 }

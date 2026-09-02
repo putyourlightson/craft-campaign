@@ -11,6 +11,8 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
+use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -37,7 +39,7 @@ class TrackerController extends BaseMessageController
     public function beforeAction($action): bool
     {
         if (
-            $action->id === 'unsubscribe' &&
+            in_array($action->id, ['unsubscribe', 'unsubscribe-all'], true) &&
             Campaign::$plugin->settings->requireUnsubscribeConfirmation &&
             $this->request->getIsPost()
         ) {
@@ -118,55 +120,17 @@ class TrackerController extends BaseMessageController
      */
     public function actionUnsubscribe(): ?Response
     {
-        if ($this->request->getParam('sid') === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
-        }
+        return $this->processUnsubscribe();
+    }
 
-        // Get contact and sendout
-        $contact = $this->getContact();
-        $sendout = $this->getSendout();
-
-        if ($contact === null || $sendout === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
-        }
-
-        if (Campaign::$plugin->settings->requireUnsubscribeConfirmation) {
-            if (!$this->request->getIsPost()) {
-                if ($this->request->getAcceptsJson()) {
-                    return $this->asJson([
-                        'success' => false,
-                        'confirmationRequired' => true,
-                    ]);
-                }
-
-                return $this->renderMessageTemplate([
-                    'title' => Craft::t('campaign', 'Confirm unsubscribe'),
-                    'message' => Craft::t('campaign', 'Are you sure you want to unsubscribe?'),
-                    'hasUnsubscribeForm' => true,
-                    'contact' => $contact,
-                    'sendout' => $sendout,
-                ], Campaign::$plugin->settings->unsubscribeConfirmationTemplate);
-            }
-
-            if ($this->request->getBodyParam('confirm') !== '1') {
-                throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe confirmation is invalid.'));
-            }
-        }
-
-        // Track unsubscribe
-        $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
-
-        if ($this->request->getAcceptsJson()) {
-            return $this->asJson(['success' => true]);
-        }
-
-        $unsubscribeSuccessTemplate = $mailingList ? $mailingList->getMailingListType()->unsubscribeSuccessTemplate : null;
-
-        return $this->renderMessageTemplate([
-            'title' => Craft::t('campaign', 'Unsubscribed'),
-            'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
-            'mailingList' => $mailingList,
-        ], $unsubscribeSuccessTemplate);
+    /**
+     * Tracks an unsubscribe from all mailing lists.
+     *
+     * @since 3.9.0
+     */
+    public function actionUnsubscribeAll(): ?Response
+    {
+        return $this->processUnsubscribe(true);
     }
 
     /**
@@ -193,6 +157,77 @@ class TrackerController extends BaseMessageController
         Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
 
         return $this->asRaw('OK');
+    }
+
+    /**
+     * Processes an unsubscribe.
+     */
+    private function processUnsubscribe(bool $all = false): Response
+    {
+        if ($this->request->getParam('sid') === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
+        }
+
+        // Get contact and sendout
+        $contact = $this->getContact();
+        $sendout = $this->getSendout();
+
+        if ($contact === null || $sendout === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link is invalid.'));
+        }
+
+        if (Campaign::$plugin->settings->requireUnsubscribeConfirmation) {
+            if (!$this->request->getIsPost()) {
+                if ($this->request->getAcceptsJson()) {
+                    return $this->asJson([
+                        'success' => false,
+                        'confirmationRequired' => true,
+                    ]);
+                }
+
+                return $this->renderMessageTemplate([
+                    'title' => Craft::t('campaign', 'Confirm unsubscribe'),
+                    'message' => $all ?
+                        Craft::t('campaign', 'Are you sure you want to unsubscribe from all mailing lists?') :
+                        Craft::t('campaign', 'Are you sure you want to unsubscribe?'),
+                    'hasUnsubscribeForm' => true,
+                    'contact' => $contact,
+                    'sendout' => $sendout,
+                ], Campaign::$plugin->settings->unsubscribeConfirmationTemplate);
+            }
+
+            if (!$this->request->validateCsrfToken()) {
+                throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
+            }
+
+            if ($this->request->getBodyParam('confirm') !== '1') {
+                throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe confirmation is invalid.'));
+            }
+        }
+
+        // Track unsubscribe
+        $mailingList = null;
+        if ($all) {
+            Campaign::$plugin->tracker->unsubscribeAll($contact, $sendout);
+        } else {
+            $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+        }
+
+        if ($this->request->getAcceptsJson()) {
+            return $this->asJson(['success' => true]);
+        }
+
+        $unsubscribeSuccessTemplate = $all ?
+            Campaign::$plugin->settings->unsubscribeAllSuccessTemplate :
+            $mailingList?->getMailingListType()->unsubscribeSuccessTemplate;
+
+        return $this->renderMessageTemplate([
+            'title' => Craft::t('campaign', 'Unsubscribed'),
+            'message' => $all ?
+                Craft::t('campaign', 'You have successfully unsubscribed from all mailing lists.') :
+                Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
+            'mailingList' => $mailingList,
+        ], $unsubscribeSuccessTemplate);
     }
 
     /**

@@ -547,6 +547,7 @@ class CampaignElement extends Element
                     'browserVersionUrl' => $this->getUrl(),
                     'contact' => new ContactElement(),
                     'unsubscribeUrl' => '',
+                    'unsubscribeAllUrl' => '',
                     'isWebRequest' => true,
                 ],
             ],
@@ -1028,6 +1029,7 @@ class CampaignElement extends Element
             'sendout' => $sendout,
             'mailingList' => $mailingList,
             'unsubscribeUrl' => $contact->getUnsubscribeUrl($sendout),
+            'unsubscribeAllUrl' => $contact->getUnsubscribeAllUrl($sendout),
             'isWebRequest' => false,
         ];
 

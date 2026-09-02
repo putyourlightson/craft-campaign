@@ -111,11 +111,12 @@ class FormsService extends Component
         Craft::$app->getSites()->setCurrentSite($mailingList->siteId);
 
         $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-unsubscribe';
-        $url = UrlHelper::siteUrl($path, [
+        $params = [
             'cid' => $contact->cid,
             'uid' => $contact->uid,
             'mlid' => $mailingList->id,
-        ]);
+        ];
+        $url = UrlHelper::siteUrl($path, $params);
 
         $subject = Craft::t('campaign', 'Verify unsubscribe');
         $bodyText = Craft::t('campaign', 'Please verify that you would like to unsubscribe from the mailing list by clicking on the following link:');
@@ -143,6 +144,28 @@ class FormsService extends Component
         }
 
         return $this->sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $mailingList->siteId);
+    }
+
+    /**
+     * Sends a verify unsubscribe from all mailing lists email.
+     *
+     * @since 3.9.0
+     */
+    public function sendVerifyUnsubscribeAllEmail(ContactElement $contact): bool
+    {
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/forms/verify-unsubscribe-all';
+        $url = UrlHelper::siteUrl($path, [
+            'cid' => $contact->cid,
+            'uid' => $contact->uid,
+        ]);
+
+        $subject = Craft::t('campaign', 'Verify unsubscribe');
+        $bodyText = Craft::t('campaign', 'Please verify that you would like to unsubscribe from all mailing lists by clicking on the following link:');
+        $htmlBody = $bodyText . '<br>' . Html::a($url, $url);
+        $plaintextBody = $bodyText . PHP_EOL . $url;
+        $siteId = Craft::$app->getSites()->getCurrentSite()->id;
+
+        return $this->sendEmail($contact->email, $subject, $htmlBody, $plaintextBody, $siteId);
     }
 
     /**
@@ -274,6 +297,18 @@ class FormsService extends Component
 
         // Update contact activity
         ContactActivityHelper::updateContactActivity($contact);
+    }
+
+    /**
+     * Unsubscribes a contact from all mailing lists.
+     *
+     * @since 3.9.0
+     */
+    public function unsubscribeContactFromAllMailingLists(ContactElement $contact, string $sourceType = null, string $source = null): void
+    {
+        foreach ($contact->getSubscribedMailingLists() as $mailingList) {
+            $this->unsubscribeContact($contact, $mailingList, $sourceType, $source);
+        }
     }
 
     /**
