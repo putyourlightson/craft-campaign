@@ -51,10 +51,31 @@ test('A confirmed unsubscribe request updates the subscription', function() {
         'cid' => $contact->cid,
         'sid' => $sendout->sid,
         'confirm' => '1',
+        Craft::$app->request->csrfParam => Craft::$app->request->getCsrfToken(),
     ]);
 
     (new TrackerController('t', Campaign::$plugin))->actionUnsubscribe();
 
     expect($contact->getMailingListSubscriptionStatus($sendout->mailingListIds[0]))
+        ->toBe('unsubscribed');
+});
+
+test('An unsubscribe all request updates every subscription', function() {
+    $contact = createContact();
+    $sendout = createSendoutWithSubscribedContact($contact);
+    $mailingList = createMailingList();
+    Campaign::$plugin->forms->subscribeContact($contact, $mailingList);
+    Craft::$app->request->setQueryParams([
+        'cid' => $contact->cid,
+        'sid' => $sendout->sid,
+    ]);
+
+    (new TrackerController('t', Campaign::$plugin))->actionUnsubscribeAll();
+
+    expect($contact->getSubscribedMailingLists())
+        ->toBeEmpty()
+        ->and($contact->getMailingListSubscriptionStatus($sendout->mailingListIds[0]))
+        ->toBe('unsubscribed')
+        ->and($contact->getMailingListSubscriptionStatus($mailingList->id))
         ->toBe('unsubscribed');
 });

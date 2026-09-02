@@ -36,6 +36,17 @@ test('A verify unsubscribe email is sent to a contact on unsubscribe', function(
     $formsService->sendVerifyUnsubscribeEmail($contact, $mailingList);
 });
 
+test('A verify unsubscribe email is sent to a contact on unsubscribe from all mailing lists', function() {
+    $contact = createContact();
+
+    $formsService = Mockery::mock(FormsService::class)->makePartial();
+    $formsService->shouldReceive('sendEmail')
+        ->withSomeOfArgs($contact->email, 'Verify unsubscribe')
+        ->once();
+
+    $formsService->sendVerifyUnsubscribeAllEmail($contact);
+});
+
 test('Subscribing and then unsubscribing a contact works', function() {
     $mailingList = createMailingList();
     $contact = createContact();
@@ -52,6 +63,23 @@ test('Subscribing and then unsubscribing a contact works', function() {
 
     expect($subscribedMailingLists)
         ->toBeEmpty();
+});
+
+test('A contact can be unsubscribed from all mailing lists', function() {
+    $mailingList1 = createMailingList();
+    $mailingList2 = createMailingList();
+    $contact = createContact();
+    Campaign::$plugin->forms->subscribeContact($contact, $mailingList1);
+    Campaign::$plugin->forms->subscribeContact($contact, $mailingList2);
+
+    Campaign::$plugin->forms->unsubscribeContactFromAllMailingLists($contact);
+
+    expect($contact->getSubscribedMailingLists())
+        ->toBeEmpty()
+        ->and($contact->getMailingListSubscriptionStatus($mailingList1->id))
+        ->toBe('unsubscribed')
+        ->and($contact->getMailingListSubscriptionStatus($mailingList2->id))
+        ->toBe('unsubscribed');
 });
 
 test('Subscribing results in a truncated source if too long', function() {

@@ -11,6 +11,8 @@ use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\SendoutElement;
 use putyourlightson\campaign\records\LinkRecord;
+use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -118,6 +120,22 @@ class TrackerController extends BaseMessageController
      */
     public function actionUnsubscribe(): ?Response
     {
+        return $this->unsubscribe();
+    }
+
+    /**
+     * Tracks an unsubscribe from all mailing lists.
+     */
+    public function actionUnsubscribeAll(): ?Response
+    {
+        return $this->unsubscribe(true);
+    }
+
+    /**
+     * Tracks an unsubscribe.
+     */
+    private function unsubscribe(bool $all = false): Response
+    {
         if ($this->request->getParam('sid') === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Unsubscribe link clicked in a test email without a sendout.'));
         }
@@ -141,11 +159,17 @@ class TrackerController extends BaseMessageController
 
                 return $this->renderMessageTemplate([
                     'title' => Craft::t('campaign', 'Confirm unsubscribe'),
-                    'message' => Craft::t('campaign', 'Are you sure you want to unsubscribe?'),
+                    'message' => $all ?
+                        Craft::t('campaign', 'Are you sure you want to unsubscribe from all mailing lists?') :
+                        Craft::t('campaign', 'Are you sure you want to unsubscribe?'),
                     'hasUnsubscribeForm' => true,
                     'contact' => $contact,
                     'sendout' => $sendout,
                 ], Campaign::$plugin->settings->unsubscribeConfirmationTemplate);
+            }
+
+            if (!$this->request->validateCsrfToken()) {
+                throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
 
             if ($this->request->getBodyParam('confirm') !== '1') {
@@ -154,7 +178,7 @@ class TrackerController extends BaseMessageController
         }
 
         // Track unsubscribe
-        $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout);
+        $mailingList = Campaign::$plugin->tracker->unsubscribe($contact, $sendout, $all);
 
         if ($this->request->getAcceptsJson()) {
             return $this->asJson(['success' => true]);
@@ -164,7 +188,9 @@ class TrackerController extends BaseMessageController
 
         return $this->renderMessageTemplate([
             'title' => Craft::t('campaign', 'Unsubscribed'),
-            'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
+            'message' => $all ?
+                Craft::t('campaign', 'You have successfully unsubscribed from all mailing lists.') :
+                Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ], $unsubscribeSuccessTemplate);
     }

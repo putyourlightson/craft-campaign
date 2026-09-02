@@ -20,3 +20,16 @@ test('A contact with the same email address as a soft-deleted contact can be sav
     expect($contact2->hasErrors())
         ->toBeFalse();
 });
+
+test('A contact provides an unsubscribe from all mailing lists URL', function() {
+    $contact = createContact();
+    $sendout = createSendout();
+
+    $url = $contact->getUnsubscribeAllUrl($sendout);
+
+    expect($url)
+        ->toContain('/campaign/t/unsubscribe-all')
+        ->toContain('cid=' . $contact->cid)
+        ->toContain('sid=' . $sendout->sid)
+        ->not->toContain('all=1');
+});

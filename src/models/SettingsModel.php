@@ -50,6 +50,12 @@ class SettingsModel extends Model
     public bool $addOneClickUnsubscribeHeaders = true;
 
     /**
+     * @var bool Whether contacts are allowed to unsubscribe from all mailing lists through a form
+     * @since 3.9.0
+     */
+    public bool $unsubscribeAllFormAllowed = false;
+
+    /**
      * @var bool Whether unsubscribe links in email bodies should require confirmation
      */
     public bool $requireUnsubscribeConfirmation = true;

@@ -837,6 +837,28 @@ class ContactElement extends Element
     }
 
     /**
+     * Returns an unsubscribe from all mailing lists URL.
+     *
+     * @since 3.9.0
+     */
+    public function getUnsubscribeAllUrl(SendoutElement $sendout = null): string
+    {
+        if ($this->cid === null) {
+            return '';
+        }
+
+        $params = ['cid' => $this->cid];
+
+        if ($sendout !== null) {
+            $params['sid'] = $sendout->sid;
+        }
+
+        $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/campaign/t/unsubscribe-all';
+
+        return UrlHelper::siteUrl($path, $params);
+    }
+
+    /**
      * Returns the mailing list subscription status.
      */
     public function getMailingListSubscriptionStatus(int $mailingListId): string

@@ -31,6 +31,9 @@ return [
         // Whether one-click unsubscribe headers should be added to emails.
         //'addOneClickUnsubscribeHeaders' => true,
 
+        // Whether contacts are allowed to unsubscribe from all mailing lists through a form
+        //'unsubscribeAllFormAllowed' => false,
+
         // Whether unsubscribe links in email bodies should require confirmation
         //'requireUnsubscribeConfirmation' => true,
 

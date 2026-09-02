@@ -83,17 +83,31 @@ class FormsController extends BaseMessageController
             throw new ForbiddenHttpException('Unsubscribing through a form is not allowed for this mailing list.');
         }
 
-        $email = $this->request->getRequiredParam('email');
-
-        // Get contact by email
-        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
-
-        if ($contact === null) {
-            throw new NotFoundHttpException(Craft::t('campaign', 'A contact with that email address could not be found.'));
-        }
+        $contact = $this->getContactFromParams();
 
         // Send verification email
         Campaign::$plugin->forms->sendVerifyUnsubscribeEmail($contact, $mailingList);
+
+        return $this->asModelSuccess($contact, '', 'contact');
+    }
+
+    /**
+     * Unsubscribes the provided email from all mailing lists.
+     */
+    public function actionUnsubscribeAll(): ?Response
+    {
+        $this->requirePostRequest();
+        $this->validateRecaptcha();
+        $this->validateTurnstile();
+
+        if (!Campaign::$plugin->settings->unsubscribeAllFormAllowed) {
+            throw new ForbiddenHttpException(Craft::t('campaign', 'Unsubscribing from all mailing lists through a form is not allowed.'));
+        }
+
+        $contact = $this->getContactFromParams();
+
+        // Send verification email
+        Campaign::$plugin->forms->sendVerifyUnsubscribeAllEmail($contact);
 
         return $this->asModelSuccess($contact, '', 'contact');
     }
@@ -238,6 +252,44 @@ class FormsController extends BaseMessageController
             'message' => Craft::t('campaign', 'You have successfully unsubscribed from the mailing list.'),
             'mailingList' => $mailingList,
         ], $mailingList->getMailingListType()->unsubscribeSuccessTemplate);
+    }
+
+    /**
+     * Verifies and unsubscribes the provided contact from all mailing lists.
+     */
+    public function actionVerifyUnsubscribeAll(): ?Response
+    {
+        $contact = $this->getVerifiedContact();
+
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'Contact not found.'));
+        }
+
+        Campaign::$plugin->forms->unsubscribeContactFromAllMailingLists($contact, 'web', $this->request->getReferrer());
+
+        if ($this->request->getBodyParam('redirect')) {
+            return $this->redirectToPostedUrl($contact);
+        }
+
+        return $this->renderMessageTemplate([
+            'title' => Craft::t('campaign', 'Unsubscribed'),
+            'message' => Craft::t('campaign', 'You have successfully unsubscribed from all mailing lists.'),
+        ]);
+    }
+
+    /**
+     * Returns a contact from the posted parameters.
+     */
+    private function getContactFromParams(): ContactElement
+    {
+        $email = $this->request->getRequiredParam('email');
+        $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+
+        if ($contact === null) {
+            throw new NotFoundHttpException(Craft::t('campaign', 'A contact with that email address could not be found.'));
+        }
+
+        return $contact;
     }
 
     /**
