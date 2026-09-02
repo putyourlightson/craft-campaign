@@ -2,6 +2,7 @@
 
 ## 3.9.0 - Unreleased
 
+- Added the ability to use Craft’s email settings for sending Campaign emails ([#321](https://github.com/putyourlightson/craft-campaign/issues/321)).
 - Added the ability to unsubscribe contacts from all mailing lists using forms and the new `unsubscribeAllUrl` campaign template variable ([#520](https://github.com/putyourlightson/craft-campaign/issues/520)).
 - Added an `unsubscribeAllFormAllowed` config setting for allowing contacts to unsubscribe from all mailing lists through a form, defaulting to `false`.
 - Added an `unsubscribeAllSuccessTemplate` config setting for customising the unsubscribe from all mailing lists success page.

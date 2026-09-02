@@ -688,6 +688,8 @@ return [
     'Untitled mailing list' => 'Unbenannte Mailing-Liste',
     'Updated' => 'Aktualisiert',
     'URL' => 'URL',
+    'Use Craft Email Settings' => 'Craft-E-Mail-Einstellungen verwenden',
+    'Use [Craft’s email settings]({link}) for sending Campaign emails.' => 'Die [E-Mail-Einstellungen von Craft]({link}) für Campaign-E-Mails verwenden.',
     'User group not found.' => 'Benutzergruppe nicht gefunden.',
     'User group successfully queued for importing.' => 'Benutzergruppe für Import erfolgreich in Warteschlange platziert.',
     'User Group' => 'Benutzergruppe',

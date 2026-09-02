@@ -323,6 +323,14 @@ class Campaign extends Plugin
             $settings = $this->getSettings();
         }
 
+        if ($settings->useCraftEmailSettings) {
+            $mailerConfig = App::mailerConfig();
+            $mailerConfig['class'] = CampaignMailer::class;
+
+            /** @var CampaignMailer */
+            return Craft::createObject($mailerConfig);
+        }
+
         // Create the transport adapter
         $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
 

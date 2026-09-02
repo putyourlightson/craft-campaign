@@ -227,18 +227,19 @@ class SettingsController extends BaseSettingsController
 
         $settings = $this->getEmailSettingsFromPost();
 
-        // Create the transport adapter so that we can validate it
-        /** @var BaseTransportAdapter $adapter */
-        $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
-
-        // Validate transport adapter
-        $adapter->validate();
+        $adapter = null;
+        if (!$settings->useCraftEmailSettings) {
+            // Create and validate the transport adapter
+            /** @var BaseTransportAdapter $adapter */
+            $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
+            $adapter->validate();
+        }
 
         // Save it
-        if ($adapter->hasErrors() || !Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
-            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save email settings.'), 'settings', [], [
-                'adapter' => $adapter,
-            ]);
+        if ($adapter?->hasErrors() || !Craft::$app->getPlugins()->savePluginSettings(Campaign::$plugin, $settings->getAttributes())) {
+            $routeParams = $adapter === null ? [] : ['adapter' => $adapter];
+
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t save email settings.'), 'settings', [], $routeParams);
         }
 
         return $this->asSuccess(Craft::t('campaign', 'Email settings saved.'));
@@ -369,18 +370,21 @@ class SettingsController extends BaseSettingsController
 
         $settings = $this->getEmailSettingsFromPost();
 
-        // Create the transport adapter so that we can validate it
-        /** @var BaseTransportAdapter $adapter */
-        $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
+        $adapter = null;
+        if (!$settings->useCraftEmailSettings) {
+            // Create the transport adapter so that we can validate it
+            /** @var BaseTransportAdapter $adapter */
+            $adapter = MailerHelper::createTransportAdapter($settings->transportType, $settings->transportSettings);
+            $adapter->validate();
+        }
 
         // Validate settings and transport adapter
         $settings->validate();
-        $adapter->validate();
 
-        if ($settings->hasErrors() || $adapter->hasErrors()) {
-            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], [
-                'adapter' => $adapter,
-            ]);
+        if ($settings->hasErrors() || $adapter?->hasErrors()) {
+            $routeParams = $adapter === null ? [] : ['adapter' => $adapter];
+
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], $routeParams);
         }
 
         // Create mailer with settings
@@ -395,7 +399,6 @@ class SettingsController extends BaseSettingsController
         /** @var User $user */
         $user = Craft::$app->getUser()->getIdentity();
 
-        $mailer = Campaign::$plugin->mailer;
         $message = $mailer->compose()
             ->setFrom([$fromNameEmail['email'] => $fromNameEmail['name']])
             ->setTo($user->email)
@@ -408,20 +411,21 @@ class SettingsController extends BaseSettingsController
         }
 
         if (!$mailer->send($message)) {
-            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], [
-                'adapter' => $adapter,
-            ]);
+            $routeParams = $adapter === null ? [] : ['adapter' => $adapter];
+
+            return $this->asModelFailure($settings, Craft::t('campaign', 'Couldn’t send test email.'), 'settings', [], $routeParams);
         }
 
         $this->setSuccessFlash(Craft::t('app', 'Email sent successfully! Check your inbox.'));
 
-        // Send the settings and adapter back to the template
+        // Send the settings and optional adapter back to the template
         /** @phpstan-var UrlManager $urlManager */
         $urlManager = Craft::$app->getUrlManager();
-        $urlManager->setRouteParams([
-            'settings' => $settings,
-            'adapter' => $adapter,
-        ]);
+        $routeParams = ['settings' => $settings];
+        if ($adapter !== null) {
+            $routeParams['adapter'] = $adapter;
+        }
+        $urlManager->setRouteParams($routeParams);
 
         return null;
     }
@@ -432,6 +436,7 @@ class SettingsController extends BaseSettingsController
     private function getEmailSettingsFromPost(): SettingsModel
     {
         $settings = Campaign::$plugin->settings;
+        $settings->useCraftEmailSettings = (bool)$this->request->getBodyParam('useCraftEmailSettings', false);
         $settings->fromNamesEmails = $this->request->getBodyParam('fromNamesEmails', $settings->fromNamesEmails);
         $settings->transportType = $this->request->getBodyParam('transportType', $settings->transportType);
         $settings->transportSettings = $this->request->getBodyParam('transportTypes.' . $settings->transportType);

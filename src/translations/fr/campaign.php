@@ -688,6 +688,8 @@ return [
     'Untitled mailing list' => 'Liste de diffusion sans titre',
     'Updated' => 'Mis à jour',
     'URL' => 'URL',
+    'Use Craft Email Settings' => 'Utiliser les réglages d’e-mail de Craft',
+    'Use [Craft’s email settings]({link}) for sending Campaign emails.' => 'Utiliser [les réglages d’e-mail de Craft]({link}) pour les e-mails de Campaign.',
     'User group not found.' => 'Groupe d’utilisateur introuvable.',
     'User group successfully queued for importing.' => 'Le groupe d’utilisateur est correctement mis en file d’attente pour importation.',
     'User Group' => 'Groupe d’utilisateur',
