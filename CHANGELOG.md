@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.9.1 - Unreleased
+
+- Improved the security of generated contact, sendout and link identifiers.
+
 ## 3.9.0 - 2026-09-02
 
 - Added the ability to schedule monthly recurring sendouts for selected occurrences of weekdays ([#211](https://github.com/putyourlightson/craft-campaign/issues/211)).

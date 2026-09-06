@@ -5,6 +5,7 @@
 
 namespace putyourlightson\campaign\helpers;
 
+use Craft;
 use Html2Text\Html2Text;
 
 class StringHelper extends \craft\helpers\StringHelper
@@ -14,9 +15,7 @@ class StringHelper extends \craft\helpers\StringHelper
      */
     public static function uniqueId(string $prefix = ''): string
     {
-        $uniqueId = uniqid($prefix) . self::randomString(4);
-
-        return substr($uniqueId, 0, 17);
+        return substr($prefix . Craft::$app->getSecurity()->generateRandomString(17), 0, 17);
     }
 
     /**
