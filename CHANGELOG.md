@@ -1,8 +1,10 @@
 # Release Notes for Campaign
 
-## 3.9.1 - Unreleased
+## 3.10.0 - Unreleased
 
+- Added support for the `--with-fields` option when resaving campaigns, mailing lists and contacts.
 - Improved the security of generated contact, sendout and link identifiers.
+- Campaign now requires Craft CMS 5.5.0 or later.
 
 ## 3.9.0 - 2026-09-02
 

@@ -41,6 +41,7 @@ use craft\services\Utilities;
 use craft\web\Response;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use Illuminate\Support\Collection;
 use Monolog\Formatter\LineFormatter;
 use Psr\Log\LogLevel;
 use putyourlightson\campaign\assets\CampaignAsset;
@@ -62,6 +63,8 @@ use putyourlightson\campaign\integrations\feedme\CampaignFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\ContactFeedMeElement;
 use putyourlightson\campaign\integrations\feedme\MailingListFeedMeElement;
 use putyourlightson\campaign\mail\CampaignMailer;
+use putyourlightson\campaign\models\CampaignTypeModel;
+use putyourlightson\campaign\models\MailingListTypeModel;
 use putyourlightson\campaign\models\SettingsModel;
 use putyourlightson\campaign\services\CampaignsService;
 use putyourlightson\campaign\services\CampaignTypesService;
@@ -86,6 +89,7 @@ use putyourlightson\campaign\widgets\MailingListStatsWidget;
 use yii\base\ActionEvent;
 use yii\base\Controller;
 use yii\base\Event;
+use yii\console\ExitCode;
 use yii\di\Instance;
 use yii\log\Logger;
 use yii\queue\Queue;
@@ -865,9 +869,28 @@ class Campaign extends Plugin
                         if ($controller->type !== null) {
                             $criteria['campaignType'] = explode(',', $controller->type);
                         }
+
+                        if (!empty($controller->withFields)) {
+                            $handles = Collection::make($this->campaignTypes->getAllCampaignTypes())
+                                ->filter(fn(CampaignTypeModel $campaignType) => $controller->hasTheFields($campaignType->getFieldLayout()))
+                                ->map(fn(CampaignTypeModel $campaignType) => $campaignType->handle)
+                                ->all();
+
+                            if (isset($criteria['campaignType'])) {
+                                $criteria['campaignType'] = array_intersect($criteria['campaignType'], $handles);
+                            } else {
+                                $criteria['campaignType'] = $handles;
+                            }
+
+                            if (empty($criteria['campaignType'])) {
+                                $controller->output($controller->markdownToAnsi('No campaign types satisfy `--with-fields`.'));
+                                return ExitCode::UNSPECIFIED_ERROR;
+                            }
+                        }
+
                         return $controller->resaveElements(CampaignElement::class, $criteria);
                     },
-                    'options' => ['type'],
+                    'options' => ['type', 'withFields'],
                     'helpSummary' => 'Re-saves Campaign campaigns.',
                     'optionsHelp' => [
                         'type' => 'The campaign type handle(s) of the campaigns to resave.',
@@ -882,9 +905,28 @@ class Campaign extends Plugin
                         if ($controller->type !== null) {
                             $criteria['mailingListType'] = explode(',', $controller->type);
                         }
+
+                        if (!empty($controller->withFields)) {
+                            $handles = Collection::make($this->mailingListTypes->getAllMailingListTypes())
+                                ->filter(fn(MailingListTypeModel $mailingListType) => $controller->hasTheFields($mailingListType->getFieldLayout()))
+                                ->map(fn(MailingListTypeModel $mailingListType) => $mailingListType->handle)
+                                ->all();
+
+                            if (isset($criteria['mailingListType'])) {
+                                $criteria['mailingListType'] = array_intersect($criteria['mailingListType'], $handles);
+                            } else {
+                                $criteria['mailingListType'] = $handles;
+                            }
+
+                            if (empty($criteria['mailingListType'])) {
+                                $controller->output($controller->markdownToAnsi('No mailing list types satisfy `--with-fields`.'));
+                                return ExitCode::UNSPECIFIED_ERROR;
+                            }
+                        }
+
                         return $controller->resaveElements(MailingListElement::class, $criteria);
                     },
-                    'options' => ['type'],
+                    'options' => ['type', 'withFields'],
                     'helpSummary' => 'Re-saves Campaign mailing lists.',
                     'optionsHelp' => [
                         'type' => 'The mailing lists type handle(s) of the mailing lists to resave.',
@@ -895,9 +937,18 @@ class Campaign extends Plugin
                     'action' => function(): int {
                         /** @var ResaveController $controller */
                         $controller = Craft::$app->controller;
+
+                        if (!empty($controller->withFields)) {
+                            $fieldLayout = Craft::$app->getFields()->getLayoutByType(ContactElement::class);
+                            if (!$controller->hasTheFields($fieldLayout)) {
+                                $controller->output($controller->markdownToAnsi('The contact field layout doesn’t satisfy `--with-fields`.'));
+                                return ExitCode::UNSPECIFIED_ERROR;
+                            }
+                        }
+
                         return $controller->resaveElements(ContactElement::class);
                     },
-                    'options' => [],
+                    'options' => ['withFields'],
                     'helpSummary' => 'Re-saves Campaign contacts.',
                 ];
             }
