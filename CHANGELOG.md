@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.10.0 - Unreleased
+## 3.10.0 - 2026-09-26
 
 - Added support for the `--with-fields` option when resaving campaigns, mailing lists and contacts.
 - Improved the security of generated contact, sendout and link identifiers.
