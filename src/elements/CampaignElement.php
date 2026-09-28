@@ -276,11 +276,7 @@ class CampaignElement extends Element
         ]);
 
         // Delete
-        $actions[] = $elementsService->createAction([
-            'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected campaigns?'),
-            'successMessage' => Craft::t('campaign', 'Campaigns deleted.'),
-        ]);
+        $actions[] = Delete::class;
 
         // Restore
         $actions[] = $elementsService->createAction([

@@ -1,5 +1,10 @@
 # Release Notes for Campaign
 
+## 3.10.1 - 2026-09-28
+
+- Elements must now be soft-deleted before they can be permanently deleted.
+- Fixed element deletion actions to use Craft’s native permanent deletion workflow ([#572](https://github.com/putyourlightson/craft-campaign/issues/572)).
+
 ## 3.10.0 - 2026-09-26
 
 - Added support for the `--with-fields` option when resaving campaigns, mailing lists and contacts.

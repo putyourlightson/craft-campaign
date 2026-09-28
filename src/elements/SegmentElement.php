@@ -155,11 +155,7 @@ class SegmentElement extends Element
         ]);
 
         // Delete
-        $actions[] = $elementsService->createAction([
-            'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected segments?'),
-            'successMessage' => Craft::t('campaign', 'Segments deleted.'),
-        ]);
+        $actions[] = Delete::class;
 
         // Restore
         $actions[] = $elementsService->createAction([

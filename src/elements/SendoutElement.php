@@ -317,11 +317,7 @@ class SendoutElement extends Element
         $actions[] = CancelSendouts::class;
 
         // Delete
-        $actions[] = $elementsService->createAction([
-            'type' => Delete::class,
-            'confirmationMessage' => Craft::t('campaign', 'Are you sure you want to delete the selected sendouts?'),
-            'successMessage' => Craft::t('campaign', 'Sendouts deleted.'),
-        ]);
+        $actions[] = Delete::class;
 
         // Restore
         $actions[] = $elementsService->createAction([
