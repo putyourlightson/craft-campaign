@@ -794,7 +794,7 @@ class CampaignElement extends Element
      */
     public function getFieldLayout(): ?FieldLayout
     {
-        // Memoize the field layout to ensure we don't end up with duplicate extra tabs!
+        // Memoize the field layout for this element instance.
         if ($this->fieldLayout !== null) {
             return $this->fieldLayout;
         }
@@ -806,12 +806,15 @@ class CampaignElement extends Element
         }
 
         if ($this->getStatus() == CampaignElement::STATUS_SENT) {
-            $this->fieldLayout->setTabs(array_merge(
-                $this->fieldLayout->getTabs(),
-                [
-                    new CampaignReportFieldLayoutTab(),
-                ],
-            ));
+            $tabs = $this->fieldLayout->getTabs();
+            foreach ($tabs as $tab) {
+                if ($tab instanceof CampaignReportFieldLayoutTab) {
+                    return $this->fieldLayout;
+                }
+            }
+
+            $tabs[] = new CampaignReportFieldLayoutTab();
+            $this->fieldLayout->setTabs($tabs);
         }
 
         return $this->fieldLayout;
