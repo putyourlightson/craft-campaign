@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 2.19.9 - 2026-10-27
+
+- Fixed missing permission checks when sending test emails and closing campaigns.
+
 ## 2.19.8 - 2026-10-16
 
 - Fixed a bug in which duplicate `Report` tabs could appear when editing a sent campaign with a provisional draft ([#573](https://github.com/putyourlightson/craft-campaign/issues/573)).

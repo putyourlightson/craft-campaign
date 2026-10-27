@@ -25,6 +25,16 @@ use yii\web\Response;
 class CampaignsController extends Controller
 {
     /**
+     * @inheritdoc
+     */
+    public function beforeAction($action): bool
+    {
+        $this->requirePermission('campaign:campaigns');
+
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Creates a new unpublished draft and redirects to its edit page.
      *
      * @see CategoriesController::actionCreate()
@@ -100,7 +110,7 @@ class CampaignsController extends Controller
 
         // Use the elements service since it might be a draft.
         /** @var CampaignElement|null $campaign */
-        $campaign = Craft::$app->getElements()->getElementById($campaignId, null, '*');
+        $campaign = Craft::$app->getElements()->getElementById($campaignId, CampaignElement::class, '*');
 
         if ($campaign === null) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
@@ -135,6 +145,10 @@ class CampaignsController extends Controller
 
         if (!$campaign) {
             throw new NotFoundHttpException(Craft::t('campaign', 'Campaign not found.'));
+        }
+
+        if (!$campaign->canSave(Craft::$app->getUser()->getIdentity())) {
+            throw new ForbiddenHttpException('User not authorized to save this campaign.');
         }
 
         // Set closed date to now
