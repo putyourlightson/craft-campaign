@@ -1,6 +1,6 @@
 # Release Notes for Campaign
 
-## 3.10.4 - Unreleased
+## 3.10.4 - 2026-11-05
 
 - Fixed a bug in which contacts imported across multiple batches could be missing from search results ([#574](https://github.com/putyourlightson/craft-campaign/issues/574)).
 
