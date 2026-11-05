@@ -47,6 +47,8 @@ class ImportJob extends BaseBatchedJob
 
         parent::execute($queue);
 
+        Campaign::$plugin->imports->updateSearchIndexes();
+
         // TODO: move what’s below this into the `BaseBatchedJob::after` method in Campaign 3.
 
         if ($this->itemOffset < $this->totalItems()) {
@@ -56,7 +58,6 @@ class ImportJob extends BaseBatchedJob
         $import->dateImported = new DateTime();
 
         Campaign::$plugin->imports->saveImport($import);
-        Campaign::$plugin->imports->updateSearchIndexes();
 
         if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
             Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, $event);

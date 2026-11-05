@@ -368,6 +368,10 @@ class ImportsService extends Component
      */
     public function updateSearchIndexes(): void
     {
+        if ($this->importedContactIds === []) {
+            return;
+        }
+
         $customFields = Campaign::$plugin->settings->getContactFields();
         $fieldHandles = array_map(fn($field) => $field->handle, $customFields);
         $fieldHandles[] = 'email';
@@ -386,5 +390,6 @@ class ImportsService extends Component
             Campaign::$plugin->settings->importJobTtr,
             Campaign::$plugin->queue,
         );
+        $this->importedContactIds = [];
     }
 }
