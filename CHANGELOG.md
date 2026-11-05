@@ -1,5 +1,9 @@
 # Release Notes for Campaign
 
+## 3.10.4 - Unreleased
+
+- Fixed a bug in which contacts imported across multiple batches could be missing from search results ([#574](https://github.com/putyourlightson/craft-campaign/issues/574)).
+
 ## 3.10.3 - 2026-10-27
 
 - Fixed missing permission checks when sending test emails and closing campaigns.

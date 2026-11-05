@@ -51,13 +51,20 @@ class ImportJob extends BaseBatchedJob
     /**
      * @inheritdoc
      */
+    protected function afterBatch(): void
+    {
+        Campaign::$plugin->imports->updateSearchIndexes();
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function after(): void
     {
         $import = $this->getImport();
         $import->dateImported = new DateTime();
 
         Campaign::$plugin->imports->saveImport($import);
-        Campaign::$plugin->imports->updateSearchIndexes();
 
         if (Campaign::$plugin->imports->hasEventHandlers(ImportsService::EVENT_AFTER_IMPORT)) {
             Campaign::$plugin->imports->trigger(ImportsService::EVENT_AFTER_IMPORT, new ImportEvent([
