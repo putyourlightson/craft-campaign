@@ -16,7 +16,6 @@ use craft\helpers\UrlHelper;
 use craft\mail\Message;
 use DateTime;
 use DOMDocument;
-use DOMElement;
 use putyourlightson\campaign\Campaign;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
@@ -814,7 +813,6 @@ class SendoutsService extends Component
         // Suppress markup errors and prepend XML tag to force utf-8 encoding (https://gist.github.com/Xeoncross/9401853)
         @$dom->loadHTML('<?xml encoding="utf-8"?>' . $body);
 
-        /** @var DOMElement[] $elements */
         $elements = $dom->getElementsByTagName('a');
 
         foreach ($elements as $element) {
